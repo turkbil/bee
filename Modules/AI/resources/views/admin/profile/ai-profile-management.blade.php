@@ -91,14 +91,6 @@
                                                             "></i> 
                                                             @break
                                                         @case(5) 
-                                                            <i class="fas fa-trophy" style="
-                                                                font-size: 2rem;
-                                                                color: #00d4ff;
-                                                                filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
-                                                                animation: float-icon 3s ease-in-out infinite;
-                                                            "></i> 
-                                                            @break
-                                                        @case(6) 
                                                             <i class="fas fa-robot" style="
                                                                 font-size: 2rem;
                                                                 color: #00d4ff;
@@ -973,7 +965,7 @@
                         {{-- Navigation Buttons + Toggle Categories - SİMETRİK LAYOUT --}}
                         <div class="form-footer mt-2 pt-2">
                             <div class="row align-items-center g-3">
-                                {{-- Sol taraf: Kategorileri Göster + Önceki Adım --}}
+                                {{-- Sol taraf: Kategorileri Göster + Sıfırlama + Önceki Adım --}}
                                 <div class="col-12 col-md-6 mb-3 mb-md-0">
                                     <div class="d-flex gap-3 flex-wrap justify-content-md-start justify-content-center">
                                         {{-- Kategorileri Göster Butonu (Sadece Adım 1'de) --}}
@@ -986,6 +978,17 @@
                                                 <span id="toggleCategoriesText">Tüm Kategorileri Göster</span>
                                             </button>
                                         @endif
+                                        
+                                        {{-- Profil Sıfırlama Butonu --}}
+                                        <button type="button" 
+                                                class="btn btn-outline-danger px-4 py-3 btn-reset-profile"
+                                                style="font-weight: 500; transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out !important; transform: none !important;"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#resetProfileModal">
+                                            <i class="fas fa-redo me-2"></i>
+                                            <span class="d-none d-sm-inline">Profili Sıfırla</span>
+                                            <span class="d-sm-none">Sıfırla</span>
+                                        </button>
                                         
                                         {{-- Önceki Adım Butonu --}}
                                         @if($currentStep > 1)
@@ -2023,6 +2026,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 });
+
+// Profil sıfırlama modal handler
+$(document).on('click', '#confirmResetProfile', function() {
+    const $btn = $(this);
+    const originalText = $btn.html();
+    
+    // Loading state
+    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Sıfırlanıyor...');
+    
+    // AJAX ile profil sıfırlama
+    $.ajax({
+        url: '{{ route("admin.ai.profile.reset") }}',
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Modal'ı kapat
+                $('#resetProfileModal').modal('hide');
+                
+                // Başarı mesajı göster
+                alert('Profil başarıyla sıfırlandı! Sayfa yeniden yüklenecek.');
+                
+                // Sayfayı ilk adıma yönlendir
+                setTimeout(function() {
+                    window.location.href = '{{ route("admin.ai.profile.edit", ["step" => 1]) }}';
+                }, 1000);
+            } else {
+                alert('Profil sıfırlanırken bir hata oluştu: ' + (response.message || 'Bilinmeyen hata'));
+                $btn.prop('disabled', false).html(originalText);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Reset profile error:', error);
+            alert('Profil sıfırlanırken bir hata oluştu. Lütfen tekrar deneyin.');
+            $btn.prop('disabled', false).html(originalText);
+        }
+    });
+});
 </script>
 
 {{-- Google Benzeri Arama CSS --}}
@@ -2260,5 +2303,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 </style>
+
+{{-- Profil Sıfırlama Modal --}}
+<div class="modal fade" id="resetProfileModal" tabindex="-1" aria-labelledby="resetProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetProfileModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    Profili Sıfırla
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-warning me-2"></i>
+                    <strong>Dikkat!</strong> Bu işlem geri alınamaz!
+                </div>
+                <p class="mb-3">
+                    Profilinizi sıfırladığınızda:
+                </p>
+                <ul class="list-unstyled mb-3">
+                    <li><i class="fas fa-times text-danger me-2"></i> Tüm AI profil verileri silinecek</li>
+                    <li><i class="fas fa-times text-danger me-2"></i> Sektör ve marka bilgileri kaybolacak</li>
+                    <li><i class="fas fa-times text-danger me-2"></i> AI davranış ayarları sıfırlanacak</li>
+                    <li><i class="fas fa-times text-danger me-2"></i> Kurucu bilgileri silinecek</li>
+                </ul>
+                <p class="text-muted">
+                    Sıfırlama sonrası profil kurulumunu tekrar baştan yapmanız gerekecek.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmResetProfile">
+                    <i class="fas fa-trash me-2"></i>Evet, Profili Sıfırla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endpush

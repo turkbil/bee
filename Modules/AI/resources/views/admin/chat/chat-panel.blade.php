@@ -238,7 +238,7 @@
         }
         
         // 🎯 SCROLL TO BOTTOM VE AUTO-SCROLL YENİDEN AKTİFLEŞTİRME
-        function scrollToBottomAndReEnable() {
+        window.scrollToBottomAndReEnable = function() {
             // Auto-scroll'u yeniden aktifleştir
             autoScrollEnabled = true;
             userScrolledUp = false;
@@ -583,9 +583,23 @@
         
         // Panoya kopyala
         function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).catch(err => {
-                console.error('Kopyalama hatası:', err);
-            });
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(err => {
+                    console.error('Kopyalama hatası:', err);
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Fallback kopyalama hatası:', err);
+                }
+                document.body.removeChild(textArea);
+            }
         }
         
         // En alta kaydır - Akıllı scroll sistemi

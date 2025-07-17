@@ -113,6 +113,192 @@ if (!function_exists('ai_get_repository')) {
     }
 }
 
+if (!function_exists('ai_smart_execute')) {
+    /**
+     * AKILLI AI PLANLAMA SİSTEMİ - Soruyu analiz et, uygun feature'ı belirle ve çalıştır
+     * 
+     * @param string $userQuestion Kullanıcının sorusu
+     * @param array $options Ek seçenekler
+     * @return array
+     */
+    function ai_smart_execute(string $userQuestion, array $options = []): array
+    {
+        try {
+            // 1. SORU ANALİZİ - AI'ya hangi feature'a uygun soralım
+            $analysisResult = ai_analyze_question($userQuestion);
+            
+            if (!$analysisResult['success']) {
+                return $analysisResult;
+            }
+            
+            $recommendedFeature = $analysisResult['recommended_feature'];
+            $confidence = $analysisResult['confidence'];
+            
+            // 2. GÜVEN KONTROLÜ - Düşük güven durumunda generic response
+            if ($confidence < 0.7) {
+                return ai_generic_response($userQuestion, $options);
+            }
+            
+            // 3. FEATURE ÇALIŞTIRMA - Önerilen feature'ı çalıştır
+            $userInput = [
+                'question' => $userQuestion,
+                'analyzed_intent' => $analysisResult['intent'],
+                'confidence' => $confidence
+            ];
+            
+            $result = ai_execute_feature($recommendedFeature, $userInput, [], $options);
+            
+            // 4. BAŞARILI SONUÇ - Metadata ekle
+            if ($result['success']) {
+                $result['smart_analysis'] = [
+                    'recommended_feature' => $recommendedFeature,
+                    'confidence' => $confidence,
+                    'analysis_method' => 'ai_smart_execute'
+                ];
+            }
+            
+            return $result;
+            
+        } catch (\Exception $e) {
+            // 5. HATA DURUMUNDA FALLBACK
+            return ai_generic_response($userQuestion, $options);
+        }
+    }
+}
+
+if (!function_exists('ai_analyze_question')) {
+    /**
+     * SORU ANALİZ SİSTEMİ - AI'ya soruyu analiz ettir ve uygun feature'ı belirle
+     * 
+     * @param string $userQuestion Kullanıcının sorusu
+     * @return array
+     */
+    function ai_analyze_question(string $userQuestion): array
+    {
+        try {
+            // Mevcut aktif feature'ları al
+            $activeFeatures = \Modules\AI\App\Models\AIFeature::where('status', 'active')
+                ->select('slug', 'name', 'description', 'category')
+                ->get()
+                ->map(function ($feature) {
+                    return [
+                        'slug' => $feature->slug,
+                        'name' => $feature->name,
+                        'description' => $feature->description,
+                        'category' => $feature->category
+                    ];
+                })->toArray();
+            
+            // AI'ya feature analizi yaptır
+            $analysisPrompt = "Kullanıcı sorusunu analiz et ve en uygun AI feature'ı belirle.\n\n";
+            $analysisPrompt .= "SORU: \"$userQuestion\"\n\n";
+            $analysisPrompt .= "MEVCUT FEATURES:\n";
+            
+            foreach ($activeFeatures as $feature) {
+                $analysisPrompt .= "- {$feature['slug']}: {$feature['name']} ({$feature['category']})\n";
+            }
+            
+            $analysisPrompt .= "\nYANIT FORMATI (JSON):\n";
+            $analysisPrompt .= "{\n";
+            $analysisPrompt .= "  \"recommended_feature\": \"feature-slug\",\n";
+            $analysisPrompt .= "  \"confidence\": 0.85,\n";
+            $analysisPrompt .= "  \"intent\": \"user_intent_description\",\n";
+            $analysisPrompt .= "  \"reasoning\": \"why_this_feature\"\n";
+            $analysisPrompt .= "}\n\n";
+            $analysisPrompt .= "Confidence: 0.0-1.0 arasında (0.7+ önerilen)\n";
+            $analysisPrompt .= "Sadece JSON yanıt ver, başka açıklama yapma.";
+            
+            // Repository ile AI'ya sor
+            $repository = ai_get_repository();
+            $response = $repository->executeRequest('generic', [
+                'message' => $analysisPrompt,
+                'source' => 'ai_analyze_question'
+            ]);
+            
+            if (!$response['success']) {
+                return [
+                    'success' => false,
+                    'error' => 'Soru analizi başarısız: ' . ($response['error'] ?? 'Bilinmeyen hata')
+                ];
+            }
+            
+            // JSON yanıtını parse et
+            $aiResponse = trim($response['response']);
+            $analysisData = json_decode($aiResponse, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return [
+                    'success' => false,
+                    'error' => 'AI yanıtı JSON formatında değil'
+                ];
+            }
+            
+            // Önerilen feature'ın var olup olmadığını kontrol et
+            $recommendedFeature = $analysisData['recommended_feature'] ?? null;
+            if (!$recommendedFeature || !collect($activeFeatures)->firstWhere('slug', $recommendedFeature)) {
+                return [
+                    'success' => false,
+                    'error' => 'Önerilen feature bulunamadı'
+                ];
+            }
+            
+            return [
+                'success' => true,
+                'recommended_feature' => $recommendedFeature,
+                'confidence' => (float)($analysisData['confidence'] ?? 0.5),
+                'intent' => $analysisData['intent'] ?? 'Bilinmeyen',
+                'reasoning' => $analysisData['reasoning'] ?? 'Açıklama yok'
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Soru analizi hatası: ' . $e->getMessage()
+            ];
+        }
+    }
+}
+
+if (!function_exists('ai_generic_response')) {
+    /**
+     * GENERIC RESPONSE SİSTEMİ - Feature bulunamazsa genel yanıt ver
+     * 
+     * @param string $userQuestion Kullanıcının sorusu
+     * @param array $options Ek seçenekler
+     * @return array
+     */
+    function ai_generic_response(string $userQuestion, array $options = []): array
+    {
+        try {
+            $genericPrompt = "Kullanıcının sorusuna yardımcı ve profesyonel bir yanıt ver.\n\n";
+            $genericPrompt .= "SORU: \"$userQuestion\"\n\n";
+            $genericPrompt .= "Kısa, net ve faydalı bir yanıt ver. Mümkünse alternatif çözüm önerileri sun.";
+            
+            $repository = ai_get_repository();
+            $response = $repository->executeRequest('generic', [
+                'message' => $genericPrompt,
+                'source' => 'ai_generic_response'
+            ]);
+            
+            if ($response['success']) {
+                $response['smart_analysis'] = [
+                    'recommended_feature' => 'generic_response',
+                    'confidence' => 0.5,
+                    'analysis_method' => 'ai_generic_response'
+                ];
+            }
+            
+            return $response;
+            
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Generic response hatası: ' . $e->getMessage()
+            ];
+        }
+    }
+}
+
 if (!function_exists('ai')) {
     /**
      * AI facade'ine kısa yoldan erişim

@@ -59,7 +59,7 @@
                                 <div class="col-6">
                                     <a href="{{ route('admin.ai.index') }}" class="btn btn-outline-secondary btn-sm w-100">
                                         <i class="fas fa-comments me-1"></i>
-                                        AI Chat
+                                        Yapay Zeka Chat
                                     </a>
                                 </div>
                             @endif
@@ -68,7 +68,7 @@
                         {{-- AI Profil Yok --}}
                         <div class="text-center py-4">
                             <i class="fas fa-robot text-muted" style="font-size: 3rem;"></i>
-                            <h4 class="mt-3">AI Profili Bulunamadı</h4>
+                            <h4 class="mt-3">Yapay Zeka Profili Bulunamadı</h4>
                             <p class="text-muted">Yapay zeka özelliklerini kullanmak için profil oluşturun.</p>
                             <a href="{{ route('admin.ai.profile.jquery-edit', 1) }}" class="btn btn-primary">
                                 <i class="fas fa-plus me-1"></i>
@@ -88,7 +88,7 @@
                 <div class="card-header drag-handle">
                     <h3 class="card-title">
                         <i class="fas fa-comments me-2"></i>
-                        Hızlı AI Chat
+                        Hızlı Yapay Zeka Chat
                     </h3>
                 </div>
                 <div class="card-body">
@@ -99,16 +99,16 @@
                         <div class="mb-2">
                             <span class="badge text-secondary mb-1">
                                 <i class="fas fa-robot me-1"></i>
-                                AI Asistan
+                                Yapay Zeka Asistan
                             </span>
                             <div class="p-2 rounded border border-secondary-subtle">
                                 @php
-                                    $brandName = 'AI Asistan';
+                                    $brandName = 'Yapay Zeka Asistan';
                                     $welcomeMessage = 'Merhaba! Size nasıl yardımcı olabilirim?';
                                     try {
                                         if ($aiProfile && isset($aiProfile->company_info['business_name'])) {
                                             $brandName = $aiProfile->company_info['business_name'];
-                                            $welcomeMessage = "Merhaba! Ben {$brandName} AI asistanıyım. Size nasıl yardımcı olabilirim? Her türlü sorunuzda yanınızdayım.";
+                                            $welcomeMessage = "Merhaba! Ben {$brandName} yapay zeka asistanıyım. Size nasıl yardımcı olabilirim? Her türlü sorunuzda yanınızdayım.";
                                         }
                                     } catch (\Exception $e) {
                                         // Hata durumunda basit mesaj kullan
@@ -809,7 +809,14 @@ function sendChatMessage() {
         document.getElementById(loadingId).remove();
         
         if (data.success) {
-            addMessageToChat('ai', data.response);
+            let responseText = data.response;
+            
+            // Akıllı feature detection bilgisi varsa ekle
+            if (data.feature_used && data.confidence) {
+                responseText += `\n\n<small class="text-muted">🤖 ${data.feature_used} (${Math.round(data.confidence * 100)}% güven)</small>`;
+            }
+            
+            addMessageToChat('ai', responseText);
         } else {
             addMessageToChat('ai', 'Üzgünüm, bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
         }

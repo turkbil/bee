@@ -191,7 +191,7 @@
                                 <i class="fas fa-edit me-2"></i>
                                 Profili Düzenle
                             </a>
-                            <a href="{{ route('admin.ai.index') }}" class="btn btn-primary btn-lg">
+                            <a href="{{ route('admin.ai.index') }}" class="btn btn-primary btn-lg me-3">
                                 <i class="fas fa-robot me-2"></i>
                                 AI Asistanı Kullan
                             </a>
@@ -209,6 +209,18 @@
                                 <i class="fas fa-rocket me-2"></i>
                                 Profili Oluşturmaya Başla
                             </a>
+                        @endif
+                        
+                        {{-- Profil Sıfırlama Butonu - Her durumda görünür --}}
+                        @if($profile)
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#resetProfileModal">
+                                    <i class="fas fa-redo me-2"></i>
+                                    Profili Sıfırla
+                                </button>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -363,27 +375,76 @@
                                                 'color' => 'info'
                                             ],
                                             5 => [
-                                                'title' => 'Başarı Hikayeleri', 
-                                                'icon' => 'fas fa-trophy', 
-                                                'desc' => 'Başarılarınızı ve deneyimlerinizi ekleyin',
-                                                'color' => 'orange'
-                                            ],
-                                            6 => [
-                                                'title' => 'AI Davranış Ayarları', 
+                                                'title' => 'AI Davranış ve İletişim Ayarları', 
                                                 'icon' => 'fas fa-robot', 
-                                                'desc' => 'Yapay zeka asistanınızın davranış tarzını belirleyin',
+                                                'desc' => 'AI asistanınızın iletişim tarzı ve davranış şeklini ayarlayın',
                                                 'color' => 'purple'
                                             ]
                                         ];
                                     @endphp
                                     
-                                    <div class="row g-4">
-                                        @foreach($steps as $stepNum => $step)
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <div class="modern-step-card">
+                                    {{-- 5 Step için Optimize Edilmiş Layout: 2-1-2 Pyramid Design --}}
+                                    {{-- İlk sıra: 2 step --}}
+                                    <div class="row g-4 mb-4 justify-content-center">
+                                        @foreach(array_slice($steps, 0, 2, true) as $stepNum => $step)
+                                            <div class="col-12 col-md-6 col-xl-5">
+                                                <div class="modern-step-card modern-step-large">
                                                     <div class="step-card-header">
-                                                        <div class="step-number-badge">{{ $stepNum }}</div>
-                                                        <div class="step-icon-wrapper step-{{ $step['color'] }}">
+                                                        <div class="step-number-badge step-large">{{ $stepNum }}</div>
+                                                        <div class="step-icon-wrapper step-{{ $step['color'] }} step-icon-large">
+                                                            <i class="{{ $step['icon'] }}"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="step-card-body">
+                                                        <h5 class="step-card-title">{{ $step['title'] }}</h5>
+                                                        <p class="step-card-description">{{ $step['desc'] }}</p>
+                                                    </div>
+                                                    <div class="step-card-footer">
+                                                        <div class="step-status-indicator">
+                                                            <i class="fas fa-clock"></i>
+                                                            <span>Bekliyor</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    
+                                    {{-- Orta sıra: 1 step (featured center) --}}
+                                    <div class="row g-4 mb-4 justify-content-center">
+                                        @php $centralStep = array_slice($steps, 2, 1, true); @endphp
+                                        @foreach($centralStep as $stepNum => $step)
+                                            <div class="col-12 col-md-8 col-lg-6">
+                                                <div class="modern-step-card modern-step-featured">
+                                                    <div class="step-card-header">
+                                                        <div class="step-number-badge step-featured">{{ $stepNum }}</div>
+                                                        <div class="step-icon-wrapper step-{{ $step['color'] }} step-icon-featured">
+                                                            <i class="{{ $step['icon'] }}"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="step-card-body text-center">
+                                                        <h5 class="step-card-title">{{ $step['title'] }}</h5>
+                                                        <p class="step-card-description">{{ $step['desc'] }}</p>
+                                                    </div>
+                                                    <div class="step-card-footer justify-content-center">
+                                                        <div class="step-status-indicator">
+                                                            <i class="fas fa-clock"></i>
+                                                            <span>Bekliyor</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    
+                                    {{-- Alt sıra: 2 step --}}
+                                    <div class="row g-4 justify-content-center">
+                                        @foreach(array_slice($steps, 3, 2, true) as $stepNum => $step)
+                                            <div class="col-12 col-md-6 col-xl-5">
+                                                <div class="modern-step-card modern-step-large">
+                                                    <div class="step-card-header">
+                                                        <div class="step-number-badge step-large">{{ $stepNum }}</div>
+                                                        <div class="step-icon-wrapper step-{{ $step['color'] }} step-icon-large">
                                                             <i class="{{ $step['icon'] }}"></i>
                                                         </div>
                                                     </div>
@@ -496,6 +557,24 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* 2-1-2 Layout Specific Styles */
+.modern-step-large {
+    min-height: 200px;
+}
+
+.modern-step-featured {
+    min-height: 220px;
+    background: linear-gradient(135deg, var(--tblr-card-bg) 0%, rgba(var(--tblr-primary-rgb), 0.02) 100%);
+    border: 2px solid rgba(var(--tblr-primary-rgb), 0.1);
+    position: relative;
+}
+
+.modern-step-featured::before {
+    background: linear-gradient(90deg, var(--tblr-primary), var(--tblr-purple));
+    opacity: 1;
+    height: 3px;
+}
+
 .modern-step-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
@@ -537,6 +616,20 @@
     font-size: 0.9rem;
 }
 
+.step-large {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+}
+
+.step-featured {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, var(--tblr-primary), var(--tblr-purple));
+    box-shadow: 0 4px 12px rgba(var(--tblr-primary-rgb), 0.3);
+}
+
 .step-icon-wrapper {
     width: 48px;
     height: 48px;
@@ -546,6 +639,21 @@
     justify-content: center;
     color: white;
     font-size: 1.2rem;
+}
+
+.step-icon-large {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+    border-radius: 14px;
+}
+
+.step-icon-featured {
+    width: 56px;
+    height: 56px;
+    font-size: 1.4rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .step-primary { background: var(--tblr-primary); }
@@ -667,16 +775,45 @@
         padding: 1.25rem;
     }
     
+    .modern-step-large,
+    .modern-step-featured {
+        min-height: 180px;
+    }
+    
     .step-icon-wrapper {
         width: 40px;
         height: 40px;
         font-size: 1rem;
     }
     
+    .step-icon-large {
+        width: 44px;
+        height: 44px;
+        font-size: 1.1rem;
+    }
+    
+    .step-icon-featured {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+    }
+    
     .step-number-badge {
         width: 28px;
         height: 28px;
         font-size: 0.8rem;
+    }
+    
+    .step-large {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .step-featured {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
     }
 }
 
@@ -813,6 +950,89 @@ function regenerateBrandStory() {
         button.innerHTML = originalText;
     });
 }
+
+// Profil sıfırlama modal handler
+$(document).on('click', '#confirmResetProfile', function() {
+    const $btn = $(this);
+    const originalText = $btn.html();
+    
+    // Loading state
+    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Sıfırlanıyor...');
+    
+    // AJAX ile profil sıfırlama
+    $.ajax({
+        url: '{{ route("admin.ai.profile.reset") }}',
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Modal'ı kapat
+                $('#resetProfileModal').modal('hide');
+                
+                // Başarı mesajı göster
+                alert('Profil başarıyla sıfırlandı! Sayfa yeniden yüklenecek.');
+                
+                // Sayfayı yenile
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            } else {
+                alert('Profil sıfırlanırken bir hata oluştu: ' + (response.message || 'Bilinmeyen hata'));
+                $btn.prop('disabled', false).html(originalText);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Reset profile error:', error);
+            alert('Profil sıfırlanırken bir hata oluştu. Lütfen tekrar deneyin.');
+            $btn.prop('disabled', false).html(originalText);
+        }
+    });
+});
 </script>
+
+{{-- Profil Sıfırlama Modal --}}
+<div class="modal fade" id="resetProfileModal" tabindex="-1" aria-labelledby="resetProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetProfileModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    Profili Sıfırla
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-warning me-2"></i>
+                    <strong>Dikkat!</strong> Bu işlem geri alınamaz!
+                </div>
+                <p class="mb-3">
+                    Profilinizi sıfırladığınızda:
+                </p>
+                <ul class="list-unstyled mb-3">
+                    <li><i class="fas fa-times text-danger me-2"></i> Tüm AI profil verileri silinecek</li>
+                    <li><i class="fas fa-times text-danger me-2"></i> Sektör ve marka bilgileri kaybolacak</li>
+                    <li><i class="fas fa-times text-danger me-2"></i> AI davranış ayarları sıfırlanacak</li>
+                    <li><i class="fas fa-times text-danger me-2"></i> Kurucu bilgileri silinecek</li>
+                    <li><i class="fas fa-times text-danger me-2"></i> Marka hikayesi silinecek</li>
+                </ul>
+                <p class="text-muted">
+                    Sıfırlama sonrası profil kurulumunu tekrar baştan yapmanız gerekecek.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmResetProfile">
+                    <i class="fas fa-trash me-2"></i>Evet, Profili Sıfırla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endpush
 @endsection

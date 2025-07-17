@@ -55,7 +55,7 @@ class AIChatController extends Controller
                 if (!$conversation) {
                     // Yoksa yeni konuşma oluştur
                     $conversation = new Conversation();
-                    $conversation->title = substr($message, 0, 30) . '...';
+                    $conversation->title = mb_substr($message, 0, 25) . '...';
                     $conversation->user_id = Auth::id();
                     $conversation->tenant_id = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
                     $conversation->save();
@@ -217,7 +217,7 @@ class AIChatController extends Controller
                     // Yeni konuşma oluştur
                     $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1; // Admin için default tenant
                     $conversation = new Conversation();
-                    $conversation->title = substr($message, 0, 30) . '...';
+                    $conversation->title = mb_substr($message, 0, 25) . '...';
                     $conversation->user_id = Auth::id();
                     $conversation->tenant_id = $tenantId;
                     $conversation->prompt_id = $promptId;

@@ -74,8 +74,10 @@ fi
 
 echo ""
 echo -e "${GREEN}✨ İşlem tamamlandı!${NC}"
-echo -e "${BLUE}📍 5 saniye sonra kapanacak...${NC}"
-sleep 5
+echo -e "${BLUE}📍 3 saniye sonra kapanacak...${NC}"
+sleep 3
 
-# Terminal'i otomatik kapat
-osascript -e 'tell application "Terminal" to close front window' 2>/dev/null || true
+# Terminal'i zorla kapat (onay sormadan)
+osascript -e 'tell application "Terminal" to close front window' 2>/dev/null &
+sleep 1
+exit 0

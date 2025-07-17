@@ -134,10 +134,8 @@
                             <div class="progress-section">
                                 <div class="progress-circle-container">
                                     @php
-                                        // Livewire component ile aynı progress hesaplama yöntemini kullan
-                                        $livewireComponent = new \Modules\AI\App\Http\Livewire\Admin\Profile\AIProfileManagement();
-                                        $livewireComponent->mount(1); // Step 1'den başlat
-                                        $progressData = $livewireComponent->calculateRealProgress();
+                                        // Model'den direkt progress bilgisini al (edit sayfalarına göre)
+                                        $progressData = $profile ? $profile->getEditPageCompletionPercentage() : ['percentage' => 0, 'completed' => 0, 'total' => 1];
                                         
                                         $completionPercentage = $progressData['percentage'];
                                         $completedFields = $progressData['completed'];
@@ -157,7 +155,7 @@
                 {{-- Status Information --}}
                 <div class="row mt-4">
                     <div class="col-12">
-                        @if((!$profile || !$profile->is_completed) && round($completionPercentage) < 70)
+                        @if((!$profile || !$profile->is_completed) && round($completionPercentage) < 25)
                             <div class="alert alert-warning" style="
                                 background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));
                                 border: 2px solid rgba(245, 158, 11, 0.3);
@@ -221,10 +219,107 @@
             {{-- Content Card --}}
             <div class="card border-0 shadow-lg mt-4">
                 <div class="card-body p-5">
+                    @if($profile)
+                        {{-- Brand Story Section - Her zaman göster --}}
+                        <div class="row g-4 mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-book-open text-primary me-3" style="font-size: 1.5rem;"></i>
+                                            <div>
+                                                <h3 class="card-title mb-0">Marka Hikayeniz</h3>
+                                                <small class="text-muted">AI tarafından özel olarak hazırlandı</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        @if($profile->hasBrandStory())
+                                            {{-- Hikaye mevcut --}}
+                                            <div class="brand-story-content">
+                                                <div class="brand-story-text p-4" style="font-size: 1.1rem; line-height: 1.7; background-color: var(--tblr-bg-surface);">
+                                                    {!! nl2br(e($profile->brand_story)) !!}
+                                                </div>
+                                                    
+                                                @if($profile->brand_story_created_at)
+                                                    <div class="mt-3 text-muted d-flex align-items-center">
+                                                        <i class="fas fa-calendar-alt me-2"></i>
+                                                        <span>{{ $profile->brand_story_created_at->format('d.m.Y H:i') }} tarihinde oluşturuldu</span>
+                                                    </div>
+                                                @endif
+                                                
+                                                {{-- Yeniden Oluştur Butonu --}}
+                                                <div class="mt-4">
+                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="regenerateBrandStory()">
+                                                        <i class="fas fa-sync-alt me-2"></i>
+                                                        Hikayeyi Yeniden Oluştur
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @else
+                                            {{-- Hikaye yok --}}
+                                            <div class="text-center py-5">
+                                                <div class="mb-4">
+                                                    <i class="fas fa-magic text-primary" style="font-size: 3rem; opacity: 0.5;"></i>
+                                                </div>
+                                                <h5 class="text-muted mb-3">Marka hikayeniz henüz oluşturulmadı</h5>
+                                                <p class="text-muted mb-4">AI asistanınız profilinize göre özel bir marka hikayesi oluşturacak</p>
+                                                
+                                                @if($completionPercentage >= 25)
+                                                    <button type="button" class="btn btn-primary" onclick="generateBrandStory()">
+                                                        <i class="fas fa-wand-magic-sparkles me-2"></i>
+                                                        Marka Hikayemi Oluştur
+                                                    </button>
+                                                @else
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        Marka hikayesi oluşturmak için profili en az %25 tamamlamanız gerekiyor. 
+                                                        (Şu an: %{{ round($completionPercentage) }})
+                                                    </div>
+                                                    <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" 
+                                                       class="btn btn-outline-primary">
+                                                        <i class="fas fa-edit me-2"></i>
+                                                        Profili Tamamla
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
                     @if($profile && $profile->is_completed)
-                        {{-- Profil Tamamlandı - Detayları Göster --}}
+                        {{-- Profil Tamamlandı - Diğer Detayları Göster --}}
                         <div class="row g-4">
-                            @include('ai::admin.profile.partials.completed-profile')
+                            {{-- Status Card --}}
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <i class="fas fa-check-circle text-success" style="font-size: 1.5rem;"></i>
+                                                </div>
+                                                <div>
+                                                    <h3 class="mb-1 text-success">AI Profiliniz Aktif!</h3>
+                                                    <p class="text-muted mb-0">Yapay zeka asistanınız markanıza özel içerik üretmeye hazır</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <form action="{{ route('admin.ai.profile.reset') }}" method="POST" class="d-inline" 
+                                                      onsubmit="return confirm('⚠️ UYARI: Profili sıfırlamak istediğinize emin misiniz?')">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-outline-muted btn-sm">
+                                                        <i class="fas fa-trash-restore me-2"></i>Sıfırla
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @else
                         {{-- Profil Tamamlanmamış - Modern Kurulum Rehberi --}}
@@ -634,6 +729,90 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }
 });
+
+// Marka hikayesi oluşturma fonksiyonu
+function generateBrandStory() {
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    // Butonu loading state'e al
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Hikaye Oluşturuluyor...';
+    
+    fetch('{{ route("admin.ai.profile.generate-story") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Başarılı - sayfayı yenile
+            location.reload();
+        } else {
+            // Hata mesajı göster
+            alert('Hata: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Hata:', error);
+        alert('Hikaye oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+    })
+    .finally(() => {
+        // Butonu normale döndür
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+}
+
+// Marka hikayesi yeniden oluşturma fonksiyonu
+function regenerateBrandStory() {
+    if (!confirm('Mevcut hikayeniz silinecek ve yeni bir hikaye oluşturulacak. Devam etmek istiyor musunuz?')) {
+        return;
+    }
+    
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    // Butonu loading state'e al
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Yeniden Oluşturuluyor...';
+    
+    fetch('{{ route("admin.ai.profile.generate-story") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            regenerate: true
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Başarılı - sayfayı yenile
+            location.reload();
+        } else {
+            // Hata mesajı göster
+            alert('Hata: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Hata:', error);
+        alert('Hikaye yeniden oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+    })
+    .finally(() => {
+        // Butonu normale döndür
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+}
 </script>
 @endpush
 @endsection

@@ -74,9 +74,18 @@ class CleanAIProfileQuestionsSeeder extends Seeder
             [
                 'id' => 5, 'sector_code' => null, 'step' => 3, 'section' => null,
                 'question_key' => 'main_business_activities', 'question_text' => 'Yaptığınız ana iş kolları nelerdir?',
-                'help_text' => 'İşletmenizin sunduğu hizmetleri veya ürünleri detaylı olarak açıklayın',
-                'input_type' => 'textarea', 'options' => null, 'validation_rules' => null,
+                'help_text' => 'Sektörünüze özel hizmetlerinizi seçin (çoklu seçim)',
+                'input_type' => 'checkbox_dynamic', 'options' => null, 'validation_rules' => json_encode(['required', 'array', 'min:1']),
                 'is_required' => true, 'sort_order' => 1, 'priority' => 3, 'ai_weight' => 50,
+                'category' => 'company', 'ai_priority' => 3, 'always_include' => false,
+                'context_category' => null
+            ],
+            [
+                'id' => 21, 'sector_code' => null, 'step' => 3, 'section' => null,
+                'question_key' => 'main_business_activities_custom', 'question_text' => 'Yukarıdakilerden farklı olarak eklemek istediğiniz hizmetler var mı?',
+                'help_text' => 'Sektörünüze özel olmayan veya yeni hizmetlerinizi yazın',
+                'input_type' => 'textarea', 'options' => null, 'validation_rules' => null,
+                'is_required' => false, 'sort_order' => 2, 'priority' => 2, 'ai_weight' => 30,
                 'category' => 'company', 'ai_priority' => 3, 'always_include' => false,
                 'context_category' => null
             ],
@@ -93,7 +102,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                         'has_custom_input' => true, 'custom_placeholder' => 'Özel müşteri kitlenizi belirtiniz...'
                     ]
                 ]),
-                'validation_rules' => null, 'is_required' => true, 'sort_order' => 2, 'priority' => 3, 'ai_weight' => 50,
+                'validation_rules' => json_encode(['required', 'array', 'min:1']), 'is_required' => true, 'sort_order' => 3, 'priority' => 3, 'ai_weight' => 50,
                 'category' => 'company', 'ai_priority' => 3, 'always_include' => false,
                 'context_category' => null
             ],

@@ -151,8 +151,18 @@ class AIProfileManagement extends Component
      */
     private function checkAndGenerateBrandStory()
     {
-        // Profil tamamlandıysa ve hikaye yoksa oluştur
-        if ($this->profile && $this->profile->is_completed && !$this->profile->hasBrandStory()) {
+        // Profil varsa ve hikaye yoksa oluştur (25% completion yeterli)
+        if ($this->profile && !$this->profile->hasBrandStory()) {
+            $completionData = $this->profile->getCompletionPercentage();
+            $completionPercentage = round($completionData['percentage']);
+            
+            if ($completionPercentage < 25) {
+                \Log::info('Livewire - Brand story generation skipped - insufficient completion', [
+                    'completion' => $completionPercentage,
+                    'required' => 25
+                ]);
+                return;
+            }
             try {
                 // API anahtarı kontrolü ÖNCE yap
                 $aiSettings = \Modules\AI\App\Models\Setting::first();
@@ -160,10 +170,20 @@ class AIProfileManagement extends Component
                     \Log::error('Livewire - API anahtarı bulunamadı - marka hikayesi oluşturulamadı');
                     session()->flash('brand_story_error', 'API anahtarı bulunamadı. Marka hikayesi oluşturulamadı.');
                 } else {
-                    // Asenkron brand story generation
-                    \Log::info('Brand story generation başlatılıyor - async');
-                    \Modules\AI\App\Jobs\GenerateBrandStoryJob::dispatch($this->profile);
-                    session()->flash('brand_story_info', 'Marka hikayesi oluşturuluyor. Bu işlem arka planda devam ediyor.');
+                    // Sync brand story generation
+                    \Log::info('Livewire - Brand story generation başlatılıyor - sync');
+                    try {
+                        $this->profile->generateBrandStory();
+                        session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
+                        // Profile'ı fresh'le
+                        $this->profile = $this->profile->fresh();
+                    } catch (\Exception $e) {
+                        \Log::error('Livewire - Brand story generation failed', [
+                            'profile_id' => $this->profile->id,
+                            'error' => $e->getMessage()
+                        ]);
+                        session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
+                    }
                 }
             } catch (\Exception $e) {
                 \Log::error('Livewire - Brand story generation failed', [
@@ -729,6 +749,54 @@ class AIProfileManagement extends Component
         }
     }
     
+    public function completeProfile()
+    {
+        try {
+            \Log::info('AIProfileManagement - completeProfile called', [
+                'tenant_id' => tenant('id'),
+                'profile_id' => $this->profile?->id,
+                'current_step' => $this->currentStep
+            ]);
+            
+            // Profil var mı kontrol et
+            if (!$this->profile || !$this->profile->exists) {
+                \Log::error('AIProfileManagement - Profile not found for completion');
+                return redirect()->route('admin.ai.profile.edit', ['step' => 1])
+                               ->with('error', 'Profil bulunamadı. Lütfen tekrar başlayın.');
+            }
+            
+            // Profili tamamlanmış olarak işaretle
+            $this->profile->is_completed = true;
+            $this->profile->save();
+            
+            \Log::info('AIProfileManagement - Profile marked as completed', [
+                'profile_id' => $this->profile->id,
+                'tenant_id' => tenant('id')
+            ]);
+            
+            // Cache'i temizle
+            $this->profile->clearContextCache();
+            
+            // Success message
+            session()->flash('success', 'Yapay zeka profili başarıyla tamamlandı! Marka hikayeniz oluşturulacak.');
+            
+            // Profile show sayfasına yönlendir
+            return redirect()->route('admin.ai.profile.show');
+            
+        } catch (\Exception $e) {
+            \Log::error('AIProfileManagement - Complete profile error', [
+                'error' => $e->getMessage(),
+                'tenant_id' => tenant('id'),
+                'profile_id' => $this->profile?->id,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Hata durumunda aynı step'te kal
+            return redirect()->route('admin.ai.profile.edit', ['step' => $this->currentStep])
+                           ->with('error', 'Profil tamamlanırken bir hata oluştu: ' . $e->getMessage());
+        }
+    }
+    
     private function validateCurrentStep()
     {
         // 🔧 FRESH DATA RELOAD - Validation öncesi jQuery auto-save verilerini yükle
@@ -1027,33 +1095,6 @@ class AIProfileManagement extends Component
         $current[$lastKey] = $value;
     }
     
-    public function completeProfile()
-    {
-        // Son adımı validate et
-        if ($this->validateCurrentStep()) {
-            // Son adım verilerini kaydet
-            $this->saveStepData();
-            
-            // Profili tamamlandı olarak işaretle
-            $this->profile->is_completed = true;
-            $this->profile->save();
-            
-            // Cache'i temizle
-            Cache::forget('ai_tenant_profile_' . tenant('id'));
-            
-            \Log::info('Profile completed successfully', [
-                'tenant_id' => tenant('id'),
-                'profile_id' => $this->profile->id,
-                'completion_percentage' => $this->calculateRealProgress()['percentage']
-            ]);
-            
-            // Başarı mesajı
-            session()->flash('success', 'Yapay zeka profili başarıyla tamamlandı! Profil sayfasında marka hikayeniz oluşturulacak.');
-            
-            // AI profil sayfasına yönlendir - hikaye oluşturma orada yapılacak
-            return redirect()->route('admin.ai.profile.show');
-        }
-    }
     
     private function buildBrandContext(): string
     {

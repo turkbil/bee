@@ -7,10 +7,7 @@ use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
-use Modules\AI\Database\Seeders\SectorSeeder_Part1;
-use Modules\AI\Database\Seeders\SectorSeeder_Part2;
-use Modules\AI\Database\Seeders\SectorSeeder_Part3;
-use Modules\AI\Database\Seeders\SectorSeeder_Part4;
+use Modules\AI\Database\Seeders\ComprehensiveSectorSeeder;
 use Modules\AI\Database\Seeders\CleanAIProfileQuestionsSeeder;
 use Modules\AI\Database\Seeders\CleanAITenantProfileSeeder;
 
@@ -46,13 +43,10 @@ class AIDatabaseSeeder extends Seeder
                 AIUsageUpdateSeeder::class,
             ]);
             
-            // AI Profil sistemi seeder'larını çalıştır - 4 parçalı 200+ sektör
+            // AI Profil sistemi seeder'larını çalıştır - Kapsamlı 118+ sektör
             $this->call([
-                // 4 parçalı sector seeder'lar (her biri kendi sorularıyla beraber)
-                SectorSeeder_Part1::class,  // Teknoloji, Sağlık, Eğitim (ID 1-50)
-                SectorSeeder_Part2::class,  // Yiyecek, E-ticaret, İnşaat (ID 51-100)
-                SectorSeeder_Part3::class,  // Finans, Sanat, Spor, Otomotiv (ID 101-150)
-                SectorSeeder_Part4::class,  // Türk Esnaf (gelinlik, kuaför, vs.) (ID 151-200+)
+                // Tek comprehensive seeder (tüm sektörler hizmetleriyle beraber)
+                ComprehensiveSectorSeeder::class,  // 118+ sektör (turizm, tarım, sanayi dahil)
                 
                 CleanAIProfileQuestionsSeeder::class,
                 SectorCommonQuestionsSeeder::class,      // Ortak sorular (ID 5000-5999)

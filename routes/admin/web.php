@@ -45,6 +45,10 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         return view('admin.index', compact('tenantStats'));
     })->name('dashboard');
     
+    // Dashboard widget layout API endpoints
+    Route::post('/dashboard/save-layout', [\App\Http\Controllers\Admin\DashboardController::class, 'saveDashboardLayout'])->name('dashboard.save-layout');
+    Route::get('/dashboard/get-layout', [\App\Http\Controllers\Admin\DashboardController::class, 'getDashboardLayout'])->name('dashboard.get-layout');
+    
     
     // Yetkisiz erişim sayfası - özel 403 sayfasına yönlendirilecek
     Route::get('/access-denied', function() {

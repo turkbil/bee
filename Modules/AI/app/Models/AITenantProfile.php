@@ -801,6 +801,137 @@ class AITenantProfile extends Model
     }
 
     /**
+     * Edit sayfalarındaki sorulara göre completion percentage hesapla
+     * Sadece jQuery edit form'larındaki soruların cevaplarını kontrol eder
+     */
+    public function getEditPageCompletionPercentage(): array
+    {
+        $totalQuestions = 0;
+        $answeredQuestions = 0;
+        $stepData = [];
+        
+        // Her step için soruları al ve cevapları kontrol et
+        foreach ([1, 2, 3, 4, 5] as $step) {
+            // Step 3 için sektöre özel filtreleme yap
+            if ($step === 3) {
+                $currentSector = $this->sector_details['sector'] ?? null;
+                $questions = \Modules\AI\app\Models\AIProfileQuestion::getByStep($step, $currentSector);
+            } else {
+                $questions = \Modules\AI\app\Models\AIProfileQuestion::where('step', $step)->get();
+            }
+            
+            $stepQuestions = $questions->count();
+            $stepAnswered = 0;
+            
+            foreach ($questions as $question) {
+                $questionKey = $question->question_key;
+                $isAnswered = false;
+                
+                // Soru anahtarına göre hangi field'da olduğunu belirle
+                $value = $this->getAnswerForQuestion($questionKey);
+                
+                if ($question->input_type === 'checkbox') {
+                    // Checkbox için en az bir seçim yapılmış mı?
+                    if (is_array($value)) {
+                        foreach ($value as $checkValue) {
+                            if ($checkValue) {
+                                $isAnswered = true;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    // Diğer input türleri için boş değil mi?
+                    $isAnswered = !empty($value) && $value !== null;
+                }
+                
+                if ($isAnswered) {
+                    $stepAnswered++;
+                }
+            }
+            
+            $stepData["step_{$step}"] = [
+                'completed' => $stepAnswered,
+                'total' => $stepQuestions,
+                'percentage' => $stepQuestions > 0 ? round(($stepAnswered / $stepQuestions) * 100) : 0
+            ];
+            
+            $totalQuestions += $stepQuestions;
+            $answeredQuestions += $stepAnswered;
+        }
+        
+        // Genel percentage hesaplama
+        $percentage = $totalQuestions > 0 ? round(($answeredQuestions / $totalQuestions) * 100) : 0;
+        
+        return [
+            'percentage' => $percentage,
+            'completed' => $answeredQuestions,
+            'total' => $totalQuestions,
+            'steps' => $stepData
+        ];
+    }
+    
+    /**
+     * Soru anahtarına göre profildeki cevabı getir
+     */
+    private function getAnswerForQuestion(string $questionKey)
+    {
+        // Question key'e göre hangi field'da saklandığını belirle
+        $fieldMappings = [
+            // Step 1
+            'sector_selection' => 'sector_details.sector',
+            
+            // Step 2 
+            'brand_name' => 'company_info.brand_name',
+            'city' => 'company_info.city',
+            'business_start_year' => 'company_info.business_start_year',
+            
+            // Step 3 (DÜZELTME: aslında company_info'da saklaniyor)
+            'main_business_activities' => 'company_info.main_business_activities',
+            'target_customers' => 'company_info.target_customers',
+            'main_business_activities_custom' => 'company_info.main_business_activities_custom',
+            'technology_specific_services' => 'sector_details.technology_specific_services',
+            'technology_main_service_detailed' => 'sector_details.technology_main_service_detailed',
+            'web_specific_services' => 'sector_details.web_specific_services',
+            'health_specific_services' => 'sector_details.health_specific_services',
+            'education_specific_services' => 'sector_details.education_specific_services',
+            'food_specific_services' => 'sector_details.food_specific_services',
+            'retail_specific_services' => 'sector_details.retail_specific_services',
+            'construction_specific_services' => 'sector_details.construction_specific_services',
+            'finance_specific_services' => 'sector_details.finance_specific_services',
+            'art_design_specific_services' => 'sector_details.art_design_specific_services',
+            'sports_specific_services' => 'sector_details.sports_specific_services',
+            'automotive_specific_services' => 'sector_details.automotive_specific_services',
+            'legal_specific_services' => 'sector_details.legal_specific_services',
+            
+            // Step 4
+            'share_founder_info' => 'company_info.share_founder_info',
+            'founder_name' => 'founder_info.founder_name',
+            'founder_role' => 'founder_info.founder_role',
+            'founder_additional_info' => 'founder_info.founder_additional_info',
+            
+            // Step 5
+            'brand_character' => 'ai_behavior_rules.brand_character',
+            'writing_style' => 'ai_behavior_rules.writing_style',
+        ];
+        
+        if (!isset($fieldMappings[$questionKey])) {
+            return null;
+        }
+        
+        $fieldPath = $fieldMappings[$questionKey];
+        $pathParts = explode('.', $fieldPath);
+        
+        if (count($pathParts) === 2) {
+            $section = $pathParts[0];
+            $key = $pathParts[1];
+            return $this->$section[$key] ?? null;
+        }
+        
+        return null;
+    }
+
+    /**
      * Merkezi completion percentage hesaplama fonksiyonu
      * Show ve Edit sayfalarında tutarlı hesaplama için
      */
@@ -1724,5 +1855,58 @@ class AITenantProfile extends Model
             $this->sector_details = $sectorDetails;
         }
         // Add other sections as needed
+    }
+
+    /**
+     * Sektör değiştiğinde sektöre özel yanıtları ve brand story'yi temizle
+     */
+    public function clearSectorRelatedData(): void
+    {
+        \Log::info('Sektör değişimi - eski verileri temizleniyor', [
+            'tenant_id' => $this->tenant_id,
+            'profile_id' => $this->id,
+            'old_sector' => $this->sector_details['sector'] ?? 'bilinmiyor'
+        ]);
+
+        // Sektöre özel yanıtları temizle
+        $this->sector_details = array_filter($this->sector_details, function($key) {
+            // Sadece sektör alanını koru, diğer sektöre özel yanıtları temizle
+            return $key === 'sector';
+        }, ARRAY_FILTER_USE_KEY);
+
+        // Başarı hikayelerini temizle (sektöre özel)
+        $this->success_stories = [];
+
+        // AI davranış kurallarını temizle (sektöre özel)
+        $this->ai_behavior_rules = [];
+
+        // Ek bilgileri temizle
+        $this->additional_info = [];
+
+        // Brand story'yi temizle (sektöre özel)
+        $this->brand_story = null;
+        $this->brand_story_created_at = null;
+
+        // Completion durumunu sıfırla
+        $this->is_completed = false;
+
+        // Smart profile system skorlarını temizle (NULL yerine default değerler)
+        $this->smart_field_scores = [];
+        $this->field_calculation_metadata = [];
+        $this->profile_completeness_score = 0;
+        $this->profile_quality_grade = 'F';
+        $this->last_calculation_context = [];
+        $this->scores_calculated_at = null;
+
+        // Cache'i temizle
+        $this->clearContextCache();
+
+        // Veritabanını güncelle
+        $this->save();
+
+        \Log::info('Sektör değişimi - veri temizleme tamamlandı', [
+            'tenant_id' => $this->tenant_id,
+            'profile_id' => $this->id
+        ]);
     }
 }

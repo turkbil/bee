@@ -538,12 +538,20 @@ class AIFeaturesController extends Controller
         }
 
         try {
+            // AKILLI UYARI SİSTEMİ - Doğru feature kontrol et
+            $smartAnalysis = $this->checkFeatureCompatibility($feature, $inputText);
+            
             // YENİ MERKEZI REPOSITORY SİSTEMİ - Prowess için
             $result = $this->aiResponseRepository->executeRequest('prowess_test', [
                 'feature_id' => $featureId,
                 'input_text' => $inputText,
                 'tenant_id' => $tenantId
             ]);
+            
+            // Akıllı uyarı sonuçlarını ekle
+            if ($result['success'] && $smartAnalysis) {
+                $result['smart_analysis'] = $smartAnalysis;
+            }
 
             if (!$result['success']) {
                 return response()->json([
@@ -940,6 +948,59 @@ ABSOLUTELY FORBIDDEN: Never use these symbols in your response:
                 'error' => $e->getMessage()
             ]);
             
+            return null;
+        }
+    }
+
+    /**
+     * Feature uyumluluk kontrolü - Akıllı uyarı sistemi
+     */
+    private function checkFeatureCompatibility($currentFeature, $inputText): ?array
+    {
+        try {
+            // Akıllı analiz yap
+            $analysisResult = ai_analyze_question($inputText);
+            
+            if (!$analysisResult['success']) {
+                return null;
+            }
+            
+            $recommendedFeature = $analysisResult['recommended_feature'];
+            $confidence = $analysisResult['confidence'];
+            
+            // Mevcut feature ile önerilen feature aynı mı?
+            if ($currentFeature->slug === $recommendedFeature) {
+                return [
+                    'is_compatible' => true,
+                    'confidence' => $confidence,
+                    'message' => 'Bu soru seçilen feature\'a uygun.'
+                ];
+            }
+            
+            // Farklı feature öneriliyor ve confidence yüksekse uyarı ver
+            if ($confidence >= 0.75) {
+                // Önerilen feature'ı bul
+                $suggestedFeature = \Modules\AI\App\Models\AIFeature::where('slug', $recommendedFeature)
+                    ->where('status', 'active')
+                    ->first();
+                
+                if ($suggestedFeature) {
+                    return [
+                        'is_compatible' => false,
+                        'confidence' => $confidence,
+                        'recommended_feature' => $recommendedFeature,
+                        'recommended_feature_name' => $suggestedFeature->name,
+                        'current_feature' => $currentFeature->slug,
+                        'current_feature_name' => $currentFeature->name,
+                        'message' => "Bu soru '{$suggestedFeature->name}' feature'ına daha uygun. (Güven: " . round($confidence * 100) . "%)",
+                        'suggestion' => "Daha iyi sonuç için '{$suggestedFeature->name}' feature'ını kullanmayı deneyin."
+                    ];
+                }
+            }
+            
+            return null;
+            
+        } catch (\Exception $e) {
             return null;
         }
     }

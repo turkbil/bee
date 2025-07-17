@@ -292,7 +292,7 @@ Route::middleware(['admin', 'admin.tenant.select'])
                         
                         // Step-based URL routing
                         Route::get('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'edit'])
-                            ->where('step', '[1-6]')
+                            ->where('step', '[1-5]')
                             ->name('edit');
                         
                         // jQuery-based simple edit
@@ -301,7 +301,7 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->name('jquery-edit');
                             
                         Route::post('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'update'])
-                            ->where('step', '[1-6]')
+                            ->where('step', '[1-5]')
                             ->middleware('module.permission:ai,update')
                             ->name('edit.update');
                         

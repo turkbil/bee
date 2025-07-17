@@ -94,10 +94,13 @@ class AIResponseRepository
             ];
         }
 
+        // Mesaja göre context type belirleme
+        $contextType = $this->determineContextType($userMessage);
+
         // AI Service ile prompt oluştur ve yanıt al
         $response = $this->aiService->ask($userMessage, [
             'custom_prompt' => $customPrompt,
-            'context_type' => 'admin_chat',
+            'context_type' => $contextType,
             'source' => 'admin_panel'
         ]);
 
@@ -481,5 +484,49 @@ class AIResponseRepository
     public function getTypeDescription(string $type): string
     {
         return $this->getAvailableTypes()[$type] ?? 'Bilinmeyen tip';
+    }
+
+    /**
+     * Mesaja göre context type belirleme - AI ile hızlı analiz
+     */
+    private function determineContextType(string $message): string
+    {
+        // Cache key oluştur
+        $cacheKey = 'ai_context_type_' . md5($message);
+        
+        // Cache'den kontrol et
+        if ($cached = cache()->get($cacheKey)) {
+            return $cached;
+        }
+        
+        // Hızlı AI analizi (sadece context type belirleme)
+        try {
+            $prompt = "Bu mesaj hangi context type gerektirir? Sadece tek kelime yanıt ver: minimal, essential, normal, detailed\n\nMesaj: \"$message\"";
+            
+            // Çok basit ve hızlı AI çağrısı
+            $response = $this->aiService->ask($prompt, [
+                'context_type' => 'minimal', // Recursive loop önleme
+                'source' => 'context_analyzer',
+                'max_tokens' => 5 // Sadece tek kelime
+            ]);
+            
+            // Response'u temizle
+            $contextType = strtolower(trim($response));
+            
+            // Valid context type kontrolü
+            $validTypes = ['minimal', 'essential', 'normal', 'detailed'];
+            if (!in_array($contextType, $validTypes)) {
+                $contextType = 'essential'; // Default fallback
+            }
+            
+            // 5 dakika cache
+            cache()->put($cacheKey, $contextType, 300);
+            
+            return $contextType;
+            
+        } catch (\Exception $e) {
+            // Hata durumunda fallback
+            return 'essential';
+        }
     }
 }

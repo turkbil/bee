@@ -94,7 +94,7 @@ class DeepSeekService
 
     public function generateCompletion($message, $conversationHistory = [])
     {
-        $messages = $this->formatMessages($conversationHistory);
+        $messages = $this->formatMessages($conversationHistory, null, $message);
 
         try {
             // Merkezi helper ile API anahtarını kontrol et
@@ -266,7 +266,7 @@ class DeepSeekService
         }
     }
 
-    protected function formatMessages($conversationHistory, $promptId = null)
+    protected function formatMessages($conversationHistory, $promptId = null, $currentMessage = null)
     {
         $messages = [];
         
@@ -294,9 +294,58 @@ class DeepSeekService
             }
         }
         
+        // Current message'ı belirle (parametreden ya da conversation history'den)
+        $actualCurrentMessage = $currentMessage;
+        if (empty($actualCurrentMessage) && !empty($conversationHistory)) {
+            $lastMessage = end($conversationHistory);
+            if ($lastMessage && $lastMessage['role'] === 'user') {
+                $actualCurrentMessage = $lastMessage['content'];
+            }
+        }
+        
+        // Context type belirleme - current message'a göre
+        $contextType = 'admin_chat'; // Default
+        
+        // "Ben kimim" sorusu için user bilgisi ekleme
+        if ($actualCurrentMessage && $this->isBenKimimQuestion($actualCurrentMessage)) {
+            $customPrompt = $this->addUserIdentityPrompt($customPrompt);
+        }
+        
+        // Akıllı feature detection - Uzun mesajlar için feature önerisi
+        if ($actualCurrentMessage && $this->shouldTryFeatureDetection($actualCurrentMessage)) {
+            $featureResult = $this->trySmartFeatureExecution($actualCurrentMessage);
+            if ($featureResult['success']) {
+                // Feature başarılı çalıştı, feature yanıtını döndür
+                return [
+                    'content' => $featureResult['response'],
+                    'feature_used' => $featureResult['feature_slug'],
+                    'confidence' => $featureResult['confidence']
+                ];
+            }
+        }
+        
+        if ($actualCurrentMessage && $this->shouldUseDynamicContext($actualCurrentMessage)) {
+            Log::info('🔍 Dynamic context detection başlıyor', [
+                'message' => $actualCurrentMessage,
+                'message_length' => strlen($actualCurrentMessage)
+            ]);
+            $contextType = $this->determineContextType($actualCurrentMessage);
+            Log::info('🎯 Dynamic context belirlendi', [
+                'original_type' => 'admin_chat',
+                'detected_type' => $contextType,
+                'message' => $actualCurrentMessage
+            ]);
+        } else {
+            Log::info('🔍 Dynamic context kullanılmıyor', [
+                'has_message' => !empty($actualCurrentMessage),
+                'should_use_dynamic' => $actualCurrentMessage ? $this->shouldUseDynamicContext($actualCurrentMessage) : false,
+                'message_length' => $actualCurrentMessage ? strlen($actualCurrentMessage) : 0
+            ]);
+        }
+        
         // YENİ SİSTEM: buildFullSystemPrompt ile tenant context + priority engine
         $systemContent = $aiService->buildFullSystemPrompt($customPrompt, [
-            'context_type' => 'admin_chat',
+            'context_type' => $contextType,
             'source' => 'stream_api',
             'prompt_id' => $promptId
         ]);
@@ -615,5 +664,172 @@ class DeepSeekService
         }
         
         return $totalTokens;
+    }
+
+    /**
+     * "Ben kimim" sorusu kontrolü
+     */
+    private function isBenKimimQuestion($message): bool
+    {
+        $message = strtolower(trim($message));
+        
+        // "Ben kimim" varyasyonları
+        $patterns = [
+            'ben kimim',
+            'ben kim',
+            'kimim ben',
+            'kim ben',
+            'ben neyim',
+            'benim kimligim',
+            'who am i',
+            'who i am'
+        ];
+        
+        foreach ($patterns as $pattern) {
+            if (strpos($message, $pattern) !== false) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * User identity prompt'u ekle
+     */
+    private function addUserIdentityPrompt($existingPrompt): string
+    {
+        $user = auth()->user();
+        if (!$user) {
+            $userPrompt = '"Ben kimim" sorusuna "Giriş yapmadığınız için kimliğinizi belirleyemiyorum." yanıtı ver.';
+        } else {
+            $userInfo = [];
+            
+            // İsim
+            if ($user->name) {
+                $userInfo[] = "İsim: " . $user->name;
+            }
+            
+            // Email
+            if ($user->email) {
+                $userInfo[] = "Email: " . $user->email;
+            }
+            
+            $userPrompt = '"Ben kimim" sorusuna şu bilgileri kısa ve samimi bir dille ver:' . "\n\n" . implode("\n", $userInfo);
+        }
+        
+        return $existingPrompt . "\n\n" . $userPrompt;
+    }
+
+    /**
+     * Feature detection gerekli mi kontrol et
+     */
+    private function shouldTryFeatureDetection($message): bool
+    {
+        // Çok kısa mesajlar için feature detection yapma
+        if (strlen(trim($message)) < 10) {
+            return false;
+        }
+        
+        // AI'ya sormalıyız, static pattern kullanmayalım
+        // Mesaj feature'a uygun mu diye AI'ya soracağız
+        return true;
+    }
+
+    /**
+     * Akıllı feature detection ve execution
+     */
+    private function trySmartFeatureExecution($message): array
+    {
+        try {
+            // AIHelper'daki smart execute fonksiyonunu kullan
+            $result = ai_smart_execute($message, [
+                'source' => 'chat_auto_feature',
+                'max_tokens' => 1000
+            ]);
+            
+            if ($result['success'] && isset($result['smart_analysis'])) {
+                $confidence = $result['smart_analysis']['confidence'] ?? 0;
+                $featureSlug = $result['smart_analysis']['recommended_feature'] ?? null;
+                
+                // Sadece yüksek confidence'lı feature'ları kullan
+                if ($confidence >= 0.8 && $featureSlug && $featureSlug !== 'generic_response') {
+                    return [
+                        'success' => true,
+                        'response' => $result['response'] ?? 'Yanıt oluşturulamadı',
+                        'feature_slug' => $featureSlug,
+                        'confidence' => $confidence
+                    ];
+                }
+            }
+            
+            return ['success' => false, 'reason' => 'low_confidence'];
+            
+        } catch (\Exception $e) {
+            return ['success' => false, 'reason' => 'exception', 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Dynamic context kullanılıp kullanılmayacağını belirle
+     */
+    private function shouldUseDynamicContext($message): bool
+    {
+        // Çok kısa mesajlarda dynamic context kullan
+        if (strlen(trim($message)) < 50) {
+            return true;
+        }
+        
+        // Soru işareti yoksa muhtemelen basit mesaj
+        if (strpos($message, '?') === false && strlen(trim($message)) < 20) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Mesaja göre context type belirleme - AI ile hızlı analiz
+     */
+    private function determineContextType(string $message): string
+    {
+        // Cache key oluştur
+        $cacheKey = 'ai_context_type_' . md5($message);
+        
+        // Cache'den kontrol et
+        if ($cached = cache()->get($cacheKey)) {
+            return $cached;
+        }
+        
+        // Hızlı AI analizi (sadece context type belirleme)
+        try {
+            $aiService = app(\Modules\AI\App\Services\AIService::class);
+            $prompt = "Bu mesaj hangi context type gerektirir? Sadece tek kelime yanıt ver: minimal, essential, normal, detailed\n\nMesaj: \"$message\"";
+            
+            // Çok basit ve hızlı AI çağrısı
+            $response = $aiService->ask($prompt, [
+                'context_type' => 'minimal', // Recursive loop önleme
+                'source' => 'context_analyzer',
+                'max_tokens' => 5 // Sadece tek kelime
+            ]);
+            
+            // Response'u temizle
+            $contextType = strtolower(trim($response));
+            
+            // Valid context type kontrolü
+            $validTypes = ['minimal', 'essential', 'normal', 'detailed'];
+            if (!in_array($contextType, $validTypes)) {
+                $contextType = 'essential'; // Default fallback
+            }
+            
+            // 5 dakika cache
+            cache()->put($cacheKey, $contextType, 300);
+            
+            return $contextType;
+            
+        } catch (\Exception $e) {
+            // Hata durumunda fallback
+            return 'essential';
+        }
     }
 }

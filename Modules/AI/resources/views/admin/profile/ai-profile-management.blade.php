@@ -1411,23 +1411,8 @@ $(document).ready(function() {
         clearSearch();
     });
     
-    // ===== KURUCU SORULARI GÖSTER/GİZLE (STEP 4) =====
-    $(document).on('change', 'input[name="formData[company_info.share_founder_info]"]', function() {
-        const value = $(this).val();
-        const founderSection = $('#founder-questions-section');
-        
-        if (value === 'evet') {
-            // Kurucu sorularını göster
-            founderSection.fadeIn(300);
-        } else {
-            // Kurucu sorularını gizle
-            founderSection.fadeOut(300);
-            
-            // Kurucu alanlarını temizle
-            $('input[name^="formData[founder_info"]').val('');
-            $('input[name^="formData[founder_info"]').prop('checked', false);
-        }
-    });
+    // ===== KURUCU SORULARI GÖSTER/GİZLE (STEP 4) - ARTIK data-field HANDLER KULLAN =====
+    // Bu handler kaldırıldı, artık data-field="company_info.share_founder_info" handler'ı kullanılıyor
 });
 
 // Sayfa yüklendiğinde seçili sektörün görünür olmasını sağla
@@ -1543,9 +1528,9 @@ $(document).ready(function() {
         // Auto-save field first
         saveFieldData(fieldName, fieldValue);
         
-        // Call Livewire method to toggle founder questions (background sync)
+        // Call Livewire setField method to update showFounderQuestions (background sync)
         if (window.Livewire) {
-            Livewire.dispatch('toggleFounderQuestions', { value: fieldValue });
+            @this.setField(fieldName, fieldValue);
         }
     });
     

@@ -26,6 +26,7 @@ class User extends Authenticatable implements HasMedia
         'is_active',
         'admin_locale',
         'tenant_locale',
+        'dashboard_preferences',
     ];
 
     /**
@@ -49,6 +50,7 @@ class User extends Authenticatable implements HasMedia
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'dashboard_preferences' => 'json',
         ];
     }
     

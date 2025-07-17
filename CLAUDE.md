@@ -33,6 +33,9 @@ aferin dediğim zaman olmuş demektir. aferin dediğim zaman yapılanları readm
 
 BU SİSTEMDE FONKSİYONLAR VE HER ŞEY İÇİN HARDCODE KULLANMAKTAN ÇEKİN. BURASI SINIRSIZ TEMA, SINIRSIZ DİL, SINIRSIZ İÇERİK, SINIRSIZ MODUL, SINIRSIZ AYAR, SINIRSIZ WİDGET OLAN SINIRSIZ BİR SİSTEM. O YÜZDEN HARDCODELERDEN UZAK DUR.
 
+ti icon seti yok. sistemin admin panelinde sadece fontawesome var. fontawesome ücretli sürümü var.
+
+admin panelinde dark light modu oldugu için kafandan color bg color renkler ekleme, ya da success error gibi bg ler kullanma alakasız yerlerde. sistemin kendi renkleri zaten güzel ve kullanıslı.
 
 **YENİ SAYFA DURUMU TETİKLEYİCİSİ:**
 "YENİ SAYFA" kelimesini duyduğumda MUTLAKA şu özeti çıkar:

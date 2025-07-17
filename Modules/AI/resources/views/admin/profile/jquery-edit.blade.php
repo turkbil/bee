@@ -95,10 +95,11 @@
                                                 <div class="progress-ring-wrapper">
                                                     <svg class="progress-ring" width="120" height="120">
                                                         <circle class="progress-ring-background" cx="60" cy="60" r="50"></circle>
-                                                        <circle class="progress-ring-progress" cx="60" cy="60" r="50" id="progress-circle"></circle>
+                                                        <circle class="progress-ring-progress" cx="60" cy="60" r="50" id="progress-circle" 
+                                                               style="stroke-dashoffset: {{ 314.16 - (314.16 * ($completionPercentage ?? 0) / 100) }}px;"></circle>
                                                     </svg>
                                                     <div class="progress-ring-text">
-                                                        <span class="progress-percentage" id="progress-percentage">{{ (($initialStep ?? 1) / ($totalSteps ?? 5)) * 100 }}%</span>
+                                                        <span class="progress-percentage" id="progress-percentage">{{ $completionPercentage ?? 0 }}%</span>
                                                         <span class="progress-label">Tamamlandı</span>
                                                     </div>
                                                 </div>
@@ -346,7 +347,11 @@
                                         
                                         // Conditional rendering check
                                         $shouldShow = true;
-                                        if ($question->depends_on && $question->show_if) {
+                                        
+                                        // KRITIK: Kurucu soruları için özel durum - her zaman render et, JavaScript ile toggle et
+                                        $isFounderQuestion = in_array($fieldName, ['founder_name', 'founder_role', 'founder_additional_info']);
+                                        
+                                        if ($question->depends_on && $question->show_if && !$isFounderQuestion) {
                                             $shouldShow = false;
                                             $dependsOnField = $question->depends_on;
                                             $showIfConditions = is_string($question->show_if) ? json_decode($question->show_if, true) : $question->show_if;
@@ -369,7 +374,10 @@
                                     <div class="conditional-question" 
                                          data-question-key="{{ $fieldName }}"
                                          @if($question->depends_on) data-depends-on="{{ $question->depends_on }}" @endif
-                                         @if($question->show_if) data-show-if="{{ json_encode($question->show_if) }}" @endif>
+                                         @if($question->show_if) data-show-if="{{ json_encode($question->show_if) }}" @endif
+                                         @if($isFounderQuestion) 
+                                         style="display: {{ ($profileData['share_founder_info'] ?? '') === 'evet' ? 'block' : 'none' }};"
+                                         @endif>
                                     
                                     {{-- Sektör seçimi Step 1'de özel olarak yapılıyor, burada gizle --}}
                                     @if($fieldName === 'sector_selection' && $initialStep == 1)
@@ -576,6 +584,81 @@
                                                                 </div>
                                                             @endif
                                                         @endforeach
+                                                    @endif
+                                                </div>
+                                                @break
+                                                
+                                            @case('checkbox_dynamic')
+                                                @php
+                                                    // Mevcut seçili sektör
+                                                    $selectedSector = $profileData['sector'] ?? null;
+                                                    $sectorServices = [];
+                                                    
+                                                    // Debug: Seçili sektörü göster
+                                                    echo "<!-- DEBUG: Seçili sektör: " . ($selectedSector ?? 'YOK') . " -->";
+                                                    
+                                                    // Seçili sektör varsa hizmetleri veritabanından çek
+                                                    if ($selectedSector) {
+                                                        $sector = \DB::table('ai_profile_sectors')
+                                                            ->where('code', $selectedSector)
+                                                            ->where('is_active', 1)
+                                                            ->first();
+                                                        
+                                                        echo "<!-- DEBUG: Sektör bulundu: " . ($sector ? 'EVET' : 'HAYIR') . " -->";
+                                                        
+                                                        if ($sector && $sector->possible_services) {
+                                                            $sectorServices = json_decode($sector->possible_services, true) ?? [];
+                                                            echo "<!-- DEBUG: Sektör hizmetleri: " . count($sectorServices) . " adet -->";
+                                                        }
+                                                    }
+                                                    
+                                                    // Fallback - sektör yoksa genel hizmetler
+                                                    if (empty($sectorServices)) {
+                                                        $sectorServices = [
+                                                            'Müşteri Danışmanlığı',
+                                                            'Satış ve Pazarlama', 
+                                                            'Proje Yönetimi',
+                                                            'Müşteri Hizmetleri',
+                                                            'Eğitim ve Seminer',
+                                                            'Teknik Destek'
+                                                        ];
+                                                        echo "<!-- DEBUG: Fallback hizmetler kullanıldı -->";
+                                                    }
+                                                @endphp
+                                                
+                                                <div class="row">
+                                                    @if(!empty($sectorServices))
+                                                        @foreach($sectorServices as $service)
+                                                            @php
+                                                                $checked = (isset($profileData[$fieldName][$service]) && $profileData[$fieldName][$service]);
+                                                            @endphp
+                                                            <div class="col-md-6 col-12 mb-2">
+                                                                <label class="form-selectgroup-item flex-fill">
+                                                                    <input type="checkbox" value="{{ $service }}" 
+                                                                           class="form-selectgroup-input checkbox-field" 
+                                                                           name="{{ $fieldName }}[]"
+                                                                           {{ $checked ? 'checked' : '' }}>
+                                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                        <div class="me-3">
+                                                                            <span class="form-selectgroup-check"></span>
+                                                                        </div>
+                                                                        <div class="form-selectgroup-label-content d-flex align-items-center">
+                                                                            <i class="fas fa-check me-3 text-muted"></i>
+                                                                            <div style="text-align: left; width: 100%;">
+                                                                                <div class="font-weight-medium">{{ $service }}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <div class="col-12 mb-3">
+                                                            <div class="alert alert-warning">
+                                                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                                                Bu sektör için henüz tanımlanmış hizmet bulunmuyor. Lütfen 'Eklemek istediğiniz hizmetler' alanını kullanın.
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                 </div>
                                                 @break
@@ -914,6 +997,7 @@ $(document).ready(function() {
     let currentStep = {{ $initialStep ?? 1 }};
     let profileData = @json($profileData ?? []);
     let currentQuestions = @json($questions ?? []);
+    let completionPercentage = {{ $completionPercentage ?? 0 }}; // PHP'den gelen doğru yüzde
     let selectedSectorData = null; // Seçilen sektör bilgilerini saklar
     
     console.log('Initial Step:', currentStep);
@@ -1242,8 +1326,13 @@ $(document).ready(function() {
                 // Update local profile data
                 profileData[field] = value;
                 
-                // Update progress circle with real data
-                let percentage = calculateDataCompletionPercentage();
+                // Update global completion percentage from PHP response
+                if (response.completion_percentage !== undefined) {
+                    completionPercentage = response.completion_percentage;
+                }
+                
+                // Update progress circle with PHP calculated data
+                let percentage = response.completion_percentage || calculateDataCompletionPercentage();
                 $('#progress-percentage').text(Math.round(percentage) + '%');
                 let circumference = 2 * Math.PI * 50;
                 let offset = circumference - (percentage / 100) * circumference;
@@ -1630,61 +1719,10 @@ $(document).ready(function() {
         }, 3000);
     }
 
-    // JSON Data completion percentage calculator
+    // PHP'den gelen doğru completion percentage'ını döndür
     function calculateDataCompletionPercentage() {
-        let totalFields = 0;
-        let filledFields = 0;
-        
-        // Ana kategoriler ve ağırlıkları
-        const fieldCategories = {
-            'sector_details': { weight: 15, fields: ['sector_selection'] },
-            'basic_info': { weight: 20, fields: ['company_name', 'company_type', 'foundation_year', 'employee_count', 'annual_revenue'] },
-            'brand_identity': { weight: 25, fields: ['brand_name', 'slogan', 'target_audience', 'brand_voice', 'main_service'] },
-            'contact_info': { weight: 10, fields: ['website', 'phone', 'email', 'address'] },
-            'founder_info': { weight: 15, fields: ['founder_name', 'founder_age', 'founder_education', 'founder_experience'] },
-            'ai_behavior': { weight: 15, fields: ['communication_style', 'response_tone', 'expertise_level', 'personality_traits'] }
-        };
-        
-        // Her kategorideki doldurulmuş alanları say
-        for (let categoryKey in fieldCategories) {
-            let category = fieldCategories[categoryKey];
-            let categoryTotal = category.fields.length;
-            let categoryFilled = 0;
-            
-            category.fields.forEach(field => {
-                if (profileData[field] && profileData[field] !== '' && profileData[field] !== null) {
-                    categoryFilled++;
-                }
-            });
-            
-            // Kategori tamamlanma oranını ağırlıklı hesapla
-            let categoryCompletion = (categoryFilled / categoryTotal) * category.weight;
-            filledFields += categoryCompletion;
-            totalFields += category.weight;
-        }
-        
-        // Form elemanlarından gerçek zamanlı kontrol
-        $('#questions-container input, #questions-container select, #questions-container textarea').each(function() {
-            let fieldName = $(this).attr('name');
-            let fieldValue = $(this).val();
-            
-            // Checkbox özel kontrolü
-            if ($(this).attr('type') === 'checkbox') {
-                if ($(this).is(':checked')) {
-                    filledFields += 0.5; // Checkbox'lar daha az ağırlık
-                }
-                totalFields += 0.5;
-            } else if (fieldValue && fieldValue.trim() !== '') {
-                filledFields += 1;
-                totalFields += 1;
-            } else {
-                totalFields += 1;
-            }
-        });
-        
-        // Min 0%, Max 100% garantisi
-        let percentage = totalFields > 0 ? (filledFields / totalFields) * 100 : 0;
-        return Math.min(Math.max(percentage, 0), 100);
+        // PHP modelinden hesaplanan doğru yüzdeyi kullan
+        return completionPercentage;
     }
 
     // Sektöre göre ana iş kolları textarea'sını otomatik doldur
@@ -1812,24 +1850,104 @@ $(document).ready(function() {
     function extractActivitiesFromSectorName(sectorName) {
         const name = sectorName.toLowerCase();
         
-        if (name.includes('teknoloji') || name.includes('bilişim')) {
-            return 'Teknoloji danışmanlığı, Yazılım geliştirme, Sistem kurulumu, IT destek hizmetleri';
+        // Teknoloji ve Bilişim
+        if (name.includes('teknoloji') || name.includes('bilişim') || name.includes('yazılım') || name.includes('it')) {
+            return 'Teknoloji danışmanlığı, Yazılım geliştirme, Sistem kurulumu, IT destek hizmetleri, Veri yönetimi, Siber güvenlik';
         }
-        if (name.includes('sağlık') || name.includes('tıp') || name.includes('medikal')) {
-            return 'Sağlık hizmeti, Tıbbi danışmanlık, Hasta bakımı, Medikal destek hizmetleri';
+        
+        // Sağlık ve Tıp
+        if (name.includes('sağlık') || name.includes('tıp') || name.includes('medikal') || name.includes('hastane') || name.includes('doktor')) {
+            return 'Sağlık hizmeti, Tıbbi danışmanlık, Hasta bakımı, Medikal destek hizmetleri, Sağlık kontrolü, Tedavi süreçleri';
         }
-        if (name.includes('eğitim') || name.includes('öğretim')) {
-            return 'Eğitim hizmeti, Kurs ve seminer, Özel ders, Eğitim danışmanlığı';
+        
+        // Eğitim ve Öğretim
+        if (name.includes('eğitim') || name.includes('öğretim') || name.includes('okul') || name.includes('kurs') || name.includes('akademi')) {
+            return 'Eğitim hizmeti, Kurs ve seminer, Özel ders, Eğitim danışmanlığı, Müfredat geliştirme, Sertifika programları';
         }
-        if (name.includes('inşaat') || name.includes('yapı')) {
-            return 'İnşaat işleri, Tadilat, Mimari hizmet, Proje yönetimi';
+        
+        // İnşaat ve Yapı
+        if (name.includes('inşaat') || name.includes('yapı') || name.includes('mimari') || name.includes('tadilat') || name.includes('dekorasyon')) {
+            return 'İnşaat işleri, Tadilat, Mimari hizmet, Proje yönetimi, Dekorasyon, Peyzaj düzenlemesi';
         }
-        if (name.includes('gıda') || name.includes('yemek') || name.includes('restoran')) {
-            return 'Gıda üretimi, Yemek servisi, Catering, Restoran işletmeciliği';
+        
+        // Gıda ve Yemek
+        if (name.includes('gıda') || name.includes('yemek') || name.includes('restoran') || name.includes('catering') || name.includes('aşçı')) {
+            return 'Gıda üretimi, Yemek servisi, Catering, Restoran işletmeciliği, Mutfak danışmanlığı, Beslenme hizmeti';
+        }
+        
+        // Turizm ve Otel
+        if (name.includes('turizm') || name.includes('otel') || name.includes('tatil') || name.includes('rezervasyon') || name.includes('rehber')) {
+            return 'Turizm rehberliği, Otel işletmeciliği, Tur organizasyonu, Rezervasyon hizmetleri, Tatil planlaması, Konaklama hizmetleri';
+        }
+        
+        // Finans ve Mali
+        if (name.includes('finans') || name.includes('mali') || name.includes('muhasebe') || name.includes('vergi') || name.includes('banka')) {
+            return 'Mali müşavirlik, Muhasebe hizmeti, Vergi danışmanlığı, Finansal planlama, Kredi danışmanlığı, Bütçe yönetimi';
+        }
+        
+        // Hukuk ve Yasal
+        if (name.includes('hukuk') || name.includes('avukat') || name.includes('yasal') || name.includes('mahkeme') || name.includes('dava')) {
+            return 'Hukuki danışmanlık, Dava takibi, Sözleşme hazırlama, Arabuluculuk, Yasal süreç yönetimi, Fikri mülkiyet';
+        }
+        
+        // Spor ve Fitness
+        if (name.includes('spor') || name.includes('fitness') || name.includes('antrenör') || name.includes('jimnastik') || name.includes('yoga')) {
+            return 'Kişisel antrenörlük, Grup dersleri, Beslenme koçluğu, Spor salonu işletme, Online fitness, Spor malzemesi satışı';
+        }
+        
+        // Güzellik ve Bakım
+        if (name.includes('güzellik') || name.includes('kuaför') || name.includes('berber') || name.includes('estetik') || name.includes('cilt')) {
+            return 'Kuaförlük hizmeti, Güzellik bakımı, Cilt bakımı, Makyaj hizmeti, Masaj terapisi, Estetik danışmanlık';
+        }
+        
+        // Otomotiv
+        if (name.includes('otomotiv') || name.includes('araba') || name.includes('araç') || name.includes('lastik') || name.includes('motor')) {
+            return 'Araç satışı, Araç bakım-onarım, Yedek parça satışı, Lastik-jant, Araç ekspertizi, Sigorta işlemleri';
+        }
+        
+        // Medya ve Reklam
+        if (name.includes('medya') || name.includes('reklam') || name.includes('pazarlama') || name.includes('tasarım') || name.includes('ajans')) {
+            return 'Reklam tasarımı, Pazarlama danışmanlığı, Sosyal medya yönetimi, İçerik üretimi, Marka geliştirme, Dijital pazarlama';
+        }
+        
+        // Üretim ve Sanayi
+        if (name.includes('üretim') || name.includes('sanayi') || name.includes('fabrika') || name.includes('imalat') || name.includes('makine')) {
+            return 'Üretim planlama, Sanayi danışmanlığı, Makine bakımı, Kalite kontrol, Lojistik yönetimi, Süreç optimizasyonu';
+        }
+        
+        // Taşımacılık ve Lojistik
+        if (name.includes('taşımacılık') || name.includes('lojistik') || name.includes('kargo') || name.includes('nakliye') || name.includes('depo')) {
+            return 'Taşımacılık hizmeti, Lojistik yönetimi, Kargo servisi, Nakliye organizasyonu, Depo yönetimi, Dağıtım hizmetleri';
+        }
+        
+        // Emlak ve Gayrimenkul
+        if (name.includes('emlak') || name.includes('gayrimenkul') || name.includes('satış') || name.includes('kiralama') || name.includes('arsa')) {
+            return 'Emlak danışmanlığı, Gayrimenkul satışı, Kiralama hizmetleri, Emlak değerlendirmesi, Yatırım danışmanlığı, Proje geliştirme';
+        }
+        
+        // Temizlik ve Bakım
+        if (name.includes('temizlik') || name.includes('bakım') || name.includes('hijyen') || name.includes('sanitasyon') || name.includes('peyzaj')) {
+            return 'Temizlik hizmeti, Bakım onarım, Hijyen hizmetleri, Sanitasyon, Peyzaj bakımı, Teknik servis';
+        }
+        
+        // Güvenlik
+        if (name.includes('güvenlik') || name.includes('koruma') || name.includes('alarm') || name.includes('kamera') || name.includes('servis')) {
+            return 'Güvenlik hizmeti, Koruma hizmetleri, Alarm sistemleri, Kamera güvenliği, Güvenlik danışmanlığı, Risk yönetimi';
+        }
+        
+        // Sanat ve Kültür
+        if (name.includes('sanat') || name.includes('kültür') || name.includes('müzik') || name.includes('tiyatro') || name.includes('sinema')) {
+            return 'Sanat eğitimi, Kültürel etkinlik, Müzik dersi, Tiyatro oyunları, Sinema prodüksiyonu, Sanat danışmanlığı';
+        }
+        
+        // Tarım ve Gıda
+        if (name.includes('tarım') || name.includes('çiftçi') || name.includes('hayvancılık') || name.includes('sera') || name.includes('organik')) {
+            return 'Tarım danışmanlığı, Çiftçilik hizmetleri, Hayvancılık, Sera işletmeciliği, Organik üretim, Tarımsal sulama';
         }
         
         return null; // Fallback'e düş
     }
+    
 });
 </script>
 

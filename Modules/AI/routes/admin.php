@@ -321,6 +321,10 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->middleware('module.permission:ai,view')
                             ->name('get-profile-data');
                         
+                        Route::post('/chat', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'chat'])
+                            ->middleware('module.permission:ai,view')
+                            ->name('chat');
+                        
                         Route::post('/reset', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'reset'])
                             ->middleware('module.permission:ai,delete')
                             ->name('reset');

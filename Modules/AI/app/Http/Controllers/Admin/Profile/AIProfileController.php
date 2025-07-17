@@ -22,58 +22,40 @@ class AIProfileController extends Controller
                 $sector = AIProfileSector::where('code', $profile->sector_details['sector'])->first();
             }
             
-            // Profil tamamlandıysa ve hikaye yoksa oluştur
+            // Profil varsa ve hikaye yoksa oluştur (25% completion yeterli)
             $brandStoryGenerating = false;
-            if ($profile->is_completed && !$profile->hasBrandStory()) {
+            $completionData = $profile->getCompletionPercentage();
+            $completionPercentage = round($completionData['percentage']);
+            
+            if ($profile && !$profile->hasBrandStory() && $completionPercentage >= 25) {
                 try {
                     // API anahtarı kontrolü ÖNCE yap
                     $aiSettings = \Modules\AI\App\Models\Setting::first();
                     if (!$aiSettings || empty($aiSettings->api_key)) {
-                        \Log::error('API anahtarı bulunamadı - marka hikayesi oluşturulamadı');
-                        $brandStoryGenerating = true; // Loading state göster
+                        \Log::error('Controller - API anahtarı bulunamadı - marka hikayesi oluşturulamadı');
+                        session()->flash('brand_story_error', 'API anahtarı bulunamadı. Marka hikayesi oluşturulamadı.');
                     } else {
-                        // Async olarak hikaye oluştur (arka planda)
-                        \Log::info('Brand story generation başlatılıyor - async');
-                        $brandStoryGenerating = true; // Loading state göster
-                        
-                        // Hikaye oluşturma deneme sayısını kontrol et
-                        $attemptKey = 'brand_story_attempt_' . $profile->id;
-                        $attempts = session($attemptKey, 0);
-                        
-                        if ($attempts < 3) { // Maximum 3 deneme
-                            session([$attemptKey => $attempts + 1]);
-                            
-                            try {
-                                \Log::info('Brand story oluşturuluyor', [
-                                    'profile_id' => $profile->id,
-                                    'attempt' => $attempts + 1
-                                ]);
-                                
-                                $profile->generateBrandStory();
-                                session()->forget($attemptKey);
-                                session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
-                                $brandStoryGenerating = false;
-                                
-                            } catch (\Exception $e) {
-                                \Log::error('Brand story generation attempt failed', [
-                                    'profile_id' => $profile->id,
-                                    'attempt' => $attempts + 1,
-                                    'error' => $e->getMessage()
-                                ]);
-                                throw $e; // Re-throw to be caught by outer try-catch
-                            }
-                        } else {
-                            \Log::warning('Brand story generation max attempts reached', [
+                        // Sync brand story generation
+                        \Log::info('Controller - Brand story generation başlatılıyor - sync');
+                        try {
+                            $profile->generateBrandStory();
+                            session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
+                            $brandStoryGenerating = false;
+                        } catch (\Exception $e) {
+                            \Log::error('Controller - Brand story generation failed', [
                                 'profile_id' => $profile->id,
-                                'attempts' => $attempts
+                                'error' => $e->getMessage()
                             ]);
-                            session()->flash('brand_story_error', 'Hikaye oluşturma denemesi başarısız. Lütfen "Hikayeyi Yeniden Oluştur" butonunu kullanın.');
+                            session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
+                            $brandStoryGenerating = false;
                         }
                     }
                 } catch (\Exception $e) {
-                    \Log::error('Brand story generation failed in show', ['error' => $e->getMessage()]);
-                    $brandStoryGenerating = true; // Loading state göster
-                    session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
+                    \Log::error('Controller - Brand story generation failed', [
+                        'profile_id' => $profile->id,
+                        'error' => $e->getMessage()
+                    ]);
+                    session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
                 }
             }
             
@@ -212,6 +194,18 @@ class AIProfileController extends Controller
             $sectors = \Modules\AI\app\Models\AIProfileSector::getCategorizedSectors();
         }
         
+        // Progress yüzdesini hesapla - sadece edit sayfalarındaki sorulara göre
+        $completionData = $profile->getEditPageCompletionPercentage();
+        $completionPercentage = $completionData['percentage'];
+        
+        \Log::info('🔍 AIProfileController - Progress calculated', [
+            'step' => $step,
+            'completion_percentage' => $completionPercentage,
+            'completed_fields' => $completionData['completed'],
+            'total_fields' => $completionData['total'],
+            'steps' => array_map(fn($s) => $s['completed'] . '/' . $s['total'], $completionData['steps'])
+        ]);
+        
         return view('ai::admin.profile.jquery-edit', [
             'initialStep' => $step,
             'totalSteps' => 5,
@@ -220,6 +214,7 @@ class AIProfileController extends Controller
             'profileData' => $profileData,
             'sectorCode' => $sectorCode,
             'selectedSector' => $selectedSector,
+            'completionPercentage' => $completionPercentage,
             'showFounderQuestions' => in_array($profileData['founder_permission'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
                 || in_array($profileData['share_founder_info'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
         ]);
@@ -236,16 +231,37 @@ class AIProfileController extends Controller
         try {
             $profile = AITenantProfile::currentOrCreate();
             
-            if (!$profile->is_completed) {
+            // Hikaye oluşturma için minimum %25 completion gerekli
+            $completionData = $profile->getCompletionPercentage();
+            $completionPercentage = $completionData['percentage'] ?? 0;
+            
+            if ($completionPercentage < 25) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Profil henüz tamamlanmamış. Önce profili tamamlamanız gerekiyor.'
+                    'message' => 'Profil henüz tamamlanmamış. Marka hikayesi oluşturmak için profilin en az %25 tamamlanması gerekiyor. Şu anki tamamlanma oranı: %' . number_format($completionPercentage, 1)
                 ]);
             }
             
-            // Mevcut hikayeyi sil (yeniden oluşturma durumunda)
-            $profile->brand_story = null;
-            $profile->brand_story_created_at = null;
+            // Yeniden oluşturma isteği kontrolü
+            $regenerate = $request->input('regenerate', false);
+            
+            // Mevcut hikaye kontrol et
+            if (!empty($profile->brand_story) && !$regenerate) {
+                // Hikaye zaten var, tekrar oluşturma
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Marka hikayeniz zaten mevcut!',
+                    'story' => $profile->brand_story,
+                    'created_at' => $profile->brand_story_created_at ? $profile->brand_story_created_at->format('d.m.Y H:i') : 'Bilinmiyor'
+                ]);
+            }
+            
+            // Yeniden oluşturma istendiyse mevcut hikayeyi sil
+            if ($regenerate) {
+                $profile->brand_story = null;
+                $profile->brand_story_created_at = null;
+                \Log::info('Controller - Brand story regeneration başlatılıyor - mevcut hikaye silindi');
+            }
             
             // Yeni hikaye oluştur
             $brandStory = $profile->generateBrandStory();
@@ -411,6 +427,7 @@ class AIProfileController extends Controller
                     
                     // Company info - Step 3 ana iş bilgileri
                     'main_business_activities' => 'company_info',  // Step 3 - YENİ
+                    'main_business_activities_custom' => 'company_info',  // Step 3 - YENİ (ek hizmetler)
                     'target_customers' => 'company_info',  // Step 3 - YENİ
                     'target_customers_custom_custom' => 'company_info',  // Step 3 - custom input
                     'web_specific_services_diger_custom' => 'sector_details',  // Step 3 - web sektör custom
@@ -575,8 +592,41 @@ class AIProfileController extends Controller
                 $this->enhanceFieldForAI($field, $key, $value, $sectionData);
             }
 
+            // Sektör değişikliği kontrolü - ÖNCE mevcut sektörü kaydet
+            $previousSector = null;
+            if ($key === 'sector' && $section === 'sector_details') {
+                $previousSector = $profile->sector_details['sector'] ?? null;
+                \Log::info('Sektör değişikliği tespit edildi', [
+                    'previous_sector' => $previousSector,
+                    'new_sector' => $value,
+                    'tenant_id' => $tenantId
+                ]);
+            }
+
             // Profile section'ını kaydet
             $profile->$section = $sectionData;
+            
+            // Sektör değişikliği işlemi - SONRA temizle
+            if ($key === 'sector' && $section === 'sector_details' && $previousSector && $previousSector !== $value) {
+                \Log::info('Sektör değişti - eski verileri temizleniyor', [
+                    'from' => $previousSector,
+                    'to' => $value,
+                    'tenant_id' => $tenantId
+                ]);
+                
+                // Eski sektör verilerini temizle
+                $profile->clearSectorRelatedData();
+                
+                // Yeni sektörü tekrar set et (clearSectorRelatedData sadece sector'u korur)
+                $sectorData = $profile->sector_details ?? [];
+                $sectorData['sector'] = $value;
+                $profile->sector_details = $sectorData;
+                
+                \Log::info('Sektör değişimi tamamlandı', [
+                    'new_sector' => $value,
+                    'tenant_id' => $tenantId
+                ]);
+            }
             
             // Founder permission özel işlemi - hayır seçilirse kurucu bilgilerini temizle
             if (($key === 'founder_permission' || $key === 'share_founder_info') && $section === 'company_info') {
@@ -602,20 +652,26 @@ class AIProfileController extends Controller
             
             $profile->save();
 
+            // Progress yüzdesini yeniden hesapla (PHP tarafında) - sadece edit sorularına göre
+            $completionData = $profile->getEditPageCompletionPercentage();
+            $completionPercentage = $completionData['percentage'];
+
             \Log::info('✅ jQuery Auto-Save - Field saved', [
                 'tenant_id' => $tenantId,
                 'field' => $field,
                 'section' => $section,
                 'key' => $key,
                 'value' => is_array($value) ? json_encode($value) : $value,
-                'step' => $step
+                'step' => $step,
+                'completion_percentage' => $completionPercentage
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Field başarıyla kaydedildi',
                 'field' => $field,
-                'value' => $value
+                'value' => $value,
+                'completion_percentage' => $completionPercentage
             ]);
 
         } catch (\Exception $e) {
@@ -907,5 +963,54 @@ class AIProfileController extends Controller
         // Livewire bileşeni ile aynı sayfaya redirect
         return redirect()->route('admin.ai.profile.edit', ['step' => $step])
                         ->with('success', 'Form gönderildi');
+    }
+
+    /**
+     * Dashboard mini AI chat endpoint
+     */
+    public function chat(Request $request)
+    {
+        try {
+            $message = $request->input('message');
+            
+            if (empty($message)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mesaj boş olamaz'
+                ]);
+            }
+
+            // AI Service'i kullanarak yanıt al
+            $aiService = app(\Modules\AI\app\Services\AIService::class);
+            
+            // Marka bilgisini al
+            $profile = \Modules\AI\app\Models\AITenantProfile::currentOrCreate();
+            $brandName = $profile->company_info['business_name'] ?? 'Türk Bilişim';
+            
+            // Dashboard chat için özel context
+            $systemPrompt = "Sen {$brandName} firmasının AI asistanısın. Kullanıcıların tüm sorularına yardımcı ol - teknik, iş, genel sorular dahil. Kısa ve net yanıtlar ver. Türkçe yanıt ver.";
+            
+            $response = $aiService->ask($message, [
+                'system_prompt' => $systemPrompt,
+                'type' => 'dashboard_chat',
+                'max_tokens' => 150 // Kısa yanıtlar için
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'response' => $response
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Dashboard AI Chat Error', [
+                'error' => $e->getMessage(),
+                'message' => $request->input('message')
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'AI servisinde bir hata oluştu: ' . $e->getMessage()
+            ]);
+        }
     }
 }

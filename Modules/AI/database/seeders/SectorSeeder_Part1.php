@@ -382,9 +382,6 @@ class SectorSeeder_Part1 extends Seeder
             ['id' => 12, 'code' => 'hukuk', 'name' => 'Hukuk', 'description' => 'Hukuk ve danışmanlık', 'emoji' => '⚖️', 'color' => 'indigo', 'keywords' => 'hukuk,avukat,legal'],
             ['id' => 13, 'code' => 'emlak_insaat', 'name' => 'Emlak & İnşaat', 'description' => 'Emlak ve inşaat sektörleri', 'emoji' => '🏠', 'color' => 'blue', 'keywords' => 'emlak,inşaat,ev'],
             ['id' => 14, 'code' => 'guzellik_bakim', 'name' => 'Güzellik & Bakım', 'description' => 'Güzellik ve bakım sektörleri', 'emoji' => '💄', 'color' => 'rose', 'keywords' => 'güzellik,bakım,kuaför'],
-            ['id' => 15, 'code' => 'turizm', 'name' => 'Turizm', 'description' => 'Turizm ve seyahat', 'emoji' => '✈️', 'color' => 'teal', 'keywords' => 'turizm,seyahat,otel'],
-            ['id' => 16, 'code' => 'tarim', 'name' => 'Tarım', 'description' => 'Tarım ve hayvancılık', 'emoji' => '🌾', 'color' => 'green', 'keywords' => 'tarım,hayvancılık,çiftlik'],
-            ['id' => 17, 'code' => 'sanayi', 'name' => 'Sanayi', 'description' => 'Sanayi ve üretim', 'emoji' => '🏭', 'color' => 'gray', 'keywords' => 'sanayi,üretim,fabrika'],
             ['id' => 18, 'code' => 'diger_hizmetler', 'name' => 'Diğer Hizmetler', 'description' => 'Diğer hizmet sektörleri', 'emoji' => '🔧', 'color' => 'secondary', 'keywords' => 'diğer,hizmet,genel']
         ];
         

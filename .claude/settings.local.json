@@ -136,7 +136,13 @@
       "Bash(git push:*)",
       "Bash(./gel_hadi_gel.command)",
       "Bash(sudo gem install:*)",
-      "Bash(pgrep:*)"
+      "Bash(pgrep:*)",
+      "Bash(sudo xcode-select:*)",
+      "Bash(~/Development/flutter/bin/flutter create laravel_tuufi)",
+      "Bash(~/Development/flutter/bin/flutter pub get)",
+      "Bash(~/Development/flutter/bin/flutter analyze)",
+      "Bash(npm audit:*)",
+      "mcp__claude-code-server__Task"
     ],
     "deny": []
   },

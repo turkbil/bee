@@ -57,6 +57,10 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->middleware('module.permission:ai,update')
                     ->name('settings.general');
                 
+                Route::get('/settings/providers', [SettingsController::class, 'providers'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('settings.providers');
+                
                 Route::get('/conversations', [ConversationController::class, 'index'])
                     ->middleware('module.permission:ai,view')
                     ->name('conversations.index');
@@ -95,6 +99,10 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->middleware('module.permission:ai,update')
                     ->name('settings.api.update');
                     
+                Route::post('/settings/api/update-priorities', [SettingsController::class, 'updateProviderPriorities'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('settings.api.update-priorities');
+                    
                 Route::post('/settings/limits/update', [SettingsController::class, 'updateLimits'])
                     ->middleware('module.permission:ai,update')
                     ->name('settings.limits.update');
@@ -102,6 +110,19 @@ Route::middleware(['admin', 'admin.tenant.select'])
                 Route::post('/settings/general/update', [SettingsController::class, 'updateGeneral'])
                     ->middleware('module.permission:ai,update')
                     ->name('settings.general.update');
+                    
+                // Provider routes
+                Route::put('/providers/{id}', [SettingsController::class, 'updateProvider'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('providers.update');
+                    
+                Route::post('/providers/{id}/test', [SettingsController::class, 'testProvider'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('providers.test');
+                    
+                Route::post('/providers/{id}/make-default', [SettingsController::class, 'makeDefaultProvider'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('providers.make-default');
                 
                 // Prompt routes
                 Route::post('/settings/prompts/store', [SettingsController::class, 'storePrompt'])
@@ -291,14 +312,11 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->name('show');
                         
                         // Step-based URL routing
-                        Route::get('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'edit'])
-                            ->where('step', '[1-5]')
-                            ->name('edit');
                         
                         // jQuery-based simple edit
-                        Route::get('/jquery-edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'jqueryEdit'])
+                        Route::get('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'jqueryEdit'])
                             ->where('step', '[1-5]')
-                            ->name('jquery-edit');
+                            ->name('edit');
                             
                         Route::post('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'update'])
                             ->where('step', '[1-5]')
@@ -308,6 +326,10 @@ Route::middleware(['admin', 'admin.tenant.select'])
                         Route::post('/generate-story', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'generateStory'])
                             ->middleware('module.permission:ai,create')
                             ->name('generate-story');
+                        
+                        Route::get('/generate-story-stream', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'generateStoryStream'])
+                            ->middleware('module.permission:ai,create')
+                            ->name('generate-story-stream');
                         
                         Route::post('/save-field', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'saveField'])
                             ->middleware('module.permission:ai,update')

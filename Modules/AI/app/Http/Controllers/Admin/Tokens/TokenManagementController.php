@@ -310,6 +310,76 @@ class TokenManagementController extends Controller
     }
 
     /**
+     * Provider bazlı kullanım analizi
+     */
+    private function getProviderAnalysis($baseQuery): array
+    {
+        // Model bazlı kullanım al
+        $modelUsage = (clone $baseQuery)
+            ->selectRaw('model, SUM(tokens_used) as total_tokens, COUNT(*) as usage_count')
+            ->whereNotNull('model')
+            ->where('model', '!=', '')
+            ->groupBy('model')
+            ->orderByDesc('total_tokens')
+            ->get();
+
+        // Provider bazlı grupla
+        $providerStats = [];
+        $totalTokens = $modelUsage->sum('total_tokens');
+        $totalUsage = $modelUsage->sum('usage_count');
+        
+        foreach ($modelUsage as $usage) {
+            $model = $usage->model;
+            
+            // Provider/model ayır
+            if (str_contains($model, '/')) {
+                [$provider, $modelName] = explode('/', $model, 2);
+            } else {
+                $provider = 'unknown';
+                $modelName = $model;
+            }
+
+            if (!isset($providerStats[$provider])) {
+                $providerStats[$provider] = [
+                    'name' => ucfirst($provider),
+                    'total_usage' => 0,
+                    'total_tokens' => 0,
+                    'usage_percentage' => 0,
+                    'token_percentage' => 0,
+                    'models' => []
+                ];
+            }
+
+            $providerStats[$provider]['total_usage'] += $usage->usage_count;
+            $providerStats[$provider]['total_tokens'] += $usage->total_tokens;
+            $providerStats[$provider]['models'][$modelName] = [
+                'name' => $modelName,
+                'usage_count' => $usage->usage_count,
+                'total_tokens' => $usage->total_tokens,
+                'usage_percentage' => $totalUsage > 0 ? round(($usage->usage_count / $totalUsage) * 100, 1) : 0,
+                'token_percentage' => $totalTokens > 0 ? round(($usage->total_tokens / $totalTokens) * 100, 1) : 0
+            ];
+        }
+
+        // Provider yüzdelerini hesapla
+        foreach ($providerStats as $provider => &$stats) {
+            $stats['usage_percentage'] = $totalUsage > 0 ? round(($stats['total_usage'] / $totalUsage) * 100, 1) : 0;
+            $stats['token_percentage'] = $totalTokens > 0 ? round(($stats['total_tokens'] / $totalTokens) * 100, 1) : 0;
+        }
+
+        // En çok kullanılandan az kullanılana sırala
+        uasort($providerStats, fn($a, $b) => $b['total_tokens'] <=> $a['total_tokens']);
+
+        return [
+            'providers' => $providerStats,
+            'total_tokens' => $totalTokens,
+            'total_usage' => $totalUsage,
+            'unique_models' => $modelUsage->count(),
+            'top_model' => $modelUsage->first()?->model ?? 'N/A'
+        ];
+    }
+
+    /**
      * All purchases history (Root admin)
      */
     public function allPurchases(Request $request)
@@ -368,6 +438,9 @@ class TokenManagementController extends Controller
             ->orderByDesc('total')
             ->pluck('total', 'model')
             ->toArray();
+
+        // Provider bazlı analiz ekle
+        $stats['provider_analysis'] = $this->getProviderAnalysis($baseQuery);
 
         // Amaç bazlı kullanım
         $stats['by_purpose'] = (clone $baseQuery)->selectRaw('purpose, SUM(tokens_used) as total')

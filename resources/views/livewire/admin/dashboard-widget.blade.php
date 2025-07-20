@@ -1,591 +1,439 @@
 <div>
-    <div class="row" id="dashboard-cards" style="opacity: 0; transition: opacity 0.3s ease;">
-        {{-- AI Profil Durumu Widget (AI modülü aktifse) --}}
+    <div class="row row-deck row-cards" id="dashboard-cards" style="opacity: 0; transition: opacity 0.3s ease;">
+        
+        {{-- First Row - Main Statistics (4 cards) --}}
         @if(in_array('ai', $activeModules))
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-robot me-2"></i>
-                        Yapay Zeka Durumu
-                    </h3>
-                </div>
                 <div class="card-body">
+                    <div class="d-flex align-items-center drag-handle">
+                        <div class="subheader">{{ __('ai::admin.dashboard.ai_profile') }}</div>
+                        <div class="ms-auto lh-1">
+                            <div class="dropdown">
+                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('ai::admin.dashboard.details') }}</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="{{ route('admin.ai.profile.show') }}">{{ __('ai::admin.view_profile') }}</a>
+                                    <a class="dropdown-item" href="{{ route('admin.ai.profile.edit', 1) }}">{{ __('ai::admin.edit_profile') }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     @if($aiProfile)
-                        <div class="row align-items-center mb-3">
-                            <div class="col-auto">
-                                <div class="avatar avatar-md">
-                                    <i class="fas fa-{{ $aiIsCompleted ? 'check' : ($aiCompletionPercentage > 50 ? 'clock' : 'times') }}"></i>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="text-truncate">
-                                    <strong>Profil {{ $aiIsCompleted ? 'Tamamlandı' : 'Beklemede' }}</strong>
-                                </div>
-                                <div class="text-muted">%{{ $aiCompletionPercentage }} tamamlanmış</div>
-                            </div>
-                        </div>
-                        
-                        {{-- Progress Bar --}}
-                        <div class="mb-3">
-                            <div class="progress progress-sm">
-                                <div class="progress-bar" 
-                                     style="width: {{ $aiCompletionPercentage }}%" role="progressbar" 
-                                     aria-valuenow="{{ $aiCompletionPercentage }}" aria-valuemin="0" aria-valuemax="100">
-                                </div>
-                            </div>
-                            <div class="text-muted text-sm mt-1">{{ $aiCompletionPercentage }}% / 100%</div>
-                        </div>
-
-                        {{-- Hızlı Aksiyonlar --}}
-                        <div class="row g-2">
-                            @if(!$aiIsCompleted)
-                                <div class="col-12">
-                                    <a href="{{ route('admin.ai.profile.jquery-edit', 1) }}" class="btn btn-primary btn-sm w-100">
-                                        <i class="fas fa-cog me-1"></i>
-                                        Profili Tamamla
-                                    </a>
-                                </div>
-                            @endif
-                            
-                            <div class="col-6">
-                                <a href="{{ route('admin.ai.profile.show') }}" class="btn btn-outline-secondary btn-sm w-100">
-                                    <i class="fas fa-eye me-1"></i>
-                                    Görüntüle
-                                </a>
-                            </div>
-                            
-                            @if($aiIsCompleted)
-                                <div class="col-6">
-                                    <a href="{{ route('admin.ai.index') }}" class="btn btn-outline-secondary btn-sm w-100">
-                                        <i class="fas fa-comments me-1"></i>
-                                        Yapay Zeka Chat
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                    @else
-                        {{-- AI Profil Yok --}}
-                        <div class="text-center py-4">
-                            <i class="fas fa-robot text-muted" style="font-size: 3rem;"></i>
-                            <h4 class="mt-3">Yapay Zeka Profili Bulunamadı</h4>
-                            <p class="text-muted">Yapay zeka özelliklerini kullanmak için profil oluşturun.</p>
-                            <a href="{{ route('admin.ai.profile.jquery-edit', 1) }}" class="btn btn-primary">
-                                <i class="fas fa-plus me-1"></i>
-                                Profil Oluştur
-                            </a>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endif
-
-        {{-- Mini AI Chat Widget --}}
-        @if(in_array('ai', $activeModules) && $aiProfile && $aiIsCompleted)
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
-            <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-comments me-2"></i>
-                        Hızlı Yapay Zeka Chat
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div id="chat-messages" style="height: 250px; overflow-y: auto; border: 1px solid var(--tblr-border-color); border-radius: 4px; padding: 12px; margin-bottom: 12px;">
-                        <div class="text-center text-muted mb-3">
-                            <i class="fas fa-robot" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="mb-2">
-                            <span class="badge text-secondary mb-1">
-                                <i class="fas fa-robot me-1"></i>
-                                Yapay Zeka Asistan
-                            </span>
-                            <div class="p-2 rounded border border-secondary-subtle">
-                                @php
-                                    $brandName = 'Yapay Zeka Asistan';
-                                    $welcomeMessage = 'Merhaba! Size nasıl yardımcı olabilirim?';
-                                    try {
-                                        if ($aiProfile && isset($aiProfile->company_info['business_name'])) {
-                                            $brandName = $aiProfile->company_info['business_name'];
-                                            $welcomeMessage = "Merhaba! Ben {$brandName} yapay zeka asistanıyım. Size nasıl yardımcı olabilirim? Her türlü sorunuzda yanınızdayım.";
-                                        }
-                                    } catch (\Exception $e) {
-                                        // Hata durumunda basit mesaj kullan
-                                    }
-                                @endphp
-                                {{ $welcomeMessage }}
+                        <div class="h1 mb-3">{{ $aiCompletionPercentage }}%</div>
+                        <div class="d-flex mb-2">
+                            <div>{{ __('ai::admin.dashboard.completion_rate') }}</div>
+                            <div class="ms-auto">
+                                <span class="text-{{ $aiIsCompleted ? 'green' : 'yellow' }} d-inline-flex align-items-center lh-1">
+                                    {{ $aiIsCompleted ? '✓' : '⏳' }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon ms-1 icon-2">
+                                        <path d="M3 17l6 -6l4 4l8 -8" />
+                                        <path d="M14 7l7 0l0 7" />
+                                    </svg>
+                                </span>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="chat-input" class="form-control" placeholder="Mesajınızı yazın..." onkeypress="handleChatEnter(event)">
-                        <button class="btn btn-primary" type="button" onclick="sendChatMessage()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
-        {{-- AI Token Durumu Widget (AI modülü aktifse) --}}
-        @if(in_array('ai', $activeModules))
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
-            <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-coins me-2"></i>
-                        AI Token Durumu
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="row align-items-center mb-3">
-                        <div class="col-auto">
-                            <div class="avatar avatar-md bg-primary text-white">
-                                <i class="fas fa-coins"></i>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="text-truncate">
-                                <strong>{{ $remainingTokensFormatted }} Token</strong>
-                            </div>
-                            <div class="text-muted">{{ function_exists('ai_format_token_count') ? ai_format_token_count($totalTokens) : number_format($totalTokens) }} toplam token</div>
-                        </div>
-                    </div>
-                    
-                    {{-- Progress Bar --}}
-                    <div class="mb-3">
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-{{ $statusColor }}" 
-                                 style="width: {{ $usagePercentage }}%" role="progressbar" 
-                                 aria-valuenow="{{ $usagePercentage }}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-{{ $aiIsCompleted ? 'success' : 'primary' }}" style="width: {{ $aiCompletionPercentage }}%" role="progressbar" aria-valuenow="{{ $aiCompletionPercentage }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ $aiCompletionPercentage }}% Complete">
+                                <span class="visually-hidden">{{ $aiCompletionPercentage }}% Complete</span>
                             </div>
                         </div>
-                        <div class="text-muted text-sm mt-1">{{ $statusText }} - %{{ $usagePercentage }} kullanıldı</div>
-                    </div>
+                    @else
+                        <div class="h1 mb-3">0%</div>
+                        <div class="d-flex mb-2">
+                            <div>{{ __('ai::admin.dashboard.no_profile') }}</div>
+                            <div class="ms-auto">
+                                <span class="text-red d-inline-flex align-items-center lh-1">
+                                    {{ __('ai::admin.dashboard.setup_needed') }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar bg-muted" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                <span class="visually-hidden">0% Complete</span>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
 
-                    {{-- Token İstatistikleri - Sadece kalan token'lara odaklan --}}
-                    <div class="text-center">
-                        <div class="p-3 bg-{{ $statusColor }}-lt rounded">
-                            <div class="h4 mb-0 text-{{ $statusColor }}">{{ $remainingTokensFormatted }}</div>
-                            <div class="text-muted small">Kalan Token</div>
+        @if(in_array('ai', $activeModules))
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center drag-handle">
+                        <div class="subheader">{{ __('ai::admin.ai_tokens') }}</div>
+                        <div class="ms-auto lh-1">
+                            <div class="dropdown">
+                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.index') }}">Token Management</a>
+                                    <a class="dropdown-item" href="{{ route('admin.ai.conversations.index') }}">Usage History</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h1 mb-3">{{ $remainingTokensFormatted }}</div>
+                    <div class="d-flex mb-2">
+                        <div>{{ __('ai::admin.dashboard.remaining_tokens') }}</div>
+                        <div class="ms-auto">
+                            <span class="text-{{ $statusColor }} d-inline-flex align-items-center lh-1">
+                                {{ $statusText }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-{{ $statusColor }}" style="width: {{ 100 - ($usagePercentage ?? 0) }}%" role="progressbar" aria-valuenow="{{ 100 - ($usagePercentage ?? 0) }}" aria-valuemin="0" aria-valuemax="100">
+                            <span class="visually-hidden">{{ 100 - ($usagePercentage ?? 0) }}% Remaining</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         @endif
-        
-        {{-- Sayfalar Widget (Page modülü aktifse) --}}
+
         @if(in_array('page', $activeModules))
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-file-alt me-2"></i>
-                        Sayfalar
-                    </h3>
-                </div>
                 <div class="card-body">
-                    <div class="row align-items-center mb-3">
-                        <div class="col-auto">
-                            <div class="avatar avatar-md bg-primary text-white">
-                                <i class="fas fa-file-alt"></i>
+                    <div class="d-flex align-items-center drag-handle">
+                        <div class="subheader">Pages</div>
+                        <div class="ms-auto lh-1">
+                            <div class="dropdown">
+                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="{{ route('admin.page.index') }}">All Pages</a>
+                                    <a class="dropdown-item" href="{{ route('admin.page.manage') }}">Create Page</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col">
-                            <div class="text-truncate">
-                                <strong>{{ number_format($totalPages) }} Sayfa</strong>
-                            </div>
-                            <div class="text-muted">Toplam sayfa sayısı</div>
                         </div>
                     </div>
-                    
-                    {{-- Son Eklenen Sayfalar --}}
-                    @if($recentPages && count($recentPages) > 0)
-                        <div class="mb-3">
-                            <h6 class="mb-2">Son Eklenenler</h6>
-                            @foreach($recentPages as $page)
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="avatar avatar-xs bg-primary-lt me-2">
-                                        <i class="fas fa-file text-primary"></i>
-                                    </div>
-                                    <div class="flex-fill">
-                                        <div class="text-truncate text-sm">{{ is_array($page->title) ? ($page->title[app()->getLocale()] ?? $page->title['tr'] ?? $page->title['en'] ?? 'Başlık') : $page->title }}</div>
-                                        <div class="text-muted text-xs">{{ $page->created_at->diffForHumans() }}</div>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div class="h1 mb-3">{{ $totalPages }}</div>
+                    <div class="d-flex mb-2">
+                        <div>{{ __('page::admin.total_pages') }}</div>
+                        <div class="ms-auto">
+                            <span class="text-blue d-inline-flex align-items-center lh-1">
+                                {{ __('ai::admin.dashboard.active') }}
+                            </span>
                         </div>
-                    @endif
-                    
-                    <div class="mt-3">
-                        <a href="{{ route('admin.page.index') }}" class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye me-1"></i>
-                            Tüm Sayfaları Görüntüle
-                        </a>
+                    </div>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-primary" style="width: {{ min(100, ($totalPages ?? 0) * 10) }}%" role="progressbar">
+                            <span class="visually-hidden">{{ $totalPages ?? 0 }} pages</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         @endif
-        
-        {{-- Portfolio Widget (Portfolio modülü aktifse) --}}
+
         @if(in_array('portfolio', $activeModules))
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="col-sm-6 col-lg-3">
             <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-briefcase me-2"></i>
-                        Portfolio
-                    </h3>
-                </div>
                 <div class="card-body">
-                    <div class="row align-items-center mb-3">
-                        <div class="col-auto">
-                            <div class="avatar avatar-md bg-primary text-white">
-                                <i class="fas fa-briefcase"></i>
+                    <div class="d-flex align-items-center drag-handle">
+                        <div class="subheader">Portfolio</div>
+                        <div class="ms-auto lh-1">
+                            <div class="dropdown">
+                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="{{ route('admin.portfolio.index') }}">All Portfolios</a>
+                                    <a class="dropdown-item" href="{{ route('admin.portfolio.manage') }}">Create Portfolio</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col">
-                            <div class="text-truncate">
-                                <strong>{{ number_format($totalPortfolios) }} Proje</strong>
-                            </div>
-                            <div class="text-muted">Toplam portfolio sayısı</div>
                         </div>
                     </div>
+                    <div class="h1 mb-3">{{ $totalPortfolios }}</div>
+                    <div class="d-flex mb-2">
+                        <div>{{ __('portfolio::admin.total_portfolios') }}</div>
+                        <div class="ms-auto">
+                            <span class="text-green d-inline-flex align-items-center lh-1">
+                                {{ __('ai::admin.dashboard.active') }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-success" style="width: {{ min(100, ($totalPortfolios ?? 0) * 15) }}%" role="progressbar">
+                            <span class="visually-hidden">{{ $totalPortfolios ?? 0 }} portfolios</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Second Row - Charts and Stats (3 equal columns) --}}
+        @if(in_array('ai', $activeModules))
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="card-title">{{ __('ai::admin.dashboard.activity_overview') }}</h3>
+                        <div class="dropdown">
+                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('ai::admin.dashboard.this_month') }}</a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">Bu Hafta</a>
+                                <a class="dropdown-item" href="#">Bu Ay</a>
+                                <a class="dropdown-item" href="#">Bu Yıl</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chart-mentions"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if(in_array('ai', $activeModules))
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="card-title">{{ __('ai::admin.dashboard.performance') }}</h3>
+                        <span class="badge bg-success">+12%</span>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chart-performance"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Third Row - AI Chat --}}
+        @if(in_array('ai', $activeModules))
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="card-title">{{ __('ai::admin.dashboard.quick_ai_chat') }}</h3>
+                        <a href="{{ route('admin.ai.index') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-expand me-1"></i>
+                            {{ __('ai::admin.dashboard.full_screen') }}
+                        </a>
+                    </div>
                     
-                    {{-- Son Eklenen Portfoliolar --}}
+                    <div class="dashboard-chat-container">
+                        <div id="dashboard-chat-messages" class="chat-messages"></div>
+                        <div class="chat-input-container">
+                            <div class="d-flex">
+                                <textarea id="dashboard-chat-input" class="form-control" rows="2" placeholder="{{ __('ai::admin.dashboard.chat_placeholder') }}" style="resize: none;"></textarea>
+                                <button id="dashboard-chat-send" class="btn btn-primary ms-2">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted">Token: {{ $remainingTokens ?? 0 }} {{ __('ai::admin.dashboard.tokens_left') }}</small>
+                                <div id="dashboard-chat-status" class="text-muted"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Fourth Row - Recent Items (3 equal columns) --}}
+        @if(in_array('page', $activeModules))
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="card-title">{{ __('page::admin.recent_pages') }}</h3>
+                        <a href="{{ route('admin.page.index') }}" class="btn btn-sm btn-outline-primary">{{ __('page::admin.view_all') }}</a>
+                    </div>
+                    @if($recentPages && count($recentPages) > 0)
+                        <div class="list-group list-group-flush">
+                            @foreach($recentPages as $page)
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">{{ is_array($page->title) ? ($page->title[app()->getLocale()] ?? array_first($page->title)) : $page->title }}</div>
+                                    <small class="text-muted">{{ $page->created_at->diffForHumans() }}</small>
+                                </div>
+                                <span class="badge bg-{{ $page->is_active ? 'success' : 'secondary' }} rounded-pill">
+                                    {{ $page->is_active ? __('ai::admin.dashboard.active') : __('ai::admin.dashboard.draft') }}
+                                </span>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">{{ __('page::admin.no_pages_yet') }}</p>
+                            <a href="{{ route('admin.page.manage') }}" class="btn btn-primary btn-sm">{{ __('page::admin.create_first_page') }}</a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if(in_array('portfolio', $activeModules))
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="card-title">{{ __('portfolio::admin.recent_portfolios') }}</h3>
+                        <a href="{{ route('admin.portfolio.index') }}" class="btn btn-sm btn-outline-primary">{{ __('portfolio::admin.view_all') }}</a>
+                    </div>
                     @if($recentPortfolios && count($recentPortfolios) > 0)
-                        <div class="mb-3">
-                            <h6 class="mb-2">Son Projeler</h6>
+                        <div class="list-group list-group-flush">
                             @foreach($recentPortfolios as $portfolio)
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="avatar avatar-xs bg-primary-lt me-2">
-                                        <i class="fas fa-folder text-primary"></i>
-                                    </div>
-                                    <div class="flex-fill">
-                                        <div class="text-truncate text-sm">{{ is_array($portfolio->title) ? ($portfolio->title[app()->getLocale()] ?? $portfolio->title['tr'] ?? $portfolio->title['en'] ?? 'Proje') : $portfolio->title }}</div>
-                                        <div class="text-muted text-xs">{{ $portfolio->created_at->diffForHumans() }}</div>
-                                    </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">{{ is_array($portfolio->title) ? ($portfolio->title[app()->getLocale()] ?? array_first($portfolio->title)) : $portfolio->title }}</div>
+                                    <small class="text-muted">{{ $portfolio->created_at->diffForHumans() }}</small>
                                 </div>
+                                <span class="badge bg-{{ $portfolio->is_active ? 'success' : 'secondary' }} rounded-pill">
+                                    {{ $portfolio->is_active ? __('ai::admin.dashboard.active') : __('ai::admin.dashboard.draft') }}
+                                </span>
+                            </div>
                             @endforeach
                         </div>
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">{{ __('portfolio::admin.no_portfolios_yet') }}</p>
+                            <a href="{{ route('admin.portfolio.manage') }}" class="btn btn-primary btn-sm">{{ __('portfolio::admin.create_first_portfolio') }}</a>
+                        </div>
                     @endif
-                    
-                    <div class="mt-3">
-                        <a href="{{ route('admin.portfolio.index') }}" class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye me-1"></i>
-                            Tüm Projeleri Görüntüle
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
         @endif
-        
-        {{-- Duyurular Widget (Announcement modülü aktifse) --}}
+
         @if(in_array('announcement', $activeModules))
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
-            <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-bullhorn me-2"></i>
-                        Duyurular
-                    </h3>
-                </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
                 <div class="card-body">
-                    <div class="row align-items-center mb-3">
-                        <div class="col-auto">
-                            <div class="avatar avatar-md bg-primary text-white">
-                                <i class="fas fa-bullhorn"></i>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="text-truncate">
-                                <strong>{{ number_format($totalAnnouncements) }} Duyuru</strong>
-                            </div>
-                            <div class="text-muted">Toplam duyuru sayısı</div>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="card-title">Duyurular</h3>
+                        <span class="badge bg-primary">{{ $totalAnnouncements ?? 0 }}</span>
                     </div>
-                    
-                    {{-- Son Eklenen Duyurular --}}
                     @if($recentAnnouncements && count($recentAnnouncements) > 0)
-                        <div class="mb-3">
-                            <h6 class="mb-2">Son Duyurular</h6>
+                        <div class="list-group list-group-flush">
                             @foreach($recentAnnouncements as $announcement)
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="avatar avatar-xs bg-primary-lt me-2">
-                                        <i class="fas fa-megaphone text-primary"></i>
-                                    </div>
-                                    <div class="flex-fill">
-                                        <div class="text-truncate text-sm">{{ is_array($announcement->title) ? ($announcement->title[app()->getLocale()] ?? $announcement->title['tr'] ?? $announcement->title['en'] ?? 'Duyuru') : $announcement->title }}</div>
-                                        <div class="text-muted text-xs">{{ $announcement->created_at->diffForHumans() }}</div>
-                                    </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">{{ is_array($announcement->title) ? ($announcement->title[app()->getLocale()] ?? array_first($announcement->title)) : $announcement->title }}</div>
+                                    <small class="text-muted">{{ $announcement->created_at->diffForHumans() }}</small>
                                 </div>
-                            @endforeach
-                        </div>
-                    @endif
-                    
-                    <div class="mt-3">
-                        <a href="{{ route('admin.announcement.index') }}" class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye me-1"></i>
-                            Tüm Duyuruları Görüntüle
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-        
-        {{-- Son Giriş Yapan Kullanıcılar Widget (UserManagement modülü aktifse) --}}
-        @if(in_array('usermanagement', $activeModules))
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
-            <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-sign-in-alt me-2"></i>
-                        Son Girişler
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                <div class="avatar avatar-md bg-primary text-white">
-                                    <i class="fas fa-sign-in-alt"></i>
-                                </div>
+                                <span class="badge bg-{{ $announcement->is_active ? 'success' : 'secondary' }} rounded-pill">
+                                    {{ $announcement->is_active ? __('ai::admin.dashboard.active') : __('ai::admin.dashboard.draft') }}
+                                </span>
                             </div>
-                            <div class="col">
-                                <div class="text-truncate">
-                                    <strong>{{ count($recentLogins) }} Kullanıcı</strong>
-                                </div>
-                                <div class="text-muted">Son giriş yapanlar</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Son Giriş Yapan Kullanıcılar --}}
-                    @if($recentLogins && count($recentLogins) > 0)
-                        <div class="mb-3">
-                            @foreach($recentLogins as $user)
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="avatar avatar-xs bg-primary-lt me-2">
-                                        <i class="fas fa-user text-primary"></i>
-                                    </div>
-                                    <div class="flex-fill">
-                                        <div class="text-truncate text-sm">{{ $user->name }}</div>
-                                        <div class="text-muted text-xs">{{ $user->last_login_at ? (is_string($user->last_login_at) ? \Carbon\Carbon::parse($user->last_login_at)->diffForHumans() : $user->last_login_at->diffForHumans()) : 'Hiç giriş yapmamış' }}</div>
-                                    </div>
-                                </div>
                             @endforeach
                         </div>
                     @else
-                        <div class="text-center text-muted">
-                            <i class="fas fa-users" style="font-size: 2rem;"></i>
-                            <p class="mt-2 mb-0">Henüz giriş yapan kullanıcı yok</p>
+                        <div class="text-center py-4">
+                            <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Henüz duyuru yok</p>
+                            <a href="{{ route('admin.announcement.manage') }}" class="btn btn-primary btn-sm">İlk Duyuru Oluştur</a>
                         </div>
                     @endif
-                    
-                    <div class="mt-3">
-                        <a href="{{ route('admin.usermanagement.index') }}" class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye me-1"></i>
-                            Tüm Kullanıcıları Görüntüle
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
         @endif
-        
-        {{-- Son Üye Olan Kullanıcılar Widget (UserManagement modülü aktifse) --}}
-        @if(in_array('usermanagement', $activeModules))
-        <div class="col-12 col-md-6 col-lg-4 mb-3">
-            <div class="card">
-                <div class="card-header drag-handle">
-                    <h3 class="card-title">
-                        <i class="fas fa-user-plus me-2"></i>
-                        Yeni Üyeler
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                <div class="avatar avatar-md bg-primary text-white">
-                                    <i class="fas fa-user-plus"></i>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="text-truncate">
-                                    <strong>{{ count($newUsers) }} Yeni Üye</strong>
-                                </div>
-                                <div class="text-muted">Son katılanlar</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Son Üye Olan Kullanıcılar --}}
-                    @if($newUsers && count($newUsers) > 0)
-                        <div class="mb-3">
-                            @foreach($newUsers as $user)
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="avatar avatar-xs bg-primary-lt me-2">
-                                        <i class="fas fa-user-check text-primary"></i>
-                                    </div>
-                                    <div class="flex-fill">
-                                        <div class="text-truncate text-sm">{{ $user->name }}</div>
-                                        <div class="text-muted text-xs">{{ $user->created_at->diffForHumans() }} katıldı</div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center text-muted">
-                            <i class="fas fa-user-plus" style="font-size: 2rem;"></i>
-                            <p class="mt-2 mb-0">Henüz yeni üye yok</p>
-                        </div>
-                    @endif
-                    
-                    <div class="mt-3">
-                        <a href="{{ route('admin.usermanagement.index') }}" class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-eye me-1"></i>
-                            Tüm Üyeleri Görüntüle
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
+
     </div>
 </div>
 
 @push('styles')
 <style>
-/* Drag Handle */
+.dashboard-chat-container {
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background-color: var(--bs-body-bg);
+}
+
+.chat-input-container {
+    padding: 1rem;
+    background-color: var(--bs-body-bg);
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.user-message-compact {
+    background-color: #206bc4;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+    margin-left: 2rem;
+    text-align: right;
+}
+
+.ai-message-compact {
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+    margin-right: 2rem;
+}
+
 .drag-handle {
-    cursor: move;
-    user-select: none;
-}
-
-.drag-handle:hover {
-    background-color: var(--tblr-gray-50);
-}
-
-.dark .drag-handle:hover {
-    background-color: var(--tblr-gray-900);
-}
-
-/* PORTFOLIO MODÜLÜ TAM ANIMASYON SİSTEMİ */
-.sortable-ghost {
-    opacity: 0.3;
-    background: var(--tblr-primary-lt);
-    border: 2px dashed var(--tblr-primary);
-    transform: scale(0.95);
-    border-radius: 8px;
-}
-
-.sortable-chosen {
-    transform: scale(1.02);
-    box-shadow: 0 8px 24px rgba(var(--tblr-primary-rgb), 0.2);
-    z-index: 1000;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    background: var(--tblr-body-bg);
-}
-
-.sortable-drag {
-    opacity: 0.95;
-    transform: rotate(2deg) scale(1.02);
-    z-index: 9999;
-    transition: none;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-}
-
-/* Smooth transitions for all cards - ENHANCED */
-.col-12 {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* Dragging state - disable transitions on dragged item */
-.dragging {
-    transition: none !important;
-}
-
-/* Enhanced drag handle */
-.drag-handle {
-    transition: all 0.2s ease;
-}
-
-.drag-handle:hover {
-    background-color: var(--tblr-gray-50);
     cursor: grab;
 }
 
 .drag-handle:active {
     cursor: grabbing;
-    background-color: var(--tblr-gray-100);
 }
 
-
-/* Grabbing cursor for body during drag */
-body.sortable-grabbing {
-    cursor: grabbing !important;
+.sortable-ghost {
+    opacity: 0.4;
 }
 
-/* Smooth card transitions during sorting */
-.col-12:not(.sortable-chosen):not(.sortable-ghost) {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(0);
+.sortable-chosen {
+    transform: scale(1.02);
 }
 
-/* Cards moving up/down smoothly */
-.col-12.sortable-fallback {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+.sortable-drag {
+    transform: rotate(2deg);
 }
 
-/* Enhanced smooth transitions for all widgets */
-#dashboard-cards .col-12 {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(0) translateX(0);
+#dashboard-cards {
+    min-height: 400px;
 }
 
-/* Disable transitions only on actively dragged item */
-#dashboard-cards .col-12.dragging {
-    transition: none !important;
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1055;
 }
 
-/* Better visual feedback during drag */
-#dashboard-cards .col-12:not(.dragging) {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.dashboard-toast {
+    background-color: var(--bs-primary);
+    color: var(--bs-white);
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+    animation: slideIn 0.3s ease-out;
 }
 
-/* Smooth repositioning animation */
-#dashboard-cards .col-12:not(.sortable-chosen):not(.sortable-ghost):not(.dragging) {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-
-/* Dark mode support */
-.dark .sortable-ghost {
-    background: var(--tblr-primary-dark);
-    border-color: var(--tblr-primary);
-}
-
-.dark .sortable-chosen {
-    background: var(--tblr-dark-bg);
-    box-shadow: 0 8px 24px rgba(var(--tblr-primary-rgb), 0.3);
-}
-
-.dark .drag-handle:hover {
-    background-color: var(--tblr-gray-900);
-}
-
-.dark .drag-handle:active {
-    background-color: var(--tblr-gray-800);
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 </style>
 @endpush
@@ -593,19 +441,26 @@ body.sortable-grabbing {
 @push('scripts')
 <!-- Sortable Library -->
 <script src="/admin-assets/libs/sortable/sortable.min.js"></script>
+<!-- Chart.js - More stable alternative -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-// PORTFOLIO MODÜLÜ TAM ANIMASYON SİSTEMİ
+// Global variables
+let dashboardConversationId = null;
+let dashboardEventSource = null;
+let dashboardWordBuffer = null;
+
+// Dashboard sortable initialization
 $(document).ready(function() {
-    var dashboardContainer = $('#dashboard-cards')[0];
+    console.log('🚀 Dashboard sortable initializing...');
+    
+    const dashboardContainer = document.getElementById('dashboard-cards');
     if (!dashboardContainer) {
-        console.log('⚠️ Dashboard container bulunamadı');
+        console.error('❌ Dashboard container not found');
         return;
     }
-    
-    console.log('🚀 Dashboard sortable initialize ediliyor...');
-    
-    // Initialize Sortable - Portfolio modülü exact copy
+
+    // Initialize Sortable
     window.dashboardSortable = Sortable.create(dashboardContainer, {
         animation: 250,
         delay: 50,
@@ -622,8 +477,6 @@ $(document).ready(function() {
             document.body.style.cursor = 'grabbing';
             document.body.classList.add('sortable-grabbing');
             $(evt.item).addClass('dragging');
-            
-            console.log('🚀 Dashboard widget drag başladı:', $(evt.item).find('.card-title').text().trim());
         },
         
         onEnd: function(evt) {
@@ -631,231 +484,332 @@ $(document).ready(function() {
             document.body.classList.remove('sortable-grabbing');
             $(evt.item).removeClass('dragging');
             
-            console.log('🔄 Dashboard widget sıralandı:', {
-                oldIndex: evt.oldIndex,
-                newIndex: evt.newIndex,
-                item: $(evt.item).find('.card-title').text().trim()
-            });
-            
-            // Layout kaydetme
+            // Save layout
             saveDashboardLayout();
-        },
-        
-        onMove: function(evt) {
-            // Smooth transition during move
-            return true;
         }
     });
-    
-    // Sayfa yüklendiğinde kaydedilmiş sıralamayı geri yükle
-    console.log('🔄 Dashboard sortable başlatıldı, layout yükleniyor...');
+
+    // Show dashboard with animation
     setTimeout(function() {
-        loadDashboardLayout();
-        // Layout uygulandıktan sonra container'ı görünür yap
-        setTimeout(function() {
-            $('#dashboard-cards').css('opacity', '1');
-        }, 50);
+        dashboardContainer.style.opacity = '1';
+        console.log('✅ Dashboard visible');
     }, 100);
-    
-    
-    function saveDashboardLayout() {
-        var layout = [];
-        $('#dashboard-cards .col-12').each(function(index) {
-            var title = $(this).find('.card-title').text().trim();
-            layout.push(title);
-        });
-        
-        // localStorage'e kaydet
-        try {
-            localStorage.setItem('dashboard_layout', JSON.stringify(layout));
-            console.log('✅ Dashboard layout localStorage\'e kaydedildi:', layout);
-            
-            // Session'a da kaydet (AJAX ile, sayfa render'ı tetiklemeyen)
-            fetch('/admin/dashboard/save-layout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ layout: layout })
-            }).then(response => {
-                if (response.ok) {
-                    console.log('✅ Dashboard layout session\'a kaydedildi');
-                } else {
-                    console.log('⚠️ Dashboard layout session kayıt hatası');
-                }
-            }).catch(e => {
-                console.log('⚠️ Dashboard layout session kayıt network hatası:', e);
-            });
-        } catch (e) {
-            console.error('❌ Dashboard layout kaydetme hatası:', e);
-        }
-    }
-    
-    function loadDashboardLayout() {
-        try {
-            var savedLayout = localStorage.getItem('dashboard_layout');
-            if (savedLayout) {
-                var layout = JSON.parse(savedLayout);
-                if (layout && Array.isArray(layout) && layout.length > 0) {
-                    applyDashboardLayout(layout);
-                    console.log('✅ Dashboard layout localStorage\'den yüklendi:', layout);
-                } else {
-                    console.log('⚠️ Dashboard layout boş veya geçersiz');
-                }
-            } else {
-                console.log('ℹ️ Dashboard layout localStorage\'de bulunamadı, varsayılan sıralama kullanılacak');
-            }
-        } catch(e) {
-            console.error('❌ Dashboard layout yükleme hatası:', e);
-            // Bozuk veri varsa temizle
-            localStorage.removeItem('dashboard_layout');
-        }
-    }
-    
-    function applyDashboardLayout(layout) {
-        var container = $('#dashboard-cards');
-        
-        if (!window.dashboardSortable) {
-            console.log('⚠️ Dashboard sortable henüz hazır değil, layout uygulanmayacak');
-            return;
-        }
-        
-        console.log('🔄 Dashboard layout uygulanıyor...', layout);
-        
-        // Animasyon için geçici olarak disabled
-        window.dashboardSortable.option('disabled', true);
-        
-        var successCount = 0;
-        var failCount = 0;
-        
-        layout.forEach(function(title, targetIndex) {
-            var widget = container.find('.col-12').filter(function() {
-                return $(this).find('.card-title').text().trim() === title;
-            }).first();
-            
-            if (widget.length > 0) {
-                var currentIndex = widget.index();
-                
-                // Eğer widget farklı pozisyonda ise taşı
-                if (currentIndex !== targetIndex) {
-                    if (targetIndex === 0) {
-                        container.prepend(widget);
-                    } else {
-                        var targetWidget = container.find('.col-12').eq(targetIndex);
-                        if (targetWidget.length > 0) {
-                            widget.insertBefore(targetWidget);
-                        } else {
-                            container.append(widget);
-                        }
-                    }
-                    successCount++;
-                } else {
-                    console.log('ℹ️ Widget zaten doğru pozisyonda:', title);
-                }
-            } else {
-                console.log('⚠️ Widget bulunamadı:', title);
-                failCount++;
-            }
-        });
-        
-        console.log('✅ Dashboard layout uygulandı:', { 
-            moved: successCount, 
-            failed: failCount, 
-            total: layout.length 
-        });
-        
-        // Animasyon tamamlandıktan sonra sortable'ı yeniden etkinleştir
-        setTimeout(function() {
-            window.dashboardSortable.option('disabled', false);
-        }, 300);
-    }
+
+    // Initialize charts
+    setTimeout(initializeCharts, 300);
 });
 
-// AI Chat Functions
-function handleChatEnter(event) {
-    if (event.key === 'Enter') {
-        sendChatMessage();
+// Chart initialization with Chart.js
+function initializeCharts() {
+    if (!window.Chart) {
+        console.warn('⚠️ Chart.js not loaded, retrying...');
+        setTimeout(initializeCharts, 500);
+        return;
+    }
+    
+    setTimeout(function() {
+        console.log('📊 Initializing charts with Chart.js...');
+        
+        // Activity chart
+        const mentionsElement = document.getElementById('chart-mentions');
+        if (mentionsElement) {
+            try {
+                const mentionsData = [{{ count($recentLogins ?? []) }}, {{ count($newUsers ?? []) }}, {{ $totalPages ?? 0 }}, {{ $totalPortfolios ?? 0 }}, {{ $totalAnnouncements ?? 0 }}];
+                
+                window.mentionsChart = new Chart(mentionsElement, {
+                    type: 'line',
+                    data: {
+                        labels: ['Logins', 'New Users', 'Pages', 'Portfolio', 'Announcements'],
+                        datasets: [{
+                            label: 'Activity',
+                            data: mentionsData,
+                            borderColor: '#206bc4',
+                            backgroundColor: 'rgba(32, 107, 196, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: '#e9ecef'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('✅ Activity chart rendered');
+            } catch (e) {
+                console.error('❌ Activity chart error:', e);
+            }
+        }
+
+        // Performance chart
+        const performanceElement = document.getElementById('chart-performance');
+        if (performanceElement) {
+            try {
+                const performanceData = [65, 59, 80, 81, 56, 55, 40];
+                
+                window.performanceChart = new Chart(performanceElement, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Performance',
+                            data: performanceData,
+                            borderColor: '#2fb344',
+                            backgroundColor: 'rgba(47, 179, 68, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: '#e9ecef'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('✅ Performance chart rendered');
+            } catch (e) {
+                console.error('❌ Performance chart error:', e);
+            }
+        }
+
+        console.log('📊 All charts initialized');
+    }, 300);
+}
+
+// Save dashboard layout
+function saveDashboardLayout() {
+    try {
+        const layout = [];
+        $('#dashboard-cards .col-12, #dashboard-cards .col-sm-6, #dashboard-cards .col-lg-3, #dashboard-cards .col-lg-4, #dashboard-cards .col-lg-6, #dashboard-cards .col-lg-8').each(function(index) {
+            layout.push($(this).attr('class'));
+        });
+        
+        localStorage.setItem('dashboard_layout', JSON.stringify(layout));
+        console.log('✅ Dashboard layout saved:', layout);
+        
+        // Also save to server
+        fetch('/admin/dashboard/save-layout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ layout: layout })
+        }).catch(e => console.error('❌ Server save error:', e));
+    } catch (e) {
+        console.error('❌ Dashboard layout save error:', e);
     }
 }
 
-function sendChatMessage() {
-    const input = document.getElementById('chat-input');
+// AI Chat Functions
+function sendDashboardAIMessage() {
+    const input = document.getElementById('dashboard-chat-input');
     const message = input.value.trim();
     
-    if (!message) return;
+    if (!message) {
+        showDashboardToast('Lütfen bir mesaj yazın');
+        return;
+    }
     
-    // Add user message to chat
-    addMessageToChat('user', message);
+    // Add user message
+    addDashboardMessage('user', message);
     input.value = '';
     
-    // Add loading indicator
-    const loadingId = addMessageToChat('ai', '<i class="spinner-border spinner-border-sm me-2"></i>Düşünüyor...');
+    // Show AI thinking
+    const aiMessageId = addDashboardMessage('ai', '');
+    const aiMessageElement = document.getElementById(aiMessageId);
     
-    // Send message to AI
-    fetch('{{ route("admin.ai.profile.chat") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            message: message
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Remove loading message
-        document.getElementById(loadingId).remove();
-        
-        if (data.success) {
-            let responseText = data.response;
+    // Initialize conversation
+    if (!dashboardConversationId) {
+        dashboardConversationId = 'dashboard_' + Date.now();
+    }
+    
+    // Setup Server-Sent Events
+    const eventSource = new EventSource(`/admin/ai/stream?message=${encodeURIComponent(message)}&conversation_id=${dashboardConversationId}`);
+    dashboardEventSource = eventSource;
+    
+    // Initialize word buffer
+    dashboardWordBuffer = createAIWordBuffer(aiMessageElement);
+    
+    eventSource.onmessage = function(event) {
+        try {
+            const data = JSON.parse(event.data);
             
-            // Akıllı feature detection bilgisi varsa ekle
-            if (data.feature_used && data.confidence) {
-                responseText += `\n\n<small class="text-muted">🤖 ${data.feature_used} (${Math.round(data.confidence * 100)}% güven)</small>`;
+            if (data.type === 'content') {
+                dashboardWordBuffer.addContent(data.content);
+            } else if (data.type === 'done') {
+                dashboardWordBuffer.finalize();
+                eventSource.close();
+                dashboardEventSource = null;
+            } else if (data.type === 'error') {
+                aiMessageElement.innerHTML = `<div class="text-danger">Error: ${data.message}</div>`;
+                eventSource.close();
+                dashboardEventSource = null;
             }
-            
-            addMessageToChat('ai', responseText);
-        } else {
-            addMessageToChat('ai', 'Üzgünüm, bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'));
+        } catch (e) {
+            console.error('Stream parsing error:', e);
         }
-    })
-    .catch(error => {
-        // Remove loading message
-        document.getElementById(loadingId).remove();
-        addMessageToChat('ai', 'Bağlantı hatası oluştu. Lütfen tekrar deneyin.');
-        console.error('AI Chat Error:', error);
-    });
+    };
+    
+    eventSource.onerror = function(event) {
+        console.error('EventSource error:', event);
+        aiMessageElement.innerHTML = '<div class="text-danger">Connection error occurred.</div>';
+        eventSource.close();
+        dashboardEventSource = null;
+    };
 }
 
-function addMessageToChat(type, message) {
-    const chatMessages = document.getElementById('chat-messages');
-    const messageId = 'msg-' + Date.now();
+function addDashboardMessage(type, content) {
+    const messagesContainer = document.getElementById('dashboard-chat-messages');
+    const messageId = 'message_' + Date.now();
     
     const messageDiv = document.createElement('div');
     messageDiv.id = messageId;
-    messageDiv.className = `mb-2 ${type === 'user' ? 'text-end' : ''}`;
+    messageDiv.className = type === 'user' ? 'user-message-compact' : 'ai-message-compact';
+    messageDiv.innerHTML = content;
     
-    const badge = type === 'user' ? 'text-primary' : 'text-secondary';
-    const icon = type === 'user' ? 'ti-user' : 'ti-robot';
-    
-    messageDiv.innerHTML = `
-        <div class="d-inline-block">
-            <span class="badge ${badge} mb-1">
-                <i class="ti ${icon} me-1"></i>
-                ${type === 'user' ? 'Siz' : 'AI Asistan'}
-            </span>
-            <div class="p-2 rounded ${type === 'user' ? 'border border-primary-subtle' : 'border border-secondary-subtle'}">
-                ${message}
-            </div>
-        </div>
-    `;
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
     
     return messageId;
 }
+
+function createAIWordBuffer(element) {
+    let buffer = '';
+    let isProcessing = false;
+    
+    return {
+        addContent: function(content) {
+            buffer += content;
+            if (!isProcessing) {
+                this.processBuffer();
+            }
+        },
+        
+        processBuffer: function() {
+            if (buffer.length === 0) return;
+            
+            isProcessing = true;
+            const words = buffer.split(/(\s+)/);
+            buffer = '';
+            
+            let currentContent = element.innerHTML;
+            let wordIndex = 0;
+            
+            const processWord = () => {
+                if (wordIndex < words.length) {
+                    currentContent += words[wordIndex];
+                    element.innerHTML = currentContent;
+                    
+                    // Auto-scroll
+                    const messagesContainer = document.getElementById('dashboard-chat-messages');
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    
+                    wordIndex++;
+                    setTimeout(processWord, 50);
+                } else {
+                    isProcessing = false;
+                    if (buffer.length > 0) {
+                        this.processBuffer();
+                    }
+                }
+            };
+            
+            processWord();
+        },
+        
+        finalize: function() {
+            if (buffer.length > 0) {
+                element.innerHTML += buffer;
+                buffer = '';
+            }
+            isProcessing = false;
+        }
+    };
+}
+
+function showDashboardToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'dashboard-toast';
+    toast.textContent = message;
+    
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // AI Chat send button
+    const sendButton = document.getElementById('dashboard-chat-send');
+    if (sendButton) {
+        sendButton.addEventListener('click', sendDashboardAIMessage);
+    }
+    
+    // AI Chat input enter key
+    const chatInput = document.getElementById('dashboard-chat-input');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendDashboardAIMessage();
+            }
+        });
+    }
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (dashboardEventSource) {
+        dashboardEventSource.close();
+    }
+});
 </script>
 @endpush

@@ -20,6 +20,9 @@
     $items = $itemsQuery->orderBy('created_at', 'desc')->limit($itemLimit)->get();
 
     // Debug log kaldırıldı
+    
+    // Current locale
+    $currentLocale = app()->getLocale();
 
     $gridClass = 'grid-cols-1'; // Mobil için varsayılan
     if ($columns == '2') {
@@ -36,8 +39,27 @@
     @if($items->count() > 0)
         <div class="grid {{ $gridClass }} gap-4">
             @foreach($items as $item)
+                @php
+                    $itemSlug = $item->slug[$currentLocale] ?? $item->slug['tr'] ?? $item->portfolio_id;
+                    $itemTitle = $item->title[$currentLocale] ?? $item->title['tr'] ?? 'Portfolio';
+                    $itemBody = $item->body[$currentLocale] ?? $item->body['tr'] ?? '';
+                @endphp
                 <div class="portfolio-item group overflow-hidden hover:shadow-sm transition-shadow duration-300">
-                    <a href="{{ route('portfolios.show', $item->slug) }}" class="block">
+                    @if($itemSlug)
+                        <a href="{{ route('portfolios.show', $itemSlug) }}" class="block">
+                            @php
+                                $imageUrl = null;
+                                if ($item->image) {
+                                    $imageUrl = asset($item->image);
+                                } elseif ($item->hasMedia('default')) {
+                                    $imageUrl = $item->getFirstMediaUrl('default');
+                                } else {
+                                    $imageUrl = 'https://placehold.co/600x400?text=' . urlencode($itemTitle);
+                                }
+                            @endphp
+                            <img src="{{ $imageUrl }}" alt="{{ $itemTitle }}" class="w-full h-48 object-cover group-hover:opacity-80 transition-opacity duration-300">
+                        </a>
+                    @else
                         @php
                             $imageUrl = null;
                             if ($item->image) {
@@ -45,16 +67,20 @@
                             } elseif ($item->hasMedia('default')) {
                                 $imageUrl = $item->getFirstMediaUrl('default');
                             } else {
-                                $imageUrl = 'https://placehold.co/600x400?text=' . urlencode($item->title);
+                                $imageUrl = 'https://placehold.co/600x400?text=' . urlencode($itemTitle);
                             }
                         @endphp
-                        <img src="{{ $imageUrl }}" alt="{{ $item->title }}" class="w-full h-48 object-cover group-hover:opacity-80 transition-opacity duration-300">
-                    </a>
+                        <img src="{{ $imageUrl }}" alt="{{ $itemTitle }}" class="w-full h-48 object-cover">
+                    @endif
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                            <a href="{{ route('portfolios.show', $item->slug) }}" class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">
-                                {{ $item->title }}
-                            </a>
+                            @if($itemSlug)
+                                <a href="{{ route('portfolios.show', $itemSlug) }}" class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">
+                                    {{ $itemTitle }}
+                                </a>
+                            @else
+                                {{ $itemTitle }}
+                            @endif
                         </h3>
                         @if($item->relationLoaded('portfolioCategory') && $item->portfolioCategory)
                             <p class="text-xs text-primary dark:text-primary-400 mb-2">{{ $item->portfolioCategory->title }}</p>
@@ -62,11 +88,13 @@
                              <p class="text-xs text-primary dark:text-primary-400 mb-2">{{ $category->title }}</p>
                         @endif
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                            {{ \Illuminate\Support\Str::limit(strip_tags($item->body), 80) }}
+                            {{ \Illuminate\Support\Str::limit(strip_tags($itemBody), 80) }}
                         </p>
-                        <a href="{{ route('portfolios.show', $item->slug) }}" class="text-sm text-primary dark:text-primary-400 hover:underline font-medium">
-                            Devamını Oku &rarr;
-                        </a>
+                        @if($itemSlug)
+                            <a href="{{ route('portfolios.show', $itemSlug) }}" class="text-sm text-primary dark:text-primary-400 hover:underline font-medium">
+                                Devamını Oku &rarr;
+                            </a>
+                        @endif
                     </div>
                 </div>
             @endforeach

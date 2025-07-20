@@ -923,7 +923,7 @@ ABSOLUTELY FORBIDDEN: Never use these symbols in your response:
                 'role' => 'assistant',
                 'content' => $aiResponse,
                 'tokens' => (int)(strlen($aiResponse) / 4),
-                'model_used' => 'deepseek-chat',
+                'model_used' => $this->getCurrentProviderModel(),
                 'message_type' => 'prowess_test',
                 'metadata' => [
                     'feature_name' => $feature->name,
@@ -1002,6 +1002,23 @@ ABSOLUTELY FORBIDDEN: Never use these symbols in your response:
             
         } catch (\Exception $e) {
             return null;
+        }
+    }
+
+    /**
+     * Şu anda aktif olan provider'ın model bilgisini al
+     */
+    private function getCurrentProviderModel(): string
+    {
+        try {
+            $defaultProvider = \Modules\AI\App\Models\AIProvider::getDefault();
+            if ($defaultProvider) {
+                return $defaultProvider->name . '/' . $defaultProvider->default_model;
+            }
+            
+            return 'unknown/unknown';
+        } catch (\Exception $e) {
+            return 'unknown/error';
         }
     }
 }

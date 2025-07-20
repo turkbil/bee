@@ -223,12 +223,12 @@ class AnnouncementSeeder extends Seeder
 
         foreach ($announcements as $announcement) {
             Announcement::create([
-                'title' => $announcement['title'],
-                'slug' => $announcement['slug'],
-                'body' => $announcement['body'],
-                'metakey' => $announcement['metakey'],
-                'metadesc' => $announcement['metadesc'],
-                'seo' => $announcement['seo'] ?? null,
+                'title' => json_encode($announcement['title']),
+                'slug' => json_encode($announcement['slug']),
+                'body' => json_encode($announcement['body']),
+                'metakey' => json_encode($announcement['metakey']),
+                'metadesc' => json_encode($announcement['metadesc']),
+                'seo' => isset($announcement['seo']) ? json_encode($announcement['seo']) : null,
                 'is_active' => true,
             ]);
         }

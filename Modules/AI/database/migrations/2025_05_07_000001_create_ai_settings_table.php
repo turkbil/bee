@@ -15,6 +15,8 @@ return new class extends Migration
             $table->integer('max_tokens')->default(4096);
             $table->float('temperature')->default(0.7);
             $table->boolean('enabled')->default(true);
+            $table->json('providers')->nullable(); // AI Provider'lar listesi
+            $table->string('active_provider')->default('deepseek'); // Aktif provider
             
             // Limit Alanı
             $table->integer('max_question_length')->default(2000);

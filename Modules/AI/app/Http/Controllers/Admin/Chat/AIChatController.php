@@ -79,7 +79,7 @@ class AIChatController extends Controller
             
             // Kullanıcı mesajı için token kullanımını kaydet
             $userPromptTokens = (int) (strlen($message) / 4);
-            $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, 'deepseek-chat');
+            $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, $this->getCurrentProviderModel());
             
             // Konuşma geçmişini oluştur
             $conversationHistory = [];
@@ -119,7 +119,7 @@ class AIChatController extends Controller
             
             // AI yanıtı için token kullanımını kaydet
             $aiCompletionTokens = (int) (strlen($response['content']) / 4);
-            $this->conversationService->recordTokenUsage($conversation, $aiMessage, 0, $aiCompletionTokens, 'deepseek-chat');
+            $this->conversationService->recordTokenUsage($conversation, $aiMessage, 0, $aiCompletionTokens, $this->getCurrentProviderModel());
             
             // Geriye uyumluluk için Redis cache'ini de güncelle
             $this->updateRedisCache($conversation->id, $conversationHistory, $response['content']);
@@ -255,7 +255,7 @@ class AIChatController extends Controller
                 
                 // Kullanıcı mesajı için token kullanımını kaydet
                 $userPromptTokens = (int) (strlen($message) / 4);
-                $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, 'deepseek-chat');
+                $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, $this->getCurrentProviderModel());
                 
                 // Konuşma geçmişini oluştur
                 $conversationHistory = [];
@@ -291,7 +291,7 @@ class AIChatController extends Controller
                 $aiMessage->save();
                 
                 // Token kullanımını kaydet
-                $this->conversationService->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens, 'deepseek-chat');
+                $this->conversationService->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens, $this->getCurrentProviderModel());
                 
                 // Geriye uyumluluk için Redis cache'ini de güncelle
                 $conversationHistory[] = [
@@ -510,6 +510,23 @@ class AIChatController extends Controller
                 'success' => false,
                 'message' => 'Bir hata oluştu: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Şu anda aktif olan provider'ın model bilgisini al
+     */
+    private function getCurrentProviderModel(): string
+    {
+        try {
+            $defaultProvider = \Modules\AI\App\Models\AIProvider::getDefault();
+            if ($defaultProvider) {
+                return $defaultProvider->name . '/' . $defaultProvider->default_model;
+            }
+            
+            return 'unknown/unknown';
+        } catch (\Exception $e) {
+            return 'unknown/error';
         }
     }
 }

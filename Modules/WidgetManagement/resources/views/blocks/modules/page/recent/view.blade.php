@@ -1,4 +1,4 @@
-<?php
+@php
 use Modules\Page\app\Models\Page;
 
 $widgetTitle = $settings['widget_title'] ?? 'Son Sayfalar';
@@ -12,18 +12,29 @@ $pages = Page::query()
     ->orderBy('created_at', 'desc')
     ->limit($itemLimit)
     ->get();
-?>
+
+// Current locale
+$currentLocale = app()->getLocale();
+@endphp
 
 <div class="recent-pages-widget p-4">
 
     @if($pages->count() > 0)
         <ul class="space-y-2">
             @foreach($pages as $page)
+                @php
+                    $pageSlug = $page->slug[$currentLocale] ?? $page->slug['tr'] ?? $page->page_id;
+                    $pageTitle = $page->title[$currentLocale] ?? $page->title['tr'] ?? 'Sayfa';
+                @endphp
                 <li class="pb-2">
-                    <a href="{{ url($page->slug) }}" 
-                       class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">
-                        {{ $page->title }}
-                    </a>
+                    @if($pageSlug)
+                        <a href="{{ url($pageSlug) }}" 
+                           class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">
+                            {{ $pageTitle }}
+                        </a>
+                    @else
+                        <span class="text-gray-700 dark:text-gray-300">{{ $pageTitle }}</span>
+                    @endif
                     @if($settings['show_date'] ?? false)
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {{ $page->created_at->translatedFormat('j M Y') }}

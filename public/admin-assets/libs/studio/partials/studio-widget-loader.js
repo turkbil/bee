@@ -1559,18 +1559,38 @@ window.StudioWidgetLoader = (function() {
                         loadingEl.classList.remove('loading-active');
                     }
                     
-                    placeholder.innerHTML = html;
+                    // XSS koruması ile güvenli HTML render
+                    if (window.StudioSecurity && window.StudioSecurity.safeInnerHTML) {
+                        window.StudioSecurity.safeInnerHTML(placeholder, html);
+                    } else {
+                        // Fallback: basit sanitization
+                        const sanitizedHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                        placeholder.innerHTML = sanitizedHtml;
+                    }
                 } else if (embedEl) {
                     // İçerik alanı oluştur ve ekle
                     const contentContainer = targetDocument.createElement('div');
                     contentContainer.className = 'widget-content-placeholder';
                     contentContainer.id = `widget-content-${widgetId}`;
-                    contentContainer.innerHTML = html;
+                    
+                    // XSS koruması ile güvenli HTML render
+                    if (window.StudioSecurity && window.StudioSecurity.safeInnerHTML) {
+                        window.StudioSecurity.safeInnerHTML(contentContainer, html);
+                    } else {
+                        // Fallback: basit sanitization
+                        const sanitizedHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                        contentContainer.innerHTML = sanitizedHtml;
+                    }
                     
                     // Mevcut içeriği temizle ve yeni içeriği ekle
                     const existingPlaceholder = embedEl.querySelector('.widget-content-placeholder');
                     if (existingPlaceholder) {
-                        existingPlaceholder.innerHTML = html;
+                        if (window.StudioSecurity && window.StudioSecurity.safeInnerHTML) {
+                            window.StudioSecurity.safeInnerHTML(existingPlaceholder, html);
+                        } else {
+                            const sanitizedHtml = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                            existingPlaceholder.innerHTML = sanitizedHtml;
+                        }
                     } else {
                         embedEl.appendChild(contentContainer);
                     }
@@ -1603,11 +1623,20 @@ window.StudioWidgetLoader = (function() {
                     styleEl.textContent = css;
                 }
                 
-                // JS enjeksiyon - her widget için benzersiz bir script ID'si kullan
+                // JS enjeksiyon - güvenlik kontrolü ile
                 if (data.content_js) {
                     let js = data.content_js;
                     const scriptId = `widget-script-${widgetId}`;
                     let scriptEl = targetDocument.getElementById(scriptId);
+                    
+                    // JavaScript güvenlik kontrolü
+                    if (window.StudioSecurity && window.StudioSecurity.validateJavaScript) {
+                        if (!window.StudioSecurity.validateJavaScript(js)) {
+                            console.error(`Widget ${widgetId} JavaScript kodu güvenlik kontrolünden geçemedi`);
+                            window.StudioSecurity.logSecurityEvent('js_injection_blocked', `Widget ${widgetId} JavaScript blocked`, { widgetId, js });
+                            return;
+                        }
+                    }
                     
                     // Handlebars ile JS şablonu işle
                     if (data.useHandlebars && window.Handlebars) {
@@ -1616,6 +1645,15 @@ window.StudioWidgetLoader = (function() {
                             js = jsTpl(data.context || {});
                         } catch(err) {
                             console.error(`JS Handlebars derlerken hata:`, err);
+                        }
+                    }
+                    
+                    // İkinci güvenlik kontrolü (template işleme sonrası)
+                    if (window.StudioSecurity && window.StudioSecurity.validateJavaScript) {
+                        if (!window.StudioSecurity.validateJavaScript(js)) {
+                            console.error(`Widget ${widgetId} JavaScript kodu template işleme sonrası güvenlik kontrolünden geçemedi`);
+                            window.StudioSecurity.logSecurityEvent('js_injection_blocked_post_template', `Widget ${widgetId} JavaScript blocked after template`, { widgetId, js });
+                            return;
                         }
                     }
                     

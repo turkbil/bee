@@ -468,6 +468,20 @@ if (!function_exists('ai_use_tokens')) {
             return false;
         }
         
+        // Current AI provider ve model bilgisini al
+        $currentModel = 'unknown';
+        try {
+            if (class_exists('Modules\AI\App\Services\AIService')) {
+                $aiService = app('Modules\AI\App\Services\AIService');
+                if (method_exists($aiService, 'getCurrentProviderModel')) {
+                    $currentModel = $aiService->getCurrentProviderModel();
+                }
+            }
+        } catch (\Exception $e) {
+            // Model alınamadıysa default kullan
+            $currentModel = 'deepseek-chat';
+        }
+
         // Kullanım kaydı oluştur (Eloquent model kullan)
         $usage = AITokenUsage::create([
             'tenant_id' => $tenantId,
@@ -475,6 +489,7 @@ if (!function_exists('ai_use_tokens')) {
             'usage_type' => $module,
             'description' => $action,
             'tokens_used' => $tokensUsed,
+            'model' => $currentModel, // Model bilgisini ekle
             'metadata' => $metadata,
             'used_at' => now()
         ]);

@@ -15,51 +15,38 @@ class AIProfileController extends Controller
     public function show()
     {
         try {
+            \Log::info('🔧 AIProfileController::show() - BAŞLADI', [
+                'tenant_id' => tenant('id'),
+                'user_id' => auth()->id()
+            ]);
+            
             $profile = AITenantProfile::currentOrCreate();
             $sector = null;
             
-            if ($profile && isset($profile->sector_details['sector'])) {
-                $sector = AIProfileSector::where('code', $profile->sector_details['sector'])->first();
+            if ($profile && isset($profile->sector_details['sector_selection'])) {
+                $sector = AIProfileSector::where('code', $profile->sector_details['sector_selection'])->first();
             }
             
-            // Profil varsa ve hikaye yoksa oluştur (25% completion yeterli)
-            $brandStoryGenerating = false;
+            // Profil completion verilerini al
             $completionData = $profile->getCompletionPercentage();
             $completionPercentage = round($completionData['percentage']);
             
-            if ($profile && !$profile->hasBrandStory() && $completionPercentage >= 25) {
-                try {
-                    // API anahtarı kontrolü ÖNCE yap
-                    $aiSettings = \Modules\AI\App\Models\Setting::first();
-                    if (!$aiSettings || empty($aiSettings->api_key)) {
-                        \Log::error('Controller - API anahtarı bulunamadı - marka hikayesi oluşturulamadı');
-                        session()->flash('brand_story_error', 'API anahtarı bulunamadı. Marka hikayesi oluşturulamadı.');
-                    } else {
-                        // Sync brand story generation
-                        \Log::info('Controller - Brand story generation başlatılıyor - sync');
-                        try {
-                            $profile->generateBrandStory();
-                            session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
-                            $brandStoryGenerating = false;
-                        } catch (\Exception $e) {
-                            \Log::error('Controller - Brand story generation failed', [
-                                'profile_id' => $profile->id,
-                                'error' => $e->getMessage()
-                            ]);
-                            session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
-                            $brandStoryGenerating = false;
-                        }
-                    }
-                } catch (\Exception $e) {
-                    \Log::error('Controller - Brand story generation failed', [
-                        'profile_id' => $profile->id,
-                        'error' => $e->getMessage()
-                    ]);
-                    session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
-                }
-            }
+            \Log::info('🔍 AIProfileController::show() - Completion check', [
+                'completion_percentage' => $completionPercentage,
+                'has_brand_story' => $profile->hasBrandStory(),
+                'profile_id' => $profile->id,
+                'tenant_id' => $profile->tenant_id
+            ]);
             
-            return view('ai::admin.profile.show', compact('profile', 'sector', 'brandStoryGenerating'));
+            // Temel profil bilgisi kontrolü - marka adı ve sektör zorunlu
+            $brandName = $profile->company_info['brand_name'] ?? null;
+            $sector = $profile->sector_details['sector_selection'] ?? null;
+            $hasRequiredFields = !empty($brandName) && !empty($sector);
+            
+            // Sync hikaye oluşturma kaldırıldı - sayfa hemen açılsın
+            // Hikaye async olarak JavaScript ile oluşturulacak
+            
+            return view('ai::admin.profile.show', compact('profile', 'sector'));
         } catch (\Exception $e) {
             return redirect()->route('admin.dashboard')
                            ->with('error', 'Profil yüklenirken hata: ' . $e->getMessage());
@@ -206,7 +193,7 @@ class AIProfileController extends Controller
             'steps' => array_map(fn($s) => $s['completed'] . '/' . $s['total'], $completionData['steps'])
         ]);
         
-        return view('ai::admin.profile.jquery-edit', [
+        return view('ai::admin.profile.edit', [
             'initialStep' => $step,
             'totalSteps' => 5,
             'questions' => $questions,
@@ -221,7 +208,143 @@ class AIProfileController extends Controller
     }
     
     /**
-     * Marka hikayesi oluştur (AJAX)
+     * Marka hikayesi oluştur (STREAMING)
+     */
+    public function generateStoryStream(Request $request)
+    {
+        \Log::info('🚀 STREAMING ENDPOINT ÇAĞRILDI - generateStoryStream()');
+        
+        // AI hikaye oluşturma uzun sürebilir - timeout arttır
+        set_time_limit(300); // 5 dakika
+        
+        try {
+            $profile = AITenantProfile::currentOrCreate();
+            
+            // Temel profil bilgisi kontrolü - marka adı ve sektör zorunlu
+            $brandName = $profile->company_info['brand_name'] ?? null;
+            $sector = $profile->sector_details['sector_selection'] ?? null;
+            
+            if (empty($brandName) || empty($sector)) {
+                $missingFields = [];
+                if (empty($brandName)) $missingFields[] = 'Marka/Şirket Adı';
+                if (empty($sector)) $missingFields[] = 'Sektör Bilgisi';
+                
+                // Hata durumunda da event-stream formatında dön
+                return response()->stream(function () use ($missingFields) {
+                    echo "data: " . json_encode([
+                        'type' => 'error',
+                        'message' => 'Marka hikayesi oluşturmak için eksik bilgiler var: ' . implode(', ', $missingFields) . '. Lütfen profili tamamlayın.'
+                    ]) . "\n\n";
+                    flush();
+                }, 200, [
+                    'Content-Type' => 'text/event-stream',
+                    'Cache-Control' => 'no-cache',
+                    'Connection' => 'keep-alive',
+                    'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Headers' => 'Cache-Control'
+                ]);
+            }
+            
+            // Yeniden oluşturma isteği kontrolü
+            $regenerate = $request->input('regenerate', false);
+            
+            // Mevcut hikaye kontrol et
+            if (!empty($profile->brand_story) && !$regenerate) {
+                // Hikaye zaten var, streaming formatında dön
+                return response()->stream(function () use ($profile) {
+                    echo "data: " . json_encode([
+                        'type' => 'complete',
+                        'story' => $profile->brand_story,
+                        'created_at' => $profile->brand_story_created_at ? $profile->brand_story_created_at->format('d.m.Y H:i') : 'Bilinmiyor'
+                    ]) . "\n\n";
+                    flush();
+                }, 200, [
+                    'Content-Type' => 'text/event-stream',
+                    'Cache-Control' => 'no-cache',
+                    'Connection' => 'keep-alive',
+                    'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Headers' => 'Cache-Control'
+                ]);
+            }
+            
+            // Yeniden oluşturma durumunda eski hikayeyi temizle
+            if ($regenerate && !empty($profile->brand_story)) {
+                \Log::info('🗑️ Yeniden oluşturma - Eski hikaye temizleniyor', [
+                    'tenant_id' => tenant('id'),
+                    'old_story_length' => strlen($profile->brand_story)
+                ]);
+                
+                // Mevcut hikayeyi ve cache'i temizle
+                $profile->brand_story = null;
+                $profile->brand_story_created_at = null;
+                $profile->save();
+                
+                // AI cache'ini temizle
+                $cacheKey = 'ai_brand_story_tenant_' . $profile->tenant_id;
+                \Cache::forget($cacheKey);
+                
+                // Redis cache'ini de temizle
+                if (config('cache.default') === 'redis') {
+                    \Illuminate\Support\Facades\Redis::del($cacheKey);
+                }
+            }
+            
+            // 🚀 STREAMING RESPONSE BAŞLAT
+            return response()->stream(function () use ($profile) {
+                // Stream headers
+                echo "data: " . json_encode(['type' => 'start', 'message' => 'Hikaye oluşturma başladı...']) . "\n\n";
+                flush();
+                
+                // Hikaye oluşturma için streaming callback
+                $storyCallback = function($chunk) {
+                    // Her chunk'ı client'a gönder
+                    echo "data: " . json_encode(['type' => 'chunk', 'content' => $chunk]) . "\n\n";
+                    flush();
+                };
+                
+                try {
+                    // Streaming ile hikaye oluştur
+                    $brandStory = $profile->generateBrandStoryStream($storyCallback);
+                    
+                    // Başarılı tamamlanma
+                    echo "data: " . json_encode([
+                        'type' => 'complete',
+                        'story' => $brandStory,
+                        'created_at' => $profile->brand_story_created_at->format('d.m.Y H:i')
+                    ]) . "\n\n";
+                    flush();
+                    
+                } catch (\Exception $e) {
+                    // Hata durumu
+                    echo "data: " . json_encode([
+                        'type' => 'error',
+                        'message' => $e->getMessage()
+                    ]) . "\n\n";
+                    flush();
+                }
+            }, 200, [
+                'Content-Type' => 'text/event-stream',
+                'Cache-Control' => 'no-cache',
+                'Connection' => 'keep-alive',
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Headers' => 'Cache-Control'
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('AIProfileController - Generate story stream error', [
+                'error' => $e->getMessage(),
+                'tenant_id' => tenant('id')
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+    
+    /**
+     * Marka hikayesi oluştur (AJAX - Fallback)
      */
     public function generateStory(Request $request)
     {
@@ -231,16 +354,23 @@ class AIProfileController extends Controller
         try {
             $profile = AITenantProfile::currentOrCreate();
             
-            // Hikaye oluşturma için minimum %25 completion gerekli
-            $completionData = $profile->getCompletionPercentage();
-            $completionPercentage = $completionData['percentage'] ?? 0;
+            // Temel profil bilgisi kontrolü - marka adı ve sektör zorunlu
+            $brandName = $profile->company_info['brand_name'] ?? null;
+            $sector = $profile->sector_details['sector_selection'] ?? null;
             
-            if ($completionPercentage < 25) {
+            if (empty($brandName) || empty($sector)) {
+                $missingFields = [];
+                if (empty($brandName)) $missingFields[] = 'Marka/Şirket Adı';
+                if (empty($sector)) $missingFields[] = 'Sektör Bilgisi';
+                
                 return response()->json([
                     'success' => false,
-                    'message' => 'Profil henüz tamamlanmamış. Marka hikayesi oluşturmak için profilin en az %25 tamamlanması gerekiyor. Şu anki tamamlanma oranı: %' . number_format($completionPercentage, 1)
+                    'message' => 'Marka hikayesi oluşturmak için eksik bilgiler var: ' . implode(', ', $missingFields) . '. Lütfen profili tamamlayın.'
                 ]);
             }
+            
+            // Hikaye oluşturma için temel bilgiler yeterli (sektör + firma adı)
+            // Completion percentage kontrolü kaldırıldı
             
             // Yeniden oluşturma isteği kontrolü
             $regenerate = $request->input('regenerate', false);
@@ -256,10 +386,22 @@ class AIProfileController extends Controller
                 ]);
             }
             
-            // Yeniden oluşturma istendiyse mevcut hikayeyi sil
+            // Yeniden oluşturma istendiyse mevcut hikayeyi sil ve cache'i temizle
             if ($regenerate) {
                 $profile->brand_story = null;
                 $profile->brand_story_created_at = null;
+                
+                // Cache'i temizle
+                $tenantId = resolve_tenant_id();
+                \Illuminate\Support\Facades\Cache::forget('brand_story_' . $tenantId);
+                \Illuminate\Support\Facades\Cache::tags(['ai_profile', 'tenant_' . $tenantId])->flush();
+                
+                // Redis cache'i de temizle
+                if (config('cache.default') === 'redis') {
+                    \Illuminate\Support\Facades\Redis::del('brand_story_' . $tenantId);
+                    \Illuminate\Support\Facades\Redis::del('ai_profile_context_' . $tenantId);
+                }
+                
                 \Log::info('Controller - Brand story regeneration başlatılıyor - mevcut hikaye silindi');
             }
             
@@ -318,8 +460,58 @@ class AIProfileController extends Controller
             ]);
             
             if ($profile && $profile->exists) {
-                // Cache'i temizle
+                // Profil bilgilerini logla (sıfırlama öncesi)
+                \Log::info('🔍 Reset - Profil sıfırlama öncesi durum', [
+                    'tenant_id' => $tenantId,
+                    'profile_id' => $profile->id,
+                    'has_brand_story' => !empty($profile->brand_story),
+                    'brand_story_length' => strlen($profile->brand_story ?? ''),
+                    'brand_story_created_at' => $profile->brand_story_created_at
+                ]);
+                
+                // Cache'i temizle - multiple cache keys
                 \Illuminate\Support\Facades\Cache::forget('ai_tenant_profile_' . $tenantId);
+                \Illuminate\Support\Facades\Cache::forget('ai_profile_' . $tenantId);
+                \Illuminate\Support\Facades\Cache::forget('brand_story_' . $tenantId);
+                \Illuminate\Support\Facades\Cache::tags(['ai_profile', 'tenant_' . $tenantId])->flush();
+                
+                // Redis cache'i de temizle
+                if (config('cache.default') === 'redis') {
+                    \Illuminate\Support\Facades\Redis::del('ai_tenant_profile_' . $tenantId);
+                    \Illuminate\Support\Facades\Redis::del('ai_profile_' . $tenantId);
+                    \Illuminate\Support\Facades\Redis::del('brand_story_' . $tenantId);
+                    \Illuminate\Support\Facades\Redis::del('ai_profile_context_' . $tenantId);
+                    \Illuminate\Support\Facades\Redis::del('ai_profile_completion_' . $tenantId);
+                }
+                
+                // Marka hikayesi alanlarını manuel temizle (forceDelete'den önce)
+                $profile->update([
+                    'brand_story' => null,
+                    'brand_story_created_at' => null,
+                    'updated_at' => now()
+                ]);
+                
+                \Log::info('🧹 Reset - Brand story alanları temizlendi', [
+                    'tenant_id' => $tenantId,
+                    'profile_id' => $profile->id,
+                    'brand_story_cleared' => true,
+                    'brand_story_length_before' => strlen($profile->getOriginal('brand_story') ?? ''),
+                    'brand_story_length_after' => strlen($profile->brand_story ?? '')
+                ]);
+                
+                // Veritabanından direkt temizle (güvenlik için)
+                \DB::table('ai_tenant_profiles')
+                    ->where('id', $profile->id)
+                    ->update([
+                        'brand_story' => null,
+                        'brand_story_created_at' => null,
+                        'updated_at' => now()
+                    ]);
+                
+                \Log::info('🧹 Reset - Brand story veritabanından da temizlendi', [
+                    'tenant_id' => $tenantId,
+                    'profile_id' => $profile->id
+                ]);
                 
                 // Profili tamamen sil (ID dahil) - veritabanından kalıcı olarak sil
                 $profileId = $profile->id;
@@ -331,16 +523,34 @@ class AIProfileController extends Controller
                     'action' => 'complete_reset'
                 ]);
                 
+                $message = 'Yapay zeka profili tamamen sıfırlandı! Tüm veriler veritabanından silindi.';
+                
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => $message
+                    ]);
+                }
+                
                 return redirect()->route('admin.ai.profile.show')
-                                ->with('success', 'Yapay zeka profili tamamen sıfırlandı! Tüm veriler veritabanından silindi.');
+                                ->with('success', $message);
             } else {
                 \Log::info('ℹ️ Reset - Profil bulunamadı', [
                     'tenant_id' => $tenantId,
                     'total_profiles_in_db' => AITenantProfile::count()
                 ]);
                 
+                $message = 'Silinecek profil bulunamadı. Zaten temiz durumda.';
+                
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => $message
+                    ]);
+                }
+                
                 return redirect()->route('admin.ai.profile.show')
-                                ->with('info', 'Silinecek profil bulunamadı. Zaten temiz durumda.');
+                                ->with('info', $message);
             }
             
         } catch (\Exception $e) {
@@ -350,8 +560,17 @@ class AIProfileController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             
+            $message = 'Profil sıfırlanırken hata: ' . $e->getMessage();
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message
+                ], 500);
+            }
+            
             return redirect()->route('admin.ai.profile.show')
-                           ->with('error', 'Profil sıfırlanırken hata: ' . $e->getMessage());
+                           ->with('error', $message);
         }
     }
 
@@ -595,7 +814,7 @@ class AIProfileController extends Controller
             // Sektör değişikliği kontrolü - ÖNCE mevcut sektörü kaydet
             $previousSector = null;
             if ($key === 'sector' && $section === 'sector_details') {
-                $previousSector = $profile->sector_details['sector'] ?? null;
+                $previousSector = $profile->sector_details['sector_selection'] ?? null;
                 \Log::info('Sektör değişikliği tespit edildi', [
                     'previous_sector' => $previousSector,
                     'new_sector' => $value,

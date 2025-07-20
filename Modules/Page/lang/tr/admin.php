@@ -28,8 +28,18 @@ return [
 'title_validation_error' => 'Başlık geçersiz. Lütfen kontrol edin.',
 'title_updated' => 'başlık güncellendi',
 'title_updated_successfully' => 'Başlık başarıyla güncellendi.',
-'page_not_found' => 'TODO: \'page_not_found\' çevirisini ekleyin',
-'homepage_cannot_be_deactivated' => 'TODO: \'homepage_cannot_be_deactivated\' çevirisini ekleyin',
-'operation_failed' => 'TODO: \'operation_failed\' çevirisini ekleyin',
-'no_pages_can_be_deleted' => 'TODO: \'no_pages_can_be_deleted\' çevirisini ekleyin'
+'page_not_found' => 'Sayfa bulunamadı',
+'homepage_cannot_be_deactivated' => 'Anasayfa deaktifleştirilemez',
+'operation_failed' => 'İşlem başarısız',
+'no_pages_can_be_deleted' => 'Hiç sayfa silinemez',
+
+// Dashboard Translations
+'total_pages' => 'Toplam Sayfa',
+'all_pages' => 'Tüm Sayfalar',
+'create_page' => 'Sayfa Oluştur',
+'recent_pages' => 'Son Sayfalar',
+'no_pages_yet' => 'Henüz sayfa yok',
+'create_first_page' => 'İlk Sayfayı Oluştur',
+'view_all' => 'Tümünü Gör',
+'manage' => 'Yönet'
 ];

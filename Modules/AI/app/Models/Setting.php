@@ -40,6 +40,8 @@ class Setting extends Model
         'rate_limiting',
         'detailed_logging',
         'performance_monitoring',
+        'providers',
+        'active_provider',
     ];
 
     protected $casts = [
@@ -58,6 +60,7 @@ class Setting extends Model
         'rate_limiting' => 'boolean',
         'detailed_logging' => 'boolean',
         'performance_monitoring' => 'boolean',
+        'providers' => 'array',
     ];
 
     /**
@@ -89,5 +92,80 @@ class Setting extends Model
             }
         }
         return null;
+    }
+
+    /**
+     * Aktif provider'ı getir
+     */
+    public function getActiveProvider()
+    {
+        $providers = $this->providers ?? [];
+        $activeProviderName = $this->active_provider ?? 'deepseek';
+        
+        return $providers[$activeProviderName] ?? null;
+    }
+
+    /**
+     * Tüm aktif provider'ları getir
+     */
+    public function getActiveProviders()
+    {
+        $providers = $this->providers ?? [];
+        
+        return array_filter($providers, function($provider) {
+            return $provider['is_active'] ?? false;
+        });
+    }
+
+    /**
+     * Provider'ı güncelle
+     */
+    public function updateProvider($providerName, $data)
+    {
+        $providers = $this->providers ?? [];
+        
+        if (isset($providers[$providerName])) {
+            $providers[$providerName] = array_merge($providers[$providerName], $data);
+            $this->providers = $providers;
+            $this->save();
+        }
+    }
+
+    /**
+     * Provider performansını güncelle
+     */
+    public function updateProviderPerformance($providerName, $responseTime)
+    {
+        $providers = $this->providers ?? [];
+        
+        if (isset($providers[$providerName])) {
+            $currentTime = $providers[$providerName]['average_response_time'] ?? 0;
+            
+            // Weighted average calculation
+            if ($currentTime > 0) {
+                $providers[$providerName]['average_response_time'] = ($currentTime * 0.8) + ($responseTime * 0.2);
+            } else {
+                $providers[$providerName]['average_response_time'] = $responseTime;
+            }
+            
+            $this->providers = $providers;
+            $this->save();
+        }
+    }
+
+    /**
+     * Provider'ı varsayılan yap
+     */
+    public function setDefaultProvider($providerName)
+    {
+        $providers = $this->providers ?? [];
+        
+        if (isset($providers[$providerName]) && $providers[$providerName]['is_active']) {
+            $this->active_provider = $providerName;
+            $this->save();
+            return true;
+        }
+        
+        return false;
     }
 }

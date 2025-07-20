@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('emoji', 10)->nullable(); // 💻, 🏥, ⚖️ vb.
             $table->string('color', 20)->nullable(); // blue, green, purple vb.
             $table->text('description')->nullable();
+            $table->json('possible_services')->nullable(); // Olası hizmetler JSON formatında
             $table->text('keywords')->nullable(); // Arama anahtar kelimeleri
             $table->boolean('is_subcategory')->default(false); // Alt kategori mi?
             $table->boolean('is_active')->default(true);

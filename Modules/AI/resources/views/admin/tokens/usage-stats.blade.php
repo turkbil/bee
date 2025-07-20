@@ -129,31 +129,53 @@
         </div>
     </div>
     
-    <!-- Model Usage -->
+    <!-- Provider/Model Analytics -->
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Model Bazlı Kullanım</h3>
+                <h3 class="card-title">
+                    <i class="fas fa-server me-2"></i>
+                    Provider/Model Analizi
+                </h3>
             </div>
             <div class="card-body">
-                @if(!empty($stats['by_model']))
-                    @foreach($stats['by_model'] as $model => $usage)
-                    <div class="row">
-                        <div class="col-auto">
-                            <span class="badge badge-outline">{{ $model }}</span>
-                        </div>
-                        <div class="col">
-                            <div class="progress progress-sm">
-                                <div class="progress-bar" style="width: {{ $stats['by_model'] && max($stats['by_model']) > 0 ? ($usage / max($stats['by_model'])) * 100 : 0 }}%"></div>
+                @if(!empty($stats['provider_analysis']['providers']))
+                    @foreach($stats['provider_analysis']['providers'] as $providerKey => $provider)
+                    <div class="mb-3">
+                        <div class="row align-items-center mb-2">
+                            <div class="col-auto">
+                                <span class="badge bg-primary">{{ $provider['name'] }}</span>
+                            </div>
+                            <div class="col">
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar" style="width: {{ $provider['token_percentage'] }}%"></div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <span class="text-muted">{{ $provider['token_percentage'] }}%</span>
                             </div>
                         </div>
-                        <div class="col-auto">
-                            <span class="text-muted">{{ \App\Helpers\TokenHelper::format($usage) }}</span>
-                        </div>
+                        @if(!empty($provider['models']))
+                            @foreach($provider['models'] as $modelName => $modelData)
+                            <div class="row align-items-center mb-1 ms-3">
+                                <div class="col-auto">
+                                    <span class="badge badge-outline">{{ $modelName }}</span>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-secondary" style="width: {{ $modelData['token_percentage'] }}%"></div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="text-muted small">{{ \App\Helpers\TokenHelper::format($modelData['total_tokens']) }}</span>
+                                </div>
+                            </div>
+                            @endforeach
+                        @endif
                     </div>
                     @endforeach
                 @else
-                    <p class="text-muted">Henüz kullanım verisi yok</p>
+                    <p class="text-muted">Henüz provider kullanım verisi yok</p>
                 @endif
             </div>
         </div>

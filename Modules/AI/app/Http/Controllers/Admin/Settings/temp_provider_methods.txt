@@ -1,0 +1,47 @@
+
+    public function providers()
+    {
+        $providers = AIProvider::orderBy('priority', 'desc')
+            ->orderBy('average_response_time', 'asc')
+            ->get();
+        
+        return view('ai::admin.settings.providers', compact('providers'));
+    }
+    
+    public function updateProvider(Request $request, $id)
+    {
+        $request->validate([
+            'is_default' => 'boolean',
+            'is_active' => 'boolean',
+            'priority' => 'integer|min:0',
+            'api_key' => 'nullable|string',
+            'default_model' => 'nullable|string',
+        ]);
+        
+        $provider = AIProvider::findOrFail($id);
+        
+        // Eğer bu provider varsayılan yapılacaksa diğerlerini kaldır
+        if ($request->boolean('is_default')) {
+            AIProvider::where('id', '\!=', $id)->update(['is_default' => false]);
+        }
+        
+        $provider->is_default = $request->boolean('is_default');
+        $provider->is_active = $request->boolean('is_active');
+        $provider->priority = $request->integer('priority');
+        
+        if ($request->filled('api_key')) {
+            $provider->api_key = $request->api_key;
+        }
+        
+        if ($request->filled('default_model')) {
+            $provider->default_model = $request->default_model;
+        }
+        
+        $provider->save();
+        
+        // Cache'i temizle
+        \Cache::forget('ai_providers');
+        
+        return redirect()->back()->with('success', 'Provider ayarları güncellendi\!');
+    }
+

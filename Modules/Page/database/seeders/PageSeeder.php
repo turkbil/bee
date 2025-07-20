@@ -4,6 +4,7 @@ namespace Modules\Page\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Page\App\Models\Page;
+use App\Models\SeoSetting;
 use Faker\Factory as Faker;
 use App\Helpers\TenantHelpers;
 
@@ -96,25 +97,27 @@ class PageSeeder extends Seeder
                 ],
                 'seo' => [
                     'tr' => [
-                        'meta_title' => 'Turkbil Bee - Anasayfa',
-                        'meta_description' => 'Web sitemizin ana sayfası',
-                        'keywords' => ['anasayfa', 'ana sayfa', 'hoşgeldin'],
-                        'og_title' => 'Turkbil Bee - Modern Web Çözümleri',
-                        'og_description' => 'Modern web teknolojileri ile güçlü çözümler üretiyoruz',
+                        'meta_title' => 'Turkbil Bee - Anasayfa | Modern Web Çözümleri',
+                        'meta_description' => 'Turkbil Bee ile dijital dünyanın geleceğini keşfedin. Laravel 11, güvenlik odaklı geliştirme ve responsive tasarım ile güçlü web çözümleri sunuyoruz.',
+                        'keywords' => ['anasayfa', 'web tasarım', 'Laravel', 'modern teknoloji', 'dijital çözümler', 'web geliştirme', 'Turkbil Bee'],
+                        'og_title' => 'Turkbil Bee - Modern Web Teknolojileri ve Dijital Çözümler',
+                        'og_description' => 'Hızlı geliştirme, güvenlik odaklı yaklaşım ve responsive tasarım ile dijital geleceği inşa ediyoruz.',
                         'robots' => 'index,follow'
                     ],
                     'en' => [
-                        'meta_title' => 'Turkbil Bee - Homepage', 
-                        'meta_description' => 'Main page of our website',
-                        'keywords' => ['homepage', 'home page', 'welcome'],
-                        'og_title' => 'Turkbil Bee - Modern Web Solutions',
-                        'og_description' => 'We create powerful solutions with modern web technologies',
+                        'meta_title' => 'Turkbil Bee - Homepage | Modern Web Solutions', 
+                        'meta_description' => 'Discover the future of the digital world with Turkbil Bee. We offer powerful web solutions with Laravel 11, security-focused development and responsive design.',
+                        'keywords' => ['homepage', 'web design', 'Laravel', 'modern technology', 'digital solutions', 'web development', 'Turkbil Bee'],
+                        'og_title' => 'Turkbil Bee - Modern Web Technologies and Digital Solutions',
+                        'og_description' => 'Building the digital future with fast development, security-focused approach and responsive design.',
                         'robots' => 'index,follow'
                     ],
                     'ar' => [
-                        'meta_title' => 'Turkbil Bee - الصفحة الرئيسية',
-                        'meta_description' => 'الصفحة الرئيسية لموقعنا',
-                        'keywords' => ['الصفحة الرئيسية', 'ترحيب'],
+                        'meta_title' => 'Turkbil Bee - الصفحة الرئيسية | حلول الويب الحديثة',
+                        'meta_description' => 'اكتشف مستقبل العالم الرقمي مع تورك بيل بي. نقدم حلول ويب قوية باستخدام Laravel 11 والتطوير المركز على الأمان والتصميم المتجاوب.',
+                        'keywords' => ['الصفحة الرئيسية', 'تصميم الويب', 'Laravel', 'التكنولوجيا الحديثة', 'الحلول الرقمية', 'تطوير الويب', 'Turkbil Bee'],
+                        'og_title' => 'Turkbil Bee - تقنيات الويب الحديثة والحلول الرقمية',
+                        'og_description' => 'بناء المستقبل الرقمي بالتطوير السريع والنهج المركز على الأمان والتصميم المتجاوب.',
                         'robots' => 'index,follow'
                     ]
                 ],
@@ -138,21 +141,27 @@ class PageSeeder extends Seeder
                 ],
                 'seo' => [
                     'tr' => [
-                        'meta_title' => 'Çerez Politikası - Turkbil Bee',
-                        'meta_description' => 'Web sitemizin çerez politikası',
-                        'keywords' => ['çerez', 'cookie', 'politika', 'gizlilik'],
+                        'meta_title' => 'Çerez Politikası: Web Deneyiminizi İyileştirmek İçin - Turkbil Bee',
+                        'meta_description' => 'Turkbil Bee çerez politikası hakkında detaylı bilgi edinin. Web sitemizde kullandığımız çerezler ve gizlilik haklarınız hakkında şeffaf bilgilendirme.',
+                        'keywords' => ['çerez politikası', 'cookie policy', 'web çerezleri', 'gizlilik hakları', 'veri toplama', 'web deneyimi', 'çerez yönetimi'],
+                        'og_title' => 'Şeffaf Çerez Politikamız | Turkbil Bee',
+                        'og_description' => 'Web deneyiminizi iyileştirmek için kullandığımız çerezler hakkında şeffaf bilgilendirme.',
                         'robots' => 'index,follow'
                     ],
                     'en' => [
-                        'meta_title' => 'Cookie Policy - Turkbil Bee',
-                        'meta_description' => 'Cookie policy of our website',
-                        'keywords' => ['cookie', 'policy', 'privacy'],
+                        'meta_title' => 'Cookie Policy: Improving Your Web Experience - Turkbil Bee',
+                        'meta_description' => 'Learn about Turkbil Bee\'s cookie policy. Transparent information about cookies we use on our website and your privacy rights.',
+                        'keywords' => ['cookie policy', 'web cookies', 'privacy rights', 'data collection', 'web experience', 'cookie management', 'transparency'],
+                        'og_title' => 'Our Transparent Cookie Policy | Turkbil Bee',
+                        'og_description' => 'Transparent information about cookies we use to improve your web experience.',
                         'robots' => 'index,follow'
                     ],
                     'ar' => [
-                        'meta_title' => 'سياسة ملفات تعريف الارتباط - Turkbil Bee',
-                        'meta_description' => 'سياسة ملفات تعريف الارتباط لموقعنا',
-                        'keywords' => ['ملفات تعريف الارتباط', 'سياسة', 'خصوصية'],
+                        'meta_title' => 'سياسة ملفات تعريف الارتباط: تحسين تجربة الويب الخاصة بك - Turkbil Bee',
+                        'meta_description' => 'تعرف على سياسة ملفات تعريف الارتباط في تورك بيل بي. معلومات شفافة حول الكوكيز التي نستخدمها في موقعنا وحقوق الخصوصية الخاصة بك.',
+                        'keywords' => ['سياسة الكوكيز', 'ملفات تعريف الارتباط', 'حقوق الخصوصية', 'جمع البيانات', 'تجربة الويب', 'إدارة الكوكيز', 'الشفافية'],
+                        'og_title' => 'سياسة الكوكيز الشفافة | Turkbil Bee',
+                        'og_description' => 'معلومات شفافة حول ملفات تعريف الارتباط التي نستخدمها لتحسين تجربة الويب.',
                         'robots' => 'index,follow'
                     ]
                 ],
@@ -176,21 +185,27 @@ class PageSeeder extends Seeder
                 ],
                 'seo' => [
                     'tr' => [
-                        'meta_title' => 'Kişisel Verilerin İşlenmesi Politikası - Turkbil Bee',
-                        'meta_description' => 'Kişisel verilerinizin korunması politikamız',
-                        'keywords' => ['kişisel veri', 'KVKK', 'gizlilik', 'politika'],
+                        'meta_title' => 'Kişisel Veri Politikası: Güvenliğiniz Bizim İçin Öncelik - Turkbil Bee',
+                        'meta_description' => 'Türk Bilişim\'in kişisel verilerin işlenmesi politikası hakkında detaylı bilgi edinin. KVKK uyumlu güvenli veri işleme süreçlerimizle kişisel verilerinizi koruyoruz.',
+                        'keywords' => ['kişisel veriler', 'veri işleme', 'kişisel veri politikası', 'veri koruma', 'gizlilik politikası', 'KVKK', 'kişisel verilerin korunması'],
+                        'og_title' => 'Güvenli Veri İşleme Politikamız | Turkbil Bee',
+                        'og_description' => 'KVKK uyumlu kişisel veri işleme politikamızla verilerinizi güvende tutuyoruz.',
                         'robots' => 'index,follow'
                     ],
                     'en' => [
-                        'meta_title' => 'Personal Data Processing Policy - Turkbil Bee',
-                        'meta_description' => 'Our personal data protection policy',
-                        'keywords' => ['personal data', 'GDPR', 'privacy', 'policy'],
+                        'meta_title' => 'Personal Data Policy: Your Security is Our Priority - Turkbil Bee',
+                        'meta_description' => 'Learn about Turkbil\'s personal data processing policy. We protect your personal data with GDPR-compliant secure data processing procedures.',
+                        'keywords' => ['personal data', 'data processing', 'personal data policy', 'data protection', 'privacy policy', 'GDPR', 'data security'],
+                        'og_title' => 'Secure Data Processing Policy | Turkbil Bee',
+                        'og_description' => 'We keep your data safe with our GDPR-compliant personal data processing policy.',
                         'robots' => 'index,follow'
                     ],
                     'ar' => [
-                        'meta_title' => 'سياسة معالجة البيانات الشخصية - Turkbil Bee',
-                        'meta_description' => 'سياسة حماية البيانات الشخصية الخاصة بنا',
-                        'keywords' => ['البيانات الشخصية', 'الخصوصية', 'سياسة'],
+                        'meta_title' => 'سياسة البيانات الشخصية: أمانكم أولويتنا - Turkbil Bee',
+                        'meta_description' => 'تعرف على سياسة معالجة البيانات الشخصية في تورك بيليشيم. نحمي بياناتكم الشخصية بإجراءات معالجة آمنة متوافقة مع قوانين حماية البيانات.',
+                        'keywords' => ['البيانات الشخصية', 'معالجة البيانات', 'سياسة البيانات الشخصية', 'حماية البيانات', 'سياسة الخصوصية', 'أمان البيانات'],
+                        'og_title' => 'سياسة معالجة البيانات الآمنة | Turkbil Bee',
+                        'og_description' => 'نحافظ على بياناتكم بأمان من خلال سياسة معالجة البيانات الشخصية المتوافقة مع القوانين.',
                         'robots' => 'index,follow'
                     ]
                 ],
@@ -265,21 +280,27 @@ class PageSeeder extends Seeder
                 ],
                 'seo' => [
                     'tr' => [
-                        'meta_title' => 'Hakkımızda - Turkbil Bee',
-                        'meta_description' => 'Şirketimiz ve ekibimiz hakkında bilgiler',
-                        'keywords' => ['hakkımızda', 'şirket', 'ekip', 'misyon'],
+                        'meta_title' => 'Hakkımızda: Teknoloji Dünyasında Yenilikçi Çözümler - Turkbil Bee',
+                        'meta_description' => 'Turkbil Bee ekibi hakkında bilgi edinin. Misyonumuz, vizyonumuz ve değerlerimizle dijital dönüşüm yolculuğunda müşterilerimize rehberlik ediyoruz.',
+                        'keywords' => ['hakkımızda', 'Turkbil Bee', 'teknoloji şirketi', 'dijital dönüşüm', 'yenilikçilik', 'kalite', 'güvenilirlik', 'müşteri odaklılık'],
+                        'og_title' => 'Turkbil Bee: Yenilikçi Teknoloji Çözümleri',
+                        'og_description' => 'Teknoloji dünyasında yenilikçi çözümler üreten dinamik ekibimizle tanışın.',
                         'robots' => 'index,follow'
                     ],
                     'en' => [
-                        'meta_title' => 'About Us - Turkbil Bee',
-                        'meta_description' => 'Information about our company and team',
-                        'keywords' => ['about us', 'company', 'team', 'mission'],
+                        'meta_title' => 'About Us: Innovative Solutions in Technology World - Turkbil Bee',
+                        'meta_description' => 'Learn about Turkbil Bee team. With our mission, vision and values, we guide our customers in their digital transformation journey.',
+                        'keywords' => ['about us', 'Turkbil Bee', 'technology company', 'digital transformation', 'innovation', 'quality', 'reliability', 'customer focus'],
+                        'og_title' => 'Turkbil Bee: Innovative Technology Solutions',
+                        'og_description' => 'Meet our dynamic team that produces innovative solutions in the technology world.',
                         'robots' => 'index,follow'
                     ],
                     'ar' => [
-                        'meta_title' => 'من نحن - Turkbil Bee',
-                        'meta_description' => 'معلومات حول شركتنا وفريقنا',
-                        'keywords' => ['من نحن', 'شركة', 'فريق', 'مهمة'],
+                        'meta_title' => 'من نحن: حلول مبتكرة في عالم التكنولوجيا - Turkbil Bee',
+                        'meta_description' => 'تعرف على فريق تورك بيل بي. برسالتنا ورؤيتنا وقيمنا، نوجه عملاءنا في رحلة التحول الرقمي.',
+                        'keywords' => ['من نحن', 'Turkbil Bee', 'شركة تكنولوجيا', 'التحول الرقمي', 'الابتكار', 'الجودة', 'الموثوقية', 'التركيز على العميل'],
+                        'og_title' => 'Turkbil Bee: حلول تكنولوجية مبتكرة',
+                        'og_description' => 'تعرف على فريقنا الديناميكي الذي ينتج حلولاً مبتكرة في عالم التكنولوجيا.',
                         'robots' => 'index,follow'
                     ]
                 ],
@@ -396,21 +417,27 @@ class PageSeeder extends Seeder
                 ],
                 'seo' => [
                     'tr' => [
-                        'meta_title' => 'İletişim - Turkbil Bee',
-                        'meta_description' => 'Bizimle iletişime geçmek için bilgiler',
-                        'keywords' => ['iletişim', 'telefon', 'email', 'adres'],
+                        'meta_title' => 'İletişim: Projeleriniz İçin Bizimle İletişime Geçin - Turkbil Bee',
+                        'meta_description' => 'Turkbil Bee ile iletişime geçin. Web tasarım, dijital çözümler ve teknoloji projeleri için detaylı bilgi alın. İstanbul ofisimiz ve iletişim bilgilerimiz.',
+                        'keywords' => ['iletişim', 'proje danışmanlığı', 'web tasarım teklifi', 'İstanbul ofis', 'teknoloji projeleri', 'dijital çözüm', 'teklif al'],
+                        'og_title' => 'Projeleriniz İçin Bizimle İletişime Geçin | Turkbil Bee',
+                        'og_description' => 'Web tasarım ve dijital çözüm projeleriniz için ücretsiz danışmanlık alın.',
                         'robots' => 'index,follow'
                     ],
                     'en' => [
-                        'meta_title' => 'Contact - Turkbil Bee',
-                        'meta_description' => 'Information to contact us',
-                        'keywords' => ['contact', 'phone', 'email', 'address'],
+                        'meta_title' => 'Contact: Get in Touch for Your Projects - Turkbil Bee',
+                        'meta_description' => 'Contact Turkbil Bee. Get detailed information for web design, digital solutions and technology projects. Our Istanbul office and contact information.',
+                        'keywords' => ['contact', 'project consultation', 'web design quote', 'Istanbul office', 'technology projects', 'digital solution', 'get quote'],
+                        'og_title' => 'Get in Touch for Your Projects | Turkbil Bee',
+                        'og_description' => 'Get free consultation for your web design and digital solution projects.',
                         'robots' => 'index,follow'
                     ],
                     'ar' => [
-                        'meta_title' => 'اتصل بنا - Turkbil Bee',
-                        'meta_description' => 'معلومات للاتصال بنا',
-                        'keywords' => ['اتصال', 'هاتف', 'بريد إلكتروني', 'عنوان'],
+                        'meta_title' => 'اتصل بنا: تواصل معنا لمشاريعك - Turkbil Bee',
+                        'meta_description' => 'تواصل مع تورك بيل بي. احصل على معلومات مفصلة لتصميم الويب والحلول الرقمية ومشاريع التكنولوجيا. مكتبنا في اسطنبول ومعلومات الاتصال.',
+                        'keywords' => ['اتصال', 'استشارة المشاريع', 'عرض أسعار تصميم الويب', 'مكتب اسطنبول', 'مشاريع التكنولوجيا', 'حل رقمي', 'احصل على عرض'],
+                        'og_title' => 'تواصل معنا لمشاريعك | Turkbil Bee',
+                        'og_description' => 'احصل على استشارة مجانية لمشاريع تصميم الويب والحلول الرقمية.',
                         'robots' => 'index,follow'
                     ]
                 ],
@@ -418,16 +445,85 @@ class PageSeeder extends Seeder
             ],
         ];
 
-        foreach ($pages as $page) {
-            Page::create([
-                'title' => $page['title'],
-                'slug' => $page['slug'],
-                'body' => $page['body'],
-                'css' => null,
-                'js' => null,
-                'seo' => $page['seo'],
-                'is_active' => true,
-                'is_homepage' => $page['is_homepage'],
+        foreach ($pages as $pageData) {
+            // Force recreate - duplicate check yapma
+            $existingPage = Page::where('title->tr', $pageData['title']['tr'])->first();
+            
+            if ($existingPage) {
+                $this->command->info('Force updating existing page: ' . $pageData['title']['tr']);
+                
+                // Page'i güncelle
+                $existingPage->update([
+                    'title' => $pageData['title'],
+                    'slug' => $pageData['slug'],
+                    'body' => $pageData['body'],
+                    'is_active' => true,
+                    'is_homepage' => $pageData['is_homepage'],
+                ]);
+                
+                $page = $existingPage;
+            } else {
+                $page = Page::create([
+                    'title' => $pageData['title'],
+                    'slug' => $pageData['slug'],
+                    'body' => $pageData['body'],
+                    'css' => null,
+                    'js' => null,
+                    'is_active' => true,
+                    'is_homepage' => $pageData['is_homepage'],
+                ]);
+            }
+
+            // SEO Settings force recreate
+            $existingSeo = $page->seoSetting;
+            if ($existingSeo) {
+                $this->command->info('Force deleting and recreating SEO for page: ' . $pageData['title']['tr']);
+                $existingSeo->delete();
+            }
+            
+            // SEO Settings oluştur - trilingual format
+            $page->seoSetting()->create([
+                'titles' => [
+                    'tr' => $pageData['seo']['tr']['meta_title'],
+                    'en' => $pageData['seo']['en']['meta_title'],
+                    'ar' => $pageData['seo']['ar']['meta_title']
+                ],
+                'descriptions' => [
+                    'tr' => $pageData['seo']['tr']['meta_description'],
+                    'en' => $pageData['seo']['en']['meta_description'],
+                    'ar' => $pageData['seo']['ar']['meta_description']
+                ],
+                'keywords' => [
+                    'tr' => $pageData['seo']['tr']['keywords'],
+                    'en' => $pageData['seo']['en']['keywords'],
+                    'ar' => $pageData['seo']['ar']['keywords']
+                ],
+                'focus_keyword' => $pageData['seo']['tr']['keywords'][0] ?? '',
+                'focus_keywords' => [
+                    'tr' => $pageData['seo']['tr']['keywords'][0] ?? '',
+                    'en' => $pageData['seo']['en']['keywords'][0] ?? '',
+                    'ar' => $pageData['seo']['ar']['keywords'][0] ?? ''
+                ],
+                'canonical_url' => '',
+                'robots_meta' => [
+                    'index' => true,
+                    'follow' => true,
+                    'archive' => true
+                ],
+                'og_title' => [
+                    'tr' => $pageData['seo']['tr']['og_title'] ?? $pageData['seo']['tr']['meta_title'],
+                    'en' => $pageData['seo']['en']['og_title'] ?? $pageData['seo']['en']['meta_title'],
+                    'ar' => $pageData['seo']['ar']['og_title'] ?? $pageData['seo']['ar']['meta_title']
+                ],
+                'og_description' => [
+                    'tr' => $pageData['seo']['tr']['og_description'] ?? $pageData['seo']['tr']['meta_description'],
+                    'en' => $pageData['seo']['en']['og_description'] ?? $pageData['seo']['en']['meta_description'],
+                    'ar' => $pageData['seo']['ar']['og_description'] ?? $pageData['seo']['ar']['meta_description']
+                ],
+                'og_image' => '',
+                'og_type' => 'website',
+                'twitter_card' => 'summary',
+                'seo_score' => rand(75, 95),
             ]);
         }
     }

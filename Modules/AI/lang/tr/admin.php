@@ -106,8 +106,6 @@ return [
 'prompt_usage_heatmap' => 'Prompt Kullanım Haritası',
 'error_analysis' => 'Hata Analizi',
 'debug_analytics' => 'Debug ve Analiz',
-
-'menu' => 'Menü',
 'test_connection' => 'Bağlantı Testi',
 'model' => 'Model',
 'max_tokens' => 'Maksimum Token',
@@ -123,15 +121,8 @@ return [
 'usage_statistics' => 'Kullanım İstatistikleri',
 
 // Debug & Analytics
-'debug_dashboard' => 'Debug Dashboard',
-'priority_debug_dashboard' => 'Priority Debug Dashboard',
-'performance_analytics' => 'Performance Analytics',
-'prompt_usage_heatmap' => 'Prompt Usage Heatmap',
-'error_analysis' => 'Error Analysis',
 'debug_analytics' => 'Debug & Analytics',
-'token_packages' => 'Token Paketleri',
 'purchase_history' => 'Satın Alma Geçmişi',
-'usage_statistics' => 'Kullanım İstatistikleri',
 'conversation_detail' => 'Konuşma Detayı',
 'status' => [
     'warning' => 'Uyarı',
@@ -146,7 +137,7 @@ return [
     'limited' => 'Sınırlı',
     'token_required' => 'Token gerekli',
     'token_available' => 'Token mevcut'
-    ],
+],
 'packages' => [
     'title' => 'AI Token Paketleri',
     'description' => 'Açıklama',
@@ -406,7 +397,6 @@ return [
 'unlimited' => 'Sınırsız',
 'buy_tokens' => 'Token Satın Al',
 'ai_module' => 'AI Modülü',
-'new_feature' => 'Yeni Özellik',
 'create_new_ai_feature' => 'Yeni AI Özelliği Oluştur',
 'system_feature' => 'Sistem Özelliği',
 'copy_and_edit' => 'Kopyala ve Düzenle',
@@ -646,5 +636,8 @@ return [
     'edit_ai_profile' => 'AI Profilini Düzenle',
     'tenant_profile' => 'Tenant Profili',
     'view_profile' => 'Profili Görüntüle',
-    'edit_profile' => 'Profili Düzenle'
+    'edit_profile' => 'Profili Düzenle',
+    
+    // Dashboard Translations
+    'ai_tokens' => 'AI Tokenları'
 ];

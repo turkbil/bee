@@ -246,7 +246,7 @@ class AIPriorityEngine
                     'scoring_summary' => $scoringSummary
                 ],
                 'scoring_summary' => $scoringSummary,
-                'ai_model' => config('ai.default_model', 'deepseek-chat'),
+                'ai_model' => self::getCurrentProviderModel(),
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
                 'has_error' => false,
@@ -400,6 +400,24 @@ class AIPriorityEngine
                 'complete' => 4,
                 default => 3
             };
+            
+            // SEO ve teknik feature'lar için brand context'i devre dışı bırak
+            $featureSlug = $options['feature_slug'] ?? '';
+            $isContentFeature = in_array($featureSlug, [
+                'seo-analiz', 'meta-etiket-olustur', 'anahtar-kelime-analiz',
+                'icerik-optimizasyon', 'makale-yaz', 'blog-post-yaz',
+                'metin-duzelt', 'gramer-kontrol', 'metin-ozetle',
+                'cevirmen', 'dil-cevirisi', 'ingilizce-turkce'
+            ]);
+            
+            // Eğer içerik/SEO feature ise brand context'i dahil etme
+            if ($isContentFeature) {
+                \Log::info('🎯 Brand context disabled for content feature', [
+                    'feature_slug' => $featureSlug,
+                    'reason' => 'content_feature_detected'
+                ]);
+                return $components;
+            }
             
             // Eski tablo yapısı için brand context oluştur
             $brandContext = self::buildLegacyBrandContext($profile, $maxPriority);
@@ -580,6 +598,29 @@ class AIPriorityEngine
         }
         
         return self::buildSystemPrompt($components, $options);
+    }
+
+    /**
+     * Şu anda aktif olan provider'ın model bilgisini al
+     */
+    public static function getCurrentProviderModel(): string
+    {
+        try {
+            $defaultProvider = \Modules\AI\App\Models\AIProvider::getDefault();
+            if ($defaultProvider) {
+                return $defaultProvider->name . '/' . $defaultProvider->default_model;
+            }
+            
+            // Fallback: İlk aktif provider'ı al
+            $activeProvider = \Modules\AI\App\Models\AIProvider::getActive()->first();
+            if ($activeProvider) {
+                return $activeProvider->name . '/' . $activeProvider->default_model;
+            }
+            
+            return 'unknown/unknown';
+        } catch (\Exception $e) {
+            return 'unknown/error';
+        }
     }
 
 }

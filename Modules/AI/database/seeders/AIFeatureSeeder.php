@@ -2121,9 +2121,9 @@ CONVERSION CONTENT:
                     'emotional_score' => 'Duygusal etki puanı'
                 ],
                 'example_inputs' => [
-                    ['text' => '2021\'de kurduğumuz AI yazılım şirketi: 2 mühendis arkadaş, küçük işletmelerin teknolojiye erişimini demokratikleştirme misyonu. Başlangıç garage\'dan 50 kişilik takıma.', 'label' => 'Tech Startup'],
-                    ['text' => '1950\'den beri 3 nesil halı dokuma atölyesi: büyükbaba\'dan başlayan zanaat, modern tasarımla geleneksel teknikleri birleştirme, yerel zanaatkar kadınlarla çalışma.', 'label' => 'Traditional Craft'],
-                    ['text' => 'Çevre dostu temizlik ürünleri markası: annenin alerjik çocuk deneyimi, doğal formuller araştırması, plastik ambalajsız çözümler, okul öncesi eğitim desteği.', 'label' => 'Eco Brand']
+                    ['text' => '2021\'de global pazarda 15 ülkeye AI çözümleri sunan şirket: deneyimli mühendislik ekibi, kurumsal firmalara özel makine öğrenmesi platformları, Fortune 500 müşteri portföyü.', 'label' => 'Tech Enterprise'],
+                    ['text' => '1950\'den beri lüks halı üretiminde dünya lideri: 70 ülkeye ihracat, saray ve otellere özel koleksiyonlar, geleneksel Türk motifleriyle modern tasarım fuzyonu.', 'label' => 'Luxury Manufacturing'],
+                    ['text' => 'Sürdürülebilir temizlik ürünlerinde Avrupa pazarının lideri: 25 ülkede distribütörlük, zero-waste üretim tesisleri, B-Corp sertifikası, küresel çevre projelerine destek.', 'label' => 'Sustainable Leader']
                 ],
                 'prompts' => [
                     ['name' => 'Yaratıcı İçerik Uzmanı', 'role' => 'primary', 'priority' => 1],

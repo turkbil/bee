@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\DB;
 
 class ConversationService
 {
-    protected $deepSeekService;
+    protected $aiService;
     protected $aiTokenService;
 
-    public function __construct(DeepSeekService $deepSeekService, AITokenService $aiTokenService = null)
+    public function __construct($aiService = null, AITokenService $aiTokenService = null)
     {
-        $this->deepSeekService = $deepSeekService;
+        $this->aiService = $aiService;
         $this->aiTokenService = $aiTokenService ?? app(AITokenService::class);
     }
 
@@ -110,7 +110,7 @@ class ConversationService
             'prompt_tokens' => $promptTokens,
             'completion_tokens' => $completionTokens,
             'usage_type' => 'chat',
-            'model' => $model ?: 'deepseek-chat',
+            'model' => $model ?: $this->getCurrentProviderModel(),
             'purpose' => $conversation->type ?? 'chat',
             'description' => 'AI Chat: ' . \Str::limit($message->content, 50),
             'used_at' => now(),
@@ -164,12 +164,12 @@ class ConversationService
     
         $userMsg = $this->addMessage($conversation, $userMessage, 'user');
     
-        $messages = $this->deepSeekService->formatConversationMessages($conversation);
+        $messages = $this->formatConversationMessages($conversation);
     
         if ($stream) {
-            return $this->deepSeekService->ask($messages, true);
+            return $this->aiService->ask($messages, true);
         } else {
-            $aiResponse = $this->deepSeekService->ask($messages);
+            $aiResponse = $this->aiService->ask($messages);
     
             if ($aiResponse) {
                 $promptTokens = (int) (strlen($userMessage) / 4);
@@ -200,7 +200,7 @@ class ConversationService
 
         $userMsg = $this->addMessage($conversation, $userMessage, 'user');
 
-        $messages = $this->deepSeekService->formatConversationMessages($conversation);
+        $messages = $this->formatConversationMessages($conversation);
 
         $aiMessage = $this->addMessage($conversation, "", 'assistant', 0);
         
@@ -208,7 +208,7 @@ class ConversationService
         $promptTokens = 0;
         $completionTokens = 0;
         
-        $streamFunction = $this->deepSeekService->ask($messages, true);
+        $streamFunction = $this->aiService->ask($messages, true);
         
         if (is_callable($streamFunction)) {
             $streamFunction(function ($content) use (&$fullContent, $callback, $aiMessage) {
@@ -416,5 +416,44 @@ class ConversationService
         }
         
         return $report;
+    }
+    
+    /**
+     * Konuşma mesajlarını AI servisine uygun formata dönüştür
+     */
+    public function formatConversationMessages(Conversation $conversation): array
+    {
+        $messages = [];
+        
+        // Konuşma mesajlarını al
+        $conversationMessages = Message::where('conversation_id', $conversation->id)
+            ->orderBy('created_at')
+            ->get();
+            
+        foreach ($conversationMessages as $message) {
+            $messages[] = [
+                'role' => $message->role,
+                'content' => $message->content
+            ];
+        }
+        
+        return $messages;
+    }
+
+    /**
+     * Şu anda aktif olan provider'ın model bilgisini al
+     */
+    private function getCurrentProviderModel(): string
+    {
+        try {
+            $defaultProvider = \Modules\AI\App\Models\AIProvider::getDefault();
+            if ($defaultProvider) {
+                return $defaultProvider->name . '/' . $defaultProvider->default_model;
+            }
+            
+            return 'unknown/unknown';
+        } catch (\Exception $e) {
+            return 'unknown/error';
+        }
     }
 }

@@ -3,10 +3,12 @@ namespace Modules\AI\App\Http\Controllers\Admin\Settings;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Models\Setting;
 use Modules\AI\App\Models\Prompt;
+use Modules\AI\App\Models\AIProvider;
 
 class SettingsController extends Controller
 {
@@ -20,6 +22,41 @@ class SettingsController extends Controller
     public function api()
     {
         $settings = Setting::first() ?: new Setting();
+        
+        // AI Provider'lardan veri çek ve settings'e ekle
+        $providers = AIProvider::orderBy('priority', 'desc')->get();
+        $providerData = [];
+        
+        foreach ($providers as $provider) {
+            $providerData[$provider->name] = [
+                'name' => $provider->display_name,
+                'service_class' => $provider->service_class,
+                'model' => $provider->default_model,
+                'available_models' => $provider->available_models,
+                'api_key' => $provider->api_key,
+                'base_url' => $provider->base_url,
+                'is_active' => $provider->is_active,
+                'is_default' => $provider->is_default,
+                'priority' => $provider->priority,
+                'average_response_time' => $provider->average_response_time,
+                'description' => $provider->description,
+                'default_settings' => $provider->default_settings,
+            ];
+        }
+        
+        // Settings'e provider verilerini ekle
+        $settings->providers = $providerData;
+        
+        // Aktif provider'ı belirle
+        if (!$settings->active_provider) {
+            $defaultProvider = $providers->where('is_default', true)->first();
+            if ($defaultProvider) {
+                $settings->active_provider = $defaultProvider->name;
+            } else {
+                $settings->active_provider = $providers->first()->name ?? 'openai';
+            }
+        }
+        
         return view('ai::admin.settings.api', compact('settings'));
     }
     
@@ -61,6 +98,35 @@ class SettingsController extends Controller
     
     public function updateApi(Request $request)
     {
+        $settings = Setting::first() ?: new Setting();
+        
+        // Provider seçimi kontrolü
+        if ($request->has('action') && $request->action === 'set_active_provider') {
+            $newProvider = $request->active_provider;
+            
+            $provider = AIProvider::where('name', $newProvider)
+                ->where('is_active', true)
+                ->first();
+                
+            if ($provider) {
+                // Diğer provider'ları varsayılan olmaktan çıkar
+                AIProvider::where('name', '!=', $newProvider)->update(['is_default' => false]);
+                
+                // Yeni provider'ı varsayılan yap
+                $provider->is_default = true;
+                $provider->save();
+                
+                // Settings'te active provider'ı güncelle
+                $settings->active_provider = $newProvider;
+                $settings->save();
+                
+                return response()->json(['success' => true, 'message' => 'Provider başarıyla değiştirildi']);
+            }
+            
+            return response()->json(['success' => false, 'message' => 'Geçersiz provider']);
+        }
+        
+        // Normal ayar güncelleme
         $request->validate([
             'api_key' => 'nullable|string',
             'model' => 'required|string',
@@ -69,14 +135,21 @@ class SettingsController extends Controller
             'enabled' => 'boolean',
         ]);
         
-        $settings = Setting::first() ?: new Setting();
+        $activeProviderName = $settings->active_provider ?? 'openai';
+        $activeProvider = AIProvider::where('name', $activeProviderName)->first();
         
-        // API anahtarı sadece dolu ise güncelle
-        if ($request->filled('api_key')) {
-            $settings->api_key = $request->api_key;
+        if ($activeProvider) {
+            // API anahtarı sadece dolu ise güncelle
+            if ($request->filled('api_key')) {
+                $activeProvider->api_key = $request->api_key;
+            }
+            
+            // Model güncelle
+            $activeProvider->default_model = $request->model;
+            $activeProvider->save();
         }
         
-        // Diğer alanları güncelle (api_key hariç)
+        // Diğer ayarları settings'te güncelle
         $settings->model = $request->model;
         $settings->max_tokens = $request->max_tokens;
         $settings->temperature = $request->temperature;
@@ -290,26 +363,72 @@ class SettingsController extends Controller
     
     public function testConnection(Request $request)
     {
-        $request->validate([
-            'api_key' => 'required|string',
-        ]);
-        
         try {
-            $deepSeekService = new DeepSeekService();
-            $deepSeekService->setApiKey($request->api_key);
+            $settings = Setting::first();
+            $providerName = $request->provider ?? ($settings->active_provider ?? 'openai');
             
-            $connectionSuccess = $deepSeekService->testConnection();
+            $provider = AIProvider::where('name', $providerName)->first();
             
-            return response()->json([
-                'success' => $connectionSuccess,
-                'message' => $connectionSuccess 
-                    ? 'API bağlantısı başarılı!' 
-                    : 'API bağlantısı başarısız. Lütfen API anahtarını kontrol edin.'
+            if (!$provider) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Provider bulunamadı'
+                ], 404);
+            }
+            
+            $serviceClass = "Modules\\AI\\App\\Services\\{$provider->service_class}";
+            
+            if (!class_exists($serviceClass)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Service class bulunamadı: ' . $serviceClass
+                ], 404);
+            }
+            
+            $service = new $serviceClass();
+            
+            // API key ve diğer ayarları set et
+            if (!empty($provider->api_key)) {
+                $service->setApiKey($provider->api_key);
+            }
+            if (!empty($provider->base_url)) {
+                $service->setBaseUrl($provider->base_url);
+            }
+            if (!empty($provider->default_model)) {
+                $service->setModel($provider->default_model);
+            }
+            
+            $startTime = microtime(true);
+            $response = $service->ask([
+                ['role' => 'user', 'content' => $request->test_message ?? 'Merhaba, test mesajı']
             ]);
+            $responseTime = round((microtime(true) - $startTime) * 1000, 2);
+            
+            if ($response && strlen($response) > 0) {
+                // Performansı güncelle
+                $provider->average_response_time = $responseTime;
+                $provider->save();
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Provider test başarılı!',
+                    'response' => substr($response, 0, 200) . (strlen($response) > 200 ? '...' : ''),
+                    'response_time' => $responseTime,
+                    'api_endpoint' => $provider->base_url,
+                    'model_used' => $provider->default_model,
+                    'provider_name' => $provider->display_name
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Provider yanıt döndürmedi'
+                ]);
+            }
+            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bağlantı testi sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Test sırasında hata oluştu: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -528,5 +647,163 @@ class SettingsController extends Controller
         ];
         
         return view('ai::admin.tests.test', compact('features', 'tokenStatus'));
+    }
+
+    /**
+     * AI Provider'ları yönetme sayfası
+     */
+    public function providers()
+    {
+        $providers = AIProvider::orderBy('priority', 'desc')
+            ->orderBy('average_response_time', 'asc')
+            ->get();
+        
+        return view('ai::admin.settings.providers', compact('providers'));
+    }
+
+    /**
+     * AI Provider güncelle
+     */
+    public function updateProvider(Request $request, $id)
+    {
+        $request->validate([
+            'display_name' => 'required|string|max:255',
+            'api_key' => 'nullable|string',
+            'default_model' => 'nullable|string',
+            'is_active' => 'boolean',
+            'is_default' => 'boolean',
+            'priority' => 'integer|min:0|max:100',
+            'description' => 'nullable|string'
+        ]);
+
+        $provider = AIProvider::findOrFail($id);
+
+        $provider->display_name = $request->display_name;
+        $provider->description = $request->description;
+        $provider->priority = $request->priority;
+        $provider->is_active = $request->boolean('is_active');
+        
+        // API key sadece dolu ise güncelle
+        if ($request->filled('api_key')) {
+            $provider->api_key = $request->api_key;
+        }
+        
+        if ($request->filled('default_model')) {
+            $provider->default_model = $request->default_model;
+        }
+
+        // Eğer varsayılan yapılacaksa diğerlerini kaldır
+        if ($request->boolean('is_default')) {
+            AIProvider::where('id', '!=', $id)->update(['is_default' => false]);
+            $provider->is_default = true;
+        }
+
+        $provider->save();
+
+        // Cache'i temizle
+        \Cache::forget('ai_providers');
+
+        return redirect()->back()->with('success', 'AI Provider başarıyla güncellendi');
+    }
+
+    /**
+     * AI Provider test et
+     */
+    public function testProvider($id)
+    {
+        $provider = AIProvider::findOrFail($id);
+        
+        try {
+            $service = $provider->getServiceInstance();
+            
+            // Basit test mesajı
+            $response = $service->ask([
+                ['role' => 'user', 'content' => 'Merhaba, test mesajı']
+            ]);
+            
+            if ($response && strlen($response) > 0) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Provider test başarılı!',
+                    'response' => substr($response, 0, 100) . '...',
+                    'api_endpoint' => $provider->base_url,
+                    'model_used' => $provider->default_model,
+                    'provider_name' => $provider->display_name
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Provider yanıt döndürmedi'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Provider test hatası: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Provider'ı varsayılan yap
+     */
+    public function makeDefaultProvider($id)
+    {
+        $provider = AIProvider::findOrFail($id);
+        
+        if (!$provider->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pasif provider varsayılan yapılamaz'
+            ], 400);
+        }
+
+        // Diğer provider'ları varsayılan olmaktan çıkar
+        AIProvider::where('id', '!=', $id)->update(['is_default' => false]);
+        
+        $provider->is_default = true;
+        $provider->save();
+
+        // Cache'i temizle
+        \Cache::forget('ai_providers');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Provider varsayılan olarak ayarlandı'
+        ]);
+    }
+
+    /**
+     * Provider önceliklerini güncelle (Sürükle-bırak)
+     */
+    public function updateProviderPriorities(Request $request)
+    {
+        $request->validate([
+            'priorities' => 'required|array',
+            'priorities.*.provider' => 'required|string',
+            'priorities.*.priority' => 'required|integer|min:1'
+        ]);
+
+        try {
+            // Yeni öncelikleri uygula
+            foreach ($request->priorities as $item) {
+                $providerName = $item['provider'];
+                $newPriority = $item['priority'];
+                
+                AIProvider::where('name', $providerName)
+                    ->update(['priority' => $newPriority]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Provider öncelikleri başarıyla güncellendi'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Öncelik güncelleme hatası: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

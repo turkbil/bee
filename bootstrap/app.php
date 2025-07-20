@@ -44,6 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('web', \App\Http\Middleware\CheckThemeStatus::class);
         
         // 5. SEO & CACHE - Son sırada
+        $middleware->appendToGroup('web', \App\Http\Middleware\SeoMetaTagMiddleware::class);
         $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
         $middleware->appendToGroup('web', \Spatie\ResponseCache\Middlewares\CacheResponse::class);
         

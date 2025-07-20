@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('admin_locale', 10)->nullable(); // Admin panel dil tercihi
             $table->string('tenant_locale', 5)->nullable(); // Tenant site dil tercihi
+            $table->json('dashboard_preferences')->nullable(); // Dashboard tercihleri
             $table->rememberToken();
             $table->timestamps();
             

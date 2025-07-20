@@ -43,11 +43,13 @@ class AnnouncementController extends Controller
                 ->where('is_active', true)
                 ->first();
         } else {
-            // String slug ise slug alanında ara
+            // String slug ise slug alanında ara (JSON field için)
             $item = Announcement::where('is_active', true)
                 ->where(function($query) use ($slug) {
-                    // Basit slug araması
-                    $query->where('slug', 'LIKE', '%"' . $slug . '"%');
+                    // Çoklu dil desteği ile slug arama
+                    $query->whereRaw('JSON_CONTAINS(slug, ?)', [json_encode($slug)])
+                          ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) = ?', [$slug])
+                          ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) = ?', [$slug]);
                 })
                 ->first();
         }

@@ -25,19 +25,26 @@ if ($projectId) {
     $item = null;
     $widgetTitle = $settings['widget_title'] ?? 'Portfolyo Detayı';
     $errorMessage = null;
+    $currentLocale = app()->getLocale();
 
     $portfolioSlug = $settings['portfolio_slug'] ?? $settings['item_slug'] ?? null;
     $portfolioId = $settings['portfolio_id'] ?? null; 
 
     if ($portfolioSlug) {
-        $item = \Modules\Portfolio\App\Models\Portfolio::where('slug', $portfolioSlug)
-                                                  ->where('is_active', true)
-                                                  ->first();
+        // JSON slug araması
+        $item = \Modules\Portfolio\App\Models\Portfolio::where('is_active', true)
+            ->where(function($query) use ($portfolioSlug) {
+                $query->whereRaw('JSON_CONTAINS(slug, ?)', [json_encode($portfolioSlug)])
+                      ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) = ?', [$portfolioSlug])
+                      ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) = ?', [$portfolioSlug]);
+            })
+            ->first();
+        
         if (!$item) {
             $errorMessage = "Belirtilen slug ('{$portfolioSlug}') ile eşleşen aktif bir portfolyo öğesi bulunamadı.";
         }
     } elseif ($portfolioId) {
-        $item = \Modules\Portfolio\App\Models\Portfolio::where('id', $portfolioId) 
+        $item = \Modules\Portfolio\App\Models\Portfolio::where('portfolio_id', $portfolioId) 
                                                   ->where('is_active', true)
                                                   ->first();
         if (!$item) {
@@ -57,16 +64,21 @@ if ($projectId) {
     }
 
     if ($item) {
-        $widgetTitle = $settings['widget_title'] ?? $item->title;
+        $itemTitle = $item->title[$currentLocale] ?? $item->title['tr'] ?? 'Portfolio';
+        $widgetTitle = $settings['widget_title'] ?? $itemTitle;
     }
 
 @endphp
 
 <div class="portfolio-detail-widget p-4">
     @if($item)
+        @php
+            $itemTitle = $item->title[$currentLocale] ?? $item->title['tr'] ?? 'Portfolio';
+            $itemBody = $item->body[$currentLocale] ?? $item->body['tr'] ?? '';
+        @endphp
         <article class="portfolio-item-detail">
             <header class="mb-3">
-                <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">{{ $item->title }}</h1>
+                <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">{{ $itemTitle }}</h1>
                 @if($item->relationLoaded('portfolioCategory') && $item->portfolioCategory)
                     <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         Kategori: <a href="#" class="text-primary hover:underline">{{ $item->portfolioCategory->title }}</a>
@@ -88,15 +100,15 @@ if ($projectId) {
                 } elseif ($item->hasMedia('default')) {
                     $imageUrl = $item->getFirstMediaUrl('default');
                 } else {
-                    $imageUrl = 'https://placehold.co/800x450?text=' . urlencode($item->title);
+                    $imageUrl = 'https://placehold.co/800x450?text=' . urlencode($itemTitle);
                 }
             @endphp
             <div class="mb-4 overflow-hidden">
-                <img src="{{ $imageUrl }}" alt="{{ $item->title }}" class="w-full h-auto object-cover max-h-[500px]">
+                <img src="{{ $imageUrl }}" alt="{{ $itemTitle }}" class="w-full h-auto object-cover max-h-[500px]">
             </div>
 
             <div class="prose prose-lg dark:prose-invert max-w-none ck-content">
-                {!! $item->body !!}
+                {!! $itemBody !!}
             </div>
 
             <footer class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">

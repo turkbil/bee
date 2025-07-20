@@ -94,6 +94,12 @@ class AITenantProfile extends Model
         // Yeni helper fonksiyonu ile hızlı tenant ID çözümleme
         $tenantId = resolve_tenant_id();
         
+        \Log::info('🔧 AITenantProfile::currentOrCreate() - Tenant ID resolved', [
+            'tenant_id' => $tenantId,
+            'tenant_function' => tenant('id'),
+            'session_tenant' => session('admin_selected_tenant_id')
+        ]);
+        
         // Tenant ID hala yoksa exception at
         if (!$tenantId) {
             throw new \Exception('Tenant ID bulunamadı. Lütfen tenant context\'ini kontrol edin.');
@@ -146,7 +152,7 @@ class AITenantProfile extends Model
         
         // Sektör bilgileri
         if ($this->sector_details) {
-            $context['sector'] = $this->sector_details['sector'] ?? null;
+            $context['sector'] = $this->sector_details['sector_selection'] ?? null;
             $context['sector_specific'] = $this->sector_details;
         }
         
@@ -307,8 +313,8 @@ class AITenantProfile extends Model
         if ($this->sector_details) {
             $sectorSection = "## 🎯 SEKTÖR VE MARKA KİŞİLİĞİ\n";
             
-            if (isset($this->sector_details['sector'])) {
-                $sector = \Modules\AI\app\Models\AIProfileSector::where('code', $this->sector_details['sector'])->first();
+            if (isset($this->sector_details['sector_selection'])) {
+                $sector = \Modules\AI\app\Models\AIProfileSector::where('code', $this->sector_details['sector_selection'])->first();
                 if ($sector) {
                     $sectorSection .= "**Sektör:** {$sector->name}\n";
                 }
@@ -441,7 +447,114 @@ class AITenantProfile extends Model
     }
 
     /**
-     * Marka hikayesi oluştur
+     * Marka hikayesi oluştur (STREAMING)
+     */
+    public function generateBrandStoryStream(callable $streamCallback): string
+    {
+        try {
+            // Mevcut AI context'i kullan
+            $context = $this->getAIContext();
+            
+            // Detaylı brand story prompt'unu oluştur
+            $brandContext = $this->buildBrandStoryPrompt($context);
+            
+            // Marka hikayesi için özel parametreler
+            $options = [
+                'industry' => $this->sector_details['sector_selection'] ?? 'general',
+                'stage' => 'growth',
+                'mission' => 'customer_focused',
+                'values' => 'quality, excellence',
+                'audience' => 'general',
+                'unique_factor' => 'innovation',
+                'streaming_callback' => $streamCallback // Streaming callback
+            ];
+            
+            // Gerçek zamanlı streaming: AI üretirken direkt akış
+            if ($streamCallback) {
+                $streamingStartTime = microtime(true);
+                \Log::info('⏰ STREAMING BAŞLADI', [
+                    'tenant_id' => tenant('id'),
+                    'start_time' => now()->format('H:i:s.u'),
+                    'timestamp' => $streamingStartTime
+                ]);
+                
+                // Streaming başladı mesajı
+                $streamCallback("Marka hikayeniz oluşturuluyor...\n\n");
+                
+                // AI'yı streaming mode'da çalıştır
+                $result = ai_brand_story_creator($brandContext, $options);
+                
+                // Sonucu kelime kelime stream et
+                if ($result['success'] && isset($result['response'])) {
+                    $words = preg_split('/\s+/', $result['response']);
+                    $totalWords = count($words);
+                    $wordCount = 0;
+                    
+                    foreach ($words as $word) {
+                        $streamCallback($word . ' ');
+                        $wordCount++;
+                        usleep(1000); // 1ms delay (rocket speed)
+                        
+                        // Her 50 kelimede bir progress log
+                        if ($wordCount % 50 === 0) {
+                            \Log::info('📈 STREAMING İLERLEME', [
+                                'progress' => round(($wordCount / $totalWords) * 100) . '%',
+                                'words_streamed' => $wordCount,
+                                'total_words' => $totalWords,
+                                'elapsed_seconds' => round(microtime(true) - $streamingStartTime, 2)
+                            ]);
+                        }
+                    }
+                    
+                    $streamingEndTime = microtime(true);
+                    $streamingDuration = round($streamingEndTime - $streamingStartTime, 2);
+                    
+                    \Log::info('🏁 STREAMING TAMAMLANDI', [
+                        'tenant_id' => tenant('id'),
+                        'end_time' => now()->format('H:i:s.u'),
+                        'total_duration_seconds' => $streamingDuration,
+                        'total_words' => $totalWords,
+                        'words_per_second' => round($totalWords / $streamingDuration, 2),
+                        'story_length' => strlen($result['response'])
+                    ]);
+                }
+            } else {
+                // Normal mode
+                $result = ai_brand_story_creator($brandContext, $options);
+            }
+            
+            // Result format: ['success' => bool, 'response' => string, 'tokens_used' => int]
+            if (!$result['success']) {
+                throw new \Exception($result['error'] ?? 'AI brand story creation failed');
+            }
+            
+            $response = $result['response'];
+            
+            // Hikayeyi kaydet
+            $this->brand_story = $response;
+            $this->brand_story_created_at = now();
+            $this->save();
+            
+            \Log::info('Brand story generated successfully (streaming)', [
+                'tenant_id' => tenant('id'),
+                'story_length' => strlen($response),
+                'tokens_used' => $result['tokens_used'] ?? 0
+            ]);
+            
+            return $response;
+        } catch (\Exception $e) {
+            \Log::error('Brand story generation failed (streaming)', [
+                'tenant_id' => tenant('id'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            throw new \Exception('Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Marka hikayesi oluştur (NORMAL)
      */
     public function generateBrandStory(): string
     {
@@ -454,7 +567,7 @@ class AITenantProfile extends Model
             
             // Marka hikayesi için özel parametreler
             $options = [
-                'industry' => $this->sector_details['sector'] ?? 'general',
+                'industry' => $this->sector_details['sector_selection'] ?? 'general',
                 'stage' => 'growth',
                 'mission' => 'customer_focused',
                 'values' => 'quality, excellence',
@@ -508,8 +621,8 @@ class AITenantProfile extends Model
         }
         
         // Sektör bilgileri
-        if (isset($this->sector_details['sector'])) {
-            $sectorName = \Modules\AI\app\Models\AIProfileSector::where('code', $this->sector_details['sector'])->first()?->name ?? $this->sector_details['sector'];
+        if (isset($this->sector_details['sector_selection'])) {
+            $sectorName = \Modules\AI\app\Models\AIProfileSector::where('code', $this->sector_details['sector_selection'])->first()?->name ?? $this->sector_details['sector_selection'];
             $prompt .= "Sektör: " . $sectorName . "\n";
         }
         
@@ -814,7 +927,7 @@ class AITenantProfile extends Model
         foreach ([1, 2, 3, 4, 5] as $step) {
             // Step 3 için sektöre özel filtreleme yap
             if ($step === 3) {
-                $currentSector = $this->sector_details['sector'] ?? null;
+                $currentSector = $this->sector_details['sector_selection'] ?? null;
                 $questions = \Modules\AI\app\Models\AIProfileQuestion::getByStep($step, $currentSector);
             } else {
                 $questions = \Modules\AI\app\Models\AIProfileQuestion::where('step', $step)->get();
@@ -942,7 +1055,7 @@ class AITenantProfile extends Model
         $sections = [];
         
         // Step 1: Sektör seçimi (1 alan)
-        $sectorCompleted = !empty($this->sector_details['sector']);
+        $sectorCompleted = !empty($this->sector_details['sector_selection']);
         $sections['sector'] = ['completed' => $sectorCompleted, 'total' => 1];
         $totalFields += 1;
         if ($sectorCompleted) $completedFields += 1;
@@ -1002,7 +1115,7 @@ class AITenantProfile extends Model
         }
         
         // Sektöre özel sorular
-        $currentSector = $this->sector_details['sector'] ?? null;
+        $currentSector = $this->sector_details['sector_selection'] ?? null;
         if ($currentSector) {
             $sectorQuestions = \Modules\AI\app\Models\AIProfileQuestion::where('step', 3)
                 ->where('sector_code', $currentSector)
@@ -1865,7 +1978,7 @@ class AITenantProfile extends Model
         \Log::info('Sektör değişimi - eski verileri temizleniyor', [
             'tenant_id' => $this->tenant_id,
             'profile_id' => $this->id,
-            'old_sector' => $this->sector_details['sector'] ?? 'bilinmiyor'
+            'old_sector' => $this->sector_details['sector_selection'] ?? 'bilinmiyor'
         ]);
 
         // Sektöre özel yanıtları temizle

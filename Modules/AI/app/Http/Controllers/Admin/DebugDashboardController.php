@@ -61,10 +61,16 @@ class DebugDashboardController extends Controller
         
         // Active features
         $features = AIFeature::active()->orderBy('name')->get();
+        
+        // Available providers ve models
+        $availableProviders = $this->getAvailableProviders();
+        
+        // Provider/Model statistics
+        $stats['provider_stats'] = $this->getProviderModelStats($tenantId, $dateRange);
 
         return view('ai::admin.debug-dashboard.index', compact(
             'stats', 'recentLogs', 'topFeatures', 'promptStats', 
-            'tenants', 'features', 'tenantId', 'dateRange', 'feature'
+            'tenants', 'features', 'tenantId', 'dateRange', 'feature', 'availableProviders'
         ));
     }
 
@@ -76,13 +82,15 @@ class DebugDashboardController extends Controller
         $request->validate([
             'input' => 'required|string|min:3',
             'feature_slug' => 'nullable|string',
-            'context_type' => 'in:minimal,essential,normal,detailed,complete'
+            'context_type' => 'in:minimal,essential,normal,detailed,complete',
+            'provider_model' => 'nullable|string'
         ]);
 
         try {
             $input = $request->input;
             $featureSlug = $request->feature_slug;
             $contextType = $request->context_type ?? 'normal';
+            $providerModel = $request->provider_model;
 
             // Feature'ı bul
             $feature = null;
@@ -126,6 +134,7 @@ class DebugDashboardController extends Controller
                     'input' => $input,
                     'feature' => $feature ? $feature->name : 'Generic Chat',
                     'context_type' => $contextType,
+                    'provider_model' => $providerModel ?: 'Default (Current Active)',
                     'threshold' => $threshold,
                     'execution_time_ms' => $executionTime,
                     'total_components' => count($components),
@@ -428,12 +437,92 @@ class DebugDashboardController extends Controller
             $query->where('feature_slug', $feature);
         }
 
+        // Provider/model istatistikleri ekle
+        $providerStats = $this->getProviderModelStats($tenantId, $dateRange);
+
         return [
             'total_requests' => $query->count(),
             'avg_execution_time' => $query->avg('execution_time_ms'),
             'avg_prompts_used' => $query->avg('actually_used_prompts'),
             'total_tokens' => $query->sum('token_usage'),
-            'error_rate' => $query->where('has_error', true)->count() / max($query->count(), 1) * 100
+            'error_rate' => $query->where('has_error', true)->count() / max($query->count(), 1) * 100,
+            'provider_stats' => $providerStats
+        ];
+    }
+
+    /**
+     * Provider ve model bazlı kullanım istatistikleri
+     */
+    private function getProviderModelStats(?string $tenantId, string $dateRange): array
+    {
+        $days = (int) $dateRange;
+        $startDate = Carbon::now()->subDays($days);
+
+        // Token usage tablondan model bazlı istatistik
+        $tokenQuery = DB::table('ai_token_usage')
+            ->where('created_at', '>=', $startDate)
+            ->whereNotNull('model')
+            ->where('model', '!=', '');
+
+        if ($tenantId) {
+            $tokenQuery->where('tenant_id', $tenantId);
+        }
+
+        // Model bazlı kullanım
+        $modelUsage = $tokenQuery
+            ->select('model', DB::raw('COUNT(*) as usage_count'), DB::raw('SUM(tokens_used) as total_tokens'))
+            ->groupBy('model')
+            ->orderBy('usage_count', 'desc')
+            ->get();
+
+        // Provider bazlı grupla
+        $providerStats = [];
+        $totalUsage = $modelUsage->sum('usage_count');
+        
+        foreach ($modelUsage as $usage) {
+            $model = $usage->model;
+            
+            // Provider/model ayır
+            if (str_contains($model, '/')) {
+                [$provider, $modelName] = explode('/', $model, 2);
+            } else {
+                $provider = 'unknown';
+                $modelName = $model;
+            }
+
+            if (!isset($providerStats[$provider])) {
+                $providerStats[$provider] = [
+                    'name' => ucfirst($provider),
+                    'total_usage' => 0,
+                    'total_tokens' => 0,
+                    'usage_percentage' => 0,
+                    'models' => []
+                ];
+            }
+
+            $providerStats[$provider]['total_usage'] += $usage->usage_count;
+            $providerStats[$provider]['total_tokens'] += $usage->total_tokens;
+            $providerStats[$provider]['models'][$modelName] = [
+                'name' => $modelName,
+                'usage_count' => $usage->usage_count,
+                'total_tokens' => $usage->total_tokens,
+                'percentage' => $totalUsage > 0 ? round(($usage->usage_count / $totalUsage) * 100, 1) : 0
+            ];
+        }
+
+        // Provider usage percentage hesapla
+        foreach ($providerStats as $provider => &$stats) {
+            $stats['usage_percentage'] = $totalUsage > 0 ? round(($stats['total_usage'] / $totalUsage) * 100, 1) : 0;
+        }
+
+        // En çok kullanılandan az kullanılana sırala
+        uasort($providerStats, fn($a, $b) => $b['total_usage'] <=> $a['total_usage']);
+
+        return [
+            'providers' => $providerStats,
+            'total_usage' => $totalUsage,
+            'unique_models' => $modelUsage->count(),
+            'top_model' => $modelUsage->first()?->model ?? 'N/A'
         ];
     }
 
@@ -588,6 +677,104 @@ class DebugDashboardController extends Controller
     {
         // Implementation for performance metrics
         return [];
+    }
+
+    /**
+     * Kullanılabilir AI provider'ları ve modellerini getir
+     */
+    private function getAvailableProviders(): array
+    {
+        try {
+            // AI settings'den provider bilgilerini al
+            $settings = \Modules\AI\App\Models\Setting::first();
+            if (!$settings || !$settings->providers) {
+                return $this->getDefaultProviders();
+            }
+
+            $providers = [];
+            $activeProvider = $settings->active_provider ?? 'deepseek';
+
+            foreach ($settings->providers as $providerKey => $providerData) {
+                if (!isset($providerData['is_active']) || !$providerData['is_active']) {
+                    continue;
+                }
+
+                $models = [];
+                if (isset($providerData['available_models']) && is_array($providerData['available_models'])) {
+                    foreach ($providerData['available_models'] as $modelKey => $modelData) {
+                        $models[] = [
+                            'key' => $modelKey,
+                            'name' => $modelData['name'] ?? $modelKey,
+                            'cost_per_1m_input' => $modelData['input_cost'] ?? 0,
+                            'cost_per_1m_output' => $modelData['output_cost'] ?? 0,
+                            'is_default' => ($providerData['model'] ?? '') === $modelKey
+                        ];
+                    }
+                }
+
+                $providers[] = [
+                    'key' => $providerKey,
+                    'name' => $providerData['name'] ?? ucfirst($providerKey),
+                    'is_active' => $providerKey === $activeProvider,
+                    'default_model' => $providerData['model'] ?? '',
+                    'models' => $models,
+                    'description' => $providerData['description'] ?? '',
+                    'average_response_time' => $providerData['average_response_time'] ?? 0
+                ];
+            }
+
+            // Aktif provider'ı en üste koy
+            usort($providers, fn($a, $b) => $b['is_active'] <=> $a['is_active']);
+
+            return $providers;
+
+        } catch (\Exception $e) {
+            \Log::error('getAvailableProviders error: ' . $e->getMessage());
+            return $this->getDefaultProviders();
+        }
+    }
+
+    /**
+     * Varsayılan provider listesi (fallback)
+     */
+    private function getDefaultProviders(): array
+    {
+        return [
+            [
+                'key' => 'claude',
+                'name' => 'Claude AI',
+                'is_active' => true,
+                'default_model' => 'claude-3-haiku-20240307',
+                'models' => [
+                    [
+                        'key' => 'claude-3-haiku-20240307',
+                        'name' => 'Claude 3 Haiku',
+                        'cost_per_1m_input' => 0.25,
+                        'cost_per_1m_output' => 1.25,
+                        'is_default' => true
+                    ]
+                ],
+                'description' => 'Anthropic Claude AI',
+                'average_response_time' => 2500
+            ],
+            [
+                'key' => 'deepseek',
+                'name' => 'DeepSeek AI',
+                'is_active' => false,
+                'default_model' => 'deepseek-chat',
+                'models' => [
+                    [
+                        'key' => 'deepseek-chat',
+                        'name' => 'DeepSeek Chat',
+                        'cost_per_1m_input' => 0.14,
+                        'cost_per_1m_output' => 0.28,
+                        'is_default' => true
+                    ]
+                ],
+                'description' => 'DeepSeek AI Chat Model',
+                'average_response_time' => 24000
+            ]
+        ];
     }
 
 

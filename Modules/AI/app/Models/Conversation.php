@@ -70,6 +70,58 @@ class Conversation extends Model
     }
 
     /**
+     * Bu conversation'da kullanılan AI modelini al
+     * 
+     * @return string
+     */
+    public function getUsedModel()
+    {
+        // Önce mesajlardaki model_used alanından kontrol et
+        $messageModel = $this->messages()
+            ->where('role', 'assistant')
+            ->whereNotNull('model_used')
+            ->where('model_used', '!=', '')
+            ->latest()
+            ->value('model_used');
+            
+        if ($messageModel) {
+            return $messageModel;
+        }
+        
+        // Mesajlarda yoksa token usage kayıtlarından al
+        try {
+            $tokenUsage = \Modules\AI\App\Models\AITokenUsage::where('tenant_id', $this->tenant_id)
+                ->where('description', 'like', 'AI Chat:%')
+                ->whereNotNull('model')
+                ->where('model', '!=', '')
+                ->where('created_at', '>=', $this->created_at->subMinutes(5))
+                ->where('created_at', '<=', $this->created_at->addMinutes(5))
+                ->latest()
+                ->first();
+                
+            if ($tokenUsage && $tokenUsage->model) {
+                return $tokenUsage->model;
+            }
+        } catch (\Exception $e) {
+            // Token usage bulunamazsa devam et
+        }
+        
+        // Hiçbiri yoksa current provider'ı al
+        try {
+            if (class_exists('Modules\AI\App\Services\AIService')) {
+                $aiService = app('Modules\AI\App\Services\AIService');
+                if (method_exists($aiService, 'getCurrentProviderModel')) {
+                    return $aiService->getCurrentProviderModel();
+                }
+            }
+        } catch (\Exception $e) {
+            // AI Service ulaşılamazsa
+        }
+        
+        return 'unknown';
+    }
+
+    /**
      * Son mesajı getir
      *
      * @return \Modules\AI\App\Models\Message|null

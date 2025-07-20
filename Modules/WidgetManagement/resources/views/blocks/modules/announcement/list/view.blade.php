@@ -20,6 +20,9 @@
     } elseif ($columns == '3') {
         $gridClass = 'sm:grid-cols-2 md:grid-cols-3';
     }
+    
+    // Debug: Current locale
+    $currentLocale = app()->getLocale();
 @endphp
 
 <div class="announcement-list-widget p-4">
@@ -29,10 +32,19 @@
             @foreach($items as $item)
                 <div class="announcement-item group overflow-hidden hover:shadow-sm transition-shadow duration-300">
                     <div class="p-4">
+                        @php
+                            $itemSlug = $item->slug[$currentLocale] ?? $item->slug['tr'] ?? $item->announcement_id;
+                            $itemTitle = $item->title[$currentLocale] ?? $item->title['tr'] ?? 'Duyuru';
+                        @endphp
+                        
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                            <a href="{{ route('announcements.show', $item->slug) }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300">
-                                {{ $item->title }}
-                            </a>
+                            @if($itemSlug)
+                                <a href="{{ route('announcements.show', $itemSlug) }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-300">
+                                    {{ $itemTitle }}
+                                </a>
+                            @else
+                                {{ $itemTitle }}
+                            @endif
                         </h3>
                         
                         @if($showDate)
@@ -46,19 +58,29 @@
                         
                         @if($showDescription && (isset($item->metadesc) || isset($item->body) || isset($item->content)))
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                            @if(isset($item->metadesc))
-                                {{ \Illuminate\Support\Str::limit($item->metadesc, 100) }}
-                            @elseif(isset($item->body))
-                                {{ \Illuminate\Support\Str::limit(strip_tags($item->body), 100) }}
-                            @elseif(isset($item->content))
-                                {{ \Illuminate\Support\Str::limit(strip_tags($item->content), 100) }}
+                            @php
+                                $itemDescription = '';
+                                if(isset($item->metadesc)) {
+                                    $itemDescription = $item->metadesc[$currentLocale] ?? $item->metadesc['tr'] ?? '';
+                                } elseif(isset($item->body)) {
+                                    $itemBody = $item->body[$currentLocale] ?? $item->body['tr'] ?? '';
+                                    $itemDescription = strip_tags($itemBody);
+                                } elseif(isset($item->content)) {
+                                    $itemContent = $item->content[$currentLocale] ?? $item->content['tr'] ?? '';
+                                    $itemDescription = strip_tags($itemContent);
+                                }
+                            @endphp
+                            @if($itemDescription)
+                                {{ \Illuminate\Support\Str::limit($itemDescription, 100) }}
                             @endif
                         </p>
                         @endif
                         
-                        <a href="{{ route('announcements.show', $item->slug) }}" class="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">
-                            Devamını Oku &rarr;
-                        </a>
+                        @if($itemSlug)
+                            <a href="{{ route('announcements.show', $itemSlug) }}" class="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">
+                                Devamını Oku &rarr;
+                            </a>
+                        @endif
                         
                         @if(isset($item->attachment) && $item->attachment)
                         <div class="mt-3 flex items-center">

@@ -1,6 +1,8 @@
 {{-- AI Debug Dashboard - Main Dashboard --}}
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('pretitle')
 {{ __('ai::admin.artificial_intelligence') }}
 @endsection
@@ -209,7 +211,7 @@
       <div class="card-body">
         <form id="promptTestForm">
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label class="form-label">Feature Seçin</label>
               <select name="feature_slug" class="form-select">
                 <option value="">Genel Chat</option>
@@ -220,7 +222,28 @@
                 @endif
               </select>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+              <label class="form-label">Provider/Model Seçin</label>
+              <select name="provider_model" class="form-select">
+                <option value="">Varsayılan (Mevcut Aktif)</option>
+                @if(!empty($availableProviders))
+                  @foreach($availableProviders as $providerKey => $provider)
+                    @if(!empty($provider['models']))
+                      @foreach($provider['models'] as $model)
+                        <option value="{{ $providerKey }}/{{ $model['name'] }}" 
+                                {{ $provider['is_active'] && $model['name'] == ($provider['default_model'] ?? '') ? 'selected' : '' }}>
+                          {{ ucfirst($providerKey) }} - {{ $model['name'] }}
+                          @if($provider['is_active'] && $model['name'] == ($provider['default_model'] ?? ''))
+                            (Aktif)
+                          @endif
+                        </option>
+                      @endforeach
+                    @endif
+                  @endforeach
+                @endif
+              </select>
+            </div>
+            <div class="col-md-4">
               <label class="form-label">Context Type</label>
               <select name="context_type" class="form-select">
                 <option value="minimal">Minimal (8000+)</option>
@@ -334,6 +357,148 @@
   </div>
 </div>
 
+{{-- Provider/Model Analytics --}}
+<div class="row mt-4">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-server me-2"></i>
+          🤖 AI Provider & Model İstatistikleri
+        </h3>
+        <div class="card-actions">
+          <span class="badge bg-primary-lt">{{ $stats['provider_stats']['total_usage'] ?? 0 }} Total Usage</span>
+        </div>
+      </div>
+      <div class="card-body">
+        @if(!empty($stats['provider_stats']['providers']))
+          <div class="row">
+            @foreach($stats['provider_stats']['providers'] as $providerKey => $provider)
+            <div class="col-md-6 mb-4">
+              <div class="card border">
+                <div class="card-header">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <h4 class="card-title mb-0">
+                      @if($providerKey == 'claude')
+                        <i class="fas fa-brain text-purple me-2"></i>
+                      @elseif($providerKey == 'openai') 
+                        <i class="fas fa-robot text-green me-2"></i>
+                      @elseif($providerKey == 'deepseek')
+                        <i class="fas fa-search text-blue me-2"></i>
+                      @else
+                        <i class="fas fa-cog text-muted me-2"></i>
+                      @endif
+                      {{ $provider['name'] }}
+                    </h4>
+                    <span class="badge bg-{{ $provider['usage_percentage'] > 50 ? 'success' : ($provider['usage_percentage'] > 20 ? 'warning' : 'secondary') }}-lt">
+                      {{ $provider['usage_percentage'] }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row mb-3">
+                    <div class="col-6">
+                      <div class="text-center">
+                        <div class="h4 mb-0 text-primary">{{ number_format($provider['total_usage']) }}</div>
+                        <div class="small text-muted">Kullanım</div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="text-center">
+                        <div class="h4 mb-0 text-warning">{{ number_format($provider['total_tokens']) }}</div>
+                        <div class="small text-muted">Token</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-2">
+                    <div class="small text-muted mb-1">Modeller:</div>
+                    @foreach($provider['models'] as $modelKey => $model)
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="small fw-medium">{{ $model['name'] }}</span>
+                      <div class="text-end">
+                        <span class="badge bg-gray-lt small">{{ $model['percentage'] }}%</span>
+                        <div class="text-muted small">{{ number_format($model['usage_count']) }} kullanım</div>
+                      </div>
+                    </div>
+                    <div class="progress progress-sm mb-2">
+                      <div class="progress-bar" style="width: {{ $model['percentage'] }}%"></div>
+                    </div>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+            </div>
+            @endforeach
+          </div>
+        @else
+          <div class="empty">
+            <div class="empty-img">
+              <i class="fas fa-server text-muted" style="font-size: 48px;"></i>
+            </div>
+            <p class="empty-title">Henüz provider verisi yok</p>
+            <p class="empty-subtitle text-muted">
+              AI kullanımları başladıktan sonra provider istatistikleri burada görünecektir.
+            </p>
+          </div>
+        @endif
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-chart-bar me-2"></i>
+          Model Özeti
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6">
+            <div class="text-center mb-3">
+              <div class="h3 mb-0 text-primary">{{ $stats['provider_stats']['unique_models'] ?? 0 }}</div>
+              <div class="small text-muted">Benzersiz Model</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="text-center mb-3">
+              <div class="h3 mb-0 text-success">{{ count($stats['provider_stats']['providers'] ?? []) }}</div>
+              <div class="small text-muted">Provider</div>
+            </div>
+          </div>
+        </div>
+        
+        <hr class="my-3">
+        
+        <div class="mb-3">
+          <div class="small text-muted mb-1">En Çok Kullanılan Model:</div>
+          <div class="fw-bold">{{ $stats['provider_stats']['top_model'] ?? 'N/A' }}</div>
+        </div>
+        
+        @if(!empty($stats['provider_stats']['providers']))
+        <div class="mb-3">
+          <div class="small text-muted mb-2">Provider Dağılımı:</div>
+          @foreach($stats['provider_stats']['providers'] as $providerKey => $provider)
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small">{{ $provider['name'] }}</span>
+            <span class="text-{{ $provider['usage_percentage'] > 50 ? 'success' : ($provider['usage_percentage'] > 20 ? 'warning' : 'muted') }}">
+              {{ $provider['usage_percentage'] }}%
+            </span>
+          </div>
+          <div class="progress progress-sm mb-2">
+            <div class="progress-bar bg-{{ $provider['usage_percentage'] > 50 ? 'success' : ($provider['usage_percentage'] > 20 ? 'warning' : 'secondary') }}" 
+                 style="width: {{ $provider['usage_percentage'] }}%"></div>
+          </div>
+          @endforeach
+        </div>
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
+
 {{-- Recent Activity --}}
 <div class="row mt-4">
   <div class="col-12">
@@ -388,6 +553,7 @@
                 <th style="width: 80px;">Zaman</th>
                 <th>Tenant</th>
                 <th>Feature</th>
+                <th>Model</th>
                 <th>Request Type</th>
                 <th class="text-center">Prompts</th>
                 <th class="text-center">Süre</th>
@@ -414,6 +580,9 @@
                   </td>
                   <td>
                     <span>{{ $log->feature_slug ?: 'chat' }}</span>
+                  </td>
+                  <td>
+                    <span class="badge badge-outline">{{ $log->ai_model ?: 'unknown' }}</span>
                   </td>
                   <td>
                     <span>{{ $log->request_type }}</span>
@@ -605,7 +774,7 @@
                 @endforeach
               @else
                 <tr>
-                  <td colspan="9" class="text-center py-4">
+                  <td colspan="10" class="text-center py-4">
                     <div class="empty">
                       <p class="empty-title">Henüz log verisi bulunmuyor</p>
                       <p class="empty-subtitle text-muted">
@@ -703,7 +872,8 @@ document.getElementById('promptTestForm').addEventListener('submit', async funct
       body: JSON.stringify({
         input: formData.get('input'),
         feature_slug: formData.get('feature_slug'),
-        context_type: formData.get('context_type')
+        context_type: formData.get('context_type'),
+        provider_model: formData.get('provider_model')
       })
     });
     
@@ -717,6 +887,7 @@ document.getElementById('promptTestForm').addEventListener('submit', async funct
             <h6 class="text-success">✅ Test Başarılı</h6>
             <ul class="list-unstyled small">
               <li><strong>Feature:</strong> ${analysis.feature}</li>
+              <li><strong>Provider/Model:</strong> ${analysis.provider_model}</li>
               <li><strong>Context Type:</strong> ${analysis.context_type}</li>
               <li><strong>Threshold:</strong> ${analysis.threshold}</li>
               <li><strong>Execution Time:</strong> ${analysis.execution_time_ms}ms</li>
@@ -1261,7 +1432,7 @@ function renderCurrentPage() {
   if (currentLogs.length === 0) {
     tbody.html(`
       <tr>
-        <td colspan="9" class="text-center py-4">
+        <td colspan="10" class="text-center py-4">
           <div class="empty">
             <p class="empty-title">Henüz log verisi bulunmuyor</p>
             <p class="empty-subtitle text-muted">
@@ -1308,6 +1479,9 @@ function buildLogTableRow(log) {
       </td>
       <td>
         <span>${log.feature_slug || 'chat'}</span>
+      </td>
+      <td>
+        <span class="badge badge-outline">${log.ai_model || 'unknown'}</span>
       </td>
       <td>
         <span>${log.request_type}</span>

@@ -29,6 +29,10 @@ class PageManageComponent extends Component
    ];
    
    public $studioEnabled = false;
+   
+   // SEO sistemi - Global servis kullanacak
+   public $seoData = [];
+   public $seoComponentData = [];
 
    public function mount($id = null)
    {
@@ -48,18 +52,11 @@ class PageManageComponent extends Component
                    'title' => $page->getTranslated('title', $lang) ?? '',
                    'body' => $page->getTranslated('body', $lang) ?? '',
                    'slug' => $page->getTranslated('slug', $lang) ?? '',
-                   'seo' => [
-                       'meta_title' => $page->getSeoField($lang, 'meta_title', ''),
-                       'meta_description' => $page->getSeoField($lang, 'meta_description', ''),
-                       'keywords' => $page->getSeoField($lang, 'keywords', []),
-                       'og_title' => $page->getSeoField($lang, 'og_title', ''),
-                       'og_description' => $page->getSeoField($lang, 'og_description', ''),
-                       'og_image' => $page->getSeoField($lang, 'og_image', ''),
-                       'canonical_url' => $page->getSeoField($lang, 'canonical_url', ''),
-                       'robots' => $page->getSeoField($lang, 'robots', 'index,follow'),
-                   ]
                ];
            }
+           
+           // Global SEO sistemini yükle
+           $this->loadSeoComponentData($page);
        } else {
            // Yeni sayfa için boş inputs hazırla
            $this->initializeEmptyInputs();
@@ -212,35 +209,10 @@ class PageManageComponent extends Component
           }
       }
       
-      // SEO verilerini hazırla
-      $seoData = [];
-      foreach ($this->availableLanguages as $lang) {
-          if (isset($this->multiLangInputs[$lang]['seo'])) {
-              $langSeoData = $this->multiLangInputs[$lang]['seo'];
-              
-              // Boş meta_title için title'dan oluştur
-              if (empty($langSeoData['meta_title']) && !empty($this->multiLangInputs[$lang]['title'])) {
-                  $langSeoData['meta_title'] = $this->multiLangInputs[$lang]['title'];
-              }
-              
-              // Boş meta_description için body'den oluştur
-              if (empty($langSeoData['meta_description']) && !empty($this->multiLangInputs[$lang]['body'])) {
-                  $langSeoData['meta_description'] = Str::limit(strip_tags($this->multiLangInputs[$lang]['body']), 160, '');
-              }
-              
-              // Boş değerleri temizle
-              $langSeoData = array_filter($langSeoData, function($value) {
-                  return !is_null($value) && $value !== '' && $value !== [];
-              });
-              
-              if (!empty($langSeoData)) {
-                  $seoData[$lang] = $langSeoData;
-              }
-          }
-      }
-      
-      if (!empty($seoData)) {
-          $multiLangData['seo'] = $seoData;
+      // Global SEO sistemini kaydet
+      if ($this->pageId && !empty($this->seoData)) {
+          $page = Page::findOrFail($this->pageId);
+          \App\Services\SeoFormService::saveSeoData($page, $this->seoData);
       }
       
       $data = array_merge($this->inputs, $multiLangData);
@@ -280,6 +252,14 @@ class PageManageComponent extends Component
           $this->pageId = $page->page_id;
           log_activity($page, 'oluşturuldu');
           
+          // Yeni oluşturulan sayfa için SEO verilerini kaydet
+          if (!empty($this->seoData)) {
+              \App\Services\SeoFormService::saveSeoData($page, $this->seoData);
+          }
+          
+          // SEO component verilerini güncelle
+          $this->loadSeoComponentData($page);
+          
           $toast = [
               'title' => __('admin.success'),
               'message' => __('page::messages.page_created'),
@@ -303,6 +283,162 @@ class PageManageComponent extends Component
               'ar' => ['title' => '', 'body' => '', 'slug' => '', 'metakey' => '', 'metadesc' => ''],
           ];
       }
+   }
+
+   /**
+    * Global SEO sistemini yükle
+    */
+   protected function loadSeoComponentData($page)
+   {
+       $this->seoComponentData = \App\Services\SeoFormService::prepareComponentData($page);
+       $this->seoData = $this->seoComponentData['seoData'] ?? [];
+   }
+   
+   /**
+    * SEO Listener - Child component events
+    */
+   protected function getListeners()
+   {
+       return [
+           'seo-data-updated' => 'updateSeoData',
+       ];
+   }
+   
+   /**
+    * SEO verilerini güncelle
+    */
+   public function updateSeoData($seoData)
+   {
+       $this->seoData = $seoData;
+   }
+   
+   /**
+    * AI SEO analizi
+    */
+   public function analyzeSeo()
+   {
+       if (!$this->pageId) {
+           $this->dispatch('toast', [
+               'title' => 'Uyarı',
+               'message' => 'Önce sayfayı kaydedin',
+               'type' => 'warning'
+           ]);
+           return;
+       }
+       
+       try {
+           $page = Page::findOrFail($this->pageId);
+           $seoAnalysisService = app(\App\Services\AI\SeoAnalysisService::class);
+           
+           $this->aiAnalysis = $seoAnalysisService->analyzeSeoContent($page, $this->currentLanguage);
+           
+           $this->dispatch('toast', [
+               'title' => 'Başarılı',
+               'message' => 'SEO analizi tamamlandı',
+               'type' => 'success'
+           ]);
+           
+       } catch (\Exception $e) {
+           $this->dispatch('toast', [
+               'title' => 'Hata',
+               'message' => 'SEO analizi başarısız: ' . $e->getMessage(),
+               'type' => 'error'
+           ]);
+       }
+   }
+   
+   /**
+    * AI SEO önerileri
+    */
+   public function generateSeoSuggestions()
+   {
+       if (!$this->pageId) {
+           $this->dispatch('toast', [
+               'title' => 'Uyarı',
+               'message' => 'Önce sayfayı kaydedin',
+               'type' => 'warning'
+           ]);
+           return;
+       }
+       
+       try {
+           $page = Page::findOrFail($this->pageId);
+           $seoAnalysisService = app(\App\Services\AI\SeoAnalysisService::class);
+           
+           $suggestions = $seoAnalysisService->generateOptimizationSuggestions($page, $this->currentLanguage);
+           $this->aiAnalysis = $suggestions;
+           
+           $this->dispatch('toast', [
+               'title' => 'Başarılı',
+               'message' => 'AI önerileri oluşturuldu',
+               'type' => 'success'
+           ]);
+           
+       } catch (\Exception $e) {
+           $this->dispatch('toast', [
+               'title' => 'Hata',
+               'message' => 'Öneri oluşturma başarısız: ' . $e->getMessage(),
+               'type' => 'error'
+           ]);
+       }
+   }
+   
+   /**
+    * Otomatik SEO optimizasyonu
+    */
+   public function autoOptimizeSeo()
+   {
+       if (!$this->pageId) {
+           $this->dispatch('toast', [
+               'title' => 'Uyarı',
+               'message' => 'Önce sayfayı kaydedin',
+               'type' => 'warning'
+           ]);
+           return;
+       }
+       
+       try {
+           $page = Page::findOrFail($this->pageId);
+           $seoAnalysisService = app(\App\Services\AI\SeoAnalysisService::class);
+           
+           $seoAnalysisService->autoOptimizeSeo($page, $this->currentLanguage);
+           
+           // SEO verilerini yeniden yükle
+           $this->loadSeoComponentData($page);
+           
+           $this->dispatch('toast', [
+               'title' => 'Başarılı',
+               'message' => 'SEO otomatik optimizasyonu tamamlandı',
+               'type' => 'success'
+           ]);
+           
+       } catch (\Exception $e) {
+           $this->dispatch('toast', [
+               'title' => 'Hata',
+               'message' => 'Otomatik optimizasyon başarısız: ' . $e->getMessage(),
+               'type' => 'error'
+           ]);
+       }
+   }
+   
+   /**
+    * AI önerisini uygula
+    */
+   public function applySuggestion($type, $value)
+   {
+       $language = $this->currentLanguage;
+       
+       if ($type === 'title') {
+           $this->seoData['titles'][$language] = $value;
+       } elseif ($type === 'description') {
+           $this->seoData['descriptions'][$language] = $value;
+       }
+       
+       $this->dispatch('toast', [
+           'title' => 'Başarılı',
+           'message' => 'Öneri uygulandı',
+           'type' => 'success'
+       ]);
    }
 
    public function render()

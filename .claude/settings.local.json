@@ -142,7 +142,9 @@
       "Bash(~/Development/flutter/bin/flutter pub get)",
       "Bash(~/Development/flutter/bin/flutter analyze)",
       "Bash(npm audit:*)",
-      "mcp__claude-code-server__Task"
+      "mcp__claude-code-server__Task",
+      "Bash(do if ! grep -q \"@include(''ai::helper'')\" \"$file\")",
+      "Bash(then echo \"EKSIK: $file\")"
     ],
     "deny": []
   },

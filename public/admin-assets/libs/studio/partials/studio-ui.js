@@ -56,33 +56,29 @@ window.StudioUI = (function() {
      * Panel arama kutuları için olay dinleyicileri ekle
      */
     function setupPanelSearch() {
+        // Memory management ile event listener'ları yönet
+        const memoryManager = window.StudioMemoryManager;
+        
         // Bileşenler arama
         const blocksSearch = document.getElementById("blocks-search");
-        if (blocksSearch) {
-            // Mevcut listener'ı kaldır (varsa)
-            const newBlocksSearch = blocksSearch.cloneNode(true);
-            if (blocksSearch.parentNode) {
-                blocksSearch.parentNode.replaceChild(newBlocksSearch, blocksSearch);
-            }
-            
-            newBlocksSearch.addEventListener("input", function() {
+        if (blocksSearch && memoryManager) {
+            // Debounced search fonksiyonu
+            const debouncedBlocksSearch = debounce(function(value) {
                 if (window.StudioBlocks && window.StudioBlocks.filterBlocks) {
-                    window.StudioBlocks.filterBlocks(this.value.toLowerCase(), editorInstance);
+                    window.StudioBlocks.filterBlocks(value.toLowerCase(), editorInstance);
                 }
-            });
+            }, 300);
+            
+            memoryManager.addEventListener(blocksSearch, "input", function() {
+                debouncedBlocksSearch(this.value);
+            }, 'ui-search');
         }
         
         // Katmanlar arama
         const layersSearch = document.getElementById("layers-search");
-        if (layersSearch) {
-            // Mevcut listener'ı kaldır (varsa)
-            const newLayersSearch = layersSearch.cloneNode(true);
-            if (layersSearch.parentNode) {
-                layersSearch.parentNode.replaceChild(newLayersSearch, layersSearch);
-            }
-            
-            newLayersSearch.addEventListener("input", function() {
-                const searchText = this.value.toLowerCase();
+        if (layersSearch && memoryManager) {
+            // Debounced search fonksiyonu
+            const debouncedLayersSearch = debounce(function(searchText) {
                 const layers = document.querySelectorAll('.gjs-layer');
                 
                 layers.forEach(layer => {
@@ -116,8 +112,35 @@ window.StudioUI = (function() {
                         }
                     }
                 });
-            });
+                
+                // Eğer boş arama ise hepsini göster
+                if (searchText === '') {
+                    layers.forEach(layer => {
+                        layer.style.display = '';
+                    });
+                }
+            }, 300);
+            
+            memoryManager.addEventListener(layersSearch, "input", function() {
+                debouncedLayersSearch(this.value.toLowerCase());
+            }, 'ui-search');
         }
+    }
+    
+    /**
+     * Debounce utility function
+     */
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
     }
     
     /**

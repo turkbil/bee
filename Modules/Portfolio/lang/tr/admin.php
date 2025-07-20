@@ -48,6 +48,15 @@ return [
 'studio_editor' => 'Studio Editör',
 'title' => 'Başlık',
 'basic_information' => 'Temel Bilgiler',
+
+// Dashboard Translations
+'total_portfolios' => 'Toplam Portföy',
+'all_portfolios' => 'Tüm Portföyler',
+'recent_portfolios' => 'Son Portföyler',
+'no_portfolios_yet' => 'Henüz portföy yok',
+'create_first_portfolio' => 'İlk Portföyü Oluştur',
+'view_all' => 'Tümünü Gör',
+'manage' => 'Yönet',
 'category_title' => 'Kategori başlığı',
 'category_title_label' => 'Başlık',
 'inactive' => 'Aktif Değil',

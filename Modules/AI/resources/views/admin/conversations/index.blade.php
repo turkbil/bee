@@ -271,6 +271,7 @@
                                     Token
                                 </button>
                             </th>
+                            <th>Model</th>
                             <th>Mesaj</th>
                             <th>Durum</th>
                             <th>
@@ -341,6 +342,31 @@
                             </td>
                             <td>
                                 <span class="badge bg-gray-lt">{{ ai_format_token_count($conversation->total_tokens_used) }}</span>
+                            </td>
+                            <td>
+                                @php
+                                    $usedModel = $conversation->getUsedModel();
+                                    $modelDisplay = $usedModel !== 'unknown' ? $usedModel : 'N/A';
+                                    // Provider/model formatını ayır
+                                    if (str_contains($modelDisplay, '/')) {
+                                        $parts = explode('/', $modelDisplay, 2);
+                                        $provider = $parts[0];
+                                        $model = $parts[1];
+                                    } else {
+                                        $provider = '';
+                                        $model = $modelDisplay;
+                                    }
+                                @endphp
+                                @if($usedModel !== 'unknown')
+                                    <div class="small">
+                                        @if($provider)
+                                            <div class="text-muted">{{ ucfirst($provider) }}</div>
+                                        @endif
+                                        <div class="fw-medium">{{ $model }}</div>
+                                    </div>
+                                @else
+                                    <span class="text-muted small">N/A</span>
+                                @endif
                             </td>
                             <td>{{ $conversation->messages()->count() }}</td>
                             <td>

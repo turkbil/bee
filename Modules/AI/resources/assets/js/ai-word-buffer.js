@@ -26,12 +26,12 @@ if (typeof window.AIWordBuffer === 'undefined') {
         constructor(targetElement, options = {}) {
             this.targetElement = targetElement;
             this.options = {
-                wordDelay: options.wordDelay || 400,           // Kelime başına gecikme (ms)
+                wordDelay: options.wordDelay || 100,           // Kelime başına gecikme (ms)
                 minWordLength: options.minWordLength || 2,     // Minimum kelime uzunluğu
                 showTypingWhileBuffering: options.showTypingWhileBuffering !== false,
                 scrollCallback: options.scrollCallback || null,
                 maxBufferSize: options.maxBufferSize || 50,    // Max buffer size (kelime)
-                punctuationDelay: options.punctuationDelay || 200, // Noktalama işaretlerinde ek gecikme
+                punctuationDelay: options.punctuationDelay || 100, // Noktalama işaretlerinde ek gecikme
                 enableMarkdown: options.enableMarkdown !== false  // Markdown desteği
             };
             

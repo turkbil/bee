@@ -23,6 +23,9 @@ class AIDatabaseSeeder extends Seeder
             // ÖNEMLİ: Seeder başlamadan önce tüm AI cache'leri temizle
             $this->clearAllAICache();
             
+            // AI Provider'ları önce oluştur (diğer seeder'lar bunlara ihtiyaç duyabilir)
+            $this->call(AIProviderSeeder::class);
+            
             // Prompts artık ayrı seeder'da (AIPromptsSeeder.php)
             $this->call(AIPromptsSeeder::class);
             

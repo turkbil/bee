@@ -276,18 +276,18 @@ class PortfolioSeeder extends Seeder
         foreach ($portfolios as $portfolio) {
             Portfolio::create([
                 'portfolio_category_id' => $portfolio['category_id'],
-                'title' => $portfolio['title'],
-                'slug' => $portfolio['slug'],
-                'body' => $portfolio['body'],
+                'title' => json_encode($portfolio['title']),
+                'slug' => json_encode($portfolio['slug']),
+                'body' => json_encode($portfolio['body']),
                 'image' => $portfolio['image'] ?? null,
-                'client' => $portfolio['client'] ?? null,
+                'client' => isset($portfolio['client']) ? json_encode($portfolio['client']) : null,
                 'date' => $portfolio['date'] ?? null,
                 'url' => $portfolio['url'] ?? null,
                 'css' => null,
                 'js' => null,
-                'metakey' => $portfolio['metakey'],
-                'metadesc' => $portfolio['metadesc'],
-                'seo' => $portfolio['seo'] ?? null,
+                'metakey' => json_encode($portfolio['metakey']),
+                'metadesc' => json_encode($portfolio['metadesc']),
+                'seo' => isset($portfolio['seo']) ? json_encode($portfolio['seo']) : null,
                 'is_active' => true,
             ]);
         }

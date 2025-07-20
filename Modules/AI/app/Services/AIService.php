@@ -6,6 +6,7 @@ use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Services\PromptService;
 use Modules\AI\App\Services\AIPriorityEngine;
+use Modules\AI\App\Services\AIProviderManager;
 use Modules\AI\App\Models\Setting;
 use App\Helpers\TenantHelpers;
 use App\Services\AITokenService;
@@ -17,6 +18,9 @@ class AIService
     protected $conversationService;
     protected $promptService;
     protected $aiTokenService;
+    protected $providerManager;
+    protected $currentProvider;
+    protected $currentService;
 
     /**
      * Constructor
@@ -31,8 +35,19 @@ class AIService
         ?PromptService $promptService = null,
         ?AITokenService $aiTokenService = null
     ) {
-        // DeepSeek servisini yükle
-        $this->deepSeekService = $deepSeekService ?? new DeepSeekService();
+        // Provider Manager'ı yükle
+        $this->providerManager = new AIProviderManager();
+        
+        // Varsayılan provider'ı al
+        try {
+            $providerData = $this->providerManager->getProviderServiceWithFailover();
+            $this->currentProvider = $providerData['provider'];
+            $this->currentService = $providerData['service'];
+        } catch (\Exception $e) {
+            \Log::warning('AI Provider yüklenemedi, DeepSeek fallback kullanılıyor: ' . $e->getMessage());
+            $this->deepSeekService = $deepSeekService ?? new DeepSeekService();
+            $this->currentService = $this->deepSeekService;
+        }
         
         // Diğer servisleri oluştur
         $this->promptService = $promptService ?? new PromptService();
@@ -40,7 +55,78 @@ class AIService
         
         // ConversationService en son oluşturulmalı çünkü diğer servislere bağımlı
         $this->conversationService = $conversationService ?? 
-            new ConversationService($this->deepSeekService, $this->aiTokenService);
+            new ConversationService($this->currentService, $this->aiTokenService);
+    }
+
+    /**
+     * AI'ya doğrudan soru sor (STREAMING)
+     *
+     * @param string $prompt
+     * @param array $options
+     * @param callable|null $streamCallback
+     * @return string|null
+     */
+    public function askStream(string $prompt, array $options = [], ?callable $streamCallback = null)
+    {
+        // Modern token sistemi kontrolü
+        $tenant = tenant();
+        if ($tenant) {
+            $tokensNeeded = $this->aiTokenService->estimateTokenCost('chat_message', ['message' => $prompt]);
+            
+            if (!$this->aiTokenService->canUseTokens($tenant, $tokensNeeded)) {
+                return "Üzgünüm, yetersiz AI token bakiyeniz var veya aylık limitinize ulaştınız.";
+            }
+        } else {
+            \Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
+        }
+
+        // YENİ PRIORITY ENGINE SİSTEMİ - Tenant context ile
+        $customPrompt = '';
+        if (isset($options['prompt_id'])) {
+            $prompt = \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
+            if ($prompt) {
+                $customPrompt = $prompt->content;
+            }
+        } elseif (isset($options['custom_prompt'])) {
+            $customPrompt = $options['custom_prompt'];
+        } elseif (isset($options['context'])) {
+            $customPrompt = $options['context'];
+        }
+
+        // Build full system prompt with TENANT CONTEXT
+        $systemPrompt = $this->buildFullSystemPrompt($customPrompt, $options);
+
+        // Mesajları formatla
+        $messages = [];
+        
+        if ($systemPrompt) {
+            $messages[] = [
+                'role' => 'system',
+                'content' => $systemPrompt
+            ];
+        }
+        
+        $messages[] = [
+            'role' => 'user',
+            'content' => $prompt
+        ];
+
+        // ✨ STREAMING RESPONSE - Dinamik provider kullanımı
+        $startTime = microtime(true);
+        $response = $this->currentService->generateCompletionStream($messages, $streamCallback);
+        
+        // Provider performansını güncelle
+        if ($this->currentProvider) {
+            $responseTime = (microtime(true) - $startTime) * 1000;
+            $this->providerManager->updateProviderPerformance($this->currentProvider->name, $responseTime);
+        }
+
+        // Token kullanımını kaydet
+        if ($tenant && isset($response['tokens_used'])) {
+            $this->aiTokenService->useTokens($tenant, $response['tokens_used'], 'chat_message');
+        }
+
+        return $response['response'] ?? null;
     }
 
     /**
@@ -98,14 +184,21 @@ class AIService
             'content' => $prompt
         ];
 
-        // AI'dan yanıt al
-        $response = $this->deepSeekService->ask($messages, $stream);
+        // AI'dan yanıt al - Dinamik provider kullanımı
+        $startTime = microtime(true);
+        $response = $this->currentService->ask($messages, $stream);
+        
+        // Provider performansını güncelle
+        if ($this->currentProvider) {
+            $responseTime = (microtime(true) - $startTime) * 1000;
+            $this->providerManager->updateProviderPerformance($this->currentProvider->name, $responseTime);
+        }
         
         if ($response && !$stream) {
             // Token kullanımını kaydet
             if ($tenant) {
-                // Modern token sistemi
-                $actualTokens = $this->deepSeekService->estimateTokens([
+                // Modern token sistemi - Dinamik provider kullanımı
+                $actualTokens = $this->currentService->estimateTokens([
                     ['role' => 'user', 'content' => $prompt],
                     ['role' => 'assistant', 'content' => $response]
                 ]);
@@ -183,16 +276,23 @@ class AIService
             'content' => $userInput
         ];
 
-        // AI'dan yanıt al
-        $response = $this->deepSeekService->ask($messages, false);
+        // AI'dan yanıt al - Dinamik provider kullanımı
+        $startTime = microtime(true);
+        $response = $this->currentService->ask($messages, false);
+        
+        // Provider performansını güncelle
+        if ($this->currentProvider) {
+            $responseTime = (microtime(true) - $startTime) * 1000;
+            $this->providerManager->updateProviderPerformance($this->currentProvider->name, $responseTime);
+        }
         
         if ($response) {
             // Feature kullanım istatistiklerini güncelle
             $feature->incrementUsage();
             
-            // Token kullanımını kaydet
+            // Token kullanımını kaydet - Dinamik provider kullanımı
             if ($tenant) {
-                $actualTokens = $this->deepSeekService->estimateTokens([
+                $actualTokens = $this->currentService->estimateTokens([
                     ['role' => 'user', 'content' => $userInput],
                     ['role' => 'assistant', 'content' => $response]
                 ]);
@@ -331,7 +431,7 @@ class AIService
                 'response_preview' => $data['response_preview'] ?? null,
                 'prompts_analysis' => json_encode($data['prompts_analysis'] ?? []),
                 'scoring_summary' => json_encode($this->calculateScoringSummary($data['prompts_analysis'] ?? [])),
-                'ai_model' => 'deepseek-chat',
+                'ai_model' => $this->currentProvider ? ($this->currentProvider->name . '/' . $this->currentProvider->default_model) : 'unknown',
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
                 'has_error' => $data['has_error'] ?? false,
@@ -404,12 +504,13 @@ class AIService
                 'token_count' => strlen($userMessage) / 4 // Tahmini
             ]);
 
-            // AI response
+            // AI response - model bilgisiyle
             \Modules\AI\App\Models\Message::create([
                 'conversation_id' => $conversation->id,
                 'content' => $aiResponse,
                 'role' => 'assistant',
-                'token_count' => strlen($aiResponse) / 4 // Tahmini
+                'token_count' => strlen($aiResponse) / 4, // Tahmini
+                'model_used' => $this->getCurrentProviderModel() // Model bilgisini ekle
             ]);
 
         } catch (\Exception $e) {
@@ -658,6 +759,41 @@ class AIService
             ]);
             
             return null;
+        }
+    }
+
+    /**
+     * Get current AI provider and model name
+     * 
+     * @return string
+     */
+    public function getCurrentProviderModel(): string
+    {
+        try {
+            // Get current provider settings
+            $settings = \Modules\AI\App\Models\Setting::first();
+            if (!$settings || !$settings->providers) {
+                return 'deepseek/deepseek-chat'; // fallback
+            }
+
+            $activeProvider = $settings->active_provider ?? 'deepseek';
+            $providers = $settings->providers;
+
+            if (!isset($providers[$activeProvider])) {
+                return 'deepseek/deepseek-chat'; // fallback
+            }
+
+            $provider = $providers[$activeProvider];
+            $model = $provider['model'] ?? 'unknown';
+
+            return $activeProvider . '/' . $model;
+            
+        } catch (\Exception $e) {
+            \Log::error('getCurrentProviderModel error', [
+                'error' => $e->getMessage()
+            ]);
+            
+            return 'deepseek/deepseek-chat'; // fallback
         }
     }
 }

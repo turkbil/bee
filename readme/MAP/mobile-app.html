@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Uygulama - Türk Bilişim Enterprise CMS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .theme-light {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-accent: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .theme-dark {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-accent: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+            --accent-color: #60a5fa;
+            --accent-hover: #3b82f6;
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --error-color: #f87171;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .card-accent {
+            background-color: var(--bg-accent);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .text-accent {
+            color: var(--accent-color);
+        }
+        
+        .bg-accent {
+            background-color: var(--accent-color);
+        }
+        
+        .bg-accent:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        .text-success {
+            color: var(--success-color);
+        }
+        
+        .text-warning {
+            color: var(--warning-color);
+        }
+        
+        .text-error {
+            color: var(--error-color);
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--success-color));
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+        
+        .navigation-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--bg-primary);
+        }
+        
+        .nav-dot.active {
+            background-color: var(--accent-color);
+            transform: scale(1.2);
+        }
+        
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background-color: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            padding: 2rem;
+            z-index: 50;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .section {
+            min-height: 100vh;
+            padding: 2rem 0;
+            position: relative;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-color), var(--success-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .icon-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .icon-feature svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent-color);
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--accent-color), var(--success-color));
+            border-radius: 2px;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .tech-item {
+            padding: 1rem;
+            background-color: var(--bg-accent);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .code-block {
+            background-color: var(--bg-accent);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+        }
+        
+        .breadcrumb a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--accent-hover);
+        }
+    </style>
+</head>
+
+<body class="theme-light" x-data="{ 
+    theme: 'light',
+    sidebarOpen: false,
+    activeSection: 'hero',
+    scrollProgress: 0,
+    init() {
+        this.initTheme();
+        this.initScrollTracking();
+        this.initFloatingElements();
+        this.animateOnScroll();
+    },
+    initTheme() {
+        const saved = localStorage.getItem('theme') || 'light';
+        this.theme = saved;
+        document.body.className = 'theme-' + saved;
+    },
+    toggleTheme() {
+        this.theme = this.theme === 'light' ? 'dark' : 'light';
+        document.body.className = 'theme-' + this.theme;
+        localStorage.setItem('theme', this.theme);
+    },
+    initScrollTracking() {
+        const updateProgress = () => {
+            const winHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset;
+            const progress = (scrollTop / (docHeight - winHeight)) * 100;
+            this.scrollProgress = Math.min(progress, 100);
+        };
+        
+        window.addEventListener('scroll', updateProgress);
+        updateProgress();
+    },
+    initFloatingElements() {
+        const container = document.querySelector('.floating-elements');
+        const icons = ['smartphone', 'tablet', 'monitor', 'wifi', 'zap', 'code'];
+        
+        setInterval(() => {
+            const icon = icons[Math.floor(Math.random() * icons.length)];
+            const element = document.createElement('div');
+            element.className = 'floating-icon';
+            element.innerHTML = `<svg width='24' height='24'><use href='#${icon}'></use></svg>`;
+            element.style.left = Math.random() * 100 + '%';
+            element.style.animationDelay = '0s';
+            element.style.animationDuration = (15 + Math.random() * 10) + 's';
+            container.appendChild(element);
+            
+            setTimeout(() => {
+                element.remove();
+            }, 25000);
+        }, 3000);
+    },
+    animateOnScroll() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.card').forEach(card => {
+            observer.observe(card);
+        });
+    },
+    scrollToSection(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        this.activeSection = sectionId;
+    }
+}">
+
+<!-- Progress Bar -->
+<div class="progress-bar" :style="{ width: scrollProgress + '%' }"></div>
+
+<!-- Navigation Dots -->
+<div class="navigation-dots">
+    <div class="nav-dot" :class="{ active: activeSection === 'hero' }" @click="scrollToSection('hero')" title="Ana Sayfa"></div>
+    <div class="nav-dot" :class="{ active: activeSection === 'overview' }" @click="scrollToSection('overview')" title="Flutter Mimarisi"></div>
+    <div class="nav-dot" :class="{ active: activeSection === 'api' }" @click="scrollToSection('api')" title="API Mimarisi"></div>
+    <div class="nav-dot" :class="{ active: activeSection === 'design' }" @click="scrollToSection('design')" title="Tasarım"></div>
+    <div class="nav-dot" :class="{ active: activeSection === 'realtime' }" @click="scrollToSection('realtime')" title="Gerçek Zamanlı"></div>
+    <div class="nav-dot" :class="{ active: activeSection === 'roadmap' }" @click="scrollToSection('roadmap')" title="Yol Haritası"></div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar" :class="{ active: sidebarOpen }">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-semibold">Navigasyon</h3>
+        <button @click="sidebarOpen = false" class="p-2 hover:bg-gray-200 rounded-lg">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <nav class="space-y-2">
+        <a href="index.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            Ana Sayfa
+        </a>
+        <a href="tenant-system.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            Çok Kiracılı Sistem
+        </a>
+        <a href="ai-system.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <i data-lucide="brain" class="w-5 h-5"></i>
+            Yapay Zeka Sistemi
+        </a>
+        <a href="mobile-app.html" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-50 text-blue-600 transition-colors">
+            <i data-lucide="smartphone" class="w-5 h-5"></i>
+            Mobil Uygulama
+        </a>
+    </nav>
+</div>
+
+<!-- Floating Background Elements -->
+<div class="floating-elements"></div>
+
+<!-- Header -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+    <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <i data-lucide="smartphone" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold">Türk Bilişim Enterprise CMS</h1>
+                    <p class="text-sm text-gray-500">Mobil Uygulama</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button @click="toggleTheme()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i data-lucide="sun" class="w-5 h-5" x-show="theme === 'light'"></i>
+                    <i data-lucide="moon" class="w-5 h-5" x-show="theme === 'dark'"></i>
+                </button>
+                <button @click="sidebarOpen = !sidebarOpen" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="pt-20">
+    <!-- Hero Section -->
+    <section id="hero" class="section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <div class="breadcrumb justify-center">
+                    <a href="index.html">Ana Sayfa</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <span>Mobil Uygulama</span>
+                </div>
+                <h1 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">Flutter</span> Cross-Platform Mobil Uygulama
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Tek kod tabanı ile iOS, Android ve Web platformları için native performance (yerli performans) 
+                    sağlayan, kendi mutfağımızdan çıkan mobil uygulama geliştirme yaklaşımımız.
+                </p>
+            </div>
+            
+            <div class="highlight-box">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="zap" class="w-8 h-8 text-purple-500"></i>
+                    <h3 class="text-xl font-semibold">Kendi Geliştirdiğimiz Mobil Çözüm</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="icon-feature">
+                        <i data-lucide="code" class="w-5 h-5"></i>
+                        <span><strong>Single Codebase (Tek Kod Tabanı):</strong> Bir kez yazılan kod, tüm platformlarda çalışır</span>
+                    </div>
+                    <div class="icon-feature">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                        <span><strong>Native Performance:</strong> Ahead-of-time compilation (önceden derleme) ile yerli hız</span>
+                    </div>
+                    <div class="icon-feature">
+                        <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+                        <span><strong>Cost-Effective (Maliyet Etkin):</strong> Geliştirme maliyetinde büyük tasarruf</span>
+                    </div>
+                    <div class="icon-feature">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                        <span><strong>Unified Updates:</strong> Tüm platformlarda eşzamanlı güncellemeler</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flutter Architecture -->
+    <section id="overview" class="section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="gradient-text">Flutter Cross-Platform</span> Mimarisi
+                </h2>
+                <p class="text-xl text-gray-600 max-w-4xl mx-auto">
+                    Flutter framework'ü ile single codebase (tek kod tabanı) yaklaşımı kullanarak 
+                    iOS, Android ve Web platformları için native performance (yerli performans) sağlıyoruz.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="smartphone" class="w-8 h-8 text-blue-500"></i>
+                        <h3 class="text-xl font-semibold">iOS & Android Features</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="layout" class="w-5 h-5"></i>
+                            <span>Native UI components (yerli kullanıcı arayüzü bileşenleri)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                            <span>Push notifications (anlık bildirimler)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="camera" class="w-5 h-5"></i>
+                            <span>Camera & photo library (kamera ve fotoğraf kütüphanesi)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="fingerprint" class="w-5 h-5"></i>
+                            <span>Biometric authentication (biyometrik kimlik doğrulama)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                            <span>Background sync (arka plan senkronizasyonu)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="globe" class="w-8 h-8 text-green-500"></i>
+                        <h3 class="text-xl font-semibold">Web & PWA Features</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                            <span>Progressive Web App (aşamalı web uygulaması)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="monitor" class="w-5 h-5"></i>
+                            <span>Responsive design (duyarlı tasarım)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="cog" class="w-5 h-5"></i>
+                            <span>Service worker (servis çalışanı)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="wifi" class="w-5 h-5"></i>
+                            <span>Web push notifications (web anlık bildirimleri)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            <span>PWA installability (PWA kurulabilirliği)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Architecture -->
+    <section id="api" class="section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="gradient-text">RESTful API</span> Mimarisi
+                </h2>
+                <p class="text-xl text-gray-600 max-w-4xl mx-auto">
+                    Kendi geliştirdiğimiz secure token-based authentication (güvenli token bazlı kimlik doğrulama) 
+                    sistemi ile mobile-first API design (mobil öncelikli API tasarımı).
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="shield" class="w-8 h-8 text-purple-500"></i>
+                        <h3 class="text-xl font-semibold">API Security Architecture</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="key" class="w-5 h-5"></i>
+                            <span>Token-based authentication (token bazlı kimlik doğrulama)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            <span>API Rate Limiting (API oran sınırlaması)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            <span>Validation Layers (doğrulama katmanları)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                            <span>Error Handling (hata yönetimi)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="user-check" class="w-8 h-8 text-blue-500"></i>
+                        <h3 class="text-xl font-semibold">Authentication Endpoints</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="log-in" class="w-5 h-5"></i>
+                            <span>POST /api/v1/auth/login - Giriş yapma</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="user-plus" class="w-5 h-5"></i>
+                            <span>POST /api/v1/auth/register - Kayıt olma</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="user" class="w-5 h-5"></i>
+                            <span>GET /api/v1/auth/me - Kullanıcı profili</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="log-out" class="w-5 h-5"></i>
+                            <span>POST /api/v1/auth/logout - Çıkış yapma</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Design -->
+    <section id="design" class="section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="gradient-text">Mobile-First</span> Design Principles
+                </h2>
+                <p class="text-xl text-gray-600 max-w-4xl mx-auto">
+                    Responsive design (duyarlı tasarım) ile tüm ekran boyutlarında optimize edilmiş 
+                    kullanıcı deneyimi sağlayan, kendi tasarladığımız mobile UX (mobil kullanıcı deneyimi).
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="palette" class="w-8 h-8 text-pink-500"></i>
+                        <h3 class="text-xl font-semibold">Theme & Touch System</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="sun" class="w-5 h-5"></i>
+                            <span>System theme detection (sistem tema algılama)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="toggle-left" class="w-5 h-5"></i>
+                            <span>Manual theme switching (manuel tema değiştirme)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="hand" class="w-5 h-5"></i>
+                            <span>Touch-friendly buttons (dokunmaya uygun düğmeler)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="move" class="w-5 h-5"></i>
+                            <span>Swipe gestures (kaydırma hareketleri)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="vibrate" class="w-5 h-5"></i>
+                            <span>Haptic feedback (dokunsal geri bildirim)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="layout" class="w-8 h-8 text-green-500"></i>
+                        <h3 class="text-xl font-semibold">Mobile UX (Mobil Kullanıcı Deneyimi)</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="navigation" class="w-5 h-5"></i>
+                            <span>Bottom navigation (alt navigasyon)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                            <span>Floating action buttons (yüzen aksiyon düğmeleri)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="layers" class="w-5 h-5"></i>
+                            <span>Modal bottom sheets (modal alt sayfalar)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="message-square" class="w-5 h-5"></i>
+                            <span>Snackbar notifications (snackbar bildirimleri)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="loader" class="w-5 h-5"></i>
+                            <span>Loading states (yükleme durumları)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-time Features -->
+    <section id="realtime" class="section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="gradient-text">Real-time Features</span> & Multi-Tenant
+                </h2>
+                <p class="text-xl text-gray-600 max-w-4xl mx-auto">
+                    Kendi geliştirdiğimiz real-time communication (gerçek zamanlı iletişim) ve 
+                    multi-tenant mobile architecture (çok kiracılı mobil mimari) ile isolated environment (izole ortam).
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="wifi" class="w-8 h-8 text-blue-500"></i>
+                        <h3 class="text-xl font-semibold">Real-time Communication</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="zap" class="w-5 h-5"></i>
+                            <span>WebSocket Integration (WebSocket entegrasyonu)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                            <span>Push Notifications (anlık bildirimler)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                            <span>Background Sync (arka plan senkronizasyonu)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="wifi-off" class="w-5 h-5"></i>
+                            <span>Offline Mode Support (çevrimdışı mod desteği)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="users" class="w-8 h-8 text-purple-500"></i>
+                        <h3 class="text-xl font-semibold">Multi-Tenant Mobile</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="database" class="w-5 h-5"></i>
+                            <span>Tenant-scoped database (kiracı-kapsamlı veritabanı)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="key" class="w-5 h-5"></i>
+                            <span>Isolated cache keys (izole önbellek anahtarları)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="folder" class="w-5 h-5"></i>
+                            <span>Secure file storage (güvenli dosya depolama)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="globe" class="w-5 h-5"></i>
+                            <span>Domain-based sessions (alan adı bazlı oturumlar)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Roadmap -->
+    <section id="roadmap" class="section">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="gradient-text">Development Roadmap</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-4xl mx-auto">
+                    Kendi geliştirdiğimiz agile methodology (çevik metodoloji) ile 
+                    iterative development (yinelemeli geliştirme) yaklaşımını benimser.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+                        <h3 class="text-xl font-semibold">Phase 1 - Tamamlandı</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            <span>Authentication System (kimlik doğrulama sistemi)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="user-cog" class="w-5 h-5"></i>
+                            <span>User Profile Management (kullanıcı profil yönetimi)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="key" class="w-5 h-5"></i>
+                            <span>Token Management (token yönetimi)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="database" class="w-5 h-5"></i>
+                            <span>Basic CRUD Operations (temel CRUD işlemleri)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="filter" class="w-5 h-5"></i>
+                            <span>Pagination & Filtering (sayfalama ve filtreleme)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="clock" class="w-8 h-8 text-orange-500"></i>
+                        <h3 class="text-xl font-semibold">Phase 2 & 3 - Devam Eden</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="icon-feature">
+                            <i data-lucide="brain" class="w-5 h-5"></i>
+                            <span>AI Features API (yapay zeka özellikler API'si)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="bell" class="w-5 h-5"></i>
+                            <span>Push Notifications (anlık bildirimler)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="folder" class="w-5 h-5"></i>
+                            <span>File Management API (dosya yönetimi API'si)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="wifi-off" class="w-5 h-5"></i>
+                            <span>Offline Mode Support (çevrimdışı mod desteği)</span>
+                        </div>
+                        <div class="icon-feature">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
+                            <span>Performance Monitoring (performans izleme)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="highlight-box mt-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="lightbulb" class="w-8 h-8 text-yellow-500"></i>
+                    <h3 class="text-xl font-semibold">Neden Flutter Cross-Platform?</h3>
+                </div>
+                <p class="text-gray-600">
+                    Flutter tercihimiz, tek kod tabanı ile multiple platforms (çoklu platform) desteği sağlaması, 
+                    native performance (yerli performans) sunması ve kendi kontrol ettiğimiz development cycle (geliştirme döngüsü) 
+                    oluşturma imkanı vermesi nedeniyle stratejik bir karardır.
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+    
+    // Update active section on scroll
+    window.addEventListener('scroll', () => {
+        const sections = ['hero', 'overview', 'api', 'design', 'realtime', 'roadmap'];
+        const scrollPosition = window.scrollY + 100;
+        
+        sections.forEach(section => {
+            const element = document.getElementById(section);
+            if (element) {
+                const offsetTop = element.offsetTop;
+                const offsetBottom = offsetTop + element.offsetHeight;
+                
+                if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+                    document.querySelectorAll('.nav-dot').forEach(dot => dot.classList.remove('active'));
+                    document.querySelector(`[title*="${section}"]`)?.classList.add('active');
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,49 +1,80 @@
 @include('page::admin.helper')
-<div class="card">
-    <div class="card-body">
-        <!-- Header Bölümü -->
-        <div class="row mb-3">
-            <!-- Arama Kutusu -->
-            <div class="col">
-                <div class="input-icon">
-                    <span class="input-icon-addon">
-                        <i class="fas fa-search"></i>
-                    </span>
-                    <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ __('page::admin.search_placeholder') }}">
-                </div>
-            </div>
-            <!-- Ortadaki Loading -->
-            <div class="col position-relative">
-                <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
-                    class="position-absolute top-50 start-50 translate-middle text-center"
-                    style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
-                    <div class="progress mb-1">
-                        <div class="progress-bar progress-bar-indeterminate"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Sağ Taraf (Switch ve Select) -->
-            <div class="col">
-                <div class="d-flex align-items-center justify-content-end gap-3">
-                    <!-- Sayfa Adeti Seçimi -->
-                    <div style="width: 80px; min-width: 80px">
-                        <select wire:model.live="perPage" class="form-control listing-filter-select" 
-                                data-choices 
-                                data-choices-search="false"
-                                data-choices-filter="true">
-                            <option value="10"><nobr>10</nobr></option>
-                            <option value="50"><nobr>50</nobr></option>
-                            <option value="100"><nobr>100</nobr></option>
-                            <option value="500"><nobr>500</nobr></option>
-                            <option value="1000"><nobr>1000</nobr></option>
-                        </select>
+
+{{-- Page Management Container --}}
+<div class="page-management-container">
+    {{-- Hero Section --}}
+    <div class="hero-section mb-4">
+        <div class="hero-background">
+            <div class="digital-grid"></div>
+            <div class="floating-elements"></div>
+            <div class="cyber-waves"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="container">
+                {{-- Page Management Badge --}}
+                <div class="row mb-2">
+                    <div class="col-12 text-start">
+                        <div class="hero-main-badge-container">
+                            <span class="badge hero-main-badge">
+                                <i class="fas fa-file-alt me-2"></i>Sayfa Yönetimi
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    {{-- Main Content Container --}}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Header Bölümü -->
+                        <div class="row mb-3">
+                            <!-- Arama Kutusu -->
+                            <div class="col">
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <input type="text" wire:model.live="search" class="form-control"
+                                        placeholder="{{ __('page::admin.search_placeholder') }}">
+                                </div>
+                            </div>
+                            <!-- Ortadaki Loading -->
+                            <div class="col position-relative">
+                                <div wire:loading
+                                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
+                                    class="position-absolute top-50 start-50 translate-middle text-center"
+                                    style="width: 100%; max-width: 250px;">
+                                    <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
+                                    <div class="progress mb-1">
+                                        <div class="progress-bar progress-bar-indeterminate"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Sağ Taraf (Switch ve Select) -->
+                            <div class="col">
+                                <div class="d-flex align-items-center justify-content-end gap-3">
+                                    <!-- Sayfa Adeti Seçimi -->
+                                    <div style="width: 80px; min-width: 80px">
+                                        <select wire:model.live="perPage" class="form-control listing-filter-select" 
+                                                data-choices 
+                                                data-choices-search="false"
+                                                data-choices-filter="true">
+                                            <option value="10"><nobr>10</nobr></option>
+                                            <option value="50"><nobr>50</nobr></option>
+                                            <option value="100"><nobr>100</nobr></option>
+                                            <option value="500"><nobr>500</nobr></option>
+                                            <option value="1000"><nobr>1000</nobr></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
         <!-- Tablo Bölümü -->
         <div id="table-default" class="table-responsive">
             <table class="table table-vcenter card-table table-hover text-nowrap datatable">
@@ -204,12 +235,16 @@
                 </tbody>
             </table>
         </div>
-    </div>
-    <!-- Pagination -->
-    {{ $pages->links() }}
-    <!-- Bulk Actions -->
-    @include('page::admin.partials.bulk-actions', ['moduleType' => 'page'])
+                    </div>
+                    <!-- Pagination -->
+                    {{ $pages->links() }}
+                    <!-- Bulk Actions -->
+                    @include('page::admin.partials.bulk-actions', ['moduleType' => 'page'])
 
-    <livewire:modals.bulk-delete-modal />
-    <livewire:modals.delete-modal />
+                    <livewire:modals.bulk-delete-modal />
+                    <livewire:modals.delete-modal />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

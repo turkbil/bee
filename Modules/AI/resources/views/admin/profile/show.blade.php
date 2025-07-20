@@ -187,7 +187,7 @@
                 <div class="row mt-4">
                     <div class="col-12 text-center">
                         @if($profile && $profile->is_completed)
-                            <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" class="btn btn-outline-light btn-lg me-3">
+                            <a href="{{ route('admin.ai.profile.edit', ['step' => 1]) }}" class="btn btn-outline-light btn-lg me-3">
                                 <i class="fas fa-edit me-2"></i>
                                 Profili Düzenle
                             </a>
@@ -196,7 +196,7 @@
                                 AI Asistanı Kullan
                             </a>
                         @else
-                            <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" class="btn btn-lg" style="
+                            <a href="{{ route('admin.ai.profile.edit', ['step' => 1]) }}" class="btn btn-lg" style="
                                 background: linear-gradient(135deg, #00d4ff, #9333ea);
                                 border: none;
                                 padding: 1rem 2.5rem;
@@ -211,8 +211,8 @@
                             </a>
                         @endif
                         
-                        {{-- Profil Sıfırlama Butonu - Her durumda görünür --}}
-                        @if($profile)
+                        {{-- Profil Sıfırlama Butonu - Sadece profil doluyken görünür --}}
+                        @if($profile && ($profile->is_completed || $completionPercentage > 0))
                             <div class="mt-3">
                                 <button type="button" class="btn btn-outline-danger btn-sm" 
                                         data-bs-toggle="modal" 
@@ -246,30 +246,59 @@
                                         </div>
                                     </div>
                                     <div class="card-body">
-                                        @if($profile->hasBrandStory())
-                                            {{-- Hikaye mevcut --}}
-                                            <div class="brand-story-content">
-                                                <div class="brand-story-text p-4" style="font-size: 1.1rem; line-height: 1.7; background-color: var(--tblr-bg-surface);">
-                                                    {!! nl2br(e($profile->brand_story)) !!}
-                                                </div>
-                                                    
-                                                @if($profile->brand_story_created_at)
-                                                    <div class="mt-3 text-muted d-flex align-items-center">
-                                                        <i class="fas fa-calendar-alt me-2"></i>
-                                                        <span>{{ $profile->brand_story_created_at->format('d.m.Y H:i') }} tarihinde oluşturuldu</span>
-                                                    </div>
-                                                @endif
-                                                
-                                                {{-- Yeniden Oluştur Butonu --}}
-                                                <div class="mt-4">
-                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="regenerateBrandStory()">
-                                                        <i class="fas fa-sync-alt me-2"></i>
-                                                        Hikayeyi Yeniden Oluştur
-                                                    </button>
+                                        {{-- Loading State (Hikaye oluşturuluyor) --}}
+                                        <div id="brand-story-loading" class="text-center py-5" style="display: none;">
+                                            <div class="mb-4">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
                                                 </div>
                                             </div>
-                                        @else
-                                            {{-- Hikaye yok --}}
+                                            <h5 class="text-primary mb-3">
+                                                <i class="fas fa-magic me-2"></i>
+                                                Marka hikayeniz oluşturuluyor...
+                                            </h5>
+                                            <p class="text-muted mb-4">AI asistanınız profilinize göre özel bir hikaye yazıyor. Lütfen bekleyin.</p>
+                                            <div class="progress mx-auto" style="width: 300px; height: 8px;">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                     role="progressbar" 
+                                                     style="width: 100%; background: linear-gradient(90deg, #007bff, #6610f2);"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        {{-- Hikaye Mevcut --}}
+                                        <div id="brand-story-content" style="display: @if($profile->hasBrandStory()) block @else none @endif;">
+                                            @if($profile->hasBrandStory())
+                                                <div class="brand-story-content">
+                                                    <div class="brand-story-text p-4" style="font-size: 1.1rem; line-height: 1.7; background-color: var(--tblr-bg-surface);">
+                                                        {!! nl2br(e($profile->brand_story)) !!}
+                                                    </div>
+                                                    
+                                                    {{-- Hikaye Bilgileri ve Aksiyonlar --}}
+                                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                                        <div class="brand-story-info">
+                                                            @if($profile->brand_story_created_at)
+                                                                <div class="text-muted d-flex align-items-center">
+                                                                    <i class="fas fa-calendar-alt me-2"></i>
+                                                                    <span>{{ $profile->brand_story_created_at->format('d.m.Y H:i') }} tarihinde oluşturuldu</span>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        
+                                                        <div class="brand-story-actions">
+                                                            <button type="button" class="btn btn-outline-primary btn-sm" 
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#regenerateStoryModal">
+                                                                <i class="fas fa-sync-alt me-2"></i>
+                                                                Yeniden Oluştur
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        
+                                        {{-- Hikaye Yok --}}
+                                        <div id="brand-story-empty" style="display: @if($profile->hasBrandStory()) none @else block @endif;">
                                             <div class="text-center py-5">
                                                 <div class="mb-4">
                                                     <i class="fas fa-magic text-primary" style="font-size: 3rem; opacity: 0.5;"></i>
@@ -277,25 +306,35 @@
                                                 <h5 class="text-muted mb-3">Marka hikayeniz henüz oluşturulmadı</h5>
                                                 <p class="text-muted mb-4">AI asistanınız profilinize göre özel bir marka hikayesi oluşturacak</p>
                                                 
-                                                @if($completionPercentage >= 25)
+                                                @php
+                                                    $brandName = $profile->company_info['brand_name'] ?? null;
+                                                    $sector = $profile->sector_details['sector_selection'] ?? null;
+                                                    $hasRequiredFields = !empty($brandName) && !empty($sector);
+                                                @endphp
+                                                
+                                                {{-- Debug bilgisi --}}
+                                                <div class="small text-muted mb-3">
+                                                    Debug: Brand=<code>{{ $brandName ?? 'null' }}</code>, 
+                                                    Sector=<code>{{ $sector ?? 'null' }}</code>, 
+                                                    Required=<code>{{ $hasRequiredFields ? 'true' : 'false' }}</code>
+                                                </div>
+                                                
+                                                @if($hasRequiredFields)
                                                     <button type="button" class="btn btn-primary" onclick="generateBrandStory()">
                                                         <i class="fas fa-wand-magic-sparkles me-2"></i>
                                                         Marka Hikayemi Oluştur
                                                     </button>
                                                 @else
-                                                    <div class="alert alert-info">
-                                                        <i class="fas fa-info-circle me-2"></i>
-                                                        Marka hikayesi oluşturmak için profili en az %25 tamamlamanız gerekiyor. 
-                                                        (Şu an: %{{ round($completionPercentage) }})
+                                                    <div class="text-center">
+                                                        <a href="{{ route('admin.ai.profile.edit', ['step' => 1]) }}" 
+                                                           class="btn btn-primary">
+                                                            <i class="fas fa-edit me-2"></i>
+                                                            Profili Tamamla
+                                                        </a>
                                                     </div>
-                                                    <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" 
-                                                       class="btn btn-outline-primary">
-                                                        <i class="fas fa-edit me-2"></i>
-                                                        Profili Tamamla
-                                                    </a>
                                                 @endif
                                             </div>
-                                        @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -334,154 +373,104 @@
                             </div>
                         </div>
                     @else
-                        {{-- Profil Tamamlanmamış - Modern Kurulum Rehberi --}}
+                        {{-- Profil Tamamlanmamış - Basit Kurulum Rehberi --}}
                         <div class="row justify-content-center">
                             <div class="col-12">
-                                <div class="modern-setup-header mb-5 text-center">
-                                    <div class="setup-icon-container mb-3">
-                                        <div class="setup-main-icon">
-                                            <i class="fas fa-cogs"></i>
-                                        </div>
-                                    </div>
-                                    <h3 class="setup-title mb-2">AI Asistanı Kurulum Rehberi</h3>
-                                    <p class="setup-subtitle">Yapay zeka asistanınızı kişiselleştirmek için aşağıdaki adımları tamamlayın</p>
+                                <div class="text-center mb-4">
+                                    <h3 class="mb-2">AI Asistanı Kurulum Rehberi</h3>
+                                    <p class="text-muted">Yapay zeka asistanınızı kişiselleştirmek için aşağıdaki adımları tamamlayın</p>
                                 </div>
                                 
-                                <div class="modern-setup-steps">
-                                    @php
-                                        $steps = [
-                                            1 => [
-                                                'title' => 'Sektör Seçimi', 
-                                                'icon' => 'fas fa-industry', 
-                                                'desc' => 'Yapay zeka asistanınız için en uygun sektörü seçin',
-                                                'color' => 'primary'
-                                            ],
-                                            2 => [
-                                                'title' => 'Temel Bilgiler', 
-                                                'icon' => 'fas fa-building', 
-                                                'desc' => 'İşletmenizin temel bilgilerini girin',
-                                                'color' => 'success'
-                                            ],
-                                            3 => [
-                                                'title' => 'Marka Detayları', 
-                                                'icon' => 'fas fa-palette', 
-                                                'desc' => 'Markanızın kişiliğini tanımlayın',
-                                                'color' => 'warning'
-                                            ],
-                                            4 => [
-                                                'title' => 'Kurucu Bilgileri', 
-                                                'icon' => 'fas fa-user-tie', 
-                                                'desc' => 'Kurucu bilgilerini paylaşın (isteğe bağlı)',
-                                                'color' => 'info'
-                                            ],
-                                            5 => [
-                                                'title' => 'AI Davranış ve İletişim Ayarları', 
-                                                'icon' => 'fas fa-robot', 
-                                                'desc' => 'AI asistanınızın iletişim tarzı ve davranış şeklini ayarlayın',
-                                                'color' => 'purple'
-                                            ]
-                                        ];
-                                    @endphp
-                                    
-                                    {{-- 5 Step için Optimize Edilmiş Layout: 2-1-2 Pyramid Design --}}
-                                    {{-- İlk sıra: 2 step --}}
-                                    <div class="row g-4 mb-4 justify-content-center">
-                                        @foreach(array_slice($steps, 0, 2, true) as $stepNum => $step)
-                                            <div class="col-12 col-md-6 col-xl-5">
-                                                <div class="modern-step-card modern-step-large">
-                                                    <div class="step-card-header">
-                                                        <div class="step-number-badge step-large">{{ $stepNum }}</div>
-                                                        <div class="step-icon-wrapper step-{{ $step['color'] }} step-icon-large">
-                                                            <i class="{{ $step['icon'] }}"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="step-card-body">
-                                                        <h5 class="step-card-title">{{ $step['title'] }}</h5>
-                                                        <p class="step-card-description">{{ $step['desc'] }}</p>
-                                                    </div>
-                                                    <div class="step-card-footer">
-                                                        <div class="step-status-indicator">
-                                                            <i class="fas fa-clock"></i>
-                                                            <span>Bekliyor</span>
-                                                        </div>
-                                                    </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <div class="mb-3">
+                                                    <span class="avatar avatar-lg bg-primary text-white">
+                                                        <i class="fas fa-industry"></i>
+                                                    </span>
                                                 </div>
+                                                <h5 class="card-title">1. Sektör Seçimi</h5>
+                                                <p class="text-muted small">Yapay zeka asistanınız için en uygun sektörü seçin</p>
                                             </div>
-                                        @endforeach
+                                        </div>
                                     </div>
                                     
-                                    {{-- Orta sıra: 1 step (featured center) --}}
-                                    <div class="row g-4 mb-4 justify-content-center">
-                                        @php $centralStep = array_slice($steps, 2, 1, true); @endphp
-                                        @foreach($centralStep as $stepNum => $step)
-                                            <div class="col-12 col-md-8 col-lg-6">
-                                                <div class="modern-step-card modern-step-featured">
-                                                    <div class="step-card-header">
-                                                        <div class="step-number-badge step-featured">{{ $stepNum }}</div>
-                                                        <div class="step-icon-wrapper step-{{ $step['color'] }} step-icon-featured">
-                                                            <i class="{{ $step['icon'] }}"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="step-card-body text-center">
-                                                        <h5 class="step-card-title">{{ $step['title'] }}</h5>
-                                                        <p class="step-card-description">{{ $step['desc'] }}</p>
-                                                    </div>
-                                                    <div class="step-card-footer justify-content-center">
-                                                        <div class="step-status-indicator">
-                                                            <i class="fas fa-clock"></i>
-                                                            <span>Bekliyor</span>
-                                                        </div>
-                                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <div class="mb-3">
+                                                    <span class="avatar avatar-lg bg-success text-white">
+                                                        <i class="fas fa-building"></i>
+                                                    </span>
                                                 </div>
+                                                <h5 class="card-title">2. Temel Bilgiler</h5>
+                                                <p class="text-muted small">İşletmenizin temel bilgilerini girin</p>
                                             </div>
-                                        @endforeach
+                                        </div>
                                     </div>
                                     
-                                    {{-- Alt sıra: 2 step --}}
-                                    <div class="row g-4 justify-content-center">
-                                        @foreach(array_slice($steps, 3, 2, true) as $stepNum => $step)
-                                            <div class="col-12 col-md-6 col-xl-5">
-                                                <div class="modern-step-card modern-step-large">
-                                                    <div class="step-card-header">
-                                                        <div class="step-number-badge step-large">{{ $stepNum }}</div>
-                                                        <div class="step-icon-wrapper step-{{ $step['color'] }} step-icon-large">
-                                                            <i class="{{ $step['icon'] }}"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="step-card-body">
-                                                        <h5 class="step-card-title">{{ $step['title'] }}</h5>
-                                                        <p class="step-card-description">{{ $step['desc'] }}</p>
-                                                    </div>
-                                                    <div class="step-card-footer">
-                                                        <div class="step-status-indicator">
-                                                            <i class="fas fa-clock"></i>
-                                                            <span>Bekliyor</span>
-                                                        </div>
-                                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <div class="mb-3">
+                                                    <span class="avatar avatar-lg bg-warning text-white">
+                                                        <i class="fas fa-palette"></i>
+                                                    </span>
                                                 </div>
+                                                <h5 class="card-title">3. Marka Detayları</h5>
+                                                <p class="text-muted small">Markanızın kişiliğini tanımlayın</p>
                                             </div>
-                                        @endforeach
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <div class="mb-3">
+                                                    <span class="avatar avatar-lg bg-info text-white">
+                                                        <i class="fas fa-user-tie"></i>
+                                                    </span>
+                                                </div>
+                                                <h5 class="card-title">4. Kurucu Bilgileri</h5>
+                                                <p class="text-muted small">Kurucu bilgilerini paylaşın (isteğe bağlı)</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <div class="mb-3">
+                                                    <span class="avatar avatar-lg bg-purple text-white">
+                                                        <i class="fas fa-robot"></i>
+                                                    </span>
+                                                </div>
+                                                <h5 class="card-title">5. AI Davranış Ayarları</h5>
+                                                <p class="text-muted small">AI asistanınızın iletişim tarzını ayarlayın</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <div class="mb-3">
+                                                    <span class="avatar avatar-lg bg-success text-white">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </span>
+                                                </div>
+                                                <h5 class="card-title text-success">6. Hazır!</h5>
+                                                <p class="text-muted small">AI asistanınız markanıza özel içerik üretecek</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 
-                                <div class="setup-footer text-center mt-5">
-                                    <div class="setup-progress-info mb-3">
-                                        <div class="d-flex justify-content-center align-items-center gap-3">
-                                            <div class="progress-circle-mini">
-                                                <svg width="24" height="24" viewBox="0 0 24 24">
-                                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
-                                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" 
-                                                            stroke-dasharray="63" stroke-dashoffset="{{ 63 - (63 * round($completionPercentage) / 100) }}" 
-                                                            stroke-linecap="round" transform="rotate(-90 12 12)"/>
-                                                </svg>
-                                            </div>
-                                            <span class="text-muted">{{ round($completionPercentage) }}% Tamamlandı</span>
-                                        </div>
+                                <div class="text-center mt-4">
+                                    <div class="mb-3">
+                                        <span class="text-muted">{{ round($completionPercentage) }}% Tamamlandı</span>
                                     </div>
-                                    <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" class="btn btn-primary btn-lg px-4 py-2">
-                                        <i class="fas fa-play me-2"></i>
-                                        Kuruluma Başla
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -494,7 +483,8 @@
 </div>
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('admin-assets/css/ai-profile-wizard.css') }}">
+<link rel="stylesheet" href="{{ asset('admin-assets/css/ai-profile-wizard.css') }}?v={{ time() }}">
+<script src="{{ asset('admin-assets/libs/ai/ai-word-buffer.js') }}?v={{ time() }}"></script>
 <style>
 .ai-profile-show-container {
     min-height: 100vh;
@@ -555,6 +545,28 @@
     position: relative;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Brand Story Font Size Override */
+.brand-story-text,
+#brand-story-content p,
+#brand-story-content .brand-story-text {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    font-weight: 400 !important;
+    color: var(--tblr-body-color) !important;
+}
+
+.brand-story-content .card-body {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+}
+
+/* Dark/Light mode text color */
+[data-bs-theme="dark"] .brand-story-text,
+[data-bs-theme="dark"] #brand-story-content p,
+[data-bs-theme="dark"] #brand-story-content .brand-story-text {
+    color: var(--tblr-body-color) !important;
 }
 
 /* 2-1-2 Layout Specific Styles */
@@ -865,90 +877,333 @@ document.addEventListener('DOMContentLoaded', function() {
             progressCircle.style.strokeDashoffset = currentOffset;
         }, 500);
     }
+    
+    // Profil tamamlandıktan sonra otomatik hikaye oluşturma
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('completed') === '1') {
+        console.log('Profil tamamlandı - otomatik hikaye oluşturma başlatılıyor');
+        
+        // Query parametresini URL'den temizle
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        
+        // Hikaye yoksa otomatik oluştur
+        const brandStoryEmpty = document.getElementById('brand-story-empty');
+        if (brandStoryEmpty && brandStoryEmpty.style.display !== 'none') {
+            // Hemen loading state'e geç
+            brandStoryEmpty.style.display = 'none';
+            document.getElementById('brand-story-loading').style.display = 'block';
+            
+            // Kısa bir delay ile otomatik hikaye oluştur
+            setTimeout(() => {
+                generateBrandStory();
+            }, 500);
+        }
+    }
+    
+    // Sayfa açılışında hikaye yoksa ve gerekli bilgiler varsa otomatik oluştur
+    console.log('🔍 Sayfa yüklendi - otomatik hikaye kontrolü');
+    
+    // Sadece hikaye boş ve gerekli bilgiler varsa çalışsın
+    const brandStoryEmpty = document.getElementById('brand-story-empty');
+    const brandStoryLoading = document.getElementById('brand-story-loading');
+    const generateButton = document.querySelector('button[onclick="generateBrandStory()"]');
+    
+    console.log('🔍 Element kontrolleri:', {
+        brandStoryEmpty: brandStoryEmpty ? 'bulundu' : 'bulunamadı',
+        brandStoryLoading: brandStoryLoading ? 'bulundu' : 'bulunamadı',
+        generateButton: generateButton ? 'bulundu' : 'bulunamadı',
+        emptyVisible: brandStoryEmpty ? brandStoryEmpty.style.display !== 'none' : false,
+        emptyDisplayStyle: brandStoryEmpty ? brandStoryEmpty.style.display : 'null',
+        emptyComputedStyle: brandStoryEmpty ? window.getComputedStyle(brandStoryEmpty).display : 'null'
+    });
+    
+    // Daha güvenli visibility kontrolü - element görünür mü?
+    const isEmptyVisible = brandStoryEmpty && brandStoryEmpty.offsetParent !== null;
+    
+    console.log('🔍 Visibility kontrol:', {
+        hasOffsetParent: brandStoryEmpty ? brandStoryEmpty.offsetParent !== null : false,
+        isEmptyVisible: isEmptyVisible
+    });
+    
+    if (brandStoryEmpty && isEmptyVisible && generateButton) {
+        console.log('✅ Sayfa açılış - otomatik hikaye oluşturma DEVRE DIŞI (streaming test için)');
+        
+        // Test için otomatik oluşturmayı devre dışı bırak
+        // setTimeout(() => {
+        //     console.log('✅ generateBrandStory() çağrılıyor');
+        //     generateBrandStory();
+        // }, 500);
+    } else {
+        console.log('❌ Otomatik hikaye oluşturma şartları sağlanmadı');
+    }
 });
 
-// Marka hikayesi oluşturma fonksiyonu
+// 🚀 GERÇEK ZAMANLI STREAMING - Marka hikayesi oluşturma fonksiyonu
 function generateBrandStory() {
-    const button = event.target;
-    const originalText = button.innerHTML;
+    const button = event ? event.target : null;
+    const originalText = button ? button.innerHTML : '';
     
-    // Butonu loading state'e al
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Hikaye Oluşturuluyor...';
+    // Butonu loading state'e al (varsa)
+    if (button) {
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Hikaye Oluşturuluyor...';
+    }
     
-    fetch('{{ route("admin.ai.profile.generate-story") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Başarılı - sayfayı yenile
-            location.reload();
-        } else {
-            // Hata mesajı göster
-            alert('Hata: ' + data.message);
+    // UI state'leri değiştir
+    const brandStoryEmpty = document.getElementById('brand-story-empty');
+    const brandStoryLoading = document.getElementById('brand-story-loading');
+    
+    if (brandStoryEmpty && brandStoryEmpty.style.display !== 'none') {
+        brandStoryEmpty.style.display = 'none';
+        brandStoryLoading.style.display = 'block';
+    }
+
+    // ✨ SERVER-SENT EVENTS ile REAL-TIME STREAMING
+    const streamUrl = '{{ route("admin.ai.profile.generate-story-stream") }}?v=' + Date.now();
+    console.log('🔗 Stream URL (with cache bust):', streamUrl);
+    
+    const eventSource = new EventSource(streamUrl);
+    
+    let isStreamStarted = false;
+    let storyContainer = null;
+    let storyElement = null;
+    let wordBuffer = null;
+    
+    console.log('📡 EventSource oluşturuldu, bağlantı kuruluyor...');
+    console.log('🔄 CACHE BUST VERSION:', Date.now());
+    
+    // Test bağlantısı
+    eventSource.onopen = function(event) {
+        console.log('🎯 STREAMING CONNECTION AÇILDI!', event);
+    };
+    
+    eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        
+        console.log('📡 Stream data received:', data);
+        console.log('🎯 STREAMING ENDPOINT ÇALIŞIYOR! Cache bust başarılı!');
+        
+        switch(data.type) {
+            case 'start':
+                console.log('🚀 Stream başladı:', data.message);
+                // Container'ı hazırla
+                prepareStreamingContainer();
+                break;
+                
+            case 'chunk':
+                console.log('📝 Chunk received:', data.content);
+                // Chunk'ı word buffer'a ekle
+                if (wordBuffer) {
+                    wordBuffer.addContent(data.content);
+                }
+                break;
+                
+            case 'complete':
+                console.log('✅ Stream tamamlandı');
+                // Final flush
+                if (wordBuffer) {
+                    wordBuffer.flush();
+                }
+                eventSource.close();
+                break;
+                
+            case 'error':
+                console.error('❌ Stream hatası:', data.message);
+                showStoryErrorModal(data.message);
+                eventSource.close();
+                // UI state'leri geri al
+                document.getElementById('brand-story-loading').style.display = 'none';
+                document.getElementById('brand-story-empty').style.display = 'block';
+                break;
         }
-    })
-    .catch(error => {
-        console.error('Hata:', error);
-        alert('Hikaye oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
-    })
-    .finally(() => {
-        // Butonu normale döndür
-        button.disabled = false;
-        button.innerHTML = originalText;
+    };
+    
+    eventSource.onerror = function(error) {
+        console.error('❌ EventSource hatası:', error);
+        eventSource.close();
+        showStoryErrorModal('Hikaye oluşturulurken bağlantı hatası. Lütfen tekrar deneyin.');
+        // UI state'leri geri al
+        document.getElementById('brand-story-loading').style.display = 'none';
+        document.getElementById('brand-story-empty').style.display = 'block';
+    };
+    
+    // Container hazırlama fonksiyonu
+    function prepareStreamingContainer() {
+        // Loading'i gizle
+        document.getElementById('brand-story-loading').style.display = 'none';
+        
+        // Hikaye container'ını hazırla
+        storyContainer = document.getElementById('brand-story-content');
+        if (!storyContainer) {
+            console.error('❌ Story container bulunamadı');
+            return;
+        }
+        
+        // Container'ı görünür yap
+        storyContainer.style.display = 'block';
+        
+        // Hikaye metnini gösterecek element'i bul
+        storyElement = storyContainer.querySelector('.brand-story-text') || storyContainer.querySelector('p') || storyContainer;
+        
+        // Metin alanını temizle
+        storyElement.innerHTML = '';
+        
+        // CSS sınıfını ekle (font size için)
+        storyElement.classList.add('brand-story-text');
+        
+        // ✨ REAL-TIME Word Buffer'ı başlat
+        wordBuffer = window.createAIWordBuffer(storyElement, {
+            wordDelay: 60,               // Çok hızlı (gerçek zamanlı)
+            minWordLength: 1,            // En az 1 karakter
+            punctuationDelay: 100,       // Noktalama sonrası 100ms ek
+            enableMarkdown: true,        // Markdown desteği
+            scrollCallback: () => {
+                // Scroll to bottom if needed
+                storyContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+        
+        // Word Buffer'ı başlat
+        wordBuffer.start();
+        
+        console.log('✅ Streaming container hazırlandı');
+    }
+    
+    // Butonu normale döndür (stream bittiğinde)
+    setTimeout(() => {
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    }, 1000); // 1 saniye delay
+}
+
+// ✨ Word Buffer ile hikaye gösterimi
+function showStoryWithWordBuffer(storyText) {
+    console.log('🎬 Word Buffer ile hikaye gösterimi başlatılıyor');
+    
+    // Loading'i gizle
+    document.getElementById('brand-story-loading').style.display = 'none';
+    
+    // Hikaye container'ını hazırla
+    const storyContainer = document.getElementById('brand-story-content');
+    if (!storyContainer) {
+        console.error('❌ Story container bulunamadı');
+        location.reload();
+        return;
+    }
+    
+    // Container'ı görünür yap
+    storyContainer.style.display = 'block';
+    
+    // Hikaye metnini gösterecek element'i bul
+    const storyElement = storyContainer.querySelector('.brand-story-text') || storyContainer.querySelector('p') || storyContainer;
+    
+    // Metin alanını temizle
+    storyElement.innerHTML = '';
+    
+    // CSS sınıfını ekle (font size için)
+    storyElement.classList.add('brand-story-text');
+    
+    // Word Buffer'ı başlat
+    const wordBuffer = window.createAIWordBuffer(storyElement, {
+        wordDelay: 120,              // Kelime başına 120ms
+        minWordLength: 1,            // En az 1 karakter
+        punctuationDelay: 200,       // Noktalama sonrası 200ms ek
+        enableMarkdown: true,        // Markdown desteği
+        scrollCallback: () => {
+            // Scroll to bottom if needed
+            storyContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     });
+    
+    // Word Buffer'ı başlat
+    wordBuffer.start();
+    
+    // Hikaye metnini buffer'a ekle
+    wordBuffer.addContent(storyText);
+    
+    // 5 saniye sonra flush (güvenlik için)
+    setTimeout(() => {
+        wordBuffer.flush();
+    }, 5000);
+    
+    console.log('✅ Word Buffer hikaye gösterimi başlatıldı');
 }
 
 // Marka hikayesi yeniden oluşturma fonksiyonu
 function regenerateBrandStory() {
-    if (!confirm('Mevcut hikayeniz silinecek ve yeni bir hikaye oluşturulacak. Devam etmek istiyor musunuz?')) {
-        return;
-    }
-    
-    const button = event.target;
-    const originalText = button.innerHTML;
+    const $btn = $('#confirmRegenerateStory');
+    const originalText = $btn.html();
     
     // Butonu loading state'e al
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Yeniden Oluşturuluyor...';
+    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Yeniden Oluşturuluyor...');
     
-    fetch('{{ route("admin.ai.profile.generate-story") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            regenerate: true
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Başarılı - sayfayı yenile
-            location.reload();
-        } else {
-            // Hata mesajı göster
-            alert('Hata: ' + data.message);
+    // Modal'ı kapat
+    $('#regenerateStoryModal').modal('hide');
+    
+    // UI state'leri değiştir
+    document.getElementById('brand-story-content').style.display = 'none';
+    document.getElementById('brand-story-loading').style.display = 'block';
+    
+    // ✨ STREAMING kullanarak yeniden oluştur
+    console.log('🔄 Regeneration -> STREAMING ENDPOINT kullanılıyor');
+    
+    // Streaming endpoint'i çağır (regenerate parametresi ile)
+    const streamUrl = '{{ route("admin.ai.profile.generate-story-stream") }}?regenerate=true&v=' + Date.now();
+    console.log('🔗 Regeneration Stream URL:', streamUrl);
+    
+    const eventSource = new EventSource(streamUrl);
+    
+    let wordBuffer = null;
+    
+    eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        
+        console.log('📡 Regeneration stream data:', data);
+        
+        switch(data.type) {
+            case 'start':
+                console.log('🚀 Regeneration stream başladı');
+                prepareStreamingContainer();
+                break;
+                
+            case 'chunk':
+                console.log('📝 Regeneration chunk:', data.content);
+                if (wordBuffer) {
+                    wordBuffer.addContent(data.content);
+                }
+                break;
+                
+            case 'complete':
+                console.log('✅ Regeneration stream tamamlandı');
+                if (wordBuffer) {
+                    wordBuffer.flush();
+                }
+                // Mevcut hikaye varsa Word Buffer ile göster
+                if (data.story) {
+                    showStoryWithWordBuffer(data.story);
+                }
+                eventSource.close();
+                break;
+                
+            case 'error':
+                console.error('❌ Regeneration stream hatası:', data.message);
+                showStoryErrorModal(data.message);
+                eventSource.close();
+                break;
         }
-    })
-    .catch(error => {
-        console.error('Hata:', error);
-        alert('Hikaye yeniden oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
-    })
-    .finally(() => {
-        // Butonu normale döndür
-        button.disabled = false;
-        button.innerHTML = originalText;
-    });
+    };
+    
+    eventSource.onerror = function(error) {
+        console.error('❌ Regeneration EventSource hatası:', error);
+        eventSource.close();
+        showStoryErrorModal('Hikaye yeniden oluşturulurken bağlantı hatası.');
+    };
+    
+    // Butonu normale döndür
+    $btn.prop('disabled', false).html(originalText);
 }
 
 // Profil sıfırlama modal handler
@@ -971,13 +1226,13 @@ $(document).on('click', '#confirmResetProfile', function() {
                 // Modal'ı kapat
                 $('#resetProfileModal').modal('hide');
                 
-                // Başarı mesajı göster
-                alert('Profil başarıyla sıfırlandı! Sayfa yeniden yüklenecek.');
+                // Başarı mesajını modal body'de göster
+                showResetSuccessMessage(response.message);
                 
                 // Sayfayı yenile
                 setTimeout(function() {
                     location.reload();
-                }, 1000);
+                }, 2000);
             } else {
                 alert('Profil sıfırlanırken bir hata oluştu: ' + (response.message || 'Bilinmeyen hata'));
                 $btn.prop('disabled', false).html(originalText);
@@ -990,6 +1245,97 @@ $(document).on('click', '#confirmResetProfile', function() {
         }
     });
 });
+
+// Hikaye yeniden oluşturma modal handler
+$(document).on('click', '#confirmRegenerateStory', function() {
+    regenerateBrandStory();
+});
+
+// Hikaye hata modal'ını göster fonksiyonu
+function showStoryErrorModal(message) {
+    // Modal içeriğini güncelle
+    document.getElementById('storyErrorMessage').textContent = message;
+    
+    // Modal'ı göster
+    const modal = new bootstrap.Modal(document.getElementById('storyErrorModal'));
+    modal.show();
+}
+
+// Başarı mesajı göster fonksiyonu
+function showResetSuccessMessage(message) {
+    // Mevcut marka hikayesi alanını temizle
+    document.getElementById('brand-story-content').style.display = 'none';
+    document.getElementById('brand-story-loading').style.display = 'none';
+    
+    // Başarı mesajını göster
+    const successDiv = document.createElement('div');
+    successDiv.innerHTML = `
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+            </div>
+            <h5 class="text-success mb-3">${message}</h5>
+            
+            <div class="alert alert-info mb-4">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle me-3" style="font-size: 1.2rem;"></i>
+                    <div class="text-start">
+                        <h6 class="mb-1">Marka Hikayesi Oluşturmak İçin:</h6>
+                        <p class="mb-0 small">AI asistanınızın size özel hikaye yazabilmesi için profil bilgilerinizi tamamlamanız gerekiyor.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center p-3">
+                            <i class="fas fa-industry mb-2" style="font-size: 2rem;"></i>
+                            <h6 class="mb-1">Sektör Bilgisi</h6>
+                            <small class="text-muted">Hangi sektörde çalışıyorsunuz?</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center p-3">
+                            <i class="fas fa-building mb-2" style="font-size: 2rem;"></i>
+                            <h6 class="mb-1">Şirket Bilgileri</h6>
+                            <small class="text-muted">Markanızın temel özellikleri</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <a href="{{ route('admin.ai.profile.edit', ['step' => 1]) }}" class="btn btn-primary btn-lg me-2">
+                    <i class="fas fa-rocket me-2"></i>
+                    Profili Oluşturmaya Başla
+                </a>
+            </div>
+            
+            <div class="text-muted mb-3">
+                <small>Profil tamamlandıktan sonra AI asistanınız size özel marka hikayesi yazacak</small>
+            </div>
+            
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `;
+    
+    // Marka hikayesi card body'sini değiştir
+    const cardBody = document.querySelector('.card-body');
+    if (cardBody) {
+        const brandStorySection = cardBody.querySelector('.row.g-4.mb-4');
+        if (brandStorySection) {
+            const brandStoryCardBody = brandStorySection.querySelector('.card-body');
+            if (brandStoryCardBody) {
+                brandStoryCardBody.innerHTML = successDiv.innerHTML;
+            }
+        }
+    }
+}
 </script>
 
 {{-- Profil Sıfırlama Modal --}}
@@ -1028,6 +1374,90 @@ $(document).on('click', '#confirmResetProfile', function() {
                 </button>
                 <button type="button" class="btn btn-danger" id="confirmResetProfile">
                     <i class="fas fa-trash me-2"></i>Evet, Profili Sıfırla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Hikaye Hata Modal --}}
+<div class="modal fade" id="storyErrorModal" tabindex="-1" aria-labelledby="storyErrorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="storyErrorModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    Hikaye Oluşturma Hatası
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-times-circle me-2"></i>
+                    <strong>Hata:</strong> Hikaye oluşturma işlemi başarısız oldu.
+                </div>
+                <p class="mb-3">
+                    <i class="fas fa-info-circle text-muted me-2"></i>
+                    <span id="storyErrorMessage">Bilinmeyen bir hata oluştu.</span>
+                </p>
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>Çözüm önerileri:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Profil bilgilerinizi kontrol edin (sektör ve marka adı dolu olmalı)</li>
+                        <li>İnternet bağlantınızı kontrol edin</li>
+                        <li>Birkaç dakika sonra tekrar deneyin</li>
+                        <li>Sorun devam ederse destek ekibine başvurun</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Kapat
+                </button>
+                <a href="{{ route('admin.ai.profile.edit', ['step' => 1]) }}" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i>Profili Düzenle
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Hikaye Yeniden Oluşturma Modal --}}
+<div class="modal fade" id="regenerateStoryModal" tabindex="-1" aria-labelledby="regenerateStoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="regenerateStoryModalLabel">
+                    <i class="fas fa-sync-alt text-primary me-2"></i>
+                    Hikayeyi Yeniden Oluştur
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Bilgi:</strong> Mevcut hikayeniz yenisiyle değiştirilecek!
+                </div>
+                <p class="mb-3">
+                    Hikayenizi yeniden oluşturduğunuzda:
+                </p>
+                <ul class="list-unstyled mb-3">
+                    <li><i class="fas fa-trash text-warning me-2"></i> Mevcut hikayeniz silinecek</li>
+                    <li><i class="fas fa-magic text-primary me-2"></i> AI güncel profil bilgilerinize göre yeni bir hikaye yazacak</li>
+                    <li><i class="fas fa-clock text-muted me-2"></i> İşlem 30-60 saniye sürebilir</li>
+                    <li><i class="fas fa-check text-success me-2"></i> Yeni hikaye otomatik olarak kaydedilecek</li>
+                </ul>
+                <p class="text-muted">
+                    Devam etmek istiyor musunuz?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-primary" id="confirmRegenerateStory">
+                    <i class="fas fa-wand-magic-sparkles me-2"></i>Evet, Yeniden Oluştur
                 </button>
             </div>
         </div>

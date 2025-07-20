@@ -1,6 +1,8 @@
 {{-- AI Debug Dashboard - Prompt Usage Heatmap --}}
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('pretitle')
 {{ __('ai::admin.artificial_intelligence') }}
 @endsection

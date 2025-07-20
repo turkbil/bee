@@ -92,6 +92,82 @@ class DeepSeekService
         }
     }
 
+    /**
+     * STREAMING completion generation
+     */
+    public function generateCompletionStream($messages, ?callable $streamCallback = null)
+    {
+        try {
+            // Merkezi helper ile API anahtarını kontrol et
+            if (!$this->apiKey) {
+                throw new \Exception('API anahtarı bulunamadı. Lütfen admin panelden AI ayarlarını yapılandırın.');
+            }
+
+            // Stream request payload
+            $payload = [
+                'model' => $this->model,
+                'messages' => $messages,
+                'max_tokens' => 2048,
+                'temperature' => 0.7,
+                'stream' => true, // ✨ STREAMING AKTIF
+            ];
+
+            // ✨ STREAMING HTTP REQUEST
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->timeout(120)->stream('POST', $this->baseUrl . '/chat/completions', $payload);
+
+            $fullResponse = '';
+            $tokensUsed = 0;
+
+            // Stream'i işle
+            foreach ($response as $chunk) {
+                $lines = explode("\n", $chunk);
+                
+                foreach ($lines as $line) {
+                    if (empty($line) || !str_starts_with($line, 'data: ')) continue;
+                    
+                    $data = substr($line, 6);
+                    
+                    if ($data === '[DONE]') break;
+                    
+                    $json = json_decode($data, true);
+                    
+                    if (isset($json['choices'][0]['delta']['content'])) {
+                        $content = $json['choices'][0]['delta']['content'];
+                        $fullResponse .= $content;
+                        
+                        // Stream callback'i çağır
+                        if ($streamCallback) {
+                            $streamCallback($content);
+                        }
+                    }
+                    
+                    // Token kullanımını hesapla
+                    if (isset($json['usage']['total_tokens'])) {
+                        $tokensUsed = $json['usage']['total_tokens'];
+                    }
+                }
+            }
+
+            return [
+                'response' => $fullResponse,
+                'tokens_used' => $tokensUsed,
+                'success' => true
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('DeepSeek streaming API hatası: ' . $e->getMessage());
+            return [
+                'response' => null,
+                'tokens_used' => 0,
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
     public function generateCompletion($message, $conversationHistory = [])
     {
         $messages = $this->formatMessages($conversationHistory, null, $message);
@@ -831,5 +907,23 @@ class DeepSeekService
             // Hata durumunda fallback
             return 'essential';
         }
+    }
+
+    /**
+     * Base URL setter - Dynamic provider sistemi için
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->baseUrl = $baseUrl;
+        return $this;
+    }
+
+    /**
+     * Model setter - Dynamic provider sistemi için
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+        return $this;
     }
 }

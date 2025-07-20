@@ -3,11 +3,12 @@ namespace Modules\Page\App\Models;
 
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
+use App\Traits\HasSeo;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Page extends BaseModel
 {
-    use Sluggable, HasTranslations;
+    use Sluggable, HasTranslations, HasSeo;
 
     protected $primaryKey = 'page_id';
 
@@ -17,7 +18,6 @@ class Page extends BaseModel
         'body',
         'css',
         'js',
-        'seo',
         'is_active',
         'is_homepage',
     ];
@@ -27,7 +27,6 @@ class Page extends BaseModel
         'title' => 'array',
         'slug' => 'array',
         'body' => 'array',
-        'seo' => 'array',
     ];
 
     /**
@@ -66,167 +65,98 @@ class Page extends BaseModel
     {
         return $query->where('is_homepage', true);
     }
-    
-    // SEO Helper Methods
+
+    /**
+     * HasSeo trait fallback implementations
+     */
     
     /**
-     * SEO verilerini varsayılan değerlerle birleştir
+     * Get fallback title for SEO
      */
-    public function getSeoAttribute($value)
+    protected function getSeoFallbackTitle(): ?string
     {
-        $decoded = json_decode($value, true) ?: [];
-        $defaults = $this->getSeoDefaults();
+        return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
+    }
+
+    /**
+     * Get fallback description for SEO
+     */
+    protected function getSeoFallbackDescription(): ?string
+    {
+        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
         
-        // Her dil için default değerleri merge et
-        foreach ($this->getAvailableLocales() as $locale) {
-            $decoded[$locale] = array_merge($defaults, $decoded[$locale] ?? []);
+        if (is_string($content)) {
+            return \Illuminate\Support\Str::limit(strip_tags($content), 160);
         }
         
-        return $decoded;
+        return null;
     }
-    
+
     /**
-     * SEO verilerini kaydet - boş değerleri temizle
+     * Get fallback keywords for SEO
      */
-    public function setSeoAttribute($value)
+    protected function getSeoFallbackKeywords(): array
     {
-        if (!is_array($value)) {
-            $this->attributes['seo'] = json_encode([]);
-            return;
+        $title = $this->getSeoFallbackTitle();
+        
+        if ($title) {
+            // Extract meaningful words from title
+            $words = array_filter(explode(' ', strtolower($title)), function($word) {
+                return strlen($word) > 3; // Only words longer than 3 chars
+            });
+            
+            return array_slice($words, 0, 5); // Max 5 keywords
         }
         
-        $cleaned = [];
-        foreach ($value as $locale => $seoData) {
-            if (is_array($seoData)) {
-                $cleaned[$locale] = array_filter($seoData, function($v) {
-                    return !is_null($v) && $v !== '' && $v !== [];
-                });
-            }
+        return [];
+    }
+
+    /**
+     * Get fallback canonical URL
+     */
+    protected function getSeoFallbackCanonicalUrl(): ?string
+    {
+        $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
+        
+        if ($slug) {
+            return url('/' . ltrim($slug, '/'));
         }
         
-        $this->attributes['seo'] = json_encode($cleaned);
+        return null;
     }
-    
+
     /**
-     * Belirli bir locale ve field için SEO değeri al
+     * Get fallback image for social sharing
      */
-    public function getSeoField(string $locale, string $field, $default = null)
+    protected function getSeoFallbackImage(): ?string
     {
-        return $this->seo[$locale][$field] ?? $default;
-    }
-    
-    /**
-     * Belirli bir locale ve field için SEO değeri güncelle
-     */
-    public function updateSeoField(string $locale, string $field, $value)
-    {
-        $seo = $this->seo;
-        $seo[$locale][$field] = $value;
-        $this->update(['seo' => $seo]);
-    }
-    
-    /**
-     * Meta title al - fallback hierarchy ile
-     */
-    public function getMetaTitle(string $locale = 'tr'): string
-    {
-        // 1. SEO meta_title
-        $metaTitle = $this->getSeoField($locale, 'meta_title');
-        if (!empty($metaTitle)) {
-            return $metaTitle;
+        // Check if page has any images in content
+        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
+        
+        if (is_string($content) && preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $content, $matches)) {
+            return $matches[1];
         }
         
-        // 2. Sayfa title
-        $pageTitle = $this->getTranslated('title', $locale);
-        if (!empty($pageTitle)) {
-            return $pageTitle;
-        }
-        
-        // 3. Fallback
-        return config('app.name', 'Site');
+        return null;
     }
-    
+
     /**
-     * Meta description al
+     * Get fallback schema markup
      */
-    public function getMetaDescription(string $locale = 'tr'): string
-    {
-        return $this->getSeoField($locale, 'meta_description', '');
-    }
-    
-    /**
-     * Keywords al
-     */
-    public function getKeywords(string $locale = 'tr'): array
-    {
-        return $this->getSeoField($locale, 'keywords', []);
-    }
-    
-    /**
-     * OG Image al
-     */
-    public function getOgImage(string $locale = 'tr'): ?string
-    {
-        return $this->getSeoField($locale, 'og_image');
-    }
-    
-    /**
-     * Robots meta al
-     */
-    public function getRobots(string $locale = 'tr'): string
-    {
-        return $this->getSeoField($locale, 'robots', 'index,follow');
-    }
-    
-    /**
-     * Canonical URL al
-     */
-    public function getCanonicalUrl(string $locale = 'tr'): ?string
-    {
-        $canonical = $this->getSeoField($locale, 'canonical_url');
-        
-        if (empty($canonical)) {
-            // Auto-generate from slug
-            $slug = $this->getTranslated('slug', $locale);
-            if ($slug) {
-                return url('/' . $slug);
-            }
-        }
-        
-        return $canonical;
-    }
-    
-    /**
-     * SEO varsayılan değerleri
-     */
-    protected function getSeoDefaults(): array
+    protected function getSeoFallbackSchemaMarkup(): ?array
     {
         return [
-            'meta_title' => null,
-            'meta_description' => null,
-            'keywords' => [],
-            'og_title' => null,
-            'og_description' => null,
-            'og_image' => null,
-            'canonical_url' => null,
-            'robots' => 'index,follow',
-            'schema_markup' => null,
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => $this->getSeoFallbackTitle(),
+            'description' => $this->getSeoFallbackDescription(),
+            'url' => $this->getSeoFallbackCanonicalUrl(),
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/')
+            ]
         ];
-    }
-    
-    /**
-     * Mevcut dilleri al
-     */
-    protected function getAvailableLocales(): array
-    {
-        // TenantLanguage'dan al veya fallback
-        try {
-            return \Modules\LanguageManagement\App\Models\TenantLanguage::where('is_active', true)
-                ->pluck('code')
-                ->toArray();
-        } catch (\Exception $e) {
-            return ['tr', 'en']; // Fallback
-        }
     }
     
 }

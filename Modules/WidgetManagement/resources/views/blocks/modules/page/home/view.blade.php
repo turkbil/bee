@@ -1,11 +1,14 @@
-<?php
+@php
 use Modules\Page\app\Models\Page;
 
 // Ana sayfayı veritabanından çek
 $homePage = Page::where('is_homepage', true)
     ->where('is_active', true)
     ->first();
-?>
+
+// Current locale
+$currentLocale = app()->getLocale();
+@endphp
 
 <div class="mb-8">
     @if($settings['show_title'] ?? true)
@@ -13,8 +16,11 @@ $homePage = Page::where('is_homepage', true)
     @endif
     
     @if($homePage)
+        @php
+            $pageBody = $homePage->body[$currentLocale] ?? $homePage->body['tr'] ?? '';
+        @endphp
         <div class="prose max-w-none">
-            {!! $homePage->body !!}
+            {!! $pageBody !!}
         </div>
     @else
         <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded">

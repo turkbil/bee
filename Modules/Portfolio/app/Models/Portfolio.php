@@ -4,6 +4,7 @@ namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
+use App\Traits\HasSeo;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +13,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Portfolio extends BaseModel implements HasMedia
 {
-    use Sluggable, SoftDeletes, InteractsWithMedia, HasTranslations;
+    use Sluggable, SoftDeletes, InteractsWithMedia, HasTranslations, HasSeo;
 
     protected $primaryKey = 'portfolio_id';
 
@@ -24,9 +25,6 @@ class Portfolio extends BaseModel implements HasMedia
         'image',
         'css',
         'js',
-        'metakey',
-        'metadesc',
-        'seo',
         'client',
         'date',
         'url',
@@ -38,100 +36,124 @@ class Portfolio extends BaseModel implements HasMedia
         'title' => 'array',
         'slug' => 'array',
         'body' => 'array',
-        'metakey' => 'array',
-        'metadesc' => 'array',
-        'seo' => 'array',
     ];
 
     /**
      * Çevrilebilir alanlar
      */
-    protected $translatable = ['title', 'slug', 'body', 'metakey', 'metadesc'];
+    protected $translatable = ['title', 'slug', 'body'];
 
     /**
-     * SEO alanını belirli dil için getir
+     * HasSeo trait fallback implementations
      */
-    public function getSeoField(string $field, ?string $locale = null, $default = null)
+    
+    /**
+     * Get fallback title for SEO
+     */
+    protected function getSeoFallbackTitle(): ?string
     {
-        $locale = $locale ?? app()->getLocale();
-        return $this->seo[$locale][$field] ?? $this->seo[$field] ?? $default;
+        return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
     }
 
     /**
-     * SEO title getir (fallback sistemi ile)
+     * Get fallback description for SEO
      */
-    public function getSeoTitle(?string $locale = null): string
+    protected function getSeoFallbackDescription(): ?string
     {
-        $locale = $locale ?? app()->getLocale();
+        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
         
-        // SEO title varsa onu döndür
-        $seoTitle = $this->getSeoField('title', $locale);
-        if ($seoTitle) {
-            return $seoTitle;
+        if (is_string($content)) {
+            return \Illuminate\Support\Str::limit(strip_tags($content), 160);
         }
         
-        // Yoksa normal title'ı döndür
-        return $this->title[$locale] ?? $this->title['tr'] ?? '';
+        return null;
     }
 
     /**
-     * SEO description getir (fallback sistemi ile)
+     * Get fallback keywords for SEO
      */
-    public function getSeoDescription(?string $locale = null): string
+    protected function getSeoFallbackKeywords(): array
     {
-        $locale = $locale ?? app()->getLocale();
+        $keywords = [];
         
-        // SEO description varsa onu döndür
-        $seoDesc = $this->getSeoField('description', $locale);
-        if ($seoDesc) {
-            return $seoDesc;
+        // Extract from title
+        $title = $this->getSeoFallbackTitle();
+        if ($title) {
+            $words = array_filter(explode(' ', strtolower($title)), function($word) {
+                return strlen($word) > 3;
+            });
+            $keywords = array_merge($keywords, array_slice($words, 0, 3));
         }
         
-        // Yoksa metadesc'i döndür
-        $metaDesc = $this->metadesc[$locale] ?? $this->metadesc['tr'] ?? '';
-        if ($metaDesc) {
-            return $metaDesc;
+        // Add category name if available
+        if ($this->category) {
+            $categoryName = $this->category->getTranslated('name', app()->getLocale());
+            if ($categoryName) {
+                $keywords[] = strtolower($categoryName);
+            }
         }
         
-        // Yoksa body'den kısa açıklama oluştur
-        $body = $this->body[$locale] ?? $this->body['tr'] ?? '';
-        return \Illuminate\Support\Str::limit(strip_tags($body), 155, '');
+        return array_unique($keywords);
     }
 
     /**
-     * SEO keywords getir (fallback sistemi ile)
+     * Get fallback canonical URL
      */
-    public function getSeoKeywords(?string $locale = null): string
+    protected function getSeoFallbackCanonicalUrl(): ?string
     {
-        $locale = $locale ?? app()->getLocale();
+        $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
         
-        // SEO keywords varsa onu döndür
-        $seoKeywords = $this->getSeoField('keywords', $locale);
-        if ($seoKeywords) {
-            return $seoKeywords;
+        if ($slug) {
+            return url('/portfolio/' . ltrim($slug, '/'));
         }
         
-        // Yoksa metakey'i döndür
-        $metaKey = $this->metakey[$locale] ?? $this->metakey['tr'] ?? '';
-        return is_array($metaKey) ? implode(', ', $metaKey) : $metaKey;
+        return null;
     }
 
     /**
-     * SEO verilerini güncelle
+     * Get fallback image for social sharing
      */
-    public function updateSeoData(string $field, $value, ?string $locale = null): self
+    protected function getSeoFallbackImage(): ?string
     {
-        $locale = $locale ?? app()->getLocale();
-        $seo = $this->seo ?? [];
-        
-        if (!isset($seo[$locale])) {
-            $seo[$locale] = [];
+        // First try direct image field
+        if ($this->image) {
+            return asset($this->image);
         }
         
-        $seo[$locale][$field] = $value;
-        $this->seo = $seo;
+        // Try media library
+        $media = $this->getFirstMedia('images');
+        if ($media) {
+            return $media->getUrl();
+        }
         
-        return $this;
+        // Extract from content
+        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
+        if (is_string($content) && preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $content, $matches)) {
+            return $matches[1];
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get fallback schema markup
+     */
+    protected function getSeoFallbackSchemaMarkup(): ?array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'CreativeWork',
+            'name' => $this->getSeoFallbackTitle(),
+            'description' => $this->getSeoFallbackDescription(),
+            'url' => $this->getSeoFallbackCanonicalUrl(),
+            'image' => $this->getSeoFallbackImage(),
+            'dateCreated' => $this->created_at?->toISOString(),
+            'dateModified' => $this->updated_at?->toISOString(),
+            'creator' => [
+                '@type' => 'Organization',
+                'name' => config('app.name')
+            ]
+        ];
     }
 
     public function sluggable(): array

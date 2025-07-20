@@ -37,6 +37,18 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
             
+            // Priority System from add migration
+            $table->tinyInteger('priority')->unsigned()->default(3)
+                  ->comment('Priority level: 1=critical, 5=rarely used');
+            
+            // AI Context Weight
+            $table->tinyInteger('ai_weight')->unsigned()->default(50)
+                  ->comment('AI context building weight (1-100)');
+            
+            // Category for grouping
+            $table->enum('category', ['company', 'sector', 'ai', 'founder'])->default('company')
+                  ->comment('Field category grouping');
+            
             // AI Priority Sistemi Alanları - EKLENEN
             $table->integer('ai_priority')->default(3)
                   ->comment('AI context priority: 1=critical, 2=important, 3=normal, 4=optional, 5=rarely_used');
@@ -50,6 +62,10 @@ return new class extends Migration
             $table->index('step');
             $table->index('section');
             $table->index('is_active');
+            
+            // Performance indexes from add migration
+            $table->index(['priority', 'ai_weight'], 'idx_priority_weight');
+            $table->index(['category', 'step'], 'idx_category_step');
         });
     }
 

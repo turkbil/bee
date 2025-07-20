@@ -221,13 +221,13 @@ class PortfolioCategorySeeder extends Seeder
 
         foreach ($categories as $index => $category) {
             PortfolioCategory::create([
-                'title' => $category['title'],
-                'slug' => $category['slug'],
-                'body' => $category['body'],
+                'title' => json_encode($category['title']),
+                'slug' => json_encode($category['slug']),
+                'body' => json_encode($category['body']),
                 'order' => $index,
-                'metakey' => $category['metakey'],
-                'metadesc' => $category['metadesc'],
-                'seo' => $category['seo'] ?? null,
+                'metakey' => json_encode($category['metakey']),
+                'metadesc' => json_encode($category['metadesc']),
+                'seo' => isset($category['seo']) ? json_encode($category['seo']) : null,
                 'is_active' => true,
             ]);
         }

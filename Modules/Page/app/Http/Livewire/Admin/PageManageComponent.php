@@ -1589,9 +1589,125 @@ class PageManageComponent extends Component
    }
 
    /**
-    * AI response'unu HTML formatına dönüştür - görsel kullanıcı deneyimi için
+    * AI response'unu HTML formatına dönüştür - MODERN TEMPLATE SİSTEMİ
     */
    private function formatAIResponseForDisplay(string $text): string
+   {
+       try {
+           // Yeni AI Response Repository sistemini kullan
+           $repository = app(\Modules\AI\App\Services\AIResponseRepository::class);
+           
+           // SEO feature'ını bul (sayfa analizi için genellikle SEO analiz kullanılır)
+           $feature = \Modules\AI\App\Models\AIFeature::where('slug', 'hizli-seo-analizi')
+                                                    ->orWhere('slug', 'seo-puan-analizi')
+                                                    ->first();
+           
+           if ($feature) {
+               // Modern template formatı ile render et
+               $formattedResponse = $repository->formatWithWordBuffer($text, 'feature_test', [
+                   'feature_name' => $feature->name,
+                   'template_type' => $feature->slug
+               ]);
+               
+               // Eğer formatted_html var ise onu kullan
+               if (isset($formattedResponse['formatted_html'])) {
+                   return $formattedResponse['formatted_html'];
+               }
+           }
+           
+           // Fallback: Modern formatı manuel olarak oluştur
+           return $this->buildModernAITemplate($text);
+           
+       } catch (\Exception $e) {
+           // Hata durumunda eski formatı kullan
+           \Log::warning('AI Response Template Error: ' . $e->getMessage());
+           return $this->formatAIResponseLegacy($text);
+       }
+   }
+
+   /**
+    * Modern AI Template Builder - Manual Implementation
+    */
+   private function buildModernAITemplate(string $text): string
+   {
+       // SEO skorunu çıkar
+       $score = $this->extractSEOScoreFromText($text);
+       $scoreColor = $score >= 80 ? 'success' : ($score >= 60 ? 'warning' : 'danger');
+       $scoreStatus = $this->getSEOStatusText($score);
+       
+       // Ana content'i parse et
+       $analysisItems = $this->parseAnalysisItems($text);
+       $recommendations = $this->parseRecommendations($text);
+       
+       return '
+       <div class="ai-response-template seo-score-template">
+           <div class="row">
+               <!-- Hero Score Section - Sol Taraf -->
+               <div class="col-lg-4 col-md-6">
+                   <div class="hero-score-card">
+                       <div class="circular-score circular-score-' . $scoreColor . '">
+                           <div class="score-inner">
+                               <div class="score-number">' . $score . '</div>
+                               <div class="score-label">SEO Skoru</div>
+                           </div>
+                       </div>
+                       <div class="score-status">
+                           <i class="fas fa-' . ($score >= 80 ? 'check-circle' : ($score >= 60 ? 'exclamation-triangle' : 'times-circle')) . ' text-' . $scoreColor . '"></i>
+                           <span class="status-text">' . $scoreStatus . '</span>
+                       </div>
+                   </div>
+               </div>
+               
+               <!-- Analysis Section - Sağ Taraf -->
+               <div class="col-lg-8 col-md-6">
+                   <div class="analysis-section">
+                       <h5><i class="fas fa-chart-line me-2"></i>Analiz Sonuçları</h5>
+                       <div class="analysis-items">
+                           ' . $this->buildAnalysisItemsHTML($analysisItems) . '
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
+           <!-- Recommendations Section - Full Width -->
+           <div class="row mt-4">
+               <div class="col-12">
+                   <div class="recommendations-section">
+                       <h5><i class="fas fa-lightbulb me-2"></i>Önerilerim</h5>
+                       <div class="recommendation-cards">
+                           ' . $this->buildRecommendationCardsHTML($recommendations) . '
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
+           <!-- Technical Details - Collapsible -->
+           <div class="row mt-3">
+               <div class="col-12">
+                   <div class="technical-details">
+                       <div class="card">
+                           <div class="card-header cursor-pointer" data-bs-toggle="collapse" data-bs-target="#technicalDetails">
+                               <i class="fas fa-cog me-2"></i>Teknik Detaylar
+                               <i class="fas fa-chevron-down float-end"></i>
+                           </div>
+                           <div id="technicalDetails" class="collapse">
+                               <div class="card-body">
+                                   <div class="technical-content">
+                                       ' . $this->parseResponseContent($text) . '
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>';
+   }
+
+   /**
+    * Legacy formatı - fallback için
+    */
+   private function formatAIResponseLegacy(string $text): string
    {
        // HTML karakterlerini encode et
        $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
@@ -1616,6 +1732,142 @@ class PageManageComponent extends Component
        $text = '<p class="mb-3">' . $text . '</p>';
        
        return $text;
+   }
+
+   /**
+    * SEO Score Helper Methods - Modern Template System
+    */
+   private function extractSEOScoreFromText(string $text): int
+   {
+       // Regex ile SEO skorunu bul
+       if (preg_match('/\b(\d{1,3})\s*[\/\%]?\s*(?:100|puan|skor)/i', $text, $matches)) {
+           return intval($matches[1]);
+       }
+       return 75; // Default score
+   }
+
+   private function getSEOStatusText(int $score): string
+   {
+       if ($score >= 90) return 'Mükemmel';
+       if ($score >= 80) return 'Çok İyi';
+       if ($score >= 60) return 'İyi';
+       if ($score >= 40) return 'Geliştirilmeli';
+       return 'Kötü';
+   }
+
+   private function parseAnalysisItems(string $text): array
+   {
+       $items = [];
+       $patterns = [
+           '/başlık.*?(eksik|kısa|uzun|problem)/i' => ['label' => 'Başlık Optimizasyonu', 'status' => 'warning'],
+           '/meta.*?(eksik|kısa|uzun|problem)/i' => ['label' => 'Meta Açıklama', 'status' => 'warning'], 
+           '/anahtar.*?(eksik|yok|problem)/i' => ['label' => 'Anahtar Kelime', 'status' => 'danger'],
+           '/içerik.*?(kısa|yetersiz|problem)/i' => ['label' => 'İçerik Kalitesi', 'status' => 'warning'],
+       ];
+       
+       foreach ($patterns as $pattern => $config) {
+           if (preg_match($pattern, $text, $matches)) {
+               $items[] = [
+                   'label' => $config['label'],
+                   'status' => $config['status'], 
+                   'detail' => $matches[0]
+               ];
+           }
+       }
+       
+       if (empty($items)) {
+           $items = [
+               ['label' => 'Genel Analiz', 'status' => 'info', 'detail' => 'SEO analizi tamamlandı'],
+               ['label' => 'Öneriler', 'status' => 'success', 'detail' => 'İyileştirme önerileri hazır']
+           ];
+       }
+       
+       return $items;
+   }
+
+   private function parseRecommendations(string $text): array
+   {
+       $recommendations = [];
+       
+       if (preg_match_all('/(?:^\d+\.|\*|\-)\s*(.+?)$/m', $text, $matches)) {
+           foreach ($matches[1] as $index => $rec) {
+               $recommendations[] = [
+                   'title' => 'Öneri ' . ($index + 1),
+                   'action' => trim($rec),
+                   'priority' => $index < 2 ? 'high' : 'medium'
+               ];
+           }
+       }
+       
+       if (empty($recommendations)) {
+           $recommendations = [
+               ['title' => 'İçerik İyileştir', 'action' => 'Analiz sonuçlarına göre içeriği optimize edin', 'priority' => 'high'],
+               ['title' => 'SEO Teknik', 'action' => 'Teknik SEO iyileştirmelerini uygulayın', 'priority' => 'medium']
+           ];
+       }
+       
+       return $recommendations;
+   }
+
+   private function buildAnalysisItemsHTML(array $items): string
+   {
+       $html = '';
+       foreach ($items as $item) {
+           $status = $item['status'] ?? 'info';
+           $icon = $this->getStatusIcon($status);
+           $html .= '
+           <div class="analysis-item analysis-item-' . $status . '">
+               <div class="item-header">
+                   <i class="' . $icon . ' me-2"></i>
+                   <span class="item-label">' . $item['label'] . '</span>
+                   <span class="badge badge-' . $status . ' ms-auto">' . ucfirst($status) . '</span>
+               </div>
+               <div class="item-detail">' . $item['detail'] . '</div>
+           </div>';
+       }
+       return $html;
+   }
+
+   private function buildRecommendationCardsHTML(array $recommendations): string
+   {
+       $html = '';
+       foreach ($recommendations as $rec) {
+           $priority = $rec['priority'] ?? 'medium';
+           $priorityClass = $priority === 'high' ? 'danger' : ($priority === 'medium' ? 'warning' : 'info');
+           $html .= '
+           <div class="recommendation-card">
+               <div class="card border-' . $priorityClass . '">
+                   <div class="card-body">
+                       <h6 class="card-title">
+                           <i class="fas fa-arrow-up me-2 text-' . $priorityClass . '"></i>
+                           ' . $rec['title'] . '
+                       </h6>
+                       <p class="card-text">' . $rec['action'] . '</p>
+                       <span class="badge bg-' . $priorityClass . '">' . strtoupper($priority) . ' ÖNCELİK</span>
+                   </div>
+               </div>
+           </div>';
+       }
+       return $html;
+   }
+
+   private function parseResponseContent(string $response): string
+   {
+       $content = nl2br(htmlspecialchars($response));
+       $content = preg_replace('/^(#+)\s*(.+?)$/m', '<strong>$2</strong>', $content);
+       $content = preg_replace('/^\*\s*(.+?)$/m', '<li>$1</li>', $content);
+       $content = preg_replace('/(<li>.*<\/li>)/s', '<ul>$1</ul>', $content);
+       return $content;
+   }
+
+   private function getStatusIcon(string $status): string
+   {
+       return match($status) {
+           'success' => 'fas fa-check-circle text-success',
+           'warning' => 'fas fa-exclamation-triangle text-warning', 
+           'danger' => 'fas fa-times-circle text-danger',
+           default => 'fas fa-info-circle text-info'
+       };
    }
 
    /**
@@ -1691,8 +1943,157 @@ class PageManageComponent extends Component
        ]);
    }
 
+   /**
+    * AI Features'ları database'den dinamik yükleme
+    */
+   public function getAIFeaturesProperty()
+   {
+       try {
+           // Sayfa Yönetimi kategorisini al
+           $pageCategory = \Modules\AI\App\Models\AIFeatureCategory::where('slug', 'sayfa-yoenetimi-9')->first();
+           
+           if (!$pageCategory) {
+               \Log::warning('Sayfa Yönetimi kategorisi bulunamadı');
+               return collect([]);
+           }
+
+           return \Modules\AI\App\Models\AIFeature::where('status', 'active')
+               ->where('ai_feature_category_id', $pageCategory->ai_feature_category_id)
+               ->orderBy('sort_order')
+               ->orderBy('name')
+               ->limit(12) // Yeni 18 feature'dan 12 tanesini göster
+               ->get()
+               ->map(function($feature) {
+                   // Token cost JSON'dan estimated değerini al
+                   $tokenCost = 100; // Default
+                   if ($feature->token_cost) {
+                       $tokenData = json_decode($feature->token_cost, true);
+                       $tokenCost = $tokenData['estimated'] ?? 100;
+                   }
+                   
+                   return [
+                       'slug' => $feature->slug,
+                       'name' => $feature->name,
+                       'emoji' => $feature->emoji ?: '🤖',
+                       'description' => $feature->description,
+                       'helper_function' => $feature->helper_function,
+                       'button_text' => $feature->button_text ?: $feature->name,
+                       'token_cost' => $tokenCost
+                   ];
+               });
+       } catch (\Exception $e) {
+           \Log::error('AI Features yüklenemedi: ' . $e->getMessage());
+           return collect([]);
+       }
+   }
+
+   /**
+    * AI Feature için CSS class döndürme
+    */
+   public function getFeatureClass($slug)
+   {
+       $classes = [
+           'hizli-seo-analizi' => 'analysis',
+           'ai-asistan-sohbet' => 'suggestions',
+           'icerik-optimizasyonu' => 'optimize',
+           'anahtar-kelime-arastirmasi' => 'keywords',
+           'coklu-dil-cevirisi' => 'translate',
+           'rekabet-analizi' => 'competitor',
+           'icerik-kalite-skoru' => 'quality',
+           'schema-markup-uretici' => 'schema'
+       ];
+       
+       return $classes[$slug] ?? 'content';
+   }
+
+   /**
+    * AI Feature için ikon döndürme
+    */
+   public function getFeatureIcon($slug)
+   {
+       $icons = [
+           'hizli-seo-analizi' => 'fas fa-chart-line',
+           'ai-asistan-sohbet' => 'fas fa-comments',
+           'icerik-optimizasyonu' => 'fas fa-magic',
+           'anahtar-kelime-arastirmasi' => 'fas fa-key',
+           'coklu-dil-cevirisi' => 'fas fa-language',
+           'rekabet-analizi' => 'fas fa-chart-bar',
+           'icerik-kalite-skoru' => 'fas fa-star',
+           'schema-markup-uretici' => 'fas fa-code',
+           'blog-yazisi-jeneratoru' => 'fas fa-edit',
+           'sosyal-medya-icerigi' => 'fas fa-share-alt',
+           'urun-aciklamasi-yazici' => 'fas fa-box',
+           'meta-etiket-optimizasyonu' => 'fas fa-tags'
+       ];
+       
+       return $icons[$slug] ?? 'fas fa-robot';
+   }
+
+   /**
+    * Dinamik AI Feature çalıştırma
+    */
+   public function executeAIFeature($slug)
+   {
+       \Log::info('🤖 executeAIFeature çağrıldı:', ['slug' => $slug, 'pageId' => $this->pageId]);
+       
+       if (!$this->pageId) {
+           $this->showSaveFirstWarning();
+           return;
+       }
+
+       try {
+           $this->aiProgress = true;
+           
+           // Sayfa verilerini hazırla
+           $pageData = [
+               'title' => $this->multiLangInputs[$this->currentLanguage]['title'] ?? '',
+               'content' => strip_tags($this->multiLangInputs[$this->currentLanguage]['body'] ?? ''),
+               'language' => $this->currentLanguage,
+               'page_id' => $this->pageId,
+               'user_context' => 'page_management'
+           ];
+           
+           // AI helper fonksiyonu ile feature çalıştır
+           $result = ai_execute_feature($slug, $pageData);
+           
+           if ($result && !empty($result['response'])) {
+               // Yanıtı işle ve AI suggestions'a kaydet
+               $response = $result['response'];
+               
+               if (is_string($response)) {
+                   $this->aiSuggestions = [$response];
+               } elseif (is_array($response)) {
+                   $this->aiSuggestions = array_values($response);
+               }
+               
+               // Başarı mesajı göster
+               $this->dispatch('toast', [
+                   'title' => '🤖 AI Feature Tamamlandı',
+                   'message' => 'AI işlemi başarıyla gerçekleştirildi',
+                   'type' => 'success'
+               ]);
+           } else {
+               throw new \Exception('AI feature yanıt vermedi');
+           }
+           
+           $this->aiProgress = false;
+           
+       } catch (\Exception $e) {
+           $this->aiProgress = false;
+           \Log::error('AI Feature hatası:', ['slug' => $slug, 'error' => $e->getMessage()]);
+           
+           $this->dispatch('toast', [
+               'title' => 'AI Feature Hatası',
+               'message' => 'AI işlemi başarısız: ' . $e->getMessage(),
+               'type' => 'error'
+           ]);
+       }
+   }
+
    public function render()
    {
-       return view('page::admin.livewire.page-manage-component');
+       return view('page::admin.livewire.page-manage-component', [
+           'aiFeatures' => $this->getAIFeaturesProperty()
+       ]);
    }
 }

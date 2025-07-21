@@ -3612,6 +3612,351 @@ CONVERSION CONTENT:
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
                 ],
+            ],
+
+            // 🚀 NURULLAH PRO EDİTİON - 20 YENİ SÜPER AI FEATURE
+            // Token tabanlı, inline sonuç sistemi
+
+            // 1. Akıllı Yazı Özetleme
+            [
+                'name' => 'Akıllı Yazı Özetleme',
+                'slug' => 'akilli-yazi-ozetleme',
+                'description' => 'Uzun metinleri önemli noktalarını kaybetmeden profesyonel özete dönüştürür.',
+                'emoji' => '📝',
+                'icon' => 'fas fa-compress',
+                'ai_feature_category_id' => 1,
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 31,
+                'badge_color' => 'primary',
+                'input_placeholder' => 'Özetlemek istediğiniz uzun metni yapıştırın...',
+                'quick_prompt' => 'Sen uzman editör ve metin analiz uzmanısın. Verilen uzun metinleri ana fikirlerini kaybetmeden özet formuna dönüştür.',
+                'response_template' => [
+                    'sections' => ['Özet', 'Ana Noktalar', 'İstatistikler'],
+                    'format' => 'summary_analysis'
+                ],
+                'helper_function' => 'ai_summarize_content',
+                'helper_parameters' => [
+                    'content' => 'Özetlenecek metin içeriği',
+                    'target_ratio' => 'Hedef sıkıştırma oranı (0.2-0.5)'
+                ],
+                'helper_description' => 'Uzun metinleri anlamlı özetlere dönüştürür',
+                'helper_returns' => [
+                    'summary' => 'Özet metin',
+                    'key_points' => 'Ana noktalar',
+                    'word_count' => 'Kelime sayısı karşılaştırması'
+                ],
+                'example_inputs' => [
+                    ['text' => 'Şirketimizin 2024 yılı finansal raporundaki 50 sayfalık detaylı analizi özet halinde sunun', 'label' => 'Finansal Rapor'],
+                    ['text' => 'Pazarlama stratejisi dokümanından önemli noktaları çıkararak 5 paragrafta özetleyin', 'label' => 'Strateji Özeti']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 2. Profesyonel Yazı Uzatma
+            [
+                'name' => 'Profesyonel Yazı Uzatma',
+                'slug' => 'profesyonel-yazi-uzatma',
+                'description' => 'Kısa metinleri detaylandırarak kapsamlı ve değerli içeriğe dönüştürür.',
+                'emoji' => '📈',
+                'icon' => 'fas fa-expand-arrows-alt',
+                'ai_feature_category_id' => 1,
+                'response_length' => 'long',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 32,
+                'badge_color' => 'success',
+                'input_placeholder' => 'Uzatılacak kısa metin veya ana fikirleri yazın...',
+                'quick_prompt' => 'Sen deneyimli copywriter ve içerik geliştirme uzmanısın. Kısa metinleri profesyonel, detaylı ve değer katacak şekilde genişlet.',
+                'response_template' => [
+                    'sections' => ['Genişletilmiş İçerik', 'Ek Detaylar', 'Örnekler'],
+                    'format' => 'expanded_content'
+                ],
+                'helper_function' => 'ai_expand_content',
+                'example_inputs' => [
+                    ['text' => 'E-ticaret SEO önemlidir.', 'label' => 'Kısa Not'],
+                    ['text' => 'Sosyal medya pazarlama stratejisi geliştirin.', 'label' => 'Pazarlama Taslak']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 3. Çoklu Dil Çeviri Uzmanı
+            [
+                'name' => 'Çoklu Dil Çeviri Uzmanı',
+                'slug' => 'coklu-dil-ceviri-uzmani',
+                'description' => 'Profesyonel kalitede çeviri ve kültürel yerelleştirme hizmeti.',
+                'emoji' => '🌐',
+                'icon' => 'fas fa-language',
+                'ai_feature_category_id' => 1,
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'advanced',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 33,
+                'badge_color' => 'info',
+                'input_placeholder' => 'Çevrilecek metin ve hedef dili belirtin...',
+                'quick_prompt' => 'Sen uzman çevirmen ve yerelleştirme uzmanısın. Metinleri kültürel nüansları koruyarak profesyonel kalitede çevir.',
+                'response_template' => [
+                    'sections' => ['Çeviri', 'Kültürel Notlar', 'Alternatif İfadeler'],
+                    'format' => 'professional_translation'
+                ],
+                'helper_function' => 'ai_translate_content',
+                'example_inputs' => [
+                    ['text' => 'Turkish: "Müşteri memnuniyeti önceliğimizdir" → English', 'label' => 'İş Çevirisi'],
+                    ['text' => 'İngilizce pazarlama metnini Türkçeye çevir', 'label' => 'Pazarlama Çevirisi']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 4. Blog Yazısı Jeneratörü
+            [
+                'name' => 'Blog Yazısı Jeneratörü',
+                'slug' => 'blog-yazisi-jeneratoru',
+                'description' => 'SEO uyumlu, özgün ve kapsamlı blog yazıları oluşturur.',
+                'emoji' => '✍️',
+                'icon' => 'fas fa-blog',
+                'ai_feature_category_id' => 1,
+                'response_length' => 'long',
+                'response_format' => 'structured',
+                'complexity_level' => 'advanced',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 34,
+                'badge_color' => 'warning',
+                'input_placeholder' => 'Blog yazısı konusu ve ana noktalarını yazın...',
+                'quick_prompt' => 'Sen deneyimli blog yazarı ve içerik pazarlama uzmanısın. SEO uyumlu, özgün ve okuyucu dostu blog yazıları yaz.',
+                'response_template' => [
+                    'sections' => ['Başlık', 'Giriş', 'Ana İçerik', 'Sonuç', 'SEO Elementleri'],
+                    'format' => 'complete_blog_post'
+                ],
+                'helper_function' => 'ai_generate_blog_post',
+                'example_inputs' => [
+                    ['text' => 'Dijital pazarlama trendleri 2024', 'label' => 'Trend Analizi'],
+                    ['text' => 'Ev dekorasyonu bütçe ipuçları', 'label' => 'Lifestyle Blog']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 5. Sosyal Medya İçerik Paketi
+            [
+                'name' => 'Sosyal Medya İçerik Paketi',
+                'slug' => 'sosyal-medya-icerik-paketi',
+                'description' => 'Tüm platformlar için optimize edilmiş sosyal medya içerikleri.',
+                'emoji' => '📱',
+                'icon' => 'fas fa-share-alt',
+                'ai_feature_category_id' => 2,
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 35,
+                'badge_color' => 'primary',
+                'input_placeholder' => 'Paylaşılacak konu ve hedef platformları yazın...',
+                'quick_prompt' => 'Sen sosyal medya uzmanı ve dijital içerik üreticisisin. Farklı platformlara uygun, engagement odaklı içerikler oluştur.',
+                'response_template' => [
+                    'sections' => ['Facebook Post', 'Instagram Caption', 'Twitter Thread', 'LinkedIn Post'],
+                    'format' => 'social_media_package'
+                ],
+                'helper_function' => 'ai_social_media_content',
+                'example_inputs' => [
+                    ['text' => 'Yeni ürün lansmanı duyurusu', 'label' => 'Ürün Lansmanı'],
+                    ['text' => 'Şirket başarı hikayesi paylaşımı', 'label' => 'Başarı Hikayesi']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 6-20. KALAn 15 AI FEATURE (Token tabanlı inline sistemler)
+            
+            // 6. E-ticaret Ürün Açıklaması
+            [
+                'name' => 'E-ticaret Ürün Açıklaması',
+                'slug' => 'e-ticaret-urun-aciklamasi',
+                'description' => 'Satış odaklı, ikna edici ürün açıklamaları üretir.',
+                'emoji' => '🛍️',
+                'icon' => 'fas fa-shopping-cart',
+                'ai_feature_category_id' => 2,
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 36,
+                'badge_color' => 'success',
+                'input_placeholder' => 'Ürün özelliklerini tanımlayın...',
+                'quick_prompt' => 'Sen e-ticaret copywriter uzmanısın. Ürünleri satış odaklı şekilde tanıt.',
+                'response_template' => [
+                    'sections' => ['Ürün Başlığı', 'Ana Açıklama', 'Teknik Özellikler'],
+                    'format' => 'product_description'
+                ],
+                'helper_function' => 'ai_product_description',
+                'example_inputs' => [
+                    ['text' => 'Bluetooth kulaklık, gürültü engelleme', 'label' => 'Elektronik'],
+                    ['text' => 'Organik bebek maması, glütensiz', 'label' => 'Bebek']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 7. Yaratıcı Başlık Üreticisi  
+            [
+                'name' => 'Yaratıcı Başlık Üreticisi',
+                'slug' => 'yaratici-baslik-ureticisi',
+                'description' => 'Dikkat çekici, tıklanabilir başlık alternatifleri.',
+                'emoji' => '💡',
+                'icon' => 'fas fa-lightbulb',
+                'ai_feature_category_id' => 1,
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 37,
+                'badge_color' => 'warning',
+                'input_placeholder' => 'İçerik konusunu tanımlayın...',
+                'quick_prompt' => 'Sen yaratıcı copywriter uzmanısın. Dikkat çekici başlıklar üret.',
+                'response_template' => [
+                    'sections' => ['Dikkat Çekici', 'SEO Odaklı', 'A/B Test'],
+                    'format' => 'headline_variations'
+                ],
+                'helper_function' => 'ai_creative_headlines',
+                'example_inputs' => [
+                    ['text' => 'Evden çalışma verimliliği', 'label' => 'Verimlilik'],
+                    ['text' => 'Sağlıklı beslenme ipuçları', 'label' => 'Sağlık']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 8. E-mail Pazarlama Uzmanı
+            [
+                'name' => 'E-mail Pazarlama Uzmanı',
+                'slug' => 'email-pazarlama-uzmani',
+                'description' => 'Yüksek açılma oranlı e-mail kampanyaları.',
+                'emoji' => '📧',
+                'icon' => 'fas fa-envelope',
+                'ai_feature_category_id' => 2,
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'advanced',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 38,
+                'badge_color' => 'info',
+                'input_placeholder' => 'E-mail konusu ve amacını yazın...',
+                'quick_prompt' => 'Sen e-mail pazarlama uzmanısın. Yüksek performanslı kampanyalar oluştur.',
+                'response_template' => [
+                    'sections' => ['Konu Başlığı', 'İçerik', 'CTA'],
+                    'format' => 'email_campaign'
+                ],
+                'helper_function' => 'ai_email_marketing',
+                'example_inputs' => [
+                    ['text' => 'Black Friday kampanyası', 'label' => 'Promosyon'],
+                    ['text' => 'Hoş geldin serisi', 'label' => 'Welcome']
+                ],
+                'prompts' => [
+                    ['name' => 'Email Pazarlama Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 9. Video Script Yazarı
+            [
+                'name' => 'Video Script Yazarı',
+                'slug' => 'video-script-yazari',
+                'description' => 'YouTube ve sosyal medya video scriptleri.',
+                'emoji' => '🎬',
+                'icon' => 'fas fa-video',
+                'ai_feature_category_id' => 1,
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'advanced',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => false,
+                'show_in_examples' => true,
+                'sort_order' => 39,
+                'badge_color' => 'warning',
+                'input_placeholder' => 'Video konusu ve süresini yazın...',
+                'quick_prompt' => 'Sen video senaryo uzmanısın. Etkili video scriptleri yazarsın.',
+                'response_template' => [
+                    'sections' => ['Hook', 'Ana İçerik', 'CTA'],
+                    'format' => 'video_script'
+                ],
+                'helper_function' => 'ai_video_script',
+                'example_inputs' => [
+                    ['text' => 'YouTube eğitim videosu', 'label' => 'Eğitim'],
+                    ['text' => 'Instagram Reels', 'label' => 'Reels']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 10. FAQ Oluşturucu
+            [
+                'name' => 'FAQ Oluşturucu',
+                'slug' => 'faq-olusturucu',
+                'description' => 'Kapsamlı SSS listeleri oluşturur.',
+                'emoji' => '❓',
+                'icon' => 'fas fa-question-circle',
+                'ai_feature_category_id' => 1,
+                'response_length' => 'long',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => false,
+                'show_in_examples' => true,
+                'sort_order' => 40,
+                'badge_color' => 'info',
+                'input_placeholder' => 'Ürün/hizmet bilgilerini yazın...',
+                'quick_prompt' => 'Sen müşteri hizmetleri uzmanısın. Kapsamlı FAQ oluşturursun.',
+                'response_template' => [
+                    'sections' => ['Genel', 'Teknik', 'Ödeme', 'Destek'],
+                    'format' => 'faq_list'
+                ],
+                'helper_function' => 'ai_faq_generator',
+                'example_inputs' => [
+                    ['text' => 'Online eğitim platformu', 'label' => 'Eğitim'],
+                    ['text' => 'SaaS yazılımı', 'label' => 'Yazılım']
+                ],
+                'prompts' => [
+                    ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
             ]
         ];
 

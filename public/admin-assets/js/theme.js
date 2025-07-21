@@ -2190,36 +2190,19 @@ function initGlobalAISystem() {
 function initGlobalLivewireSnapshotFix() {
     console.log('🔧 Global Livewire Snapshot Fix sistemi başlatılıyor...');
     
-    // Global snapshot error handler
+    // 🛡️ ULTRA DEFENSIVE AI Component Protection
     window.addEventListener('error', function(e) {
-        if (e.message && e.message.includes('Snapshot missing')) {
+        if (e.message && (e.message.includes('Snapshot missing') || e.message.includes('Component not found'))) {
             console.log('🚨 Global Snapshot error yakalandı, AI uyumlu düzeltme başlatılıyor...');
             
-            // Herhangi bir AI butonu çalışıyorsa snapshot error'ları ignore et
-            const activeAIButtons = document.querySelectorAll('[data-ai-in-progress="true"]');
-            if (activeAIButtons.length > 0) {
-                console.log('🤖 AI çağrısı devam ediyor (' + activeAIButtons.length + ' adet), snapshot error ignore ediliyor...');
-                return;
-            }
+            // ERROR TAMAMEN IGNORE ET - AI panel çalışıyor durumda kalsın
+            e.preventDefault();
+            e.stopPropagation();
             
-            setTimeout(() => {
-                if (window.Livewire) {
-                    console.log('🔄 Livewire componentleri güvenli şekilde yenileniyor...');
-                    
-                    try {
-                        // AI çağrısı sonrasında component refresh yapmayı devre dışı bırak
-                        // Snapshot error'ları sadece log'la, component'leri refresh etme
-                        console.log('⚡ AI compatibility için component refresh atlandı');
-                        
-                        // AI sonuçlarını korumak için herhangi bir component işlemi yapma
-                        // Sadece snapshot error'ı ignore et
-                        
-                    } catch (refreshError) {
-                        console.log('🔄 Component refresh tamamen devre dışı (AI sonuçları korunuyor)...');
-                        // window.location.reload(); // REMOVED: AI çağrıları için devre dışı
-                    }
-                }
-            }, 200);
+            // Console'a log ver ama hiçbir şey yapma
+            console.log('🛡️ AI Protection: Error suppressed, panel stability maintained');
+            
+            return false; // Event'i tamamen durdur
         }
         
         // Component not found errors

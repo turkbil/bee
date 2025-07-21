@@ -224,6 +224,18 @@
             font-size: 12px;
         }
 
+        .ai-token-cost {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
         /* Chat Section */
         .ai-chat-messages {
             max-height: 200px;
@@ -365,6 +377,40 @@
         }
 
         /* Responsive */
+        /* AI Result Cards - Clean Design */
+        .ai-result-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 4px solid #667eea;
+            transition: all 0.2s ease;
+        }
+
+        .ai-result-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+
+        /* AI Process Tracker */
+        .ai-process-tracker {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 16px;
+        }
+
+        /* Remove excessive borders */
+        .ai-results-content {
+            border: none !important;
+        }
+
+        .ai-results-content .bg-white.border {
+            border: none !important;
+        }
+
         @media (max-width: 768px) {
             .ai-assistant-panel {
                 bottom: 20px;
@@ -444,136 +490,54 @@
                     <div class="ai-action-grid">
                         {{-- 🚀 ANA FEATURES --}}
                         
-                        {{-- TEST BUTTON - DEBUG VERSION --}}
-                        <div class="ai-action-card primary" 
-                             wire:click="testAI" 
-                             onclick="console.log('🔥 TEST BUTON TIKLANDI!'); alert('Test buton tıklandı!');"
-                             style="border: 3px solid red !important; background: yellow !important;">
-                            <div class="ai-action-icon analysis">
-                                <i class="fas fa-bug"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title" style="color: black !important;">🧪 TEST DEBUG</div>
-                                <div class="ai-action-desc" style="color: black !important;">Livewire bağlantı testi - SARILI</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
 
-                        {{-- 1. Hızlı Analiz --}}
-                        <div class="ai-action-card primary" wire:click="runQuickAnalysis">
-                            <div class="ai-action-icon analysis">
-                                <i class="fas fa-chart-line"></i>
+                        {{-- 🚀 DİNAMİK AI FEATURES --}}
+                        @if(isset($aiFeatures) && $aiFeatures->count() > 0)
+                            @foreach($aiFeatures as $feature)
+                                <div class="ai-action-card {{ $loop->index < 3 ? 'primary' : '' }}" 
+                                     wire:click="executeAIFeature('{{ $feature['slug'] }}')"
+                                     onclick="aiProcessTracker.start('{{ $feature['name'] }} yapılıyor...', {{ $feature['token_cost'] ?? 100 }})">
+                                    <div class="ai-action-icon {{ $this->getFeatureClass($feature['slug']) }}">
+                                        <i class="{{ $this->getFeatureIcon($feature['slug']) }}"></i>
+                                    </div>
+                                    <div class="ai-action-content">
+                                        <div class="ai-action-title">{{ $feature['emoji'] }} {{ $feature['name'] }}</div>
+                                        <div class="ai-action-desc">{{ Str::limit($feature['description'], 45) }}</div>
+                                    </div>
+                                    <div class="ai-action-arrow">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    <div class="ai-token-cost">{{ $feature['token_cost'] ?? 100 }} token</div>
+                                </div>
+                            @endforeach
+                        @else
+                            {{-- FALLBACK: Yedek hardcode features (database bağlantısı olmadığında) --}}
+                            <div class="ai-action-card primary" wire:click="runQuickAnalysis">
+                                <div class="ai-action-icon analysis">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="ai-action-content">
+                                    <div class="ai-action-title">🚀 Hızlı Analiz</div>
+                                    <div class="ai-action-desc">SEO, içerik ve performans analizi</div>
+                                </div>
+                                <div class="ai-action-arrow">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
                             </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">🚀 Hızlı Analiz</div>
-                                <div class="ai-action-desc">SEO, içerik ve performans analizi</div>
+                            
+                            <div class="ai-action-card primary" wire:click="generateAISuggestions">
+                                <div class="ai-action-icon suggestions">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <div class="ai-action-content">
+                                    <div class="ai-action-title">🎯 AI Önerileri</div>
+                                    <div class="ai-action-desc">Akıllı içerik ve başlık önerileri</div>
+                                </div>
+                                <div class="ai-action-arrow">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
                             </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-
-                        {{-- 2. AI Önerileri --}}
-                        <div class="ai-action-card primary" wire:click="generateAISuggestions">
-                            <div class="ai-action-icon suggestions">
-                                <i class="fas fa-lightbulb"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">🎯 AI Önerileri</div>
-                                <div class="ai-action-desc">Akıllı içerik ve başlık önerileri</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-
-                        {{-- 3. Otomatik Optimize --}}
-                        <div class="ai-action-card primary" wire:click="autoOptimize">
-                            <div class="ai-action-icon optimize">
-                                <i class="fas fa-magic"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">⚡ Otomatik Optimize</div>
-                                <div class="ai-action-desc">Tek tıkla otomatik iyileştirme</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-
-                        {{-- ➕ EKSTRA FEATURES --}}
-                        
-                        {{-- 4. Anahtar Kelime Araştırması --}}
-                        <div class="ai-action-card" wire:click="researchKeywords">
-                            <div class="ai-action-icon keywords">
-                                <i class="fas fa-key"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">🔑 Anahtar Kelime</div>
-                                <div class="ai-action-desc">Target keyword araştırması</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-
-                        {{-- 5. Çoklu Dil Çevirisi --}}
-                        <div class="ai-action-card" wire:click="translateMultiLanguage">
-                            <div class="ai-action-icon translate">
-                                <i class="fas fa-language"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">🌍 Çoklu Dil</div>
-                                <div class="ai-action-desc">Otomatik çeviri sistemi</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-
-                        {{-- 6. Rekabet Analizi --}}
-                        <div class="ai-action-card" wire:click="competitorAnalysis">
-                            <div class="ai-action-icon competitor">
-                                <i class="fas fa-chart-bar"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">📊 Rekabet Analizi</div>
-                                <div class="ai-action-desc">Benzer sayfalarla karşılaştırma</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-
-                        {{-- 7. İçerik Kalite Skoru --}}
-                        <div class="ai-action-card" wire:click="contentQualityScore">
-                            <div class="ai-action-icon quality">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">⭐ Kalite Skoru</div>
-                                <div class="ai-action-desc">Okunabilirlik ve SEO puanı</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-
-                        {{-- 8. Schema Markup --}}
-                        <div class="ai-action-card" wire:click="generateSchemaMarkup">
-                            <div class="ai-action-icon schema">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <div class="ai-action-content">
-                                <div class="ai-action-title">🔗 Schema Markup</div>
-                                <div class="ai-action-desc">Yapılandırılmış veri önerileri</div>
-                            </div>
-                            <div class="ai-action-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -619,7 +583,19 @@
                         <i class="fas fa-chart-line me-2"></i>📊 Analiz Sonuçları
                     </div>
                     
-                    <div class="ai-results-content" id="aiResultsContent" style="background: white; border: 2px solid var(--bs-primary) !important; border-radius: 12px; padding: 20px; margin-top: 10px; color: var(--bs-dark);">
+                    <div class="ai-results-content" id="aiResultsContent" style="background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%); border-radius: 12px; padding: 20px; margin-top: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                        
+                        {{-- AI İşlem Detay Tracking Sistemi --}}
+                        <div class="ai-process-tracker" id="aiProcessTracker" style="display: none;">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                <span class="text-muted">AI işlemi gerçekleştiriliyor...</span>
+                            </div>
+                            <div class="ai-process-details text-sm text-muted">
+                                <div id="aiProcessStep">🤖 Analiz başlatılıyor...</div>
+                                <div id="aiProcessCredits" class="mt-1">💎 Kullanılan token: <span class="fw-bold">-</span></div>
+                            </div>
+                        </div>
                         
                         {{-- LIVEWIRE + SESSION FALLBACK SONUÇLARI --}}
                         @php
@@ -627,7 +603,7 @@
                         @endphp
                         
                         @if(!empty($analysis))
-                            <div class="bg-white border border-success rounded-3 p-3 mb-3">
+                            <div class="ai-result-card">
                                 <div style="text-align: center; margin-bottom: 15px;">
                                     <div class="display-4 fw-bold {{ $analysis['overall_score'] >= 80 ? 'text-success' : ($analysis['overall_score'] >= 60 ? 'text-warning' : 'text-danger') }}">
                                         {{ $analysis['overall_score'] ?? 'N/A' }}/100
@@ -760,6 +736,59 @@
 
 @push('scripts')
 <script>
+    // 🚀 AI İşlem Detay Tracking Sistemi
+    let aiProcessTracker = {
+        currentProcess: null,
+        usedTokens: 0,
+        
+        start: function(processName, estimatedTokens = 0) {
+            console.log('🤖 AI Process Started:', processName);
+            this.currentProcess = processName;
+            this.usedTokens = estimatedTokens;
+            
+            const tracker = document.getElementById('aiProcessTracker');
+            const step = document.getElementById('aiProcessStep');
+            const credits = document.getElementById('aiProcessCredits');
+            
+            if (tracker && step && credits) {
+                tracker.style.display = 'block';
+                step.textContent = `🤖 ${processName}`;
+                credits.innerHTML = `💎 Tahmini token: <span class="fw-bold">${estimatedTokens}</span>`;
+            }
+        },
+        
+        update: function(newStep, actualTokens = null) {
+            console.log('🔄 AI Process Update:', newStep);
+            const step = document.getElementById('aiProcessStep');
+            const credits = document.getElementById('aiProcessCredits');
+            
+            if (step) step.textContent = `🔄 ${newStep}`;
+            if (actualTokens && credits) {
+                this.usedTokens = actualTokens;
+                credits.innerHTML = `💎 Kullanılan token: <span class="fw-bold text-success">${actualTokens}</span>`;
+            }
+        },
+        
+        complete: function(result, totalTokens = null) {
+            console.log('✅ AI Process Complete:', result);
+            const tracker = document.getElementById('aiProcessTracker');
+            const step = document.getElementById('aiProcessStep');
+            const credits = document.getElementById('aiProcessCredits');
+            
+            if (step) step.textContent = `✅ ${result}`;
+            if (totalTokens && credits) {
+                this.usedTokens = totalTokens;
+                credits.innerHTML = `💎 Toplam token: <span class="fw-bold text-primary">${totalTokens}</span>`;
+            }
+            
+            // 3 saniye sonra gizle
+            setTimeout(() => {
+                if (tracker) tracker.style.display = 'none';
+                this.currentProcess = null;
+            }, 3000);
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🤖 AI Assistant Panel Loading...');
         

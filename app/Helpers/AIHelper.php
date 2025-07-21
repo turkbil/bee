@@ -1970,3 +1970,79 @@ if (!function_exists('ai_landing_page_architect')) {
         ], $options);
     }
 }
+
+// ============================================================================
+// PAGE MANAGEMENT AI HELPER FUNCTIONS - SAYFA YÖNETİMİ İÇİN ÖZELLEŞTİRİLMİŞ
+// ============================================================================
+
+if (!function_exists('ai_seo_score_analysis')) {
+    /**
+     * SEO Puanı Analizi - Sayfa içeriğinin SEO performansını analiz eder
+     */
+    function ai_seo_score_analysis(string $page_content, array $options = []): array
+    {
+        return ai_execute_feature('seo-puan-analizi', [
+            'content' => $page_content,
+            'title' => $options['title'] ?? '',
+            'meta_description' => $options['meta_description'] ?? '',
+            'keywords' => implode(', ', $options['keywords'] ?? []),
+            'url' => $options['url'] ?? '',
+            'language' => $options['language'] ?? 'Turkish'
+        ], [
+            'content_type' => ['seo_analysis', 'scoring'],
+            'analysis_factors' => ['title_optimization', 'content_quality', 'keyword_density', 'meta_tags'],
+            'scoring_metrics' => ['overall_score', 'title_score', 'content_score', 'seo_score']
+        ], $options);
+    }
+}
+
+if (!function_exists('ai_quick_seo_analysis')) {
+    function ai_quick_seo_analysis(string $page_content, array $options = []): array {
+        return ai_execute_feature('hizli-seo-analizi', [
+            'content' => $page_content,
+            'title' => $options['title'] ?? '',
+            'meta_description' => $options['meta_description'] ?? '',
+            'language' => $options['language'] ?? 'Turkish'
+        ], ['content_type' => ['quick_seo', 'analysis']], $options);
+    }
+}
+
+if (!function_exists('ai_keyword_analysis')) {
+    function ai_keyword_analysis(string $page_content, array $options = []): array {
+        return ai_execute_feature('anahtar-kelime-analizi', [
+            'content' => $page_content,
+            'target_keywords' => implode(', ', $options['target_keywords'] ?? []),
+            'language' => $options['language'] ?? 'Turkish'
+        ], ['content_type' => ['keyword_research']], $options);
+    }
+}
+
+if (!function_exists('ai_content_optimization')) {
+    function ai_content_optimization(string $page_content, array $options = []): array {
+        return ai_execute_feature('icerik-optimizasyonu', [
+            'content' => $page_content,
+            'target_keywords' => implode(', ', $options['target_keywords'] ?? []),
+            'language' => $options['language'] ?? 'Turkish'
+        ], ['content_type' => ['content_improvement']], $options);
+    }
+}
+
+if (!function_exists('ai_title_generator')) {
+    function ai_title_generator(string $page_content, array $options = []): array {
+        return ai_execute_feature('baslik-uretici', [
+            'content' => $page_content,
+            'keywords' => implode(', ', $options['keywords'] ?? []),
+            'language' => $options['language'] ?? 'Turkish'
+        ], ['content_type' => ['title_generation']], $options);
+    }
+}
+
+if (!function_exists('ai_meta_description_generator')) {
+    function ai_meta_description_generator(string $page_content, array $options = []): array {
+        return ai_execute_feature('meta-aciklama-uretici', [
+            'content' => $page_content,
+            'keywords' => implode(', ', $options['keywords'] ?? []),
+            'language' => $options['language'] ?? 'Turkish'
+        ], ['content_type' => ['meta_description']], $options);
+    }
+}

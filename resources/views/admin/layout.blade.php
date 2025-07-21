@@ -82,6 +82,7 @@
     <link rel="stylesheet" href="/admin-assets/css/main.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
+    <link rel="stylesheet" href="/admin-assets/css/ai-response-templates.css?v={{ time() }}" />
     @stack('styles') @stack('css')
     
     {{-- Module Menu Icon Symmetry CSS --}}

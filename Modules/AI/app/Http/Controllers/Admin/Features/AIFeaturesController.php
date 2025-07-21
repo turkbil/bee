@@ -560,11 +560,8 @@ class AIFeaturesController extends Controller
                 ], 400);
             }
 
-            // Token kullanımını kaydet
-            ai_use_tokens($estimatedTokens, 'ai', 'prowess_test', $tenantId, [
-                'feature_id' => $featureId,
-                'feature_name' => $feature->name
-            ]);
+            // ARTIK KULLANILMIYOR - ai_use_calculated_credits() AIService'de otomatik çalışıyor
+            // Credit kullanımı AIService.ask() içinde gerçek token bilgileri ile yapılacak
 
             // Word buffer için format oluştur
             $wordBufferResponse = $this->aiResponseRepository->formatWithWordBuffer(

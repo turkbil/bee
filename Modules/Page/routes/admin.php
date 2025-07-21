@@ -18,5 +18,8 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/manage/{id?}', PageManageComponent::class)
                     ->middleware('module.permission:page,update')
                     ->name('manage');
+                Route::post('/set-editing-language', function () {
+                    return response()->json(['status' => 'success']);
+                })->name('set-editing-language');
             });
     });

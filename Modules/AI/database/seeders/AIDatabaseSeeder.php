@@ -3,7 +3,6 @@
 namespace Modules\AI\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
@@ -29,7 +28,7 @@ class AIDatabaseSeeder extends Seeder
             // Prompts artık ayrı seeder'da (AIPromptsSeeder.php)
             $this->call(AIPromptsSeeder::class);
             
-            // AI ayarlarını oluştur
+            // AI ayarları bilgilendirme
             $this->createSettings();
             
             // Gizli özellikler seeder'ını çalıştır
@@ -38,13 +37,8 @@ class AIDatabaseSeeder extends Seeder
             // AI Features seeder'ını çalıştır (kategoriler otomatik kontrol edilir)
             $this->call(AIFeatureSeeder::class);
             
-            // Token sistemini oluştur - SIRALA: packages -> purchases -> setup -> usage
-            $this->call([
-                AITokenPackageSeeder::class,
-                AIPurchaseSeeder::class,
-                AITenantSetupSeeder::class,
-                AIUsageUpdateSeeder::class,
-            ]);
+            // YENİ KREDİ SİSTEMİ - Token sistemi kaldırıldı, Credit sistemi kullanılıyor
+            // AITokenPackageSeeder kaldırıldı - AICreditPackage sistemi kullanılıyor
             
             // AI Profil sistemi seeder'larını çalıştır - Kapsamlı 118+ sektör
             $this->call([
@@ -66,21 +60,13 @@ class AIDatabaseSeeder extends Seeder
     }
 
     /**
-     * Varsayılan AI ayarlarını oluştur
+     * Varsayılan AI ayarları artık config/ai.php'de
      */
     private function createSettings(): void
     {
-        // Önce tüm ayarları temizleme
-        DB::table('ai_settings')->delete();
-
-        // Ana tenant için API ayarlarını oluştur
-        Setting::create([
-            'api_key' => 'sk-2b5dd64c73b4429388c8de3055f0ba77',
-            'model' => 'deepseek-chat',
-            'max_tokens' => 8192,
-            'temperature' => 0.7,
-            'enabled' => true,
-        ]);
+        // AI ayarları artık config/ai.php dosyasında
+        // Global settings config-based, provider-specific settings ai_providers tablosunda
+        $this->command->info('AI ayarları config/ai.php dosyasından yönetiliyor.');
     }
 
     /**

@@ -12,41 +12,97 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class SeoAnalysisService
 {
-    private AIService $aiService;
+    private ?AIService $aiService;
     private HtmlConverter $htmlConverter;
 
-    public function __construct(AIService $aiService)
+    public function __construct(AIService $aiService = null)
     {
-        $this->aiService = $aiService;
+        try {
+            $this->aiService = $aiService;
+            Log::info('✅ SeoAnalysisService constructor - AIService injected');
+        } catch (\Exception $e) {
+            Log::error('🚨 SeoAnalysisService constructor - AIService injection failed', [
+                'error' => $e->getMessage()
+            ]);
+            $this->aiService = null;
+        }
+        
         $this->htmlConverter = new HtmlConverter();
+        Log::info('✅ SeoAnalysisService constructor completed');
     }
 
     /**
-     * Comprehensive SEO analysis with AI integration
+     * Comprehensive SEO analysis without AI (fast version)
      */
     public function analyzeSeoContent($model, string $locale = null): array
     {
+        Log::info('🔍 SeoAnalysisService::analyzeSeoContent called', [
+            'model_class' => get_class($model),
+            'model_id' => $model->getKey(),
+            'locale' => $locale
+        ]);
+        
         $locale = $locale ?? app()->getLocale();
         $cacheKey = "seo_analysis_{$model->getMorphClass()}_{$model->id}_{$locale}";
         
+        Log::info('📦 Cache key generated', ['cache_key' => $cacheKey]);
+        
         return Cache::remember($cacheKey, 300, function() use ($model, $locale) {
+            Log::info('🚀 Starting SEO analysis (cache miss)');
             try {
+                Log::info('📄 Extracting content...');
                 $content = $this->extractContent($model);
-                $seoData = $this->extractSeoData($model, $locale);
+                Log::info('✅ Content extracted', ['length' => strlen($content)]);
                 
-                $analysis = [
-                    'content_analysis' => $this->analyzeContent($content, $locale),
-                    'keyword_analysis' => $this->analyzeKeywordsWithoutAI($content, $seoData, $locale),
-                    'meta_analysis' => $this->analyzeMetaTags($seoData, $locale),
-                    'structure_analysis' => $this->analyzeStructure($content, $locale),
-                    'readability_analysis' => $this->analyzeReadability($content, $locale),
-                    'ai_recommendations' => $this->generateBasicRecommendations($content, $seoData, $locale)
-                ];
+                Log::info('🎯 Extracting SEO data...');
+                $seoData = $this->extractSeoData($model, $locale);
+                Log::info('✅ SEO data extracted', ['has_data' => !empty($seoData)]);
+                
+                \Log::info('🔍 SEO Analysis starting', [
+                    'model_type' => get_class($model),
+                    'model_id' => $model->getKey(),
+                    'locale' => $locale,
+                    'content_length' => strlen($content),
+                    'has_seo_data' => !empty($seoData)
+                ]);
+                
+                $analysis = [];
+                
+                \Log::info('📝 Starting content analysis...');
+                $analysis['content_analysis'] = $this->analyzeContent($content, $locale);
+                
+                \Log::info('🔑 Starting keyword analysis...');
+                $analysis['keyword_analysis'] = $this->analyzeKeywordsWithoutAI($content, $seoData, $locale);
+                
+                \Log::info('🏷️ Starting meta analysis...');
+                $analysis['meta_analysis'] = $this->analyzeMetaTags($seoData, $locale);
+                
+                \Log::info('🏗️ Starting structure analysis...');
+                $analysis['structure_analysis'] = $this->analyzeStructure($content, $locale);
+                
+                \Log::info('📖 Starting readability analysis...');
+                $analysis['readability_analysis'] = $this->analyzeReadability($content, $locale);
+                
+                \Log::info('💡 Starting AI recommendations...');
+                $analysis['ai_recommendations'] = $this->generateBasicRecommendations($content, $seoData, $locale);
 
                 $score = $this->calculateSeoScore($analysis);
                 $analysis['overall_score'] = $score;
                 $analysis['analyzed_at'] = now()->toISOString();
                 $analysis['locale'] = $locale;
+                
+                // Add frontend-expected fields with null safety
+                $analysis['priority_actions'] = $this->generatePriorityActions($analysis, $seoData) ?? [];
+                $analysis['suggested_title'] = $this->generateSuggestedTitle($content, $seoData, $locale) ?? '';
+                $analysis['suggested_description'] = $this->generateSuggestedDescription($content, $seoData, $locale) ?? '';
+
+                \Log::info('✅ SEO Analysis completed', [
+                    'overall_score' => $score,
+                    'content_score' => $analysis['content_analysis']['score'] ?? 0,
+                    'keyword_score' => $analysis['keyword_analysis']['score'] ?? 0,
+                    'meta_score' => $analysis['meta_analysis']['score'] ?? 0,
+                    'priority_actions_count' => count($analysis['priority_actions'])
+                ]);
 
                 return $analysis;
                 
@@ -61,6 +117,156 @@ class SeoAnalysisService
                 return $this->getDefaultAnalysis($locale);
             }
         });
+    }
+
+    /**
+     * 🚀 YENİ: Modern AI destekli kapsamlı analiz 
+     */
+    public function performComprehensiveAnalysis(array $analysisData): array
+    {
+        try {
+            $title = $analysisData['title'] ?? '';
+            $content = $analysisData['content'] ?? '';
+            $language = $analysisData['language'] ?? 'tr';
+            $seoData = $analysisData['seo_data'] ?? [];
+            
+            // Modern AI prompt oluştur
+            $prompt = $this->buildModernAnalysisPrompt($title, $content, $language, $seoData);
+            
+            // AI Feature kullanarak analiz
+            $aiResult = ai_execute_feature('hizli-seo-analizi', [
+                'title' => $title,
+                'content' => $content,
+                'language' => $language,
+                'analysis_prompt' => $prompt
+            ]);
+            
+            if ($aiResult && isset($aiResult['analysis'])) {
+                return $this->formatModernAnalysisResult($aiResult['analysis']);
+            }
+            
+            // Fallback: Basit analiz
+            return $this->performBasicAnalysis($title, $content, $language);
+            
+        } catch (\Exception $e) {
+            Log::error('Modern SEO analizi hatası', [
+                'error' => $e->getMessage(),
+                'data' => $analysisData
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => 'Analiz sırasında bir hata oluştu: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Modern analiz prompt'u oluştur
+     */
+    private function buildModernAnalysisPrompt(string $title, string $content, string $language, array $seoData): string
+    {
+        $prompt = "Sen profesyonel bir SEO uzmanısın. Aşağıdaki web sayfası içeriğini analiz et ve detaylı öneriler ver.\n\n";
+        
+        $prompt .= "📝 ANALİZ EDİLECEK İÇERİK:\n";
+        $prompt .= "Başlık: \"" . strip_tags($title) . "\"\n";
+        $prompt .= "İçerik: \"" . strip_tags(substr($content, 0, 1000)) . "...\"\n";
+        $prompt .= "Dil: " . strtoupper($language) . "\n\n";
+        
+        if (!empty($seoData)) {
+            $prompt .= "🔍 MEVCUT SEO VERİLERİ:\n";
+            foreach ($seoData as $key => $value) {
+                if (is_array($value) && isset($value[$language])) {
+                    $prompt .= "- " . ucfirst($key) . ": " . $value[$language] . "\n";
+                }
+            }
+            $prompt .= "\n";
+        }
+        
+        $prompt .= "📊 YANIT FORMATI (JSON):\n";
+        $prompt .= "{\n";
+        $prompt .= '  "overall_score": 85,';
+        $prompt .= '  "title_analysis": {"score": 90, "issues": [], "suggestions": []},';
+        $prompt .= '  "content_analysis": {"score": 80, "issues": [], "suggestions": []},';
+        $prompt .= '  "keyword_analysis": {"primary_keywords": [], "missing_keywords": []},';
+        $prompt .= '  "recommendations": ["Öneri 1", "Öneri 2"],';
+        $prompt .= '  "priority_actions": ["Acil işlem 1", "Acil işlem 2"]';
+        $prompt .= "}\n\n";
+        
+        $prompt .= "Lütfen sadece JSON formatında yanıt ver, başka açıklama ekleme.";
+        
+        return $prompt;
+    }
+    
+    /**
+     * Modern analiz sonucunu formatla
+     */
+    private function formatModernAnalysisResult($rawResult): array
+    {
+        // JSON parse et
+        if (is_string($rawResult)) {
+            $parsed = json_decode($rawResult, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $rawResult = $parsed;
+            }
+        }
+        
+        return [
+            'success' => true,
+            'analysis_type' => 'comprehensive',
+            'overall_score' => $rawResult['overall_score'] ?? 0,
+            'title_analysis' => $rawResult['title_analysis'] ?? [],
+            'content_analysis' => $rawResult['content_analysis'] ?? [],
+            'keyword_analysis' => $rawResult['keyword_analysis'] ?? [],
+            'recommendations' => $rawResult['recommendations'] ?? [],
+            'priority_actions' => $rawResult['priority_actions'] ?? [],
+            'timestamp' => now()->toIso8601String()
+        ];
+    }
+    
+    /**
+     * Basit fallback analiz
+     */
+    private function performBasicAnalysis(string $title, string $content, string $language): array
+    {
+        $titleLen = mb_strlen(strip_tags($title));
+        $contentLen = mb_strlen(strip_tags($content));
+        $wordCount = str_word_count(strip_tags($content));
+        
+        $score = 50; // Base score
+        
+        // Başlık analizi
+        if ($titleLen >= 30 && $titleLen <= 60) $score += 15;
+        if (!empty($title)) $score += 10;
+        
+        // İçerik analizi  
+        if ($contentLen >= 300) $score += 15;
+        if ($wordCount >= 50) $score += 10;
+        
+        return [
+            'success' => true,
+            'analysis_type' => 'basic',
+            'overall_score' => min(100, $score),
+            'title_analysis' => [
+                'score' => $titleLen >= 30 && $titleLen <= 60 ? 90 : 60,
+                'length' => $titleLen,
+                'issues' => $titleLen < 30 ? ['Başlık çok kısa'] : ($titleLen > 60 ? ['Başlık çok uzun'] : []),
+                'suggestions' => ['Başlığı 30-60 karakter arasında tutun']
+            ],
+            'content_analysis' => [
+                'score' => $contentLen >= 300 ? 80 : 50,
+                'word_count' => $wordCount,
+                'character_count' => $contentLen,
+                'issues' => $contentLen < 300 ? ['İçerik çok kısa'] : [],
+                'suggestions' => ['En az 300 karakter içerik yazın']
+            ],
+            'recommendations' => [
+                'Başlık uzunluğunu optimize edin',
+                'İçerik uzunluğunu artırın',
+                'Anahtar kelimeler ekleyin'
+            ],
+            'timestamp' => now()->toIso8601String()
+        ];
     }
 
     /**
@@ -202,7 +408,7 @@ class SeoAnalysisService
     }
 
     /**
-     * Auto-optimize SEO settings using AI
+     * Auto-optimize SEO settings without AI (basic optimization)
      */
     public function autoOptimizeSeo($model, string $locale = null): SeoSetting
     {
@@ -213,10 +419,17 @@ class SeoAnalysisService
             $content = $this->extractContent($model);
             $analysis = $this->analyzeSeoContent($model, $locale);
             
-            // Generate optimized content
-            $optimizedTitle = $this->generateMetaTitle($content, $locale);
-            $optimizedDescription = $this->generateMetaDescription($content, '', $locale);
-            $optimizedKeywords = $this->extractKeywords($content, $locale);
+            \Log::info('🔧 Auto-optimizing SEO (basic mode)', [
+                'model_type' => get_class($model),
+                'model_id' => $model->getKey(),
+                'locale' => $locale,
+                'current_score' => $analysis['overall_score']
+            ]);
+            
+            // Generate basic optimized content
+            $optimizedTitle = $this->generateBasicTitle($content, $model);
+            $optimizedDescription = $this->generateBasicDescription($content);
+            $optimizedKeywords = $this->generateBasicKeywords($content);
             
             // Update SEO settings
             $seoSetting->updateLanguageData($locale, [
@@ -225,22 +438,24 @@ class SeoAnalysisService
                 'keywords' => $optimizedKeywords
             ]);
             
-            // Update analysis data - fix JSON encoding
+            // Update analysis data
             $cleanAnalysis = $this->cleanForJson($analysis);
-            $cleanSuggestions = $this->cleanForJson($this->generateOptimizationSuggestions($model, $locale));
+            $basicSuggestions = $this->generateBasicRecommendations($content, $this->extractSeoData($model, $locale), $locale);
             
             $seoSetting->update([
                 'seo_analysis' => $cleanAnalysis,
                 'seo_score' => $analysis['overall_score'],
                 'last_analyzed' => now(),
-                'ai_suggestions' => $cleanSuggestions
+                'ai_suggestions' => $this->cleanForJson($basicSuggestions)
             ]);
             
-            Log::info('SEO auto-optimization completed', [
+            Log::info('✅ SEO auto-optimization completed', [
                 'model' => $model->getMorphClass(),
                 'id' => $model->id,
                 'locale' => $locale,
-                'score' => $analysis['overall_score']
+                'score' => $analysis['overall_score'],
+                'title' => $optimizedTitle,
+                'keywords_count' => count($optimizedKeywords)
             ]);
             
             return $seoSetting;
@@ -448,6 +663,13 @@ class SeoAnalysisService
             'structure_analysis' => ['structure_score' => 0, 'issues' => ['Analiz yapılamadı']],
             'readability_analysis' => ['score' => 0, 'issues' => ['Analiz yapılamadı']],
             'ai_recommendations' => [],
+            'priority_actions' => [
+                'SEO analizi yapılamadı - lütfen tekrar deneyin',
+                'İçerik eksik veya model bulunamadı',
+                'Teknik bir sorun oluştu'
+            ],
+            'suggested_title' => '',
+            'suggested_description' => '',
             'analyzed_at' => now()->toISOString(),
             'locale' => $locale,
             'error' => true
@@ -1015,44 +1237,346 @@ class SeoAnalysisService
     }
 
     /**
-     * Quick AI suggestions with minimal content
+     * Quick AI suggestions with real AI analysis
      */
     public function generateQuickSuggestions($model, string $locale = null): array
     {
         $locale = $locale ?? app()->getLocale();
         
         try {
-            $content = substr($this->extractContent($model), 0, 500); // Limit content
+            $content = $this->extractContent($model);
             $seoData = $this->extractSeoData($model, $locale);
             
-            $prompt = "SEO önerileri (kısa):\n";
-            $prompt .= "İçerik: " . $content . "\n";
-            $prompt .= "Başlık: " . ($seoData['title'] ?? 'Yok') . "\n";
-            $prompt .= "Açıklama: " . ($seoData['description'] ?? 'Yok') . "\n\n";
-            $prompt .= "3 önemli öneri ver (her biri 1 satır):";
-            
-            $aiResponse = $this->aiService->ask($prompt, [
-                'type' => 'seo_quick_suggestions',
+            \Log::info('🚀 SEO Quick Suggestions - GERÇEK AI ANALİZİ başlıyor', [
+                'model_type' => get_class($model),
+                'model_id' => $model->getKey(),
                 'locale' => $locale,
-                'max_tokens' => 150
+                'content_length' => strlen($content),
+                'has_ai_service' => !is_null($this->aiService)
             ]);
-
-            $suggestions = explode("\n", trim($aiResponse));
             
-            return [
-                'priority_actions' => array_filter($suggestions),
-                'suggested_title' => $this->generateQuickTitle($content),
-                'suggested_description' => $this->generateQuickDescription($content),
-                'estimated_impact' => 'Orta',
-                'confidence' => 'Yüksek',
-                'overall_score' => $this->calculateQuickScore($seoData),
-                'generated_at' => now()->toISOString()
-            ];
+            // Gerçek AI analizi yap
+            if ($this->aiService) {
+                $aiAnalysis = $this->performRealAIAnalysis($content, $seoData, $locale);
+                
+                \Log::info('✅ Real AI Analysis completed', [
+                    'ai_score' => $aiAnalysis['overall_score'] ?? 0,
+                    'ai_suggestions_count' => count($aiAnalysis['ai_suggestions'] ?? []),
+                    'ai_title_generated' => !empty($aiAnalysis['suggested_title']),
+                    'ai_description_generated' => !empty($aiAnalysis['suggested_description'])
+                ]);
+                
+                return $aiAnalysis;
+            }
+            
+            // AI service yoksa fallback
+            \Log::warning('AI Service not available, using basic analysis');
+            return $this->generateBasicAnalysis($content, $seoData, $locale);
             
         } catch (\Exception $e) {
-            // Fallback to basic recommendations
-            return $this->generateBasicRecommendations($this->extractContent($model), $this->extractSeoData($model, $locale), $locale);
+            \Log::error('SEO Quick Suggestions failed', [
+                'error' => $e->getMessage(),
+                'model_type' => get_class($model),
+                'model_id' => $model->getKey()
+            ]);
+            
+            return $this->generateBasicAnalysis($content, $seoData, $locale);
         }
+    }
+
+    /**
+     * Gerçek AI ile SEO analizi
+     */
+    private function performRealAIAnalysis(string $content, array $seoData, string $locale): array
+    {
+        try {
+            // AI'ya kapsamlı SEO analizi prompt'u gönder
+            $prompt = $this->buildComprehensiveAnalysisPrompt($content, $seoData, $locale);
+            
+            \Log::info('🤖 AI Service çağrılıyor - SEO analizi');
+            
+            $aiResponse = $this->aiService->ask($prompt, [
+                'type' => 'seo_comprehensive_analysis',
+                'locale' => $locale,
+                'max_tokens' => 800,
+                'feature_slug' => 'seo-analiz'
+            ]);
+            
+            \Log::info('✅ AI Response received', [
+                'response_length' => strlen($aiResponse),
+                'response_preview' => substr($aiResponse, 0, 200) . '...'
+            ]);
+            
+            // AI yanıtını parse et
+            $analysis = $this->parseAIAnalysisResponse($aiResponse, $content, $seoData);
+            
+            // Gerçek AI ile title ve description üret
+            $analysis['suggested_title'] = $this->generateAITitle($content, $seoData, $locale);
+            $analysis['suggested_description'] = $this->generateAIDescription($content, $seoData, $locale);
+            
+            return $analysis;
+            
+        } catch (\Exception $e) {
+            \Log::error('Real AI Analysis failed', ['error' => $e->getMessage()]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Kapsamlı AI analizi için prompt oluştur
+     */
+    private function buildComprehensiveAnalysisPrompt(string $content, array $seoData, string $locale): string
+    {
+        $wordCount = str_word_count(strip_tags($content));
+        
+        $prompt = "Sen profesyonel bir SEO uzmanısın. Aşağıdaki web sayfası içeriğini analiz et ve detaylı öneriler ver.\n\n";
+        
+        $prompt .= "🔍 ANALİZ EDİLECEK İÇERİK:\n";
+        $prompt .= "\"" . substr(strip_tags($content), 0, 1200) . "\"\n\n";
+        
+        $prompt .= "📊 MEVCUT SEO VERİLERİ:\n";
+        $prompt .= "• Başlık: " . ($seoData['title'] ? '"' . $seoData['title'] . '"' : 'Eksik') . "\n";
+        $prompt .= "• Meta açıklama: " . ($seoData['description'] ? '"' . $seoData['description'] . '"' : 'Eksik') . "\n";
+        $prompt .= "• Ana anahtar kelime: " . ($seoData['focus_keyword'] ? '"' . $seoData['focus_keyword'] . '"' : 'Belirlenmemiş') . "\n";
+        $prompt .= "• Kelime sayısı: {$wordCount} kelime\n\n";
+        
+        $prompt .= "🎯 YAPMANIZ GEREKEN ANALİZ:\n";
+        $prompt .= "1. Bu sayfanın SEO puanını 0-100 arasında belirleyin\n";
+        $prompt .= "2. En kritik 3 sorunu tespit edin\n";
+        $prompt .= "3. Somut iyileştirme önerileri verin\n";
+        $prompt .= "4. Başlık ve meta açıklama için öneriler sunun\n\n";
+        
+        $prompt .= "📝 YANIT FORMATI:\n";
+        $prompt .= "PUAN: [0-100 arası sayı]\n";
+        $prompt .= "KRİTİK SORUNLAR:\n";
+        $prompt .= "1. [Somut sorun ve çözüm önerisi]\n";
+        $prompt .= "2. [Somut sorun ve çözüm önerisi]\n";
+        $prompt .= "3. [Somut sorun ve çözüm önerisi]\n\n";
+        
+        $prompt .= "ÖNEMLİ: Düzgün Türkçe kullanın. Kısa ve anlaşılır cümleler yazın. Teknik jargon kullanmayın.";
+        
+        return $prompt;
+    }
+
+    /**
+     * AI yanıtını parse et - İyileştirilmiş parsing
+     */
+    private function parseAIAnalysisResponse(string $response, string $content, array $seoData): array
+    {
+        \Log::info('🔍 AI Response parsing başlıyor', [
+            'response_length' => strlen($response),
+            'response_preview' => substr($response, 0, 500)
+        ]);
+        
+        // AI yanıtından score çıkar - daha güçlü pattern matching
+        $score = 50; // Default
+        if (preg_match('/PUAN:\s*(\d+)/i', $response, $matches)) {
+            $score = intval($matches[1]);
+        } elseif (preg_match('/(\d+)\s*\/\s*100/i', $response, $matches)) {
+            $score = intval($matches[1]);
+        } elseif (preg_match('/(\d+)\s*puan/i', $response, $matches)) {
+            $score = intval($matches[1]);
+        } elseif (preg_match('/skor?\s*[:\-]\s*(\d+)/i', $response, $matches)) {
+            $score = intval($matches[1]);
+        }
+        
+        // Priority actions çıkar - daha iyi parsing
+        $priorityActions = [];
+        
+        // "KRİTİK SORUNLAR" bölümünü bul
+        if (preg_match('/KRİTİK SORUNLAR?:?\s*(.*?)(?=\n\n|\n[A-Z]|\z)/s', $response, $matches)) {
+            $problemsSection = $matches[1];
+            $lines = explode("\n", $problemsSection);
+            
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (preg_match('/^(\d+)\.\s*(.+)$/', $line, $matches)) {
+                    $action = trim($matches[2]);
+                    if (!empty($action) && strlen($action) > 10) {
+                        $priorityActions[] = $action;
+                    }
+                }
+            }
+        }
+        
+        // Fallback: Normal numbered list
+        if (empty($priorityActions)) {
+            $lines = explode("\n", $response);
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (preg_match('/^(\d+)\.\s*(.+)$/', $line, $matches)) {
+                    $action = trim($matches[2]);
+                    if (!empty($action) && strlen($action) > 15) {
+                        $priorityActions[] = $action;
+                    }
+                }
+            }
+        }
+        
+        // Eğer hâlâ boşsa, basic sorunları ekle
+        if (empty($priorityActions)) {
+            $priorityActions = $this->generateBasicPriorityActions($seoData, $content);
+        }
+        
+        \Log::info('✅ AI Response parsed', [
+            'extracted_score' => $score,
+            'priority_actions_count' => count($priorityActions),
+            'priority_actions' => $priorityActions
+        ]);
+        
+        return [
+            'overall_score' => min(100, max(0, $score)),
+            'priority_actions' => array_slice($priorityActions, 0, 5),
+            'ai_suggestions' => $priorityActions,
+            'focus_keyword_suggestions' => $this->extractTopKeywords($content, 5),
+            'analyzed_at' => now()->toISOString(),
+            'locale' => app()->getLocale(),
+            'ai_powered' => true,
+            'ai_response_preview' => substr($response, 0, 300),
+            'ai_response_full' => $response, // Debug için
+            'content_analysis' => [
+                'word_count' => str_word_count(strip_tags($content)),
+                'ai_score' => $score,
+                'reading_ease' => $score > 70 ? 'Kolay' : ($score > 50 ? 'Orta' : 'Zor')
+            ]
+        ];
+    }
+
+    /**
+     * Basic priority actions fallback
+     */
+    private function generateBasicPriorityActions(array $seoData, string $content): array
+    {
+        $actions = [];
+        
+        // Title check
+        $title = $seoData['title'] ?? '';
+        if (empty($title)) {
+            $actions[] = 'SEO başlığı eksik - sayfa için çekici bir başlık ekleyin';
+        } elseif (strlen($title) < 30) {
+            $actions[] = 'SEO başlığı çok kısa - ' . strlen($title) . ' karakter, en az 50-60 karakter olmalı';
+        } elseif (strlen($title) > 65) {
+            $actions[] = 'SEO başlığı çok uzun - ' . strlen($title) . ' karakter, 60 karakterin altında olmalı';
+        }
+        
+        // Description check
+        $description = $seoData['description'] ?? '';
+        if (empty($description)) {
+            $actions[] = 'Meta açıklama eksik - kullanıcıları çekecek 150-160 karakter açıklama ekleyin';
+        } elseif (strlen($description) < 120) {
+            $actions[] = 'Meta açıklama çok kısa - ' . strlen($description) . ' karakter, en az 120-160 karakter olmalı';
+        } elseif (strlen($description) > 165) {
+            $actions[] = 'Meta açıklama çok uzun - ' . strlen($description) . ' karakter, 160 karakterin altında olmalı';
+        }
+        
+        // Content check
+        $wordCount = str_word_count(strip_tags($content));
+        if ($wordCount < 300) {
+            $actions[] = 'İçerik çok kısa - ' . $wordCount . ' kelime, SEO için en az 300-500 kelime ekleyin';
+        }
+        
+        // Focus keyword check
+        if (empty($seoData['focus_keyword'] ?? '')) {
+            $actions[] = 'Ana anahtar kelime belirtilmemiş - içeriğin odak noktasını belirleyin';
+        }
+        
+        return array_slice($actions, 0, 3);
+    }
+
+    /**
+     * Gerçek AI ile title üret - İyileştirilmiş
+     */
+    private function generateAITitle(string $content, array $seoData, string $locale): string
+    {
+        try {
+            $prompt = "Web sayfası için SEO optimizasyonlu başlık oluştur.\n\n";
+            $prompt .= "📄 İÇERİK: \"" . substr(strip_tags($content), 0, 600) . "\"\n\n";
+            $prompt .= "📊 MEVCUT BİLGİLER:\n";
+            $prompt .= "• Şu anki başlık: " . ($seoData['title'] ? '"' . $seoData['title'] . '"' : 'Eksik') . "\n";
+            $prompt .= "• Ana anahtar kelime: " . ($seoData['focus_keyword'] ? '"' . $seoData['focus_keyword'] . '"' : 'Yok') . "\n\n";
+            $prompt .= "🎯 İSTEK: 50-60 karakter arası, çekici ve SEO dostu bir başlık oluştur.\n";
+            $prompt .= "📝 FORMAT: Sadece başlığı yaz, başka hiçbir şey ekleme.\n";
+            $prompt .= "🔤 DİL: Düzgün Türkçe kullan.";
+            
+            $aiTitle = $this->aiService->ask($prompt, [
+                'type' => 'seo_title_generation',
+                'locale' => $locale,
+                'max_tokens' => 100,
+                'feature_slug' => 'baslik-uret'
+            ]);
+            
+            $cleanTitle = trim(strip_tags($aiTitle));
+            // Quotes ve gereksiz karakterleri temizle
+            $cleanTitle = trim($cleanTitle, '"\'');
+            
+            \Log::info('✅ AI Title generated', [
+                'generated_title' => $cleanTitle,
+                'title_length' => strlen($cleanTitle)
+            ]);
+            
+            return strlen($cleanTitle) > 60 ? substr($cleanTitle, 0, 57) . '...' : $cleanTitle;
+            
+        } catch (\Exception $e) {
+            \Log::error('AI Title generation failed', ['error' => $e->getMessage()]);
+            return $this->generateBasicTitle($content, (object)$seoData);
+        }
+    }
+
+    /**
+     * Gerçek AI ile description üret - İyileştirilmiş
+     */
+    private function generateAIDescription(string $content, array $seoData, string $locale): string
+    {
+        try {
+            $prompt = "Web sayfası için meta açıklama oluştur.\n\n";
+            $prompt .= "📄 İÇERİK: \"" . substr(strip_tags($content), 0, 800) . "\"\n\n";
+            $prompt .= "📊 MEVCUT BİLGİLER:\n";
+            $prompt .= "• Şu anki açıklama: " . ($seoData['description'] ? '"' . $seoData['description'] . '"' : 'Eksik') . "\n";
+            $prompt .= "• Ana anahtar kelime: " . ($seoData['focus_keyword'] ? '"' . $seoData['focus_keyword'] . '"' : 'Yok') . "\n\n";
+            $prompt .= "🎯 İSTEK: 120-160 karakter arası, kullanıcıları çekecek meta açıklama oluştur.\n";
+            $prompt .= "📝 FORMAT: Sadece açıklamayı yaz, başka hiçbir şey ekleme.\n";
+            $prompt .= "🔤 DİL: Düzgün Türkçe kullan. Tıklamaya teşvik edici ol.";
+            
+            $aiDescription = $this->aiService->ask($prompt, [
+                'type' => 'seo_description_generation',
+                'locale' => $locale,
+                'max_tokens' => 150,
+                'feature_slug' => 'aciklama-uret'
+            ]);
+            
+            $cleanDescription = trim(strip_tags($aiDescription));
+            // Quotes ve gereksiz karakterleri temizle
+            $cleanDescription = trim($cleanDescription, '"\'');
+            
+            \Log::info('✅ AI Description generated', [
+                'generated_description' => substr($cleanDescription, 0, 100) . '...',
+                'description_length' => strlen($cleanDescription)
+            ]);
+            
+            return strlen($cleanDescription) > 160 ? substr($cleanDescription, 0, 157) . '...' : $cleanDescription;
+            
+        } catch (\Exception $e) {
+            \Log::error('AI Description generation failed', ['error' => $e->getMessage()]);
+            return $this->generateBasicDescription($content, $seoData);
+        }
+    }
+
+    /**
+     * Basic analysis fallback
+     */
+    private function generateBasicAnalysis(string $content, array $seoData, string $locale): array
+    {
+        return [
+            'overall_score' => $this->calculateQuickScore($seoData),
+            'priority_actions' => $this->generatePriorityActions([], $seoData),
+            'suggested_title' => $this->generateBasicTitle($content, (object)$seoData),
+            'suggested_description' => $this->generateBasicDescription($content, $seoData),
+            'focus_keyword_suggestions' => $this->extractTopKeywords($content, 3),
+            'analyzed_at' => now()->toISOString(),
+            'locale' => $locale,
+            'ai_powered' => false,
+            'fallback_reason' => 'AI service not available'
+        ];
     }
 
     /**
@@ -1088,6 +1612,94 @@ class SeoAnalysisService
         if (!empty($seoData['focus_keyword'])) $score += 10;
         
         return min(100, $score);
+    }
+
+    /**
+     * Generate basic title from content
+     */
+    private function generateBasicTitle(string $content, $model): string
+    {
+        // Try to get existing title from model
+        if (method_exists($model, 'getTranslated')) {
+            $title = $model->getTranslated('title', app()->getLocale());
+            if (!empty($title)) {
+                return strlen($title) > 60 ? substr($title, 0, 57) . '...' : $title;
+            }
+        }
+        
+        // Extract from content
+        $cleanContent = strip_tags($content);
+        $words = explode(' ', $cleanContent);
+        $title = implode(' ', array_slice($words, 0, 8)); // First 8 words
+        
+        return strlen($title) > 60 ? substr($title, 0, 57) . '...' : $title;
+    }
+    
+    /**
+     * Generate basic description from content
+     */
+    private function generateBasicDescription(string $content, array $seoData = []): string
+    {
+        $cleanContent = strip_tags($content);
+        $sentences = preg_split('/[.!?]+/', $cleanContent, -1, PREG_SPLIT_NO_EMPTY);
+        
+        if (!empty($sentences)) {
+            $description = trim($sentences[0]);
+            
+            // Add focus keyword if available
+            $focusKeyword = $seoData['focus_keyword'] ?? '';
+            if (!empty($focusKeyword) && stripos($description, $focusKeyword) === false) {
+                $description = $focusKeyword . ' hakkında: ' . $description;
+            }
+            
+            return strlen($description) > 160 ? substr($description, 0, 157) . '...' : $description;
+        }
+        
+        return substr($cleanContent, 0, 157) . '...';
+    }
+    
+    /**
+     * Extract top keywords from content
+     */
+    private function extractTopKeywords(string $content, int $limit = 5): array
+    {
+        $cleanContent = strip_tags($content);
+        $words = preg_split('/[\s\.,;:!?\-\(\)]+/', mb_strtolower($cleanContent));
+        
+        // Filter out common Turkish stop words and short words
+        $stopWords = ['ve', 'bir', 'bu', 'şu', 'da', 'de', 'ile', 'için', 'olan', 'gibi', 'çok', 'daha', 'en', 'her', 'ki', 'mi', 'mu', 'mı', 'mü'];
+        $words = array_filter($words, function($word) use ($stopWords) {
+            return strlen($word) > 3 && !in_array($word, $stopWords);
+        });
+        
+        // Count word frequency
+        $wordCounts = array_count_values($words);
+        arsort($wordCounts);
+        
+        // Return top keywords
+        return array_slice(array_keys($wordCounts), 0, $limit);
+    }
+    
+    /**
+     * Generate basic keywords from content
+     */
+    private function generateBasicKeywords(string $content): array
+    {
+        $cleanContent = strtolower(strip_tags($content));
+        $words = str_word_count($cleanContent, 1);
+        
+        // Filter meaningful words
+        $meaningful = array_filter($words, function($word) {
+            return strlen($word) > 3 && !in_array($word, [
+                'için', 'olan', 'ile', 'bir', 'bu', 'da', 'de', 've', 'var', 'her',
+                'şey', 'çok', 'daha', 'gibi', 'kadar', 'sonra', 'önce', 'şimdi'
+            ]);
+        });
+        
+        $wordCounts = array_count_values($meaningful);
+        arsort($wordCounts);
+        
+        return array_keys(array_slice($wordCounts, 0, 5));
     }
 
     /**
@@ -1141,5 +1753,199 @@ class SeoAnalysisService
         
         // For other types (int, float, bool, null), return as-is
         return $data;
+    }
+
+    /**
+     * Generate priority action items based on analysis
+     */
+    private function generatePriorityActions(array $analysis, array $seoData): array
+    {
+        $actions = [];
+        
+        // Meta Title Analysis - More specific and actionable
+        $titleLen = strlen($seoData['title'] ?? '');
+        if (empty($seoData['title'] ?? '')) {
+            $actions[] = "🎯 Kritik: Meta başlık eksik! SEO sıralaması için mutlaka ekleyin";
+        } elseif ($titleLen < 30) {
+            $actions[] = "📏 Başlığı genişletin: {$titleLen} karakter çok kısa (ideal: 50-60 karakter)";
+        } elseif ($titleLen > 65) {
+            $actions[] = "✂️ Başlığı kısaltın: {$titleLen} karakter çok uzun (Google'da kesilecek)";
+        }
+        
+        // Meta Description Analysis - More detailed
+        $descLen = strlen($seoData['description'] ?? '');
+        if (empty($seoData['description'] ?? '')) {
+            $actions[] = "📝 Meta açıklama eksik! Tıklama oranını artırmak için ekleyin";
+        } elseif ($descLen < 120) {
+            $actions[] = "📈 Açıklamayı genişletin: {$descLen} karakter kısa (ideal: 150-160 karakter)";
+        } elseif ($descLen > 165) {
+            $actions[] = "⚡ Açıklamayı optimize edin: {$descLen} karakter uzun (Google'da kesilecek)";
+        }
+        
+        // Keyword Analysis - More strategic
+        $keywords = $seoData['keywords'] ?? [];
+        $keywordCount = is_array($keywords) ? count($keywords) : 0;
+        if ($keywordCount === 0) {
+            $actions[] = "🔑 Anahtar kelime eksik! Hedef kitlenizi tanımlamak için ekleyin";
+        } elseif ($keywordCount > 10) {
+            $actions[] = "🎯 Çok fazla anahtar kelime ({$keywordCount}): 5-7 arası odaklanın";
+        }
+        
+        // Focus Keyword Analysis
+        if (empty($seoData['focus_keyword'] ?? '')) {
+            $actions[] = "🎯 Ana anahtar kelime seçin: İçeriğinizin odak noktasını belirleyin";
+        }
+        
+        // Advanced checks based on analysis scores
+        if (isset($analysis['content_analysis']['score']) && $analysis['content_analysis']['score'] < 60) {
+            $actions[] = "📚 İçerik kalitesini artırın: Daha detaylı ve değerli bilgi ekleyin";
+        }
+        
+        if (isset($analysis['keyword_analysis']['score']) && $analysis['keyword_analysis']['score'] < 60) {
+            $actions[] = "🔍 Anahtar kelime dağılımını optimize edin: İçerikte doğal kullanım";
+        }
+        
+        // Content length check
+        $contentScore = $analysis['content_analysis']['score'] ?? 0;
+        if ($contentScore < 50) {
+            $actions[] = "İçerik kalitesi artırılmalı - daha detaylı bilgi ekleyin";
+        }
+        
+        // Readability check  
+        $readabilityScore = $analysis['readability_analysis']['score'] ?? 0;
+        if ($readabilityScore < 60) {
+            $actions[] = "Metin okunabilirliği iyileştirilmeli - daha basit cümleler kullanın";
+        }
+        
+        return array_slice($actions, 0, 5); // Max 5 priority action
+    }
+
+    /**
+     * Generate suggested title based on content
+     */
+    private function generateSuggestedTitle(string $content, array $seoData, string $locale): string
+    {
+        try {
+            // AI ile dinamik başlık üretimi
+            $prompt = $this->buildTitlePrompt($content, $seoData, $locale);
+            
+            if (false && function_exists('ai_execute_feature')) {
+                // AI Feature sistemi geçici olarak devre dışı (500 error nedeniyle)
+                // Bu kısım credit sistem sorunu düzeldikten sonra aktifleştirilebilir
+                        'locale' => $locale,
+                        'response_type' => gettype($aiResponse)
+                    ]);
+                    
+                    return $suggestedTitle;
+                }
+            }
+            
+            // Fallback: Mevcut başlık varsa döndür
+            $currentTitle = $seoData['title'] ?? '';
+            if (!empty($currentTitle)) {
+                return strlen($currentTitle) > 60 ? substr($currentTitle, 0, 57) . '...' : $currentTitle;
+            }
+            
+            // Son fallback: İçerikten başlık üret
+            $cleanContent = strip_tags($content);
+            $words = explode(' ', $cleanContent);
+            $title = implode(' ', array_slice($words, 0, 8));
+            
+            return strlen($title) > 60 ? substr($title, 0, 57) . '...' : $title;
+            
+        } catch (\Exception $e) {
+            \Log::error('AI Title generation failed', ['error' => $e->getMessage()]);
+            
+            // Emergency fallback
+            $focusKeyword = $seoData['focus_keyword'] ?? '';
+            return !empty($focusKeyword) ? $focusKeyword . ' - Detaylı Bilgi' : 'İçerik Başlığı';
+        }
+    }
+
+    /**
+     * Generate suggested description based on content
+     */
+    private function generateSuggestedDescription(string $content, array $seoData, string $locale): string
+    {
+        try {
+            // AI ile dinamik açıklama üretimi
+            if (function_exists('ai_execute_feature')) {
+                // AI Feature sistemi ile açıklama üret - mevcut SEO feature kullan
+                $prompt = "Bu içerik için SEO optimizasyonlu, çekici meta açıklama oluştur (120-160 karakter):\n\n";
+                $prompt .= "İçerik: " . substr(strip_tags($content), 0, 1200) . "\n";
+                $prompt .= "Mevcut açıklama: " . ($seoData['description'] ?? 'Yok') . "\n";
+                $prompt .= "Ana kelime: " . ($seoData['focus_keyword'] ?? 'Yok') . "\n";
+                $prompt .= "Anahtar kelimeler: " . implode(', ', $seoData['keywords'] ?? []) . "\n";
+                $prompt .= "Dil: " . $locale . "\n\n";
+                $prompt .= "Çekici ve bilgilendirici açıklama yaz. Sadece açıklamayı ver, başka şey yazma. Türkçe açıklama oluştur.";
+                
+                $aiResponse = ai_execute_feature('seo-content-generation', [
+                    'prompt' => $prompt,
+                    'content_type' => 'description',
+                    'language' => $locale,
+                    'max_length' => 160
+                ]);
+                
+                // AI response can be array or string, handle both
+                $descriptionText = '';
+                if (is_array($aiResponse)) {
+                    $descriptionText = $aiResponse['response'] ?? $aiResponse['content'] ?? $aiResponse['result'] ?? '';
+                } elseif (is_string($aiResponse)) {
+                    $descriptionText = $aiResponse;
+                }
+                
+                if (!empty($descriptionText)) {
+                    $suggestedDescription = trim($descriptionText);
+                    
+                    // Açıklama uzunluğunu kontrol et ve optimize et
+                    if (strlen($suggestedDescription) > 160) {
+                        $suggestedDescription = substr($suggestedDescription, 0, 157) . '...';
+                    }
+                    
+                    \Log::info('✅ AI Description suggestion generated', [
+                        'suggested_description' => substr($suggestedDescription, 0, 100) . '...',
+                        'length' => strlen($suggestedDescription),
+                        'locale' => $locale,
+                        'response_type' => gettype($aiResponse)
+                    ]);
+                    
+                    return $suggestedDescription;
+                }
+            }
+            
+            // Fallback: Mevcut açıklama varsa ve uygunsa döndür
+            $currentDescription = $seoData['description'] ?? '';
+            if (!empty($currentDescription) && strlen($currentDescription) >= 120 && strlen($currentDescription) <= 160) {
+                return $currentDescription;
+            }
+            
+            // Son fallback: İçerikten akıllı açıklama üret
+            $cleanContent = strip_tags($content);
+            $sentences = preg_split('/[.!?]+/', $cleanContent, -1, PREG_SPLIT_NO_EMPTY);
+            
+            if (!empty($sentences)) {
+                $description = trim($sentences[0]);
+                
+                // Focus keyword ekle
+                $focusKeyword = $seoData['focus_keyword'] ?? '';
+                if (!empty($focusKeyword) && stripos($description, $focusKeyword) === false) {
+                    $description = $focusKeyword . ' hakkında detaylı bilgi: ' . $description;
+                }
+                
+                return strlen($description) > 160 ? substr($description, 0, 157) . '...' : $description;
+            }
+            
+            // Emergency fallback
+            $focusKeyword = $seoData['focus_keyword'] ?? '';
+            return !empty($focusKeyword) 
+                ? $focusKeyword . ' ile ilgili kapsamlı bilgiler ve detaylar.'
+                : 'Bu sayfada ilginç ve değerli bilgiler bulabilirsiniz.';
+            
+        } catch (\Exception $e) {
+            \Log::error('AI Description generation failed', ['error' => $e->getMessage()]);
+            
+            // Emergency fallback
+            return 'Bu konuda detaylı ve faydalı bilgiler içeren kapsamlı bir içerik.';
+        }
     }
 }

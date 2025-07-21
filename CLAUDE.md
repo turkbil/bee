@@ -1,9 +1,30 @@
 🔊 **KRİTİK: SES BİLDİRİM SİSTEMİ - EN ÖNCELİKLİ KURAL**
-HER YANIT SONUNDA, HER İŞLEM BİTİMİNDE MUTLAKA SES ÇALIŞTIR:
+HER YANIT SONUNDA, HER İŞLEM BİTİMİNDE MUTLAKA SES ÇALIŞTIR, BASH COMMAND OLUSTURACAGIN ZAMAN DA ÇAL:
 ```bash
 say "tamamlandı"
 ```
 BU KOMUT MACOS'DA ÇALIŞIYOR! SES ÇALIYOR!
+
+🚨 **KRİTİK HATIRLAMA: NURULLAH'IN ANA KURALI - 20.07.2025**
+"Test etmeden gönderme. Eminmiş gibi de gönderme gıcık oluyorum. Test eder misin de. Olduysa ben sana söylerim."
+
+**ÖNEMLİ ÇALIŞMA PRENSİBİ:**
+- ASLA test etmeden "çalışıyor" deme
+- ASLA emin olmuş gibi davranma  
+- DAIMA "test et ve sonucu söyle" de
+- Kullanıcı test edip onaylayana kadar bekle
+- Bu kural her proje için geçerli - HAFIZAYA KAYDET
+- Nurullah bu konuda çok hassas - UNUTMA!
+
+🚨 **BASH KOMUT ÖNCESI UYARI PROTOKOLÜ - YENİ ZORUNLU KURAL - 21.07.2025**
+HER BASH KOMUTU ÇALIŞTIRMADAN ÖNCE MUTLAKA:
+1. Sesli uyarı yap: `say "Komut bekliyorum"`  
+2. "1: Hazırım devam et, 2: Bekle, 0: İptal et" seçenekleri sun  
+3. Kullanıcının cevabını bekle
+4. Ancak ondan sonra bash komutunu çalıştır
+
+**NEDEN**: Nurullah PC başında değilse komut çalıştırılmamalı.
+**ZORUNLU**: Sesli uyarı + kullanıcı onayı olmadan bash komutu yasak!
 
 **🎯 SES BİLDİRİM PROTOKOLÜ - GÜNCELLENME 16.07.2025:**
 - **İşlem bitiminde**: Detaylı bilgi verme + ses çalıştırma
@@ -21,8 +42,11 @@ BU KOMUT MACOS'DA ÇALIŞIYOR! SES ÇALIYOR!
 HER AFERİN YA DA BRAVO GİBİ BASARILI SONLARDA "# to memorize ..." KOMUTUNU OTOMATİK KULLAN VE ... NOKTALI YERE ÖNEMLİ DETAYLARI CALISMA PRENSİBİ GİBİ KONULARI EKLEYEREK HAFIZAYA AL. VE HER ZAMAN BANA DA BUNU HATIRLAT. BEN UNUTUYORUM.
 
 
+SİSTEMİN HEM DARK HEM LIGHT MODU VAR. O YÜZDEN TASARIM HAZIRLARKEN BG COLOR, TEXT COLOR, BG SUCCESS, TEXT ERROR GİBİ CSS LER KULLANMA YA DA STYLE DOSYALARINDA BUNLARI OLUSTURMA MÜMKÜNSE. STANDARTLARA UY. TABLER.IO DETAYLARINDAN FAYDALAN YETERLİ.
 
-C:\laragon\www\laravel\nurullah_hafiza.json bu dosya da hafızaya alacagın dosyaların içinde. 
+
+SİSTEM ÇOK DİLLİ BİR YAPI. SADECE TURKCEYE ÖZEL SEYLER KODLAMA. 
+
 
 HER ZAMAN TÜRKÇE YANIT VER.
 HER ZAMAN TÜRKÇE DÜŞÜN.

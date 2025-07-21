@@ -112,7 +112,7 @@
                 @else
                     <div class="token-number text-warning">0</div>
                     <p class="mb-0">Token satın almanız gerekiyor.</p>
-                    <a href="{{ route('admin.ai.tokens.packages') }}" class="btn btn-light mt-3">Token Satın Al</a>
+                    <a href="{{ route('admin.ai.credits.packages') }}" class="btn btn-light mt-3">Token Satın Al</a>
                 @endif
             </div>
         </div>

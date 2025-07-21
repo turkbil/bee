@@ -259,7 +259,7 @@
                 <i class="fas fa-download me-2"></i>Token Verilerini İndir
               </a>
               <div class="dropdown-divider"></div>
-              <a href="{{ route('admin.ai.tokens.usage-stats') }}" class="dropdown-item">
+              <a href="{{ route('admin.ai.credits.usage-stats') }}" class="dropdown-item">
                 <i class="fas fa-external-link-alt me-2"></i>Detaylı Token Analizi
               </a>
             </div>

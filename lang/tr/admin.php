@@ -390,7 +390,9 @@ return [
     'export_failed' => 'Dışa aktarma başarısız',
     
     // Form Hataları
+    'required' => 'Zorunlu',
     'required_field' => 'Bu alan zorunludur',
+    'loading' => 'Yükleniyor',
     'field_too_short' => 'Bu alan çok kısa',
     'field_too_long' => 'Bu alan çok uzun',
     'password_mismatch' => 'Şifreler eşleşmiyor',

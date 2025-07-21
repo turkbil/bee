@@ -87,8 +87,8 @@ if (!function_exists('ai_get_total_used')) {
         $cacheKey = "ai_total_used_{$tenantId}";
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId) {
-            return AITokenUsage::where('tenant_id', $tenantId)
-                ->sum('tokens_used');
+            return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
+                ->sum('input_tokens');
         });
     }
 }
@@ -112,15 +112,15 @@ if (!function_exists('ai_get_token_stats')) {
             $remaining = max(0, $totalPurchased - $totalUsed);
             
             // Daily usage (bugünkü kullanım)
-            $dailyUsage = AITokenUsage::where('tenant_id', $tenantId)
+            $dailyUsage = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
                 ->whereDate('created_at', today())
-                ->sum('tokens_used');
+                ->sum('input_tokens');
             
             // Monthly usage (bu ayki kullanım)
-            $monthlyUsage = AITokenUsage::where('tenant_id', $tenantId)
+            $monthlyUsage = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
                 ->whereYear('created_at', now()->year)
                 ->whereMonth('created_at', now()->month)
-                ->sum('tokens_used');
+                ->sum('input_tokens');
             
             $usagePercentage = $totalPurchased > 0 ? round(($totalUsed / $totalPurchased) * 100, 2) : 0;
             $remainingPercentage = $totalPurchased > 0 ? round(($remaining / $totalPurchased) * 100, 2) : 0;
@@ -482,15 +482,17 @@ if (!function_exists('ai_use_tokens')) {
             $currentModel = 'deepseek-chat';
         }
 
-        // Kullanım kaydı oluştur (Eloquent model kullan)
-        $usage = AITokenUsage::create([
+        // Kullanım kaydı oluştur (Credit sistemi kullan)
+        $usage = \Modules\AI\App\Models\AICreditUsage::create([
             'tenant_id' => $tenantId,
             'user_id' => auth()->id() ?: 1,
-            'usage_type' => $module,
-            'description' => $action,
-            'tokens_used' => $tokensUsed,
-            'model' => $currentModel, // Model bilgisini ekle
-            'metadata' => $metadata,
+            'feature_slug' => $module,
+            'input_tokens' => $tokensUsed,
+            'output_tokens' => 0,
+            'credits_used' => $tokensUsed / 1000, // Token'ları credit'e çevir (basit conversion)
+            'credit_cost' => $tokensUsed * 0.00001, // Basit maliyet hesaplaması
+            'provider_name' => $currentModel,
+            'metadata' => json_encode($metadata),
             'used_at' => now()
         ]);
         
@@ -626,8 +628,8 @@ if (!function_exists('ai_get_daily_usage')) {
     {
         $tenantId = $tenantId ?: tenant('id') ?: 'default';
         
-        return AITokenUsage::where('tenant_id', $tenantId)
+        return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
             ->whereDate('created_at', now()->toDateString())
-            ->sum('tokens_used');
+            ->sum('input_tokens');
     }
 }

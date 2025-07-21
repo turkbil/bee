@@ -16,10 +16,14 @@ class TokenHelper
     }
     
     /**
-     * Token miktarını formatla
+     * Token miktarını formatla - Null-safe handling
      */
-    public static function format(int $amount): string
+    public static function format(?int $amount): string
     {
+        if ($amount === null) {
+            return '0';
+        }
+        
         return self::getTokenService()->formatTokenAmount($amount);
     }
     

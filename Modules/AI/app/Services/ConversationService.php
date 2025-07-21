@@ -100,19 +100,29 @@ class ConversationService
             ]);
         }
 
-        // Ayrıca AI modülünün kendi tablosuna da kaydet
-        \Modules\AI\App\Models\AITokenUsage::create([
+        // Credit sistemi ile kaydet
+        \Modules\AI\App\Models\AICreditUsage::create([
             'tenant_id' => $conversation->tenant_id,
             'user_id' => $conversation->user_id,
             'conversation_id' => $conversation->id,
             'message_id' => $message->id,
-            'tokens_used' => $totalTokens,
-            'prompt_tokens' => $promptTokens,
-            'completion_tokens' => $completionTokens,
+            'input_tokens' => $promptTokens,
+            'output_tokens' => $completionTokens,
+            'credits_used' => round($totalTokens / 1000, 4), // Token'ları credit'e çevir
+            'credit_cost' => round($totalTokens * 0.0005, 4), // Basit maliyet hesabı
             'usage_type' => 'chat',
-            'model' => $model ?: $this->getCurrentProviderModel(),
-            'purpose' => $conversation->type ?? 'chat',
+            'provider_name' => $model ?: $this->getCurrentProviderModel(),
+            'feature_slug' => 'admin-chat',
             'description' => 'AI Chat: ' . \Str::limit($message->content, 50),
+            'metadata' => json_encode([
+                'conversation_type' => $conversation->type ?? 'chat',
+                'message_id' => $message->id,
+                'tokens_breakdown' => [
+                    'total' => $totalTokens,
+                    'prompt' => $promptTokens,
+                    'completion' => $completionTokens
+                ]
+            ]),
             'used_at' => now(),
         ]);
     }

@@ -107,13 +107,68 @@ class AIProviderManager
     }
 
     /**
-     * Automatic failover - bir provider çalışmazsa diğerine geç
+     * Provider'ları doğru sırada getir - 3 Aşamalı Sistem:
+     * 1. Tenant'ın seçtiği provider (tenants.default_ai_provider_id)
+     * 2. Sistem varsayılanı (ai_providers.is_default=1)  
+     * 3. Fallback (priority sırasına göre)
      */
-    public function getProviderServiceWithFailover($preferredProvider = null)
+    public function getOrderedProviders($tenantId = null)
     {
+        $orderedProviders = collect();
+        
+        // 1. AŞAMA: Tenant'ın seçtiği provider
+        if ($tenantId) {
+            $tenant = \App\Models\Tenant::find($tenantId);
+            if ($tenant && $tenant->default_ai_provider_id) {
+                $tenantProvider = $this->providers->where('id', $tenant->default_ai_provider_id)->first();
+                if ($tenantProvider) {
+                    $orderedProviders->push($tenantProvider);
+                    Log::info("🎯 Tenant provider seçildi", [
+                        'tenant_id' => $tenantId,
+                        'provider' => $tenantProvider->name,
+                        'provider_id' => $tenantProvider->id
+                    ]);
+                }
+            }
+        }
+        
+        // 2. AŞAMA: Sistem varsayılanı (eğer tenant'ta yoksa)
+        $defaultProvider = $this->providers->where('is_default', true)->first();
+        if ($defaultProvider && !$orderedProviders->contains('id', $defaultProvider->id)) {
+            $orderedProviders->push($defaultProvider);
+            Log::info("🔧 Sistem varsayılan provider eklendi", [
+                'provider' => $defaultProvider->name,
+                'is_default' => true
+            ]);
+        }
+        
+        // 3. AŞAMA: Fallback (priority sırasına göre geri kalanlar)
+        $fallbackProviders = $this->providers
+            ->whereNotIn('id', $orderedProviders->pluck('id'))
+            ->sortByDesc('priority');
+            
+        foreach ($fallbackProviders as $provider) {
+            $orderedProviders->push($provider);
+        }
+        
+        return $orderedProviders;
+    }
+
+    /**
+     * Automatic failover - bir provider çalışmazsa diğerine geç
+     * 3 Aşamalı Provider Seçimi ile
+     */
+    public function getProviderServiceWithFailover($preferredProvider = null, $tenantId = null)
+    {
+        // Tenant ID'yi al (session'dan veya parametre)
+        if (!$tenantId && session('admin_tenant_id')) {
+            $tenantId = session('admin_tenant_id');
+        }
+        
+        // 3 aşamalı provider seçimi kullan
         $providers = $preferredProvider 
-            ? $this->providers->where('name', $preferredProvider)->concat($this->getProvidersByPriority())
-            : $this->getProvidersByPriority();
+            ? $this->providers->where('name', $preferredProvider)->concat($this->getOrderedProviders($tenantId))
+            : $this->getOrderedProviders($tenantId);
 
         foreach ($providers as $provider) {
             try {
@@ -123,19 +178,22 @@ class AIProviderManager
                     Log::info("AI Provider seçildi: {$provider->name}", [
                         'provider' => $provider->name,
                         'average_response_time' => $provider->average_response_time,
-                        'priority' => $provider->priority
+                        'priority' => $provider->priority,
+                        'tenant_id' => $tenantId,
+                        'selection_reason' => $preferredProvider ? 'preferred' : 'priority_order'
                     ]);
                     
                     return ['provider' => $provider, 'service' => $service];
                 }
             } catch (\Exception $e) {
                 Log::warning("AI Provider unavailable: {$provider->name}", [
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'tenant_id' => $tenantId
                 ]);
                 continue;
             }
         }
 
-        throw new \Exception("No available AI providers found");
+        throw new \Exception("No available AI providers found for tenant: " . ($tenantId ?: 'none'));
     }
 }

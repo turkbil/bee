@@ -69,6 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // CSS değişkenlerini zorla güncelle
             forceUpdateThemeVariables();
             
+            // Custom event dispatch for theme change
+            const themeChangeEvent = new CustomEvent('theme-changed', {
+                detail: {
+                    theme: themeMode,
+                    isDark: themeMode === 'dark' || (themeMode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+                }
+            });
+            document.dispatchEvent(themeChangeEvent);
+            
             // Smooth transition için kısa delay
             setTimeout(() => {
                 forceUpdateAllElements();
@@ -462,6 +471,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // CSS değişkenlerini güncelle
             forceUpdateThemeVariables();
+            
+            // Custom event dispatch for theme change
+            const themeMode = currentTheme === '1' ? 'dark' : 'light';
+            const themeChangeEvent = new CustomEvent('theme-changed', {
+                detail: {
+                    theme: themeMode,
+                    isDark: themeMode === 'dark'
+                }
+            });
+            document.dispatchEvent(themeChangeEvent);
             
             // Toast bildirimi devre dışı - Livewire handle ediyor
             // const themeName = currentTheme === '1' ? 'Karanlık' : 
@@ -2002,4 +2021,268 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Boş style elementleri güncellendi
     }
+    
+    // 🤖 GLOBAL AI ROBOTİ VE SEO SİSTEMİ - TÜMÜ MODÜLLER İÇİN
+    initGlobalAISystem();
+    
+    // 🔧 GLOBAL LIVEWIRE SNAPSHOT FIX SİSTEMİ
+    initGlobalLivewireSnapshotFix();
 });
+
+// 🤖 GLOBAL AI SİSTEMİ - TÜM ADMIN PANELİ İÇİN
+function initGlobalAISystem() {
+    console.log('🤖 Global AI sistem başlatılıyor...');
+    
+    // AI Robot butonları için global event listener
+    document.addEventListener('click', function(e) {
+        // AI Test butonları
+        if (e.target.matches('[wire\\:click="testAI"], .ai-test-btn')) {
+            console.log('🧪 Global AI Test butonu tıklandı');
+            
+            // Bu butona özel tracking - global değil
+            e.target.dataset.aiInProgress = 'true';
+            
+            // Butonu disable et - double click engellemek için
+            e.target.disabled = true;
+            e.target.innerHTML = '🤖 AI Test Ediliyor...';
+            
+            showAIProgress('AI test çalışıyor...');
+            
+            // 30 saniye sonra otomatik temizle
+            setTimeout(() => {
+                e.target.dataset.aiInProgress = 'false';
+                e.target.disabled = false;
+                e.target.innerHTML = '🧪 AI Test';
+            }, 30000);
+        }
+        
+        // Hızlı Analiz butonları  
+        if (e.target.matches('[wire\\:click="runQuickAnalysis"], .ai-analysis-btn')) {
+            console.log('⚡ Global Hızlı Analiz butonu tıklandı');
+            
+            // Bu butona özel tracking - global değil
+            e.target.dataset.aiInProgress = 'true';
+            
+            // Butonu disable et - double click engellemek için
+            e.target.disabled = true;
+            e.target.innerHTML = '🤖 AI Analiz Ediliyor...';
+            
+            showAIProgress('AI analizi yapılıyor...');
+            
+            // 30 saniye sonra otomatik temizle ve butonu enable et
+            setTimeout(() => {
+                e.target.dataset.aiInProgress = 'false';
+                e.target.disabled = false;
+                e.target.innerHTML = '⚡ Hızlı Analiz';
+            }, 30000);
+        }
+        
+        // AI Önerileri butonları
+        if (e.target.matches('[wire\\:click="generateAISuggestions"], .ai-suggestions-btn')) {
+            console.log('🎯 Global AI Önerileri butonu tıklandı');
+            
+            // Bu butona özel tracking - global değil
+            e.target.dataset.aiInProgress = 'true';
+            
+            // Butonu disable et - double click engellemek için
+            e.target.disabled = true;
+            e.target.innerHTML = '🤖 AI Önerileri Oluşturuluyor...';
+            
+            showAIProgress('AI önerileri oluşturuluyor...');
+            
+            // 30 saniye sonra otomatik temizle
+            setTimeout(() => {
+                e.target.dataset.aiInProgress = 'false';
+                e.target.disabled = false;
+                e.target.innerHTML = '🎯 AI Önerileri';
+            }, 30000);
+        }
+        
+        // Otomatik Optimize butonları
+        if (e.target.matches('[wire\\:click="autoOptimize"], .ai-optimize-btn')) {
+            console.log('⚡ Global Otomatik Optimize butonu tıklandı');
+            
+            // Bu butona özel tracking - global değil
+            e.target.dataset.aiInProgress = 'true';
+            
+            // Butonu disable et - double click engellemek için
+            e.target.disabled = true;
+            e.target.innerHTML = '🤖 AI Optimize Ediliyor...';
+            
+            showAIProgress('AI optimizasyonu yapılıyor...');
+            
+            // 30 saniye sonra otomatik temizle
+            setTimeout(() => {
+                e.target.dataset.aiInProgress = 'false';
+                e.target.disabled = false;
+                e.target.innerHTML = '⚡ Otomatik Optimize';
+            }, 30000);
+        }
+    });
+    
+    // AI progress indicator
+    function showAIProgress(message) {
+        // Toast notification göster
+        if (typeof showToast === 'function') {
+            showToast('AI Sistemi', message, 'info');
+        }
+        
+        // Progress indicator ekle
+        const existingProgress = document.querySelector('.global-ai-progress');
+        if (existingProgress) existingProgress.remove();
+        
+        const progressDiv = document.createElement('div');
+        progressDiv.className = 'global-ai-progress position-fixed top-0 end-0 m-3 alert alert-info';
+        progressDiv.style.zIndex = '9999';
+        progressDiv.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(progressDiv);
+        
+        // 10 saniye sonra otomatik kaldır
+        setTimeout(() => {
+            if (progressDiv && progressDiv.parentNode) {
+                progressDiv.remove();
+            }
+        }, 10000);
+    }
+    
+    // Livewire event listener'ları
+    document.addEventListener('livewire:load', function() {
+        console.log('🔄 Livewire yüklendi, global AI sistemi aktif');
+        
+        // Livewire component'lerini dinle
+        window.Livewire.on('ai-progress-start', function(data) {
+            showAIProgress(data.message || 'AI işlemi devam ediyor...');
+        });
+        
+        // ❌ ai-analysis-complete event listener kaldırıldı - Component conflict'e sebep oluyor
+        // window.Livewire.on('ai-analysis-complete', function(data) {
+        //     const existingProgress = document.querySelector('.global-ai-progress');
+        //     if (existingProgress) existingProgress.remove();
+        //     
+        //     if (typeof showToast === 'function') {
+        //         showToast('AI Analizi', 'Analiz tamamlandı!', 'success');
+        //     }
+        // });
+        
+        window.Livewire.on('toast', function(data) {
+            if (typeof showToast === 'function') {
+                showToast(data.title || 'Bildirim', data.message, data.type || 'info');
+            }
+        });
+    });
+    
+    console.log('✅ Global AI sistemi başarıyla başlatıldı');
+    
+    // Say komutu çalıştırma - macOS için
+    window.sayCommand = function(message) {
+        console.log('🔊 Say komutu:', message);
+        // Bu browser'da çalışmaz ama backend'de çalışacak
+        // Sadece konsola log atalım
+    };
+}
+
+// 🔧 GLOBAL LIVEWIRE SNAPSHOT FIX SİSTEMİ
+function initGlobalLivewireSnapshotFix() {
+    console.log('🔧 Global Livewire Snapshot Fix sistemi başlatılıyor...');
+    
+    // Global snapshot error handler
+    window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes('Snapshot missing')) {
+            console.log('🚨 Global Snapshot error yakalandı, AI uyumlu düzeltme başlatılıyor...');
+            
+            // Herhangi bir AI butonu çalışıyorsa snapshot error'ları ignore et
+            const activeAIButtons = document.querySelectorAll('[data-ai-in-progress="true"]');
+            if (activeAIButtons.length > 0) {
+                console.log('🤖 AI çağrısı devam ediyor (' + activeAIButtons.length + ' adet), snapshot error ignore ediliyor...');
+                return;
+            }
+            
+            setTimeout(() => {
+                if (window.Livewire) {
+                    console.log('🔄 Livewire componentleri güvenli şekilde yenileniyor...');
+                    
+                    try {
+                        // AI çağrısı sonrasında component refresh yapmayı devre dışı bırak
+                        // Snapshot error'ları sadece log'la, component'leri refresh etme
+                        console.log('⚡ AI compatibility için component refresh atlandı');
+                        
+                        // AI sonuçlarını korumak için herhangi bir component işlemi yapma
+                        // Sadece snapshot error'ı ignore et
+                        
+                    } catch (refreshError) {
+                        console.log('🔄 Component refresh tamamen devre dışı (AI sonuçları korunuyor)...');
+                        // window.location.reload(); // REMOVED: AI çağrıları için devre dışı
+                    }
+                }
+            }, 200);
+        }
+        
+        // Component not found errors
+        if (e.message && e.message.includes('Component not found')) {
+            console.log('🚨 Component not found error, registry temizleniyor...');
+            
+            if (window.Livewire && window.Livewire.store && window.Livewire.store.componentsById) {
+                console.log('🧹 Component registry temizleniyor...');
+                
+                // Broken component'leri temizle
+                Object.keys(window.Livewire.store.componentsById).forEach(id => {
+                    try {
+                        const component = window.Livewire.find(id);
+                        if (!component || !component.snapshot || !component.snapshot.memo) {
+                            console.log('🗑️ Broken component kaldırılıyor:', id);
+                            delete window.Livewire.store.componentsById[id];
+                        }
+                    } catch (e) {
+                        console.log('🗑️ Invalid component kaldırılıyor:', id);
+                        delete window.Livewire.store.componentsById[id];
+                    }
+                });
+            }
+        }
+    });
+    
+    // Livewire component state management
+    document.addEventListener('livewire:load', function() {
+        console.log('🔧 Livewire yüklendi, global snapshot fix aktif');
+        
+        // Component snapshot refresh sistemi
+        setInterval(() => {
+            if (window.Livewire && window.Livewire.store) {
+                const componentCount = Object.keys(window.Livewire.store.componentsById || {}).length;
+                
+                if (componentCount > 0) {
+                    console.log('🔄 ' + componentCount + ' Livewire component aktif');
+                    
+                    // Stale component'leri kontrol et
+                    Object.keys(window.Livewire.store.componentsById).forEach(id => {
+                        try {
+                            const component = window.Livewire.find(id);
+                            if (component && component.el && !component.snapshot) {
+                                console.log('🔄 Stale component tespit edildi, refresh ediliyor:', id);
+                                component.call('$refresh');
+                            }
+                        } catch (e) {
+                            console.log('🗑️ Problematic component kaldırılıyor:', id);
+                            delete window.Livewire.store.componentsById[id];
+                        }
+                    });
+                }
+            }
+        }, 30000); // 30 saniyede bir kontrol
+    });
+    
+    // Sayfa değişimi sırasında component temizleme
+    window.addEventListener('beforeunload', function() {
+        if (window.Livewire && window.Livewire.store && window.Livewire.store.componentsById) {
+            console.log('🧹 Sayfa kapanıyor, Livewire registry temizleniyor...');
+            window.Livewire.store.componentsById = {};
+        }
+    });
+    
+    console.log('✅ Global Livewire Snapshot Fix sistemi başarıyla başlatıldı');
+}

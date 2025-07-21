@@ -29,14 +29,31 @@ class ClaudeService
         ]);
         
         try {
+            // Claude API'de system mesajları ayrı parameter olarak gönderilmeli
+            $systemMessage = '';
+            $userMessages = [];
+            
+            foreach ($messages as $message) {
+                if (isset($message['role']) && $message['role'] === 'system') {
+                    $systemMessage .= $message['content'] . "\n";
+                } else {
+                    $userMessages[] = $message;
+                }
+            }
+            
             // Non-streaming request payload (Claude API format)
             $payload = [
                 'model' => $this->model,
                 'max_tokens' => 800,
                 'temperature' => 0.3,
-                'messages' => $messages,
+                'messages' => $userMessages, // Sadece user/assistant mesajları
                 'stream' => false, // Non-streaming for testing
             ];
+            
+            // System mesajı varsa ekle
+            if (!empty(trim($systemMessage))) {
+                $payload['system'] = trim($systemMessage);
+            }
             
             // HTTP REQUEST
             $response = Http::withHeaders([
@@ -51,17 +68,28 @@ class ClaudeService
             if ($response->successful()) {
                 $responseData = $response->json();
                 
+                // Claude API token usage bilgilerini al
+                $inputTokens = $responseData['usage']['input_tokens'] ?? 0;
+                $outputTokens = $responseData['usage']['output_tokens'] ?? 0;
+                $totalTokens = $inputTokens + $outputTokens;
+                
                 Log::info('✅ Claude API başarılı', [
                     'duration_ms' => $duration,
                     'status' => $response->status(),
-                    'response_length' => strlen($responseData['content'][0]['text'] ?? '')
+                    'response_length' => strlen($responseData['content'][0]['text'] ?? ''),
+                    'input_tokens' => $inputTokens,
+                    'output_tokens' => $outputTokens,
+                    'total_tokens' => $totalTokens
                 ]);
                 
                 return [
                     'response' => $responseData['content'][0]['text'] ?? '',
-                    'tokens_used' => $responseData['usage']['output_tokens'] ?? 0,
+                    'tokens_used' => $totalTokens,
+                    'input_tokens' => $inputTokens,
+                    'output_tokens' => $outputTokens,
                     'success' => true,
-                    'duration_ms' => $duration
+                    'duration_ms' => $duration,
+                    'usage_details' => $responseData['usage'] ?? []
                 ];
             } else {
                 $errorData = $response->json();

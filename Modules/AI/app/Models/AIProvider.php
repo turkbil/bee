@@ -25,6 +25,10 @@ class AIProvider extends Model
         'priority',
         'average_response_time',
         'description',
+        'token_cost_multiplier',
+        'tokens_per_request_estimate',
+        'cost_structure',
+        'tracks_usage',
     ];
 
     protected $casts = [
@@ -33,6 +37,10 @@ class AIProvider extends Model
         'is_active' => 'boolean',
         'is_default' => 'boolean',
         'average_response_time' => 'decimal:2',
+        'token_cost_multiplier' => 'decimal:4',
+        'tokens_per_request_estimate' => 'integer',
+        'cost_structure' => 'array',
+        'tracks_usage' => 'boolean',
     ];
 
     /**
@@ -132,5 +140,64 @@ class AIProvider extends Model
     public function isAvailable()
     {
         return $this->is_active && $this->api_key && $this->service_class;
+    }
+
+    /**
+     * Bu provider'ı kullanan tenant'lar
+     */
+    public function tenants()
+    {
+        return $this->hasMany(\App\Models\Tenant::class, 'default_ai_provider_id');
+    }
+
+    /**
+     * Bu provider'ın token kullanımları
+     */
+    public function tokenUsages()
+    {
+        return $this->hasMany(\Modules\AI\App\Models\AITokenUsage::class, 'ai_provider_id');
+    }
+
+    /**
+     * Token cost hesapla
+     */
+    public function calculateTokenCost(int $tokens): float
+    {
+        return $tokens * $this->token_cost_multiplier;
+    }
+
+    /**
+     * Günlük kullanım istatistikleri
+     */
+    public function getDailyUsageStats()
+    {
+        return $this->tokenUsages()
+            ->whereDate('used_at', today())
+            ->selectRaw('
+                COUNT(*) as total_requests,
+                SUM(tokens_used) as total_tokens,
+                AVG(tokens_used) as avg_tokens_per_request,
+                SUM(tokens_used * cost_multiplier) as total_cost
+            ')
+            ->first();
+    }
+
+    /**
+     * Provider için select option formatı
+     */
+    public static function getSelectOptions()
+    {
+        return self::where('is_active', true)
+            ->orderBy('priority', 'desc')
+            ->get()
+            ->map(function ($provider) {
+                return [
+                    'value' => $provider->id,
+                    'label' => $provider->display_name . ' (Cost: x' . $provider->token_cost_multiplier . ')',
+                    'priority' => $provider->priority,
+                    'cost_multiplier' => $provider->token_cost_multiplier,
+                ];
+            })
+            ->toArray();
     }
 }

@@ -88,10 +88,9 @@
     @livewireScripts
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
-        // Debug Livewire loading
+        // Initialize Livewire and Alpine
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Livewire available:', typeof window.Livewire !== 'undefined');
-            console.log('Alpine available:', typeof window.Alpine !== 'undefined');
+            // Livewire and Alpine.js initialization
         });
     </script>
     @stack('scripts')

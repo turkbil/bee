@@ -24,6 +24,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'central' => 'boolean',
         'data' => 'array',
         'theme_id' => 'integer',
+        'default_ai_provider_id' => 'integer',
+        'ai_settings' => 'array',
         'ai_tokens_balance' => 'integer',
         'ai_tokens_used_this_month' => 'integer',
         'ai_monthly_token_limit' => 'integer',
@@ -118,6 +120,34 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     }
 
     /**
+     * Default AI Provider relationship
+     */
+    public function defaultAiProvider()
+    {
+        return $this->belongsTo(\Modules\AI\App\Models\AIProvider::class, 'default_ai_provider_id');
+    }
+
+    /**
+     * Get default AI model for this tenant
+     */
+    public function getDefaultAiModel()
+    {
+        $data = $this->data ?? [];
+        return $data['default_ai_model'] ?? null;
+    }
+
+    /**
+     * Set default AI model for this tenant
+     */
+    public function setDefaultAiModel($model)
+    {
+        $data = $this->data ?? [];
+        $data['default_ai_model'] = $model;
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
      * Check if tenant has enough AI tokens
      */
     public function hasEnoughTokens(int $tokensNeeded): bool
@@ -182,8 +212,8 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             ->where('status', 'completed')
             ->sum('token_amount') ?? 0;
 
-        $totalUsed = $this->aiTokenUsage()
-            ->sum('tokens_used') ?? 0;
+        $totalUsed = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $this->id)
+            ->sum('input_tokens') ?? 0;
 
         return max(0, $totalPurchased - $totalUsed);
     }

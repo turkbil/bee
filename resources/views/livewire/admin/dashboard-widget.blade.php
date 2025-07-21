@@ -63,12 +63,12 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center drag-handle">
-                        <div class="subheader">{{ __('ai::admin.ai_tokens') }}</div>
+                        <div class="subheader">AI Kredileri</div>
                         <div class="ms-auto lh-1">
                             <div class="dropdown">
                                 <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.index') }}">Token Management</a>
+                                    <a class="dropdown-item" href="{{ route('admin.ai.credits.index') }}">Kredi Yönetimi</a>
                                     <a class="dropdown-item" href="{{ route('admin.ai.conversations.index') }}">Usage History</a>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="h1 mb-3">{{ $remainingTokensFormatted }}</div>
                     <div class="d-flex mb-2">
-                        <div>{{ __('ai::admin.dashboard.remaining_tokens') }}</div>
+                        <div>Kalan Krediler</div>
                         <div class="ms-auto">
                             <span class="text-{{ $statusColor }} d-inline-flex align-items-center lh-1">
                                 {{ $statusText }}
@@ -441,8 +441,8 @@
 @push('scripts')
 <!-- Sortable Library -->
 <script src="/admin-assets/libs/sortable/sortable.min.js"></script>
-<!-- Chart.js - More stable alternative -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart.js - Local version to avoid source map errors -->
+<script src="/admin-assets/libs/apexcharts/dist/apexcharts.min.js"></script>
 
 <script>
 // Global variables

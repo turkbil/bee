@@ -49,5 +49,6 @@ return array(
     'cd6300adadbd4f8fd3c2a0a1b3efa58a' => $baseDir . '/app/Helpers/Functions.php',
     '328ac2dfc6cbdb61ee942279aca1141c' => $baseDir . '/app/Helpers/TenantHelpers.php',
     'a211fe5eb7136ac3d49924193e91eae0' => $baseDir . '/app/Helpers/AIHelper.php',
+    '1396d18559aff122f3c2aa74b73a2e76' => $baseDir . '/app/Helpers/CreditHelpers.php',
     '83bd2eaaa0c8f246d1feccb8de5192b9' => $baseDir . '/app/Helpers/TranslationHelper.php',
 );

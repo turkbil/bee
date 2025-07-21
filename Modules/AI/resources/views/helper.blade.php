@@ -91,19 +91,19 @@
                         <span class="dropdown-header">{{ __('ai::admin.token_management') }}</span>
                     </h6>
                     
-                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.index') }}">
+                    <a class="dropdown-item" href="{{ route('admin.ai.credits.index') }}">
                         <i class="icon-menu fas fa-coins"></i>{{ __('ai::admin.token_management') }}
                     </a>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.packages') }}">
+                    <a class="dropdown-item" href="{{ route('admin.ai.credits.packages') }}">
                         <i class="icon-menu fas fa-box"></i>{{ __('ai::admin.token_packages') }}
                     </a>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.purchases') }}">
+                    <a class="dropdown-item" href="{{ route('admin.ai.credits.purchases') }}">
                         <i class="icon-menu fas fa-shopping-cart"></i>{{ __('ai::admin.token_purchases') }}
                     </a>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.usage-stats') }}">
+                    <a class="dropdown-item" href="{{ route('admin.ai.credits.usage-stats') }}">
                         <i class="icon-menu fas fa-chart-bar"></i>{{ __('ai::admin.usage_statistics') }}
                     </a>
                     @endrole

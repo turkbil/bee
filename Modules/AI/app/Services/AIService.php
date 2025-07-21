@@ -7,7 +7,6 @@ use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Services\PromptService;
 use Modules\AI\App\Services\AIPriorityEngine;
 use Modules\AI\App\Services\AIProviderManager;
-use Modules\AI\App\Models\Setting;
 use App\Helpers\TenantHelpers;
 use App\Services\AITokenService;
 use Illuminate\Support\Facades\Cache;
@@ -186,7 +185,7 @@ class AIService
 
         // AI'dan yanıt al - Dinamik provider kullanımı
         $startTime = microtime(true);
-        $response = $this->currentService->ask($messages, $stream);
+        $apiResponse = $this->currentService->ask($messages, $stream);
         
         // Provider performansını güncelle
         if ($this->currentProvider) {
@@ -194,21 +193,25 @@ class AIService
             $this->providerManager->updateProviderPerformance($this->currentProvider->name, $responseTime);
         }
         
+        // API response'u parse et (string veya array olabilir)
+        $response = is_array($apiResponse) ? ($apiResponse['response'] ?? $apiResponse) : $apiResponse;
+        
         if ($response && !$stream) {
-            // Token kullanımını kaydet
+            // YENİ MERKEZİ KREDİ DÜŞME SİSTEMİ
             if ($tenant) {
-                // Modern token sistemi - Dinamik provider kullanımı
-                $actualTokens = $this->currentService->estimateTokens([
-                    ['role' => 'user', 'content' => $prompt],
-                    ['role' => 'assistant', 'content' => $response]
-                ]);
+                // API response'undan token bilgilerini al
+                $tokenData = is_array($apiResponse) ? $apiResponse : [];
                 
-                $this->aiTokenService->useTokens(
-                    $tenant, 
-                    $actualTokens, 
-                    'chat',
-                    'AI Chat: ' . substr($prompt, 0, 50) . '...'
-                );
+                // Provider adını belirle  
+                $providerName = $this->currentProvider ? $this->currentProvider->name : 'unknown';
+                
+                // Merkezi kredi düşme sistemi
+                ai_use_calculated_credits($tokenData, $providerName, [
+                    'usage_type' => 'chat',
+                    'tenant_id' => $tenant->id,
+                    'description' => 'AI Chat: ' . substr($prompt, 0, 50) . '...',
+                    'source' => 'ai_service_ask'
+                ]);
             } else {
                 // Legacy limit sistemi kaldırıldı - sadece log
                 \Log::info('AI yanıt başarılı (legacy mode)', [
@@ -277,32 +280,42 @@ class AIService
         ];
 
         // AI'dan yanıt al - Dinamik provider kullanımı
-        $startTime = microtime(true);
-        $response = $this->currentService->ask($messages, false);
+        $featureStartTime = microtime(true);
+        $apiResponse = $this->currentService->ask($messages, false);
         
         // Provider performansını güncelle
         if ($this->currentProvider) {
-            $responseTime = (microtime(true) - $startTime) * 1000;
+            $responseTime = (microtime(true) - $featureStartTime) * 1000;
             $this->providerManager->updateProviderPerformance($this->currentProvider->name, $responseTime);
         }
+        
+        // API response'u parse et (string veya array olabilir)
+        $response = is_array($apiResponse) ? ($apiResponse['response'] ?? $apiResponse) : $apiResponse;
+        
+        // Debug log kaldırıldı - AI çalışmasını etkiliyordu
         
         if ($response) {
             // Feature kullanım istatistiklerini güncelle
             $feature->incrementUsage();
             
-            // Token kullanımını kaydet - Dinamik provider kullanımı
+            // YENİ MERKEZİ KREDİ DÜŞME SİSTEMİ - FEATURE
             if ($tenant) {
-                $actualTokens = $this->currentService->estimateTokens([
-                    ['role' => 'user', 'content' => $userInput],
-                    ['role' => 'assistant', 'content' => $response]
-                ]);
+                // API response'undan token bilgilerini al
+                $tokenData = is_array($apiResponse) ? $apiResponse : [];
                 
-                $this->aiTokenService->useTokens(
-                    $tenant, 
-                    $actualTokens, 
-                    'feature_test',
-                    'AI Feature: ' . $feature->name
-                );
+                // Provider adını belirle
+                $providerName = $this->currentProvider ? $this->currentProvider->name : 'unknown';
+                
+                // Merkezi kredi düşme sistemi
+                ai_use_calculated_credits($tokenData, $providerName, [
+                    'usage_type' => 'feature_test',
+                    'tenant_id' => $tenant->id,
+                    'feature_slug' => $feature->slug,
+                    'feature_id' => $feature->id,
+                    'feature_name' => $feature->name,
+                    'description' => 'AI Feature: ' . $feature->name,
+                    'source' => 'ai_service_ask_feature'
+                ]);
             }
             
             // Conversation tracking
@@ -528,7 +541,16 @@ class AIService
         $cacheKey = "ai_settings";
         
         return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-            return Setting::first();
+            // Config tabanlı ayarlar döndür
+            return (object) [
+                'enabled' => config('ai.enabled', true),
+                'debug' => config('ai.debug', false),
+                'cache_duration' => config('ai.cache_duration', 60),
+                'default_language' => config('ai.integrations.page.supported_languages.0', 'tr'),
+                'response_format' => 'markdown',
+                'rate_limiting' => config('ai.security.enable_rate_limiting', true),
+                'content_filtering' => config('ai.security.enable_content_filter', true),
+            ];
         });
     }
 
@@ -540,7 +562,16 @@ class AIService
      */
     public function updateSettings(array $data): ?Setting
     {
-        $settings = Setting::first();
+        // Config tabanlı ayarlar
+        $settings = (object) [
+            'enabled' => config('ai.enabled', true),
+            'debug' => config('ai.debug', false),
+            'cache_duration' => config('ai.cache_duration', 60),
+            'default_language' => config('ai.integrations.page.supported_languages.0', 'tr'),
+            'response_format' => 'markdown',
+            'rate_limiting' => config('ai.security.enable_rate_limiting', true),
+            'content_filtering' => config('ai.security.enable_content_filter', true),
+        ];
         
         if (!$settings) {
             $settings = new Setting();
@@ -771,7 +802,16 @@ class AIService
     {
         try {
             // Get current provider settings
-            $settings = \Modules\AI\App\Models\Setting::first();
+            // Config tabanlı ayarlar
+            $settings = (object) [
+                'enabled' => config('ai.enabled', true),
+                'debug' => config('ai.debug', false),
+                'cache_duration' => config('ai.cache_duration', 60),
+                'default_language' => config('ai.integrations.page.supported_languages.0', 'tr'),
+                'response_format' => 'markdown',
+                'rate_limiting' => config('ai.security.enable_rate_limiting', true),
+                'content_filtering' => config('ai.security.enable_content_filter', true),
+            ];
             if (!$settings || !$settings->providers) {
                 return 'deepseek/deepseek-chat'; // fallback
             }

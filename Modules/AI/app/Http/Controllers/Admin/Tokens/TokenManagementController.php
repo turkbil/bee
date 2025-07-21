@@ -4,16 +4,15 @@ namespace Modules\AI\App\Http\Controllers\Admin\Tokens;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
-use Modules\AI\App\Models\AITokenPackage;
-use Modules\AI\App\Models\AITokenPurchase;
-use Modules\AI\App\Models\AITokenUsage;
+use Modules\AI\App\Models\AICreditPackage;
+use Modules\AI\App\Models\AICreditUsage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TokenManagementController extends Controller
 {
     /**
-     * Display AI token management dashboard
+     * Display AI kredi management dashboard
      */
     public function index()
     {
@@ -35,8 +34,8 @@ class TokenManagementController extends Controller
         $systemStats = [
             'total_tenants' => Tenant::count(),
             'active_ai_tenants' => Tenant::where('ai_enabled', true)->count(),
-            'total_tokens_distributed' => AITokenPurchase::where('status', 'completed')->sum('token_amount'),
-            'total_tokens_used' => AITokenUsage::sum('tokens_used'),
+            'total_credits_distributed' => AITokenPurchase::where('status', 'completed')->sum('token_amount'),
+            'total_credits_used' => AITokenUsage::sum('tokens_used'),
         ];
 
         return view('ai::admin.tokens.index', compact('tenants', 'systemStats'));
@@ -68,7 +67,7 @@ class TokenManagementController extends Controller
             ->orderBy('date')
             ->get();
 
-        // Calculate real token statistics for this tenant
+        // Calculate real kredi statistics for this tenant
         $totalPurchasedTokens = AITokenPurchase::where('tenant_id', $tenant->id)
             ->where('status', 'completed')
             ->sum('token_amount');
@@ -103,7 +102,7 @@ class TokenManagementController extends Controller
             'adjustment_reason' => 'string|nullable'
         ]);
 
-        // Calculate real token balance
+        // Calculate real kredi balance
         $totalPurchased = AITokenPurchase::where('tenant_id', $tenant->id)
             ->where('status', 'completed')
             ->sum('token_amount');
@@ -129,10 +128,10 @@ class TokenManagementController extends Controller
                 if (request()->expectsJson()) {
                     return response()->json([
                         'success' => false, 
-                        'message' => 'Mevcut bakiyeden fazla token çıkarılamaz. Gerçek bakiye: ' . number_format($realBalance) . ' token'
+                        'message' => 'Mevcut bakiyeden fazla kredi çıkarılamaz. Gerçek bakiye: ' . number_format($realBalance) . ' kredi'
                     ]);
                 }
-                return redirect()->back()->with('error', 'Mevcut bakiyeden fazla token çıkarılamaz.');
+                return redirect()->back()->with('error', 'Mevcut bakiyeden fazla kredi çıkarılamaz.');
             }
             
             // Calculate new balance (we still update the old field for backward compatibility)
@@ -151,7 +150,7 @@ class TokenManagementController extends Controller
                 'usage_type' => 'admin_adjustment',
                 'model' => 'admin',
                 'purpose' => $adjustment > 0 ? 'token_addition' : 'token_deduction',
-                'description' => $request->input('adjustment_reason', 'Admin tarafından token düzenlemesi'),
+                'description' => $request->input('adjustment_reason', 'Admin tarafından kredi düzenlemesi'),
                 'metadata' => json_encode([
                     'admin_id' => auth()->id(),
                     'adjustment_amount' => $adjustment,
@@ -175,7 +174,7 @@ class TokenManagementController extends Controller
                     'payment_method' => 'admin_free',
                     'payment_transaction_id' => null,
                     'payment_data' => null,
-                    'notes' => 'Admin tarafından ücretsiz token ekleme: ' . $request->input('adjustment_reason', ''),
+                    'notes' => 'Admin tarafından ücretsiz kredi ekleme: ' . $request->input('adjustment_reason', ''),
                     'purchased_at' => now()
                 ]);
             }
@@ -189,7 +188,7 @@ class TokenManagementController extends Controller
     }
 
     /**
-     * Token packages management (Root admin)
+     * Kredi packages management (Root admin)
      */
     public function adminPackages()
     {
@@ -225,7 +224,7 @@ class TokenManagementController extends Controller
 
         AITokenPackage::create($request->all());
 
-        return redirect()->back()->with('success', 'Token paketi oluşturuldu.');
+        return redirect()->back()->with('success', 'Kredi paketi oluşturuldu.');
     }
 
     /**
@@ -276,14 +275,14 @@ class TokenManagementController extends Controller
         $package->update($request->all());
 
         if ($request->expectsJson()) {
-            return response()->json(['success' => true, 'message' => 'Token paketi güncellendi.']);
+            return response()->json(['success' => true, 'message' => 'Kredi paketi güncellendi.']);
         }
 
-        return redirect()->back()->with('success', 'Token paketi güncellendi.');
+        return redirect()->back()->with('success', 'Kredi paketi güncellendi.');
     }
 
     /**
-     * Delete token package
+     * Delete kredi package
      */
     public function destroyPackage(AITokenPackage $package)
     {
@@ -303,79 +302,56 @@ class TokenManagementController extends Controller
         $package->delete();
 
         if (request()->expectsJson()) {
-            return response()->json(['success' => true, 'message' => 'Token paketi silindi.']);
+            return response()->json(['success' => true, 'message' => 'Kredi paketi silindi.']);
         }
 
-        return redirect()->back()->with('success', 'Token paketi silindi.');
+        return redirect()->back()->with('success', 'Kredi paketi silindi.');
     }
 
     /**
-     * Provider bazlı kullanım analizi
+     * Provider bazlı kullanım analizi (Credit sistemi için güncellenmiş)
      */
     private function getProviderAnalysis($baseQuery): array
     {
-        // Model bazlı kullanım al
-        $modelUsage = (clone $baseQuery)
-            ->selectRaw('model, SUM(tokens_used) as total_tokens, COUNT(*) as usage_count')
-            ->whereNotNull('model')
-            ->where('model', '!=', '')
-            ->groupBy('model')
-            ->orderByDesc('total_tokens')
+        // Provider bazlı kullanım al
+        $providerUsage = (clone $baseQuery)
+            ->selectRaw('provider_name, SUM(credits_used) as total_credits, SUM(input_tokens + output_tokens) as total_tokens, COUNT(*) as usage_count')
+            ->whereNotNull('provider_name')
+            ->where('provider_name', '!=', '')
+            ->groupBy('provider_name')
+            ->orderByDesc('total_credits')
             ->get();
 
-        // Provider bazlı grupla
+        // Provider istatistikleri
         $providerStats = [];
-        $totalTokens = $modelUsage->sum('total_tokens');
-        $totalUsage = $modelUsage->sum('usage_count');
+        $totalCredits = $providerUsage->sum('total_credits');
+        $totalTokens = $providerUsage->sum('total_tokens');
+        $totalUsage = $providerUsage->sum('usage_count');
         
-        foreach ($modelUsage as $usage) {
-            $model = $usage->model;
-            
-            // Provider/model ayır
-            if (str_contains($model, '/')) {
-                [$provider, $modelName] = explode('/', $model, 2);
-            } else {
-                $provider = 'unknown';
-                $modelName = $model;
-            }
+        foreach ($providerUsage as $usage) {
+            $providerName = $usage->provider_name;
 
-            if (!isset($providerStats[$provider])) {
-                $providerStats[$provider] = [
-                    'name' => ucfirst($provider),
-                    'total_usage' => 0,
-                    'total_tokens' => 0,
-                    'usage_percentage' => 0,
-                    'token_percentage' => 0,
-                    'models' => []
-                ];
-            }
-
-            $providerStats[$provider]['total_usage'] += $usage->usage_count;
-            $providerStats[$provider]['total_tokens'] += $usage->total_tokens;
-            $providerStats[$provider]['models'][$modelName] = [
-                'name' => $modelName,
-                'usage_count' => $usage->usage_count,
+            $providerStats[$providerName] = [
+                'name' => ucfirst($providerName),
+                'total_usage' => $usage->usage_count,
                 'total_tokens' => $usage->total_tokens,
+                'total_credits' => $usage->total_credits,
                 'usage_percentage' => $totalUsage > 0 ? round(($usage->usage_count / $totalUsage) * 100, 1) : 0,
-                'token_percentage' => $totalTokens > 0 ? round(($usage->total_tokens / $totalTokens) * 100, 1) : 0
+                'token_percentage' => $totalTokens > 0 ? round(($usage->total_tokens / $totalTokens) * 100, 1) : 0,
+                'credit_percentage' => $totalCredits > 0 ? round(($usage->total_credits / $totalCredits) * 100, 1) : 0
             ];
         }
 
-        // Provider yüzdelerini hesapla
-        foreach ($providerStats as $provider => &$stats) {
-            $stats['usage_percentage'] = $totalUsage > 0 ? round(($stats['total_usage'] / $totalUsage) * 100, 1) : 0;
-            $stats['token_percentage'] = $totalTokens > 0 ? round(($stats['total_tokens'] / $totalTokens) * 100, 1) : 0;
-        }
-
-        // En çok kullanılandan az kullanılana sırala
-        uasort($providerStats, fn($a, $b) => $b['total_tokens'] <=> $a['total_tokens']);
+        // En çok credit kullanılandan az kullanılana sırala
+        uasort($providerStats, fn($a, $b) => $b['total_credits'] <=> $a['total_credits']);
 
         return [
             'providers' => $providerStats,
+            'total_credits' => $totalCredits,
             'total_tokens' => $totalTokens,
             'total_usage' => $totalUsage,
-            'unique_models' => $modelUsage->count(),
-            'top_model' => $modelUsage->first()?->model ?? 'N/A'
+            'unique_providers' => $providerUsage->count(),
+            'top_provider' => $providerUsage->first()?->provider_name ?? 'N/A'
         ];
     }
 
@@ -405,6 +381,14 @@ class TokenManagementController extends Controller
     }
 
     /**
+     * Credit usage statistics page (alias for allUsageStats)
+     */
+    public function usageStats(Request $request)
+    {
+        return $this->allUsageStats($request);
+    }
+    
+    /**
      * All usage statistics (Root admin)
      */
     public function allUsageStats(Request $request)
@@ -418,43 +402,52 @@ class TokenManagementController extends Controller
         $selectedTenant = $request->get('tenant_id');
         $tenants = \App\Models\Tenant::select('id', 'title')->get();
 
-        // Base query
-        $baseQuery = AITokenUsage::query();
+        // Base query - Credit sistemi kullan
+        $baseQuery = AICreditUsage::query();
         if ($selectedTenant) {
             $baseQuery->where('tenant_id', $selectedTenant);
         }
 
-        // Genel istatistikler
+        // Genel istatistikler - Credit alanları kullan
         $stats = [
-            'total_usage' => (clone $baseQuery)->sum('tokens_used'),
-            'today_usage' => (clone $baseQuery)->whereDate('used_at', today())->sum('tokens_used'),
-            'week_usage' => (clone $baseQuery)->where('used_at', '>=', now()->startOfWeek())->sum('tokens_used'),
-            'month_usage' => (clone $baseQuery)->where('used_at', '>=', now()->startOfMonth())->sum('tokens_used'),
+            'total_usage' => (clone $baseQuery)->sum('credits_used'),
+            'today_usage' => (clone $baseQuery)->whereDate('used_at', today())->sum('credits_used'),
+            'week_usage' => (clone $baseQuery)->where('used_at', '>=', now()->startOfWeek())->sum('credits_used'),
+            'month_usage' => (clone $baseQuery)->where('used_at', '>=', now()->startOfMonth())->sum('credits_used'),
         ];
 
-        // Model bazlı kullanım
-        $stats['by_model'] = (clone $baseQuery)->selectRaw('model, SUM(tokens_used) as total')
-            ->groupBy('model')
+        // Provider bazlı kullanım
+        $stats['by_provider'] = (clone $baseQuery)->selectRaw('provider_name, SUM(credits_used) as total')
+            ->groupBy('provider_name')
             ->orderByDesc('total')
-            ->pluck('total', 'model')
+            ->pluck('total', 'provider_name')
             ->toArray();
 
         // Provider bazlı analiz ekle
         $stats['provider_analysis'] = $this->getProviderAnalysis($baseQuery);
 
-        // Amaç bazlı kullanım
-        $stats['by_purpose'] = (clone $baseQuery)->selectRaw('purpose, SUM(tokens_used) as total')
-            ->groupBy('purpose')
+        // Feature bazlı kullanım
+        $stats['by_feature'] = (clone $baseQuery)->selectRaw('feature_slug, SUM(credits_used) as total')
+            ->whereNotNull('feature_slug')
+            ->groupBy('feature_slug')
             ->orderByDesc('total')
-            ->pluck('total', 'purpose')
+            ->pluck('total', 'feature_slug')
+            ->toArray();
+
+        // Amaç bazlı kullanım (usage_type)
+        $stats['by_purpose'] = (clone $baseQuery)->selectRaw('usage_type, SUM(credits_used) as total')
+            ->whereNotNull('usage_type')
+            ->groupBy('usage_type')
+            ->orderByDesc('total')
+            ->pluck('total', 'usage_type')
             ->toArray();
 
         // Son 30 gün günlük kullanım (grafik için)
-        $dailyUsageData = (clone $baseQuery)->selectRaw('DATE(used_at) as date, SUM(tokens_used) as total_tokens')
+        $dailyUsageData = (clone $baseQuery)->selectRaw('DATE(used_at) as date, SUM(credits_used) as total_credits')
             ->where('used_at', '>=', now()->subDays(30))
             ->groupBy('date')
             ->orderBy('date')
-            ->pluck('total_tokens', 'date')
+            ->pluck('total_credits', 'date')
             ->toArray();
 
         // Son 30 gün için eksik günleri sıfır ile doldur
@@ -469,7 +462,7 @@ class TokenManagementController extends Controller
             ->latest('used_at')
             ->paginate(50);
 
-        return view('ai::admin.tokens.usage-stats', compact('stats', 'usageRecords', 'tenants', 'selectedTenant'));
+        return view('ai::admin.credits.usage-stats', compact('stats', 'usageRecords', 'tenants', 'selectedTenant'));
     }
 
     /**
@@ -499,8 +492,8 @@ class TokenManagementController extends Controller
         $systemStats = [
             'total_tenants' => Tenant::count(),
             'active_ai_tenants' => $activeAITenants,
-            'total_tokens_distributed' => $purchasedTokens,
-            'total_tokens_used' => $totalUsed,
+            'total_credits_distributed' => $purchasedTokens,
+            'total_credits_used' => $totalUsed,
             'total_purchases' => AITokenPurchase::count(),
             'total_revenue' => AITokenPurchase::where('status', 'completed')->sum('price_paid') ?? 0,
             'avg_tokens_per_tenant' => $activeAITenants > 0 ? (($purchasedTokens - $totalUsed) / $activeAITenants) : 0,
@@ -508,11 +501,11 @@ class TokenManagementController extends Controller
         ];
 
         // Son 30 gün tenant aktivitesi
-        $tenantActivity = AITokenUsage::selectRaw('tenant_id, SUM(tokens_used) as total_tokens')
+        $tenantActivity = AITokenUsage::selectRaw('tenant_id, SUM(tokens_used) as total_credits')
             ->with('tenant')
             ->where('used_at', '>=', now()->subDays(30))
             ->groupBy('tenant_id')
-            ->orderByDesc('total_tokens')
+            ->orderByDesc('total_credits')
             ->limit(10)
             ->get();
 
@@ -539,9 +532,9 @@ class TokenManagementController extends Controller
         }
 
         // En çok kullanılan modeller
-        $topModels = AITokenUsage::selectRaw('model, SUM(tokens_used) as total_tokens')
+        $topModels = AITokenUsage::selectRaw('model, SUM(tokens_used) as total_credits')
             ->groupBy('model')
-            ->orderByDesc('total_tokens')
+            ->orderByDesc('total_credits')
             ->limit(5)
             ->get();
 
@@ -699,7 +692,7 @@ class TokenManagementController extends Controller
             'adjustmentReason' => 'required|string|min:10|max:500'
         ]);
 
-        // Calculate real token balance for validation
+        // Calculate real kredi balance for validation
         $totalPurchased = AITokenPurchase::where('tenant_id', $tenant->id)
             ->where('status', 'completed')
             ->sum('token_amount');
@@ -715,7 +708,7 @@ class TokenManagementController extends Controller
         if ($adjustment < 0 && abs($adjustment) > $realBalance) {
             return response()->json([
                 'success' => false,
-                'message' => 'Yeterli token bakiyesi yok. Gerçek bakiye: ' . number_format($realBalance) . ' token'
+                'message' => 'Yeterli kredi bakiyesi yok. Gerçek bakiye: ' . number_format($realBalance) . ' kredi'
             ]);
         }
 
@@ -757,21 +750,21 @@ class TokenManagementController extends Controller
                     'payment_method' => 'admin_free',
                     'payment_transaction_id' => null,
                     'payment_data' => null,
-                    'notes' => 'Admin tarafından ücretsiz token ekleme: ' . $request->input('adjustmentReason'),
+                    'notes' => 'Admin tarafından ücretsiz kredi ekleme: ' . $request->input('adjustmentReason'),
                     'purchased_at' => now()
                 ]);
             }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Token bakiyesi başarıyla güncellendi.',
-                'new_balance' => $newBalance
+                'message' => 'Kredi bakiyesi başarıyla güncellendi.',
+                'remaining_credits' => $newBalance
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Token ayarlama sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Kredi ayarlama sırasında hata oluştu: ' . $e->getMessage()
             ]);
         }
     }

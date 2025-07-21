@@ -4,7 +4,6 @@ namespace Modules\AI\App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
@@ -154,7 +153,13 @@ class DeepSeekService
             return [
                 'response' => $fullResponse,
                 'tokens_used' => $tokensUsed,
-                'success' => true
+                'input_tokens' => (int) round($tokensUsed * 0.6), // Tahmini input token
+                'output_tokens' => (int) round($tokensUsed * 0.4), // Tahmini output token
+                'success' => true,
+                'usage_details' => [
+                    'total_tokens' => $tokensUsed,
+                    'estimated_breakdown' => true
+                ]
             ];
 
         } catch (\Exception $e) {
@@ -194,8 +199,8 @@ class DeepSeekService
             ])->post($this->baseUrl . '/chat/completions', [
                 'model' => $this->model,
                 'messages' => $messages,
-                'temperature' => $settings ? $settings->temperature : 0.7,
-                'max_tokens' => $settings ? $settings->max_tokens : 2000,
+                'temperature' => $settings ? $settings['temperature'] : 0.7,
+                'max_tokens' => $settings ? $settings['max_tokens'] : 2000,
                 'stream' => false,
             ]);
 
@@ -267,8 +272,8 @@ class DeepSeekService
                 'json' => [
                     'model' => $this->model,
                     'messages' => $messages,
-                    'temperature' => $settings ? $settings->temperature : 0.7,
-                    'max_tokens' => $settings ? $settings->max_tokens : 2000,
+                    'temperature' => $settings ? $settings['temperature'] : 0.7,
+                    'max_tokens' => $settings ? $settings['max_tokens'] : 2000,
                     'stream' => true,
                 ],
             ]);
@@ -497,8 +502,8 @@ class DeepSeekService
                         'json' => [
                             'model' => $this->model,
                             'messages' => $formattedMessages,
-                            'temperature' => $settings ? $settings->temperature : 0.7,
-                            'max_tokens' => $settings ? $settings->max_tokens : 2000,
+                            'temperature' => $settings ? $settings['temperature'] : 0.7,
+                            'max_tokens' => $settings ? $settings['max_tokens'] : 2000,
                             'stream' => true,
                         ],
                     ]);
@@ -550,8 +555,8 @@ class DeepSeekService
                 ])->post($this->baseUrl . '/chat/completions', [
                     'model' => $this->model,
                     'messages' => $formattedMessages,
-                    'temperature' => $settings ? $settings->temperature : 0.7,
-                    'max_tokens' => $settings ? $settings->max_tokens : 2000,
+                    'temperature' => $settings ? $settings['temperature'] : 0.7,
+                    'max_tokens' => $settings ? $settings['max_tokens'] : 2000,
                     'stream' => false,
                 ]);
                 
@@ -561,7 +566,26 @@ class DeepSeekService
                     if (isset($responseData['choices'][0]['message']['content'])) {
                         $content = $responseData['choices'][0]['message']['content'];
                         $this->lastFullResponse = $content;
-                        return $content;
+                        
+                        // Token usage bilgisini al
+                        $totalTokens = $responseData['usage']['total_tokens'] ?? 0;
+                        $inputTokens = $responseData['usage']['prompt_tokens'] ?? 0;
+                        $outputTokens = $responseData['usage']['completion_tokens'] ?? 0;
+                        
+                        // Eğer breakdown yoksa tahmin et
+                        if ($totalTokens > 0 && $inputTokens == 0 && $outputTokens == 0) {
+                            $inputTokens = (int) round($totalTokens * 0.6);
+                            $outputTokens = (int) round($totalTokens * 0.4);
+                        }
+                        
+                        return [
+                            'response' => $content,
+                            'tokens_used' => $totalTokens,
+                            'input_tokens' => $inputTokens,
+                            'output_tokens' => $outputTokens,
+                            'success' => true,
+                            'usage_details' => $responseData['usage'] ?? []
+                        ];
                     }
                 }
                 
@@ -570,11 +594,25 @@ class DeepSeekService
                     'response' => $response->json(),
                 ]);
                 
-                return 'Üzgünüm, şu anda cevap üretemiyorum. Lütfen daha sonra tekrar deneyin.';
+                return [
+                    'response' => 'Üzgünüm, şu anda cevap üretemiyorum. Lütfen daha sonra tekrar deneyin.',
+                    'tokens_used' => 0,
+                    'input_tokens' => 0,
+                    'output_tokens' => 0,
+                    'success' => false,
+                    'error' => 'API Error: ' . $response->status()
+                ];
             }
         } catch (\Exception $e) {
             Log::error('API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
-            return 'Üzgünüm, bir hata oluştu: ' . $e->getMessage();
+            return [
+                'response' => 'Üzgünüm, bir hata oluştu: ' . $e->getMessage(),
+                'tokens_used' => 0,
+                'input_tokens' => 0,
+                'output_tokens' => 0,
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
         }
     }
 

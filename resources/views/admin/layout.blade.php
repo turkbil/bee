@@ -9,6 +9,37 @@
     <title>{{ config('app.name') }} - @yield('title')</title>
     <!-- Sistem teması kontrolü - Sayfa yüklenmeden çalışır -->
     <script>
+        // Disable source map requests and errors in development
+        (function() {
+            // Suppress console errors for source maps
+            var originalError = console.error;
+            console.error = function() {
+                var message = String(arguments[0] || '');
+                if (message.toLowerCase().includes('source map') || 
+                    message.includes('bootstrap.esm.js.map') ||
+                    message.includes('chart.umd.min.js.map') ||
+                    message.includes('ENOENT') ||
+                    message.includes('node_modules')) {
+                    return; // Suppress these errors
+                }
+                originalError.apply(console, arguments);
+            };
+            
+            // Disable sourcemap requests globally
+            if (window.SourceMap) {
+                window.SourceMap = undefined;
+            }
+            
+            // Override fetch to block source map requests
+            var originalFetch = window.fetch;
+            window.fetch = function(url, options) {
+                if (typeof url === 'string' && url.includes('.map')) {
+                    return Promise.reject(new Error('Source map blocked'));
+                }
+                return originalFetch.apply(this, arguments);
+            };
+        })();
+        
         (function() {
             var darkMode = "<?php echo isset($_COOKIE['dark']) ? $_COOKIE['dark'] : 'auto'; ?>";
             if(darkMode === 'auto') {
@@ -387,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function() {
 @endif
 
 @if (request()->routeIs('admin.*.manage*'))
-    <x-head.tinymce-config />
+    <x-head.hugerte-config />
     
     {{-- Global Multi-Language Form Management for All Modules --}}
     <script>
@@ -402,31 +433,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Initialize multi-language form switcher
             MultiLangFormSwitcher.init();
             
-            // Initialize TinyMCE for multi-language editors
-            if (typeof tinymce !== 'undefined') {
-                TinyMCEMultiLang.initAll();
-            }
+            // HugeRTE is automatically initialized via hugerte-config.blade.php
         } else {
-            // Single language - initialize standard TinyMCE
-            if (typeof tinymce !== 'undefined' && $('#editor').length > 0) {
-                tinymce.init({
-                    selector: '#editor',
-                    height: 400,
-                    menubar: true,
-                    plugins: [
-                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px }',
-                    setup: function(editor) {
-                        editor.on('change', function() {
-                            editor.save();
-                        });
-                    }
-                });
-            }
+            // Single language - TinyMCE is automatically initialized via tinymce-config.blade.php
         }
         
         // Language switcher for underline style buttons (.language-switch-btn) - only if exists
@@ -459,34 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Re-initialize on Livewire updates
     document.addEventListener('livewire:updated', function() {
-        // Check if page has multi-language support
-        if ($('.language-content').length > 0 || $('.language-switch-btn').length > 0) {
-            if (typeof tinymce !== 'undefined') {
-                TinyMCEMultiLang.initAll();
-            }
-        } else {
-            // Single language TinyMCE re-init
-            if (typeof tinymce !== 'undefined' && $('#editor').length > 0) {
-                tinymce.remove('#editor');
-                tinymce.init({
-                    selector: '#editor',
-                    height: 400,
-                    menubar: true,
-                    plugins: [
-                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px }',
-                    setup: function(editor) {
-                        editor.on('change', function() {
-                            editor.save();
-                        });
-                    }
-                });
-            }
-        }
+        // HugeRTE handles its own reinitialization via hugerte-config.blade.php
         
         // Re-bind language switcher events - only if exists
         if ($('.language-switch-btn').length > 0) {

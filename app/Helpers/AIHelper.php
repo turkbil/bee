@@ -23,61 +23,95 @@ use Modules\AI\App\Models\AIFeature;
 
 if (!function_exists('ai_get_settings')) {
     /**
-     * Merkezi AI ayarlarını döndürür (global cache'li)
-     * Tüm helper'lar ve servisler bu fonksiyonu kullanmalı
+     * Merkezi AI ayarlarını döndürür (CONFIG bazlı sistem)
+     * ESKİ SETTING MODEL YERİNE CONFIG KULLANIR
      */
-    function ai_get_settings(): ?\Modules\AI\App\Models\Setting
+    function ai_get_settings(): array
     {
         static $settings = null;
         
         if ($settings === null) {
             try {
-                // AI ayarları sadece central domain'de - tenancy bypass
-                $previousTenantId = tenancy()->tenant?->id ?? null;
+                // Config'den AI ayarları al
+                $settings = [
+                    'default_provider' => config('ai.providers.default_provider', 'deepseek'),
+                    'fallback_provider' => config('ai.providers.fallback_provider', 'openai'),
+                    'max_tokens' => config('ai.models.default_max_tokens', 800),
+                    'temperature' => config('ai.models.default_temperature', 0.7),
+                    'timeout' => config('ai.api.timeout', 120),
+                    'retry_attempts' => config('ai.api.retry_attempts', 3),
+                    'default_model' => config('ai.models.default_model', 'deepseek-chat'),
+                    'credit_multiplier' => config('ai.credit_management.base_multiplier', 3.0),
+                    'model_multipliers' => config('ai.credit_management.model_multipliers', []),
+                    'feature_multipliers' => config('ai.credit_management.feature_multipliers', []),
+                    'is_enabled' => config('ai.enabled', true),
+                ];
                 
-                // Tenancy'yi bypass et
-                tenancy()->end();
+                \Log::debug('ai_get_settings() - Config bazlı ayarlar yüklendi', [
+                    'default_provider' => $settings['default_provider'],
+                    'fallback_provider' => $settings['fallback_provider'],
+                    'is_enabled' => $settings['is_enabled']
+                ]);
                 
-                $settings = \Cache::remember('ai_global_settings', 3600, function () {
-                    return \Modules\AI\App\Models\Setting::first();
-                });
-                
-                // Eski tenant context'i geri yükle
-                if ($previousTenantId && class_exists('\App\Models\Tenant')) {
-                    $tenant = \App\Models\Tenant::find($previousTenantId);
-                    if ($tenant) {
-                        tenancy()->initialize($tenant);
-                    }
-                }
             } catch (\Exception $e) {
-                // Fallback - direkt database (tenancy bypass)
-                try {
-                    tenancy()->end();
-                    $settings = \Modules\AI\App\Models\Setting::first();
-                } catch (\Exception $e2) {
-                    $settings = false; // Cache false değer (tekrar denemeyi önler)
-                }
+                \Log::error('ai_get_settings() error', ['error' => $e->getMessage()]);
+                // Fallback settings
+                $settings = [
+                    'default_provider' => 'deepseek',
+                    'fallback_provider' => 'openai',
+                    'max_tokens' => 800,
+                    'temperature' => 0.7,
+                    'timeout' => 120,
+                    'retry_attempts' => 3,
+                    'default_model' => 'deepseek-chat',
+                    'credit_multiplier' => 3.0,
+                    'model_multipliers' => [],
+                    'feature_multipliers' => [],
+                    'is_enabled' => true,
+                ];
             }
         }
         
-        return $settings === false ? null : $settings;
+        return $settings;
     }
 }
 
 if (!function_exists('ai_get_api_key')) {
     /**
-     * Merkezi API anahtarı döndürür
+     * YENİ PROVIDER SİSTEMİ - Aktif provider'dan API anahtarını döndürür
      * Tüm AI servisleri bu fonksiyonu kullanmalı
      */
     function ai_get_api_key(): ?string
     {
-        $settings = ai_get_settings();
-        
-        if (!$settings || empty($settings->api_key)) {
+        try {
+            // Aktif provider'ı bul (priority'ye göre sıralı)
+            $provider = \Modules\AI\App\Models\AIProvider::where('is_active', true)
+                ->orderBy('priority', 'asc') // En yüksek priority (1) önce
+                ->first();
+                
+            if (!$provider || empty($provider->api_key)) {
+                \Log::warning('AI Provider API key not found', [
+                    'provider_exists' => $provider ? true : false,
+                    'has_api_key' => $provider && !empty($provider->api_key)
+                ]);
+                return null;
+            }
+            
+            \Log::info('AI API key retrieved successfully', [
+                'provider' => $provider->name,
+                'display_name' => $provider->display_name,
+                'priority' => $provider->priority
+            ]);
+            
+            return $provider->api_key;
+            
+        } catch (\Exception $e) {
+            \Log::error('ai_get_api_key error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return null;
         }
-        
-        return $settings->api_key;
     }
 }
 
@@ -337,13 +371,20 @@ if (!function_exists('ai_execute_feature_template')) {
     function ai_execute_feature_template(string $featureSlug, string $userMessage, array $userInput = [], bool $stream = false)
     {
         try {
-            // Token kontrolü ÖNCE yap
-            $tenantId = tenant('id') ?: 'default';
-            $estimatedTokens = max(10, (int)(strlen($userMessage) / 4));
+            // Credit kontrolü ÖNCE yap (yeni sistem)
+            $estimatedCredits = max(0.01, (strlen($userMessage) / 4000)); // 4000 karakter = 1 credit
             
-            if (!ai_can_use_tokens($estimatedTokens, $tenantId)) {
-                $tokenPackagesUrl = route('admin.ai.token-packages.index');
-                return "❌ **Yetersiz AI Token Bakiyesi**\n\n🛒 Token satın almak için: [{$tokenPackagesUrl}]({$tokenPackagesUrl})\n\n💰 Gerekli token: {$estimatedTokens}\n📊 Mevcut bakiye: " . ai_get_token_balance($tenantId);
+            // Admin paneli için tenant ID çözümlemesi
+            $tenantId = null;
+            if (tenant('id')) {
+                $tenantId = tenant('id');
+            } elseif (auth()->check() && auth()->user()->tenant_id) {
+                $tenantId = auth()->user()->tenant_id;
+            }
+            
+            if (!ai_can_use_credits($estimatedCredits, $tenantId)) {
+                $creditPackagesUrl = route('admin.ai.credits.packages');
+                return "❌ **Yetersiz AI Kredi Bakiyesi**\n\n🛒 Kredi satın almak için: [{$creditPackagesUrl}]({$creditPackagesUrl})\n\n💰 Gerekli kredi: " . round($estimatedCredits, 4) . "\n📊 Mevcut bakiye: " . ai_get_credit_balance($tenantId);
             }
             
             // Feature'ı bul
@@ -504,7 +545,7 @@ if (!function_exists('ai_brand_story_creator')) {
                 return [
                     'success' => false,
                     'error' => 'Marka hikayesi özelliği bulunamadı. Lütfen feature\'ı aktif hale getirin.',
-                    'tokens_used' => 0
+                    'credits_used' => 0
                 ];
             }
 
@@ -544,8 +585,8 @@ if (!function_exists('ai_brand_story_creator')) {
                 'context_type' => 'detailed' // Brand story için detailed context kullan
             ]);
 
-            // Token kullanımını kaydet
-            ai_use_tokens($estimatedTokens, 'AI', 'brand-story-creator', $tenantId, ['brand_context' => $brandContext]);
+            // ARTIK KULLANILMIYOR - ai_use_calculated_credits() AIService'de otomatik çalışıyor
+            // Credit kullanımı AIService.ask() içinde gerçek token bilgileri ile yapılacak
 
             // Feature kullanım sayısını artır
             $feature->incrementUsage();
@@ -553,7 +594,7 @@ if (!function_exists('ai_brand_story_creator')) {
             return [
                 'success' => true,
                 'response' => $result,
-                'tokens_used' => $estimatedTokens,
+                'credits_used' => $estimatedCredits,
                 'feature' => $feature->name,
                 'message' => $feature->success_messages['default'] ?? 'Marka hikayeniz başarıyla oluşturuldu'
             ];
@@ -567,7 +608,7 @@ if (!function_exists('ai_brand_story_creator')) {
             return [
                 'success' => false,
                 'error' => 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage(),
-                'tokens_used' => 0
+                'credits_used' => 0
             ];
         }
     }
@@ -676,24 +717,30 @@ if (!function_exists('ai_execute_feature')) {
                 return [
                     'success' => false,
                     'error' => "AI özelliği bulunamadı: {$featureSlug}",
-                    'tokens_used' => 0
+                    'credits_used' => 0
                 ];
             }
 
-            // Token kontrolü
-            $estimatedTokens = $feature->token_cost['estimated'] ?? 100;
+            // Credit kontrolü (yeni sistem)
+            $estimatedCredits = ($feature->token_cost['estimated'] ?? 100) / 1000; // Token → Credit dönüşümü
             if (isset($options['word_count'])) {
-                $estimatedTokens += intval($options['word_count'] * 0.3);
+                $estimatedCredits += intval($options['word_count'] * 0.0003); // 0.3 token → 0.0003 credit
             }
             
-            $tenantId = tenant('id') ?: 'default';
+            // Admin paneli için tenant ID çözümlemesi
+            $tenantId = null;
+            if (tenant('id')) {
+                $tenantId = tenant('id');
+            } elseif (auth()->check() && auth()->user()->tenant_id) {
+                $tenantId = auth()->user()->tenant_id;
+            }
             
-            if (!ai_can_use_tokens($estimatedTokens, $tenantId)) {
+            if (!ai_can_use_credits($estimatedCredits, $tenantId)) {
                 return [
                     'success' => false,
-                    'error' => 'Yeterli token bakiyeniz yok. Gerekli: ' . $estimatedTokens . ' token',
-                    'tokens_needed' => $estimatedTokens,
-                    'tokens_available' => ai_get_token_balance($tenantId)
+                    'error' => 'Yeterli kredi bakiyeniz yok. Gerekli: ' . round($estimatedCredits, 4) . ' kredi',
+                    'credits_needed' => round($estimatedCredits, 4),
+                    'credits_available' => ai_get_credit_balance($tenantId)
                 ];
             }
 
@@ -719,16 +766,12 @@ if (!function_exists('ai_execute_feature')) {
                 return [
                     'success' => false,
                     'error' => $result['error'],
-                    'tokens_used' => 0
+                    'credits_used' => 0
                 ];
             }
 
-            // Token kullanımını kaydet
-            ai_use_tokens($estimatedTokens, $tenantId, [
-                'source' => 'ai_helper',
-                'helper_name' => 'ai_execute_feature',
-                'feature_slug' => $featureSlug
-            ]);
+            // ARTIK KULLANILMIYOR - ai_use_calculated_credits() AIService'de otomatik çalışıyor
+            // Credit kullanımı AIService.askFeature() içinde gerçek token bilgileri ile yapılacak
 
             // Feature kullanım sayısını artır
             $feature->incrementUsage();
@@ -748,7 +791,7 @@ if (!function_exists('ai_execute_feature')) {
                 'response' => $result['response'],
                 'formatted_response' => $result['formatted_response'],
                 'feature' => $result['feature'],
-                'tokens_used' => $estimatedTokens,
+                'credits_used' => $estimatedCredits,
                 'helper_name' => $result['helper_name'],
                 'word_buffer_enabled' => true,
                 'word_buffer_config' => $wordBufferConfig
@@ -758,7 +801,7 @@ if (!function_exists('ai_execute_feature')) {
             return [
                 'success' => false,
                 'error' => 'Feature çalıştırma hatası: ' . $e->getMessage(),
-                'tokens_used' => 0
+                'credits_used' => 0
             ];
         }
     }
@@ -1291,9 +1334,35 @@ if (!function_exists('ai_validate_feature_input')) {
                 return ['valid' => true]; // No validation rules
             }
 
-            $rules = is_string($feature->input_validation) 
+            $validationData = is_string($feature->input_validation) 
                 ? json_decode($feature->input_validation, true) 
                 : $feature->input_validation;
+
+            // AI Feature validation format'ını Laravel validation format'ına dönüştür
+            $rules = [];
+            foreach ($validationData as $field => $config) {
+                $fieldRules = [];
+                
+                if (isset($config['required']) && $config['required']) {
+                    $fieldRules[] = 'required';
+                }
+                
+                if (isset($config['type'])) {
+                    switch ($config['type']) {
+                        case 'string':
+                            $fieldRules[] = 'string';
+                            break;
+                        case 'integer':
+                            $fieldRules[] = 'integer';
+                            break;
+                        case 'array':
+                            $fieldRules[] = 'array';
+                            break;
+                    }
+                }
+                
+                $rules[$field] = implode('|', $fieldRules);
+            }
 
             $validator = \Illuminate\Support\Facades\Validator::make($input, $rules);
             

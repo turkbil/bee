@@ -3,15 +3,23 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Default AI Provider
+    | AI System Configuration - Simplified Single Table Approach
     |--------------------------------------------------------------------------
     |
-    | Bu seçenek, uygulamanızda kullanılacak varsayılan AI provider'ını
-    | belirler. Şu anda sadece DeepSeek desteklenmektedir.
+    | Global AI system settings - tek tablo yaklaşımı için config
+    | Providers ai_providers tablosundan, global settings buradan
     |
     */
 
-    'default_provider' => env('AI_DEFAULT_PROVIDER', 'deepseek'),
+    // Global AI system settings
+    'enabled' => env('AI_ENABLED', true),
+    'debug' => env('AI_DEBUG', false),
+    'cache_duration' => env('AI_CACHE_DURATION', 60), // minutes
+    
+    // Default provider (fallback from database)
+    'default_provider' => env('AI_DEFAULT_PROVIDER', 'openai'),
+    'default_model' => env('AI_DEFAULT_MODEL', 'gpt-4o-mini'),
+    'fallback_provider' => env('AI_FALLBACK_PROVIDER', 'deepseek'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,30 +51,82 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Token Management
+    | Credit & Pricing Management
     |--------------------------------------------------------------------------
     |
-    | Token yönetimi için gerekli ayarlar. Bu ayarlar tüm modüller
-    | tarafından kullanılır.
+    | Credit yönetimi ve fiyatlandırma ayarları. Aracı kurum kommisyonu dahil.
+    |
+    */
+
+    'credit_management' => [
+        // Model bazlı aracı kurum çarpanları - UCUZ MODEL = YÜKSEK ÇARPAN
+        'model_multipliers' => [
+            // OpenAI Modelleri
+            'gpt-4o-mini' => (float) env('AI_GPT4O_MINI_MULTIPLIER', 5.0), // En ucuz model, en yüksek çarpan
+            'gpt-3.5-turbo' => (float) env('AI_GPT35_TURBO_MULTIPLIER', 4.0), // Ucuz model, yüksek çarpan
+            'gpt-4o' => (float) env('AI_GPT4O_MULTIPLIER', 1.8), // Pahalı model, düşük çarpan
+            
+            // DeepSeek Modelleri
+            'deepseek-chat' => (float) env('AI_DEEPSEEK_CHAT_MULTIPLIER', 4.5), // Ucuz, yüksek çarpan
+            
+            // Claude Modelleri  
+            'claude-3-haiku-20240307' => (float) env('AI_CLAUDE_HAIKU_MULTIPLIER', 4.8), // En ucuz Claude, yüksek çarpan
+            'claude-3-sonnet-20240229' => (float) env('AI_CLAUDE_SONNET_MULTIPLIER', 1.5), // En pahalı, en düşük çarpan
+        ],
+        
+        // Provider bazlı fallback çarpanları (model bulunamazsa)
+        'provider_multipliers' => [
+            'openai' => (float) env('AI_OPENAI_MULTIPLIER', 3.0),
+            'deepseek' => (float) env('AI_DEEPSEEK_MULTIPLIER', 4.5),
+            'claude' => (float) env('AI_CLAUDE_MULTIPLIER', 3.0),
+            'default' => (float) env('AI_DEFAULT_MULTIPLIER', 3.0),
+        ],
+        
+        // Feature bazlı çarpanlar (opsiyonel ek komisyon)
+        'feature_multipliers' => [
+            'seo-content-generation' => (float) env('AI_SEO_FEATURE_MULTIPLIER', 1.2), // SEO premium
+            'content-translation' => (float) env('AI_TRANSLATION_FEATURE_MULTIPLIER', 1.1), // Çeviri normal
+            'chat' => (float) env('AI_CHAT_FEATURE_MULTIPLIER', 1.0), // Chat standart
+            'default' => (float) env('AI_DEFAULT_FEATURE_MULTIPLIER', 1.0),
+        ],
+        
+        // Varsayılan credit limitleri
+        'default_daily_limit' => (float) env('AI_DEFAULT_DAILY_CREDIT_LIMIT', 1.0), // $1 USD
+        'default_monthly_limit' => (float) env('AI_DEFAULT_MONTHLY_CREDIT_LIMIT', 20.0), // $20 USD
+        
+        // Cache ayarları
+        'cache_ttl' => (int) env('AI_CACHE_TTL', 300), // 5 dakika
+        'cache_prefix' => env('AI_CACHE_PREFIX', 'ai_credits'),
+        
+        // Credit hesaplama
+        'credit_calculation_method' => env('AI_CREDIT_CALCULATION', 'accurate'), // simple, accurate
+        'base_cost_per_1k_tokens' => (float) env('AI_BASE_COST_PER_1K_TOKENS', 0.0015), // $0.0015 per 1K tokens average
+        
+        // Güvenlik
+        'max_credit_per_request' => (float) env('AI_MAX_CREDIT_PER_REQUEST', 2.0), // $2 max per request
+        'rate_limit_per_minute' => (int) env('AI_RATE_LIMIT_PER_MINUTE', 10),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Legacy Token Management (Backward Compatibility)
+    |--------------------------------------------------------------------------
+    |
+    | Eski token sistemi ile uyumluluk için ayarlar.
     |
     */
 
     'token_management' => [
-        // Varsayılan token limitleri
+        // Legacy token limitleri
         'default_daily_limit' => (int) env('AI_DEFAULT_DAILY_LIMIT', 100),
         'default_monthly_limit' => (int) env('AI_DEFAULT_MONTHLY_LIMIT', 3000),
-        
-        // Cache ayarları
-        'cache_ttl' => (int) env('AI_CACHE_TTL', 300), // 5 dakika
-        'cache_prefix' => env('AI_CACHE_PREFIX', 'ai_tokens'),
         
         // Token hesaplama
         'token_calculation_method' => env('AI_TOKEN_CALCULATION', 'simple'), // simple, accurate
         'characters_per_token' => (int) env('AI_CHARACTERS_PER_TOKEN', 4),
         
-        // Güvenlik
-        'max_tokens_per_request' => (int) env('AI_MAX_TOKENS_PER_REQUEST', 5000),
-        'rate_limit_per_minute' => (int) env('AI_RATE_LIMIT_PER_MINUTE', 10),
+        // Token to credit conversion rate
+        'token_to_credit_rate' => (float) env('AI_TOKEN_TO_CREDIT_RATE', 0.0005), // 1 token = $0.0005
     ],
 
     /*

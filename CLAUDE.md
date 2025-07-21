@@ -16,15 +16,15 @@ BU KOMUT MACOS'DA ÇALIŞIYOR! SES ÇALIYOR!
 - Bu kural her proje için geçerli - HAFIZAYA KAYDET
 - Nurullah bu konuda çok hassas - UNUTMA!
 
-🚨 **BASH KOMUT ÖNCESI UYARI PROTOKOLÜ - YENİ ZORUNLU KURAL - 21.07.2025**
-HER BASH KOMUTU ÇALIŞTIRMADAN ÖNCE MUTLAKA:
-1. Sesli uyarı yap: `say "Komut bekliyorum"`  
-2. "1: Hazırım devam et, 2: Bekle, 0: İptal et" seçenekleri sun  
-3. Kullanıcının cevabını bekle
-4. Ancak ondan sonra bash komutunu çalıştır
+🚨 **OTOMATİK DEVAM PROTOKOLÜ - YENİ BAŞLANGIÇ KURALI - 21.07.2025**
+CONVERSATION COMPACT SONRASINDA VE GENELLİKLE:
+- Sorma, direk devam et
+- Kullanıcı onayı bekleme
+- Bash komutlarını çalıştır
+- İşlemi tamamla
 
-**NEDEN**: Nurullah PC başında değilse komut çalıştırılmamalı.
-**ZORUNLU**: Sesli uyarı + kullanıcı onayı olmadan bash komutu yasak!
+**NEDEN**: Sürekli soru sormak verimsiz ve sinir bozucu.
+**YENİ KURAL**: Otomatik devam - sadece kritik durumlarda sor!
 
 **🎯 SES BİLDİRİM PROTOKOLÜ - GÜNCELLENME 16.07.2025:**
 - **İşlem bitiminde**: Detaylı bilgi verme + ses çalıştırma

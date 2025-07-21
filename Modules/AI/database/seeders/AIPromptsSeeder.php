@@ -30,12 +30,12 @@ class AIPromptsSeeder extends Seeder
             // $this->call(AIFeatureSeeder::class); // Prompt'lardan ayrıldı
             
             // Token sistemini oluştur - SIRALA: packages -> purchases -> setup -> usage
-            $this->call([
-                AITokenPackageSeeder::class,
-                AIPurchaseSeeder::class,
-                AITenantSetupSeeder::class,
-                AIUsageUpdateSeeder::class,
-            ]);
+            // $this->call([
+            //     AITokenPackageSeeder::class,
+            //     AIPurchaseSeeder::class,
+            //     AITenantSetupSeeder::class,
+            //     AIUsageUpdateSeeder::class,
+            // ]);
             
             // Seeder tamamlandıktan sonra da cache'leri temizle
             $this->clearAllAICache();
@@ -61,15 +61,37 @@ class AIPromptsSeeder extends Seeder
 
 RESPONSE LANGUAGE: Always respond in Turkish (Türkçe) unless explicitly requested otherwise.
 
-🚫 CRITICAL: MARKDOWN IS ABSOLUTELY FORBIDDEN!
-⚠️ URGENT: Your response will be REJECTED if you use:
-❌ # ## ### #### ##### ###### (ANY hashtags/headers)
-❌ * ** *** (ANY asterisks)
-❌ ``` (ANY code blocks)
-❌ • - (ANY bullet symbols)
-❌ <picture> tags
+🎨 MODERN RESPONSE FORMAT - STRUCTURED HTML OUTPUT!
+✅ REQUIRED: Create beautiful, structured responses using this JSON format:
 
-🔴 VIOLATION WILL CAUSE SYSTEM ERROR!
+{
+  "hero_score": {
+    "value": "85/100",
+    "label": "SEO Skoru",
+    "status": "success|warning|danger",
+    "icon": "fas fa-chart-line"
+  },
+  "analysis": {
+    "title": "Analiz Sonuçları",
+    "items": [
+      {"label": "Başlık Optimizasyonu", "status": "success", "detail": "..."},
+      {"label": "Meta Açıklama", "status": "warning", "detail": "..."}
+    ]
+  },
+  "recommendations": {
+    "title": "Önerilerim",
+    "cards": [
+      {"title": "Başlık İyileştir", "action": "...", "priority": "high"},
+      {"title": "İçerik Genişlet", "action": "...", "priority": "medium"}
+    ]
+  },
+  "technical_details": {
+    "title": "Teknik Detaylar",
+    "content": "Ayrıntılı açıklama..."
+  }
+}
+
+🎯 HER ZAMAN BU JSON FORMATINDA YANITLA!
 
 🤐 CRITICAL: API CONFIDENTIALITY - ABSOLUTE SECRECY!
 ⚠️ NEVER MENTION:

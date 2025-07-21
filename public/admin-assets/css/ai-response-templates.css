@@ -1,0 +1,556 @@
+/**
+ * AI RESPONSE TEMPLATES CSS - ŞİK VE MODERN GÖRÜNÜM
+ * 
+ * Bu CSS dosyası AI yanıtlarının modern HTML template'leri için tasarlandı.
+ * Kullanıcı dostu, şık ve responsive tasarım prensipleri ile oluşturulmuştur.
+ */
+
+/* ==============================================
+   GENEL AI RESPONSE TEMPLATE STİLLERİ
+   ============================================== */
+
+.ai-response-template {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(79, 70, 229, 0.08);
+    margin-bottom: 20px;
+    animation: slideInUp 0.6s ease-out;
+}
+
+.ai-response-template:hover {
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==============================================
+   SEO SCORE TEMPLATE STİLLERİ
+   ============================================== */
+
+.seo-score-template .hero-score-card {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    border: 2px solid rgba(79, 70, 229, 0.1);
+}
+
+.circular-score {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    position: relative;
+    background: conic-gradient(from 0deg, var(--score-color) 0%, var(--score-color) var(--score-percentage), #e5e7eb var(--score-percentage), #e5e7eb 100%);
+    animation: scoreAnimation 1.5s ease-out;
+}
+
+.circular-score::before {
+    content: '';
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.score-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.score-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1;
+}
+
+.score-label {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* Score Color Variants */
+.circular-score-success {
+    --score-color: #10b981;
+    --score-percentage: 85%;
+}
+
+.circular-score-warning {
+    --score-color: #f59e0b;
+    --score-percentage: 65%;
+}
+
+.circular-score-danger {
+    --score-color: #ef4444;
+    --score-percentage: 40%;
+}
+
+@keyframes scoreAnimation {
+    from {
+        background: conic-gradient(from 0deg, #e5e7eb 0%, #e5e7eb 100%);
+        transform: rotate(-90deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+.score-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* ==============================================
+   ANALYSIS SECTION STİLLERİ
+   ============================================== */
+
+.analysis-section {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(79, 70, 229, 0.08);
+}
+
+.analysis-section h5 {
+    margin-bottom: 16px;
+    color: #1f2937;
+    font-weight: 700;
+}
+
+.analysis-item {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.analysis-item:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.analysis-item-success {
+    border-left-color: #10b981;
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+}
+
+.analysis-item-warning {
+    border-left-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%);
+}
+
+.analysis-item-danger {
+    border-left-color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, #fef1f1 100%);
+}
+
+.analysis-item-info {
+    border-left-color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.item-label {
+    flex: 1;
+    color: #1f2937;
+}
+
+.item-detail {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.badge {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-danger {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+.badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* ==============================================
+   RECOMMENDATIONS SECTION STİLLERİ
+   ============================================== */
+
+.recommendations-section {
+    margin-top: 24px;
+}
+
+.recommendations-section h5 {
+    margin-bottom: 16px;
+    color: #1f2937;
+    font-weight: 700;
+}
+
+.recommendation-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.recommendation-card .card {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.recommendation-card .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.recommendation-card .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1f2937;
+}
+
+.recommendation-card .card-text {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* ==============================================
+   TECHNICAL DETAILS STİLLERİ
+   ============================================== */
+
+.technical-details .card {
+    border: 1px solid rgba(79, 70, 229, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.technical-details .card-header {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: white;
+    font-weight: 600;
+    padding: 16px 20px;
+    border: none;
+}
+
+.technical-details .card-header:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #5b21b6 100%);
+}
+
+.technical-content {
+    color: #374151;
+    line-height: 1.7;
+}
+
+.technical-content strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.technical-content ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.technical-content li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.technical-content li:last-child {
+    border-bottom: none;
+}
+
+/* ==============================================
+   GENERIC FEATURE TEMPLATE STİLLERİ
+   ============================================== */
+
+.generic-feature-template .feature-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.feature-icon {
+    font-size: 48px;
+    margin-right: 16px;
+    opacity: 0.9;
+}
+
+.feature-title h4 {
+    margin: 0;
+    color: #1f2937;
+    font-weight: 700;
+}
+
+.feature-title p {
+    margin: 4px 0 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.styled-points {
+    list-style: none;
+    padding: 0;
+}
+
+.styled-points li {
+    padding: 12px 0;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.styled-points li:last-child {
+    border-bottom: none;
+}
+
+.feature-details {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.details-content {
+    color: #374151;
+    line-height: 1.7;
+}
+
+/* ==============================================
+   CONTENT OPTIMIZATION TEMPLATE STİLLERİ
+   ============================================== */
+
+.content-optimization-template .optimization-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.optimization-header h4 {
+    color: #1f2937;
+    font-weight: 700;
+    margin: 0;
+}
+
+.improvement-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.before-after-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.optimization-summary {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+/* ==============================================
+   RESPONSIVE DESIGN
+   ============================================== */
+
+@media (max-width: 768px) {
+    .ai-response-template {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .circular-score {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .circular-score::before {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .score-number {
+        font-size: 24px;
+    }
+    
+    .score-label {
+        font-size: 12px;
+    }
+    
+    .recommendation-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .feature-icon {
+        margin-right: 0;
+        margin-bottom: 12px;
+    }
+}
+
+/* ==============================================
+   DARK MODE SUPPORT
+   ============================================== */
+
+@media (prefers-color-scheme: dark) {
+    .ai-response-template {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-color: rgba(148, 163, 184, 0.1);
+        color: #e2e8f0;
+    }
+    
+    .hero-score-card,
+    .analysis-section,
+    .technical-details .card-body,
+    .feature-details,
+    .before-after-section,
+    .optimization-summary {
+        background: #1e293b;
+        color: #e2e8f0;
+        border-color: rgba(148, 163, 184, 0.1);
+    }
+    
+    .score-inner .score-number {
+        color: #e2e8f0;
+    }
+    
+    .item-label,
+    .feature-title h4 {
+        color: #e2e8f0;
+    }
+    
+    .item-detail,
+    .feature-title p {
+        color: #94a3b8;
+    }
+    
+    .analysis-item {
+        background: #334155;
+    }
+    
+    .analysis-item:hover {
+        background: #475569;
+    }
+}
+
+/* ==============================================
+   ANIMATION VE INTERACTION EFFECTS
+   ============================================== */
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-pointer:hover {
+    opacity: 0.8;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Smooth collapse animation */
+.collapse {
+    transition: height 0.3s ease;
+}
+
+/* Loading state */
+.ai-response-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.ai-response-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e2e8f0;
+    border-top: 2px solid #4f46e5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

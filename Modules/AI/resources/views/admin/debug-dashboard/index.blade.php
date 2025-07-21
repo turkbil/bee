@@ -186,7 +186,10 @@
           <div class="flex-fill">
             <div class="small text-uppercase fw-bold">Token Kullanımı</div>
             <div class="h2 mb-0 text-warning">{{ number_format($stats['total_tokens'] ?? 0) }}</div>
-            <div class="small">Total tokens used</div>
+            <div class="small">
+              <span class="badge bg-success me-1">{{ number_format($stats['total_credits'] ?? 0, 4) }} credits</span>
+              <span class="text-muted">In: {{ number_format($stats['input_tokens'] ?? 0) }} | Out: {{ number_format($stats['output_tokens'] ?? 0) }}</span>
+            </div>
           </div>
         </div>
       </div>

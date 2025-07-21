@@ -2,7 +2,7 @@
 
 @include('ai::helper')
 
-@section('pretitle', 'AI Token Yönetimi')
+@section('pretitle', 'AI Kredi Yönetimi')
 @section('title', 'Genel İstatistikler')
 
 @section('content')
@@ -31,14 +31,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <div class="subheader">Toplam Dağıtılan Token</div>
+                    <div class="subheader">Toplam Dağıtılan Kredi</div>
                 </div>
-                <div class="h1 mb-3">{{ \App\Helpers\TokenHelper::format($systemStats['total_tokens_distributed']) }}</div>
+                <div class="h1 mb-3">{{ number_format($systemStats['total_tokens_distributed'], 0) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                     <div class="ms-auto">
                         <span class="badge badge-outline text-blue">
-                            {{ \App\Helpers\TokenHelper::format($systemStats['total_tokens_used']) }} Kullanıldı
+                            {{ number_format($systemStats['total_tokens_used'], 0) }} Kullanıldı
                         </span>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                     {{ $weeklyGrowth >= 0 ? '+' : '' }}{{ number_format($weeklyGrowth, 1) }}%
                 </div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Bu Hafta: {{ \App\Helpers\TokenHelper::format($currentWeekUsage) }} Token</div>
+                    <div class="text-muted">Bu Hafta: {{ number_format($currentWeekUsage, 0) }} Kredi</div>
                 </div>
             </div>
         </div>
@@ -141,7 +141,7 @@
                             <tr>
                                 <th>Sıra</th>
                                 <th>Kiracı</th>
-                                <th>Toplam Token Kullanımı</th>
+                                <th>Toplam Kredi Kullanımı</th>
                                 <th>Mevcut Bakiye</th>
                                 <th>Durum</th>
                                 <th>İşlemler</th>
@@ -162,13 +162,13 @@
                                 </td>
                                 <td>
                                     <span class="badge badge-outline text-blue">
-                                        {{ \App\Helpers\TokenHelper::format($activity->total_tokens) }} Token
+                                        {{ number_format($activity->total_tokens, 0) }} Kredi
                                     </span>
                                 </td>
                                 <td>
                                     @if($activity->tenant)
                                         <span class="badge badge-outline text-green">
-                                            {{ \App\Helpers\TokenHelper::format($activity->tenant->real_balance) }} Token
+                                            {{ number_format($activity->tenant->real_balance, 0) }} Kredi
                                         </span>
                                     @else
                                         <span class="text-muted">-</span>
@@ -183,12 +183,12 @@
                                 </td>
                                 <td>
                                     <div class="btn-list">
-                                        <a href="{{ route('admin.ai.tokens.tenant-statistics', $activity->tenant_id) }}" 
+                                        <a href="{{ route('admin.ai.credits.tenant-statistics', $activity->tenant_id) }}" 
                                            class="btn btn-sm btn-outline-primary" 
                                            title="Detaylı İstatistik">
                                             <i class="fas fa-chart-line"></i>
                                         </a>
-                                        <a href="{{ route('admin.ai.tokens.show', $activity->tenant_id) }}" 
+                                        <a href="{{ route('admin.ai.credits.show', $activity->tenant_id) }}" 
                                            class="btn btn-sm btn-outline-info" 
                                            title="Kiracı Detayı">
                                             <i class="fas fa-eye"></i>
@@ -230,7 +230,7 @@
                     </div>
                     <div class="col">
                         <div class="text-muted">Ortalama Kiracı Bakiyesi</div>
-                        <div class="h4 mb-0">{{ \App\Helpers\TokenHelper::format($systemStats['avg_tokens_per_tenant'] ?? 0) }} Token</div>
+                        <div class="h4 mb-0">{{ number_format($systemStats['avg_tokens_per_tenant'] ?? 0, 0) }} Kredi</div>
                     </div>
                 </div>
                 
@@ -272,19 +272,19 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="{{ route('admin.ai.tokens.usage-stats') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('admin.ai.credits.usage-stats') }}" class="btn btn-outline-primary">
                         <i class="fas fa-chart-line me-2"></i>
                         Detaylı Kullanım İstatistikleri
                     </a>
-                    <a href="{{ route('admin.ai.tokens.purchases') }}" class="btn btn-outline-info">
+                    <a href="{{ route('admin.ai.credits.purchases') }}" class="btn btn-outline-info">
                         <i class="fas fa-shopping-cart me-2"></i>
                         Tüm Satın Alımları Görüntüle
                     </a>
-                    <a href="{{ route('admin.ai.tokens.packages') }}" class="btn btn-outline-success">
+                    <a href="{{ route('admin.ai.credits.packages') }}" class="btn btn-outline-success">
                         <i class="fas fa-box me-2"></i>
-                        Token Paketlerini Yönet
+                        Kredi Paketlerini Yönet
                     </a>
-                    <a href="{{ route('admin.ai.tokens.index') }}" class="btn btn-outline-warning">
+                    <a href="{{ route('admin.ai.credits.index') }}" class="btn btn-outline-warning">
                         <i class="fas fa-users me-2"></i>
                         Kiracı Yönetimi
                     </a>
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: Object.keys(monthlyTrendData),
             datasets: [{
-                label: 'Aylık Token Kullanımı',
+                label: 'Aylık Kredi Kullanımı',
                 data: Object.values(monthlyTrendData),
                 borderColor: 'rgb(32, 107, 196)',
                 backgroundColor: 'rgba(32, 107, 196, 0.1)',

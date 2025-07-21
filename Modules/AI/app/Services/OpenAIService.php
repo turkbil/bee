@@ -51,12 +51,18 @@ class OpenAIService
                 $responseData = $response->json();
                 
                 $fullResponse = $responseData['choices'][0]['message']['content'] ?? '';
-                $tokensUsed = $responseData['usage']['total_tokens'] ?? 0;
+                
+                // OpenAI token usage bilgilerini al
+                $inputTokens = $responseData['usage']['prompt_tokens'] ?? 0;
+                $outputTokens = $responseData['usage']['completion_tokens'] ?? 0;
+                $totalTokens = $responseData['usage']['total_tokens'] ?? 0;
                 
                 Log::info('⚡ OpenAI yanıt alındı', [
                     'response_time_ms' => round((microtime(true) - $apiStartTime) * 1000, 2),
                     'response_length' => strlen($fullResponse),
-                    'tokens_used' => $tokensUsed
+                    'input_tokens' => $inputTokens,
+                    'output_tokens' => $outputTokens,
+                    'total_tokens' => $totalTokens
                 ]);
             } else {
                 throw new \Exception('OpenAI API hatası: ' . $response->status() . ' - ' . $response->body());
@@ -66,23 +72,28 @@ class OpenAIService
             Log::info('🏁 OpenAI streaming tamamlandı', [
                 'total_time_ms' => $totalTime,
                 'response_length' => strlen($fullResponse),
-                'tokens_used' => $tokensUsed
+                'total_tokens' => $totalTokens
             ]);
 
             return [
                 'response' => $fullResponse,
-                'tokens_used' => $tokensUsed,
+                'tokens_used' => $totalTokens,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
                 'success' => true,
                 'provider' => 'openai',
                 'model' => $this->model,
-                'time_ms' => $totalTime
+                'time_ms' => $totalTime,
+                'usage_details' => $responseData['usage'] ?? []
             ];
 
         } catch (\Exception $e) {
             Log::error('OpenAI streaming API hatası: ' . $e->getMessage());
             return [
-                'response' => null,
+                'response' => 'Üzgünüm, bir hata oluştu: ' . $e->getMessage(),
                 'tokens_used' => 0,
+                'input_tokens' => 0,
+                'output_tokens' => 0,
                 'success' => false,
                 'error' => $e->getMessage(),
                 'provider' => 'openai'
@@ -103,9 +114,8 @@ class OpenAIService
             return $this->generateCompletionStream($messages);
         }
 
-        // Normal request
-        $result = $this->generateCompletionStream($messages);
-        return $result['response'] ?? null;
+        // Normal request - tam response döndür (token bilgileri ile)
+        return $this->generateCompletionStream($messages);
     }
 
     /**

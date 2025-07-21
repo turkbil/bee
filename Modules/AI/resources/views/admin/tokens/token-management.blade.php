@@ -22,7 +22,7 @@
                 <tr>
                     <th>Site</th>
                     <th class="text-center" style="width: 80px">AI Durumu</th>
-                    <th>Token Bakiyesi</th>
+                    <th>Kredi Bakiyesi</th>
                     <th>Aylık Limit</th>
                     <th>Bu Ay Kullanım</th>
                     <th>Son Kullanım</th>
@@ -35,7 +35,7 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <div>
-                                <a href="{{ route('admin.ai.tokens.show', $tenant) }}" class="fw-bold text-decoration-none">
+                                <a href="{{ route('admin.ai.credits.show', $tenant) }}" class="fw-bold text-decoration-none">
                                     {{ $tenant->title ?: 'Varsayılan' }}
                                 </a>
                                 <div class="text-muted small">ID: {{ $tenant->id }}</div>
@@ -60,13 +60,13 @@
                     <td>
                         @if($tenant->ai_monthly_token_limit > 0)
                             <div class="fw-bold">{{ \App\Helpers\TokenHelper::format($tenant->ai_monthly_token_limit) }}</div>
-                            <div class="text-muted small">token/ay</div>
+                            <div class="text-muted small">kredi/ay</div>
                         @else
                             <span class="text-muted">Sınırsız</span>
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('admin.ai.tokens.usage-stats', ['tenant_id' => $tenant->id]) }}" class="text-decoration-none">
+                        <a href="{{ route('admin.ai.credits.usage-stats', ['tenant_id' => $tenant->id]) }}" class="text-decoration-none">
                             <div class="fw-bold">{{ \App\Helpers\TokenHelper::format($tenant->ai_tokens_used_this_month) }}</div>
                         </a>
                         @if($tenant->ai_monthly_token_limit > 0)
@@ -89,7 +89,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col">
-                                    <a href="{{ route('admin.ai.tokens.show', $tenant) }}"
+                                    <a href="{{ route('admin.ai.credits.show', $tenant) }}"
                                         data-bs-toggle="tooltip" data-bs-placement="top" title="Detayları Görüntüle">
                                         <i class="fa-solid fa-eye link-secondary fa-lg"></i>
                                     </a>
@@ -111,7 +111,7 @@
                                             <a href="javascript:void(0);" 
                                                wire:click="openTokenModal({{ $tenant->id }})" 
                                                class="dropdown-item">
-                                                <i class="fas fa-coins me-2"></i>Token Ekle/Çıkar
+                                                <i class="fas fa-coins me-2"></i>Kredi Ekle/Çıkar
                                             </a>
                                         </div>
                                     </div>
@@ -137,13 +137,13 @@
         </div>
     @endif
 
-    <!-- Token Yönetimi Modal -->
+    <!-- Kredi Yönetimi Modal -->
     @if($showModal)
     <div class="modal modal-blur fade show" style="display: block;" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Token Yönetimi</h5>
+                    <h5 class="modal-title">Kredi Yönetimi</h5>
                     <button type="button" class="btn-close" wire:click="closeModal" aria-label="Kapat"></button>
                 </div>
                 <div class="modal-body">
@@ -154,7 +154,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Gerçek Bakiye</label>
-                        <div class="form-control-plaintext">{{ \App\Helpers\TokenHelper::format($currentBalance) }} token</div>
+                        <div class="form-control-plaintext">{{ number_format($currentBalance, 0) }} kredi</div>
                         <small class="text-muted">
                             Satın alınan: {{ \App\Helpers\TokenHelper::format($selectedTenant->total_purchased ?? 0) }} | 
                             Kullanılan: {{ \App\Helpers\TokenHelper::format($selectedTenant->total_used ?? 0) }}
@@ -163,14 +163,14 @@
                     @endif
                     
                     <div class="mb-3">
-                        <label for="tokenAmount" class="form-label">Token Miktarı</label>
+                        <label for="tokenAmount" class="form-label">Kredi Miktarı</label>
                         <input type="number" class="form-control @error('tokenAmount') is-invalid @enderror" 
                                wire:model="tokenAmount" 
                                placeholder="Eklemek için pozitif, çıkarmak için negatif">
                         @error('tokenAmount')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="form-hint">Pozitif sayı token ekler, negatif sayı token çıkarır.</small>
+                        <small class="form-hint">Pozitif sayı kredi ekler, negatif sayı kredi çıkarır.</small>
                     </div>
                     
                     <div class="mb-3">
@@ -178,7 +178,7 @@
                         <textarea class="form-control @error('adjustmentReason') is-invalid @enderror" 
                                   wire:model="adjustmentReason" 
                                   rows="3" 
-                                  placeholder="Token düzenleme sebebini açıklayın..."></textarea>
+                                  placeholder="Kredi düzenleme sebebini açıklayın..."></textarea>
                         @error('adjustmentReason')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

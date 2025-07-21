@@ -43,12 +43,16 @@ class GlobalTokenManager implements TokenManagerInterface
         array $metadata = []
     ): bool {
         try {
-            // Veritabanına token kullanımını kaydet
-            \DB::table('ai_token_usage')->insert([
+            // Veritabanına credit kullanımını kaydet
+            \DB::table('ai_credit_usage')->insert([
                 'tenant_id' => $tenantId,
-                'tokens_used' => $tokensUsed,
-                'usage_type' => $usageType,
-                'module_context' => $moduleContext,
+                'credits_used' => $tokensUsed / 1000, // Token'ları credit'e çevir
+                'input_tokens' => $tokensUsed,
+                'output_tokens' => 0,
+                'credit_cost' => $tokensUsed * 0.001, // Basit cost hesaplama
+                'currency' => 'USD',
+                'provider_name' => 'unknown',
+                'feature_slug' => $usageType,
                 'metadata' => json_encode($metadata),
                 'created_at' => now(),
                 'updated_at' => now()
@@ -87,9 +91,9 @@ class GlobalTokenManager implements TokenManagerInterface
                 ->sum('token_amount');
 
             // Kullanılan toplam token miktarı
-            $totalUsed = \DB::table('ai_token_usage')
+            $totalUsed = \DB::table('ai_credit_usage')
                 ->where('tenant_id', $tenantId)
-                ->sum('tokens_used');
+                ->sum('input_tokens');
 
             $remaining = max(0, $totalPurchased - $totalUsed);
             
@@ -104,10 +108,10 @@ class GlobalTokenManager implements TokenManagerInterface
     public function getDailyUsage(string $tenantId): int
     {
         try {
-            return \DB::table('ai_token_usage')
+            return \DB::table('ai_credit_usage')
                 ->where('tenant_id', $tenantId)
                 ->whereDate('created_at', Carbon::today())
-                ->sum('tokens_used');
+                ->sum('input_tokens');
         } catch (Exception $e) {
             Log::error('Daily usage calculation error', ['error' => $e->getMessage()]);
             return 0;
@@ -117,11 +121,11 @@ class GlobalTokenManager implements TokenManagerInterface
     public function getMonthlyUsage(string $tenantId): int
     {
         try {
-            return \DB::table('ai_token_usage')
+            return \DB::table('ai_credit_usage')
                 ->where('tenant_id', $tenantId)
                 ->whereMonth('created_at', Carbon::now()->month)
                 ->whereYear('created_at', Carbon::now()->year)
-                ->sum('tokens_used');
+                ->sum('input_tokens');
         } catch (Exception $e) {
             Log::error('Monthly usage calculation error', ['error' => $e->getMessage()]);
             return 0;

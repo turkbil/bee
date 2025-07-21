@@ -11,7 +11,7 @@
         <a href="{{ route('admin.ai.settings.limits') }}" 
            class="list-group-item list-group-item-action {{ request()->routeIs('admin.ai.settings.limits') ? 'active' : '' }}">
             <i class="fas fa-hourglass-half me-2"></i>
-            Soru & Token Limitleri
+            Soru & Kredi Limitleri
         </a>
         <a href="{{ route('admin.ai.settings.prompts') }}" 
            class="list-group-item list-group-item-action {{ request()->routeIs('admin.ai.settings.prompts') ? 'active' : '' }}">

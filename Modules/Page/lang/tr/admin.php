@@ -41,5 +41,12 @@ return [
 'no_pages_yet' => 'Henüz sayfa yok',
 'create_first_page' => 'İlk Sayfayı Oluştur',
 'view_all' => 'Tümünü Gör',
-'manage' => 'Yönet'
+'manage' => 'Yönet',
+
+// Content Editor
+'content_placeholder' => 'Sayfa içeriğinizi buraya yazın',
+'wysiwyg_editor' => 'Zengin Metin Editörü',
+'editor_supports_html' => 'Editör HTML ve zengin metin formatlarını destekler',
+'fullscreen' => 'Tam Ekran',
+'initializing_editor' => 'Editör başlatılıyor'
 ];

@@ -155,7 +155,7 @@
             Son Aktiviteler
           </h3>
           <div class="card-actions">
-            <a href="{{ route('admin.ai.tokens.usage-stats') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ route('admin.ai.credits.usage-stats') }}" class="btn btn-outline-primary btn-sm">
               Tümünü Gör
             </a>
           </div>
@@ -209,7 +209,7 @@
                 </div>
               </div>
             </a>
-            <a href="{{ route('admin.ai.tokens.packages') }}"
+            <a href="{{ route('admin.ai.credits.packages') }}"
               class="list-group-item list-group-item-action">
               <div class="d-flex align-items-center">
                 <i class="fas fa-box text-success me-2"></i>
@@ -219,7 +219,7 @@
                 </div>
               </div>
             </a>
-            <a href="{{ route('admin.ai.tokens.usage-stats') }}"
+            <a href="{{ route('admin.ai.credits.usage-stats') }}"
               class="list-group-item list-group-item-action">
               <div class="d-flex align-items-center">
                 <i class="fas fa-chart-area text-warning me-2"></i>

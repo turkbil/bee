@@ -5,8 +5,7 @@ namespace Modules\AI\App\Http\Livewire\Admin\Features;
 use Livewire\Component;
 use App\Services\AITokenService;
 use App\Helpers\TokenHelper;
-use Modules\AI\App\Models\AITokenUsage;
-use Modules\AI\App\Models\Setting;
+use Modules\AI\App\Models\AICreditUsage;
 use App\Models\Tenant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -181,18 +180,18 @@ class AIFeaturesDashboard extends Component
         }
 
         try {
-            // Usage by type (last 30 days)
-            $usageByTypeRaw = AITokenUsage::forTenant($this->currentTenant->id)
-                ->where('used_at', '>=', Carbon::now()->subDays(30))
-                ->selectRaw('usage_type, SUM(tokens_used) as total')
-                ->groupBy('usage_type')
+            // Usage by type (last 30 days) - Credit sistemi
+            $usageByTypeRaw = AICreditUsage::where('tenant_id', $this->currentTenant->id)
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->selectRaw('feature_slug, SUM(credit_cost) as total')
+                ->groupBy('feature_slug')
                 ->get();
                 
             $this->usageByType = $usageByTypeRaw->map(function ($item) {
                 return [
-                    'type' => $item->usage_type_label ?? ucfirst($item->usage_type),
-                    'value' => $item->total,
-                    'color' => $this->getTypeColor($item->usage_type)
+                    'type' => ucfirst($item->feature_slug ?? 'unknown'),
+                    'value' => round($item->total, 4),
+                    'color' => $this->getTypeColor($item->feature_slug ?? 'unknown')
                 ];
             })->toArray();
 
@@ -200,9 +199,9 @@ class AIFeaturesDashboard extends Component
             $weekData = [];
             for ($i = 6; $i >= 0; $i--) {
                 $date = Carbon::now()->subDays($i);
-                $usage = AITokenUsage::forTenant($this->currentTenant->id)
-                    ->whereDate('used_at', $date)
-                    ->sum('tokens_used');
+                $usage = AICreditUsage::where('tenant_id', $this->currentTenant->id)
+                    ->whereDate('created_at', $date)
+                    ->sum('credit_cost');
                     
                 $weekData[] = [
                     'date' => $date->format('M d'),
@@ -243,18 +242,18 @@ class AIFeaturesDashboard extends Component
         }
 
         try {
-            $activities = AITokenUsage::forTenant($this->currentTenant->id)
+            $activities = AICreditUsage::where('tenant_id', $this->currentTenant->id)
                 ->with('user')
-                ->orderBy('used_at', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->limit(5)
                 ->get();
                 
             $this->lastActivities = $activities->map(function ($usage) {
                 // Türkçe zaman farkı hesaplama
                 $timeAgo = 'Bilinmeyen';
-                if ($usage->used_at) {
+                if ($usage->created_at) {
                     $now = now();
-                    $usedAt = $usage->used_at;
+                    $usedAt = $usage->created_at;
                     
                     if ($usedAt->gt($now)) {
                         // Gelecek tarih ise "şimdi" göster
@@ -279,12 +278,12 @@ class AIFeaturesDashboard extends Component
                 
                 return [
                     'id' => $usage->id,
-                    'type' => $usage->usage_type_label ?? ucfirst($usage->usage_type),
-                    'tokens' => TokenHelper::format($usage->tokens_used),
-                    'description' => $usage->description ?? 'AI İşlemi',
+                    'type' => ucfirst($usage->feature_slug ?? 'ai_general'),
+                    'tokens' => number_format($usage->credit_cost, 4) . ' kredi',
+                    'description' => 'AI İşlemi (' . ($usage->provider_name ?? 'unknown') . ')',
                     'user' => $usage->user?->name ?? 'Bilinmeyen',
                     'time' => $timeAgo,
-                    'time_exact' => $usage->used_at?->format('H:i:s') ?? ''
+                    'time_exact' => $usage->created_at?->format('H:i:s') ?? ''
                 ];
             })->toArray();
             
@@ -305,7 +304,14 @@ class AIFeaturesDashboard extends Component
 
     private function loadSettings()
     {
-        $this->settings = Setting::first();
+        // Config-based ayarlar
+        $this->settings = (object) [
+            'enabled' => config('ai.enabled', true),
+            'api_key' => config('ai.providers.deepseek.api_key', ''),
+            'model' => config('ai.providers.deepseek.model', 'deepseek-chat'),
+            'max_tokens' => config('ai.providers.deepseek.max_tokens', 4096),
+            'temperature' => config('ai.providers.deepseek.temperature', 0.7),
+        ];
     }
 
     private function getTypeColor($type)

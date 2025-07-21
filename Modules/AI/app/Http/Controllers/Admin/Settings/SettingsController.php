@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
-use Modules\AI\App\Models\Setting;
 use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Models\AIProvider;
 
@@ -21,49 +20,42 @@ class SettingsController extends Controller
     
     public function api()
     {
-        $settings = Setting::first() ?: new Setting();
-        
-        // AI Provider'lardan veri çek ve settings'e ekle
+        // Artık sadece ai_providers tablosunu kullanıyoruz
         $providers = AIProvider::orderBy('priority', 'desc')->get();
-        $providerData = [];
         
-        foreach ($providers as $provider) {
-            $providerData[$provider->name] = [
-                'name' => $provider->display_name,
-                'service_class' => $provider->service_class,
-                'model' => $provider->default_model,
-                'available_models' => $provider->available_models,
-                'api_key' => $provider->api_key,
-                'base_url' => $provider->base_url,
-                'is_active' => $provider->is_active,
-                'is_default' => $provider->is_default,
-                'priority' => $provider->priority,
-                'average_response_time' => $provider->average_response_time,
-                'description' => $provider->description,
-                'default_settings' => $provider->default_settings,
-            ];
-        }
+        // Global config'den varsayılan ayarları al
+        $globalSettings = [
+            'enabled' => config('ai.enabled', true),
+            'debug' => config('ai.debug', false),
+            'cache_duration' => config('ai.cache_duration', 60),
+            'default_provider' => config('ai.default_provider', 'openai'),
+            'default_model' => config('ai.default_model', 'gpt-4o-mini'),
+            'global_token_limit' => config('ai.global_token_limit', 100000),
+        ];
         
-        // Settings'e provider verilerini ekle
-        $settings->providers = $providerData;
+        // Aktif provider'ı belirle (config'den veya ilk default provider)
+        $activeProvider = $providers->where('is_default', true)->first() 
+            ?? $providers->where('name', $globalSettings['default_provider'])->first()
+            ?? $providers->first();
         
-        // Aktif provider'ı belirle
-        if (!$settings->active_provider) {
-            $defaultProvider = $providers->where('is_default', true)->first();
-            if ($defaultProvider) {
-                $settings->active_provider = $defaultProvider->name;
-            } else {
-                $settings->active_provider = $providers->first()->name ?? 'openai';
-            }
-        }
-        
-        return view('ai::admin.settings.api', compact('settings'));
+        return view('ai::admin.settings.api', compact('providers', 'globalSettings', 'activeProvider'));
     }
     
     public function limits()
     {
-        $settings = Setting::first() ?: new Setting();
-        return view('ai::admin.settings.limits', compact('settings'));
+        // Config tabanlı limit ayarları
+        $limitSettings = [
+            'global_token_limit' => config('ai.global_token_limit', 100000),
+            'daily_token_limit' => config('ai.daily_token_limit', 10000),
+            'request_token_limit' => config('ai.request_token_limit', 4000),
+            'rate_limit_per_minute' => config('ai.rate_limit_per_minute', 60),
+            'rate_limit_per_hour' => config('ai.rate_limit_per_hour', 1000),
+            'concurrent_requests' => config('ai.concurrent_requests', 5),
+            'max_retries' => config('ai.max_retries', 3),
+            'timeout' => config('ai.timeout', 30),
+        ];
+        
+        return view('ai::admin.settings.limits', compact('limitSettings'));
     }
     
     public function prompts()
@@ -81,8 +73,19 @@ class SettingsController extends Controller
     
     public function general()
     {
-        $settings = Setting::first() ?: new Setting();
-        return view('ai::admin.settings.general', compact('settings'));
+        // Config tabanlı genel ayarlar
+        $generalSettings = [
+            'default_language' => config('ai.integrations.page.supported_languages.0', 'tr'),
+            'response_format' => 'markdown',
+            'cache_duration' => config('ai.cache_duration', 60),
+            'concurrent_requests' => config('ai.token_management.rate_limit_per_minute', 10),
+            'content_filtering' => config('ai.security.enable_content_filter', true),
+            'rate_limiting' => config('ai.security.enable_rate_limiting', true),
+            'detailed_logging' => config('ai.logging.enabled', true),
+            'performance_monitoring' => config('ai.performance.cache_responses', false),
+        ];
+        
+        return view('ai::admin.settings.general', compact('generalSettings'));
     }
     
     public function managePrompt($id = null)
@@ -98,27 +101,21 @@ class SettingsController extends Controller
     
     public function updateApi(Request $request)
     {
-        $settings = Setting::first() ?: new Setting();
-        
-        // Provider seçimi kontrolü
+        // Provider seçimi kontrolü - artık sadece ai_providers tablosu
         if ($request->has('action') && $request->action === 'set_active_provider') {
-            $newProvider = $request->active_provider;
+            $providerId = $request->active_provider;
             
-            $provider = AIProvider::where('name', $newProvider)
+            $provider = AIProvider::where('id', $providerId)
                 ->where('is_active', true)
                 ->first();
                 
             if ($provider) {
                 // Diğer provider'ları varsayılan olmaktan çıkar
-                AIProvider::where('name', '!=', $newProvider)->update(['is_default' => false]);
+                AIProvider::where('id', '!=', $providerId)->update(['is_default' => false]);
                 
                 // Yeni provider'ı varsayılan yap
                 $provider->is_default = true;
                 $provider->save();
-                
-                // Settings'te active provider'ı güncelle
-                $settings->active_provider = $newProvider;
-                $settings->save();
                 
                 return response()->json(['success' => true, 'message' => 'Provider başarıyla değiştirildi']);
             }
@@ -126,56 +123,53 @@ class SettingsController extends Controller
             return response()->json(['success' => false, 'message' => 'Geçersiz provider']);
         }
         
-        // Normal ayar güncelleme
+        // Provider settings güncelleme - artık sadece ai_providers tablosu
         $request->validate([
+            'provider_id' => 'required|exists:ai_providers,id',
             'api_key' => 'nullable|string',
-            'model' => 'required|string',
-            'max_tokens' => 'required|integer|min:1',
-            'temperature' => 'required|numeric|min:0',
-            'enabled' => 'boolean',
+            'default_model' => 'required|string',
+            'temperature' => 'required|numeric|min:0|max:2',
+            'max_tokens' => 'required|integer|min:1|max:32000',
         ]);
         
-        $activeProviderName = $settings->active_provider ?? 'openai';
-        $activeProvider = AIProvider::where('name', $activeProviderName)->first();
+        $provider = AIProvider::findOrFail($request->provider_id);
         
-        if ($activeProvider) {
-            // API anahtarı sadece dolu ise güncelle
-            if ($request->filled('api_key')) {
-                $activeProvider->api_key = $request->api_key;
-            }
-            
-            // Model güncelle
-            $activeProvider->default_model = $request->model;
-            $activeProvider->save();
+        // API anahtarı sadece dolu ise güncelle
+        if ($request->filled('api_key')) {
+            $provider->api_key = $request->api_key;
         }
         
-        // Diğer ayarları settings'te güncelle
-        $settings->model = $request->model;
-        $settings->max_tokens = $request->max_tokens;
-        $settings->temperature = $request->temperature;
-        $settings->enabled = $request->boolean('enabled');
-        $settings->save();
+        // Model ve settings güncelle
+        $provider->default_model = $request->default_model;
         
-        return redirect()->back()->with('success', 'API ayarları güncellendi');
+        // Provider settings JSON'ını güncelle
+        $settings = $provider->default_settings ?? [];
+        $settings['temperature'] = (float) $request->temperature;
+        $settings['max_tokens'] = (int) $request->max_tokens;
+        $provider->default_settings = $settings;
+        
+        $provider->save();
+        
+        return redirect()->back()->with('success', 'Provider ayarları güncellendi');
     }
     
     public function updateLimits(Request $request)
     {
         $request->validate([
-            'max_question_length' => 'required|integer|min:1',
-            'max_daily_questions' => 'required|integer|min:0',
-            'max_monthly_questions' => 'required|integer|min:0',
-            'question_token_limit' => 'required|integer|min:1',
-            'free_question_tokens_daily' => 'required|integer|min:0',
-            'charge_question_tokens' => 'boolean',
+            'global_token_limit' => 'required|integer|min:1000',
+            'daily_token_limit' => 'required|integer|min:100',
+            'request_token_limit' => 'required|integer|min:100',
+            'rate_limit_per_minute' => 'required|integer|min:1',
+            'rate_limit_per_hour' => 'required|integer|min:10',
+            'concurrent_requests' => 'required|integer|min:1',
+            'max_retries' => 'required|integer|min:1',
+            'timeout' => 'required|integer|min:10',
         ]);
         
-        $settings = Setting::first() ?: new Setting();
-        $settings->fill($request->all());
-        $settings->charge_question_tokens = $request->boolean('charge_question_tokens');
-        $settings->save();
+        // Config dosyasında bu ayarlar bulunduğu için
+        // Bu fonksiyon artık sadece bilgilendirme amaçlı
         
-        return redirect()->back()->with('success', 'Limit ayarları güncellendi');
+        return redirect()->back()->with('info', 'Limit ayarları config/ai.php dosyasından yönetiliyor');
     }
     
     public function updateGeneral(Request $request)
@@ -191,15 +185,10 @@ class SettingsController extends Controller
             'performance_monitoring' => 'boolean',
         ]);
         
-        $settings = Setting::first() ?: new Setting();
-        $settings->fill($request->all());
-        $settings->content_filtering = $request->boolean('content_filtering');
-        $settings->rate_limiting = $request->boolean('rate_limiting');
-        $settings->detailed_logging = $request->boolean('detailed_logging');
-        $settings->performance_monitoring = $request->boolean('performance_monitoring');
-        $settings->save();
+        // Config dosyasında bu ayarlar bulunduğu için
+        // Bu fonksiyon artık sadece bilgilendirme amaçlı
         
-        return redirect()->back()->with('success', 'Genel ayarlar güncellendi');
+        return redirect()->back()->with('info', 'Genel ayarlar config/ai.php dosyasından yönetiliyor');
     }
     
     public function storePrompt(Request $request)
@@ -364,10 +353,13 @@ class SettingsController extends Controller
     public function testConnection(Request $request)
     {
         try {
-            $settings = Setting::first();
-            $providerName = $request->provider ?? ($settings->active_provider ?? 'openai');
-            
-            $provider = AIProvider::where('name', $providerName)->first();
+            // Provider ID ya da name ile arama
+            if ($request->has('provider_id')) {
+                $provider = AIProvider::find($request->provider_id);
+            } else {
+                $providerName = $request->provider ?? config('ai.default_provider', 'openai');
+                $provider = AIProvider::where('name', $providerName)->first();
+            }
             
             if (!$provider) {
                 return response()->json([

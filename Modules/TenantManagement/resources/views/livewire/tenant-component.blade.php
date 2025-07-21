@@ -38,6 +38,13 @@
                             <option value="1000">1000</option>
                         </select>
                     </div>
+                    <!-- Tenant Ekleme Butonu -->
+                    <div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant-add" wire:click="resetForm">
+                            <i class="fas fa-plus me-1"></i>
+                            {{ __('tenantmanagement::admin.add_new_tenant') }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,7 +131,7 @@
     
     <!-- Tenant Düzenleme Modal -->
     <div class="modal fade" id="modal-tenant-edit" tabindex="-1" wire:ignore.self>
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ __('tenantmanagement::admin.tenant_update') }}</h5>
@@ -173,6 +180,35 @@
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         
+                        @if(count($availableAiProviders) > 0)
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" wire:model.live="default_ai_provider_id">
+                                        <option value="">AI Provider seçin</option>
+                                        @foreach($availableAiProviders as $provider)
+                                        <option value="{{ $provider['value'] }}">{{ $provider['label'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label>AI Provider (Marka)</label>
+                                    @error('default_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" wire:model="default_ai_model" @if(empty($availableModels)) disabled @endif>
+                                        <option value="">Model seçin</option>
+                                        @foreach($availableModels as $model)
+                                        <option value="{{ $model['value'] }}">{{ $model['label'] }} @if($model['cost']) ({{ $model['cost'] }}) @endif</option>
+                                        @endforeach
+                                    </select>
+                                    <label>AI Model @if(empty($availableModels)) (Önce provider seçin) @endif</label>
+                                    @error('default_ai_model') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                        
                         @if($tenantId && $editingTenant)
                         <div class="card bg-light">
                             <div class="card-body p-3">
@@ -219,7 +255,7 @@
     
     <!-- Tenant Ekleme Modal -->
     <div class="modal fade" id="modal-tenant-add" tabindex="-1" wire:ignore.self>
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ __('tenantmanagement::admin.add_new_tenant') }}</h5>
@@ -270,6 +306,35 @@
                             <label>{{ __('tenantmanagement::admin.theme') }}</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
+                        
+                        @if(count($availableAiProviders) > 0)
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" wire:model.live="default_ai_provider_id">
+                                        <option value="">AI Provider seçin</option>
+                                        @foreach($availableAiProviders as $provider)
+                                        <option value="{{ $provider['value'] }}">{{ $provider['label'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label>AI Provider (Marka)</label>
+                                    @error('default_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" wire:model="default_ai_model" @if(empty($availableModels)) disabled @endif>
+                                        <option value="">Model seçin</option>
+                                        @foreach($availableModels as $model)
+                                        <option value="{{ $model['value'] }}">{{ $model['label'] }} @if($model['cost']) ({{ $model['cost'] }}) @endif</option>
+                                        @endforeach
+                                    </select>
+                                    <label>AI Model @if(empty($availableModels)) (Önce provider seçin) @endif</label>
+                                    @error('default_ai_model') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <div class="w-100">
@@ -374,6 +439,32 @@
         </div>
     </div>
     
+    @push('styles')
+    <style>
+        /* Modal içindeki dropdown'ların z-index sorununu çöz */
+        .modal .form-floating select {
+            position: relative;
+            z-index: 1060 !important;
+        }
+        
+        .modal .form-floating select:focus {
+            z-index: 1061 !important;
+        }
+        
+        /* Modal overflow ayarları */
+        .modal-dialog-scrollable .modal-body {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        
+        /* Dropdown açıldığında kaybolan sorununu önle */
+        .modal select option {
+            background-color: white !important;
+            color: black !important;
+        }
+    </style>
+    @endpush
+    
     @push('scripts')
     <script>
         document.addEventListener('livewire:initialized', () => {
@@ -389,6 +480,23 @@
             
             modalAdd.addEventListener('hidden.bs.modal', () => {
                 @this.resetForm();
+            });
+            
+            // Modal açılırken dropdown pozisyonlarını düzelt
+            modalEdit.addEventListener('shown.bs.modal', () => {
+                // AI Provider dropdown'ları için özel stil
+                const selects = modalEdit.querySelectorAll('select[wire\\:model="default_ai_provider_id"]');
+                selects.forEach(select => {
+                    select.style.zIndex = '9999';
+                });
+            });
+            
+            modalAdd.addEventListener('shown.bs.modal', () => {
+                // AI Provider dropdown'ları için özel stil
+                const selects = modalAdd.querySelectorAll('select[wire\\:model="default_ai_provider_id"]');
+                selects.forEach(select => {
+                    select.style.zIndex = '9999';
+                });
             });
             
             Livewire.on('hideModal', ({ id }) => {

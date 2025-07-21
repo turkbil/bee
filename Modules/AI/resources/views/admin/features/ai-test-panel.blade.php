@@ -74,7 +74,7 @@
                 @else
                     <div style="font-size: 60px; font-weight: 700;">0</div>
                     <p class="mb-3">Token satın almanız gerekiyor.</p>
-                    <a href="{{ route('admin.ai.tokens.packages') }}" class="btn btn-light btn-lg">
+                    <a href="{{ route('admin.ai.credits.packages') }}" class="btn btn-light btn-lg">
                         <i class="ti ti-shopping-cart"></i> Token Satın Al
                     </a>
                 @endif

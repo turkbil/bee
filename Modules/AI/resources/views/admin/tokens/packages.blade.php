@@ -2,8 +2,8 @@
 
 @include('ai::helper')
 
-@section('pretitle', 'AI Token Yönetimi')
-@section('title', 'Token Paketleri')
+@section('pretitle', 'AI Kredi Yönetimi')
+@section('title', 'Kredi Paketleri')
 
 @section('content')
 <!-- Add Package Button -->
@@ -11,7 +11,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Token Paket Yönetimi</h3>
+                <h3 class="card-title">Kredi Paket Yönetimi</h3>
                 <div class="card-actions">
                     <button class="btn btn-primary" onclick="addPackage()">
                         <i class="fas fa-plus me-2"></i>
@@ -28,7 +28,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Mevcut Token Paketleri</h3>
+                <h3 class="card-title">Mevcut Kredi Paketleri</h3>
             </div>
             <div class="card-body">
                 @if($packages->count() > 0)
@@ -38,7 +38,7 @@
                             <tr>
                                 <th>Sıra</th>
                                 <th>Paket Adı</th>
-                                <th>Token Miktarı</th>
+                                <th>Kredi Miktarı</th>
                                 <th>Fiyat</th>
                                 <th>Açıklama</th>
                                 <th>Durum</th>
@@ -56,7 +56,7 @@
                                 </td>
                                 <td>
                                     <span class="badge badge-outline text-blue">
-                                        {{ \App\Helpers\TokenHelper::format($package->token_amount) }} Token
+                                        {{ number_format($package->token_amount, 0) }} Kredi
                                     </span>
                                 </td>
                                 <td>
@@ -96,9 +96,9 @@
                     <div class="empty-img">
                         <i class="fas fa-box text-muted" style="font-size: 64px;"></i>
                     </div>
-                    <p class="empty-title">Henüz token paketi yok</p>
+                    <p class="empty-title">Henüz kredi paketi yok</p>
                     <p class="empty-subtitle text-muted">
-                        Yeni token paketi eklemek için "Yeni Paket Ekle" butonunu kullanın.
+                        Yeni kredi paketi eklemek için "Yeni Paket Ekle" butonunu kullanın.
                     </p>
                 </div>
                 @endif
@@ -112,7 +112,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="packageModalTitle">Token Paketi Ekle</h5>
+                <h5 class="modal-title" id="packageModalTitle">Kredi Paketi Ekle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -129,7 +129,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="tokenAmount" class="form-label">Token Miktarı</label>
+                                <label for="tokenAmount" class="form-label">Kredi Miktarı</label>
                                 <input type="number" class="form-control" id="tokenAmount" name="token_amount" 
                                        placeholder="Örn: 10000" min="1" required>
                             </div>
@@ -211,7 +211,7 @@
 <script>
 // Package form functions
 function addPackage() {
-    document.getElementById('packageModalTitle').textContent = 'Token Paketi Ekle';
+    document.getElementById('packageModalTitle').textContent = 'Kredi Paketi Ekle';
     document.getElementById('packageForm').reset();
     document.getElementById('packageId').value = '';
     document.getElementById('isActive').checked = true;
@@ -238,7 +238,7 @@ function editPackage(packageId) {
             if (data.success) {
                 const package = data.package;
                 
-                document.getElementById('packageModalTitle').textContent = 'Token Paketi Düzenle';
+                document.getElementById('packageModalTitle').textContent = 'Kredi Paketi Düzenle';
                 document.getElementById('packageId').value = package.id;
                 document.getElementById('packageName').value = package.name;
                 document.getElementById('tokenAmount').value = package.token_amount;

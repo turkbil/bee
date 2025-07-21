@@ -127,14 +127,9 @@ class AIChatController extends Controller
             // Token bilgileri hesapla
             $totalTokensUsed = $userPromptTokens + $aiCompletionTokens;
             
-            // Token kullanımını AIHelper sistemi ile kaydet
+            // ARTIK KULLANILMIYOR - ai_use_calculated_credits() AIService'de otomatik çalışıyor
+            // Credit kullanımı AIService.ask() içinde gerçek token bilgileri ile yapılacak
             $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
-            ai_use_tokens($totalTokensUsed, 'chat', 'general_chat', $tenantId, [
-                'conversation_id' => $conversation->id,
-                'user_message_length' => strlen($message),
-                'ai_response_length' => strlen($response['content']),
-                'source' => 'admin_chat'
-            ]);
             
             // İşlemi kaydet
             activity()
@@ -150,7 +145,7 @@ class AIChatController extends Controller
             $content = $response['content'];
             $hasMarkdown = $this->markdownService->hasMarkdown($content);
             $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
-            $newBalance = ai_get_token_balance($tenantId);
+            $newBalance = ai_get_credit_balance($tenantId);
             
             return response()->json([
                 'success' => true,
@@ -163,7 +158,7 @@ class AIChatController extends Controller
                 'tokens_used' => $totalTokensUsed,
                 'tokens_used_formatted' => ai_format_token_count($totalTokensUsed) . ' kullanıldı',
                 'new_balance' => $newBalance,
-                'new_balance_formatted' => ai_format_token_count($newBalance)
+                'new_balance_formatted' => number_format($newBalance, 4) . ' kredi'
             ]);
         } catch (\Exception $e) {
             Log::error('AI mesaj gönderme hatası: ' . $e->getMessage(), [

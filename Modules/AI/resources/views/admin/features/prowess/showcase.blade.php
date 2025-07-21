@@ -184,7 +184,7 @@ use Illuminate\Support\Str;
                 <span class="input-group-text bg-primary text-white">
                     <i class="fas fa-search"></i>
                 </span>
-                <input type="text" class="form-control" id="skill-search" placeholder="AI yeteneklerinde ara... (Ad, açıklama, kategori)" />
+                <input type="text" class="form-control" id="skill-search" placeholder="{{ __('ai::admin.prowess.search_placeholder', ['default' => 'Search AI capabilities... (Name, description, category)']) }}" />
                 <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -197,7 +197,7 @@ use Illuminate\Support\Str;
             <div class="card">
                 <div class="card-body py-2">
                     <div class="d-flex align-items-center">
-                        <strong class="me-3">Hızlı Erişim:</strong>
+                        <strong class="me-3">{{ __('ai::admin.prowess.quick_access', ['default' => 'Quick Access:']) }}</strong>
                         <div class="btn-group" role="group" id="category-nav">
                             <!-- JavaScript ile doldurulacak -->
                         </div>
@@ -273,8 +273,7 @@ use Illuminate\Support\Str;
                 {{ $categoryNames[$category] ?? ucfirst($category) }}
                 <span class="badge skill-badge ms-3">{{ __('ai::admin.prowess.skills_count', ['count' => count($categoryFeatures)]) }}</span>
             </h2>
-            <p class="mb-0 mt-2 opacity-75">Unleash the power of AI in {{ strtolower($categoryNames[$category] ??
-                $category) }}</p>
+            <p class="mb-0 mt-2 opacity-75">{{ __('ai::admin.prowess.unleash_power', ['category' => strtolower($categoryNames[$category] ?? $category), 'default' => 'Unleash the power of AI in ' . strtolower($categoryNames[$category] ?? $category)]) }}</p>
         </div>
 
         <div class="row">
@@ -310,9 +309,13 @@ use Illuminate\Support\Str;
                                         : (is_array($feature->example_inputs) ? $feature->example_inputs : []);
                                 @endphp
                                 @foreach(array_slice($exampleInputs, 0, 3) as $example)
+                                @php
+                                    $exampleText = is_array($example) ? ($example['text'] ?? '') : $example;
+                                    $exampleLabel = is_array($example) ? ($example['label'] ?? Str::limit($exampleText, 20)) : Str::limit($exampleText, 20);
+                                @endphp
                                 <button class="btn btn-sm btn-outline-primary"
-                                    onclick="setExamplePrompt({{ $feature->id }}, '{{ addslashes($example['text'] ?? '') }}'); console.log('Example clicked: {{ addslashes($example['text'] ?? '') }}');">
-                                    {{ $example['label'] ?? Str::limit($example['text'] ?? '', 20) }}
+                                    onclick="setExamplePrompt({{ $feature->id }}, '{{ addslashes($exampleText) }}'); console.log('Example clicked: {{ addslashes($exampleText) }}');">
+                                    {{ $exampleLabel }}
                                 </button>
                                 @endforeach
                             </div>
@@ -448,10 +451,10 @@ use Illuminate\Support\Str;
         const navContainer = document.getElementById('category-nav');
         if (!navContainer || allCategories.length === 0) return;
 
-        // "Tümü" butonu
+        // "{{ __('ai::admin.prowess.all_categories', ['default' => 'All']) }}" butonu
         const allBtn = document.createElement('button');
         allBtn.className = 'btn btn-outline-primary category-nav-active';
-        allBtn.textContent = 'Tümü';
+        allBtn.textContent = '{{ __('ai::admin.prowess.all_categories', ['default' => 'All']) }}';
         allBtn.onclick = () => filterByCategory(null);
         navContainer.appendChild(allBtn);
 
@@ -606,9 +609,9 @@ use Illuminate\Support\Str;
         if (!countElement) return;
 
         if (visible === total) {
-            countElement.textContent = `${total} AI yeteneği gösteriliyor`;
+            countElement.textContent = `${total} {{ __('ai::admin.prowess.capabilities_showing', ['default' => 'AI capabilities showing']) }}`;
         } else {
-            countElement.textContent = `${visible} / ${total} AI yeteneği gösteriliyor`;
+            countElement.textContent = `${visible} / ${total} {{ __('ai::admin.prowess.capabilities_showing', ['default' => 'AI capabilities showing']) }}`;
         }
     }
 
@@ -741,7 +744,7 @@ async function testSkill(featureId) {
             resultContentElement.innerHTML = `
                 <div class="text-danger">
                     <i class="fas fa-exclamation-triangle me-1"></i>
-                    Hata: ${data.message || 'Bilinmeyen hata oluştu'}
+                    {{ __('ai::admin.prowess.error_occurred', ['default' => 'Error']) }}: ${data.message || '{{ __('ai::admin.prowess.unknown_error', ['default' => 'Unknown error occurred']) }}'}
                 </div>
             `;
             resultElement.style.display = 'block';
@@ -752,7 +755,7 @@ async function testSkill(featureId) {
         resultContentElement.innerHTML = `
             <div class="text-danger">
                 <i class="fas fa-exclamation-triangle me-1"></i>
-                Bağlantı hatası: ${error.message}
+                {{ __('ai::admin.prowess.connection_error', ['default' => 'Connection error']) }}: ${error.message}
             </div>
         `;
         resultElement.style.display = 'block';
@@ -786,7 +789,7 @@ function setExamplePrompt(featureId, prompt) {
 
 // Format AI response for elegant display
 function formatAIResponse(aiResult) {
-    if (!aiResult) return 'Mevcut sonuç yok';
+    if (!aiResult) return '{{ __('ai::admin.prowess.no_result_available', ['default' => 'No result available']) }}';
     
     // If HTML formatted, convert to clean formatted text
     if (aiResult.includes('<')) {

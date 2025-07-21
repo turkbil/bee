@@ -103,27 +103,27 @@ class DashboardWidget extends Component
         try {
             $tenantId = tenant('id') ?: '1';
             
-            // AITokenHelper fonksiyonları kullan
-            $this->remainingTokens = function_exists('ai_get_token_balance') ? ai_get_token_balance($tenantId) : 0;
-            $this->usedTokens = function_exists('ai_get_total_used') ? ai_get_total_used($tenantId) : 0;
-            $this->totalTokens = function_exists('ai_get_total_purchased') ? ai_get_total_purchased($tenantId) : 0;
+            // Credit Helper fonksiyonları kullan (yeni sistem)
+            $this->remainingTokens = function_exists('ai_get_credit_balance') ? ai_get_credit_balance($tenantId) : 0;
+            $this->usedTokens = function_exists('ai_get_total_credits_used') ? ai_get_total_credits_used($tenantId) : 0;
+            $this->totalTokens = function_exists('ai_get_total_credits_purchased') ? ai_get_total_credits_purchased($tenantId) : 0;
             
-            // Formatlanmış token sayısı
-            $this->remainingTokensFormatted = function_exists('ai_format_token_count') ? ai_format_token_count($this->remainingTokens) : number_format($this->remainingTokens);
+            // Formatlanmış kredi sayısı  
+            $this->remainingTokensFormatted = number_format($this->remainingTokens, 4) . ' kredi';
             
             // Kullanım yüzdesi
             $this->usagePercentage = $this->totalTokens > 0 ? round(($this->usedTokens / $this->totalTokens) * 100, 1) : 0;
             
-            // Status belirleme
+            // Status belirleme (credit sistemi)
             if ($this->remainingTokens <= 0) {
                 $this->statusColor = 'danger';
-                $this->statusText = 'Token tükendi';
-            } elseif ($this->remainingTokens < 1000) {
+                $this->statusText = 'Kredi tükendi';
+            } elseif ($this->remainingTokens < 1.0) {
                 $this->statusColor = 'warning';
-                $this->statusText = 'Token azalıyor';
+                $this->statusText = 'Kredi azalıyor';
             } else {
                 $this->statusColor = 'success';
-                $this->statusText = 'Token yeterli';
+                $this->statusText = 'Kredi yeterli';
             }
         } catch (\Exception $e) {
             // Token hesaplama hatası

@@ -28,6 +28,10 @@ class TenantComponent extends Component
     public $refreshModuleKey = 0;
     public $theme_id;
     public $themes = [];
+    public $default_ai_provider_id;
+    public $default_ai_model;
+    public $availableAiProviders = [];
+    public $availableModels = [];
 
     protected $listeners = ['modulesSaved' => '$refresh', 'itemDeleted' => '$refresh'];
 
@@ -39,6 +43,8 @@ class TenantComponent extends Component
         'is_active' => 'boolean',
         'newDomain' => 'nullable|string|max:255|unique:domains,domain',
         'theme_id'  => 'required|integer',
+        'default_ai_provider_id' => 'nullable|integer|exists:ai_providers,id',
+        'default_ai_model' => 'nullable|string|max:255',
     ];
 
     public function mount()
@@ -47,6 +53,69 @@ class TenantComponent extends Component
         // Tema listesi ve başlangıç teması
         $this->themes = Theme::where('is_active', true)->pluck('title','theme_id')->toArray();
         $this->theme_id = $this->themes ? array_key_first($this->themes) : 1;
+        
+        // AI Provider listesi yükle
+        $this->loadAiProviders();
+    }
+    
+    /**
+     * AI Provider listesini yükle
+     */
+    private function loadAiProviders()
+    {
+        try {
+            $this->availableAiProviders = \Modules\AI\App\Models\AIProvider::getSelectOptions();
+            // Varsayılan seçimi sadece yeni tenant için ayarla
+            if (!$this->tenantId && count($this->availableAiProviders) > 0) {
+                $this->default_ai_provider_id = $this->availableAiProviders[0]['value'] ?? null;
+            }
+        } catch (\Exception $e) {
+            $this->availableAiProviders = [];
+            $this->default_ai_provider_id = null;
+        }
+    }
+
+    /**
+     * Provider değiştiğinde modelleri yükle
+     */
+    public function updatedDefaultAiProviderId($providerId)
+    {
+        $this->availableModels = [];
+        $this->default_ai_model = null;
+        
+        if ($providerId) {
+            try {
+                $provider = \Modules\AI\App\Models\AIProvider::find($providerId);
+                if ($provider && $provider->available_models) {
+                    // available_models string array ise
+                    if (is_array($provider->available_models) && isset($provider->available_models[0]) && is_string($provider->available_models[0])) {
+                        $this->availableModels = collect($provider->available_models)->map(function($model, $index) {
+                            return [
+                                'value' => $model,
+                                'label' => $model,
+                                'cost' => ''
+                            ];
+                        })->toArray();
+                    } 
+                    // available_models object array ise (detaylı bilgi ile)
+                    else {
+                        $this->availableModels = collect($provider->available_models)->map(function($model, $key) {
+                            return [
+                                'value' => is_string($model) ? $model : $key,
+                                'label' => is_array($model) ? ($model['name'] ?? $key) : $model,
+                                'cost' => is_array($model) && isset($model['input_cost']) ? '$' . $model['input_cost'] . '/' . $model['output_cost'] : ''
+                            ];
+                        })->toArray();
+                    }
+                    
+                    // Varsayılan modeli ayarla
+                    $this->default_ai_model = $provider->default_model;
+                }
+            } catch (\Exception $e) {
+                $this->availableModels = [];
+                $this->default_ai_model = null;
+            }
+        }
     }
 
     public function getTenantsProperty()
@@ -115,6 +184,15 @@ class TenantComponent extends Component
             // Tema listesi ve mevcut tenant teması
             $this->themes = Theme::where('is_active', true)->pluck('title','theme_id')->toArray();
             $this->theme_id = $tenantData->theme_id ?? (array_key_first($this->themes) ?? 1);
+            // AI Provider listesi ve mevcut tenant AI provider'ı
+            $this->loadAiProviders();
+            $this->default_ai_provider_id = $tenantData->default_ai_provider_id;
+            $this->default_ai_model = $data['default_ai_model'] ?? null;
+            
+            // Provider seçiliyse modellerini yükle
+            if ($this->default_ai_provider_id) {
+                $this->updatedDefaultAiProviderId($this->default_ai_provider_id);
+            }
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
@@ -143,6 +221,7 @@ class TenantComponent extends Component
                     if (!empty($this->fullname)) $data['fullname'] = $this->fullname;
                     if (!empty($this->email)) $data['email'] = $this->email;
                     if (!empty($this->phone)) $data['phone'] = $this->phone;
+                    if (!empty($this->default_ai_model)) $data['default_ai_model'] = $this->default_ai_model;
                     
                     // Güncelleme zamanı ekleyelim
                     $data['updated_at'] = now()->toDateTimeString();
@@ -155,6 +234,7 @@ class TenantComponent extends Component
                             'is_active'  => $this->is_active ? 1 : 0,
                             'data'      => empty($data) ? null : json_encode($data),
                             'theme_id'     => $this->theme_id,
+                            'default_ai_provider_id' => $this->default_ai_provider_id,
                             'updated_at' => now()
                         ]);
                     
@@ -182,6 +262,7 @@ class TenantComponent extends Component
                 if (!empty($this->fullname)) $data['fullname'] = $this->fullname;
                 if (!empty($this->email)) $data['email'] = $this->email;
                 if (!empty($this->phone)) $data['phone'] = $this->phone;
+                if (!empty($this->default_ai_model)) $data['default_ai_model'] = $this->default_ai_model;
                 
                 // Zaman bilgisi
                 $data['created_at'] = now()->toDateTimeString();
@@ -194,6 +275,7 @@ class TenantComponent extends Component
                     'is_active'       => $this->is_active ? 1 : 0,
                     'data'            => empty($data) ? null : $data,
                     'theme_id'        => $this->theme_id,
+                    'default_ai_provider_id' => $this->default_ai_provider_id,
                 ]);
                 
                 // Tenant dizinlerini hazırla
@@ -432,6 +514,11 @@ class TenantComponent extends Component
         $this->phone = '';
         $this->is_active = true;
         $this->editingTenant = null;
+        $this->default_ai_model = null;
+        $this->availableModels = [];
+        
+        // AI Provider listesi yeniden yükle ve varsayılanı ayarla
+        $this->loadAiProviders();
     }
 
     /**

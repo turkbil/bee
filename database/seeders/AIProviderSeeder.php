@@ -15,10 +15,12 @@ class AIProviderSeeder extends Seeder
             return;
         }
 
-        // Mevcut provider'ları temizle
+        // Mevcut provider'ları temizle (foreign key safe)
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         AIProvider::truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         
-        // DeepSeek Provider
+        // DeepSeek Provider (Fallback)  
         AIProvider::create([
             'name' => 'deepseek',
             'display_name' => 'DeepSeek AI',
@@ -30,15 +32,16 @@ class AIProviderSeeder extends Seeder
                 'max_tokens' => 800,
                 'top_p' => 0.9
             ],
+            'api_key' => 'sk-035528bc068943e0918fbe37646077c1',
             'base_url' => 'https://api.deepseek.com',
             'is_active' => true,
             'is_default' => true,
             'priority' => 1,
             'average_response_time' => 24000.0,
-            'description' => 'DeepSeek AI - Mevcut sistem provider'
+            'description' => 'DeepSeek AI - Varsayılan provider, hızlı ve ekonomik'
         ]);
         
-        // OpenAI Provider
+        // OpenAI Provider (Fallback)
         AIProvider::create([
             'name' => 'openai',
             'display_name' => 'OpenAI',
@@ -50,13 +53,13 @@ class AIProviderSeeder extends Seeder
                 'max_tokens' => 800,
                 'top_p' => 1.0
             ],
-            'api_key' => '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',
+            'api_key' => 'sk-Rd0uAFfpiAcfdxillkFM1mV0NWxihzz2L4ARj6k2tjT3BlbkFJ6V0IbyeIq53gOxZa31u1xOq94W69xoacMELOL7CIEA',
             'base_url' => 'https://api.openai.com/v1',
             'is_active' => true,
             'is_default' => false,
             'priority' => 2,
             'average_response_time' => 1600.0,
-            'description' => 'OpenAI GPT Models - Hızlı ve güvenilir'
+            'description' => 'OpenAI GPT Models - Fallback provider, hızlı ve güvenilir'
         ]);
         
         // Claude Provider

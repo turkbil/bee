@@ -262,23 +262,151 @@ class AIResponseRepository
             ];
         }
 
-        $response = $this->aiService->askFeature($feature, '', [
-            'user_input' => $userInput,
-            'conditions' => $conditions,
-            'context_type' => 'helper_function',
-            'source' => 'ai_helper',
-            'helper_name' => $helperName
-        ]);
+        // Feature-specific handling with separate functions
+        return match($featureSlug) {
+            'hizli-seo-analizi' => $this->handleSEOAnalysisFeature($feature, $userInput, $helperName, $conditions),
+            'ai-asistan-sohbet' => $this->handleAIChatFeature($feature, $userInput, $helperName, $conditions),
+            default => $this->handleGenericFeature($feature, $userInput, $helperName, $conditions)
+        };
+    }
 
-        return [
-            'success' => true,
-            'response' => $response,
-            'feature' => $feature->toArray(),
-            'type' => 'helper_function',
-            'helper_name' => $helperName,
-            'token_used' => true,
-            'formatted_response' => $this->formatHelperResponse($response, $helperName)
-        ];
+    /**
+     * =======================================================================
+     * SEO ANALİZ FEATURE - AYRI FONKSİYON
+     * =======================================================================
+     */
+    private function handleSEOAnalysisFeature($feature, array $userInput, string $helperName, array $conditions): array
+    {
+        try {
+            // SEO analizi için özel user message
+            $userMessage = $this->buildSEOAnalysisMessage($userInput);
+            
+            Log::info("SEO Analysis Feature - Processing", [
+                'feature_slug' => $feature->slug,
+                'user_input_keys' => array_keys($userInput),
+                'helper_name' => $helperName
+            ]);
+            
+            $response = $this->aiService->askFeature($feature, $userMessage, [
+                'user_input' => $userInput,
+                'conditions' => $conditions,
+                'context_type' => 'seo_analysis',
+                'source' => 'seo_helper',
+                'helper_name' => $helperName,
+                'feature_type' => 'seo_analysis'
+            ]);
+
+            return [
+                'success' => true,
+                'response' => $response,
+                'feature' => $feature->toArray(),
+                'type' => 'seo_analysis',
+                'helper_name' => $helperName,
+                'token_used' => true,
+                'formatted_response' => $this->formatSEOAnalysisResponse($response, $helperName)
+            ];
+            
+        } catch (\Exception $e) {
+            Log::error("SEO Analysis Feature Error", [
+                'error' => $e->getMessage(),
+                'feature_slug' => $feature->slug
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => 'SEO analiz hatası: ' . $e->getMessage(),
+                'type' => 'seo_analysis'
+            ];
+        }
+    }
+
+    /**
+     * =======================================================================
+     * AI CHAT FEATURE - AYRI FONKSİYON
+     * =======================================================================
+     */
+    private function handleAIChatFeature($feature, array $userInput, string $helperName, array $conditions): array
+    {
+        try {
+            // AI chat için özel user message
+            $userMessage = $this->buildAIChatMessage($userInput);
+            
+            Log::info("AI Chat Feature - Processing", [
+                'feature_slug' => $feature->slug,
+                'user_input_keys' => array_keys($userInput),
+                'helper_name' => $helperName
+            ]);
+            
+            $response = $this->aiService->askFeature($feature, $userMessage, [
+                'user_input' => $userInput,
+                'conditions' => $conditions,
+                'context_type' => 'ai_chat_test',
+                'source' => 'chat_helper',
+                'helper_name' => $helperName,
+                'feature_type' => 'ai_chat'
+            ]);
+
+            return [
+                'success' => true,
+                'response' => $response,
+                'feature' => $feature->toArray(),
+                'type' => 'ai_chat_test',
+                'helper_name' => $helperName,
+                'token_used' => true,
+                'formatted_response' => $this->formatAIChatResponse($response, $helperName)
+            ];
+            
+        } catch (\Exception $e) {
+            Log::error("AI Chat Feature Error", [
+                'error' => $e->getMessage(),
+                'feature_slug' => $feature->slug
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => 'AI chat test hatası: ' . $e->getMessage(),
+                'type' => 'ai_chat_test'
+            ];
+        }
+    }
+
+    /**
+     * =======================================================================
+     * GENERİK FEATURE - DİĞER TÜM FEATURE'LAR
+     * =======================================================================
+     */
+    private function handleGenericFeature($feature, array $userInput, string $helperName, array $conditions): array
+    {
+        try {
+            // Genel feature'lar için user message
+            $userMessage = $this->buildGenericFeatureMessage($userInput, $feature);
+            
+            $response = $this->aiService->askFeature($feature, $userMessage, [
+                'user_input' => $userInput,
+                'conditions' => $conditions,
+                'context_type' => 'helper_function',
+                'source' => 'ai_helper',
+                'helper_name' => $helperName,
+                'feature_type' => 'generic'
+            ]);
+
+            return [
+                'success' => true,
+                'response' => $response,
+                'feature' => $feature->toArray(),
+                'type' => 'helper_function',
+                'helper_name' => $helperName,
+                'token_used' => true,
+                'formatted_response' => $this->formatHelperResponse($response, $helperName)
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Feature işlem hatası: ' . $e->getMessage(),
+                'type' => 'helper_function'
+            ];
+        }
     }
 
     /**
@@ -377,8 +505,13 @@ class AIResponseRepository
         ];
     }
 
-    private function formatProwessResponse(string $response, AIFeature $feature): array
+    private function formatProwessResponse(?string $response, AIFeature $feature): array
     {
+        // Null response durumunu handle et
+        if ($response === null) {
+            $response = "⚠️ AI yanıt alamadı. Lütfen tekrar deneyin veya farklı bir provider kullanın.";
+        }
+        
         return [
             'formatted_text' => "⭐ **{$feature->name} Prowess Showcase**\n\n" . $response,
             'word_buffer_config' => [
@@ -414,6 +547,48 @@ class AIResponseRepository
                 'delay_between_words' => 170,
                 'animation_duration' => 4300,
                 'container_selector' => '.helper-response-container',
+                'helper_name' => $helperName
+            ]
+        ];
+    }
+
+    /**
+     * =======================================================================
+     * FEATURE-SPECIFIC RESPONSE FORMATTERS - AYRI FONKSİYONLAR
+     * =======================================================================
+     */
+    
+    /**
+     * SEO Analiz response formatter
+     */
+    private function formatSEOAnalysisResponse(string $response, string $helperName): array
+    {
+        return [
+            'formatted_text' => "🔍 **SEO Analiz Sonucu**\n\n" . $response,
+            'word_buffer_config' => [
+                'enabled' => true,
+                'delay_between_words' => 180,
+                'animation_duration' => 5000,
+                'container_selector' => '.seo-analysis-response-container',
+                'feature_type' => 'seo_analysis',
+                'helper_name' => $helperName
+            ]
+        ];
+    }
+    
+    /**
+     * AI Chat Test response formatter
+     */
+    private function formatAIChatResponse(string $response, string $helperName): array
+    {
+        return [
+            'formatted_text' => "🤖 **AI Test Sonucu**\n\n" . $response,
+            'word_buffer_config' => [
+                'enabled' => true,
+                'delay_between_words' => 150,
+                'animation_duration' => 3500,
+                'container_selector' => '.ai-chat-test-response-container',
+                'feature_type' => 'ai_chat_test',
                 'helper_name' => $helperName
             ]
         ];
@@ -528,5 +703,101 @@ class AIResponseRepository
             // Hata durumunda fallback
             return 'essential';
         }
+    }
+
+    /**
+     * =======================================================================
+     * FEATURE-SPECIFIC MESSAGE BUILDERS - AYRI FONKSİYONLAR
+     * =======================================================================
+     */
+    
+    /**
+     * SEO Analiz için özel message builder
+     */
+    private function buildSEOAnalysisMessage(array $userInput): string
+    {
+        $title = $userInput['title'] ?? '';
+        $content = $userInput['content'] ?? '';
+        $metaDesc = $userInput['meta_description'] ?? '';
+        $language = $userInput['language'] ?? 'tr';
+        
+        return "🔍 SEO ANALİZ İSTEĞİ
+
+Aşağıdaki web sayfası içeriğini profesyonel SEO kriterlerine göre analiz et:
+
+📝 SAYFA BAŞLIĞI: {$title}
+
+📄 İÇERİK METNİ:
+{$content}
+
+📋 META AÇIKLAMA: {$metaDesc}
+
+🌐 DİL: {$language}
+
+📊 ANALIZ TALEP EDİLEN KONULAR:
+- SEO puanı (0-100)
+- Kritik sorunlar ve eksiklikler
+- Anahtar kelime optimizasyonu önerileri
+- Teknik SEO iyileştirmeleri
+- İçerik kalitesi değerlendirmesi
+- Kullanıcı deneyimi önerileri
+
+Lütfen detaylı ve uygulanabilir SEO analizi yap.";
+    }
+    
+    /**
+     * AI Chat Test için özel message builder
+     */
+    private function buildAIChatMessage(array $userInput): string
+    {
+        $testMessage = $userInput['test_message'] ?? 'AI bağlantı testi';
+        $pageId = $userInput['page_id'] ?? '';
+        $language = $userInput['language'] ?? 'tr';
+        
+        return "🤖 AI BAĞLANTI TEST İSTEĞİ
+
+Bu bir AI asistan bağlantı testidir. Lütfen yanıt vererek sistemin çalıştığını onayla.
+
+💬 TEST MESAJI: {$testMessage}
+
+📄 SAYFA ID: {$pageId}
+
+🌐 DİL: {$language}
+
+✅ BEKLENEN YANIT:
+- Kısa ve net bir onay mesajı
+- Sistemin çalıştığına dair bilgi
+- Test başarısı konfirmasyonu
+
+Lütfen AI sisteminin aktif olduğunu doğrula.";
+    }
+    
+    /**
+     * Genel feature'lar için message builder
+     */
+    private function buildGenericFeatureMessage(array $userInput, $feature): string
+    {
+        $message = "🔧 {$feature->name} İSTEĞİ\n\nAşağıdaki verilerle işlem yap:\n\n";
+        
+        foreach ($userInput as $key => $value) {
+            if (is_array($value)) {
+                $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+            }
+            $message .= "• " . strtoupper($key) . ": " . $value . "\n";
+        }
+        
+        return $message;
+    }
+
+    /**
+     * Legacy method - backward compatibility için
+     */
+    private function buildUserMessageFromInput(array $userInput, $feature): string
+    {
+        return match($feature->slug) {
+            'hizli-seo-analizi' => $this->buildSEOAnalysisMessage($userInput),
+            'ai-asistan-sohbet' => $this->buildAIChatMessage($userInput),
+            default => $this->buildGenericFeatureMessage($userInput, $feature)
+        };
     }
 }

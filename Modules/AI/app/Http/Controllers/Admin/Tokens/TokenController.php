@@ -21,7 +21,7 @@ class TokenController extends Controller
     }
 
     /**
-     * Purchase a token package
+     * Purchase a kredi package
      */
     public function purchasePackage(Request $request, AITokenPackage $package)
     {
@@ -60,9 +60,10 @@ class TokenController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Token paketi başarıyla satın alındı! ' . number_format($package->token_amount) . ' token hesabınıza eklendi.',
+                'message' => 'Kredi paketi başarıyla satın alındı! ' . number_format($package->token_amount) . ' kredi hesabınıza eklendi.',
                 'purchase_id' => $purchase->id,
-                'new_balance' => $tenant->fresh()->ai_tokens_balance
+                'credit_amount' => $package->token_amount,
+                'remaining_credits' => $tenant->fresh()->ai_tokens_balance
             ]);
 
         } catch (\Exception $e) {

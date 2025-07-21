@@ -3,7 +3,6 @@
 namespace Modules\AI\App\Http\Livewire\Admin\Settings;
 
 use Livewire\Component;
-use Modules\AI\App\Models\Setting;
 use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Services\DeepSeekService;
 use Illuminate\Support\Facades\Validator;
@@ -71,17 +70,14 @@ class SettingsPanel extends Component
     
     public function loadSettings()
     {
-        $settings = Setting::first();
-        
-        if ($settings) {
-            $this->settings = [
-                'api_key' => $settings->api_key,
-                'model' => $settings->model,
-                'max_tokens' => $settings->max_tokens,
-                'temperature' => $settings->temperature,
-                'enabled' => $settings->enabled,
-            ];
-        }
+        // Config-based ayarlar
+        $this->settings = [
+            'api_key' => config('ai.providers.deepseek.api_key', ''),
+            'model' => config('ai.providers.deepseek.model', 'deepseek-chat'),
+            'max_tokens' => config('ai.providers.deepseek.max_tokens', 4096),
+            'temperature' => config('ai.providers.deepseek.temperature', 0.7),
+            'enabled' => config('ai.enabled', true),
+        ];
     }
     
     public function loadPrompts()
@@ -183,13 +179,23 @@ class SettingsPanel extends Component
         try {
             // Eğer API anahtarı boşsa, mevcut değeri koru
             if (empty($this->settings['api_key'])) {
-                $currentSettings = Setting::first();
+                // Config-based ayarlar
+                $currentSettings = (object) [
+                    'api_key' => config('ai.providers.deepseek.api_key', ''),
+                    'model' => config('ai.providers.deepseek.model', 'deepseek-chat'),
+                    'enabled' => config('ai.enabled', true),
+                ];
                 if ($currentSettings && $currentSettings->api_key) {
                     $this->settings['api_key'] = $currentSettings->api_key;
                 }
             }
             
-            $settings = Setting::first();
+            // Config-based ayarlar
+            $settings = (object) [
+                'api_key' => config('ai.providers.deepseek.api_key', ''),
+                'model' => config('ai.providers.deepseek.model', 'deepseek-chat'),
+                'enabled' => config('ai.enabled', true),
+            ];
             
             if (!$settings) {
                 $settings = new Setting();

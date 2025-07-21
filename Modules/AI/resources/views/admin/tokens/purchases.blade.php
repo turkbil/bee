@@ -2,8 +2,8 @@
 
 @include('ai::helper')
 
-@section('pretitle', 'AI Token Yönetimi')
-@section('title', 'Token Satın Alımları')
+@section('pretitle', 'AI Kredi Yönetimi')
+@section('title', 'Kredi Satın Alımları')
 
 @section('content')
 <!-- Tenant Filter -->
@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h5 class="card-title mb-0">Token Satın Alımları</h5>
+                        <h5 class="card-title mb-0">Kredi Satın Alımları</h5>
                         @if($selectedTenant)
                             <small class="text-muted">
                                 {{ $tenants->where('id', $selectedTenant)->first()->title ?? 'Tenant #' . $selectedTenant }} verileri gösteriliyor
@@ -35,7 +35,7 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="dropdown-item {{ !$selectedTenant ? 'active' : '' }}" 
-                                       href="{{ route('admin.ai.tokens.purchases') }}">
+                                       href="{{ route('admin.ai.credits.purchases') }}">
                                         <i class="fas fa-globe me-2"></i>Tüm Kiracılar
                                     </a>
                                 </li>
@@ -43,7 +43,7 @@
                                 @foreach($tenants as $tenant)
                                     <li>
                                         <a class="dropdown-item {{ $selectedTenant == $tenant->id ? 'active' : '' }}" 
-                                           href="{{ route('admin.ai.tokens.purchases', ['tenant_id' => $tenant->id]) }}">
+                                           href="{{ route('admin.ai.credits.purchases', ['tenant_id' => $tenant->id]) }}">
                                             <i class="fas fa-user me-2"></i>{{ $tenant->title ?: 'Tenant #' . $tenant->id }}
                                         </a>
                                     </li>
@@ -61,7 +61,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Token Satın Alım Kayıtları</h3>
+                <h3 class="card-title">Kredi Satın Alım Kayıtları</h3>
             </div>
             <div class="card-body">
                 @if($purchases->count() > 0)
@@ -72,7 +72,7 @@
                                 <th>ID</th>
                                 <th>Kiracı</th>
                                 <th>Paket</th>
-                                <th>Token Miktarı</th>
+                                <th>Kredi Miktarı</th>
                                 <th>Ödenen Fiyat</th>
                                 <th>Durum</th>
                                 <th>Tarih</th>
@@ -98,7 +98,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-outline">{{ \App\Helpers\TokenHelper::format($purchase->token_amount) }} Token</span>
+                                    <span class="badge badge-outline">{{ number_format($purchase->token_amount, 0) }} Kredi</span>
                                 </td>
                                 <td>{{ number_format($purchase->price_paid, 2) }} {{ $purchase->currency }}</td>
                                 <td>
@@ -133,7 +133,7 @@
                     </div>
                     <p class="empty-title">Henüz satın alım yok</p>
                     <p class="empty-subtitle text-muted">
-                        Henüz hiçbir kiracı tarafından token paketi satın alınmamış.
+                        Henüz hiçbir kiracı tarafından kredi paketi satın alınmamış.
                     </p>
                 </div>
                 @endif

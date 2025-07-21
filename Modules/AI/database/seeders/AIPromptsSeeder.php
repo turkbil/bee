@@ -4,7 +4,6 @@ namespace Modules\AI\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\AI\App\Models\Prompt;
-use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
@@ -808,21 +807,12 @@ APPLICATION TYPES:
     }
 
     /**
-     * Varsayılan AI ayarlarını oluştur
+     * AI ayarları artık config-based
      */
     private function createSettings(): void
     {
-        // Önce tüm ayarları temizleme
-        DB::table('ai_settings')->delete();
-
-        // Ana tenant için API ayarlarını oluştur
-        Setting::create([
-            'api_key' => 'sk-cee745529b534f048415cd999cedce84',
-            'model' => 'deepseek-chat',
-            'max_tokens' => 4096,
-            'temperature' => 0.7,
-            'enabled' => true,
-        ]);
+        // AI ayarları artık config/ai.php dosyasında
+        $this->command->info('AI ayarları config/ai.php dosyasından yönetiliyor.');
     }
 
     /**

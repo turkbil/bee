@@ -2,7 +2,7 @@
 
 @include('ai::helper')
 
-@section('pretitle', 'AI Token Yönetimi')
+@section('pretitle', 'AI Kredi Yönetimi')
 @section('title', $tenant->title ?: 'Varsayılan Kiracı')
 
 @section('content')
@@ -10,9 +10,9 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Kiracı Token Detayları</h3>
+                <h3 class="card-title">Kiracı Kredi Detayları</h3>
                 <div class="card-actions">
-                    <a href="{{ route('admin.ai.tokens.index') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('admin.ai.credits.index') }}" class="btn btn-outline-primary">
                         <i class="fas fa-arrow-left me-2"></i>Geri Dön
                     </a>
                 </div>
@@ -47,7 +47,7 @@
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h4>Token İstatistikleri</h4>
+                        <h4>Kredi İstatistikleri</h4>
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <div class="card bg-primary text-white">
@@ -135,7 +135,7 @@
                         <h4>Hızlı İşlemler</h4>
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-primary" onclick="openTokenModal()">
-                                <i class="fas fa-coins me-2"></i>Token Ekle/Çıkar
+                                <i class="fas fa-coins me-2"></i>Kredi Ekle/Çıkar
                             </button>
                             <button type="button" class="btn btn-{{ $tenant->ai_enabled ? 'danger' : 'success' }}" 
                                     onclick="toggleAI()">
@@ -150,12 +150,12 @@
     </div>
 </div>
 
-<!-- Token Yönetimi Modal -->
+<!-- Kredi Yönetimi Modal -->
 <div class="modal modal-blur fade" id="tokenModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Token Yönetimi</h5>
+                <h5 class="modal-title">Kredi Yönetimi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
             </div>
             <form id="tokenForm">
@@ -167,21 +167,21 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Gerçek Bakiye</label>
-                        <div class="form-control-plaintext">{{ ai_format_token_count($realTokenBalance) }} token</div>
+                        <div class="form-control-plaintext">{{ number_format($realTokenBalance, 0) }} kredi</div>
                         <small class="text-muted">Satın alınan ({{ ai_format_token_count($totalPurchasedTokens) }}) - Kullanılan ({{ ai_format_token_count($totalUsedTokens) }}) = {{ ai_format_token_count($realTokenBalance) }}</small>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="tokenAmount" class="form-label">Token Miktarı</label>
+                        <label for="tokenAmount" class="form-label">Kredi Miktarı</label>
                         <input type="number" class="form-control" id="tokenAmount" name="tokenAmount" 
                                placeholder="Eklemek için pozitif, çıkarmak için negatif">
-                        <small class="form-hint">Pozitif sayı token ekler, negatif sayı token çıkarır.</small>
+                        <small class="form-hint">Pozitif sayı kredi ekler, negatif sayı kredi çıkarır.</small>
                     </div>
                     
                     <div class="mb-3">
                         <label for="adjustmentReason" class="form-label">Açıklama</label>
                         <textarea class="form-control" id="adjustmentReason" name="adjustmentReason" 
-                                  rows="3" placeholder="Token düzenleme sebebini açıklayın..."></textarea>
+                                  rows="3" placeholder="Kredi düzenleme sebebini açıklayın..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -205,7 +205,7 @@ function openTokenModal() {
 
 function toggleAI() {
     if (confirm('AI durumunu değiştirmek istediğinizden emin misiniz?')) {
-        fetch('{{ route("admin.ai.tokens.toggle-ai", $tenant) }}', {
+        fetch('{{ route("admin.ai.credits.toggle-ai", $tenant) }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -240,7 +240,7 @@ document.getElementById('tokenForm').addEventListener('submit', function(e) {
     
     const formData = new FormData(this);
     
-    fetch('{{ route("admin.ai.tokens.adjust", $tenant) }}', {
+    fetch('{{ route("admin.ai.credits.adjust", $tenant) }}', {
         method: 'POST',
         body: formData,
         headers: {

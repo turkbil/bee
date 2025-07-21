@@ -31,7 +31,8 @@ $(document).ready(function() {
         
         restoreActiveTab: function() {
             const activeTab = localStorage.getItem(this.storageKey);
-            if (activeTab) {
+            // SEO tab'ı değilse restore et, SEO tab'ıysa Basic Info'yu aç
+            if (activeTab && activeTab !== '#tabs-2') {
                 $('.nav-tabs .nav-link').removeClass('active');
                 $('.tab-content .tab-pane').removeClass('active show');
                 
@@ -40,6 +41,16 @@ $(document).ready(function() {
                     targetTab.addClass('active');
                     $(activeTab).addClass('active show');
                 }
+            } else {
+                // Default olarak Basic Info tab'ını aç
+                $('.nav-tabs .nav-link').removeClass('active');
+                $('.tab-content .tab-pane').removeClass('active show');
+                
+                $('[href="#tabs-1"]').addClass('active');
+                $('#tabs-1').addClass('active show');
+                
+                // localStorage'ı da Basic Info ile güncelle
+                localStorage.setItem(this.storageKey, '#tabs-1');
             }
         },
         

@@ -2,8 +2,8 @@
 
 @include('ai::helper')
 
-@section('pretitle', 'AI Token Yönetimi')
-@section('title', 'Token Kullanım İstatistikleri')
+@section('pretitle', 'AI Kredi Yönetimi')
+@section('title', 'Kredi Kullanım İstatistikleri')
 
 @section('content')
 <!-- Tenant Filter -->
@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h5 class="card-title mb-0">Token Kullanım İstatistikleri</h5>
+                        <h5 class="card-title mb-0">Kredi Kullanım İstatistikleri</h5>
                         @if($selectedTenant)
                             <small class="text-muted">
                                 {{ $tenants->where('id', $selectedTenant)->first()->title ?? 'Tenant #' . $selectedTenant }} verileri gösteriliyor
@@ -35,7 +35,7 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="dropdown-item {{ !$selectedTenant ? 'active' : '' }}" 
-                                       href="{{ route('admin.ai.tokens.usage-stats') }}">
+                                       href="{{ route('admin.ai.credits.usage-stats') }}">
                                         <i class="fas fa-globe me-2"></i>Tüm Kiracılar
                                     </a>
                                 </li>
@@ -43,7 +43,7 @@
                                 @foreach($tenants as $tenant)
                                     <li>
                                         <a class="dropdown-item {{ $selectedTenant == $tenant->id ? 'active' : '' }}" 
-                                           href="{{ route('admin.ai.tokens.usage-stats', ['tenant_id' => $tenant->id]) }}">
+                                           href="{{ route('admin.ai.credits.usage-stats', ['tenant_id' => $tenant->id]) }}">
                                             <i class="fas fa-user me-2"></i>{{ $tenant->title ?: 'Tenant #' . $tenant->id }}
                                         </a>
                                     </li>
@@ -65,9 +65,9 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Toplam Kullanım</div>
                 </div>
-                <div class="h1 mb-3">{{ \App\Helpers\TokenHelper::format($stats['total_usage']) }}</div>
+                <div class="h1 mb-3">{{ number_format($stats['total_usage'], 0) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -79,9 +79,9 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Bugün</div>
                 </div>
-                <div class="h1 mb-3">{{ \App\Helpers\TokenHelper::format($stats['today_usage']) }}</div>
+                <div class="h1 mb-3">{{ number_format($stats['today_usage'], 0) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -93,9 +93,9 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Bu Hafta</div>
                 </div>
-                <div class="h1 mb-3">{{ \App\Helpers\TokenHelper::format($stats['week_usage']) }}</div>
+                <div class="h1 mb-3">{{ number_format($stats['week_usage'], 0) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -107,9 +107,9 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Bu Ay</div>
                 </div>
-                <div class="h1 mb-3">{{ \App\Helpers\TokenHelper::format($stats['month_usage']) }}</div>
+                <div class="h1 mb-3">{{ number_format($stats['month_usage'], 0) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -167,7 +167,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <span class="text-muted small">{{ \App\Helpers\TokenHelper::format($modelData['total_tokens']) }}</span>
+                                    <span class="text-muted small">{{ number_format($modelData['total_tokens'], 0) }}</span>
                                 </div>
                             </div>
                             @endforeach
@@ -202,7 +202,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <span class="text-muted">{{ \App\Helpers\TokenHelper::format($usage) }}</span>
+                            <span class="text-muted">{{ number_format($usage, 0) }}</span>
                         </div>
                     </div>
                     @endforeach
@@ -242,7 +242,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-outline">{{ \App\Helpers\TokenHelper::format($usage->tokens_used) }}</span>
+                                    <span class="badge badge-outline">{{ number_format($usage->tokens_used, 0) }}</span>
                                 </td>
                                 <td>{{ $usage->model }}</td>
                                 <td>{{ $usage->used_at ? $usage->used_at->format('d.m H:i') : '-' }}</td>
@@ -301,7 +301,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-outline">{{ \App\Helpers\TokenHelper::format($usage->tokens_used) }}</span>
+                                    <span class="badge badge-outline">{{ number_format($usage->tokens_used, 0) }}</span>
                                 </td>
                                 <td>{{ $usage->model }}</td>
                                 <td>{{ ucfirst($usage->purpose) }}</td>
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: Object.keys(dailyUsageData),
             datasets: [{
-                label: 'Günlük Token Kullanımı',
+                label: 'Günlük Kredi Kullanımı',
                 data: Object.values(dailyUsageData),
                 borderColor: 'rgb(32, 107, 196)',
                 backgroundColor: 'rgba(32, 107, 196, 0.1)',

@@ -2,8 +2,8 @@
 
 @include('ai::helper')
 
-@section('pretitle', 'AI Token Yönetimi')
-@section('title', 'Token Yönetimi')
+@section('pretitle', 'AI Kredi Yönetimi')
+@section('title', 'Kredi Yönetimi')
 
 @section('content')
 <!-- System Overview Cards -->
@@ -31,14 +31,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <div class="subheader">Toplam Dağıtılan Token</div>
+                    <div class="subheader">Toplam Dağıtılan Kredi</div>
                 </div>
-                <div class="h1 mb-3">{{ \App\Helpers\TokenHelper::format($systemStats['total_tokens_distributed']) }}</div>
+                <div class="h1 mb-3">${{ number_format($systemStats['total_credits_distributed'] ?? 0, 2) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                     <div class="ms-auto">
                         <span class="badge badge-outline text-blue">
-                            {{ \App\Helpers\TokenHelper::format($systemStats['total_tokens_used']) }} Kullanıldı
+                            ${{ number_format($systemStats['total_credits_used'] ?? 0, 2) }} Kullanıldı
                         </span>
                     </div>
                 </div>
@@ -50,11 +50,11 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <div class="subheader">Aktif Token Bakiyesi</div>
+                    <div class="subheader">Aktif Kredi Bakiyesi</div>
                 </div>
-                <div class="h1 mb-3">{{ \App\Helpers\TokenHelper::format($systemStats['total_tokens_distributed'] - $systemStats['total_tokens_used']) }}</div>
+                <div class="h1 mb-3">{{ number_format($systemStats['total_tokens_distributed'] - $systemStats['total_tokens_used'], 0) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Kullanılabilir Token</div>
+                    <div class="text-muted">Kullanılabilir Kredi</div>
                 </div>
             </div>
         </div>
@@ -67,10 +67,10 @@
                     <div class="subheader">Hızlı İşlemler</div>
                 </div>
                 <div class="d-grid gap-2">
-                    <a href="{{ route('admin.ai.tokens.statistics.overview') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('admin.ai.credits.statistics.overview') }}" class="btn btn-sm btn-outline-primary">
                         <i class="fas fa-chart-line me-2"></i>İstatistikler
                     </a>
-                    <a href="{{ route('admin.ai.tokens.packages') }}" class="btn btn-sm btn-outline-success">
+                    <a href="{{ route('admin.ai.credits.packages') }}" class="btn btn-sm btn-outline-success">
                         <i class="fas fa-box me-2"></i>Paketler
                     </a>
                 </div>
@@ -89,27 +89,27 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <a href="{{ route('admin.ai.tokens.purchases') }}" class="btn btn-outline-primary w-100 mb-2">
+                        <a href="{{ route('admin.ai.credits.purchases') }}" class="btn btn-outline-primary w-100 mb-2">
                             <i class="fas fa-shopping-cart me-2"></i>
                             Satın Alımları Görüntüle
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('admin.ai.tokens.usage-stats') }}" class="btn btn-outline-info w-100 mb-2">
+                        <a href="{{ route('admin.ai.credits.usage-stats') }}" class="btn btn-outline-info w-100 mb-2">
                             <i class="fas fa-chart-bar me-2"></i>
                             Kullanım İstatistikleri
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('admin.ai.tokens.statistics.overview') }}" class="btn btn-outline-success w-100 mb-2">
+                        <a href="{{ route('admin.ai.credits.statistics.overview') }}" class="btn btn-outline-success w-100 mb-2">
                             <i class="fas fa-chart-line me-2"></i>
                             Genel İstatistikler
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('admin.ai.tokens.packages') }}" class="btn btn-outline-warning w-100 mb-2">
+                        <a href="{{ route('admin.ai.credits.packages') }}" class="btn btn-outline-warning w-100 mb-2">
                             <i class="fas fa-box me-2"></i>
-                            Token Paketleri
+                            Kredi Paketleri
                         </a>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Kiracı Token Yönetimi</h3>
+                <h3 class="card-title">Kiracı Kredi Yönetimi</h3>
             </div>
             <div class="card-body">
                 @if($tenants->count() > 0)
@@ -133,7 +133,7 @@
                             <tr>
                                 <th>Kiracı</th>
                                 <th>AI Durumu</th>
-                                <th>Token Bakiyesi</th>
+                                <th>Kredi Bakiyesi</th>
                                 <th>Aylık Kullanım</th>
                                 <th>Aylık Limit</th>
                                 <th>Son Kullanım</th>
@@ -158,18 +158,18 @@
                                 </td>
                                 <td>
                                     <span class="badge badge-outline text-blue">
-                                        {{ \App\Helpers\TokenHelper::format($tenant->ai_tokens_balance) }}
+                                        {{ number_format($tenant->ai_tokens_balance, 0) }}
                                     </span>
                                 </td>
                                 <td>
                                     <span class="badge badge-outline text-orange">
-                                        {{ \App\Helpers\TokenHelper::format($tenant->ai_tokens_used_this_month) }}
+                                        {{ number_format($tenant->ai_tokens_used_this_month, 0) }}
                                     </span>
                                 </td>
                                 <td>
                                     @if($tenant->ai_monthly_token_limit > 0)
                                         <span class="badge badge-outline text-purple">
-                                            {{ \App\Helpers\TokenHelper::format($tenant->ai_monthly_token_limit) }}
+                                            {{ number_format($tenant->ai_monthly_token_limit, 0) }}
                                         </span>
                                     @else
                                         <span class="text-muted">Sınırsız</span>
@@ -184,12 +184,12 @@
                                 </td>
                                 <td>
                                     <div class="btn-list">
-                                        <a href="{{ route('admin.ai.tokens.show', $tenant->id) }}" 
+                                        <a href="{{ route('admin.ai.credits.show', $tenant->id) }}" 
                                            class="btn btn-sm btn-outline-primary" 
                                            title="Detayları Görüntüle">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('admin.ai.tokens.tenant-statistics', $tenant->id) }}" 
+                                        <a href="{{ route('admin.ai.credits.tenant-statistics', $tenant->id) }}" 
                                            class="btn btn-sm btn-outline-info" 
                                            title="İstatistikler">
                                             <i class="fas fa-chart-line"></i>
@@ -237,7 +237,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Token Ayarlama</h5>
+                <h5 class="modal-title">Kredi Ayarlama</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -245,18 +245,18 @@
                     <input type="hidden" id="tenantId" name="tenantId">
                     
                     <div class="mb-3">
-                        <label for="tokenAmount" class="form-label">Token Miktarı</label>
+                        <label for="tokenAmount" class="form-label">Kredi Miktarı</label>
                         <input type="number" class="form-control" id="tokenAmount" name="tokenAmount" 
                                placeholder="Pozitif değer ekler, negatif değer çıkarır" required>
                         <small class="form-text text-muted">
-                            Pozitif değer token ekler, negatif değer token çıkarır
+                            Pozitif değer kredi ekler, negatif değer kredi çıkarır
                         </small>
                     </div>
                     
                     <div class="mb-3">
                         <label for="adjustmentReason" class="form-label">Ayarlama Nedeni</label>
                         <textarea class="form-control" id="adjustmentReason" name="adjustmentReason" 
-                                  rows="3" placeholder="Token ayarlama nedenini açıklayın" required></textarea>
+                                  rows="3" placeholder="Kredi ayarlama nedenini açıklayın" required></textarea>
                     </div>
                 </form>
             </div>
@@ -322,7 +322,7 @@ function submitTokenAdjustment() {
     const adjustmentReason = formData.get('adjustmentReason');
     
     if (!tokenAmount || tokenAmount == 0) {
-        alert('Token miktarı sıfırdan farklı olmalıdır');
+        alert('Kredi miktarı sıfırdan farklı olmalıdır');
         return;
     }
     

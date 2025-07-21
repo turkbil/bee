@@ -144,7 +144,10 @@
       "Bash(npm audit:*)",
       "mcp__claude-code-server__Task",
       "Bash(do if ! grep -q \"@include(''ai::helper'')\" \"$file\")",
-      "Bash(then echo \"EKSIK: $file\")"
+      "Bash(then echo \"EKSIK: $file\")",
+      "Bash(code:*)",
+      "Bash(brew services restart:*)",
+      "Bash(brew services:*)"
     ],
     "deny": []
   },

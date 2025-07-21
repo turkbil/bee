@@ -159,4 +159,33 @@ class Page extends BaseModel
         ];
     }
     
+    /**
+     * Get or create SEO setting for this page
+     */
+    public function getOrCreateSeoSetting()
+    {
+        if (!$this->seoSetting) {
+            $this->seoSetting()->create([
+                'titles' => [],
+                'descriptions' => [],
+                'keywords' => [],
+                'focus_keywords' => [],
+                'og_title' => [],
+                'og_description' => [],
+                'robots_meta' => [
+                    'index' => true,
+                    'follow' => true,
+                    'archive' => true
+                ],
+                'status' => 'active',
+                'default_language' => 'tr'
+            ]);
+            
+            // Refresh relationship
+            $this->load('seoSetting');
+        }
+        
+        return $this->seoSetting;
+    }
+    
 }

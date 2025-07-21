@@ -96,7 +96,7 @@
                                     </th>
                                     <th style="cursor: pointer" wire:click="sortBy('token_amount')">
                                         <div class="d-flex align-items-center">
-                                            Token Miktarı
+                                            Kredi Miktarı
                                             @if($sortField === 'token_amount')
                                                 <i class="fas fa-chevron-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1 text-muted"></i>
                                             @endif
@@ -153,8 +153,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="fw-bold">{{ ai_format_token_count($package->token_amount) }}</div>
-                                        <div class="text-muted small">token</div>
+                                        <div class="fw-bold">{{ number_format($package->token_amount, 0) }}</div>
+                                        <div class="text-muted small">kredi</div>
                                     </td>
                                     <td>
                                         <div class="fw-bold">{{ number_format($package->price, 2) }}</div>
@@ -242,7 +242,7 @@
                                             @enderror
                                         </div>
 
-                                        {{-- Token Miktarı ve Fiyat --}}
+                                        {{-- Kredi Miktarı ve Fiyat --}}
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-floating mb-3">
@@ -251,7 +251,7 @@
                                                            class="form-control @error('token_amount') is-invalid @enderror" 
                                                            min="1"
                                                            placeholder="Token miktarı">
-                                                    <label>Token Miktarı *</label>
+                                                    <label>Kredi Miktarı *</label>
                                                     @error('token_amount')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -399,7 +399,7 @@
                                                     <div class="text-h1 text-primary">
                                                         {{ $token_amount ? ai_format_token_count($token_amount) : '0' }}
                                                     </div>
-                                                    <div class="text-muted mb-2">Token</div>
+                                                    <div class="text-muted mb-2">Kredi</div>
                                                     @if($price)
                                                         <div class="text-h2">
                                                             {{ number_format($price, 2) }} {{ $currency }}

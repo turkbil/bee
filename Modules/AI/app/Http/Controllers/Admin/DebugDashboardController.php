@@ -437,14 +437,37 @@ class DebugDashboardController extends Controller
             $query->where('feature_slug', $feature);
         }
 
+        // YENİ KREDİ SİSTEMİ - Gerçek token/credit kullanımını al
+        $creditQuery = DB::table('ai_credit_usage')
+            ->where('used_at', '>=', $startDate);
+            
+        if ($tenantId) {
+            $creditQuery->where('tenant_id', $tenantId);
+        }
+        
+        if ($feature) {
+            $creditQuery->where('feature_slug', $feature);
+        }
+
         // Provider/model istatistikleri ekle
         $providerStats = $this->getProviderModelStats($tenantId, $dateRange);
+
+        // Gerçek token kullanımını hesapla (input_tokens + output_tokens)
+        $totalInputTokens = $creditQuery->sum('input_tokens') ?? 0;
+        $totalOutputTokens = $creditQuery->sum('output_tokens') ?? 0;
+        $totalTokens = $totalInputTokens + $totalOutputTokens;
+        
+        // Credits kullanımını da göster
+        $totalCredits = $creditQuery->sum('credits_used') ?? 0;
 
         return [
             'total_requests' => $query->count(),
             'avg_execution_time' => $query->avg('execution_time_ms'),
             'avg_prompts_used' => $query->avg('actually_used_prompts'),
-            'total_tokens' => $query->sum('token_usage'),
+            'total_tokens' => $totalTokens, // GERÇEK TOKEN KULLANIMI
+            'total_credits' => $totalCredits, // KREDİ KULLANIMI
+            'input_tokens' => $totalInputTokens,
+            'output_tokens' => $totalOutputTokens,
             'error_rate' => $query->where('has_error', true)->count() / max($query->count(), 1) * 100,
             'provider_stats' => $providerStats
         ];
@@ -458,20 +481,20 @@ class DebugDashboardController extends Controller
         $days = (int) $dateRange;
         $startDate = Carbon::now()->subDays($days);
 
-        // Token usage tablondan model bazlı istatistik
-        $tokenQuery = DB::table('ai_token_usage')
+        // Credit usage tablondan model bazlı istatistik
+        $tokenQuery = DB::table('ai_credit_usage')
             ->where('created_at', '>=', $startDate)
-            ->whereNotNull('model')
-            ->where('model', '!=', '');
+            ->whereNotNull('provider_name')
+            ->where('provider_name', '!=', '');
 
         if ($tenantId) {
             $tokenQuery->where('tenant_id', $tenantId);
         }
 
-        // Model bazlı kullanım
+        // Provider bazlı kullanım
         $modelUsage = $tokenQuery
-            ->select('model', DB::raw('COUNT(*) as usage_count'), DB::raw('SUM(tokens_used) as total_tokens'))
-            ->groupBy('model')
+            ->select('provider_name as model', DB::raw('COUNT(*) as usage_count'), DB::raw('SUM(input_tokens + output_tokens) as total_tokens'))
+            ->groupBy('provider_name')
             ->orderBy('usage_count', 'desc')
             ->get();
 
@@ -685,41 +708,50 @@ class DebugDashboardController extends Controller
     private function getAvailableProviders(): array
     {
         try {
-            // AI settings'den provider bilgilerini al
-            $settings = \Modules\AI\App\Models\Setting::first();
-            if (!$settings || !$settings->providers) {
+            // AI providers'dan provider bilgilerini al
+            $aiProviders = \Modules\AI\App\Models\AIProvider::orderBy('priority')->get();
+            if ($aiProviders->isEmpty()) {
                 return $this->getDefaultProviders();
             }
 
             $providers = [];
-            $activeProvider = $settings->active_provider ?? 'deepseek';
+            $activeProvider = 'deepseek'; // Default active provider
 
-            foreach ($settings->providers as $providerKey => $providerData) {
-                if (!isset($providerData['is_active']) || !$providerData['is_active']) {
+            foreach ($aiProviders as $provider) {
+                if (!$provider->is_active) {
                     continue;
                 }
 
                 $models = [];
-                if (isset($providerData['available_models']) && is_array($providerData['available_models'])) {
-                    foreach ($providerData['available_models'] as $modelKey => $modelData) {
+                // Safe JSON decode - check if it's already an array
+                $availableModels = [];
+                if ($provider->available_models) {
+                    if (is_array($provider->available_models)) {
+                        $availableModels = $provider->available_models;
+                    } elseif (is_string($provider->available_models)) {
+                        $availableModels = json_decode($provider->available_models, true) ?: [];
+                    }
+                }
+                if (is_array($availableModels)) {
+                    foreach ($availableModels as $modelKey => $modelData) {
                         $models[] = [
                             'key' => $modelKey,
                             'name' => $modelData['name'] ?? $modelKey,
                             'cost_per_1m_input' => $modelData['input_cost'] ?? 0,
                             'cost_per_1m_output' => $modelData['output_cost'] ?? 0,
-                            'is_default' => ($providerData['model'] ?? '') === $modelKey
+                            'is_default' => ($provider->default_model ?? '') === $modelKey
                         ];
                     }
                 }
 
                 $providers[] = [
-                    'key' => $providerKey,
-                    'name' => $providerData['name'] ?? ucfirst($providerKey),
-                    'is_active' => $providerKey === $activeProvider,
-                    'default_model' => $providerData['model'] ?? '',
+                    'key' => $provider->name,
+                    'name' => $provider->display_name ?? ucfirst($provider->name),
+                    'is_active' => $provider->is_default,
+                    'default_model' => $provider->default_model ?? '',
                     'models' => $models,
-                    'description' => $providerData['description'] ?? '',
-                    'average_response_time' => $providerData['average_response_time'] ?? 0
+                    'description' => $provider->description ?? '',
+                    'average_response_time' => $provider->average_response_time ?? 0
                 ];
             }
 

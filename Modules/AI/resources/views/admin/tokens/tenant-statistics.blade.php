@@ -2,7 +2,7 @@
 
 @include('ai::helper')
 
-@section('pretitle', 'AI Token Yönetimi')
+@section('pretitle', 'AI Kredi Yönetimi')
 @section('title', $tenant->title . ' - Detaylı İstatistikler')
 
 @section('content')
@@ -29,11 +29,11 @@
                     </div>
                     <div class="col-auto">
                         <div class="btn-list">
-                            <a href="{{ route('admin.ai.tokens.show', $tenant->id) }}" class="btn btn-outline-primary">
+                            <a href="{{ route('admin.ai.credits.show', $tenant->id) }}" class="btn btn-outline-primary">
                                 <i class="fas fa-eye me-2"></i>
                                 Kiracı Detayı
                             </a>
-                            <a href="{{ route('admin.ai.tokens.usage-stats', ['tenant_id' => $tenant->id]) }}" class="btn btn-outline-info">
+                            <a href="{{ route('admin.ai.credits.usage-stats', ['tenant_id' => $tenant->id]) }}" class="btn btn-outline-info">
                                 <i class="fas fa-list me-2"></i>
                                 Kullanım Kayıtları
                             </a>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="h1 mb-3 text-green">{{ ai_format_token_count($stats['real_balance']) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="h1 mb-3">{{ ai_format_token_count($stats['total_usage']) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                 </div>
                 <div class="h1 mb-3">{{ ai_format_token_count($stats['total_purchases']) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="h1 mb-3">{{ ai_format_token_count($stats['monthly_usage']) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                 </div>
                 <div class="h1 mb-3">{{ ai_format_token_count($stats['weekly_usage']) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -125,7 +125,7 @@
                 </div>
                 <div class="h1 mb-3">{{ ai_format_token_count($stats['today_usage']) }}</div>
                 <div class="d-flex mb-2">
-                    <div class="text-muted">Token</div>
+                    <div class="text-muted">Kredi</div>
                 </div>
             </div>
         </div>
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: Object.keys(dailyUsageData),
             datasets: [{
-                label: 'Günlük Token Kullanımı',
+                label: 'Günlük Kredi Kullanımı',
                 data: Object.values(dailyUsageData),
                 borderColor: 'rgb(32, 107, 196)',
                 backgroundColor: 'rgba(32, 107, 196, 0.1)',

@@ -324,7 +324,7 @@
                             </td>
                             <td>
                                 @if($conversation->tenant)
-                                    <a href="{{ route('admin.ai.tokens.show', $conversation->tenant) }}" class="text-reset">
+                                    <a href="{{ route('admin.ai.credits.show', $conversation->tenant) }}" class="text-reset">
                                         {{ $conversation->tenant->title ?: 'Tenant #' . $conversation->tenant->id }}
                                     </a>
                                 @else

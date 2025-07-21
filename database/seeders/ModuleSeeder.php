@@ -77,7 +77,6 @@ class ModuleSeeder extends Seeder
                     
                     // AI modülü özel durumları - ana seeder'da zaten çağrıldı
                     if ($moduleBaseName === 'AI' && in_array($className, [
-                        'AITokenPackageSeeder', 
                         'AIPurchaseSeeder', 
                         'AITenantSetupSeeder', 
                         'AIUsageUpdateSeeder',

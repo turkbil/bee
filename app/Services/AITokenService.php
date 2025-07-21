@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Tenant;
 use Modules\AI\App\Models\AITokenPackage;
 use Modules\AI\App\Models\AITokenPurchase;
-use Modules\AI\App\Models\AITokenUsage;
+use Modules\AI\App\Models\AICreditUsage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -52,14 +52,21 @@ class AITokenService
             $tenant->increment('ai_tokens_used_this_month', $tokensUsed);
             $tenant->update(['ai_last_used_at' => now()]);
 
-            // Log usage
-            AITokenUsage::create([
+            // Log usage using new credit system
+            AICreditUsage::create([
                 'tenant_id' => $tenant->id,
                 'user_id' => \Illuminate\Support\Facades\Auth::id(),
-                'tokens_used' => $tokensUsed,
-                'usage_type' => $usageType,
-                'description' => $description,
-                'reference_id' => $referenceId,
+                'input_tokens' => $tokensUsed,
+                'output_tokens' => 0,
+                'credits_used' => round($tokensUsed / 1000, 4), // Convert tokens to credits
+                'credit_cost' => round($tokensUsed * 0.0005, 4), // Legacy token to credit conversion
+                'provider_name' => $description ?? 'legacy_token_service',
+                'feature_slug' => $usageType,
+                'metadata' => json_encode([
+                    'reference_id' => $referenceId,
+                    'legacy_conversion' => true,
+                    'original_usage_type' => $usageType
+                ]),
                 'used_at' => now()
             ]);
 

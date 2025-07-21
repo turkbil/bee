@@ -210,6 +210,64 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->middleware('module.permission:ai,view')
                     ->name('prowess');
                 
+                // AI Providers Management
+                Route::get('/providers', function() {
+                    $providers = \Modules\AI\App\Models\AIProvider::orderBy('priority', 'asc')->get();
+                    return view('ai::admin.providers.index', compact('providers'));
+                })
+                    ->middleware('module.permission:ai,view')
+                    ->name('providers');
+
+                // SEO AI Center
+                Route::get('/seo', function() {
+                    // SEO kategorisindeki feature'ları getir
+                    $seoFeatures = \Modules\AI\App\Models\AIFeature::with(['category'])
+                        ->whereHas('category', function($query) {
+                            $query->where('title', 'SEO & Marketing');
+                        })
+                        ->where('is_active', true)
+                        ->orderBy('complexity_level')
+                        ->get()
+                        ->groupBy(function($feature) {
+                            return $feature->category->title ?? 'other';
+                        });
+
+                    $categoryNames = [
+                        'SEO & Marketing' => 'SEO & Pazarlama Araçları'
+                    ];
+
+                    // Token durumunu al
+                    $tokenStatus = [
+                        'remaining' => ai_get_tenant_balance() ?? 1000,
+                        'provider' => ai_get_active_provider_name() ?? 'DeepSeek',
+                        'provider_active' => true
+                    ];
+
+                    return view('ai::admin.seo.prowess', compact('seoFeatures', 'categoryNames', 'tokenStatus'));
+                })
+                    ->middleware('module.permission:ai,view')
+                    ->name('seo.prowess');
+                    
+                // AI Provider Update
+                Route::post('/providers/{provider}/update', function(\Modules\AI\App\Models\AIProvider $provider, \Illuminate\Http\Request $request) {
+                    $data = $request->only(['is_active', 'is_default', 'priority', 'api_key']);
+                    
+                    // Boolean değerleri düzelt
+                    $data['is_active'] = $request->has('is_active') || $request->boolean('is_active');
+                    $data['is_default'] = $request->has('is_default') || $request->boolean('is_default');
+                    
+                    $provider->update($data);
+                    
+                    // AJAX mi normal request mi kontrol et
+                    if ($request->expectsJson()) {
+                        return response()->json(['success' => true, 'message' => 'Provider güncellendi!']);
+                    }
+                    
+                    return redirect()->route('admin.ai.providers')->with('success', 'Provider güncellendi!');
+                })
+                    ->middleware('module.permission:ai,update')
+                    ->name('providers.update');
+
                 // AI Features Test API
                 Route::post('/test-feature', function(\Illuminate\Http\Request $request) {
                     \Log::info('AI Feature Test API çağrıldı', $request->all());
@@ -219,88 +277,212 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->middleware('module.permission:ai,view')
                     ->name('test-feature');
                     
-                // Token Stats API (Real-time güncellemeler için)
-                Route::get('/token-stats', function() {
+                // Credit Stats API (Real-time güncellemeler için)
+                Route::get('/credit-stats', function() {
                     $tenantId = tenant('id') ?: '1';
                     
-                    // Mevcut token verilerini al
-                    $remainingTokens = ai_get_token_balance($tenantId);
-                    $totalUsed = ai_get_total_used($tenantId);
-                    $totalPurchased = ai_get_total_purchased($tenantId);
-                    $monthlyUsage = ai_get_monthly_usage($tenantId);
-                    $dailyUsage = ai_get_daily_usage($tenantId);
+                    // Mevcut credit verilerini al
+                    $remainingCredits = ai_get_credit_balance($tenantId);
+                    $totalUsed = ai_get_total_credits_used($tenantId);
+                    $totalPurchased = ai_get_total_credits_purchased($tenantId);
+                    $monthlyUsage = ai_get_monthly_credits_used($tenantId);
+                    $dailyUsage = ai_get_daily_credits_used($tenantId);
                     
                     // Formatlanmış değerlerle birlikte döndür
-                    $tokenStats = [
-                        'remaining_tokens' => $remainingTokens,
-                        'remaining_tokens_formatted' => ai_format_token_count($remainingTokens),
-                        'used_tokens' => $totalUsed,
-                        'total_tokens' => $totalPurchased,
+                    $creditStats = [
+                        'remaining_credits' => $remainingCredits,
+                        'remaining_credits_formatted' => number_format($remainingCredits, 4) . ' kredi',
+                        'used_credits' => $totalUsed,
+                        'total_credits' => $totalPurchased,
                         'monthly_usage' => $monthlyUsage,
-                        'monthly_usage_formatted' => ai_format_token_count($monthlyUsage),
+                        'monthly_usage_formatted' => number_format($monthlyUsage, 4) . ' kredi',
                         'daily_usage' => $dailyUsage,
-                        'daily_usage_formatted' => ai_format_token_count($dailyUsage),
+                        'daily_usage_formatted' => number_format($dailyUsage, 4) . ' kredi',
                         'monthly_limit' => 0, // TODO: Limit sistemi eklenecek
                         'monthly_limit_formatted' => '0',
                         'usage_percentage' => 0
                     ];
                     
-                    return response()->json($tokenStats);
+                    return response()->json($creditStats);
                 })
                     ->middleware('module.permission:ai,view')
-                    ->name('token-stats');
+                    ->name('credit-stats');
                 
-                // Token Management Routes (Root Admin Only)
+                // YENİ KREDİ SİSTEMİ - Credit Management Routes (Root Admin Only)
+                Route::prefix('credits')
+                    ->name('credits.')
+                    ->middleware('role:root')
+                    ->group(function () {
+                        // Genel kredi yönetimi ana sayfa
+                        Route::get('/', function() {
+                            $packages = \Modules\AI\App\Models\AICreditPackage::getActivePackages();
+                            return view('ai::admin.credits.index', compact('packages'));
+                        })
+                            ->name('index');
+                        
+                        // Kredi paket yönetimi
+                        Route::get('/packages', function() {
+                            $packages = \Modules\AI\App\Models\AICreditPackage::orderBy('sort_order')->get();
+                            return view('ai::admin.credits.packages', compact('packages'));
+                        })
+                            ->name('packages');
+                        
+                        // Kredi kullanım raporları
+                        Route::get('/usage', function() {
+                            return view('ai::admin.credits.usage');
+                        })
+                            ->name('usage');
+                        
+                        // API: İstatistikler
+                        Route::get('/api/statistics', function() {
+                            $stats = [
+                                'total_credits_used' => number_format(\Modules\AI\App\Models\AICreditUsage::sum('credits_used'), 2),
+                                'monthly_credits_used' => number_format(\Modules\AI\App\Models\AICreditUsage::whereMonth('used_at', now()->month)->sum('credits_used'), 2),
+                                'daily_credits_used' => number_format(\Modules\AI\App\Models\AICreditUsage::whereDate('used_at', today())->sum('credits_used'), 2),
+                                'avg_daily_usage' => number_format(\Modules\AI\App\Models\AICreditUsage::where('used_at', '>=', now()->subDays(30))->sum('credits_used') / 30, 2)
+                            ];
+                            return response()->json($stats);
+                        })->name('api.statistics');
+                        
+                        // API: Kullanım verisi
+                        Route::get('/api/usage-data', function() {
+                            $providerUsage = \Modules\AI\App\Models\AICreditUsage::selectRaw('provider_name as provider, SUM(credits_used) as credits')
+                                ->groupBy('provider_name')
+                                ->whereNotNull('provider_name')
+                                ->get();
+                                
+                            $featureUsage = \Modules\AI\App\Models\AICreditUsage::selectRaw('feature_slug as feature, SUM(credits_used) as credits')
+                                ->groupBy('feature_slug')
+                                ->whereNotNull('feature_slug')
+                                ->orderByDesc('credits')
+                                ->limit(10)
+                                ->get();
+                                
+                            $detailedUsage = \Modules\AI\App\Models\AICreditUsage::with(['tenant'])
+                                ->latest('used_at')
+                                ->limit(20)
+                                ->get()
+                                ->map(function($usage) {
+                                    return [
+                                        'date' => $usage->used_at->format('d.m.Y H:i'),
+                                        'tenant' => $usage->tenant->title ?? 'N/A',
+                                        'provider' => $usage->provider_name ?? 'N/A',
+                                        'feature' => $usage->feature_slug ?? 'N/A',
+                                        'input_tokens' => number_format($usage->input_tokens),
+                                        'output_tokens' => number_format($usage->output_tokens),
+                                        'total_credits' => number_format($usage->credits_used, 4),
+                                        'cost' => number_format($usage->credit_cost, 4)
+                                    ];
+                                });
+                            
+                            return response()->json([
+                                'provider_usage' => $providerUsage,
+                                'feature_usage' => $featureUsage,
+                                'detailed_usage' => $detailedUsage
+                            ]);
+                        })->name('api.usage-data');
+                        
+                        // API: Kullanım trendi
+                        Route::get('/api/usage-trend', function() {
+                            $period = request('period', 7);
+                            $data = \Modules\AI\App\Models\AICreditUsage::selectRaw('DATE(used_at) as date, SUM(credits_used) as credits')
+                                ->where('used_at', '>=', now()->subDays($period))
+                                ->groupBy('date')
+                                ->orderBy('date')
+                                ->get();
+                                
+                            $labels = [];
+                            $values = [];
+                            
+                            for ($i = $period - 1; $i >= 0; $i--) {
+                                $date = now()->subDays($i)->format('Y-m-d');
+                                $labels[] = now()->subDays($i)->format('d.m');
+                                $usage = $data->where('date', $date)->first();
+                                $values[] = $usage ? round($usage->credits, 2) : 0;
+                            }
+                            
+                            return response()->json([
+                                'labels' => $labels,
+                                'values' => $values
+                            ]);
+                        })->name('api.usage-trend');
+                        
+                        // API: Kullanım filtreleme
+                        Route::get('/api/usage-filter', function() {
+                            $startDate = request('start');
+                            $endDate = request('end');
+                            
+                            $usage = \Modules\AI\App\Models\AICreditUsage::with(['tenant'])
+                                ->when($startDate, fn($q) => $q->whereDate('used_at', '>=', $startDate))
+                                ->when($endDate, fn($q) => $q->whereDate('used_at', '<=', $endDate))
+                                ->latest('used_at')
+                                ->limit(100)
+                                ->get()
+                                ->map(function($usage) {
+                                    return [
+                                        'date' => $usage->used_at->format('d.m.Y H:i'),
+                                        'tenant' => $usage->tenant->title ?? 'N/A',
+                                        'provider' => $usage->provider_name ?? 'N/A',
+                                        'feature' => $usage->feature_slug ?? 'N/A',
+                                        'input_tokens' => number_format($usage->input_tokens),
+                                        'output_tokens' => number_format($usage->output_tokens),
+                                        'total_credits' => number_format($usage->credits_used, 4),
+                                        'cost' => number_format($usage->credit_cost, 4)
+                                    ];
+                                });
+                            
+                            return response()->json(['usage' => $usage]);
+                        })->name('api.usage-filter');
+                        
+                        // Kredi işlemleri
+                        Route::get('/transactions', function() {
+                            return view('ai::admin.credits.transactions');
+                        })
+                            ->name('transactions');
+                        
+                        // Kredi satın alımları
+                        Route::get('/purchases', function() {
+                            return view('ai::admin.credits.purchases');
+                        })
+                            ->name('purchases');
+                        
+                        // Kredi kullanım istatistikleri - HTML sayfa
+                        Route::get('/usage-stats', [TokenManagementController::class, 'usageStats'])
+                            ->name('usage-stats');
+                            
+                        // Kredi kullanım istatistikleri - JSON API
+                        Route::get('/usage-stats-api', function() {
+                            $tenantId = tenant('id') ?: '1';
+                            
+                            $stats = [
+                                'current_balance' => ai_get_credit_balance($tenantId),
+                                'total_used' => ai_get_total_credits_used($tenantId),
+                                'total_purchased' => ai_get_total_credits_purchased($tenantId),
+                                'monthly_used' => ai_get_monthly_credits_used($tenantId),
+                                'daily_used' => ai_get_daily_credits_used($tenantId)
+                            ];
+                            
+                            return response()->json($stats);
+                        })
+                            ->name('usage-stats-api');
+                        
+                        // Kredi detay sayfası
+                        Route::get('/show', function() {
+                            return view('ai::admin.credits.show');
+                        })
+                            ->name('show');
+                    });
+                    
+                // ESKİ TOKEN SİSTEMİ - DEPRECATED (Backward compatibility için korundu)
                 Route::prefix('tokens')
                     ->name('tokens.')
                     ->middleware('role:root')
                     ->group(function () {
-                        Route::get('/', TokenManagement::class)
+                        Route::get('/', function() {
+                            return redirect()->route('admin.ai.credits.index')
+                                ->with('info', 'Token sistemi kredi sistemine dönüştürüldü. Lütfen kredi yönetimini kullanın.');
+                        })
                             ->name('index');
-                        
-                        Route::get('/tenant/{tenant}', [TokenManagementController::class, 'show'])
-                            ->name('show');
-                        
-                        Route::put('/tenant/{tenant}/settings', [TokenManagementController::class, 'updateTenantSettings'])
-                            ->name('update-settings');
-                        
-                        Route::post('/tenant/{tenant}/toggle-ai', [TokenManagementController::class, 'toggleAI'])
-                            ->name('toggle-ai');
-                        
-                        Route::post('/tenant/{tenant}/adjust', [TokenManagementController::class, 'adjustTokens'])
-                            ->name('adjust');
-                        
-                        // Livewire Token Paket Yönetimi  
-                        Route::get('/packages', TokenPackageManagement::class)
-                            ->name('packages');
-                        
-                        Route::get('/purchases', [TokenManagementController::class, 'allPurchases'])
-                            ->name('purchases');
-                        
-                        Route::get('/usage-stats', [TokenManagementController::class, 'allUsageStats'])
-                            ->name('usage-stats');
-                        
-                        Route::get('/statistics/overview', [TokenManagementController::class, 'statisticsOverview'])
-                            ->name('statistics.overview');
-                        
-                        Route::get('/tenant/{tenantId}/statistics', [TokenManagementController::class, 'tenantStatistics'])
-                            ->name('tenant-statistics');
-                        
-                        // Package management routes
-                        Route::post('/packages', [TokenManagementController::class, 'storePackage'])
-                            ->name('packages.store');
-                        
-                        Route::get('/packages/{package}/edit', [TokenManagementController::class, 'editPackage'])
-                            ->name('packages.edit');
-                        
-                        Route::put('/packages/{package}', [TokenManagementController::class, 'updatePackage'])
-                            ->name('packages.update');
-                        
-                        Route::delete('/packages/{package}', [TokenManagementController::class, 'destroyPackage'])
-                            ->name('packages.destroy');
-                        
-                        Route::post('/packages/update-order', [TokenManagementController::class, 'updatePackageOrder'])
-                            ->name('packages.update-order');
                     });
                     
                 // AI Profile Management Routes

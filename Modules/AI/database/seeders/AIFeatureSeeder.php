@@ -1615,7 +1615,7 @@ CONVERSION CONTENT:
                 'description' => 'Google Haritalar ve yerel aramalarda 1. sıra garantisi.',
                 'emoji' => '📍',
                 'icon' => 'fas fa-map-marked-alt',
-                'ai_feature_category_id' => 3,
+                'ai_feature_category_id' => 1,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'advanced',
@@ -1623,7 +1623,7 @@ CONVERSION CONTENT:
                 'is_system' => true,
                 'is_featured' => true,
                 'show_in_examples' => true,
-                'sort_order' => 8,
+                'sort_order' => 13,
                 'badge_color' => 'success',
                 'input_placeholder' => 'İşletme türü ve konumunuzu belirtin...',
                 'quick_prompt' => 'Sen yerel SEO uzmanısın, Google My Business optimizasyonu, yerel arama sonuçlarında üst sıralara çıkarma, Google Haritalar\'da görünürlük artırma konularında uzman bir yerel SEO stratejistisin. Verilen işletme için yerel SEO stratejisi oluştur.',
@@ -2139,14 +2139,14 @@ CONVERSION CONTENT:
                 'description' => 'Google\'ın anlayacağı zengin sonuçlar için schema markup kodları.',
                 'emoji' => '🔧',
                 'icon' => 'fas fa-code-branch',
-                'ai_feature_category_id' => 3,
+                'ai_feature_category_id' => 1,
                 'response_length' => 'medium',
                 'response_format' => 'code',
                 'complexity_level' => 'expert',
                 'status' => 'active',
                 'is_system' => true,
                 'show_in_examples' => true,
-                'sort_order' => 13,
+                'sort_order' => 4,
                 'badge_color' => 'info',
                 'input_placeholder' => 'Schema tipi ve içerik detayları...',
                 'quick_prompt' => 'Sen schema markup uzmanısın, Google\'ın anlayabileceği, zengin sonuçlar (rich snippets) oluşturan, SEO performansını artıran structured data kodları oluşturan bir teknik SEO uzmanısın. Verilen içerik için uygun schema markup oluştur.',
@@ -2232,14 +2232,14 @@ CONVERSION CONTENT:
                 'description' => 'CTR\'yi artıran mükemmel meta title ve description\'lar.',
                 'emoji' => '🏷️',
                 'icon' => 'fas fa-tags',
-                'ai_feature_category_id' => 3,
+                'ai_feature_category_id' => 1,
                 'response_length' => 'short',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
                 'status' => 'active',
                 'is_system' => true,
                 'show_in_examples' => true,
-                'sort_order' => 14,
+                'sort_order' => 3,
                 'badge_color' => 'success',
                 'input_placeholder' => 'Sayfa içeriği ve hedef anahtar kelime...',
                 'quick_prompt' => 'Sen meta tag optimizasyon uzmanısın, yüksek CTR (tıklama oranı) elde eden, Google arama sonuçlarında öne çıkan, kullanıcıların tıklamak isteyeceği meta title ve description oluşturan bir SEO uzmanısın. Verilen sayfa için optimum meta taglar oluştur.',
@@ -3956,6 +3956,112 @@ CONVERSION CONTENT:
                 ],
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 11. Hızlı SEO Analizi
+            [
+                'name' => 'Hızlı SEO Analizi',
+                'slug' => 'hizli-seo-analizi',
+                'description' => 'Web sayfanızın SEO durumunu hızlıca analiz eder.',
+                'emoji' => '⚡',
+                'icon' => 'fas fa-search',
+                'ai_feature_category_id' => 1, // SEO & Analiz
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 1,
+                'badge_color' => 'primary',
+                'input_placeholder' => 'Web sayfası URL\'sini veya içeriği yazın...',
+                'quick_prompt' => 'Sen SEO analiz uzmanısın. Web sayfalarını hızlıca analiz edip iyileştirme önerileri sunarsın.',
+                'response_template' => [
+                    'format' => 'modern_html',
+                    'layout' => 'card_accordion',
+                    'sections' => [
+                        'analysis' => [
+                            'title' => 'Detaylı SEO Analizi',
+                            'icon' => 'fas fa-search',
+                            'type' => 'html_content'
+                        ],
+                        'recommendations' => [
+                            'title' => 'İyileştirme Önerileri', 
+                            'icon' => 'fas fa-lightbulb',
+                            'type' => 'list_group'
+                        ],
+                        'score' => [
+                            'title' => 'SEO Puanı',
+                            'icon' => 'fas fa-star',
+                            'type' => 'badge_score'
+                        ]
+                    ],
+                    'show_confidence' => true,
+                    'card_header' => true,
+                    'collapsible' => true
+                ],
+                'helper_function' => 'ai_seo_analysis',
+                'example_inputs' => [
+                    ['text' => 'https://example.com/blog-yazisi', 'label' => 'Blog URL'],
+                    ['text' => 'E-ticaret ürün sayfası analizi', 'label' => 'Ürün Sayfası']
+                ],
+                'prompts' => [
+                    ['name' => 'SEO Analiz Uzmanı', 'role' => 'primary', 'priority' => 1],
+                ],
+            ],
+
+            // 12. Anahtar Kelime Analizi
+            [
+                'name' => 'Anahtar Kelime Analizi',
+                'slug' => 'anahtar-kelime-analizi',
+                'description' => 'İçeriğiniz için en uygun anahtar kelimeleri analiz eder.',
+                'emoji' => '🔑',
+                'icon' => 'fas fa-key',
+                'ai_feature_category_id' => 1, // SEO & Analiz
+                'response_length' => 'medium',
+                'response_format' => 'structured',
+                'complexity_level' => 'intermediate',
+                'status' => 'active',
+                'is_system' => true,
+                'is_featured' => true,
+                'show_in_examples' => true,
+                'sort_order' => 2,
+                'badge_color' => 'success',
+                'input_placeholder' => 'Hedef konu veya içeriğinizi yazın...',
+                'quick_prompt' => 'Sen anahtar kelime araştırma uzmanısın. İçerik için en uygun anahtar kelimeleri bulur ve analiz edersin.',
+                'response_template' => [
+                    'format' => 'modern_html',
+                    'layout' => 'card_accordion',
+                    'sections' => [
+                        'analysis' => [
+                            'title' => 'Anahtar Kelime Analizi',
+                            'icon' => 'fas fa-key',
+                            'type' => 'table_responsive'
+                        ],
+                        'recommendations' => [
+                            'title' => 'Kelime Önerileri',
+                            'icon' => 'fas fa-lightbulb', 
+                            'type' => 'list_group'
+                        ],
+                        'score' => [
+                            'title' => 'Kelime Uygunluk Puanı',
+                            'icon' => 'fas fa-chart-bar',
+                            'type' => 'badge_score'
+                        ]
+                    ],
+                    'show_confidence' => true,
+                    'card_header' => true,
+                    'collapsible' => true
+                ],
+                'helper_function' => 'ai_keyword_analysis',
+                'example_inputs' => [
+                    ['text' => 'Web tasarım hizmetleri', 'label' => 'Hizmet'],
+                    ['text' => 'Organik gıda e-ticaret', 'label' => 'E-ticaret']
+                ],
+                'prompts' => [
+                    ['name' => 'SEO Analiz Uzmanı', 'role' => 'primary', 'priority' => 1],
                 ],
             ]
         ];

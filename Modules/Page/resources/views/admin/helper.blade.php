@@ -1,127 +1,13 @@
-{{-- Modules/Page/resources/views/admin/helper.blade.php --}}
-{{-- PreTitle --}}
+{{-- SOLID Page Management Helper --}}
 @section('pretitle')
 {{ __('page::admin.pages') }}
 @endsection
 
-@push('pretitle')
-{{ __('page::admin.pages') }}
-@endpush
-
-{{-- Başlık --}}
 @push('title')
 {{ __('page::admin.page_management') }}
 @endpush
 
-{{-- Çok Dilli Tab Sistemi --}}
-@push('admin-js')
-<script>
-$(document).ready(function() {
-    // Aktif tab'ı kaydet
-    const routeName = '{{ request()->route()->getName() }}';
-    const tabKey = routeName.replace('.', '') + 'ActiveTab';
-    
-    // Tab Manager
-    const TabManager = {
-        init: function(storageKey) {
-            this.storageKey = storageKey;
-            this.restoreActiveTab();
-            this.bindTabEvents();
-        },
-        
-        restoreActiveTab: function() {
-            const activeTab = localStorage.getItem(this.storageKey);
-            // SEO tab'ı değilse restore et, SEO tab'ıysa Basic Info'yu aç
-            if (activeTab && activeTab !== '#tabs-2') {
-                $('.nav-tabs .nav-link').removeClass('active');
-                $('.tab-content .tab-pane').removeClass('active show');
-                
-                const targetTab = $(`[href="${activeTab}"]`);
-                if (targetTab.length) {
-                    targetTab.addClass('active');
-                    $(activeTab).addClass('active show');
-                }
-            } else {
-                // Default olarak Basic Info tab'ını aç
-                $('.nav-tabs .nav-link').removeClass('active');
-                $('.tab-content .tab-pane').removeClass('active show');
-                
-                $('[href="#tabs-1"]').addClass('active');
-                $('#tabs-1').addClass('active show');
-                
-                // localStorage'ı da Basic Info ile güncelle
-                localStorage.setItem(this.storageKey, '#tabs-1');
-            }
-        },
-        
-        bindTabEvents: function() {
-            const self = this;
-            $('.nav-tabs .nav-link').on('click', function() {
-                const href = $(this).attr('href');
-                localStorage.setItem(self.storageKey, href);
-            });
-        }
-    };
-    
-    // Çok Dilli Form Switcher
-    const MultiLangFormSwitcher = {
-        init: function() {
-            this.bindLanguageToggle();
-        },
-        
-        bindLanguageToggle: function() {
-            $('.language-toggle').on('click', function(e) {
-                e.preventDefault();
-                const targetLang = $(this).data('language');
-                const currentLang = $('.language-toggle.active').data('language');
-                
-                // Form değerlerini kaydet
-                MultiLangFormSwitcher.saveFormData(currentLang);
-                
-                // Yeni dil verilerini yükle
-                MultiLangFormSwitcher.loadFormData(targetLang);
-                
-                // Aktif dil toggle'ını değiştir
-                $('.language-toggle').removeClass('active');
-                $(this).addClass('active');
-            });
-        },
-        
-        saveFormData: function(lang) {
-            const formData = {};
-            $('[data-multilang]').each(function() {
-                const fieldName = $(this).data('multilang');
-                formData[fieldName] = $(this).val();
-            });
-            
-            // Livewire ile veri gönder
-            if (window.Livewire) {
-                @this.updateLanguageData(lang, formData);
-            }
-        },
-        
-        loadFormData: function(lang) {
-            // Livewire'dan veri al ve form alanlarını doldur
-            if (window.Livewire) {
-                @this.loadLanguageData(lang).then(data => {
-                    $.each(data, function(fieldName, value) {
-                        $(`[data-multilang="${fieldName}"]`).val(value);
-                    });
-                });
-            }
-        }
-    };
-    
-    // Initialize
-    TabManager.init(tabKey);
-    MultiLangFormSwitcher.init();
-});
-</script>
-@endpush
-
-{{-- Modül Menüsü --}}
 @push('module-menu')
-
 <div class="dropdown d-grid d-md-flex module-menu">
     <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">{{ __('page::admin.menu') }}</a>
     <div class="dropdown-menu dropdown-module-menu">
@@ -140,5 +26,4 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-
 @endpush

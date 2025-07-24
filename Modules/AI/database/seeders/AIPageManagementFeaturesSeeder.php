@@ -16,15 +16,19 @@ class AIPageManagementFeaturesSeeder extends Seeder
     {
         $this->command->info('🚀 Page Management AI Features seeding started...');
 
-        // Page Management kategorisi oluştur
+        // Sayfa SEO Araçları kategorisini kullan (kategori ID 1)
         $pageCategory = AIFeatureCategory::firstOrCreate([
-            'title' => 'Sayfa Yönetimi',
-            'slug' => 'sayfa-yonetimi'
+            'ai_feature_category_id' => 1
         ], [
-            'description' => 'Web sayfası yönetimi ve içerik optimizasyonu AI araçları',
-            'icon' => 'fas fa-file-alt',
-            'order' => 50,
-            'is_active' => true
+            'ai_feature_category_id' => 1,
+            'title' => 'Sayfa SEO Araçları',
+            'slug' => 'sayfa-seo-araclari',
+            'description' => 'Sayfa analizi ve SEO optimizasyonu için uzman araçlar',
+            'icon' => 'fas fa-search-plus',
+            'order' => 1,
+            'is_active' => true,
+            'parent_id' => null,
+            'has_subcategories' => false
         ]);
 
         // Page Management AI Prompts oluştur
@@ -482,7 +486,25 @@ class AIPageManagementFeaturesSeeder extends Seeder
             ]
         ];
 
-        foreach ($features as $featureData) {
+        // SEO araçları öncelik haritası
+        $seoPriorityMap = [
+            'icerik-optimizasyonu' => 19,
+            'anahtar-kelime-arastirmasi' => 20,
+            'otomatik-optimize' => 21,
+            'rekabet-analizi' => 22,
+            'icerik-kalite-skoru' => 23,
+            'schema-markup-uretici' => 24
+        ];
+        
+        foreach ($features as $index => $featureData) {
+            // SEO araçları için özel sort_order, diğerleri için 100+ değerler
+            $sortOrder = isset($seoPriorityMap[$featureData['slug']]) 
+                ? $seoPriorityMap[$featureData['slug']] 
+                : $index + 100; // SEO olmayanlar 100+ değer alır
+                
+            $featureData['sort_order'] = $sortOrder;
+            $featureData['is_featured'] = isset($seoPriorityMap[$featureData['slug']]); // SEO araçları featured
+            
             AIFeature::firstOrCreate(
                 ['slug' => $featureData['slug']], 
                 $featureData

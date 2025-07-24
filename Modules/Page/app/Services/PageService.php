@@ -5,12 +5,15 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Modules\Page\App\Contracts\PageRepositoryInterface;
+use Modules\Page\App\Contracts\PageSeoRepositoryInterface;
+use Modules\Page\App\Services\PageTabService;
 use Modules\Page\App\Models\Page;
 
 class PageService
 {
     public function __construct(
-        protected PageRepositoryInterface $pageRepository
+        protected PageRepositoryInterface $pageRepository,
+        protected PageSeoRepositoryInterface $seoRepository
     ) {}
     
     public function getPage(int $id): ?Page
@@ -276,6 +279,91 @@ class PageService
         return $prepared;
     }
     
+    /**
+     * Sayfa verilerini form için hazırla
+     */
+    public function preparePageForForm(int $id, string $language): array
+    {
+        $page = $this->pageRepository->findById($id);
+        
+        if (!$page) {
+            return $this->getEmptyFormData($language);
+        }
+
+        // Tab completion durumunu hesapla
+        $allData = array_merge(
+            $page->toArray(),
+            $this->seoRepository->getSeoData($page, $language)
+        );
+        
+        $tabCompletion = PageTabService::getTabCompletionStatus($allData);
+
+        return [
+            'page' => $page,
+            'seoData' => $this->seoRepository->getSeoData($page, $language),
+            'tabCompletion' => $tabCompletion,
+            'tabConfig' => PageTabService::getJavaScriptConfig(),
+            'seoLimits' => $this->seoRepository->getFieldLimits()
+        ];
+    }
+
+    /**
+     * Yeni sayfa için boş form verisi
+     */
+    public function getEmptyFormData(string $language): array
+    {
+        $emptyData = [
+            'title' => '',
+            'body' => '',
+            'slug' => '',
+            'seo_title' => '',
+            'seo_description' => '',
+            'seo_keywords' => '',
+            'canonical_url' => ''
+        ];
+
+        return [
+            'page' => null,
+            'seoData' => $emptyData,
+            'tabCompletion' => PageTabService::getTabCompletionStatus($emptyData),
+            'tabConfig' => PageTabService::getJavaScriptConfig(),
+            'seoLimits' => $this->seoRepository->getFieldLimits()
+        ];
+    }
+
+    /**
+     * Form validation kurallarını getir
+     */
+    public function getValidationRules(array $availableLanguages): array
+    {
+        $rules = [
+            'inputs.css' => 'nullable|string',
+            'inputs.js' => 'nullable|string',
+            'inputs.is_active' => 'boolean',
+            'inputs.is_homepage' => 'boolean',
+        ];
+        
+        // Çoklu dil alanları
+        foreach ($availableLanguages as $lang) {
+            $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+            $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
+            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
+        }
+        
+        // SEO validation kuralları
+        $seoRules = $this->seoRepository->getValidationRules();
+        
+        return array_merge($rules, $seoRules);
+    }
+
+    /**
+     * SEO skorunu hesapla
+     */
+    public function calculateSeoScore(array $seoData): array
+    {
+        return $this->seoRepository->calculateSeoScore($seoData);
+    }
+
     public function clearCache(): void
     {
         $this->pageRepository->clearCache();

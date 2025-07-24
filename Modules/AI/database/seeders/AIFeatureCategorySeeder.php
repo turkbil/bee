@@ -23,31 +23,45 @@ class AIFeatureCategorySeeder extends Seeder
             // Ana kategoriler
             $categories = [
                 [
-                    'title' => 'İçerik Üretimi',
-                    'slug' => 'icerik-uretimi',
-                    'description' => 'Metin, makale, blog yazıları ve SEO içeriği üretim araçları',
-                    'icon' => 'fas fa-pen-fancy',
+                    'ai_feature_category_id' => 1,
+                    'title' => 'Sayfa SEO Araçları',
+                    'slug' => 'sayfa-seo-araclari',
+                    'description' => 'Sayfa analizi ve SEO optimizasyonu için uzman araçlar',
+                    'icon' => 'fas fa-search-plus',
                     'order' => 1,
                     'is_active' => true,
                     'parent_id' => null,
                     'has_subcategories' => false
                 ],
                 [
-                    'title' => 'Pazarlama',
-                    'slug' => 'pazarlama',
-                    'description' => 'Dijital pazarlama, sosyal medya ve reklam içerikleri',
-                    'icon' => 'fas fa-bullhorn',
+                    'ai_feature_category_id' => 44,
+                    'title' => 'İçerik Üretimi',
+                    'slug' => 'icerik-uretimi',
+                    'description' => 'Metin, makale, blog yazıları ve SEO içeriği üretim araçları',
+                    'icon' => 'fas fa-pen-fancy',
                     'order' => 2,
                     'is_active' => true,
                     'parent_id' => null,
                     'has_subcategories' => false
                 ],
                 [
+                    'ai_feature_category_id' => 45,
+                    'title' => 'Pazarlama',
+                    'slug' => 'pazarlama',
+                    'description' => 'Dijital pazarlama, sosyal medya ve reklam içerikleri',
+                    'icon' => 'fas fa-bullhorn',
+                    'order' => 3,
+                    'is_active' => true,
+                    'parent_id' => null,
+                    'has_subcategories' => false
+                ],
+                [
+                    'ai_feature_category_id' => 46,
                     'title' => 'SEO & Analiz',
                     'slug' => 'seo-analiz',
                     'description' => 'Arama motoru optimizasyonu ve içerik analizi araçları',
                     'icon' => 'fas fa-chart-line',
-                    'order' => 3,
+                    'order' => 4,
                     'is_active' => true,
                     'parent_id' => null,
                     'has_subcategories' => false

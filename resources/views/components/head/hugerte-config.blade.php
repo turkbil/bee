@@ -1,5 +1,5 @@
 {{-- HugeRTE Configuration - Simple & Dark Mode Compatible --}}
-<script src="/admin-assets/libs/tinymce/tinymce.min.js?v={{ time() }}"></script>
+<script src="/admin-assets/libs/hugerte/hugerte.min.js?v={{ time() }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // HugeRTE temel yapılandırması
@@ -35,6 +35,26 @@
           license_key: "gpl",
           // İçerik stili
           content_style: "body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; }",
+          
+          // Livewire sync için setup callback
+          setup: function(editor) {
+            // Editor ready olduğunda Livewire sync kur
+            editor.on('init', function() {
+              console.log('📝 HugeRTE hazır:', editor.id);
+              
+              // Real-time sync - content değiştiğinde
+              editor.on('input change keyup', function() {
+                const lang = editor.id.replace('editor_', '');
+                const hiddenInput = document.getElementById('hidden_body_' + lang);
+                
+                if (hiddenInput) {
+                  hiddenInput.value = editor.getContent();
+                  hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+                  console.log('🔄 HugeRTE real-time sync:', lang);
+                }
+              });
+            });
+          },
         };
         
         // Tabler dark mode detection - comprehensive
@@ -71,41 +91,54 @@
         const isDarkMode = detectDarkMode();
         
         if (isDarkMode) {
-          options.skin = "oxide-dark";
+          options.skin = "hugerte-5-dark";
           options.content_css = "dark";
           // Dark mode için ek ayarlar
           options.toolbar_mode = "sliding";
           // Dark theme applied
         } else {
+          options.skin = "hugerte-5";
+          options.content_css = "default";
           // Light theme applied
         }
         
-        tinymce.init(options);
+        hugerte.init(options);
         
         // Tema değişimini dinle ve editörü güncelle
         function updateEditorTheme() {
             const isDark = detectDarkMode();
             
-            // Tüm editör instance'larını güncelle
-            tinymce.editors.forEach(editor => {
-                if (editor && editor.initialized) {
-                    // Editörü kaldır ve yeniden başlat
-                    editor.remove();
+            // Tüm editör instance'larını güncelle - güvenli forEach
+            try {
+                if (typeof hugerte !== 'undefined' && hugerte.editors) {
+                    // HugeRTE editors array veya object olabilir
+                    const editors = Array.isArray(hugerte.editors) 
+                        ? hugerte.editors 
+                        : Object.values(hugerte.editors);
+                    
+                    editors.forEach(editor => {
+                        if (editor && editor.initialized) {
+                            // Editörü kaldır ve yeniden başlat
+                            editor.remove();
+                        }
+                    });
                 }
-            });
+            } catch (error) {
+                console.warn('HugeRTE editor cleanup failed:', error);
+            }
             
             // Yeni tema ile editörü yeniden başlat
             if (isDark) {
-                options.skin = "oxide-dark";
+                options.skin = "hugerte-5-dark";
                 options.content_css = "dark";
             } else {
-                options.skin = "oxide";
+                options.skin = "hugerte-5";
                 options.content_css = "default";
             }
             
             // Editörü yeniden başlat
             setTimeout(() => {
-                tinymce.init(options);
+                hugerte.init(options);
             }, 100);
         }
         
@@ -126,9 +159,9 @@
             attributeFilter: ['data-bs-theme', 'class']
         });
         
-        // Bootstrap dialog içinde TinyMCE kullanımı için focusin sorununu çöz
+        // Bootstrap dialog içinde HugeRTE kullanımı için focusin sorununu çöz
         document.addEventListener('focusin', (e) => {
-          if (e.target.closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+          if (e.target.closest(".tox-hugerte, .tox-hugerte-aux, .moxman-window, .tam-assetmanager-root") !== null) {
             e.stopImmediatePropagation();
           }
         });

@@ -441,7 +441,7 @@
 @push('scripts')
 <!-- Sortable Library -->
 <script src="/admin-assets/libs/sortable/sortable.min.js"></script>
-<!-- Chart.js - Local version to avoid source map errors -->
+<!-- ApexCharts - Modern charting library -->
 <script src="/admin-assets/libs/apexcharts/dist/apexcharts.min.js"></script>
 
 <script>
@@ -499,16 +499,16 @@ $(document).ready(function() {
     setTimeout(initializeCharts, 300);
 });
 
-// Chart initialization with Chart.js
+// Chart initialization with ApexCharts
 function initializeCharts() {
-    if (!window.Chart) {
-        console.warn('⚠️ Chart.js not loaded, retrying...');
+    if (!window.ApexCharts) {
+        console.warn('⚠️ ApexCharts not loaded, retrying...');
         setTimeout(initializeCharts, 500);
         return;
     }
     
     setTimeout(function() {
-        console.log('📊 Initializing charts with Chart.js...');
+        console.log('📊 Initializing charts with ApexCharts...');
         
         // Activity chart
         const mentionsElement = document.getElementById('chart-mentions');
@@ -516,43 +516,42 @@ function initializeCharts() {
             try {
                 const mentionsData = [{{ count($recentLogins ?? []) }}, {{ count($newUsers ?? []) }}, {{ $totalPages ?? 0 }}, {{ $totalPortfolios ?? 0 }}, {{ $totalAnnouncements ?? 0 }}];
                 
-                window.mentionsChart = new Chart(mentionsElement, {
-                    type: 'line',
-                    data: {
-                        labels: ['Logins', 'New Users', 'Pages', 'Portfolio', 'Announcements'],
-                        datasets: [{
-                            label: 'Activity',
-                            data: mentionsData,
-                            borderColor: '#206bc4',
-                            backgroundColor: 'rgba(32, 107, 196, 0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: '#e9ecef'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
+                const mentionsOptions = {
+                    chart: {
+                        type: 'area',
+                        height: 250,
+                        toolbar: {
+                            show: false
                         }
+                    },
+                    series: [{
+                        name: 'Activity',
+                        data: mentionsData
+                    }],
+                    xaxis: {
+                        categories: ['Logins', 'New Users', 'Pages', 'Portfolio', 'Announcements']
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 2
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.3,
+                            opacityTo: 0.05,
+                            stops: [0, 100]
+                        }
+                    },
+                    colors: ['#206bc4'],
+                    legend: {
+                        show: false
                     }
-                });
+                };
+                
+                window.mentionsChart = new ApexCharts(mentionsElement, mentionsOptions);
+                window.mentionsChart.render();
                 
                 console.log('✅ Activity chart rendered');
             } catch (e) {
@@ -566,43 +565,36 @@ function initializeCharts() {
             try {
                 const performanceData = [65, 59, 80, 81, 56, 55, 40];
                 
-                window.performanceChart = new Chart(performanceElement, {
-                    type: 'line',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        datasets: [{
-                            label: 'Performance',
-                            data: performanceData,
-                            borderColor: '#2fb344',
-                            backgroundColor: 'rgba(47, 179, 68, 0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            borderWidth: 3
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: '#e9ecef'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
+                const performanceOptions = {
+                    chart: {
+                        type: 'line',
+                        height: 250,
+                        toolbar: {
+                            show: false
                         }
+                    },
+                    series: [{
+                        name: 'Performance',
+                        data: performanceData
+                    }],
+                    xaxis: {
+                        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 3
+                    },
+                    colors: ['#2fb344'],
+                    legend: {
+                        show: false
+                    },
+                    yaxis: {
+                        min: 0
                     }
-                });
+                };
+                
+                window.performanceChart = new ApexCharts(performanceElement, performanceOptions);
+                window.performanceChart.render();
                 
                 console.log('✅ Performance chart rendered');
             } catch (e) {

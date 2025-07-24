@@ -193,16 +193,45 @@ class DeepSeekService
             
             $settings = $this->getGlobalSettings();
             
-            $response = Http::timeout(900)->withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/chat/completions', [
+            // Debug request before sending
+            $requestData = [
                 'model' => $this->model,
                 'messages' => $messages,
                 'temperature' => $settings ? $settings['temperature'] : 0.7,
                 'max_tokens' => $settings ? $settings['max_tokens'] : 2000,
                 'stream' => false,
+            ];
+            
+            // DEBUG: Mesaj formatını kontrol et (GENERATE COMPLETION)
+            Log::info('🔍 DeepSeek Message Format Debug (GENERATE_COMPLETION)', [
+                'messages_count' => count($messages),
+                'first_message' => (!empty($messages) && isset($messages[0])) ? $messages[0] : 'no_messages',
+                'messages_is_array' => is_array($messages),
+                'messages_empty' => empty($messages),
+                'all_messages_structure' => !empty($messages) ? array_map(function($msg) {
+                    return [
+                        'role' => $msg['role'] ?? 'missing_role',
+                        'content_length' => isset($msg['content']) ? strlen($msg['content']) : 0,
+                        'content_preview' => isset($msg['content']) ? substr($msg['content'], 0, 100) . '...' : 'no_content'
+                    ];
+                }, $messages) : 'empty_messages_array'
             ]);
+            
+            Log::info('🔍 DeepSeek API Request Debug', [
+                'url' => $this->baseUrl . '/chat/completions',
+                'model' => $this->model,
+                'messages_count' => count($messages),
+                'first_message_role' => !empty($messages) ? $messages[0]['role'] ?? 'unknown' : 'no_messages',
+                'temperature' => $requestData['temperature'],
+                'max_tokens' => $requestData['max_tokens'],
+                'has_api_key' => !empty($this->apiKey),
+                'api_key_prefix' => !empty($this->apiKey) ? substr($this->apiKey, 0, 10) . '...' : 'empty'
+            ]);
+            
+            $response = Http::timeout(900)->withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->post($this->baseUrl . '/chat/completions', $requestData);
 
             if ($response->successful()) {
                 $responseData = $response->json();
@@ -215,14 +244,33 @@ class DeepSeekService
                 }
             }
             
-            Log::error('API hatası', [
+            $responseBody = null;
+            try {
+                $responseBody = $response->json();
+            } catch (\Exception $jsonError) {
+                $responseBody = $response->body();
+            }
+            
+            Log::error('🚨 DeepSeek API Hatası - Detaylı Analiz', [
                 'status' => $response->status(),
-                'response' => $response->json(),
+                'response_body' => $responseBody,
+                'request_model' => $this->model,
+                'request_messages_count' => count($messages),
+                'request_temperature' => $requestData['temperature'] ?? 'unknown',
+                'request_max_tokens' => $requestData['max_tokens'] ?? 'unknown',
+                'base_url' => $this->baseUrl,
+                'endpoint' => $this->baseUrl . '/chat/completions',
+                'api_key_exists' => !empty($this->apiKey),
+                'headers' => $response->headers()
             ]);
             
             return [
-                'content' => 'Üzgünüm, şu anda cevap üretemiyorum. Lütfen daha sonra tekrar deneyin.',
-                'error' => $response->json(),
+                'content' => 'Üzgünüm, şu anda cevap üretemiyorum. Lütfen daha sonra tekrar deneyin. (Hata Kodu: ' . $response->status() . ')',
+                'error' => $responseBody,
+                'error_details' => [
+                    'status_code' => $response->status(),
+                    'api_response' => $responseBody
+                ]
             ];
         } catch (\Exception $e) {
             Log::error('API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
@@ -490,7 +538,21 @@ class DeepSeekService
             
             if ($stream) {
                 return function (callable $callback) use ($messages) {
-                    $formattedMessages = $this->formatMessagesForAPI($messages);
+                    // Messages zaten formatlanmış durumda (double formatting önlenir)
+                    $formattedMessages = $messages;
+                    
+                    // DEBUG: Mesaj formatını kontrol et (STREAM)
+                    Log::info('🔍 DeepSeek Message Format Debug (STREAM)', [
+                        'messages_count' => count($formattedMessages),
+                        'first_message' => !empty($formattedMessages) ? $formattedMessages[0] : 'no_messages',
+                        'all_messages_structure' => array_map(function($msg) {
+                            return [
+                                'role' => $msg['role'] ?? 'missing_role',
+                                'content_length' => isset($msg['content']) ? strlen($msg['content']) : 0,
+                                'content_preview' => isset($msg['content']) ? substr($msg['content'], 0, 100) . '...' : 'no_content'
+                            ];
+                        }, $formattedMessages)
+                    ]);
                     
                     $settings = $this->getGlobalSettings();
                     
@@ -545,7 +607,21 @@ class DeepSeekService
                     }
                 };
             } else {
-                $formattedMessages = $this->formatMessagesForAPI($messages);
+                // Messages zaten formatlanmış durumda (double formatting önlenir)
+                $formattedMessages = $messages;
+                
+                // DEBUG: Mesaj formatını kontrol et
+                Log::info('🔍 DeepSeek Message Format Debug', [
+                    'messages_count' => count($formattedMessages),
+                    'first_message' => !empty($formattedMessages) ? $formattedMessages[0] : 'no_messages',
+                    'all_messages_structure' => array_map(function($msg) {
+                        return [
+                            'role' => $msg['role'] ?? 'missing_role',
+                            'content_length' => isset($msg['content']) ? strlen($msg['content']) : 0,
+                            'content_preview' => isset($msg['content']) ? substr($msg['content'], 0, 100) . '...' : 'no_content'
+                        ];
+                    }, $formattedMessages)
+                ]);
                 
                 $settings = $this->getGlobalSettings();
                 

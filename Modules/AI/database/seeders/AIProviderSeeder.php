@@ -47,8 +47,8 @@ class AIProviderSeeder extends Seeder
                 'api_key' => 'sk-deepseek-placeholder-key-for-testing-purposes',
                 'base_url' => 'https://api.deepseek.com',
                 'is_active' => true,
-                'is_default' => true,
-                'priority' => 100,
+                'is_default' => false,
+                'priority' => 80,
                 'average_response_time' => 0,
                 'description' => 'DeepSeek AI - Yüksek performanslı AI modeli',
                 'token_cost_multiplier' => 0.5000, // DeepSeek en ucuz
@@ -89,8 +89,8 @@ class AIProviderSeeder extends Seeder
                 'api_key' => 'sk-Rd0uAFfpiAcfdxillkFM1mV0NWxihzz2L4ARj6k2tjT3BlbkFJ6V0IbyeIq53gOxZa31u1xOq94W69xoacMELOL7CIEA',
                 'base_url' => 'https://api.openai.com/v1',
                 'is_active' => true, // API key eklendiği için aktif
-                'is_default' => false,
-                'priority' => 90,
+                'is_default' => true,
+                'priority' => 100,
                 'average_response_time' => 0,
                 'description' => 'OpenAI GPT modelleri - Güçlü dil modeli',
                 'token_cost_multiplier' => 1.0000, // OpenAI baseline

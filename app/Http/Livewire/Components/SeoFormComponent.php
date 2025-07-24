@@ -125,10 +125,21 @@ class SeoFormComponent extends Component
     {
         $model = $this->getModel();
         if (!$model || !$model->exists) {
+            \Log::warning('⚠️ loadSeoData - Model yok', [
+                'model_exists' => $model ? 'var' : 'yok',
+                'model_id' => $this->modelId,
+                'model_type' => $this->modelType
+            ]);
             return;
         }
         
         $seoSettings = $model->seoSetting;
+        
+        \Log::info('🔍 loadSeoData - BAŞLADI', [
+            'current_language' => $this->currentLanguage,
+            'seo_settings_exists' => $seoSettings ? 'var' : 'yok',
+            'model_id' => $model->id
+        ]);
         
         if ($seoSettings) {
             // Get current language data from multi-language fields using fallback
@@ -136,6 +147,13 @@ class SeoFormComponent extends Component
             $titles = $seoSettings->titles ?? [];
             $descriptions = $seoSettings->descriptions ?? [];
             $keywords = $seoSettings->keywords ?? [];
+            
+            \Log::info('🔍 loadSeoData - DB Verileri', [
+                'titles' => $titles,
+                'descriptions' => $descriptions,
+                'keywords' => $keywords,
+                'current_lang' => $currentLang
+            ]);
             
             
             // Use HasTranslations pattern - fallback to tenant default, then tr, then first available
@@ -344,6 +362,11 @@ class SeoFormComponent extends Component
     
     public function switchLanguage($language)
     {
+        \Log::info('🔄 SeoFormComponent switchLanguage BAŞLADI', [
+            'old_language' => $this->currentLanguage,
+            'new_language' => $language,
+            'available_languages' => $this->availableLanguages
+        ]);
         
         if (in_array($language, $this->availableLanguages)) {
             // Dil değişimi kontrolü - AYNI dil ise frontend keywords'leri koru, farklı dil ise DB'den yükle
@@ -351,12 +374,25 @@ class SeoFormComponent extends Component
             $currentKeywords = $this->seoData['keywords'] ?? [];
             $isSameLanguage = ($oldLanguage === $language);
             
+            \Log::info('🔧 Dil değişimi detayları', [
+                'old_lang' => $oldLanguage,
+                'new_lang' => $language,
+                'is_same' => $isSameLanguage,
+                'current_keywords_count' => count($currentKeywords)
+            ]);
             
             $this->currentLanguage = $language;
             
             // Dil değiştiğinde SEO ve slug verilerini yeniden yükle
             $this->loadSeoData();
             $this->loadSlugData();
+            
+            \Log::info('✅ SEO verileri yeniden yüklendi', [
+                'language' => $language,
+                'title' => substr($this->seoData['title'] ?? '', 0, 50),
+                'description' => substr($this->seoData['description'] ?? '', 0, 50),
+                'keywords_count' => count($this->seoData['keywords'] ?? [])
+            ]);
             
             // Frontend keywords'leri sadece AYNI DIL için koru, farklı dillere geçişte DB verisini kullan
             if (!empty($currentKeywords) && $isSameLanguage) {
@@ -366,20 +402,32 @@ class SeoFormComponent extends Component
                     $currentKeywords = is_array($decoded) ? $decoded : [];
                 }
                 $this->seoData['keywords'] = $currentKeywords;
+                \Log::info('🔄 Aynı dil - keywords korundu', ['count' => count($currentKeywords)]);
             } else {
                 // Farklı dile geçiş - DB'den yüklenen veriyi koru, frontend'i override etme
+                \Log::info('🔄 Farklı dil - DB keywords kullanıldı', [
+                    'count' => count($this->seoData['keywords'] ?? [])
+                ]);
             }
             
-            // Force Livewire component refresh for choices.js update
-            $this->dispatch('seo-language-switched', [
-                'language' => $language,
-                'keywords' => $this->seoData['keywords'] ?? []
+            // Data clean sonra component'ı force refresh et
+            $this->cleanComponentData();
+            
+            // Component re-render için dispatch - çok önemli!
+            $this->dispatch('$refresh');
+            
+            \Log::info('✅ SeoFormComponent switchLanguage TAMAMLANDI', [
+                'new_language' => $this->currentLanguage,
+                'title_length' => strlen($this->seoData['title'] ?? ''),
+                'desc_length' => strlen($this->seoData['description'] ?? ''),
+                'keywords_count' => count($this->seoData['keywords'] ?? [])
             ]);
             
-            // Safe count for keywords (could be array or string)
-            $keywords = $this->seoData['keywords'] ?? [];
-            
         } else {
+            \Log::warning('⚠️ Geçersiz dil kodu', [
+                'requested' => $language,
+                'available' => $this->availableLanguages
+            ]);
         }
     }
     
@@ -846,13 +894,83 @@ class SeoFormComponent extends Component
     }
     
     /**
-     * Livewire event listener'ları
+     * Handle language change from parent Page component
      */
-    protected $listeners = [
-        'saveSeoData' => 'prepareSeoForSave',
-        'parentFormSaving' => 'prepareSeoForSave',
-        'pageFormSubmit' => 'prepareSeoForSave'
-    ];
+    public function handleLanguageChange($data)
+    {
+        $newLanguage = $data['language'] ?? null;
+        
+        Log::info('🔄 handleLanguageChange called - BAŞLADI', [
+            'data' => $data,
+            'new_language' => $newLanguage,
+            'current_language' => $this->currentLanguage,
+            'available_languages' => $this->availableLanguages,
+            'model_exists' => $this->getModel() ? 'yes' : 'no'
+        ]);
+        
+        if ($newLanguage && in_array($newLanguage, $this->availableLanguages)) {
+            // Dil değişikliğini yap
+            $this->switchLanguage($newLanguage);
+            
+            Log::info('✅ SEO Component language changed from parent', [
+                'new_language' => $newLanguage,
+                'old_language' => $this->currentLanguage,
+                'available_languages' => $this->availableLanguages
+            ]);
+        } else {
+            Log::warning('⚠️ Invalid language change request', [
+                'new_language' => $newLanguage,
+                'available_languages' => $this->availableLanguages
+            ]);
+        }
+    }
+    
+    /**
+     * Direct property update için public method
+     */
+    public function updateCurrentLanguage($language)
+    {
+        Log::info('🔄 updateCurrentLanguage called', [
+            'language' => $language,
+            'current' => $this->currentLanguage
+        ]);
+        
+        if (in_array($language, $this->availableLanguages)) {
+            $this->switchLanguage($language);
+            Log::info('✅ Language updated successfully', ['language' => $language]);
+        }
+    }
+    
+    /**
+     * Test için basit metod
+     */
+    public function testLanguageChange()
+    {
+        Log::info('🧪 testLanguageChange called - Livewire component çalışıyor!');
+        
+        $this->dispatch('toast', [
+            'title' => 'Test',
+            'message' => 'SEO Component çalışıyor!',
+            'type' => 'success'
+        ]);
+    }
+    
+    /**
+     * Livewire event listener'ları - getListeners() metodu ile override
+     */
+    protected function getListeners()
+    {
+        Log::info('🔍 getListeners called - SEO Component listeners initialized');
+        
+        return [
+            'saveSeoData' => 'prepareSeoForSave',
+            'parentFormSaving' => 'prepareSeoForSave',
+            'pageFormSubmit' => 'prepareSeoForSave',
+            'seo-language-change' => 'handleLanguageChange',
+            'refresh-seo-language' => 'handleLanguageChange',
+            'test-seo-component' => 'testLanguageChange'
+        ];
+    }
     
     /**
      * Handle Livewire exceptions

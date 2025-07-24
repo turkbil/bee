@@ -6,11 +6,15 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ __('usermanagement::admin.basic_info') }}</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">
+                            <i class="fas fa-edit me-2"></i>{{ __('usermanagement::admin.basic_info') }}
+                        </a>
                     </li>
                     @if($roleId)
                     <li class="nav-item">
-                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">{{ __('usermanagement::admin.permissions') }}</a>
+                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">
+                            <i class="fas fa-key me-2"></i>{{ __('usermanagement::admin.permissions') }}
+                        </a>
                     </li>
                     @endif
                 </ul>

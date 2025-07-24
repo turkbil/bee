@@ -83,6 +83,20 @@
     <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/ai-response-templates.css?v={{ time() }}" />
+    
+    {{-- Global AI Widget System CSS - Auto-load if AI module is active --}}
+    @php
+        $aiModuleActive = false;
+        try {
+            $modules = app('modules')->allEnabled();
+            $aiModuleActive = is_array($modules) ? in_array('AI', array_keys($modules)) : $modules->has('AI');
+        } catch(\Exception $e) {
+            // Module service not available
+        }
+    @endphp
+    @if($aiModuleActive)
+    <link rel="stylesheet" href="/admin-assets/css/ai-widget.css?v={{ time() }}" />
+    @endif
     @stack('styles') @stack('css')
     
     {{-- Module Menu Icon Symmetry CSS --}}
@@ -258,6 +272,9 @@
     </div>
 </div>
 
+{{-- 🤖 Floating AI Chat Widget - Sağ Alt Köşe --}}
+@include('admin.includes.floating-ai-chat')
+
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>
 <script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
@@ -392,6 +409,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Navigation Loading States -->
 <script src="{{ asset('admin-assets/js/navigation-loading.js') }}"></script>
 
+{{-- Global AI Widget System JS - Auto-load if AI module is active --}}
+@if($aiModuleActive ?? false)
+<script src="{{ asset('admin-assets/js/ai-widget.js') }}?v={{ time() }}"></script>
+@endif
+
 @stack('scripts') @stack('js')
 
 @if(session('toast'))
@@ -426,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $(document).ready(function() {
         // Initialize tab manager with dynamic key based on current route
         const routeName = '{{ request()->route()->getName() }}';
-        const tabKey = routeName.replace('.', '') + 'ActiveTab';
+        const tabKey = routeName.replace(/\./g, '') + 'ActiveTab'; // Global replace - tüm noktaları çıkar
         TabManager.init(tabKey);
         
         // Check if page has multi-language support

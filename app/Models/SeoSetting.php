@@ -142,6 +142,93 @@ class SeoSetting extends Model
     }
 
     /**
+     * Multi-language canonical URL getter with fallback
+     */
+    public function getCanonicalUrl(?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        // Eğer canonical URL tek değer ise direkt döndür
+        if (is_string($this->canonical_url)) {
+            return $this->canonical_url;
+        }
+        
+        // Array ise dil bazında döndür
+        if (is_array($this->canonical_url)) {
+            return SeoLanguageManager::getSafeValue($this->canonical_url, $locale, $this->default_language);
+        }
+        
+        return null;
+    }
+
+    /**
+     * Multi-language OG title getter with fallback
+     */
+    public function getOgTitle(?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (!$this->og_title) {
+            return $this->getTitle($locale);
+        }
+
+        return SeoLanguageManager::getSafeValue($this->og_title, $locale, $this->default_language)
+            ?? $this->getTitle($locale);
+    }
+
+    /**
+     * Multi-language OG description getter with fallback
+     */
+    public function getOgDescription(?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (!$this->og_description) {
+            return $this->getDescription($locale);
+        }
+
+        return SeoLanguageManager::getSafeValue($this->og_description, $locale, $this->default_language)
+            ?? $this->getDescription($locale);
+    }
+
+    /**
+     * Multi-language OG image getter with fallback
+     */
+    public function getOgImage(?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (is_string($this->og_image)) {
+            return $this->og_image;
+        }
+        
+        if (is_array($this->og_image)) {
+            return SeoLanguageManager::getSafeValue($this->og_image, $locale, $this->default_language);
+        }
+        
+        return null;
+    }
+
+    /**
+     * Multi-language robots getter with fallback
+     */
+    public function getRobots(?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (is_string($this->robots_meta)) {
+            return $this->robots_meta;
+        }
+        
+        if (is_array($this->robots_meta)) {
+            $robotsValue = SeoLanguageManager::getSafeValue($this->robots_meta, $locale, $this->default_language);
+            return $robotsValue ?? 'index,follow';
+        }
+        
+        return 'index,follow';
+    }
+
+    /**
      * Get hreflang URLs for current locale
      */
     public function getHreflangUrls(): array
@@ -243,6 +330,10 @@ class SeoSetting extends Model
             $keywords = $this->keywords ?? [];
             $keywords[$locale] = is_array($data['keywords']) ? $data['keywords'] : explode(',', $data['keywords']);
             $this->keywords = $keywords;
+        }
+
+        if (isset($data['canonical_url'])) {
+            $this->canonical_url = $data['canonical_url'];
         }
 
         if (isset($data['hreflang_url'])) {

@@ -92,11 +92,11 @@ class AIChatController extends Controller
                 ];
             }
             
-            // DeepSeek API'ye istek gönder
-            $response = $this->deepSeekService->generateCompletion($message, $conversationHistory);
+            // Modern AIService ile provider-aware request
+            $response = $this->aiService->ask($message, ['source' => 'admin_chat']);
             
-            if (empty($response) || !isset($response['content'])) {
-                Log::error('DeepSeek API boş yanıt döndü', [
+            if (empty($response) || is_string($response) && str_contains($response, 'üzgünüm')) {
+                Log::error('AI API boş yanıt döndü', [
                     'request' => $message,
                     'response' => $response,
                 ]);
@@ -113,16 +113,16 @@ class AIChatController extends Controller
             $aiMessage = new Message();
             $aiMessage->conversation_id = $conversation->id;
             $aiMessage->role = 'assistant';
-            $aiMessage->content = $response['content'];
-            $aiMessage->tokens = strlen($response['content']) / 4;
+            $aiMessage->content = $response;
+            $aiMessage->tokens = strlen($response) / 4;
             $aiMessage->save();
             
             // AI yanıtı için token kullanımını kaydet
-            $aiCompletionTokens = (int) (strlen($response['content']) / 4);
+            $aiCompletionTokens = (int) (strlen($response) / 4);
             $this->conversationService->recordTokenUsage($conversation, $aiMessage, 0, $aiCompletionTokens, $this->getCurrentProviderModel());
             
             // Geriye uyumluluk için Redis cache'ini de güncelle
-            $this->updateRedisCache($conversation->id, $conversationHistory, $response['content']);
+            $this->updateRedisCache($conversation->id, $conversationHistory, $response);
             
             // Token bilgileri hesapla
             $totalTokensUsed = $userPromptTokens + $aiCompletionTokens;
@@ -137,12 +137,12 @@ class AIChatController extends Controller
                 ->withProperties([
                     'conversation_id' => $conversation->id,
                     'message_length' => strlen($message),
-                    'response_length' => strlen($response['content']),
+                    'response_length' => strlen($response),
                 ])
                 ->log('ai_message_sent');
             
             // Markdown kontrolü ve dönüşüm
-            $content = $response['content'];
+            $content = $response;
             $hasMarkdown = $this->markdownService->hasMarkdown($content);
             $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
             $newBalance = ai_get_credit_balance($tenantId);
@@ -523,5 +523,145 @@ class AIChatController extends Controller
         } catch (\Exception $e) {
             return 'unknown/error';
         }
+    }
+    
+    /**
+     * Execute AI Widget Feature
+     * Global AI Widget System için
+     */
+    public function executeWidgetFeature(Request $request)
+    {
+        try {
+            Log::info('🚀 AI Widget Feature Request', $request->all());
+            
+            $featureSlug = $request->input('feature_slug');
+            $context = $request->input('context', 'page');
+            $entityId = $request->input('entity_id');
+            $entityType = $request->input('entity_type', 'page');
+            $currentData = $request->input('current_data', []);
+            
+            // Validation
+            if (!$featureSlug) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Feature slug gerekli'
+                ], 400);
+            }
+            
+            // Context-based data preparation
+            $contextData = $this->prepareContextData($context, $entityId, $currentData);
+            
+            // Execute AI feature through repository
+            $result = $this->aiResponseRepository->executeRequest('widget_feature', [
+                'feature_slug' => $featureSlug,
+                'context' => $context,
+                'entity_id' => $entityId,
+                'entity_type' => $entityType,
+                'data' => $contextData,
+                'user_id' => Auth::id()
+            ]);
+            
+            if ($result['success']) {
+                Log::info('✅ AI Widget Feature completed', [
+                    'feature' => $featureSlug,
+                    'context' => $context,
+                    'tokens' => $result['tokens_used'] ?? 0
+                ]);
+                
+                return response()->json([
+                    'success' => true,
+                    'response' => $result['response'],
+                    'formatted_response' => $result['formatted_response'],
+                    'tokens_used' => $result['tokens_used'] ?? 0,
+                    'feature' => [
+                        'slug' => $featureSlug,
+                        'context' => $context
+                    ],
+                    'suggestions' => $this->extractSuggestions($result['response'])
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'error' => $result['error'] ?? 'AI feature hatası'
+                ], 500);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('AI Widget Feature Error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'AI widget servisi şu anda kullanılamıyor.'
+            ], 500);
+        }
+    }
+    
+    /**
+     * Prepare context-specific data
+     */
+    private function prepareContextData(string $context, $entityId, array $currentData): array
+    {
+        $contextData = $currentData;
+        
+        // Context-specific data enrichment
+        switch ($context) {
+            case 'page':
+                if ($entityId) {
+                    // Page specific data loading
+                    try {
+                        $page = \Modules\Page\App\Models\Page::find($entityId);
+                        if ($page) {
+                            $contextData['existing_content'] = $page->multilang_data ?? [];
+                            $contextData['page_type'] = 'existing';
+                        }
+                    } catch (\Exception $e) {
+                        Log::warning('Could not load page data: ' . $e->getMessage());
+                    }
+                } else {
+                    $contextData['page_type'] = 'new';
+                }
+                break;
+                
+            case 'portfolio':
+                // Portfolio specific data
+                $contextData['context_type'] = 'portfolio';
+                break;
+                
+            case 'blog':
+                // Blog specific data  
+                $contextData['context_type'] = 'blog';
+                break;
+        }
+        
+        return $contextData;
+    }
+    
+    /**
+     * Extract actionable suggestions from AI response
+     */
+    private function extractSuggestions(string $response): array
+    {
+        $suggestions = [];
+        
+        // Extract title suggestions
+        if (preg_match('/(?:title|başlık)[:\s]*["\']?([^"\'\n]+)["\']?/i', $response, $matches)) {
+            $suggestions['title'] = trim($matches[1]);
+        }
+        
+        // Extract meta description suggestions
+        if (preg_match('/(?:meta|açıklama)[:\s]*["\']?([^"\'\n]{50,160})["\']?/i', $response, $matches)) {
+            $suggestions['meta_description'] = trim($matches[1]);
+        }
+        
+        // Extract keywords
+        if (preg_match_all('/(?:anahtar|kelime|keyword)[:\s]*["\']?([^"\'\n]+)["\']?/i', $response, $matches)) {
+            $keywords = [];
+            foreach ($matches[1] as $match) {
+                $keywords = array_merge($keywords, array_map('trim', explode(',', $match)));
+            }
+            $suggestions['keywords'] = array_unique(array_filter($keywords));
+        }
+        
+        return $suggestions;
     }
 }

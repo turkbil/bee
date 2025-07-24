@@ -501,17 +501,23 @@ class AIFeaturesController extends Controller
      */
     public function testFeature(Request $request)
     {
+        // Slug veya ID kabul et
         $request->validate([
-            'feature_id' => 'required|integer',
-            'input_text' => 'required|string|min:5'
+            'feature_id' => 'required_without:feature_slug|integer',
+            'feature_slug' => 'required_without:feature_id|string',
+            'input_text' => 'nullable|string|min:5',
+            'custom_prompt' => 'nullable|string|min:5'
         ]);
 
         $featureId = $request->feature_id;
-        $inputText = $request->input_text;
+        $featureSlug = $request->feature_slug;
+        $inputText = $request->input_text ?? $request->custom_prompt ?? 'Analiz yap';
         $tenantId = tenant('id') ?: '1';
 
-        // Feature'ı veritabanından al
-        $feature = \Modules\AI\App\Models\AIFeature::find($featureId);
+        // Feature'ı veritabanından al (ID veya slug ile)
+        $feature = $featureId 
+            ? \Modules\AI\App\Models\AIFeature::find($featureId)
+            : \Modules\AI\App\Models\AIFeature::where('slug', $featureSlug)->first();
 
         if (!$feature) {
             return response()->json([
@@ -543,7 +549,7 @@ class AIFeaturesController extends Controller
             
             // YENİ MERKEZI REPOSITORY SİSTEMİ - Prowess için
             $result = $this->aiResponseRepository->executeRequest('prowess_test', [
-                'feature_id' => $featureId,
+                'feature_id' => $feature->id,
                 'input_text' => $inputText,
                 'tenant_id' => $tenantId
             ]);
@@ -569,7 +575,7 @@ class AIFeaturesController extends Controller
                 'prowess_test', 
                 [
                     'feature_name' => $feature->name,
-                    'feature_id' => $featureId,
+                    'feature_id' => $feature->id,
                     'showcase_mode' => true
                 ]
             );

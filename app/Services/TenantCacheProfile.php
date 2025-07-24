@@ -16,13 +16,25 @@ class TenantCacheProfile implements CacheProfile
 
     public function shouldCacheRequest(Request $request): bool
     {
+        // MUTLAK ADMIN CACHE ENGELLEMESİ - İLK KONTROL
+        $path = $request->path();
+        if (str_starts_with($path, 'admin') || str_contains($path, '/admin')) {
+            return false;
+        }
+        
+        // Admin No-Cache Header kontrolü
+        if ($request->header('X-Cache-Bypass') === 'admin' || $request->header('X-Admin-No-Cache')) {
+            return false;
+        }
+        
         // Debug log sadece local/staging'de
         if (app()->environment(['local', 'staging'])) {
             \Log::debug('Cache profile check', [
                 'url' => $request->fullUrl(),
                 'method' => $request->method(),
                 'is_ajax' => $request->ajax(),
-                'is_auth' => auth()->check()
+                'is_auth' => auth()->check(),
+                'path' => $path
             ]);
         }
         

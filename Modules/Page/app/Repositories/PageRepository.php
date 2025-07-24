@@ -18,6 +18,12 @@ class PageRepository implements PageRepositoryInterface
     
     public function findById(int $id): ?Page
     {
+        // Admin panelinde cache kullanma - Fresh data
+        if (request()->is('admin*')) {
+            return $this->model->where('page_id', $id)->first();
+        }
+        
+        // Public sayfalarda cache kullan
         $cacheKey = $this->getCacheKey("find_by_id.{$id}");
         
         return Cache::tags($this->getCacheTags())->remember($cacheKey, $this->cacheTtl, function () use ($id) {
@@ -39,6 +45,12 @@ class PageRepository implements PageRepositoryInterface
     
     public function getActive(): Collection
     {
+        // Admin panelinde cache kullanma - Fresh data
+        if (request()->is('admin*')) {
+            return $this->model->active()->orderBy('page_id', 'desc')->get();
+        }
+        
+        // Public sayfalarda cache kullan
         $cacheKey = $this->getCacheKey('active_pages');
         
         return Cache::tags($this->getCacheTags())->remember($cacheKey, $this->cacheTtl, function () {

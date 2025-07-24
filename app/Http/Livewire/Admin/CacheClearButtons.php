@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admin;
 use Livewire\Component;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Spatie\ResponseCache\Facades\ResponseCache;
 
 class CacheClearButtons extends Component
 {
@@ -28,6 +29,9 @@ class CacheClearButtons extends Component
                 Artisan::call('route:clear');
                 Artisan::call('view:clear');
                 
+                // Response Cache temizle - KRİTİK!
+                ResponseCache::clear();
+                
                 $this->dispatch('toast', [
                     'title' => 'Başarılı',
                     'message' => 'Sistem cache temizlendi',
@@ -37,9 +41,12 @@ class CacheClearButtons extends Component
                 // Basic cache clear
                 Cache::flush();
                 
+                // Response Cache de temizle - Her durumda!
+                ResponseCache::clear();
+                
                 $this->dispatch('toast', [
                     'title' => 'Başarılı',
-                    'message' => 'Cache temizlendi',
+                    'message' => 'Cache temizlendi (ResponseCache dahil)',
                     'type' => 'success'
                 ]);
             }

@@ -33,8 +33,46 @@ class BaseModel extends Model
             'slug' => [
                 'source'   => 'title',
                 'onUpdate' => true, // Slug güncellemeyi destekler
+                'method'   => 'customSlugMethod', // Custom Türkçe slug metodu
+                'separator' => '-',
+                'unique' => true,
+                'includeTrashed' => false,
             ],
         ];
+    }
+
+    /**
+     * Custom Türkçe Slug Üretimi
+     */
+    public function customSlugMethod($string, $separator = '-')
+    {
+        // Türkçe karakter dönüşüm tablosu
+        $turkishChars = [
+            'Ç' => 'C', 'ç' => 'c',
+            'Ğ' => 'G', 'ğ' => 'g', 
+            'I' => 'I', 'ı' => 'i',
+            'İ' => 'I', 'i' => 'i',
+            'Ö' => 'O', 'ö' => 'o',
+            'Ş' => 'S', 'ş' => 's',
+            'Ü' => 'U', 'ü' => 'u'
+        ];
+        
+        // Türkçe karakterleri çevir
+        $string = strtr($string, $turkishChars);
+        
+        // Küçük harfe çevir
+        $string = strtolower($string);
+        
+        // Özel karakterleri temizle (sadece harf, rakam ve boşluk kalsın)
+        $string = preg_replace('/[^a-z0-9\s\-]/', '', $string);
+        
+        // Birden fazla boşluk/tire varsa tek tire yap
+        $string = preg_replace('/[\s\-]+/', $separator, $string);
+        
+        // Başındaki ve sonundaki tireleri kaldır
+        $string = trim($string, $separator);
+        
+        return $string;
     }
 
     /**

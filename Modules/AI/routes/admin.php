@@ -534,6 +534,11 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->name('reset');
                     });
 
+                // Global AI Widget System
+                Route::post('/execute-widget-feature', [AIChatController::class, 'executeWidgetFeature'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('execute-widget-feature');
+
                 // AI Debug Dashboard Routes
                 Route::prefix('debug')
                     ->name('debug.')

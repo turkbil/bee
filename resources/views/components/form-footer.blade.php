@@ -38,7 +38,9 @@
 
         <div class="d-flex gap-2">
             @if($modelId)
-            <button type="button" class="btn" wire:click="save(false, false)" wire:loading.attr="disabled"
+            <button type="button" class="btn save-button" 
+                wire:click="save(false, false)" 
+                wire:loading.attr="disabled"
                 wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(false, false)">
@@ -50,7 +52,9 @@
                 </span>
             </button>
             @else
-            <button type="button" class="btn" wire:click="save(false, true)" wire:loading.attr="disabled"
+            <button type="button" class="btn save-button" 
+                wire:click="save(false, true)" 
+                wire:loading.attr="disabled"
                 wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(false, true)">
@@ -63,8 +67,10 @@
             </button>
             @endif
 
-            <button type="button" class="btn btn-primary ms-4" wire:click="save(true, false)"
-                wire:loading.attr="disabled" wire:target="save">
+            <button type="button" class="btn btn-primary ms-4 save-button" 
+                wire:click="save(true, false)"
+                wire:loading.attr="disabled" 
+                wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(true, false)">
                         <i class="fa-thin fa-floppy-disk me-2"></i> {{ __('admin.save') }}

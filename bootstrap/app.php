@@ -43,10 +43,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // 4. TEMA - Dil'den sonra
         $middleware->appendToGroup('web', \App\Http\Middleware\CheckThemeStatus::class);
         
-        // 5. SEO & CACHE - Son sırada
+        // 5. SEO - Son sırada (CACHE KALDIRILDI - Sadece site rotalarında)
         $middleware->appendToGroup('web', \App\Http\Middleware\SeoMetaTagMiddleware::class);
         $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
-        $middleware->appendToGroup('web', \Spatie\ResponseCache\Middlewares\CacheResponse::class);
         
         // Middleware alias tanımları
         $middleware->alias([
@@ -55,6 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'page.tracker' => \App\Http\Middleware\PageTracker::class,
             'root.access' => \App\Http\Middleware\RootAccessMiddleware::class,
             'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
+            'admin.nocache' => \App\Http\Middleware\AdminNoCacheMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
@@ -70,6 +70,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'web',
             'auth',
             'admin.access',
+            'admin.nocache', // MUTLAK CACHE ENGELLEMESİ
             'locale.admin',
         ]);
         
@@ -83,6 +84,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('site', [
             'web',
             'locale.site',
+            \Spatie\ResponseCache\Middlewares\CacheResponse::class, // SADECE SİTE ROTALARINDA CACHE
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü

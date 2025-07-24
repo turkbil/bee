@@ -2020,9 +2020,10 @@ if (!function_exists('ai_keyword_analysis')) {
 if (!function_exists('ai_content_optimization')) {
     function ai_content_optimization(string $page_content, array $options = []): array {
         return ai_execute_feature('icerik-optimizasyonu', [
+            'title' => $options['title'] ?? 'Sayfa Başlığı', // Validation için zorunlu
             'content' => $page_content,
             'target_keywords' => implode(', ', $options['target_keywords'] ?? []),
-            'language' => $options['language'] ?? 'Turkish'
+            'language' => $options['language'] ?? 'tr'
         ], ['content_type' => ['content_improvement']], $options);
     }
 }
@@ -2044,5 +2045,162 @@ if (!function_exists('ai_meta_description_generator')) {
             'keywords' => implode(', ', $options['keywords'] ?? []),
             'language' => $options['language'] ?? 'Turkish'
         ], ['content_type' => ['meta_description']], $options);
+    }
+}
+
+// ============================================================================
+// KATEGORI 1 - SAYFA SEO ARAÇLARI HELPER FUNCTIONS
+// ============================================================================
+
+if (!function_exists('optimizePageContent')) {
+    function optimizePageContent(string $content, array $options = []): array {
+        return ai_execute_feature('icerik-optimizasyonu', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'language' => $options['language'] ?? 'tr'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('researchKeywords')) {
+    function researchKeywords(string $content, array $options = []): array {
+        return ai_execute_feature('anahtar-kelime-arastirmasi', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'language' => $options['language'] ?? 'tr',
+            'industry' => $options['industry'] ?? ''
+        ], [], $options);
+    }
+}
+
+if (!function_exists('translateContent')) {
+    function translateContent(string $content, array $options = []): array {
+        return ai_execute_feature('cevirmen', [
+            'source_text' => $content,
+            'source_language' => $options['source_language'] ?? 'tr',
+            'target_language' => $options['target_language'] ?? 'en',
+            'content_type' => $options['content_type'] ?? 'web_page'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('autoOptimize')) {
+    function autoOptimize(string $content, array $options = []): array {
+        return ai_execute_feature('otomatik-optimize', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'language' => $options['language'] ?? 'tr'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('contentQualityScore')) {
+    function contentQualityScore(string $content, array $options = []): array {
+        return ai_execute_feature('icerik-kalite-skoru', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'language' => $options['language'] ?? 'tr'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('generateSchemaMarkup')) {
+    function generateSchemaMarkup(string $content, array $options = []): array {
+        return ai_execute_feature('schema-markup-uretici', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'page_type' => $options['page_type'] ?? 'WebPage'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('translateMultiLanguage')) {
+    function translateMultiLanguage(string $content, array $options = []): array {
+        return ai_execute_feature('coklu-dil-cevirisi', [
+            'source_text' => $content,
+            'source_language' => $options['source_language'] ?? 'tr',
+            'target_languages' => $options['target_languages'] ?? ['en', 'de'],
+            'preserve_formatting' => $options['preserve_formatting'] ?? true
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_content_expansion')) {
+    function ai_content_expansion(string $content, array $options = []): array {
+        return ai_execute_feature('icerik-genisletme', [
+            'content' => $content,
+            'expansion_type' => $options['expansion_type'] ?? 'detailed',
+            'language' => $options['language'] ?? 'tr'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_content_summarize')) {
+    function ai_content_summarize(string $content, array $options = []): array {
+        return ai_execute_feature('icerik-ozetleme', [
+            'content' => $content,
+            'summary_length' => $options['summary_length'] ?? 'medium',
+            'language' => $options['language'] ?? 'tr'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_subheading_suggestions')) {
+    function ai_subheading_suggestions(string $content, array $options = []): array {
+        return ai_execute_feature('alt-baslik-onerileri', [
+            'content' => $content,
+            'heading_levels' => $options['heading_levels'] ?? ['h2', 'h3'],
+            'language' => $options['language'] ?? 'tr'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_page_improvement_suggestions')) {
+    function ai_page_improvement_suggestions(string $content, array $options = []): array {
+        return ai_execute_feature('sayfa-gelistirme-onerileri', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'page_type' => $options['page_type'] ?? 'general'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_ux_analysis')) {
+    function ai_ux_analysis(string $content, array $options = []): array {
+        return ai_execute_feature('kullanici-deneyimi-analizi', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'target_audience' => $options['target_audience'] ?? 'general'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_language_quality_check')) {
+    function ai_language_quality_check(string $content, array $options = []): array {
+        return ai_execute_feature('dil-kalitesi-kontrolu', [
+            'content' => $content,
+            'language' => $options['language'] ?? 'tr',
+            'check_type' => $options['check_type'] ?? 'full'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_schema_markup_suggestions')) {
+    function ai_schema_markup_suggestions(string $content, array $options = []): array {
+        return ai_execute_feature('schema-markup-onerileri', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'page_type' => $options['page_type'] ?? 'WebPage'
+        ], [], $options);
+    }
+}
+
+if (!function_exists('ai_link_suggestions')) {
+    function ai_link_suggestions(string $content, array $options = []): array {
+        return ai_execute_feature('link-onerileri', [
+            'title' => $options['title'] ?? '',
+            'content' => $content,
+            'link_type' => $options['link_type'] ?? 'both'
+        ], [], $options);
     }
 }

@@ -1,4 +1,82 @@
 
+/* SOLID Management System - Global Styles */
+.required-star {
+    color: #e74c3c;
+    font-size: 0.75rem;
+    margin-left: 2px;
+}
+
+.tab-completion-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+}
+
+.seo-character-counter {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.seo-character-counter.warning {
+    color: #f39c12;
+}
+
+.seo-character-counter.danger {
+    color: #e74c3c;
+}
+
+.seo-score-container {
+    /* Removed background for dark/light mode compatibility */
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+/* Removed - using Bootstrap progress bar instead */
+
+.seo-score-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Removed - using Bootstrap badges instead */
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin: 2px;
+}
+
+.keyword-remove {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #f44336;
+}
+
+.keyword-input-container {
+    position: relative;
+}
+
+.keyword-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.keyword-suggestion {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.keyword-suggestion:hover {
+    background: #f5f5f5;
+}
+
 /* Navigation Icon Styling */
 .nav-icon {
     display: flex;
@@ -149,6 +227,84 @@ form .ts-control .item {
 .toggle-status.btn-link:focus-visible {
     color: inherit;
     text-decoration: none;
+}
+
+/* SOLID Management System - Global Styles */
+.required-star {
+    color: #e74c3c;
+    font-size: 0.75rem;
+    margin-left: 2px;
+}
+
+.tab-completion-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+}
+
+.seo-character-counter {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.seo-character-counter.warning {
+    color: #f39c12;
+}
+
+.seo-character-counter.danger {
+    color: #e74c3c;
+}
+
+.seo-score-container {
+    /* Removed background for dark/light mode compatibility */
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+/* Removed - using Bootstrap progress bar instead */
+
+.seo-score-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Removed - using Bootstrap badges instead */
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin: 2px;
+}
+
+.keyword-remove {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #f44336;
+}
+
+.keyword-input-container {
+    position: relative;
+}
+
+.keyword-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.keyword-suggestion {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.keyword-suggestion:hover {
+    background: #f5f5f5;
 }
 
 /* Navigation Icon Styling */
@@ -452,5 +608,89 @@ td:hover .edit-icon {
 .nav-tabs .language-switch-btn.text-primary {
     border-bottom-color: var(--primary-color) !important;
     color: var(--primary-color) !important;
+}
+
+/* ====================================== */
+/* GLOBAL HELPER STYLES - From Page Module */
+/* ====================================== */
+
+/* Required Star Styling - Minimal & Consistent */
+.required-star {
+    color: #6c757d;
+    font-size: 10px !important;
+    line-height: 1;
+    margin-left: 3px;
+    font-weight: 300;
+    opacity: 0.7;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    text-align: center;
+    vertical-align: baseline;
+}
+
+/* Form floating ve form-label içindeki yıldızlar için özel */
+.form-floating label .required-star {
+    font-size: 12px !important;
+    transform: none !important;
+    width: 12px !important;
+    height: 12px !important;
+}
+
+.form-label .required-star {
+    font-size: 10px !important;
+    transform: none !important;
+    width: 10px !important;
+    height: 10px !important;
+}
+
+/* Dark mode uyumluluğu */
+[data-bs-theme="dark"] .required-star {
+    color: #adb5bd;
+    opacity: 0.6;
+}
+
+/* Character Counter Styles - Global */
+.input-with-counter {
+    position: relative;
+}
+
+.character-counter {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    transform: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+}
+
+/* Textarea için counter position ayarı */
+.form-floating textarea ~ .character-counter {
+    top: 8px;
+    transform: none;
+}
+
+.character-counter .counter-text {
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-weight: normal;
+    min-width: 40px;
+}
+
+.counter-bar {
+    width: 40px;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.counter-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4aa, #667eea);
+    border-radius: 2px;
+    transition: width 0.3s ease;
 }
 

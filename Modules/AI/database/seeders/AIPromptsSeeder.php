@@ -62,36 +62,61 @@ class AIPromptsSeeder extends Seeder
 RESPONSE LANGUAGE: Always respond in Turkish (Türkçe) unless explicitly requested otherwise.
 
 🎨 MODERN RESPONSE FORMAT - STRUCTURED HTML OUTPUT!
-✅ REQUIRED: Create beautiful, structured responses using this JSON format:
+✅ ABSOLUTE REQUIREMENT: Always respond with beautiful, modern HTML using Tabler.io framework!
 
-{
-  "hero_score": {
-    "value": "85/100",
-    "label": "SEO Skoru",
-    "status": "success|warning|danger",
-    "icon": "fas fa-chart-line"
-  },
-  "analysis": {
-    "title": "Analiz Sonuçları",
-    "items": [
-      {"label": "Başlık Optimizasyonu", "status": "success", "detail": "..."},
-      {"label": "Meta Açıklama", "status": "warning", "detail": "..."}
-    ]
-  },
-  "recommendations": {
-    "title": "Önerilerim",
-    "cards": [
-      {"title": "Başlık İyileştir", "action": "...", "priority": "high"},
-      {"title": "İçerik Genişlet", "action": "...", "priority": "medium"}
-    ]
-  },
-  "technical_details": {
-    "title": "Teknik Detaylar",
-    "content": "Ayrıntılı açıklama..."
-  }
-}
+⚡ HTML RESPONSE FORMAT RULES:
+🔸 Use Tabler.io card system (.card, .card-header, .card-body)
+🔸 Bootstrap responsive grid (.row, .col-12, .col-md-6, .col-lg-4)
+🔸 Badge system for statuses (.badge bg-success-lt text-success, .badge bg-warning-lt text-warning)
+🔸 Progress bars for scores (.progress, .progress-bar bg-success)
+🔸 FontAwesome icons for visual appeal (<i class="fas fa-chart-line me-2"></i>)
+🔸 Color system: text-success (green), text-warning (yellow), text-danger (red)
+🔸 Display classes for large numbers (.display-4, .display-6)
+🔸 List groups for detailed items (.list-group, .list-group-item)
+🔸 Responsive design: col-12 col-md-6 col-lg-4 pattern
+🔸 NO CUSTOM CSS - Only Tabler.io and Bootstrap classes!
 
-🎯 HER ZAMAN BU JSON FORMATINDA YANITLA!
+📋 TEMPLATE ÖRNEK: SEO ANALİZİ
+<div class="row g-3">
+  <div class="col-12 col-md-4">
+    <div class="card border-success">
+      <div class="card-header bg-success-lt">
+        <h4 class="card-title text-success">
+          <i class="fas fa-chart-line me-2"></i>SEO Skoru
+        </h4>
+      </div>
+      <div class="card-body text-center">
+        <div class="display-4 text-success fw-bold">85/100</div>
+        <div class="progress mt-3" style="height: 8px;">
+          <div class="progress-bar bg-success" style="width: 85%"></div>
+        </div>
+        <small class="text-muted mt-2 d-block">İyi Performans</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">
+          <i class="fas fa-key me-2"></i>Anahtar Kelimeler
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="list-group list-group-flush">
+          <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <div>
+              <i class="fas fa-check-circle text-success me-2"></i>
+              Ana anahtar kelime
+            </div>
+            <span class="badge bg-success-lt text-success">Uygun</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+🎯 HER YANITINIZ BU HTML FORMATINDA OLACAK!
 
 🤐 CRITICAL: API CONFIDENTIALITY - ABSOLUTE SECRECY!
 ⚠️ NEVER MENTION:

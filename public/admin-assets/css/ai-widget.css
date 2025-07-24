@@ -1,0 +1,256 @@
+/**
+ * Global AI Widget CSS
+ * Clean and modern design for all AI widgets
+ */
+
+.ai-widget-container {
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.ai-widget-container .card {
+    border: 1px solid var(--tblr-border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.ai-widget-container .card-header {
+    border-bottom: 1px solid var(--tblr-border-color);
+    background: var(--tblr-bg-surface);
+}
+
+.ai-widget-container .card-header.bg-primary-subtle {
+    background-color: rgba(var(--tblr-primary-rgb), 0.1) !important;
+    border-bottom-color: rgba(var(--tblr-primary-rgb), 0.2);
+}
+
+/* AI Feature Buttons */
+.ai-feature-btn {
+    transition: all 0.3s ease;
+    border: 1px solid var(--tblr-border-color);
+    background: var(--tblr-bg-surface);
+    color: var(--tblr-body-color);
+    text-align: left;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-feature-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(var(--tblr-primary-rgb), 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.ai-feature-btn:hover::before {
+    left: 100%;
+}
+
+.ai-feature-btn:hover {
+    background: var(--tblr-primary);
+    border-color: var(--tblr-primary);
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(var(--tblr-primary-rgb), 0.3);
+}
+
+.ai-feature-btn:hover .fas {
+    color: white;
+    transform: scale(1.1);
+}
+
+.ai-feature-btn .fas {
+    transition: all 0.2s ease;
+    font-size: 1.1em;
+}
+
+/* AI Results Container */
+.ai-results-container {
+    min-height: 200px;
+    max-height: 600px;
+    overflow-y: auto;
+    border: 1px solid var(--tblr-border-color);
+    border-radius: 6px;
+    background: var(--tblr-bg-surface);
+    scrollbar-width: thin;
+    scrollbar-color: var(--tblr-border-color) transparent;
+}
+
+.ai-results-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ai-results-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ai-results-container::-webkit-scrollbar-thumb {
+    background: var(--tblr-border-color);
+    border-radius: 3px;
+}
+
+.ai-results-container::-webkit-scrollbar-thumb:hover {
+    background: var(--tblr-secondary);
+}
+
+/* AI Result Content */
+.ai-result-content {
+    line-height: 1.6;
+    color: var(--tblr-body-color);
+}
+
+.ai-result-content h1,
+.ai-result-content h2,
+.ai-result-content h3,
+.ai-result-content h4,
+.ai-result-content h5,
+.ai-result-content h6 {
+    color: var(--tblr-primary);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.ai-result-content p {
+    margin-bottom: 0.75rem;
+}
+
+.ai-result-content ul,
+.ai-result-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.ai-result-content li {
+    margin-bottom: 0.25rem;
+}
+
+.ai-result-content code {
+    background: rgba(var(--tblr-primary-rgb), 0.1);
+    color: var(--tblr-primary);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.ai-result-content pre {
+    background: var(--tblr-dark);
+    color: var(--tblr-light);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+/* Loading States */
+.spinner-border.text-primary {
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Avatar Styles */
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.avatar.avatar-sm {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+}
+
+.avatar.bg-primary {
+    background-color: var(--tblr-primary) !important;
+    color: white;
+}
+
+.avatar.bg-success {
+    background-color: var(--tblr-success) !important;
+    color: white;
+}
+
+.avatar.bg-danger {
+    background-color: var(--tblr-danger) !important;
+    color: white;
+}
+
+/* Card Variations */
+.card.border-success {
+    border-color: var(--tblr-success) !important;
+}
+
+.card.border-warning {
+    border-color: var(--tblr-warning) !important;
+}
+
+.card-header.bg-success-subtle {
+    background-color: rgba(var(--tblr-success-rgb), 0.1) !important;
+    color: var(--tblr-success);
+}
+
+.card-header.bg-warning-subtle {
+    background-color: rgba(var(--tblr-warning-rgb), 0.1) !important;
+    color: var(--tblr-warning);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ai-widget-container {
+        margin-bottom: 1rem;
+    }
+    
+    .ai-feature-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .ai-results-container {
+        max-height: 400px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .ai-widget-container .card {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .ai-feature-btn {
+        border-color: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .ai-feature-btn:hover {
+        box-shadow: 0 4px 12px rgba(var(--tblr-primary-rgb), 0.4);
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}

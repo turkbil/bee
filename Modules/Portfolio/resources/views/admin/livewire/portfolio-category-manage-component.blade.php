@@ -6,10 +6,14 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ __('portfolio::admin.basic_information') }}</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">
+                            <i class="fas fa-edit me-2"></i>{{ __('portfolio::admin.basic_information') }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">{{ __('portfolio::admin.seo') }}</a>
+                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">
+                            <i class="fas fa-search me-2"></i>{{ __('portfolio::admin.seo') }}
+                        </a>
                     </li>
                     <li class="nav-item ms-auto">
                         @php

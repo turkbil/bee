@@ -40,23 +40,24 @@ class AISEOFeaturesSeeder extends Seeder
     private function ensureSEOCategory(): void
     {
         $seoCategory = DB::table('ai_feature_categories')
-            ->where('title', 'SEO & Marketing')
+            ->where('ai_feature_category_id', 1)
             ->first();
 
         if (!$seoCategory) {
             DB::table('ai_feature_categories')->insert([
-                'title' => 'SEO & Marketing',
-                'slug' => 'seo-marketing',
-                'description' => 'Arama motoru optimizasyonu ve dijital pazarlama araçları',
-                'icon' => 'fas fa-search',
-                'order' => 2,
+                'ai_feature_category_id' => 1,
+                'title' => 'Sayfa SEO Araçları',
+                'slug' => 'sayfa-seo-araclari',
+                'description' => 'Sayfa analizi ve SEO optimizasyonu için uzman araçlar',
+                'icon' => 'fas fa-search-plus',
+                'order' => 1,
                 'is_active' => true,
                 'parent_id' => null,
                 'has_subcategories' => false,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-            $this->command->info("✓ SEO & Marketing kategorisi oluşturuldu");
+            $this->command->info("✓ Sayfa SEO Araçları kategorisi oluşturuldu");
         }
     }
 
@@ -67,7 +68,7 @@ class AISEOFeaturesSeeder extends Seeder
     {
         // Kategori ID'sini al
         $seoCategory = DB::table('ai_feature_categories')
-            ->where('title', 'SEO & Marketing')
+            ->where('ai_feature_category_id', 1)
             ->first();
 
         $seoFeatures = [
@@ -229,7 +230,7 @@ class AISEOFeaturesSeeder extends Seeder
             ]
         ];
 
-        foreach ($seoFeatures as $featureData) {
+        foreach ($seoFeatures as $index => $featureData) {
             // Prompt ID'lerini bul
             $promptIds = [];
             if (isset($featureData['prompts'])) {
@@ -252,7 +253,7 @@ class AISEOFeaturesSeeder extends Seeder
             $featureData['requires_input'] = true;
             $featureData['is_system'] = false;
             $featureData['status'] = 'active';
-            $featureData['sort_order'] = 1;
+            $featureData['sort_order'] = $index + 1; // SEO araçları sırası: Hızlı SEO=1, Anahtar Kelime=2, vs.
             $featureData['usage_count'] = 0;
 
             // Feature'ı oluştur

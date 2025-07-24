@@ -91,6 +91,42 @@ class AppServiceProvider extends ServiceProvider
                 'responsecache.cache_lifetime_in_seconds' => 86400, // 24 saat
             ]);
         }
+        
+        // Performance: View Composers for commonly used data
+        $this->registerViewComposers();
+    }
+    
+    protected function registerViewComposers(): void
+    {
+        // Tenant Languages View Composer - Cache için optimize edilmiş
+        view()->composer([
+            'page::admin.livewire.page-manage-component',
+            'portfolio::admin.livewire.portfolio-manage-component',
+            'portfolio::admin.livewire.portfolio-category-manage-component',
+            'announcement::admin.livewire.announcement-manage-component'
+        ], function ($view) {
+            // Admin panelinde cache kullanma - Her zaman fresh data
+            if (request()->is('admin*')) {
+                $tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::orderBy('is_active', 'desc')
+                    ->orderBy('sort_order', 'asc')
+                    ->orderBy('id', 'asc')
+                    ->get();
+            } else {
+                // Sadece public sayfalarda cache kullan
+                $tenantLanguages = \Illuminate\Support\Facades\Cache::remember(
+                    'tenant_languages_for_forms', 
+                    3600, // 1 saat
+                    function () {
+                        return \Modules\LanguageManagement\app\Models\TenantLanguage::orderBy('is_active', 'desc')
+                            ->orderBy('sort_order', 'asc')
+                            ->orderBy('id', 'asc')
+                            ->get();
+                    }
+                );
+            }
+            
+            $view->with('cachedTenantLanguages', $tenantLanguages);
+        });
     }
     
     protected function loadHelperFiles(): void

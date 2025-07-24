@@ -35,7 +35,7 @@
                                         <div class="card-body text-center position-relative">
                                             <!-- Priority Badge -->
                                             <div class="position-absolute top-0 end-0 m-2">
-                                                <span class="badge bg-azure text-azure-fg">{{ $provider->priority }}</span>
+                                                <span class="badge bg-azure text-azure-fg">{{ is_array($provider->priority) ? json_encode($provider->priority) : ($provider->priority ?? 'N/A') }}</span>
                                             </div>
                                             
                                             <div class="mb-2 mt-3">
@@ -127,8 +127,12 @@
                                                 name="default_model" id="default_model">
                                             @if($activeProvider->available_models)
                                                 @foreach($activeProvider->available_models as $model)
-                                                    <option value="{{ $model }}" {{ $activeProvider->default_model == $model ? 'selected' : '' }}>
-                                                        {{ $model }}
+                                                    @php
+                                                        $modelValue = is_array($model) ? (isset($model['name']) ? $model['name'] : json_encode($model)) : $model;
+                                                        $modelDisplay = is_array($model) ? (isset($model['display_name']) ? $model['display_name'] : $modelValue) : $model;
+                                                    @endphp
+                                                    <option value="{{ $modelValue }}" {{ $activeProvider->default_model == $modelValue ? 'selected' : '' }}>
+                                                        {{ $modelDisplay }}
                                                     </option>
                                                 @endforeach
                                             @endif
@@ -141,10 +145,16 @@
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
+                                    @php
+                                        $maxTokensDefault = is_array($activeProvider->default_settings) && isset($activeProvider->default_settings['max_tokens']) 
+                                            ? $activeProvider->default_settings['max_tokens'] 
+                                            : 800;
+                                        $maxTokensValue = old('max_tokens', $maxTokensDefault);
+                                    @endphp
                                     <div class="form-floating">
                                         <input type="number" class="form-control @error('max_tokens') is-invalid @enderror" 
                                                name="max_tokens" id="max_tokens" placeholder="800"
-                                               value="{{ old('max_tokens', $activeProvider->default_settings['max_tokens'] ?? 800) }}" 
+                                               value="{{ $maxTokensValue }}" 
                                                min="1">
                                         <label for="max_tokens">Maksimum Token</label>
                                         @error('max_tokens')
@@ -155,7 +165,10 @@
                                 
                                 <div class="col-md-6 mb-3">
                                     @php
-                                        $temperature = old('temperature', $activeProvider->default_settings['temperature'] ?? 0.7);
+                                        $temperatureDefault = is_array($activeProvider->default_settings) && isset($activeProvider->default_settings['temperature']) 
+                                            ? $activeProvider->default_settings['temperature'] 
+                                            : 0.7;
+                                        $temperature = old('temperature', $temperatureDefault);
                                     @endphp
                                     <label for="temperature" class="form-label">
                                         Temperature
@@ -194,7 +207,7 @@
                                             </tr>
                                             <tr>
                                                 <td><strong>Varsayılan Model:</strong></td>
-                                                <td>{{ $activeProvider->default_model ?? 'N/A' }}</td>
+                                                <td>{{ is_array($activeProvider->default_model) ? 'Array' : ($activeProvider->default_model ?? 'N/A') }}</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Ortalama Yanıt Süresi:</strong></td>
@@ -208,13 +221,18 @@
                                             </tr>
                                             <tr>
                                                 <td><strong>Öncelik:</strong></td>
-                                                <td>{{ $activeProvider->priority ?? 'N/A' }}</td>
+                                                <td>{{ is_array($activeProvider->priority) ? json_encode($activeProvider->priority) : ($activeProvider->priority ?? 'N/A') }}</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Kullanılabilir Modeller:</strong></td>
                                                 <td>
-                                                    @if($activeProvider->available_models)
-                                                        {{ implode(', ', $activeProvider->available_models) }}
+                                                    @if(is_array($activeProvider->available_models) && !empty($activeProvider->available_models))
+                                                        @php
+                                                            $modelList = array_map(function($model) {
+                                                                return is_array($model) ? (isset($model['name']) ? $model['name'] : json_encode($model)) : $model;
+                                                            }, $activeProvider->available_models);
+                                                        @endphp
+                                                        {{ implode(', ', $modelList) }}
                                                     @else
                                                         N/A
                                                     @endif
@@ -275,6 +293,10 @@
                                                 $isActiveProvider = $activeProvider && $activeProvider->id === $provider->id;
                                             @endphp
                                             @foreach($provider->available_models as $model)
+                                                @php
+                                                    $modelValue = is_array($model) ? (isset($model['name']) ? $model['name'] : json_encode($model)) : $model;
+                                                    $modelDisplay = is_array($model) ? (isset($model['display_name']) ? $model['display_name'] : $modelValue) : $model;
+                                                @endphp
                                                 <tr class="{{ $isActiveProvider ? 'table-active' : '' }}">
                                                     @if($loop->first)
                                                         <td rowspan="{{ $modelCount }}" class="align-middle">
@@ -304,8 +326,8 @@
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div>
-                                                                <div class="font-weight-medium">{{ $model }}</div>
-                                                                @if($provider->default_model === $model)
+                                                                <div class="font-weight-medium">{{ $modelDisplay }}</div>
+                                                                @if($provider->default_model === $modelValue)
                                                                     <span class="badge bg-blue-lt text-blue mt-1">Varsayılan</span>
                                                                 @endif
                                                             </div>
@@ -324,7 +346,7 @@
                                                             'claude-3-sonnet-20240229' => ['input' => 3.0, 'output' => 15.0],
                                                         ];
                                                         
-                                                        $pricing = $modelPricing[$model] ?? ['input' => 0, 'output' => 0];
+                                                        $pricing = $modelPricing[$modelValue] ?? ['input' => 0, 'output' => 0];
                                                         $inputCost = $pricing['input'];
                                                         $outputCost = $pricing['output'];
                                                         
@@ -377,7 +399,7 @@
                                                                 </span>
                                                             @endif
                                                             <div class="mt-1">
-                                                                <small class="text-muted">#{{ $provider->priority }}</small>
+                                                                <small class="text-muted">#{{ is_array($provider->priority) ? json_encode($provider->priority) : ($provider->priority ?? 'N/A') }}</small>
                                                             </div>
                                                         </td>
                                                     @endif

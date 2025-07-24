@@ -14,7 +14,12 @@ return new class extends Migration
     {
         // 1. AI Token Packages - Eksik alanları ekle
         Schema::table('ai_token_packages', function (Blueprint $table) {
-            // Sadece price_per_token alanını ekle (diğerleri zaten mevcut)
+            // Önce is_credit_based alanını ekle
+            if (!Schema::hasColumn('ai_token_packages', 'is_credit_based')) {
+                $table->boolean('is_credit_based')->after('price')->default(false)->comment('Credit tabanlı paket mi?');
+            }
+            
+            // Sonra price_per_token alanını ekle
             if (!Schema::hasColumn('ai_token_packages', 'price_per_token')) {
                 $table->decimal('price_per_token', 10, 6)->after('is_credit_based')->nullable()->comment('Legacy token başına fiyat');
             }

@@ -440,8 +440,8 @@ class AIService
                 'execution_time_ms' => intval($data['execution_time_ms'] ?? 0),
                 'response_length' => isset($data['response_preview']) ? strlen($data['response_preview']) : null,
                 'token_usage' => $data['tokens_estimated'] ?? 0,
-                'input_preview' => $data['input_preview'] ?? null,
-                'response_preview' => $data['response_preview'] ?? null,
+                'input_preview' => $this->sanitizeForMySQL($data['input_preview'] ?? null),
+                'response_preview' => $this->sanitizeForMySQL($data['response_preview'] ?? null),
                 'prompts_analysis' => json_encode($data['prompts_analysis'] ?? []),
                 'scoring_summary' => json_encode($this->calculateScoringSummary($data['prompts_analysis'] ?? [])),
                 'ai_model' => $this->currentProvider ? ($this->currentProvider->name . '/' . $this->currentProvider->default_model) : 'unknown',
@@ -469,6 +469,27 @@ class AIService
                 'data' => $data
             ]);
         }
+    }
+    
+    /**
+     * MySQL charset problemi için text sanitize et
+     */
+    private function sanitizeForMySQL(?string $text): ?string
+    {
+        if (!$text) {
+            return null;
+        }
+        
+        // Limit text length to prevent huge debug logs
+        $text = substr($text, 0, 2000);
+        
+        // Replace problematic UTF-8 characters for MySQL
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        
+        // Remove any remaining problematic characters
+        $text = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '', $text);
+        
+        return $text;
     }
     
     /**

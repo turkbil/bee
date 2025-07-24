@@ -414,3 +414,29 @@ if (!function_exists('settings_id')) {
         }
     }
 }
+
+if (!function_exists('ai_format_response')) {
+    /**
+     * AI yanıtını modern template ile formatla
+     * Global kullanım - tüm modüllerde kullanılabilir
+     * 
+     * @param string $text AI yanıt metni
+     * @param string|null $featureSlug AI feature slug'ı
+     * @return string Formatted HTML template
+     */
+    function ai_format_response(string $text, ?string $featureSlug = null): string
+    {
+        try {
+            $templateService = app(\App\Services\AITemplateService::class);
+            return $templateService->buildModernTemplate($text, $featureSlug);
+        } catch (\Exception $e) {
+            \Log::error('AI Template Helper Error: ' . $e->getMessage());
+            return '
+            <div class="ai-response-template">
+                <div class="ai-error-message">
+                    <p><i class="fas fa-exclamation-triangle me-2"></i>AI yanıt formatlanamadı: ' . $e->getMessage() . '</p>
+                </div>
+            </div>';
+        }
+    }
+}

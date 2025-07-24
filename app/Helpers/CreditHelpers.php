@@ -126,7 +126,16 @@ if (!function_exists('ai_can_use_credits')) {
     function ai_can_use_credits(float $creditAmount, ?string $tenantId = null): bool
     {
         try {
-            $tenantId = $tenantId ?: (tenant('id') ?: 'default');
+            // Central admin mode kontrolü - tenant yoksa unlimited credit
+            if (!$tenantId) {
+                $tenantId = tenant('id');
+                if (!$tenantId) {
+                    // Central admin mode - limitless credit
+                    Log::debug('ai_can_use_credits: Central admin mode - unlimited credits');
+                    return true;
+                }
+            }
+            
             $currentBalance = ai_get_credit_balance($tenantId);
             
             Log::debug('ai_can_use_credits check', [
@@ -144,7 +153,8 @@ if (!function_exists('ai_can_use_credits')) {
                 'credit_amount' => $creditAmount,
                 'error' => $e->getMessage()
             ]);
-            return false;
+            // Central admin mode'da error olursa true dön
+            return !tenant('id'); // Tenant yoksa true, varsa false
         }
     }
 }
@@ -231,7 +241,13 @@ if (!function_exists('ai_get_total_credits_used')) {
     function ai_get_total_credits_used(?string $tenantId = null): float
     {
         try {
-            $tenantId = $tenantId ?: (tenant('id') ?: 'default');
+            if (!$tenantId) {
+                $tenantId = tenant('id');
+                if (!$tenantId) {
+                    Log::warning('ai_get_total_credits_used: No tenant context');
+                    return 0.0;
+                }
+            }
             
             $totalUsed = AICreditUsage::where('tenant_id', $tenantId)
                 ->sum('credit_cost');
@@ -258,7 +274,13 @@ if (!function_exists('ai_get_total_credits_purchased')) {
     function ai_get_total_credits_purchased(?string $tenantId = null): float
     {
         try {
-            $tenantId = $tenantId ?: (tenant('id') ?: 'default');
+            if (!$tenantId) {
+                $tenantId = tenant('id');
+                if (!$tenantId) {
+                    Log::warning('Function called without tenant context');
+                    return 100.0; // Default for central admin
+                }
+            }
             
             // Credit purchase tablosu varsa oradan al
             if (class_exists('Modules\AI\App\Models\AICreditPurchase')) {
@@ -302,7 +324,13 @@ if (!function_exists('ai_get_monthly_credits_used')) {
     function ai_get_monthly_credits_used(?string $tenantId = null): float
     {
         try {
-            $tenantId = $tenantId ?: (tenant('id') ?: 'default');
+            if (!$tenantId) {
+                $tenantId = tenant('id');
+                if (!$tenantId) {
+                    Log::warning('Function called without tenant context');
+                    return 100.0; // Default for central admin
+                }
+            }
             
             $monthlyUsed = AICreditUsage::where('tenant_id', $tenantId)
                 ->whereMonth('created_at', now()->month)
@@ -331,7 +359,13 @@ if (!function_exists('ai_get_daily_credits_used')) {
     function ai_get_daily_credits_used(?string $tenantId = null): float
     {
         try {
-            $tenantId = $tenantId ?: (tenant('id') ?: 'default');
+            if (!$tenantId) {
+                $tenantId = tenant('id');
+                if (!$tenantId) {
+                    Log::warning('Function called without tenant context');
+                    return 100.0; // Default for central admin
+                }
+            }
             
             $dailyUsed = AICreditUsage::where('tenant_id', $tenantId)
                 ->whereDate('created_at', now()->toDateString())
@@ -629,7 +663,11 @@ if (!function_exists('ai_use_calculated_credits')) {
             ]);
             
             // Tenant ID belirle
-            $tenantId = $metadata['tenant_id'] ?? (tenant('id') ?: 'default');
+            $tenantId = $metadata['tenant_id'] ?? tenant('id');
+            if (!$tenantId) {
+                Log::warning('ai_use_calculated_credits: No tenant context found');
+                return false;
+            }
             
             // Gerçek kredi kullanımını kaydet
             $success = ai_use_credits($creditCost, $tenantId, array_merge($metadata, [

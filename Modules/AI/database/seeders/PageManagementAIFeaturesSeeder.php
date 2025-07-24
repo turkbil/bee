@@ -10,13 +10,20 @@ class PageManagementAIFeaturesSeeder extends Seeder
 {
     public function run()
     {
-        // Sayfa Yönetimi kategorisini al
-        $category = AIFeatureCategory::where('slug', 'sayfa-yoenetimi-10')->first();
-        
-        if (!$category) {
-            $this->command->error('Sayfa Yönetimi kategorisi bulunamadı!');
-            return;
-        }
+        // Sayfa SEO Araçları kategorisini al veya oluştur (kategori ID 1)
+        $category = AIFeatureCategory::firstOrCreate([
+            'ai_feature_category_id' => 1
+        ], [
+            'ai_feature_category_id' => 1,
+            'title' => 'Sayfa SEO Araçları',
+            'slug' => 'sayfa-seo-araclari',
+            'description' => 'Sayfa analizi ve SEO optimizasyonu için uzman araçlar',
+            'icon' => 'fas fa-search-plus',
+            'order' => 1,
+            'is_active' => true,
+            'parent_id' => null,
+            'has_subcategories' => false
+        ]);
         
         $this->command->info('Kategori bulundu: ' . $category->title . ' (ID: ' . $category->ai_feature_category_id . ')');
 
@@ -85,7 +92,35 @@ class PageManagementAIFeaturesSeeder extends Seeder
                 'quick_prompt' => 'Sen bir içerik editörüsün. Verilen içeriği optimize et ve iyileştir.',
                 'helper_function' => 'ai_content_optimization',
                 'button_text' => 'İçerik Optimize Et',
-                'token_cost' => json_encode(['estimated' => 200, 'min' => 180, 'max' => 250])
+                'token_cost' => json_encode(['estimated' => 200, 'min' => 180, 'max' => 250]),
+                'response_template' => json_encode([
+                    'format' => 'modern_html',
+                    'layout' => 'card_accordion',
+                    'sections' => [
+                        'hero_score' => [
+                            'title' => 'İyileştirme Skoru',
+                            'icon' => 'fas fa-star',
+                            'type' => 'badge_score'
+                        ],
+                        'analysis' => [
+                            'title' => 'Analiz Sonuçları',
+                            'icon' => 'fas fa-chart-line',
+                            'type' => 'list_group'
+                        ],
+                        'recommendations' => [
+                            'title' => 'Öneriler',
+                            'icon' => 'fas fa-lightbulb',
+                            'type' => 'list_group'
+                        ],
+                        'improvements' => [
+                            'title' => 'İyileştirmeler',
+                            'icon' => 'fas fa-edit',
+                            'type' => 'key_value_table'
+                        ]
+                    ],
+                    'show_confidence' => false,
+                    'styling' => ['theme' => 'content_optimization', 'icons' => true]
+                ])
             ],
             [
                 'name' => 'İçerik Genişletme',
@@ -239,15 +274,29 @@ class PageManagementAIFeaturesSeeder extends Seeder
             ]
         ];
 
+        // SEO priority mapping - önce SEO araçları gelsin
+        $seoPriorityMap = [
+            'seo-puan-analizi' => 14,
+            'hizli-seo-analizi' => 15, 
+            'anahtar-kelime-analizi' => 16,
+            'schema-markup-onerileri' => 17,
+            'link-onerileri' => 18
+        ];
+        
         foreach ($features as $index => $featureData) {
+            // SEO araçları için özel sort_order, diğerleri için 50+ değerler
+            $sortOrder = isset($seoPriorityMap[$featureData['slug']]) 
+                ? $seoPriorityMap[$featureData['slug']] 
+                : $index + 50; // SEO olmayanlar 50+ değer alır
+                
             $feature = AIFeature::firstOrCreate([
                 'slug' => $featureData['slug']
             ], array_merge($featureData, [
                 'ai_feature_category_id' => $category->ai_feature_category_id,
                 'status' => 'active',
                 'is_system' => false,
-                'is_featured' => $index < 6, // İlk 6 tanesi featured
-                'sort_order' => $index + 1,
+                'is_featured' => isset($seoPriorityMap[$featureData['slug']]), // SEO araçları featured
+                'sort_order' => $sortOrder,
                 'complexity_level' => 'intermediate',
                 'response_template' => json_encode([
                     'format' => 'modern_card',

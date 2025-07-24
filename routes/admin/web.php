@@ -8,6 +8,41 @@ use App\Http\Middleware\InitializeTenancy;
 // Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için  
 Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
     
+    // Slug benzersizlik kontrolü - AJAX
+    Route::post('/check-slug', function(\Illuminate\Http\Request $request) {
+        $slug = $request->input('slug');
+        $module = $request->input('module', 'Page');
+        $excludeId = $request->input('exclude_id');
+        
+        if (!$slug) {
+            return response()->json(['unique' => false, 'message' => 'Slug boş olamaz']);
+        }
+        
+        // Module'a göre model seç
+        $modelClass = "Modules\\{$module}\\App\\Models\\{$module}";
+        
+        if (!class_exists($modelClass)) {
+            return response()->json(['unique' => false, 'message' => 'Model bulunamadı']);
+        }
+        
+        $query = $modelClass::where('slug->tr', $slug)
+            ->orWhere('slug->en', $slug)
+            ->orWhere('slug->ar', $slug);
+            
+        // Mevcut kaydı hariç tut (düzenleme sırasında)
+        if ($excludeId) {
+            $primaryKey = (new $modelClass)->getKeyName();
+            $query->where($primaryKey, '!=', $excludeId);
+        }
+        
+        $exists = $query->exists();
+        
+        return response()->json([
+            'unique' => !$exists,
+            'message' => $exists ? 'Bu slug zaten kullanılıyor' : 'Kullanılabilir'
+        ]);
+    });
+    
     // /admin rotası - dashboard'a yönlendir
     Route::get('/', function () {
         return redirect()->route('admin.dashboard');
@@ -55,24 +90,26 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
     })->name('access.denied');
     
-    // Debug log endpoint - sadece geliştirme için
-    Route::post('/debug-log', function() {
-        if (!config('app.debug')) return response('Disabled', 403);
-        
-        $data = request()->json()->all();
-        \Illuminate\Support\Facades\Log::channel('single')->info('JS_DEBUG', $data);
-        
-        return response()->json(['status' => 'logged']);
-    })->name('debug.log');
     
     // Cache clear endpoints
     Route::post('/cache/clear', [\App\Http\Controllers\Admin\CacheController::class, 'clearCache'])->name('cache.clear');
     Route::post('/cache/clear-all', [\App\Http\Controllers\Admin\CacheController::class, 'clearAllCache'])->name('cache.clear.all');
     
+    // AI Widget Routes
+    Route::group(['prefix' => 'ai', 'as' => 'ai.'], function () {
+        Route::post('/execute-feature', [\Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController::class, 'executeWidgetFeature'])->name('execute-feature');
+        Route::post('/send-message', [\Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController::class, 'sendMessage'])->name('send-message');
+    });
+    
     // Debug routes
     Route::get('/debug-language', function() {
         return view('admin.debug-language');
     })->name('debug.language');
+    
+    // Real-time debug page
+    Route::get('/debug-page', function() {
+        return view('admin.debug-page');
+    })->name('debug.page');
     
     Route::post('/debug-clear-sessions', function() {
         session()->forget(['admin_locale', 'tenant_locale']);

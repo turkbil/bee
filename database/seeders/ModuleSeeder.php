@@ -85,7 +85,8 @@ class ModuleSeeder extends Seeder
                         'AIFeatureSeeder_Part1',
                         'AIFeatureSeeder_Part1_Updated',
                         'AIFeatureSeeder_Part2',
-                        'AIFeatureSeeder_Part3'
+                        'AIFeatureSeeder_Part3',
+                        'AISEOFeaturesSeeder'  // Duplicate slug hatası önlenmesi için
                     ])) {
                         continue;
                     }
@@ -147,6 +148,22 @@ class ModuleSeeder extends Seeder
                     if ($file->getExtension() === 'php') {
                         $className = str_replace('.php', '', $file->getFilename());
                         $fullClassName = "Modules\\" . $moduleBaseName . "\\Database\\Seeders\\" . $className;
+                        
+                        // AI modülü özel durumları - tenant'larda da atla
+                        if ($moduleBaseName === 'AI' && in_array($className, [
+                            'AIPurchaseSeeder', 
+                            'AITenantSetupSeeder', 
+                            'AIUsageUpdateSeeder',
+                            'AIFeatureSeeder_Complete',
+                            'AIFeatureSeeder_Master',
+                            'AIFeatureSeeder_Part1',
+                            'AIFeatureSeeder_Part1_Updated',
+                            'AIFeatureSeeder_Part2',
+                            'AIFeatureSeeder_Part3',
+                            'AISEOFeaturesSeeder'  // Tenant'larda da duplicate slug önlemesi
+                        ])) {
+                            continue;
+                        }
                         
                         // Seeder'ı tenant_id ile birlikte benzersiz olarak işaretler
                         $uniqueKey = $fullClassName . '_' . $tenant->id;

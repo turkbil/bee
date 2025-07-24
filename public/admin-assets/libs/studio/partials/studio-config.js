@@ -13,7 +13,6 @@ window.StudioConfig = (function() {
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
             ],
             scripts: [
-                "https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js",
                 "/admin/libs/handlebars/handlebars.min.js",
                 "/admin/libs/studio/partials/studio-widget-manager.js",
                 "/admin/libs/studio/partials/studio-widget-loader.js"
@@ -139,7 +138,6 @@ ${css}
 </head>
 <body>
 ${html}
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script>
 ${js}
     </script>

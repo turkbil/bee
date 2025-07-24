@@ -1,24 +1,13 @@
 <div wire:key="page-manage-component">
     @include('admin.partials.error_message')
-    <form wire:submit.prevent="save">
+    <form method="post" wire:submit.prevent="save">
         <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
-                    <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">
-                            <i class="fas fa-info-circle me-2"></i>{{ __('admin.basic_info') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">
-                            <i class="fas fa-search me-2"></i>{{ __('page::admin.seo') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#tabs-3" class="nav-link" data-bs-toggle="tab">
-                            <i class="fas fa-code me-2"></i>{{ __('admin.code_area') }}
-                        </a>
-                    </li>
+            <x-tab-system 
+                :tabs="$tabConfig" 
+                :tab-completion="$tabCompletionStatus"
+                storage-key="page_active_tab">
+                
+                {{-- Studio Integration --}}
                     @if($studioEnabled && $pageId)
                     <li class="nav-item ms-auto">
                         <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $pageId]) }}" 
@@ -32,10 +21,8 @@
                     <li class="nav-item ms-auto">
                     @endif
                         @php
-                            $tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::orderBy('is_active', 'desc')
-                                ->orderBy('sort_order', 'asc')
-                                ->orderBy('id', 'asc')
-                                ->get();
+                            // View Composer'dan gelen cache'li data kullan
+                            $tenantLanguages = $cachedTenantLanguages ?? collect();
                         @endphp
                         <div class="d-flex gap-3">
                             @foreach($tenantLanguages->where('is_active', true) as $lang)
@@ -47,12 +34,12 @@
                             @endforeach
                         </div>
                     </li>
-                </ul>
-            </div>
+                
+            </x-tab-system>
             <div class="card-body">
                 <div class="tab-content">
                     <!-- Tab 1: Basic Info -->
-                    <div class="tab-pane fade active show" id="tabs-1">
+                    <div class="tab-pane fade show active" id="tabs-1">
                         @foreach($availableLanguages as $lang)
                         @php
                             $langData = $multiLangInputs[$lang] ?? [];
@@ -67,7 +54,7 @@
                                     placeholder="{{ __('page::admin.title_field') }} ({{ strtoupper($lang) }})">
                                 <label>
                                     {{ __('page::admin.title_field') }} ({{ $langName }})
-                                    @if($lang === session('site_default_language', 'tr')) * @endif
+                                    @if($lang === session('site_default_language', 'tr')) <span class="required-star">★</span> @endif
                                 </label>
                                 @error('multiLangInputs.' . $lang . '.title')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -83,223 +70,13 @@
                         </div>
                         @endforeach
                         
-                        {{-- 🤖 AI ANALIZ SONUÇLARI VE KONTROL PANELİ - FORM İÇİNDE --}}
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-robot me-2 text-primary"></i>AI Asistan & Analiz Merkezi
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                {{-- AI Kontrol Butonları --}}
-                                <div class="row mb-4">
-                                    <div class="col-md-4">
-                                        <button type="button" wire:click="runQuickAnalysis" class="btn btn-primary w-100" @if($aiProgress) disabled @endif>
-                                            @if($aiProgress)
-                                                <i class="fas fa-spinner fa-spin me-2"></i>Analiz Ediliyor...
-                                            @else
-                                                <i class="fas fa-tachometer-alt me-2"></i>🚀 Hızlı SEO Analizi
-                                            @endif
-                                        </button>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="button" wire:click="generateAISuggestions" class="btn btn-success w-100" @if($aiProgress) disabled @endif>
-                                            @if($aiProgress)
-                                                <i class="fas fa-spinner fa-spin me-2"></i>Üretiliyor...
-                                            @else
-                                                <i class="fas fa-lightbulb me-2"></i>🎯 AI Önerileri
-                                            @endif
-                                        </button>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="button" wire:click="testAI" class="btn btn-info w-100">
-                                            <i class="fas fa-vial me-2"></i>🧪 AI Test
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {{-- AI ANALIZ SONUÇLARI --}}
-                                @if($aiProgress)
-                                <div class="card" wire:key="ai-progress-card">
-                                    <div class="card-body text-center py-5">
-                                        <div class="spinner-border text-primary mb-3" role="status">
-                                            <span class="visually-hidden">Yükleniyor...</span>
-                                        </div>
-                                        <h5 class="text-muted">AI analizi devam ediyor...</h5>
-                                        <p class="text-muted small">Lütfen bekleyin, yapay zeka sonuçlarınızı hazırlıyor.</p>
-                                    </div>
-                                </div>
-                                @elseif(!empty($aiAnalysis))
-                                <div class="card" wire:key="ai-analysis-card">
-                                    <div class="card-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="card-title">📊 AI Analiz Sonuçları</div>
-                                            <div class="ms-auto">
-                                                <span class="badge bg-primary">
-                                                    {{ $aiAnalysis['stats']['ai_used'] ? '🤖 AI' : '⚡ Hızlı' }} 
-                                                    {{ $aiAnalysis['stats']['timestamp'] ?? now()->format('H:i:s') }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-6 col-md-3">
-                                                <div class="card text-center">
-                                                    <div class="card-body p-3">
-                                                        <div class="display-6 fw-bold text-primary">{{ $aiAnalysis['overall_score'] ?? 0 }}/100</div>
-                                                        <div class="text-muted small">Genel Skor</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 col-md-3">
-                                                <div class="card text-center">
-                                                    <div class="card-body p-3">
-                                                        <div class="h4 fw-bold text-info">{{ $aiAnalysis['title_score'] ?? 0 }}/100</div>
-                                                        <div class="text-muted small">📝 Başlık</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 col-md-3">
-                                                <div class="card text-center">
-                                                    <div class="card-body p-3">
-                                                        <div class="h4 fw-bold text-success">{{ $aiAnalysis['content_score'] ?? 0 }}/100</div>
-                                                        <div class="text-muted small">📄 İçerik</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 col-md-3">
-                                                <div class="card text-center">
-                                                    <div class="card-body p-3">
-                                                        <div class="h4 fw-bold text-warning">{{ $aiAnalysis['seo_score'] ?? 0 }}/100</div>
-                                                        <div class="text-muted small">🔍 SEO</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    
-                                    {{-- AI DETAYLI YANIT --}}
-                                    @if(!empty($aiAnalysis['ai_formatted_response']))
-                                    <div class="card card-sm mt-3">
-                                        <div class="card-header py-2">
-                                            <div class="card-title m-0">
-                                                <i class="fas fa-robot me-2 text-success"></i>🤖 Detaylı AI Analizi
-                                            </div>
-                                        </div>
-                                        <div class="card-body p-3">
-                                            <div class="ai-response-content" style="line-height: 1.6;">
-                                                {!! $aiAnalysis['ai_formatted_response'] !!}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                    
-                                    {{-- AI KISA ÖNERİLER (VARSA) --}}
-                                    @if(!empty($aiAnalysis['suggestions']))
-                                    <div class="card card-sm mt-3">
-                                        <div class="card-header py-2">
-                                            <div class="card-title m-0">
-                                                <i class="fas fa-lightbulb me-2 text-warning"></i>💡 Hızlı Öneriler
-                                            </div>
-                                        </div>
-                                        <div class="card-body p-3">
-                                            @foreach(array_slice($aiAnalysis['suggestions'], 0, 5) as $suggestion)
-                                            <div class="d-flex align-items-start mb-2">
-                                                <i class="fas fa-arrow-right me-2 text-primary mt-1"></i>
-                                                <div class="text-muted small">{{ is_array($suggestion) ? implode(' ', array_filter((array)$suggestion)) : $suggestion }}</div>
-                                            </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    @endif
-                                </div>
-                                @else
-                                <div class="card border-dashed" wire:key="ai-analysis-placeholder">
-                                    <div class="card-body text-center py-5">
-                                        <div class="text-muted mb-3">
-                                            <i class="fas fa-robot fa-3x"></i>
-                                        </div>
-                                        <h5 class="text-muted">🤖 AI analiz sonuçları burada görünecek...</h5>
-                                        <p class="text-muted small mb-3">Hızlı Analiz butonuna tıklayın</p>
-                                        <small class="text-muted">
-                                            Debug: Property = {{ empty($aiAnalysis) ? 'BOŞ' : count($aiAnalysis) . ' adet' }} | 
-                                            Session = {{ session('ai_last_analysis') ? 'DOLU' : 'BOŞ' }} | 
-                                            Final = {{ !empty($aiAnalysis) ? count($aiAnalysis) . ' adet' : 'BOŞ' }} | 
-                                            Zaman: {{ now()->format('H:i:s') }}
-                                        </small>
-                                    </div>
-                                </div>
-                                @endif
-
-                                {{-- AI ÖNERİLERİ --}}
-                                @if(!empty($aiSuggestions))
-                                <div class="card mt-3" wire:key="ai-suggestions-card">
-                                    <div class="card-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="card-title">
-                                                <i class="fas fa-lightbulb me-2 text-warning"></i>🎯 AI İyileştirme Önerileri
-                                            </div>
-                                            <div class="ms-auto">
-                                                <span class="badge bg-warning text-dark">
-                                                    {{ is_array($aiSuggestions) ? count($aiSuggestions) : '1' }} Öneri
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        {{-- Eğer $aiSuggestions string ise (AI full response) --}}
-                                        @if(is_string($aiSuggestions))
-                                            <div class="ai-suggestions-content" style="line-height: 1.6;">
-                                                {!! nl2br(e($aiSuggestions)) !!}
-                                            </div>
-                                        @else
-                                            {{-- Array format (önceki format) --}}
-                                            <div class="row">
-                                                @foreach(array_slice($aiSuggestions, 0, 8) as $index => $suggestion)
-                                                <div class="col-md-6 mb-3">
-                                                    <div class="card card-sm">
-                                                        <div class="card-body p-3">
-                                                            <div class="d-flex align-items-start">
-                                                                <span class="badge bg-warning text-dark me-3 mt-1">{{ $index + 1 }}</span>
-                                                                <div class="text-muted">{{ is_array($suggestion) ? implode(' ', array_filter((array)$suggestion)) : $suggestion }}</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                @else
-                                <div class="card mt-3 border-dashed" wire:key="ai-suggestions-placeholder">
-                                    <div class="card-body text-center py-4">
-                                        <div class="text-warning mb-3">
-                                            <i class="fas fa-lightbulb fa-2x"></i>
-                                        </div>
-                                        <h5 class="text-muted">🎯 AI önerileri burada görünecek...</h5>
-                                        <p class="text-muted small mb-2">AI Önerileri butonuna tıklayın</p>
-                                        <small class="text-muted">
-                                            Suggestions Debug: Property = {{ empty($aiSuggestions) ? 'BOŞ' : count($aiSuggestions) . ' adet' }} | 
-                                            Session = {{ session('ai_last_suggestions') ? count(session('ai_last_suggestions')) . ' adet' : 'BOŞ' }} | 
-                                            Final = {{ !empty($aiSuggestions) ? count($aiSuggestions) . ' adet' : 'BOŞ' }} | 
-                                            Zaman: {{ now()->format('H:i:s') }}
-                                        </small>
-                                    </div>
-                                </div>
-                                @endif
-
-                                {{-- AI Progress --}}
-                                @if($aiProgress)
-                                <div class="alert alert-info border-0">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-spinner fa-spin me-2"></i>
-                                        <span>AI işlemi devam ediyor, lütfen bekleyin...</span>
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
+                        {{-- Current Page ID for JavaScript --}}
+                        @if($pageId)
+                        <script>
+                            window.currentPageId = {{ $pageId }};
+                        </script>
+                        @endif
+                        
 
                         <!-- Aktif/Pasif - sadece bir kere -->
                         <div class="mb-3">
@@ -317,21 +94,51 @@
                         </div>
                     </div>
                     
-                    <!-- Tab 2: SEO -->
+                    <!-- Tab 2: SEO - Global Widget -->
                     <div class="tab-pane fade" id="tabs-2">
-                        <!-- Global SEO Form Component -->
                         @if($pageId)
                             @php
                                 $page = \Modules\Page\App\Models\Page::find($pageId);
+                                $seoSettings = $page ? $page->seoSetting : null;
+                                
+                                // Mevcut dilin SEO verilerini al
+                                $currentSeoData = [
+                                    'seo_title' => '',
+                                    'seo_description' => '',
+                                    'seo_keywords' => '',
+                                    'canonical_url' => ''
+                                ];
+                                
+                                if ($seoSettings) {
+                                    $titles = $seoSettings->titles ?? [];
+                                    $descriptions = $seoSettings->descriptions ?? [];
+                                    $keywords = $seoSettings->keywords ?? [];
+                                    
+                                    $currentSeoData = [
+                                        'seo_title' => $titles[$currentLanguage] ?? '',
+                                        'seo_description' => $descriptions[$currentLanguage] ?? '',
+                                        'seo_keywords' => is_array($keywords[$currentLanguage] ?? []) ? implode(', ', $keywords[$currentLanguage]) : '',
+                                        'canonical_url' => $seoSettings->canonical_url ?? ''
+                                    ];
+                                }
+                                
+                                // SEO limitleri
+                                $seoLimits = [
+                                    'seo_title' => 60,
+                                    'seo_description' => 160,
+                                    'seo_keywords_count' => 10,
+                                    'canonical_url' => 255
+                                ];
                             @endphp
-                            @if($page)
-                                @livewire('seo-form-component', ['model' => $page])
-                            @else
-                                <div class="alert alert-warning">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    Sayfa bulunamadı (ID: {{ $pageId }}). SEO ayarları görüntülenemiyor.
-                                </div>
-                            @endif
+                            
+                            <!-- Global SEO Widget Kullanımı -->
+                            <x-seo-widget 
+                                :seo-data="$currentSeoData" 
+                                :seo-limits="$seoLimits" 
+                                :language="$currentLanguage" 
+                                :current-language="$currentLanguage"
+                                :show-score="true" />
+                                
                         @else
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
@@ -353,18 +160,18 @@
                             <label>{{ __('admin.javascript') }}</label>
                         </div>
                     </div>
+                    
                 </div>
             </div>
 
             <x-form-footer route="admin.page" :model-id="$pageId" />
 
         </div>
+        
+        {{-- Helper dosyası --}}
+        <div class="mt-2">
+            @include('page::admin.helper')
+        </div>
     </form>
-    
-    {{-- 🚀 FLOATING AI PANELİ + FORM İÇİ = DUAL AI SİSTEMİ --}}
-    @include('page::admin.includes.ai-assistant-panel')
-    
-    {{-- Helper dosyası --}}
-    @include('page::admin.helper')
     
 </div>

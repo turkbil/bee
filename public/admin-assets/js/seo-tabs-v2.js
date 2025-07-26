@@ -65,6 +65,8 @@ window.SeoTabsV2 = {
         // Backend'den gelen hazır veriyi kullan
         if (window.allLanguagesSeoData) {
             console.log('✅ Backend verisi kullanılıyor:', window.allLanguagesSeoData);
+            console.log('🔍 Mevcut diller:', Object.keys(window.allLanguagesSeoData || {}));
+            console.log('🌍 Mevcut aktif dil:', window.currentLanguage);
             window.seoDataCache = window.allLanguagesSeoData;
             return;
         }
@@ -213,8 +215,8 @@ window.SeoTabsV2 = {
 
 // Sistem başlatma
 $(document).ready(function() {
-    // Sadece page manage sayfasında çalıştır
-    if (window.location.pathname.includes('/page/manage')) {
+    // Sadece manage sayfalarında çalıştır (page, portfolio, vs.)
+    if (window.location.pathname.includes('/manage') || window.location.pathname.includes('/create')) {
         SeoTabsV2.init();
         console.log('✅ SEO Tabs V2 başlatıldı!');
     }

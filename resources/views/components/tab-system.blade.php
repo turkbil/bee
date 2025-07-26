@@ -1,4 +1,4 @@
-<div class="card-header">
+<div class="card-header" style="padding-bottom: 0px;">
     <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" id="dynamic-tabs">
         @foreach($tabs as $index => $tab)
         <li class="nav-item">
@@ -6,7 +6,7 @@
                class="nav-link {{ $index === 0 ? 'active' : '' }}" 
                data-bs-toggle="tab"
                data-tab-key="{{ $index }}">
-                <i class="{{ $tab['icon'] ?? 'ti ti-file' }} me-2"></i>{{ $tab['name'] ?? $tab['title'] ?? 'Tab' }}
+                <i class="{{ $tab['icon'] ?? 'fas fa-file' }} me-2"></i>{{ $tab['name'] ?? $tab['title'] ?? 'Tab' }}
             </a>
         </li>
         @endforeach

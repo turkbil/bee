@@ -337,33 +337,32 @@ app()->setLocale($originalLocale);
 
             <!-- Mobile/Tablet: Tek buton -->
             <div class="d-lg-none nav-item dropdown me-3">
-                <a href="#" class="nav-link d-flex flex-column align-items-center justify-content-center"
+                <a href="#" class="nav-link d-flex align-items-center justify-content-center"
                     data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false"
-                    style="width: 50px; height: 50px; border-radius: 0.375rem;">
-                    <i class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></i>
-                    <small class="mt-1" style="font-size: 9px; line-height: 1;">{{ __('admin.menu') }}</small>
+                    style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                    <i class="fa-solid fa-grid-2" style="font-size: 18px;"></i>
                 </a>
-                <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">{{ __('admin.admin_actions') }}</div>
+                <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card" style="width: 280px; max-height: 500px; overflow-y: auto;">
+                    <div class="card border-0">
+                        <div class="card-header border-0 bg-primary text-white">
+                            <div class="card-title text-white mb-0">{{ __('admin.admin_actions') }}</div>
                         </div>
-                        <div class="card-body p-2">
-                            <div class="row g-2">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
                                 <!-- Anasayfa -->
                                 <div class="col-6">
                                     <a href="{{ url('/') }}" target="_blank"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
-                                        <i class="fa-solid fa-home mb-1 text-primary" style="font-size: 18px;"></i>
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action">
+                                        <i class="fa-solid fa-home mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">{{ __('admin.homepage') }}</small>
                                     </a>
                                 </div>
                                 <!-- Cache Temizle -->
                                 <div class="col-6">
                                     <a href="#"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action"
                                         onclick="clearCache(this); return false;">
-                                        <i class="fa-solid fa-broom mb-1 text-primary" style="font-size: 18px;"></i>
+                                        <i class="fa-solid fa-broom mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">Cache Temizle</small>
                                     </a>
                                 </div>
@@ -371,9 +370,9 @@ app()->setLocale($originalLocale);
                                 <!-- Sistem Cache -->
                                 <div class="col-6">
                                     <a href="#"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action"
                                         onclick="clearSystemCache(this); return false;">
-                                        <i class="fa-solid fa-trash-can mb-1 text-danger" style="font-size: 18px;"></i>
+                                        <i class="fa-solid fa-trash-can mb-2 text-danger" style="font-size: 24px;"></i>
                                         <small class="fw-bold">Sistem Cache</small>
                                     </a>
                                 </div>
@@ -381,25 +380,25 @@ app()->setLocale($originalLocale);
                                 <!-- Tema -->
                                 <div class="col-6">
                                     <a href="#"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action"
                                         data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
-                                        <i class="fa-solid fa-brush mb-1 text-primary" style="font-size: 18px;"></i>
+                                        <i class="fa-solid fa-brush mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">{{ __('admin.theme_settings') }}</small>
                                     </a>
                                 </div>
                                 <!-- Aktiviteler -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.usermanagement.activity.logs') }}"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
-                                        <i class="fa-solid fa-bell mb-1 text-info" style="font-size: 18px;"></i>
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action">
+                                        <i class="fa-solid fa-bell mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">{{ __('admin.recent_activities') }}</small>
                                     </a>
                                 </div>
                                 <!-- Modüller -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.modulemanagement.index') }}"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
-                                        <i class="fa-solid fa-puzzle-piece mb-1 text-info" style="font-size: 18px;"></i>
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action">
+                                        <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">{{ __('admin.module_management') }}</small>
                                     </a>
                                 </div>
@@ -407,8 +406,8 @@ app()->setLocale($originalLocale);
                                 <!-- Kullanıcılar -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.usermanagement.index') }}"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
-                                        <i class="fa-solid fa-users mb-1 text-success" style="font-size: 18px;"></i>
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action">
+                                        <i class="fa-solid fa-users mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">{{ __('admin.user_management') }}</small>
                                     </a>
                                 </div>
@@ -416,27 +415,30 @@ app()->setLocale($originalLocale);
                                 <!-- Studio -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.studio.index') }}"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
-                                        <i class="fa-solid fa-palette mb-1 text-warning" style="font-size: 18px;"></i>
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action">
+                                        <i class="fa-solid fa-palette mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">{{ __('admin.studio_editor') }}</small>
                                     </a>
                                 </div>
                                 <!-- Ayarlar -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.settingmanagement.index') }}"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
-                                        <i class="fa-solid fa-sliders mb-1 text-secondary" style="font-size: 18px;"></i>
+                                        class="d-flex flex-column text-center p-3 mobile-quick-action">
+                                        <i class="fa-solid fa-sliders mb-2" style="font-size: 24px;"></i>
                                         <small class="fw-bold">{{ __('admin.system_settings') }}</small>
                                     </a>
                                 </div>
-                                <!-- Dil Seçimi (Mobil) - Livewire ile -->
+                                <!-- Dil Seçimi (Mobil) -->
                                 <div class="col-6">
-                                    <a href="#"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
-                                        onclick="document.querySelector('.navbar-nav .nav-item.dropdown a.nav-link').click()">
-                                        <i class="fa-solid fa-language mb-1 text-primary" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ __('admin.language_settings') }}</small>
-                                    </a>
+                                    <div class="dropdown">
+                                        <a href="#"
+                                            class="d-flex flex-column text-center p-3 mobile-quick-action"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-solid fa-language mb-2" style="font-size: 24px;"></i>
+                                            <small class="fw-bold">{{ __('admin.language_settings') }}</small>
+                                        </a>
+                                        @livewire('languagemanagement::admin-language-switcher', ['isMobile' => true])
+                                    </div>
                                 </div>
                             </div>
                         </div>

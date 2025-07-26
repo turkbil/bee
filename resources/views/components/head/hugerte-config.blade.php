@@ -106,19 +106,15 @@
         function updateEditorTheme() {
             const isDark = detectDarkMode();
             
-            // Tüm editör instance'larını güncelle - güvenli forEach
+            // Tüm editör instance'larını tamamen temizle
             try {
-                if (typeof hugerte !== 'undefined' && hugerte.editors) {
-                    // HugeRTE editors array veya object olabilir
-                    const editors = Array.isArray(hugerte.editors) 
-                        ? hugerte.editors 
-                        : Object.values(hugerte.editors);
+                if (typeof hugerte !== 'undefined') {
+                    // Önce tüm editörleri remove et
+                    hugerte.remove();
                     
-                    editors.forEach(editor => {
-                        if (editor && editor.initialized) {
-                            // Editörü kaldır ve yeniden başlat
-                            editor.remove();
-                        }
+                    // DOM'dan kalan HugeRTE elementlerini temizle
+                    document.querySelectorAll('.tox-hugerte, .tox-hugerte-inline, .tox-hugerte-aux').forEach(el => {
+                        el.remove();
                     });
                 }
             } catch (error) {
@@ -134,21 +130,35 @@
                 options.content_css = "default";
             }
             
-            // Editörü yeniden başlat
+            // Editörü yeniden başlat - daha uzun timeout
             setTimeout(() => {
                 hugerte.init(options);
-            }, 100);
+            }, 300);
+        }
+        
+        // Tema değişimi için debounced function - çoklu çağrıları önler
+        let themeUpdateTimeout;
+        function debouncedThemeUpdate() {
+            clearTimeout(themeUpdateTimeout);
+            themeUpdateTimeout = setTimeout(() => {
+                updateEditorTheme();
+            }, 500); // 500ms debounce
         }
         
         // Body attribute değişimini izle (Tabler tema değişimi)
         const observer = new MutationObserver((mutations) => {
+            let shouldUpdate = false;
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && 
                     (mutation.attributeName === 'data-bs-theme' || 
                      mutation.attributeName === 'class')) {
-                    updateEditorTheme();
+                    shouldUpdate = true;
                 }
             });
+            
+            if (shouldUpdate) {
+                debouncedThemeUpdate();
+            }
         });
         
         // Body elementini izlemeye başla

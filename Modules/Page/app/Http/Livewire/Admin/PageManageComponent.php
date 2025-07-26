@@ -362,9 +362,9 @@ class PageManageComponent extends Component
    }
 
    protected $messages = [
-       'multiLangInputs.tr.title.required' => 'Başlık alanı zorunludur',
-       'multiLangInputs.tr.title.min' => 'Başlık en az 3 karakter olmalıdır',
-       'multiLangInputs.tr.title.max' => 'Başlık en fazla 255 karakter olabilir',
+       'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
+       'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
+       'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
        // SEO Cache messages for each language
        'seoDataCache.*.seo_title.required' => 'SEO başlığı zorunludur',
        'seoDataCache.*.seo_title.max' => 'SEO başlığı en fazla 60 karakter olabilir',

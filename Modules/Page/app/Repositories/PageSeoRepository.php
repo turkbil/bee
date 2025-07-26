@@ -178,7 +178,10 @@ class PageSeoRepository implements PageSeoRepositoryInterface
         $pattern = "{$this->cachePrefix}.tenant.{$tenantId}.seo_data.{$page->page_id}.*";
         
         // Laravel cache'de pattern-based clear yoksa manuel clear
-        $languages = ['tr', 'en', 'ar']; // Aktif dilleri al
+        // Tenant languages'den aktif dilleri al
+        $languages = \Modules\LanguageManagement\app\Models\TenantLanguage::where('is_active', true)
+            ->pluck('code')
+            ->toArray();
         
         foreach ($languages as $lang) {
             $cacheKey = $this->getCacheKey("seo_data.{$page->page_id}.{$lang}");

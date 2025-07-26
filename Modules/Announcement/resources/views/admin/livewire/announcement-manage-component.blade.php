@@ -41,7 +41,8 @@
                         @foreach($availableLanguages as $lang)
                         @php
                             $langData = $multiLangInputs[$lang] ?? [];
-                            $langName = $lang === 'tr' ? 'Türkçe' : ($lang === 'en' ? 'English' : 'العربية');
+                            // Tenant languages'den dil ismini al
+                            $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
                         @endphp
                         
                         <div class="language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
@@ -90,7 +91,8 @@
                     <div class="tab-pane fade" id="tabs-2">
                         @foreach($availableLanguages as $lang)
                         @php
-                            $langName = $lang === 'tr' ? 'Türkçe' : ($lang === 'en' ? 'English' : 'العربية');
+                            // Tenant languages'den dil ismini al
+                            $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
                         @endphp
                         
                         <div class="language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">

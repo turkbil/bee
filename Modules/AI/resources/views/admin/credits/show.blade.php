@@ -12,14 +12,14 @@
                         AI Yönetimi
                     </div>
                     <h2 class="page-title">
-                        <i class="ti ti-coins me-2"></i>
+                        <i class="fas fa-coins me-2"></i>
                         Kredi Detayları
                     </h2>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
                     <div class="btn-list">
                         <a href="{{ route('admin.ai.credits.index') }}" class="btn btn-ghost-dark">
-                            <i class="ti ti-arrow-left me-1"></i>
+                            <i class="fas fa-arrow-left me-1"></i>
                             Geri Dön
                         </a>
                     </div>
@@ -35,7 +35,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-chart-bar me-2"></i>
+                                <i class="fas fa-chart-bar me-2"></i>
                                 Kredi Kullanım Detayları
                             </h3>
                         </div>
@@ -101,7 +101,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-info-circle me-2"></i>
+                                <i class="fas fa-info-circle me-2"></i>
                                 Kredi Bilgileri
                             </h3>
                         </div>
@@ -140,26 +140,26 @@
                     <div class="card mt-3">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-bolt me-2"></i>
+                                <i class="fas fa-bolt me-2"></i>
                                 Hızlı İşlemler
                             </h3>
                         </div>
                         <div class="card-body">
                             <div class="d-grid gap-2">
                                 <a href="{{ route('admin.ai.credits.packages') }}" class="btn btn-blue">
-                                    <i class="ti ti-package me-1"></i>
+                                    <i class="fas fa-box me-1"></i>
                                     Kredi Paketleri
                                 </a>
                                 <a href="{{ route('admin.ai.credits.purchases') }}" class="btn btn-outline-blue">
-                                    <i class="ti ti-shopping-cart me-1"></i>
+                                    <i class="fas fa-shopping-cart me-1"></i>
                                     Satın Alma Geçmişi
                                 </a>
                                 <a href="{{ route('admin.ai.credits.usage') }}" class="btn btn-outline-blue">
-                                    <i class="ti ti-chart-line me-1"></i>
+                                    <i class="fas fa-chart-line me-1"></i>
                                     Kullanım Raporları
                                 </a>
                                 <a href="{{ route('admin.ai.credits.transactions') }}" class="btn btn-outline-blue">
-                                    <i class="ti ti-receipt me-1"></i>
+                                    <i class="fas fa-receipt me-1"></i>
                                     Kredi İşlemleri
                                 </a>
                             </div>

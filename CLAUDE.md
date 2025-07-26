@@ -23,7 +23,7 @@ say "tamamlandı"
 **SİSTEM KURALLARI:**
 - Türkçe yanıt ver
 - HARDCODE kullanma - sistem tamamen dinamik
-- "aferin" dediğimde readme.md'ye ekle
+- "aferin", "bravo", "oldu" gibi sonuclanma kelimesi kullandığımda → README.md'ye kaydet + Git'e yükle
 
 **TASARIM KURALLARI:**
 - **Admin**: Tabler.io + Bootstrap + jQuery + Livewire + FontAwesome

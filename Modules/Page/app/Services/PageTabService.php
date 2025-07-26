@@ -38,19 +38,19 @@ class PageTabService
             [
                 'key' => 'basic',
                 'name' => __('admin.basic_information'),
-                'icon' => 'ti ti-file-text',
+                'icon' => 'fas fa-file-text',
                 'required_fields' => ['title', 'slug', 'content']
             ],
             [
                 'key' => 'seo',
                 'name' => 'SEO',
-                'icon' => 'ti ti-seo',
+                'icon' => 'fas fa-search',
                 'required_fields' => ['seo_title']
             ],
             [
                 'key' => 'code',
                 'name' => 'Code',
-                'icon' => 'ti ti-code',
+                'icon' => 'fas fa-code',
                 'required_fields' => []
             ]
         ];

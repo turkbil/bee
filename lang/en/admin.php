@@ -10,7 +10,7 @@ return [
     'sidebar' => 'Sidebar',
     'header' => 'Header',
     'footer' => 'Footer',
-    
+
     // User Operations
     'profile' => 'Profile',
     'account' => 'Account',
@@ -20,7 +20,7 @@ return [
     'login' => 'Login',
     'welcome' => 'Welcome',
     'hello' => 'Hello',
-    
+
     // Management Areas
     'users' => 'Users',
     'roles' => 'Roles',
@@ -28,6 +28,7 @@ return [
     'modules' => 'Modules',
     'tenants' => 'Tenants',
     'languages' => 'Languages',
+    'data_language' => 'Data Language',
     'themes' => 'Themes',
     'widgets' => 'Widgets',
     'pages' => 'Pages',
@@ -37,7 +38,7 @@ return [
     'media' => 'Media',
     'files' => 'Files',
     'gallery' => 'Gallery',
-    
+
     // Statistics
     'statistics' => 'Statistics',
     'reports' => 'Reports',
@@ -47,10 +48,10 @@ return [
     'activity' => 'Activity',
     'logs' => 'Logs',
     'history' => 'History',
-    
+
     // System
     'system' => 'System',
-    'artificial_intelligence' => 'Artificial Intelligence',
+    'artificial_intelligence' => 'AI',
     'ai' => 'AI',
     'configuration' => 'Configuration',
     'maintenance' => 'Maintenance',
@@ -60,7 +61,7 @@ return [
     'performance' => 'Performance',
     'cache' => 'Cache',
     'database' => 'Database',
-    
+
     // Content Management
     'content' => 'Content',
     'content_management' => 'Content Management',
@@ -71,7 +72,7 @@ return [
     'seo' => 'SEO',
     'meta' => 'Meta',
     'keywords' => 'Keywords',
-    
+
     // E-commerce
     'products' => 'Products',
     'orders' => 'Orders',
@@ -81,7 +82,7 @@ return [
     'inventory' => 'Inventory',
     'discounts' => 'Discounts',
     'coupons' => 'Coupons',
-    
+
     // Communication
     'contact' => 'Contact',
     'messages' => 'Messages',
@@ -91,7 +92,7 @@ return [
     'emails' => 'Emails',
     'comments' => 'Comments',
     'reviews' => 'Reviews',
-    
+
     // Tools
     'tools' => 'Tools',
     'utilities' => 'Utilities',
@@ -99,11 +100,11 @@ return [
     'validators' => 'Validators',
     'converters' => 'Converters',
     'optimizers' => 'Optimizers',
-    
+
     // Language Management
     'default_language' => 'Default Language',
     'default_language_description' => 'Default language to be used for URL prefix settings and multilingual content',
-    
+
     // Status Messages
     'online' => 'Online',
     'offline' => 'Offline',
@@ -111,7 +112,7 @@ return [
     'away' => 'Away',
     'maintenance_mode' => 'Maintenance Mode',
     'development_mode' => 'Development Mode',
-    
+
     // Actions
     'quick_actions' => 'Quick Actions',
     'bulk_actions' => 'Bulk Actions',
@@ -119,7 +120,7 @@ return [
     'shortcuts' => 'Shortcuts',
     'favorites' => 'Favorites',
     'bookmarks' => 'Bookmarks',
-    
+
     // Pagination
     'pagination_showing' => 'Showing',
     'pagination_to' => 'to',
@@ -148,7 +149,7 @@ return [
     'close' => 'Close',
     'continue' => 'Continue',
     'finish' => 'Finish',
-    
+
     // Confirmation
     'yes' => 'Yes',
     'no' => 'No',
@@ -156,7 +157,7 @@ return [
     'confirm' => 'Confirm',
     'approve' => 'Approve',
     'reject' => 'Reject',
-    
+
     // Status
     'active' => 'Active',
     'inactive' => 'Inactive',
@@ -167,7 +168,7 @@ return [
     'pending' => 'Pending',
     'approved' => 'Approved',
     'rejected' => 'Rejected',
-    
+
     // Actions
     'view' => 'View',
     'show' => 'Show',
@@ -186,7 +187,7 @@ return [
     'refresh' => 'Refresh',
     'reload' => 'Reload',
     'clear' => 'Clear',
-    
+
     // Information
     'name' => 'Name',
     'title' => 'Title',
@@ -204,7 +205,7 @@ return [
     'phone' => 'Phone',
     'address' => 'Address',
     'website' => 'Website',
-    
+
     // Messages
     'loading' => 'Loading...',
     'saving' => 'Saving...',
@@ -214,7 +215,7 @@ return [
     'warning' => 'Warning',
     'info' => 'Info',
     'notice' => 'Notice',
-    
+
     // Pagination
     'page' => 'Page',
     'total' => 'Total',
@@ -224,7 +225,7 @@ return [
     'per_page' => 'Per Page',
     'first' => 'First',
     'last' => 'Last',
-    
+
     // Time
     'today' => 'Today',
     'yesterday' => 'Yesterday',
@@ -235,7 +236,7 @@ return [
     'last_month' => 'Last Month',
     'this_year' => 'This Year',
     'last_year' => 'Last Year',
-    
+
     // File
     'file' => 'File',
     'image' => 'Image',
@@ -245,7 +246,7 @@ return [
     'size' => 'Size',
     'format' => 'Format',
     'quality' => 'Quality',
-    
+
     // Additional General Terms
     'actions' => 'Actions',
     'updating' => 'Updating...',
@@ -258,7 +259,7 @@ return [
     'no_changes' => 'No changes were made.',
     'activated' => 'activated',
     'deactivated' => 'deactivated',
-    
+
     // Navigation Translations
     'theme_settings' => 'Theme Settings',
     'theme_mode' => 'Theme Mode',
@@ -285,7 +286,7 @@ return [
     'homepage' => 'Homepage',
     'save_and_continue' => 'Save and Continue',
     'save_and_new' => 'Save and New',
-    
+
     // Language Management
     'default_tenant_language' => 'Default Tenant Language',
     'code' => 'Code',
@@ -295,7 +296,7 @@ return [
     'coded_with_love' => 'Coded with love.',
     'copyright' => 'Copyright',
     'all_rights_reserved' => 'All rights reserved.',
-    
+
     // Site Language Component
     'search_tenant_language' => 'Search tenant language...',
     'default' => 'Default',
@@ -326,7 +327,7 @@ return [
     '502' => 'Bad Gateway',
     '503' => 'Service Unavailable',
     '504' => 'Gateway Timeout',
-    
+
     // General Errors
     'general_error' => 'An error occurred',
     'unknown_error' => 'Unknown error',
@@ -336,7 +337,7 @@ return [
     'timeout_error' => 'Timeout error',
     'network_error' => 'Network error',
     'server_error' => 'Server error',
-    
+
     // Access Errors
     'access_denied' => 'You do not have permission for this operation',
     'permission_denied' => 'Permission denied',
@@ -346,7 +347,7 @@ return [
     'session_expired' => 'Session expired',
     'login_required' => 'Login required',
     'admin_required' => 'Admin permission required',
-    
+
     // Record Errors
     'not_found' => 'Record not found',
     'record_not_found' => 'Record not found',
@@ -356,7 +357,7 @@ return [
     'module_not_found' => 'Module not found',
     'route_not_found' => 'Page not found',
     'resource_not_found' => 'Resource not found',
-    
+
     // Validation Errors
     'validation_failed' => 'Validation failed',
     'invalid_input' => 'Invalid input',
@@ -368,7 +369,7 @@ return [
     'invalid_date' => 'Invalid date',
     'invalid_file' => 'Invalid file',
     'invalid_image' => 'Invalid image',
-    
+
     // File Errors
     'file_upload_failed' => 'File upload failed',
     'file_too_large' => 'File too large',
@@ -378,7 +379,7 @@ return [
     'file_permission_denied' => 'File permission denied',
     'disk_full' => 'Disk full',
     'storage_error' => 'Storage error',
-    
+
     // Operation Errors
     'operation_failed' => 'Operation failed',
     'save_failed' => 'Save failed',
@@ -389,7 +390,7 @@ return [
     'move_failed' => 'Move failed',
     'import_failed' => 'Import failed',
     'export_failed' => 'Export failed',
-    
+
     // Form Errors
     'required_field' => 'This field is required',
     'field_too_short' => 'This field is too short',
@@ -399,7 +400,7 @@ return [
     'email_exists' => 'This email address is already in use',
     'username_exists' => 'This username is already in use',
     'duplicate_entry' => 'Duplicate entry',
-    
+
     // Network Errors
     'no_internet' => 'No internet connection',
     'dns_error' => 'DNS error',
@@ -407,61 +408,61 @@ return [
     'certificate_error' => 'Certificate error',
     'proxy_error' => 'Proxy error',
     'firewall_blocked' => 'Blocked by firewall',
-    
+
     // Maintenance
     'service_unavailable' => 'Service unavailable',
     'temporarily_unavailable' => 'Temporarily unavailable',
     'scheduled_maintenance' => 'Scheduled maintenance',
-    
+
     // API Errors
     'api_error' => 'API error',
     'api_limit_exceeded' => 'API limit exceeded',
     'api_key_invalid' => 'Invalid API key',
     'api_unavailable' => 'API unavailable',
     'rate_limit_exceeded' => 'Rate limit exceeded',
-    
+
     // =============================================
     // TINYMCE EDITOR TRANSLATIONS
     // =============================================
-    
+
     'tinymce_edit' => 'Edit',
     'tinymce_view' => 'View',
     'tinymce_insert' => 'Insert',
     'tinymce_format' => 'Format',
     'tinymce_tools' => 'Tools',
     'tinymce_table' => 'Table',
-    
+
     // =============================================
     // COMMON MODAL AND CONFIRMATION MESSAGES
     // =============================================
-    
+
     'confirm_delete' => 'Confirm Delete',
     'confirm_delete_message' => 'Are you sure you want to delete this record?',
     'confirm_delete_category' => 'Confirm Delete Category',
     'confirm_delete_category_message' => 'Are you sure you want to delete this category? All subcategories will also be deleted!',
     'configure' => 'Configure',
     'customize' => 'Customize',
-    
+
     // CRUD Permissions
     'permission_view' => 'View',
     'permission_create' => 'Create',
     'permission_update' => 'Edit',
     'permission_delete' => 'Delete',
-    
+
     // Image Upload Component
     'drag_drop_image' => 'Drag and drop image or click',
     'drop_it' => 'Drop it!',
     'uploaded_photo' => 'Uploaded Photo',
     'current_photo' => 'Current Photo',
-    
+
     // 3-Stage Hybrid Language System
     'admin_language_changed' => 'Admin panel language changed successfully',
     'tenant_language_changed' => 'Tenant language changed successfully',
-    
+
     // =============================================
     // COMMON SUCCESS MESSAGES
     // =============================================
-    
+
     // Basic Operation Messages
     'saved' => 'saved',
     'updated' => 'updated',
@@ -471,7 +472,7 @@ return [
     'updated_successfully' => 'updated successfully',
     'created_successfully' => 'created successfully',
     'deleted_successfully' => 'deleted successfully',
-    
+
     // Page Module Messages
     'page_updated' => 'Page updated',
     'page_saved' => 'Page saved',
@@ -483,14 +484,14 @@ return [
     'no_pages_can_be_deleted' => 'No pages can be deleted',
     'basic_information' => 'Basic Information',
     'edit_with_studio' => 'Edit with Studio',
-    
+
     // Validation Messages
     'title_validation_error' => 'Title is invalid. Please check.',
-    
+
     // =============================================
     // SEO TRANSLATIONS
     // =============================================
-    
+
     // SEO Fields
     'seo_title' => 'SEO Title',
     'seo_description' => 'SEO Description',
@@ -498,7 +499,7 @@ return [
     'canonical_url' => 'Canonical URL',
     'page_url_slug' => 'Page URL (Slug)',
     'slug_auto_generated' => 'Auto-generated',
-    
+
     // SEO Help Texts
     'seo_title_help' => 'Title that will appear in search engines',
     'seo_description_help' => 'Description that will appear in search results',

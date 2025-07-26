@@ -159,7 +159,7 @@
                                     </div>
                                     <div class="col">
                                         <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $page->page_id]) }}" target="_blank"
-                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('studio.editor', ['default' => 'Studio Editor']) }}">
+                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('page::admin.studio.editor') }}">
                                             <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
                                         </a>
                                     </div>

@@ -30,6 +30,7 @@ return [
     'modules' => 'Modüller',
     'tenants' => 'Tenant\'lar',
     'languages' => 'Diller',
+    'data_language' => 'Veri Dili',
     'themes' => 'Temalar',
     'widgets' => 'Widget\'lar',
     'pages' => 'Sayfalar',

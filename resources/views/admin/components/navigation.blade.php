@@ -92,7 +92,7 @@ $siteTitle = settings('site_title', config('app.name'));
 app()->setLocale($originalLocale);
 @endphp
 
-<header class="navbar navbar-expand-md d-print-none">
+<header class="navbar navbar-expand-xl d-print-none">
     <div class="container">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
             aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,7 +113,7 @@ app()->setLocale($originalLocale);
 
         <div class="navbar-nav flex-row order-md-last align-items-center">
             <!-- Desktop: Tüm butonlar görünür -->
-            <div class="d-none d-md-flex align-items-center">
+            <div class="d-none d-lg-flex align-items-center">
                 <!-- Anasayfa Butonu -->
                 <div class="nav-item me-2">
                     <a href="{{ url('/') }}" target="_blank"
@@ -124,15 +124,6 @@ app()->setLocale($originalLocale);
                     </a>
                 </div>
 
-                <!-- Tema Ayarları Butonu -->
-                <div class="nav-item me-2" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                    title="{{ __('admin.theme_settings') }}">
-                    <a href="#" class="nav-link d-flex align-items-center justify-content-center"
-                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme"
-                        style="width: 40px; height: 40px; border-radius: 0.375rem;">
-                        <i class="fa-solid fa-brush" style="font-size: 18px;"></i>
-                    </a>
-                </div>
 
                 <!-- NAVBAR TEMA SWITCH - KALDIRMA! Theme Builder'daki sistem modu ile aynı işlevi görüyor -->
                 {{--
@@ -344,8 +335,8 @@ app()->setLocale($originalLocale);
                 </div>
             </div>
 
-            <!-- Mobile: Tek buton -->
-            <div class="d-md-none nav-item dropdown me-3">
+            <!-- Mobile/Tablet: Tek buton -->
+            <div class="d-lg-none nav-item dropdown me-3">
                 <a href="#" class="nav-link d-flex flex-column align-items-center justify-content-center"
                     data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false"
                     style="width: 50px; height: 50px; border-radius: 0.375rem;">

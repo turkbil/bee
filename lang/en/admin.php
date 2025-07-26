@@ -457,4 +457,55 @@ return [
     // 3-Stage Hybrid Language System
     'admin_language_changed' => 'Admin panel language changed successfully',
     'tenant_language_changed' => 'Tenant language changed successfully',
+    
+    // =============================================
+    // COMMON SUCCESS MESSAGES
+    // =============================================
+    
+    // Basic Operation Messages
+    'saved' => 'saved',
+    'updated' => 'updated',
+    'created' => 'created',
+    'deleted' => 'deleted',
+    'saved_successfully' => 'saved successfully',
+    'updated_successfully' => 'updated successfully',
+    'created_successfully' => 'created successfully',
+    'deleted_successfully' => 'deleted successfully',
+    
+    // Page Module Messages
+    'page_updated' => 'Page updated',
+    'page_saved' => 'Page saved',
+    'page_created' => 'Page created',
+    'page_deleted' => 'Page deleted',
+    'title_updated' => 'title updated',
+    'title_updated_successfully' => 'Title updated successfully',
+    'homepage_cannot_be_deactivated' => 'Homepage cannot be deactivated',
+    'no_pages_can_be_deleted' => 'No pages can be deleted',
+    'basic_information' => 'Basic Information',
+    'edit_with_studio' => 'Edit with Studio',
+    
+    // Validation Messages
+    'title_validation_error' => 'Title is invalid. Please check.',
+    
+    // =============================================
+    // SEO TRANSLATIONS
+    // =============================================
+    
+    // SEO Fields
+    'seo_title' => 'SEO Title',
+    'seo_description' => 'SEO Description',
+    'seo_keywords' => 'Keywords',
+    'canonical_url' => 'Canonical URL',
+    'page_url_slug' => 'Page URL (Slug)',
+    'slug_auto_generated' => 'Auto-generated',
+    
+    // SEO Help Texts
+    'seo_title_help' => 'Title that will appear in search engines',
+    'seo_description_help' => 'Description that will appear in search results',
+    'seo_keywords_help' => 'Write keywords separated by commas',
+    'slug_help' => 'If left empty, it will be automatically generated from title',
+    'canonical_url_help' => 'Used in special cases - leave empty if unsure',
+    'keywords_separator_note' => '(Comma separated)',
+    'keywords_placeholder' => 'Comma separated: keyword1, keyword2, keyword3',
+    'seo_score' => 'SEO Score',
 ];

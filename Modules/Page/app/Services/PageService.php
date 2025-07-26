@@ -137,7 +137,7 @@ class PageService
         if (!$page) {
             return [
                 'success' => false,
-                'message' => __('page::admin.page_not_found'),
+                'message' => __('admin.page_not_found'),
                 'type' => 'error'
             ];
         }
@@ -146,7 +146,7 @@ class PageService
         if ($page->is_homepage && $page->is_active) {
             return [
                 'success' => false,
-                'message' => __('page::admin.homepage_cannot_be_deactivated'),
+                'message' => __('admin.homepage_cannot_be_deactivated'),
                 'type' => 'warning'
             ];
         }
@@ -164,7 +164,7 @@ class PageService
             
             return [
                 'success' => true,
-                'message' => __($page->is_active ? 'page::admin.page_activated' : 'page::admin.page_deactivated'),
+                'message' => __($page->is_active ? 'admin.activated' : 'admin.deactivated'),
                 'type' => $page->is_active ? 'success' : 'warning',
                 'new_status' => $page->is_active
             ];
@@ -172,7 +172,7 @@ class PageService
         
         return [
             'success' => false,
-            'message' => __('page::admin.operation_failed'),
+            'message' => __('admin.operation_failed'),
             'type' => 'error'
         ];
     }
@@ -193,7 +193,7 @@ class PageService
         if (empty($allowedIds)) {
             return [
                 'success' => false,
-                'message' => __('page::admin.no_pages_can_be_deleted'),
+                'message' => __('admin.no_pages_can_be_deleted'),
                 'deleted_count' => 0
             ];
         }
@@ -208,7 +208,7 @@ class PageService
         
         return [
             'success' => true,
-            'message' => __('page::admin.pages_deleted_successfully', ['count' => $deletedCount]),
+            'message' => __('admin.deleted_successfully') . ' (' . $deletedCount . ')',
             'deleted_count' => $deletedCount,
             'skipped_count' => count($homepageIds)
         ];
@@ -225,7 +225,7 @@ class PageService
         
         return [
             'success' => true,
-            'message' => __('page::admin.pages_status_updated', ['count' => $affectedCount]),
+            'message' => __('admin.updated_successfully') . ' (' . $affectedCount . ')',
             'affected_count' => $affectedCount
         ];
     }
@@ -284,23 +284,23 @@ class PageService
      */
     public function preparePageForForm(int $id, string $language): array
     {
-        $page = $this->pageRepository->findById($id);
+        // 🚨 PERFORMANCE FIX: Eager loading ile bir seferde çek
+        $page = $this->pageRepository->findByIdWithSeo($id);
         
         if (!$page) {
             return $this->getEmptyFormData($language);
         }
 
-        // Tab completion durumunu hesapla
-        $allData = array_merge(
-            $page->toArray(),
-            $this->seoRepository->getSeoData($page, $language)
-        );
+        // 🚨 PERFORMANCE FIX: SEO data'yı sadece bir kez çek
+        $seoData = $this->seoRepository->getSeoData($page, $language);
         
+        // Tab completion durumunu hesapla
+        $allData = array_merge($page->toArray(), $seoData);
         $tabCompletion = PageTabService::getTabCompletionStatus($allData);
 
         return [
             'page' => $page,
-            'seoData' => $this->seoRepository->getSeoData($page, $language),
+            'seoData' => $seoData, // Tekrar çekme!
             'tabCompletion' => $tabCompletion,
             'tabConfig' => PageTabService::getJavaScriptConfig(),
             'seoLimits' => $this->seoRepository->getFieldLimits()

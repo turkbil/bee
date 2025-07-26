@@ -1,0 +1,106 @@
+/* SEO Tabs CSS */
+.seo-character-counter {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.seo-character-counter.warning {
+    color: #f39c12;
+}
+
+.seo-character-counter.danger {
+    color: #e74c3c;
+}
+
+.seo-score-container {
+    /* Removed background for dark/light mode compatibility */
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+.seo-score-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.seo-progress-bar {
+    transition: width 0.3s ease;
+}
+
+.seo-checks {
+    font-size: 0.8rem;
+}
+
+.seo-checks .fa-check {
+    color: #28a745;
+}
+
+.seo-checks .fa-exclamation-triangle {
+    color: #ffc107;
+}
+
+.seo-checks .fa-times {
+    color: #dc3545;
+}
+
+.keyword-input-container {
+    position: relative;
+}
+
+.keyword-badges .badge {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.keyword-remove {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 2px;
+    transition: background-color 0.2s;
+}
+
+.keyword-remove:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.seo-widget-container .form-floating > label .required-star {
+    color: #e74c3c;
+    margin-left: 2px;
+}
+
+.slug-status {
+    font-weight: 500;
+}
+
+.slug-status .fa-check {
+    color: #28a745;
+}
+
+.slug-status .fa-times {
+    color: #dc3545;
+}
+
+.slug-status .fa-exclamation-triangle {
+    color: #ffc107;
+}
+
+.slug-status .fa-spinner {
+    color: #6c757d;
+}
+
+/* Progress bar renklendirme */
+.seo-progress-bar[style*="width: 0%"],
+.seo-progress-bar[style*="width: 1%"],
+.seo-progress-bar[style*="width: 2%"],
+.seo-progress-bar[style*="width: 3%"],
+.seo-progress-bar[style*="width: 4%"],
+.seo-progress-bar[style*="width: 5%"] {
+    background-color: #dc3545;
+}
+
+.seo-progress-bar {
+    background-color: #28a745;
+}

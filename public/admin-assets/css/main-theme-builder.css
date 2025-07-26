@@ -1055,7 +1055,6 @@ a.link-primary:focus {
 
 /* 6. Dropdown düzeltmeleri */
 .dropdown-menu {
-    background-color: var(--tblr-bg-surface) !important;
     border-color: var(--tblr-border-color) !important;
     color: var(--tblr-body-color) !important;
 }

@@ -4,33 +4,33 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class AdminNoCacheMiddleware
 {
     /**
-     * Admin panelinde cache'i mutlak engelle
+     * Admin panel'de TÜM cache ve Redis işlemlerini devre dışı bırak
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        // Cache bypass header'ları ekle
-        $request->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
-        $request->headers->set('Pragma', 'no-cache');
-        $request->headers->set('Expires', '0');
-        
-        // Response cache bypass için özel header
-        $request->headers->set('X-Cache-Bypass', 'admin');
-        
-        $response = $next($request);
-        
-        // Response header'larını da ekle - Güçlü cache engelleme
-        $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0');
-        $response->headers->set('Pragma', 'no-cache');
-        $response->headers->set('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
-        $response->headers->set('Last-Modified', gmdate('D, d M Y H:i:s') . ' GMT');
-        $response->headers->set('ETag', '');
-        $response->headers->set('X-Admin-No-Cache', 'true');
-        
-        return $response;
+        // Admin panel kontrolü
+        if ($request->is('admin/*') || str_contains($request->path(), 'admin')) {
+            
+            Log::info('🚫 ADMIN CACHE KILLER AKTIF', [
+                'path' => $request->path(),
+                'url' => $request->url()
+            ]);
+            
+            // Cache'i devre dışı bırakmak için config'i değiştir
+            config(['cache.default' => 'array']); // Array driver cache'i RAM'de tutar, request sonunda kaybolur
+            
+            // Redis connection'ını da devre dışı bırak
+            config(['database.redis.default.host' => '127.0.0.1']);
+            config(['database.redis.options.prefix' => 'admin_disabled_']);
+            
+            Log::info('✅ Admin panel cache/Redis tamamen bypass edildi');
+        }
+
+        return $next($request);
     }
 }

@@ -1,37 +1,6 @@
 @include('page::admin.helper')
-
-{{-- Page Management Container --}}
-<div class="page-management-container">
-    {{-- Hero Section --}}
-    <div class="hero-section mb-4">
-        <div class="hero-background">
-            <div class="digital-grid"></div>
-            <div class="floating-elements"></div>
-            <div class="cyber-waves"></div>
-        </div>
-        
-        <div class="hero-content">
-            <div class="container">
-                {{-- Page Management Badge --}}
-                <div class="row mb-2">
-                    <div class="col-12 text-start">
-                        <div class="hero-main-badge-container">
-                            <span class="badge hero-main-badge">
-                                <i class="fas fa-file-alt me-2"></i>Sayfa Yönetimi
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Main Content Container --}}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
+<div class="card">
+    <div class="card-body">
                         <!-- Header Bölümü -->
                         <div class="row mb-3">
                             <!-- Arama Kutusu -->
@@ -241,10 +210,7 @@
                     <!-- Bulk Actions -->
                     @include('page::admin.partials.bulk-actions', ['moduleType' => 'page'])
 
-                    <livewire:modals.bulk-delete-modal />
-                    <livewire:modals.delete-modal />
-                </div>
-            </div>
-        </div>
+        <livewire:modals.bulk-delete-modal />
+        <livewire:modals.delete-modal />
     </div>
 </div>

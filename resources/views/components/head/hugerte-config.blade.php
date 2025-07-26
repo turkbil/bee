@@ -40,7 +40,6 @@
           setup: function(editor) {
             // Editor ready olduğunda Livewire sync kur
             editor.on('init', function() {
-              console.log('📝 HugeRTE hazır:', editor.id);
               
               // Real-time sync - content değiştiğinde
               editor.on('input change keyup', function() {
@@ -50,7 +49,6 @@
                 if (hiddenInput) {
                   hiddenInput.value = editor.getContent();
                   hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
-                  console.log('🔄 HugeRTE real-time sync:', lang);
                 }
               });
             });

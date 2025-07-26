@@ -32,9 +32,15 @@ class PageSeoRepository implements PageSeoRepositoryInterface
     
     /**
      * Fresh SEO data çek (cache'siz)
+     * 🚨 PERFORMANCE FIX: Relationship zaten yüklenmişse tekrar sorgu atma
      */
     protected function getFreshSeoData(Page $page, string $language): array
     {
+        // 🚨 FIX: Relationship zaten yüklenmişse DB'ye tekrar sorgu atma
+        if (!$page->relationLoaded('seoSetting')) {
+            $page->load('seoSetting');
+        }
+        
         $seoSettings = $page->seoSetting;
         
         if (!$seoSettings) {

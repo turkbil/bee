@@ -9,6 +9,7 @@ use Modules\Page\App\Services\PageTabService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
+use App\Helpers\SlugHelper;
 
 #[Layout('admin.layout')]
 class PageManageComponent extends Component
@@ -36,6 +37,12 @@ class PageManageComponent extends Component
    public $seo_description = '';
    public $seo_keywords = '';
    public $canonical_url = '';
+  
+  // SEO Cache - Tüm dillerin SEO verileri (Performance Optimization)
+  public $seoDataCache = [];
+  
+  // JavaScript için tüm dillerin SEO verileri (Blade exposure)
+  public $allLanguagesSeoData = [];
    
    // Konfigürasyon verileri
    public $tabConfig = [];
@@ -44,6 +51,9 @@ class PageManageComponent extends Component
    public $seoLimits = [];
    
    public $studioEnabled = false;
+   
+   // 🚨 PERFORMANCE FIX: Cached page with SEO
+   protected $cachedPageWithSeo = null;
    
    // SOLID Dependencies
    protected $pageService;
@@ -54,8 +64,42 @@ class PageManageComponent extends Component
        'refreshComponent' => '$refresh',
        'tab-changed' => 'handleTabChange',
        'seo-keywords-updated' => 'updateSeoKeywords',
-       'seo-field-updated' => 'handleSeoFieldUpdate'
+       'seo-field-updated' => 'handleSeoFieldUpdate',
+       'switchLanguage' => 'switchLanguage',
+       'js-language-sync' => 'handleJavaScriptLanguageSync',
+       'handleTestEvent' => 'handleTestEvent',
+       'simple-test' => 'handleSimpleTest',
+       'handleJavaScriptLanguageSync' => 'handleJavaScriptLanguageSync',
+       'debug-test' => 'handleDebugTest',
+       'set-js-language' => 'setJavaScriptLanguage',
+       'set-continue-mode' => 'setContinueMode'
    ];
+   
+   /**
+    * SEO Keywords Updated Handler
+    */
+   public function updateSeoKeywords($data)
+   {
+       $language = $data['lang'] ?? $this->currentLanguage;
+       $keywords = $data['keywords'] ?? '';
+       
+       // seoDataCache'e kaydet
+       if (!isset($this->seoDataCache[$language])) {
+           $this->seoDataCache[$language] = [
+               'seo_title' => '',
+               'seo_description' => '',
+               'seo_keywords' => '',
+               'canonical_url' => ''
+           ];
+       }
+       
+       $this->seoDataCache[$language]['seo_keywords'] = $keywords;
+       
+       // Mevcut dil ise eski property'yi de güncelle (backward compatibility)
+       if ($language === $this->currentLanguage) {
+           $this->seo_keywords = $keywords;
+       }
+   }
    
    // Dependency Injection Boot
    public function boot()
@@ -142,8 +186,23 @@ class PageManageComponent extends Component
            $this->availableLanguages = ['tr'];
        }
        
-       // Dinamik varsayılan dil - sistem helper'ından
-       $this->currentLanguage = current_tenant_language();
+       // 🎯 KRİTİK: Her durumda mevcut kullanıcı dilini koru
+       // Önce session'dan kontrol et, yoksa ilk aktif dil
+       if (session('page_continue_mode') && session('js_saved_language')) {
+           // Kaydet ve Devam Et durumu
+           $this->currentLanguage = session('js_saved_language');
+           session()->forget(['page_continue_mode', 'js_saved_language']);
+           \Log::info('🔄 Kaydet ve Devam Et - dil korundu:', ['language' => $this->currentLanguage]);
+       } elseif (session('js_current_language') && in_array(session('js_current_language'), $this->availableLanguages)) {
+           // Normal kaydet - mevcut JS dilini koru
+           $this->currentLanguage = session('js_current_language');
+           \Log::info('🔄 Normal kaydet - JS dili korundu:', ['language' => $this->currentLanguage]);
+       } else {
+           // İlk yükleme - DAIMA TR default
+           $defaultLanguage = session('site_default_language', 'tr');
+           $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : 'tr';
+           \Log::info('🔥 İlk yükleme - TR default dil atandı:', ['language' => $this->currentLanguage]);
+       }
    }
 
    /**
@@ -168,12 +227,59 @@ class PageManageComponent extends Component
                ];
            }
            
-           // SEO alanlarını yükle
+           // SEO alanlarını yükle - sadece mevcut dil için (backward compatibility)
            $seoData = $formData['seoData'];
            $this->seo_title = $seoData['seo_title'] ?? '';
            $this->seo_description = $seoData['seo_description'] ?? '';
            $this->seo_keywords = $seoData['seo_keywords'] ?? '';
            $this->canonical_url = $seoData['canonical_url'] ?? '';
+           
+           // KRİTİK FİX: Tüm dillerin SEO verilerini seoDataCache'e yükle
+           // 🚨 PERFORMANCE FIX: Cached page kullan
+           $cachedPage = $this->getCachedPageWithSeo();
+           $seoSettings = $cachedPage ? $cachedPage->seoSetting : null;
+           if ($seoSettings) {
+               $titles = $seoSettings->titles ?? [];
+               $descriptions = $seoSettings->descriptions ?? [];
+               $keywords = $seoSettings->keywords ?? [];
+               
+               foreach ($this->availableLanguages as $lang) {
+                   // Keywords güvenli işleme
+                   $keywordData = $keywords[$lang] ?? [];
+                   $keywordString = '';
+                   if (is_array($keywordData)) {
+                       $keywordString = implode(', ', $keywordData);
+                   } elseif (is_string($keywordData)) {
+                       $keywordString = $keywordData;
+                   }
+                   
+                   $this->seoDataCache[$lang] = [
+                       'seo_title' => $titles[$lang] ?? '',
+                       'seo_description' => $descriptions[$lang] ?? '',
+                       'seo_keywords' => $keywordString,
+                       'canonical_url' => $seoSettings->canonical_url ?? ''
+                   ];
+               }
+               
+               // ✅ JavaScript için allLanguagesSeoData property'sini de güncelle
+               $this->allLanguagesSeoData = [];
+               foreach ($this->availableLanguages as $lang) {
+                   $this->allLanguagesSeoData[$lang] = $this->seoDataCache[$lang];
+               }
+           } else {
+               // SEO ayarları yoksa boş cache oluştur
+               foreach ($this->availableLanguages as $lang) {
+                   $this->seoDataCache[$lang] = [
+                       'seo_title' => '',
+                       'seo_description' => '',
+                       'seo_keywords' => '',
+                       'canonical_url' => ''
+                   ];
+               }
+               
+               // JavaScript için de boş data
+               $this->allLanguagesSeoData = $this->seoDataCache;
+           }
        }
        
        // Tab ve SEO konfigürasyonları
@@ -194,11 +300,31 @@ class PageManageComponent extends Component
            ];
        }
        
-       // SEO alanlarını boşalt
+       // ✅ YENİ SAYFA İÇİN VARSAYILAN SEO AYARLARI - UX İYİLEŞTİRMESİ
+       // SEO alanlarını boşalt ama kullanıcı yazabilir hale getir
        $this->seo_title = '';
        $this->seo_description = '';
        $this->seo_keywords = '';
        $this->canonical_url = '';
+       
+       // SEO cache'i de başlat - her dil için boş veri
+       foreach ($this->availableLanguages as $lang) {
+           $this->seoDataCache[$lang] = [
+               'seo_title' => '',
+               'seo_description' => '',
+               'seo_keywords' => '',
+               'canonical_url' => '',
+               'og_title' => '',
+               'og_description' => '',
+               'og_image' => '',
+               'robots_meta' => 'index, follow, archive, snippet, imageindex',
+               'focus_keyword' => '',
+               'auto_generate' => false
+           ];
+       }
+       
+       // JavaScript için de boş data
+       $this->allLanguagesSeoData = $this->seoDataCache;
    }
 
    protected function rules()
@@ -213,13 +339,24 @@ class PageManageComponent extends Component
        // Çoklu dil alanları
        foreach ($this->availableLanguages as $lang) {
            $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
-           $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
        }
        
-       // SEO validation kuralları
-       $seoRules = PageSeoService::getSeoValidationRules();
-       $rules = array_merge($rules, $seoRules);
+       // Slug validation kuralları KALDIRILDI - Otomatik normalizasyon yapılıyor
+       // $slugRules = SlugHelper::getValidationRules($this->availableLanguages, 'multiLangInputs', false);
+       // $rules = array_merge($rules, $slugRules);
+       
+       // SEO validation kuralları - yeni seoDataCache sistemi için (karakter limiti YOK - kullanıcı karar verir)
+       foreach ($this->availableLanguages as $lang) {
+           $rules["seoDataCache.{$lang}.seo_title"] = 'nullable|string';
+           $rules["seoDataCache.{$lang}.seo_description"] = 'nullable|string';
+           $rules["seoDataCache.{$lang}.seo_keywords"] = 'nullable|string';
+           $rules["seoDataCache.{$lang}.canonical_url"] = 'nullable|url';
+       }
+       
+       // Backward compatibility - eski SEO field'ları (KARAKTER LİMİTİ KALDIRILDI)
+       // $seoRules = PageSeoService::getSeoValidationRules();
+       // $rules = array_merge($rules, $seoRules);
        
        return $rules;
    }
@@ -228,6 +365,12 @@ class PageManageComponent extends Component
        'multiLangInputs.tr.title.required' => 'Başlık alanı zorunludur',
        'multiLangInputs.tr.title.min' => 'Başlık en az 3 karakter olmalıdır',
        'multiLangInputs.tr.title.max' => 'Başlık en fazla 255 karakter olabilir',
+       // SEO Cache messages for each language
+       'seoDataCache.*.seo_title.required' => 'SEO başlığı zorunludur',
+       'seoDataCache.*.seo_title.max' => 'SEO başlığı en fazla 60 karakter olabilir',
+       'seoDataCache.*.seo_description.required' => 'SEO açıklaması zorunludur',
+       'seoDataCache.*.seo_description.max' => 'SEO açıklaması en fazla 160 karakter olabilir',
+       // Backward compatibility
        'seo_title.required' => 'SEO başlığı zorunludur',
        'seo_title.max' => 'SEO başlığı en fazla 60 karakter olabilir',
        'seo_description.required' => 'SEO açıklaması zorunludur',
@@ -235,16 +378,34 @@ class PageManageComponent extends Component
    ];
    
    /**
+    * Tüm validation mesajlarını al
+    */
+   protected function getMessages()
+   {
+       // Slug validation mesajları - SlugHelper'dan al
+       $slugMessages = SlugHelper::getValidationMessages($this->availableLanguages, 'multiLangInputs');
+       
+       return array_merge($this->messages, $slugMessages);
+   }
+   
+   
+   /**
     * Dil sekmesi değiştir
     */
    public function switchLanguage($language)
    {
        if (in_array($language, $this->availableLanguages)) {
+           $oldLanguage = $this->currentLanguage;
            $this->currentLanguage = $language;
            
+           // Session'a kaydet - save sonrası dil koruması için
+           session(['page_manage_language' => $language]);
+           
            \Log::info('🎯 PageManageComponent switchLanguage çağrıldı', [
+               'old_language' => $oldLanguage,
                'new_language' => $language,
-               'current_language' => $this->currentLanguage
+               'current_language' => $this->currentLanguage,
+               'is_successfully_changed' => $this->currentLanguage === $language
            ]);
            
            // JavaScript'e dil değişikliğini bildir (TinyMCE için)
@@ -254,27 +415,37 @@ class PageManageComponent extends Component
                'content' => $this->multiLangInputs[$language]['body'] ?? ''
            ]);
            
-           // SEO Component'e dil değişimini bildir - ÇOKLU EVENT DENEMESİ
-           $this->dispatch('seo-language-change', ['language' => $language]);
-           $this->dispatch('refresh-seo-language', ['language' => $language]);
+           // SEO Component'e dil değişimini bildir - KAPALI (API çağrısı engellendi)
+           // $this->dispatch('seo-language-change', ['language' => $language]);
            
-           // Direkt component refresh - alternatif yöntem
-           $this->dispatch('$refresh');
-           
-           \Log::info('✅ PageManageComponent eventleri gönderildi', [
-               'language' => $language,
-               'events' => ['seo-language-change', 'refresh-seo-language', '$refresh']
+           \Log::info('⛔ PageManageComponent SEO dil eventi GÖNDERİLMEDİ (API çağrısı engellendi)', [
+               'language' => $language
            ]);
        }
    }
 
    public function save($redirect = false, $resetForm = false)
    {
+       // CRITICAL FIX: Session'dan JavaScript currentLanguage'i al ve senkronize et
+       $jsCurrentLanguage = session('js_current_language', $this->currentLanguage);
+       if ($jsCurrentLanguage !== $this->currentLanguage && in_array($jsCurrentLanguage, $this->availableLanguages)) {
+           \Log::info('🔄 SAVE SYNC: JavaScript dili ile senkronize ediliyor', [
+               'old_livewire_language' => $this->currentLanguage,
+               'js_session_language' => $jsCurrentLanguage,
+               'syncing_for_save' => true
+           ]);
+           $this->currentLanguage = $jsCurrentLanguage;
+       }
+       
        \Log::info('🚀 SAVE METHOD BAŞLADI!', [
            'pageId' => $this->pageId,
            'redirect' => $redirect,
            'resetForm' => $resetForm,
-           'currentLanguage' => $this->currentLanguage
+           'currentLanguage' => $this->currentLanguage,
+           'seo_title' => $this->seo_title,
+           'seo_description' => $this->seo_description,
+           'js_session_language' => $jsCurrentLanguage,
+           'language_synced' => $jsCurrentLanguage === $this->currentLanguage
        ]);
       // TinyMCE içeriğini senkronize et
       $this->dispatch('sync-tinymce-content');
@@ -282,7 +453,7 @@ class PageManageComponent extends Component
       \Log::info('🔍 Validation başlıyor...', ['currentLanguage' => $this->currentLanguage]);
       
       try {
-          $this->validate();
+          $this->validate($this->rules(), $this->getMessages());
           \Log::info('✅ Validation başarılı geçti!');
       } catch (\Exception $e) {
           \Log::error('❌ Validation HATASI!', [
@@ -307,11 +478,29 @@ class PageManageComponent extends Component
           foreach ($this->availableLanguages as $lang) {
               $value = $this->multiLangInputs[$lang][$field] ?? '';
               
-              // Boş slug'lar için otomatik oluştur - Türkçe karakter desteği ile
-              if ($field === 'slug' && empty($value) && !empty($this->multiLangInputs[$lang]['title'])) {
-                  // Page model'inin custom slug metodunu kullan
-                  $page = new \Modules\Page\App\Models\Page();
-                  $value = $page->customSlugMethod($this->multiLangInputs[$lang]['title']);
+              // Slug işleme - SlugHelper kullan
+              if ($field === 'slug') {
+                  if (empty($value) && !empty($this->multiLangInputs[$lang]['title'])) {
+                      // Boş slug'lar için title'dan oluştur
+                      $value = SlugHelper::generateFromTitle(
+                          Page::class,
+                          $this->multiLangInputs[$lang]['title'],
+                          $lang,
+                          'slug',
+                          'page_id',
+                          $this->pageId
+                      );
+                  } elseif (!empty($value)) {
+                      // Dolu slug'lar için unique kontrolü yap
+                      $value = SlugHelper::generateUniqueSlug(
+                          Page::class,
+                          $value,
+                          $lang,
+                          'slug',
+                          'page_id',
+                          $this->pageId
+                      );
+                  }
               }
               
               if (!empty($value)) {
@@ -320,12 +509,56 @@ class PageManageComponent extends Component
           }
       }
       
-      // SEO verilerini kaydet - Ayrı field'lardan array oluştur
+      // SEO verilerini kaydet - TÜM DİLLERİN VERİLERİNİ KAYDET (ÇOKLU DİL DESTEĞİ)
+      \Log::info('🔍 SAVE METHOD - seoDataCache durumu', [
+          'currentLanguage' => $this->currentLanguage,
+          'seoDataCache' => $this->seoDataCache,
+          'seoDataCache_for_current_lang' => $this->seoDataCache[$this->currentLanguage] ?? 'YOK!'
+      ]);
+      
+      // KRİTİK FİX: TÜM dillerin SEO verilerini kaydet
+      $allLanguagesSeoData = [
+          'titles' => [],
+          'descriptions' => [],
+          'keywords' => [],
+          'canonical_url' => $this->seoDataCache[$this->currentLanguage]['canonical_url'] ?? ''
+      ];
+      
+      foreach ($this->availableLanguages as $lang) {
+          if (isset($this->seoDataCache[$lang])) {
+              $allLanguagesSeoData['titles'][$lang] = $this->seoDataCache[$lang]['seo_title'] ?? '';
+              $allLanguagesSeoData['descriptions'][$lang] = $this->seoDataCache[$lang]['seo_description'] ?? '';
+              
+              // Keywords - string'i array'e çevir
+              $keywordString = $this->seoDataCache[$lang]['seo_keywords'] ?? '';
+              if (!empty(trim($keywordString))) {
+                  $keywordArray = array_filter(array_map('trim', explode(',', $keywordString)));
+                  $allLanguagesSeoData['keywords'][$lang] = $keywordArray;
+              } else {
+                  $allLanguagesSeoData['keywords'][$lang] = [];
+              }
+          }
+      }
+      
+      \Log::info('🔄 TÜM DİLLERİN SEO verileri hazırlandı', [
+          'allLanguagesSeoData' => $allLanguagesSeoData,
+          'tr_keywords' => $allLanguagesSeoData['keywords']['tr'] ?? 'YOK',
+          'en_keywords' => $allLanguagesSeoData['keywords']['en'] ?? 'YOK'
+      ]);
+      
+      // ✅ KRİTİK FİX: JavaScript için allLanguagesSeoData property'sini güncelle
+      $this->allLanguagesSeoData = $allLanguagesSeoData;
+      \Log::info('✅ allLanguagesSeoData property güncellendi', [
+          'property_set' => true,
+          'data_size' => count($this->allLanguagesSeoData)
+      ]);
+      
+      // Eski format için backward compatibility
       $seoData = [
-          'title' => $this->seo_title,
-          'description' => $this->seo_description,
-          'keywords' => $this->seo_keywords,
-          'canonical_url' => $this->canonical_url
+          'title' => $allLanguagesSeoData['titles'][$this->currentLanguage] ?? '',
+          'description' => $allLanguagesSeoData['descriptions'][$this->currentLanguage] ?? '',
+          'keywords' => implode(', ', $allLanguagesSeoData['keywords'][$this->currentLanguage] ?? []),
+          'canonical_url' => $allLanguagesSeoData['canonical_url']
       ];
       
       \Log::info('💾 SEO verilerini kaydediliyor...', [
@@ -337,26 +570,35 @@ class PageManageComponent extends Component
           'filtered_data' => array_filter($seoData)
       ]);
       
-      if ($this->pageId && !empty(array_filter($seoData))) {
-          $page = Page::findOrFail($this->pageId);
+      if ($this->pageId) {
+          // 🚨 PERFORMANCE FIX: Cached page kullan
+          $page = $this->getCachedPageWithSeo() ?? Page::findOrFail($this->pageId);
           
-          // HasSeo trait metoduyla SEO verileri kaydet
-          if (!empty(array_filter($seoData))) {
-              \Log::info('✅ SEO Title hazırlandı', [
-                  'language' => $this->currentLanguage,
-                  'title' => $seoData['title']
-              ]);
-              
-              \Log::info('✅ SEO Description hazırlandı', [
-                  'language' => $this->currentLanguage,
-                  'description' => substr($seoData['description'], 0, 100) . '...'
-              ]);
-              
-              $page->updateSeoForLanguage($this->currentLanguage, $seoData);
-              \Log::info('✅ SEO ayarları HasSeo trait ile kaydedildi', [
-                  'language' => $this->currentLanguage,
-                  'data' => $seoData
-              ]);
+          // KRİTİK FİX: TÜM dillerin SEO verilerini kaydet
+          foreach ($this->availableLanguages as $lang) {
+              if (isset($allLanguagesSeoData['titles'][$lang]) || 
+                  isset($allLanguagesSeoData['descriptions'][$lang]) || 
+                  isset($allLanguagesSeoData['keywords'][$lang])) {
+                  
+                  $langSeoData = [
+                      'title' => $allLanguagesSeoData['titles'][$lang] ?? '',
+                      'description' => $allLanguagesSeoData['descriptions'][$lang] ?? '', 
+                      'keywords' => implode(', ', $allLanguagesSeoData['keywords'][$lang] ?? []),
+                      'canonical_url' => $allLanguagesSeoData['canonical_url']
+                  ];
+                  
+                  // Boş olmayan veriler varsa kaydet
+                  if (!empty(array_filter($langSeoData, fn($v) => !empty(trim($v))))) {
+                      $page->updateSeoForLanguage($lang, $langSeoData);
+                      \Log::info('✅ SEO ayarları kaydedildi', [
+                          'language' => $lang,
+                          'title' => $langSeoData['title'],
+                          'description' => substr($langSeoData['description'], 0, 50) . '...',
+                          'keywords_count' => count($allLanguagesSeoData['keywords'][$lang] ?? []),
+                          'has_data' => true
+                      ]);
+                  }
+              }
           }
       }
       
@@ -367,18 +609,20 @@ class PageManageComponent extends Component
       
       $data = array_merge($this->inputs, $multiLangData);
 
-      // Eğer ana sayfa ise pasif yapılmasına izin verme
-      if (($this->inputs['is_homepage'] || ($this->pageId && Page::find($this->pageId)?->is_homepage)) && isset($data['is_active']) && $data['is_active'] == false) {
+      // 🚨 PERFORMANCE FIX: Cached page kullan
+      $currentPage = $this->pageId ? $this->getCachedPageWithSeo() : null;
+      if (($this->inputs['is_homepage'] || ($currentPage && $currentPage->is_homepage)) && isset($data['is_active']) && $data['is_active'] == false) {
           $this->dispatch('toast', [
               'title' => __('admin.warning'),
-              'message' => __('page::messages.homepage_cannot_be_deactivated'),
+              'message' => __('admin.homepage_cannot_be_deactivated'),
               'type' => 'warning',
           ]);
           return;
       }
    
       if ($this->pageId) {
-          $page = Page::findOrFail($this->pageId);
+          // 🚨 PERFORMANCE FIX: Cached page kullan
+          $page = $this->getCachedPageWithSeo() ?? Page::findOrFail($this->pageId);
           $currentData = collect($page->toArray())->only(array_keys($data))->all();
           
           // SEO Component'e kaydetme event'i gönder (her durumda)
@@ -388,7 +632,7 @@ class PageManageComponent extends Component
               // Sayfa değişmemiş ama SEO değişmiş olabilir - her durumda başarı mesajı
               $toast = [
                   'title' => __('admin.success'),
-                  'message' => __('page::messages.page_updated'),
+                  'message' => __('admin.page_updated'),
                   'type' => 'success'
               ];
               
@@ -399,7 +643,7 @@ class PageManageComponent extends Component
               
               $toast = [
                   'title' => __('admin.success'),
-                  'message' => __('page::messages.page_updated'),
+                  'message' => __('admin.page_updated'),
                   'type' => 'success'
               ];
           }
@@ -408,9 +652,13 @@ class PageManageComponent extends Component
           $this->pageId = $page->page_id;
           log_activity($page, 'oluşturuldu');
           
-          // Yeni oluşturulan sayfa için SEO verilerini kaydet
+          // Yeni oluşturulan sayfa için SEO verilerini kaydet (ÇOKLU DİL DESTEĞİ)
           if (!empty(array_filter($seoData))) {
-              \App\Services\SeoFormService::saveSeoData($page, $seoData);
+              $page->updateSeoForLanguage($this->currentLanguage, $seoData);
+              \Log::info('✅ Yeni sayfa için SEO verileri kaydedildi', [
+                  'language' => $this->currentLanguage,
+                  'data' => $seoData
+              ]);
           }
           
           // SEO component verilerini güncelle
@@ -418,7 +666,7 @@ class PageManageComponent extends Component
           
           $toast = [
               'title' => __('admin.success'),
-              'message' => __('page::messages.page_created'),
+              'message' => __('admin.page_created'),
               'type' => 'success'
           ];
       }
@@ -436,6 +684,9 @@ class PageManageComponent extends Component
    
       \Log::info('🎊 Toast mesajı gönderiliyor...', ['toast' => $toast]);
       $this->dispatch('toast', $toast);
+      
+      // ✅ TAB KORUMA SİSTEMİ - Kaydetme sonrası event dispatch
+      $this->dispatch('page-saved');
       
       \Log::info('✅ Save method başarıyla tamamlandı!', ['pageId' => $this->pageId]);
    
@@ -459,6 +710,26 @@ class PageManageComponent extends Component
    /**
     * SEO form property'lerini yükle
     */
+   /**
+    * 🚨 PERFORMANCE FIX: Global cache service
+    */
+   protected function getCachedPageWithSeo()
+   {
+       if (!$this->pageId) {
+           return null;
+       }
+       
+       return \Modules\Page\App\Services\PageCacheService::getPageWithSeo($this->pageId);
+   }
+   
+   /**
+    * Clear cached page data
+    */
+   protected function clearCachedPage()
+   {
+       $this->cachedPageWithSeo = null;
+   }
+   
    protected function loadSeoFormProperties($page)
    {
        \Log::info('🔄 SEO form properties yükleniyor...', [
@@ -466,7 +737,9 @@ class PageManageComponent extends Component
            'current_language' => $this->currentLanguage
        ]);
        
-       $seoSettings = $page->seoSetting;
+       // 🚨 PERFORMANCE FIX: Cached page kullan
+       $cachedPage = $this->getCachedPageWithSeo();
+       $seoSettings = $cachedPage ? $cachedPage->seoSetting : null;
        if ($seoSettings) {
            $this->seoTitle = $seoSettings->getTitle($this->currentLanguage) ?? '';
            $this->seoDescription = $seoSettings->getDescription($this->currentLanguage) ?? '';
@@ -514,7 +787,8 @@ class PageManageComponent extends Component
        }
        
        try {
-           $page = Page::findOrFail($this->pageId);
+           // 🚨 PERFORMANCE FIX: Cached page kullan
+          $page = $this->getCachedPageWithSeo() ?? Page::findOrFail($this->pageId);
            $seoAnalysisService = app(\App\Services\AI\SeoAnalysisService::class);
            
            $this->aiAnalysis = $seoAnalysisService->analyzeSeoContent($page, $this->currentLanguage);
@@ -549,7 +823,8 @@ class PageManageComponent extends Component
        }
        
        try {
-           $page = Page::findOrFail($this->pageId);
+           // 🚨 PERFORMANCE FIX: Cached page kullan
+          $page = $this->getCachedPageWithSeo() ?? Page::findOrFail($this->pageId);
            $seoAnalysisService = app(\App\Services\AI\SeoAnalysisService::class);
            
            $suggestions = $seoAnalysisService->generateOptimizationSuggestions($page, $this->currentLanguage);
@@ -585,7 +860,8 @@ class PageManageComponent extends Component
        }
        
        try {
-           $page = Page::findOrFail($this->pageId);
+           // 🚨 PERFORMANCE FIX: Cached page kullan
+          $page = $this->getCachedPageWithSeo() ?? Page::findOrFail($this->pageId);
            $seoAnalysisService = app(\App\Services\AI\SeoAnalysisService::class);
            
            $seoAnalysisService->autoOptimizeSeo($page, $this->currentLanguage);
@@ -682,38 +958,97 @@ class PageManageComponent extends Component
        ]);
    }
 
-   // SEO Field Update Handler - EVENT BAZLI SİSTEM
+   // SEO Field Update Handler - EVENT BAZLI SİSTEM (MULTI-LANGUAGE)
    public function handleSeoFieldUpdate($data)
    {
-       \Log::info('🚨 SEO Field EVENT ALINDI!', [
-           'field' => $data['field'] ?? 'unknown',
-           'value' => $data['value'] ?? '',
-           'value_length' => strlen($data['value'] ?? ''),
-           'timestamp' => now(),
-           'current_seo_title' => $this->seo_title,
-           'current_seo_description' => $this->seo_description
-       ]);
-       
        $field = $data['field'] ?? '';
        $value = $data['value'] ?? '';
+       $language = $data['language'] ?? $this->currentLanguage;
+       $silent = $data['silent'] ?? false;
        
-       // SEO alanlarını güncelle
+       \Log::info('🚨 SEO Field EVENT ALINDI!', [
+           'field' => $field,
+           'value' => $value,
+           'language' => $language,
+           'current_language' => $this->currentLanguage,
+           'value_length' => strlen($value),
+           'silent_mode' => $silent,
+           'timestamp' => now()
+       ]);
+       
+       // CRITICAL FIX: JavaScript'ten gelen dil ile Livewire currentLanguage'i senkronize et
+       if ($language !== $this->currentLanguage && in_array($language, $this->availableLanguages)) {
+           \Log::info('🔄 LANGUAGE SYNC: JavaScript\'ten gelen dil ile senkronize ediliyor', [
+               'old_language' => $this->currentLanguage,
+               'new_language' => $language,
+               'field' => $field,
+               'syncing' => true
+           ]);
+           $this->currentLanguage = $language;
+           
+           // CRITICAL FIX: Cache temizle - anında güncellenme için
+           if ($this->pageId) {
+               $page = $this->getCachedPageWithSeo();
+               if ($page && $page->seoSetting) {
+                   \App\Services\SeoCacheService::forgetModelCache($page);
+                   \Log::info('🗑️ Livewire: SEO cache temizlendi', ['language' => $language]);
+                   // Clear our local cache too
+                   $this->clearCachedPage();
+               }
+           }
+       }
+       
+       // KRİTİK FİX: seoDataCache'i güncelle (yeni sistem)
+       if (!isset($this->seoDataCache[$language])) {
+           $this->seoDataCache[$language] = [
+               'seo_title' => '',
+               'seo_description' => '',
+               'seo_keywords' => '',
+               'canonical_url' => ''
+           ];
+       }
+       
+       // SEO alanlarını hem eski property'lerde hem seoDataCache'de güncelle
        switch ($field) {
            case 'seo_title':
                $this->seo_title = $value;
-               \Log::info('✅ SEO Title event ile güncellendi:', $value);
+               $this->seoDataCache[$language]['seo_title'] = $value;
+               \Log::info('✅ SEO Title güncellendi:', [
+                   'language' => $language,
+                   'value' => $value,
+                   'length' => strlen($value),
+                   'seoDataCache_updated' => true
+               ]);
                break;
            case 'seo_description':
                $this->seo_description = $value;
-               \Log::info('✅ SEO Description event ile güncellendi:', $value);
+               $this->seoDataCache[$language]['seo_description'] = $value;
+               \Log::info('✅ SEO Description güncellendi:', [
+                   'language' => $language,
+                   'value' => $value,
+                   'length' => strlen($value),
+                   'seoDataCache_updated' => true
+               ]);
                break;
            case 'seo_keywords':
                $this->seo_keywords = $value;
-               \Log::info('✅ SEO Keywords event ile güncellendi:', $value);
+               $this->seoDataCache[$language]['seo_keywords'] = $value;
+               \Log::info('✅ SEO Keywords güncellendi:', [
+                   'language' => $language,
+                   'value' => $value,
+                   'keyword_count' => count(array_filter(explode(',', $value))),
+                   'seoDataCache_updated' => true
+               ]);
                break;
            case 'canonical_url':
                $this->canonical_url = $value;
-               \Log::info('✅ Canonical URL event ile güncellendi:', $value);
+               $this->seoDataCache[$language]['canonical_url'] = $value;
+               \Log::info('✅ Canonical URL güncellendi:', [
+                   'language' => $language,
+                   'value' => $value,
+                   'is_valid_url' => filter_var($value, FILTER_VALIDATE_URL) !== false,
+                   'seoDataCache_updated' => true
+               ]);
                break;
            default:
                \Log::warning('❌ Bilinmeyen SEO field:', $field);
@@ -723,13 +1058,115 @@ class PageManageComponent extends Component
        $this->updateTabCompletionStatus();
    }
 
+   // JavaScript Language Sync Handler
+   public function handleJavaScriptLanguageSync($data)
+   {
+       $jsLanguage = $data['language'] ?? '';
+       $oldLanguage = $this->currentLanguage;
+       
+       \Log::info('🚨 KRİTİK: handleJavaScriptLanguageSync çağrıldı', [
+           'js_language' => $jsLanguage,
+           'current_language' => $this->currentLanguage,
+           'data' => $data,
+           'will_change' => in_array($jsLanguage, $this->availableLanguages) && $jsLanguage !== $this->currentLanguage
+       ]);
+       
+       if (in_array($jsLanguage, $this->availableLanguages) && $jsLanguage !== $this->currentLanguage) {
+           $this->currentLanguage = $jsLanguage;
+           
+           // JavaScript'e confirmation gönder
+           $this->dispatch('language-sync-completed', [
+               'language' => $jsLanguage,
+               'oldLanguage' => $oldLanguage,
+               'success' => true
+           ]);
+           
+           \Log::info('🔄 JavaScript Language Sync - Livewire güncellendi', [
+               'old_language' => $oldLanguage,
+               'new_language' => $jsLanguage,
+               'current_language' => $this->currentLanguage,
+               'sync_successful' => true
+           ]);
+       } else {
+           // Değişiklik yoksa da confirmation gönder
+           $this->dispatch('language-sync-completed', [
+               'language' => $this->currentLanguage,
+               'oldLanguage' => $oldLanguage,
+               'success' => false,
+               'reason' => 'no_change_needed'
+           ]);
+           
+           \Log::info('🔄 JavaScript Language Sync - Değişiklik yok', [
+               'js_language' => $jsLanguage,
+               'current_language' => $this->currentLanguage,
+               'is_valid_language' => in_array($jsLanguage, $this->availableLanguages)
+           ]);
+       }
+   }
+
    // Test event handler
    public function handleTestEvent($data)
    {
-       \Log::info('🧪 TEST EVENT ALINDI!', [
+       \Log::info('🧪 TEST EVENT ALINDI! Livewire listener calisiyor!', [
            'data' => $data,
            'timestamp' => now(),
-           'component' => 'PageManageComponent'
+           'component' => 'PageManageComponent',
+           'event_working' => 'YES - JavaScript to Livewire works!'
+       ]);
+   }
+
+   // Simple test handler
+   public function handleSimpleTest($data)
+   {
+       \Log::info('🎯 SIMPLE TEST EVENT ALINDI! jQuery + Livewire 3.6.3 calisiyor!', [
+           'data' => $data,
+           'timestamp' => now(),
+           'message' => $data['message'] ?? 'no message',
+           'language' => $data['language'] ?? 'no language',
+           'test_successful' => true
+       ]);
+   }
+
+   // Debug Test Handler
+   public function handleDebugTest($data)
+   {
+       \Log::info('🔥 DEBUG TEST EVENT ALINDI!', [
+           'data' => $data,
+           'current_language' => $this->currentLanguage,
+           'message' => $data['message'] ?? 'no message',
+           'language' => $data['language'] ?? 'no language',
+           'timestamp' => $data['timestamp'] ?? 'no timestamp',
+           'livewire_working' => true
+       ]);
+   }
+
+   // JavaScript Language Session Handler
+   public function setJavaScriptLanguage($data)
+   {
+       $jsLanguage = $data['language'] ?? '';
+       
+       // Session'a JavaScript currentLanguage'i kaydet
+       session(['js_current_language' => $jsLanguage]);
+       
+       \Log::info('📝 JavaScript language session\'a kaydedildi', [
+           'js_language' => $jsLanguage,
+           'session_set' => true,
+           'current_livewire_language' => $this->currentLanguage
+       ]);
+   }
+
+   // Kaydet ve Devam Et Handler
+   public function setContinueMode($data)
+   {
+       session([
+           'page_continue_mode' => $data['continue_mode'] ?? false,
+           'js_saved_language' => $data['saved_language'] ?? 'tr'
+       ]);
+
+       \Log::info('✅ Kaydet ve Devam Et - session verileri kaydedildi', [
+           'continue_mode' => $data['continue_mode'] ?? false,
+           'saved_language' => $data['saved_language'] ?? 'tr',
+           'session_set' => true
        ]);
    }
 
@@ -747,7 +1184,7 @@ class PageManageComponent extends Component
            ];
        }
        
-       $page = Page::find($this->pageId);
+       $page = $this->getCachedPageWithSeo();
        $seoSettings = $page ? $page->seoSetting : null;
        
        if (!$seoSettings) {
@@ -769,6 +1206,48 @@ class PageManageComponent extends Component
            'seo_keywords' => is_array($keywords[$this->currentLanguage] ?? []) ? implode(', ', $keywords[$this->currentLanguage]) : '',
            'canonical_url' => $seoSettings->canonical_url ?? ''
        ];
+   }
+
+   /**
+    * Tüm dillerin SEO verilerini döndür (Ultra Performance - Zero API Calls)
+    */
+   public function getAllLanguagesSeoDataProperty()
+   {
+       if (!$this->pageId) {
+           return [];
+       }
+       
+       $page = $this->getCachedPageWithSeo();
+       $seoSettings = $page ? $page->seoSetting : null;
+       
+       if (!$seoSettings) {
+           return [];
+       }
+       
+       $allData = [];
+       $titles = $seoSettings->titles ?? [];
+       $descriptions = $seoSettings->descriptions ?? [];
+       $keywords = $seoSettings->keywords ?? [];
+       
+       foreach ($this->availableLanguages as $lang) {
+           $keywordData = $keywords[$lang] ?? [];
+           $keywordString = '';
+           
+           if (is_array($keywordData)) {
+               $keywordString = implode(', ', $keywordData);
+           } elseif (is_string($keywordData)) {
+               $keywordString = $keywordData;
+           }
+           
+           $allData[$lang] = [
+               'seo_title' => $titles[$lang] ?? '',
+               'seo_description' => $descriptions[$lang] ?? '',
+               'seo_keywords' => $keywordString,
+               'canonical_url' => $seoSettings->canonical_url ?? ''
+           ];
+       }
+       
+       return $allData;
    }
 
    public function render()

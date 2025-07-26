@@ -30,11 +30,30 @@ class PageTabService
     }
 
     /**
-     * Tüm tab'ları listele
+     * Tüm tab'ları listele - orijinal 3 tab yapısı
      */
     public static function getAllTabs(): array
     {
-        return self::getTabConfig();
+        return [
+            [
+                'key' => 'basic',
+                'name' => __('admin.basic_information'),
+                'icon' => 'ti ti-file-text',
+                'required_fields' => ['title', 'slug', 'content']
+            ],
+            [
+                'key' => 'seo',
+                'name' => 'SEO',
+                'icon' => 'ti ti-seo',
+                'required_fields' => ['seo_title']
+            ],
+            [
+                'key' => 'code',
+                'name' => 'Code',
+                'icon' => 'ti ti-code',
+                'required_fields' => []
+            ]
+        ];
     }
 
     /**

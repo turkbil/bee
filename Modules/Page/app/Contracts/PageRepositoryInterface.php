@@ -9,6 +9,8 @@ interface PageRepositoryInterface
 {
     public function findById(int $id): ?Page;
     
+    public function findByIdWithSeo(int $id): ?Page;
+    
     public function findBySlug(string $slug, string $locale = 'tr'): ?Page;
     
     public function getActive(): Collection;

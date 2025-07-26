@@ -28,5 +28,8 @@ return [
 'page_not_found' => 'TODO: Add translation for \'page_not_found\'',
 'homepage_cannot_be_deactivated' => 'TODO: Add translation for \'homepage_cannot_be_deactivated\'',
 'operation_failed' => 'TODO: Add translation for \'operation_failed\'',
-'no_pages_can_be_deleted' => 'TODO: Add translation for \'no_pages_can_be_deleted\''
+'no_pages_can_be_deleted' => 'TODO: Add translation for \'no_pages_can_be_deleted\'',
+
+// Studio Editor
+'studio.editor' => 'Edit with Studio'
 ];

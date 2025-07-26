@@ -48,5 +48,8 @@ return [
 'wysiwyg_editor' => 'Zengin Metin Editörü',
 'editor_supports_html' => 'Editör HTML ve zengin metin formatlarını destekler',
 'fullscreen' => 'Tam Ekran',
-'initializing_editor' => 'Editör başlatılıyor'
+'initializing_editor' => 'Editör başlatılıyor',
+
+// Studio Editor
+'studio.editor' => 'Studio ile Düzenle'
 ];

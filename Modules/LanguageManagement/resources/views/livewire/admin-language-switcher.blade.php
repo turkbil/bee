@@ -26,7 +26,7 @@
     
     <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="min-width: 220px;">
         <!-- Admin Dili Bölümü -->
-        <h6 class="dropdown-header">{{ __('languagemanagement::admin.admin_language') }}</h6>
+        <h6 class="dropdown-header">{{ __('admin.languages') }}</h6>
         
         @forelse($adminLanguages as $language)
             <button type="button" 
@@ -37,7 +37,6 @@
                     {{ $language->flag_icon ?? '🌐' }}
                 </span>
                 {{ $language->native_name }}
-                <small class="text-muted ms-1">(Admin)</small>
                 @if($language->code === $currentAdminLocale)
                     <i class="fa-solid fa-check ms-auto text-success"></i>
                 @endif
@@ -52,7 +51,7 @@
         <div class="dropdown-divider"></div>
         
         <!-- Veri Dili Bölümü -->
-        <h6 class="dropdown-header">{{ __('languagemanagement::admin.data_language') }}</h6>
+        <h6 class="dropdown-header">{{ __('admin.data_language') }}</h6>
         
         @forelse($siteLanguages as $language)
             <button type="button" 
@@ -63,7 +62,6 @@
                     {{ $language->flag_icon ?? '🌐' }}
                 </span>
                 {{ $language->native_name }}
-                <small class="text-muted ms-1">(Veri)</small>
                 @if($language->code === $currentSiteLocale)
                     <i class="fa-solid fa-check ms-auto text-success"></i>
                 @endif

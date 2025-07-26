@@ -695,3 +695,49 @@ td:hover .edit-icon {
     bottom: -2px; /* Aşağı kaydır */
 }
 
+/* Mobile responsive action buttons - Force horizontal layout */
+@media (max-width: 767.98px) {
+    .table td .container .row {
+        white-space: nowrap !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    .table td .container .row .col {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        max-width: none !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+    
+    /* Form header spacing for mobile */
+    .nav-item {
+        margin-bottom: 8px !important;
+    }
+    
+    .nav-item.ms-auto,
+    .nav-item.ms-2 {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Language animation container mobile spacing */
+    .language-animation-container {
+        margin-bottom: 12px !important;
+    }
+    
+    /* Nav item mobile alignment - Force language to right */
+    .nav-item.ms-auto {
+        margin-left: auto !important;
+        margin-right: 0 !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+    }
+    
+    /* Studio button mobile spacing */
+    .header-btn-uniform {
+        margin-bottom: 8px !important;
+    }
+}
+
+

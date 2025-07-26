@@ -25,8 +25,8 @@ return [
     'seo' => [
         'enabled' => true,
         'fields' => [
-            'seo_title' => ['required' => true, 'max_length' => 60],
-            'seo_description' => ['required' => true, 'max_length' => 160],
+            'seo_title' => ['required' => false, 'max_length' => 60],
+            'seo_description' => ['required' => false, 'max_length' => 160],
             'seo_keywords' => ['required' => false, 'max_keywords' => 10],
             'canonical_url' => ['required' => false],
         ],

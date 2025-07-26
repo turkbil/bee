@@ -31,6 +31,24 @@ class PageRepository implements PageRepositoryInterface
         });
     }
     
+    /**
+     * 🚨 PERFORMANCE FIX: Global cache service kullan
+     */
+    public function findByIdWithSeo(int $id): ?Page
+    {
+        // Admin panelinde global cache service kullan
+        if (request()->is('admin*')) {
+            return \Modules\Page\App\Services\PageCacheService::getPageWithSeo($id);
+        }
+        
+        // Public sayfalarda Laravel cache kullan
+        $cacheKey = $this->getCacheKey("find_by_id_with_seo.{$id}");
+        
+        return Cache::tags($this->getCacheTags())->remember($cacheKey, $this->cacheTtl, function () use ($id) {
+            return $this->model->with('seoSetting')->where('page_id', $id)->first();
+        });
+    }
+    
     public function findBySlug(string $slug, string $locale = 'tr'): ?Page
     {
         $cacheKey = $this->getCacheKey("find_by_slug.{$slug}.{$locale}");
@@ -151,7 +169,8 @@ class PageRepository implements PageRepositoryInterface
     
     public function toggleActive(int $id): bool
     {
-        $page = $this->findById($id);
+        // 🚨 PERFORMANCE FIX: Tek sorguda toggle yap, gereksiz findById kaldır
+        $page = $this->model->where('page_id', $id)->first(['page_id', 'is_active', 'is_homepage']);
         
         if (!$page) {
             return false;
@@ -162,9 +181,13 @@ class PageRepository implements PageRepositoryInterface
             return false;
         }
         
-        $result = $this->update($id, ['is_active' => !$page->is_active]);
+        $result = $this->model->where('page_id', $id)->update(['is_active' => !$page->is_active]);
         
-        return $result;
+        if ($result) {
+            $this->clearCache();
+        }
+        
+        return (bool) $result;
     }
     
     public function bulkDelete(array $ids): int
@@ -211,7 +234,8 @@ class PageRepository implements PageRepositoryInterface
     
     public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool
     {
-        $page = $this->findById($id);
+        // 🚨 PERFORMANCE FIX: Gereksiz findById kaldır, direkt güncelle
+        $page = $this->model->where('page_id', $id)->first(['page_id', 'seo']);
         
         if (!$page) {
             return false;
@@ -220,9 +244,13 @@ class PageRepository implements PageRepositoryInterface
         $seo = $page->seo ?? [];
         $seo[$locale][$field] = $value;
         
-        $result = $this->update($id, ['seo' => $seo]);
+        $result = $this->model->where('page_id', $id)->update(['seo' => $seo]);
         
-        return $result;
+        if ($result) {
+            $this->clearCache();
+        }
+        
+        return (bool) $result;
     }
     
     public function clearCache(): void

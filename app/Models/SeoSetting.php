@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Log;
 use App\Services\SeoLanguageManager;
 use App\Services\AI\SeoAnalysisService;
 
@@ -28,6 +29,7 @@ class SeoSetting extends Model
         'focus_keywords' => 'array',
         'og_title' => 'array',
         'og_description' => 'array',
+        'canonical_url' => 'array',
         'robots_meta' => 'array',
         'schema_markup' => 'array',
         'additional_keywords' => 'array',
@@ -68,12 +70,30 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
+        // 🔍 DEBUG: getTitle çağrıldı
+        Log::info('🔍 SeoSetting::getTitle called', [
+            'locale' => $locale,
+            'titles_array' => $this->titles,
+            'meta_title' => $this->meta_title,
+            'default_language' => $this->default_language
+        ]);
+        
         if (!$this->titles) {
+            Log::info('⚠️ Titles array boş, meta_title döndürülüyor', [
+                'meta_title' => $this->meta_title
+            ]);
             return $this->meta_title;
         }
 
-        return SeoLanguageManager::getSafeValue($this->titles, $locale, $this->default_language)
+        $result = SeoLanguageManager::getSafeValue($this->titles, $locale, $this->default_language)
             ?? $this->meta_title;
+            
+        Log::info('✅ getTitle sonucu', [
+            'locale' => $locale,
+            'result' => $result
+        ]);
+        
+        return $result;
     }
 
     /**
@@ -83,12 +103,30 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
+        // 🔍 DEBUG: getDescription çağrıldı
+        Log::info('🔍 SeoSetting::getDescription called', [
+            'locale' => $locale,
+            'descriptions_array' => $this->descriptions,
+            'meta_description' => $this->meta_description,
+            'default_language' => $this->default_language
+        ]);
+        
         if (!$this->descriptions) {
+            Log::info('⚠️ Descriptions array boş, meta_description döndürülüyor', [
+                'meta_description' => $this->meta_description
+            ]);
             return $this->meta_description;
         }
 
-        return SeoLanguageManager::getSafeValue($this->descriptions, $locale, $this->default_language)
+        $result = SeoLanguageManager::getSafeValue($this->descriptions, $locale, $this->default_language)
             ?? $this->meta_description;
+            
+        Log::info('✅ getDescription sonucu', [
+            'locale' => $locale,
+            'result' => $result
+        ]);
+        
+        return $result;
     }
 
     /**
@@ -302,6 +340,10 @@ class SeoSetting extends Model
             $this->keywords = array_intersect_key($this->keywords, array_flip($languages));
         }
         
+        if ($this->canonical_url) {
+            $this->canonical_url = array_intersect_key($this->canonical_url, array_flip($languages));
+        }
+        
         if ($this->hreflang_urls) {
             $this->hreflang_urls = array_intersect_key($this->hreflang_urls, array_flip($languages));
         }
@@ -369,6 +411,95 @@ class SeoSetting extends Model
     public function scopeByScore($query, string $operator = '>=', int $score = 80)
     {
         return $query->where('seo_score', $operator, $score);
+    }
+
+    /**
+     * Multi-language setter methods for PageSeoRepository
+     */
+    public function setTitle(string $locale, ?string $value): void
+    {
+        $titles = $this->titles ?? [];
+        if ($value !== null && $value !== '') {
+            $titles[$locale] = SeoLanguageManager::sanitizeString($value);
+        } else {
+            unset($titles[$locale]);
+        }
+        $this->titles = $titles;
+    }
+
+    public function setDescription(string $locale, ?string $value): void
+    {
+        $descriptions = $this->descriptions ?? [];
+        if ($value !== null && $value !== '') {
+            $descriptions[$locale] = SeoLanguageManager::sanitizeString($value);
+        } else {
+            unset($descriptions[$locale]);
+        }
+        $this->descriptions = $descriptions;
+    }
+
+    public function setKeywords(string $locale, $value): void
+    {
+        $keywords = $this->keywords ?? [];
+        if ($value !== null && $value !== '') {
+            if (is_string($value)) {
+                $keywordArray = array_map('trim', explode(',', $value));
+                $keywords[$locale] = SeoLanguageManager::sanitizeArray($keywordArray);
+            } elseif (is_array($value)) {
+                $keywords[$locale] = SeoLanguageManager::sanitizeArray($value);
+            }
+        } else {
+            unset($keywords[$locale]);
+        }
+        $this->keywords = $keywords;
+    }
+
+    public function setCanonicalUrl(string $locale, ?string $value): void
+    {
+        $canonicalUrls = $this->canonical_url ?? [];
+        if ($value !== null && $value !== '') {
+            $canonicalUrls[$locale] = SeoLanguageManager::sanitizeString($value);
+        } else {
+            unset($canonicalUrls[$locale]);
+        }
+        $this->canonical_url = $canonicalUrls;
+    }
+
+    public function setRobots(string $locale, ?string $value): void
+    {
+        if ($value !== null && $value !== '') {
+            $this->robots_meta = SeoLanguageManager::sanitizeString($value);
+        }
+    }
+
+    public function setOgTitle(string $locale, ?string $value): void
+    {
+        $ogTitles = $this->og_title ?? [];
+        if ($value !== null && $value !== '') {
+            $ogTitles[$locale] = SeoLanguageManager::sanitizeString($value);
+        } else {
+            unset($ogTitles[$locale]);
+        }
+        $this->og_title = $ogTitles;
+    }
+
+    public function setOgDescription(string $locale, ?string $value): void
+    {
+        $ogDescriptions = $this->og_description ?? [];
+        if ($value !== null && $value !== '') {
+            $ogDescriptions[$locale] = SeoLanguageManager::sanitizeString($value);
+        } else {
+            unset($ogDescriptions[$locale]);
+        }
+        $this->og_description = $ogDescriptions;
+    }
+
+    public function setOgImage(string $locale, ?string $value): void
+    {
+        if ($value !== null && $value !== '') {
+            // OG Image tek değer olarak saklanabilir
+            $this->og_image = SeoLanguageManager::sanitizeString($value);
+        }
     }
 
     /**

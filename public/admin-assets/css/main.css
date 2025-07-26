@@ -11,71 +11,7 @@
     padding: 2px 6px;
 }
 
-.seo-character-counter {
-    font-size: 0.85rem;
-    color: #6c757d;
-}
-
-.seo-character-counter.warning {
-    color: #f39c12;
-}
-
-.seo-character-counter.danger {
-    color: #e74c3c;
-}
-
-.seo-score-container {
-    /* Removed background for dark/light mode compatibility */
-    padding: 0;
-    margin: 0 0 15px 0;
-}
-
-/* Removed - using Bootstrap progress bar instead */
-
-.seo-score-fill {
-    height: 100%;
-    transition: width 0.3s ease;
-}
-
-/* Removed - using Bootstrap badges instead */
-    border-radius: 12px;
-    font-size: 0.8rem;
-    margin: 2px;
-}
-
-.keyword-remove {
-    margin-left: 5px;
-    cursor: pointer;
-    color: #f44336;
-}
-
-.keyword-input-container {
-    position: relative;
-}
-
-.keyword-suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-}
-
-.keyword-suggestion {
-    padding: 8px 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-}
-
-.keyword-suggestion:hover {
-    background: #f5f5f5;
-}
+/* SEO styles moved to /admin-assets/css/seo-tabs.css */
 
 /* Navigation Icon Styling */
 .nav-icon {
@@ -241,71 +177,7 @@ form .ts-control .item {
     padding: 2px 6px;
 }
 
-.seo-character-counter {
-    font-size: 0.85rem;
-    color: #6c757d;
-}
-
-.seo-character-counter.warning {
-    color: #f39c12;
-}
-
-.seo-character-counter.danger {
-    color: #e74c3c;
-}
-
-.seo-score-container {
-    /* Removed background for dark/light mode compatibility */
-    padding: 0;
-    margin: 0 0 15px 0;
-}
-
-/* Removed - using Bootstrap progress bar instead */
-
-.seo-score-fill {
-    height: 100%;
-    transition: width 0.3s ease;
-}
-
-/* Removed - using Bootstrap badges instead */
-    border-radius: 12px;
-    font-size: 0.8rem;
-    margin: 2px;
-}
-
-.keyword-remove {
-    margin-left: 5px;
-    cursor: pointer;
-    color: #f44336;
-}
-
-.keyword-input-container {
-    position: relative;
-}
-
-.keyword-suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-}
-
-.keyword-suggestion {
-    padding: 8px 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-}
-
-.keyword-suggestion:hover {
-    background: #f5f5f5;
-}
+/* SEO styles moved to /admin-assets/css/seo-tabs.css */
 
 /* Navigation Icon Styling */
 .nav-icon {
@@ -573,7 +445,6 @@ td:hover .edit-icon {
     border-color: var(--tblr-border-color) var(--tblr-border-color) var(--tblr-bg-surface-secondary) !important;
     color: var(--tblr-body-color) !important;
     border-bottom: 1px solid transparent !important;
-    margin-bottom: -1px !important;
     position: relative;
     z-index: 1;
     border-top-left-radius: var(--tblr-border-radius) !important;
@@ -596,18 +467,35 @@ td:hover .edit-icon {
     border-bottom-right-radius: 0 !important;
 }
 
-/* Language switch button'lar için - sadece üst yuvarlaklık */
-.nav-tabs .language-switch-btn {
+/* Language switch button'lar için - ALTA SIZIRLAMA */
+.language-buttons .language-switch-btn {
     border-top-left-radius: var(--tblr-border-radius) !important;
     border-top-right-radius: var(--tblr-border-radius) !important;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
+    
+    /* Alta sızırlama için - GÜÇLÜ */
+    margin-bottom: -3px !important;
+    padding-bottom: 8px !important;
+    position: relative;
+    z-index: 10 !important;
+    
+    /* Border efekti için */
+    border-bottom: 2px solid transparent !important;
 }
 
-/* Language switch button active state - Primary color kullan */
-.nav-tabs .language-switch-btn.text-primary {
+/* Normal nav-tabs için margin düzeltmesi - Language buttonların etkilemesi engelleniyor */
+.nav-tabs:not(.language-buttons) .nav-link.active {
+    margin-bottom: -1px !important;
+}
+
+/* Language switch button active state - Primary color kullan + ALTA SIZIRLAMA */
+.language-buttons .language-switch-btn.text-primary {
     border-bottom-color: var(--primary-color) !important;
     color: var(--primary-color) !important;
+    border-bottom-width: 3px !important;
+    margin-bottom: -4px !important;
+    font-weight: 600 !important;
 }
 
 /* ====================================== */
@@ -692,5 +580,118 @@ td:hover .edit-icon {
     background: linear-gradient(90deg, #00d4aa, #667eea);
     border-radius: 2px;
     transition: width 0.3s ease;
+}
+
+/* Header Button Uniform Size */
+.header-btn-uniform {
+    padding: 0.5rem 1rem !important;
+    height: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.875rem !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    vertical-align: middle !important;
+    text-decoration: none !important;
+    border: none !important;
+    min-width: auto !important;
+    font-weight: 500;
+}
+
+/* Language Animation System */
+.language-animation-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start; /* Üstten hizalama */
+    gap: 12px;
+    min-width: 128px; /* Badge ile buttons eşit genişlik + 8px */
+    width: 128px; /* Sabit genişlik - ikisi de aynı */
+    height: auto; /* Auto height - çocuklara bırak */
+    margin-top: -4px; /* Yukarı kaydır */
+}
+
+/* Language Buttons - TR EN AR butonları sabit kalacak */
+.language-buttons {
+    display: flex;
+    align-items: flex-end; /* Alta sızırlama */
+    justify-content: center;
+    gap: 12px;
+    min-width: 128px; /* Badge ile aynı genişlik + 8px */
+    width: 128px; /* Sabit genişlik - badge ile eşit */
+    z-index: 2;
+    
+    /* Başlangıçta görünür */
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: none; /* TR EN AR efekt kullanmayacak */
+}
+
+.language-buttons.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Language Badge - Türkçe badge overlay olarak çalışacak */
+.language-badge {
+    position: absolute;
+    bottom: 0; /* Alta sızırla */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end; /* İçerikleri de alta sızırla */
+    z-index: 3; /* Button'ların üstünde */
+    
+    /* Normal durumda gözükür */
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.4s ease;
+    
+    /* Badge border radius */
+    border-radius: var(--tblr-border-radius);
+}
+
+.language-badge.hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(10px);
+}
+
+/* HOVER EFEKTİ */
+.language-animation-container:hover .language-buttons {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+.language-animation-container:hover .language-badge {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateX(-50%) translateY(10px) !important;
+}
+
+/* Badge için Studio ile aynı boyut */
+.language-badge .nav-link {
+    min-width: 128px;
+    width: 128px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    
+    /* Studio ile aynı padding ve font-weight */
+    padding: 0.5rem 1rem !important;
+    font-weight: 500;
+    height: 38px !important; /* Final boyut */
+    
+    /* Alta sızırlama için */
+    margin-bottom: -4px !important;
+    padding-bottom: 8px !important;
+    position: relative;
+    bottom: -2px; /* Aşağı kaydır */
 }
 

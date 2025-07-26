@@ -284,6 +284,8 @@
 <script src="/admin-assets/js/translations.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/theme.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/main.js?v={{ time() }}"></script>
+{{-- YENİ SEO TABS V2 SİSTEMİ --}}
+<script src="/admin-assets/js/seo-tabs-v2.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
 
 <!-- Global Loading Bar Script - Tabler Native -->
@@ -443,84 +445,8 @@ document.addEventListener('DOMContentLoaded', function() {
 @if (request()->routeIs('admin.*.manage*'))
     <x-head.hugerte-config />
     
-    {{-- Global Multi-Language Form Management for All Modules --}}
-    <script>
-    $(document).ready(function() {
-        // Initialize tab manager with dynamic key based on current route
-        const routeName = '{{ request()->route()->getName() }}';
-        const tabKey = routeName.replace(/\./g, '') + 'ActiveTab'; // Global replace - tüm noktaları çıkar
-        TabManager.init(tabKey);
-        
-        // Check if page has multi-language support
-        if ($('.language-content').length > 0 || $('.language-switch-btn').length > 0) {
-            // Initialize multi-language form switcher
-            MultiLangFormSwitcher.init();
-            
-            // HugeRTE is automatically initialized via hugerte-config.blade.php
-        } else {
-            // Single language - TinyMCE is automatically initialized via tinymce-config.blade.php
-        }
-        
-        // Language switcher for underline style buttons (.language-switch-btn) - only if exists
-        if ($('.language-switch-btn').length > 0) {
-            $('.language-switch-btn').on('click', function(e) {
-            e.preventDefault();
-            const selectedLang = $(this).data('language');
-            
-            // Remove active from all siblings
-            $('.language-switch-btn').each(function() {
-                $(this).removeClass('text-primary').addClass('text-muted');
-                $(this).css('border-bottom', '2px solid transparent');
-            });
-            
-            // Add active to clicked button
-            $(this).removeClass('text-muted').addClass('text-primary');
-            
-            // Get primary color from theme builder variable
-            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
-                                 getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
-                                 '#066fd1';
-            
-            $(this).css('border-bottom', `2px solid ${primaryColor}`);
-            
-            // Switch language content
-            MultiLangFormSwitcher.switchLanguage(selectedLang);
-        });
-        }
-    });
-
-    // Re-initialize on Livewire updates
-    document.addEventListener('livewire:updated', function() {
-        // HugeRTE handles its own reinitialization via hugerte-config.blade.php
-        
-        // Re-bind language switcher events - only if exists
-        if ($('.language-switch-btn').length > 0) {
-            $('.language-switch-btn').off('click').on('click', function(e) {
-            e.preventDefault();
-            const selectedLang = $(this).data('language');
-            
-            // Remove active from all siblings
-            $('.language-switch-btn').each(function() {
-                $(this).removeClass('text-primary').addClass('text-muted');
-                $(this).css('border-bottom', '2px solid transparent');
-            });
-            
-            // Add active to clicked button
-            $(this).removeClass('text-muted').addClass('text-primary');
-            
-            // Get primary color from theme builder variable
-            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
-                                 getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
-                                 '#066fd1';
-            
-            $(this).css('border-bottom', `2px solid ${primaryColor}`);
-            
-            // Switch language content
-            MultiLangFormSwitcher.switchLanguage(selectedLang);
-        });
-        }
-    });
-    </script>
+    {{-- Load Manage.js for manage pages --}}
+    <script src="/admin-assets/js/manage.js?v={{ time() }}"></script>
 @endif
 </body>
 </html>

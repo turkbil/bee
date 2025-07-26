@@ -458,4 +458,55 @@ return [
     // 3 Aşamalı Hibrit Dil Sistemi
     'admin_language_changed' => 'Admin panel dili başarıyla değiştirildi',
     'tenant_language_changed' => 'Tenant dili başarıyla değiştirildi',
+    
+    // =============================================
+    // ORTAK BAŞARI MESAJLARI (SUCCESS MESSAGES)
+    // =============================================
+    
+    // Temel İşlem Mesajları
+    'saved' => 'kaydedildi',
+    'updated' => 'güncellendi',
+    'created' => 'oluşturuldu',
+    'deleted' => 'silindi',
+    'saved_successfully' => 'başarıyla kaydedildi',
+    'updated_successfully' => 'başarıyla güncellendi',
+    'created_successfully' => 'başarıyla oluşturuldu',
+    'deleted_successfully' => 'başarıyla silindi',
+    
+    // Page Modülü Mesajları
+    'page_updated' => 'Sayfa güncellendi',
+    'page_saved' => 'Sayfa kaydedildi',
+    'page_created' => 'Sayfa oluşturuldu',
+    'page_deleted' => 'Sayfa silindi',
+    'title_updated' => 'başlık güncellendi',
+    'title_updated_successfully' => 'Başlık başarıyla güncellendi',
+    'homepage_cannot_be_deactivated' => 'Anasayfa deaktifleştirilemez',
+    'no_pages_can_be_deleted' => 'Hiç sayfa silinemez',
+    'basic_information' => 'Temel Bilgiler',
+    'edit_with_studio' => 'Studio ile Düzenle',
+    
+    // Doğrulama Mesajları
+    'title_validation_error' => 'Başlık geçersiz. Lütfen kontrol edin.',
+    
+    // =============================================
+    // SEO ÇEVİRİLERİ
+    // =============================================
+    
+    // SEO Alanları
+    'seo_title' => 'SEO Başlığı',
+    'seo_description' => 'SEO Açıklaması',
+    'seo_keywords' => 'Anahtar Kelimeler',
+    'canonical_url' => 'Canonical URL',
+    'page_url_slug' => 'Sayfa URL (Slug)',
+    'slug_auto_generated' => 'Otomatik oluşur',
+    
+    // SEO Açıklamaları
+    'seo_title_help' => 'Arama motorlarında görünecek başlık',
+    'seo_description_help' => 'Arama sonuçlarında görünecek açıklama',
+    'seo_keywords_help' => 'Anahtar kelimeleri virgülle ayırarak yazın',
+    'slug_help' => 'Boş bırakılırsa başlıktan otomatik oluşturulur',
+    'canonical_url_help' => 'Özel durumlarda kullanılır - emin değilseniz boş bırakın',
+    'keywords_separator_note' => '(Virgülle ayırın)',
+    'keywords_placeholder' => 'Virgülle ayırın: kelime1, kelime2, kelime3',
+    'seo_score' => 'SEO Skoru',
 ];

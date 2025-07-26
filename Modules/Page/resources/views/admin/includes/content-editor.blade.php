@@ -1,7 +1,7 @@
 {{-- Page Content Editor with HugeRTE --}}
 <div class="mb-3">
     <label class="form-label">
-        {{ __('page::admin.content') }} ({{ $langName }})
+        {{ __('page::admin.content') }}
         @if($lang === session('site_default_language', 'tr')) 
             <span class="required-star">★</span>
         @endif
@@ -13,7 +13,7 @@
             class="form-control hugerte-editor"
             data-wire-model="multiLangInputs.{{ $lang }}.body"
             style="min-height: 500px;"
-            placeholder="{{ __('page::admin.content_placeholder') }} ({{ $langName }})...">{{ $langData['body'] ?? '' }}</textarea>
+            placeholder="{{ __('page::admin.content_placeholder') }}...">{{ $langData['body'] ?? '' }}</textarea>
     </div>
     
     {{-- Hidden input for Livewire synchronization --}}

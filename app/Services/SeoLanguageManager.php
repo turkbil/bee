@@ -101,22 +101,51 @@ class SeoLanguageManager
      * Layer 3: Fallback Chain
      * Implements intelligent fallback mechanism
      */
-    public static function getSafeValue(array $data, string $locale, string $fallbackLocale = null): mixed
+    public static function getSafeValue(array|string $data, string $locale, string $fallbackLocale = null): mixed
     {
         $fallbackLocale = $fallbackLocale ?? self::$defaultLanguage;
         
+        // Eğer string gelirse direkt döndür
+        if (is_string($data)) {
+            Log::info('🔄 String data döndürülüyor', [
+                'data' => $data,
+                'locale' => $locale
+            ]);
+            return $data;
+        }
+        
+        // 🔍 DEBUG: Gelen veriler
+        Log::info('🔍 SeoLanguageManager::getSafeValue called', [
+            'data' => $data,
+            'locale' => $locale,
+            'fallbackLocale' => $fallbackLocale,
+            'data_keys' => array_keys($data)
+        ]);
+        
         // Primary: Requested locale
         if (isset($data[$locale]) && !empty($data[$locale])) {
+            Log::info('✅ Primary locale bulundu', [
+                'locale' => $locale,
+                'value' => $data[$locale]
+            ]);
             return $data[$locale];
         }
         
         // Secondary: Fallback locale
         if (isset($data[$fallbackLocale]) && !empty($data[$fallbackLocale])) {
+            Log::info('✅ Fallback locale bulundu', [
+                'fallbackLocale' => $fallbackLocale,
+                'value' => $data[$fallbackLocale]
+            ]);
             return $data[$fallbackLocale];
         }
         
         // Tertiary: Default language
         if (isset($data[self::$defaultLanguage]) && !empty($data[self::$defaultLanguage])) {
+            Log::info('✅ Default language bulundu', [
+                'defaultLanguage' => self::$defaultLanguage,
+                'value' => $data[self::$defaultLanguage]
+            ]);
             return $data[self::$defaultLanguage];
         }
         

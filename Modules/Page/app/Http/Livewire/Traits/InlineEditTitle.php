@@ -34,7 +34,7 @@ trait InlineEditTitle
             if ($validator->fails()) {
                 $this->dispatch('toast', [
                     'title' => __('admin.error'),
-                    'message' => __('page::admin.title_validation_error'),
+                    'message' => __('admin.title_validation_error'),
                     'type' => 'error',
                 ]);
                 return;
@@ -62,13 +62,13 @@ trait InlineEditTitle
 
             log_activity(
                 $model, 
-                __('page::admin.title_updated'),
+                __('admin.title_updated'),
                 ['old' => $oldTitle, 'new' => $titles[$currentSiteLocale], 'locale' => $currentSiteLocale]
             );
 
             $this->dispatch('toast', [
                 'title' => __('admin.success'),
-                'message' => __('page::admin.title_updated_successfully'),
+                'message' => __('admin.title_updated_successfully'),
                 'type' => 'success',
             ]);
         }

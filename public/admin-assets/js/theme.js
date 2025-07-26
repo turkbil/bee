@@ -2031,7 +2031,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 🤖 GLOBAL AI SİSTEMİ - TÜM ADMIN PANELİ İÇİN
 function initGlobalAISystem() {
-    console.log('🤖 Global AI sistem başlatılıyor...');
     
     // AI Robot butonları için global event listener
     document.addEventListener('click', function(e) {
@@ -2176,7 +2175,6 @@ function initGlobalAISystem() {
         });
     });
     
-    console.log('✅ Global AI sistemi başarıyla başlatıldı');
     
     // Say komutu çalıştırma - macOS için
     window.sayCommand = function(message) {
@@ -2188,7 +2186,6 @@ function initGlobalAISystem() {
 
 // 🔧 GLOBAL LIVEWIRE SNAPSHOT FIX SİSTEMİ
 function initGlobalLivewireSnapshotFix() {
-    console.log('🔧 Global Livewire Snapshot Fix sistemi başlatılıyor...');
     
     // 🛡️ ULTRA DEFENSIVE AI Component Protection
     window.addEventListener('error', function(e) {
@@ -2267,5 +2264,4 @@ function initGlobalLivewireSnapshotFix() {
         }
     });
     
-    console.log('✅ Global Livewire Snapshot Fix sistemi başarıyla başlatıldı');
 }

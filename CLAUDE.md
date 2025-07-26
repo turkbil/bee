@@ -36,6 +36,47 @@ say "tamamlandı"
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## SlugHelper - Global Slug Yönetim Sistemi
+
+**Konum**: `app/Helpers/SlugHelper.php` ve `app/Traits/HasSlugManagement.php`
+
+Tüm modüllerde slug unique kontrolü ve otomatik düzeltme sistemi:
+
+### Özellikler
+- ✅ **Çoklu Dil Desteği**: Her dil için ayrı unique kontrol
+- ✅ **Otomatik Düzeltme**: Duplicate slug'lar otomatik sayı ile düzeltilir (`iletisim` → `iletisim-1`)
+- ✅ **Title'dan Slug**: Boş slug'lar title'dan otomatik oluşturulur
+- ✅ **Türkçe Karakter Desteği**: ğ→g, ş→s dönüşümleri
+- ✅ **Model Agnostic**: Her model için çalışır (Page, Portfolio, Announcement, vs.)
+- ✅ **Validation Entegrasyonu**: Hazır validation kuralları ve mesajları
+
+### Kullanım Örneği
+```php
+use App\Helpers\SlugHelper;
+use App\Traits\HasSlugManagement;
+
+class ExampleManageComponent extends Component
+{
+    use HasSlugManagement;
+    
+    // Save metodunda:
+    $processedSlugs = $this->processMultiLanguageSlugs(
+        ExampleModel::class,
+        $this->multiLangInputs,
+        $this->availableLanguages,
+        $this->modelId
+    );
+}
+```
+
+### Mevcut Entegrasyonlar
+- ✅ **Page Modülü**: `PageManageComponent` tamamen entegre edildi
+- 🔄 **Portfolio Modülü**: Hazırlanabilir
+- 🔄 **Announcement Modülü**: Hazırlanabilir
+- 🔄 **Diğer Modüller**: İhtiyaç halinde eklenebilir
+
+**Detaylı dokümantasyon**: `SlugHelper_README.md`
+
 ## Project Overview
 
 This is **Turkbil Bee**, a sophisticated Laravel 11 multi-tenant application with a modular architecture. The project uses domain-based tenancy where each tenant has isolated databases, storage, and Redis caching.

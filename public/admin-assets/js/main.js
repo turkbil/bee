@@ -12,7 +12,7 @@ class PageManagementSystem {
     init() {
         this.waitForDependencies(() => {
             this.initializeTabSystem();
-            this.initializeSeoSystem();
+            // this.initializeSeoSystem(); // Moved to seo-tabs.js
             this.bindGlobalEvents();
         });
     }
@@ -61,61 +61,14 @@ class PageManagementSystem {
         this.tabManager.init();
     }
 
-    initializeSeoSystem() {
-        this.seoManager = {
-            updateAllCounters() {
-                const counters = document.querySelectorAll('.seo-character-counter');
-                counters.forEach(counter => {
-                    const fieldName = counter.getAttribute('data-counter-for');
-                    const limit = parseInt(counter.getAttribute('data-limit'));
-                    const input = document.getElementById(fieldName) || document.querySelector(`[name="${fieldName}"]`);
-                    
-                    if (input) {
-                        this.updateCounter(input, counter, limit);
-                    }
-                });
-            },
-            
-            updateCounter(input, counter, limit) {
-                const currentLength = input.value.length;
-                const percentage = (currentLength / limit) * 100;
-                
-                let colorClass = '';
-                let progressColorClass = '';
-                
-                if (percentage > 90) {
-                    colorClass = 'text-danger';
-                    progressColorClass = 'bg-danger';
-                } else if (percentage > 75) {
-                    colorClass = 'text-warning';
-                    progressColorClass = 'bg-warning';
-                } else {
-                    colorClass = 'text-success';
-                    progressColorClass = 'bg-success';
-                }
-                
-                counter.className = `seo-character-counter ${colorClass}`;
-                counter.innerHTML = `${currentLength}/${limit}`;
-                
-                // Progress bar güncelle
-                const progressBar = counter.closest('label')?.querySelector('.seo-progress-bar') || 
-                                   counter.closest('.form-text')?.querySelector('.seo-progress-bar');
-                if (progressBar) {
-                    progressBar.style.width = `${Math.min(100, percentage)}%`;
-                    progressBar.className = `progress-bar seo-progress-bar ${progressColorClass}`;
-                }
-            }
-        };
-    }
+    // initializeSeoSystem moved to seo-tabs.js
 
     bindGlobalEvents() {
         // Tab değişikliklerini dinle
         document.addEventListener('click', (e) => {
             if (e.target.matches('[data-bs-toggle="tab"]')) {
                 setTimeout(() => {
-                    if (this.seoManager) {
-                        this.seoManager.updateAllCounters();
-                    }
+                    // SEO manager now in seo-tabs.js
                 }, 100);
             }
         });
@@ -155,11 +108,10 @@ const TabManager = {
     }
 };
 
-// Character Counting System
+// Character Counting System - SEO counters moved to seo-tabs.js
 function setupCharacterCounting() {
-    console.log('🔄 Character counting sistemi başlatılıyor...');
     
-    const counters = document.querySelectorAll('.seo-character-counter');
+    const counters = document.querySelectorAll('.character-counter:not(.seo-character-counter)');
     
     counters.forEach(counter => {
         const fieldName = counter.getAttribute('data-counter-for');
@@ -176,9 +128,9 @@ function setupCharacterCounting() {
             return;
         }
         
-        // Progress bar'ı bul (label içinde veya form-text içinde)
-        const progressBar = counter.closest('label')?.querySelector('.seo-progress-bar') || 
-                           counter.closest('.form-text')?.querySelector('.seo-progress-bar');
+        // Progress bar'ı bul (sadece non-SEO için)
+        const progressBar = counter.closest('label')?.querySelector('.progress-bar:not(.seo-progress-bar)') || 
+                           counter.closest('.form-text')?.querySelector('.progress-bar:not(.seo-progress-bar)');
         
         // Counter fonksiyonu
         function updateCounter() {
@@ -204,13 +156,13 @@ function setupCharacterCounting() {
                     progressColorClass = 'bg-success';
                 }
                 
-                counter.className = `seo-character-counter ${colorClass}`;
+                counter.className = `character-counter ${colorClass}`;
                 counter.innerHTML = `${currentLength}/${limit}`;
                 
                 // Progress bar güncelle
                 if (progressBar) {
                     progressBar.style.width = `${Math.min(100, percentage)}%`;
-                    progressBar.className = `progress-bar seo-progress-bar ${progressColorClass}`;
+                    progressBar.className = `progress-bar ${progressColorClass}`;
                 }
             }, 100);
         }
@@ -223,188 +175,429 @@ function setupCharacterCounting() {
         // İlk yükleme
         updateCounter();
         
-        console.log(`✅ Character counter kuruldu: ${fieldName}`);
     });
-    
-    console.log('✅ Character counting sistemi hazır!');
 }
 
-// Keyword System
-function setupKeywordSystem() {
-    console.log('🔄 Keyword sistemi başlatılıyor...');
-    
-    const keywordInput = document.getElementById('keyword-input');
-    const addKeywordBtn = document.getElementById('add-keyword');
-    const keywordDisplay = document.getElementById('keyword-display');
-    const hiddenInput = document.getElementById('seo-keywords-hidden');
-    
-    if (!keywordInput || !keywordDisplay || !hiddenInput) {
-        console.warn('⚠️ Keyword elemanları bulunamadı');
-        return;
-    }
-    
-    // Add keyword function
-    function addKeyword() {
-        const keyword = keywordInput.value.trim();
-        if (!keyword) return;
-        
-        // Duplicate check
-        const existingKeywords = Array.from(keywordDisplay.querySelectorAll('.keyword-text'))
-            .map(elem => elem.textContent.trim());
-        
-        if (existingKeywords.includes(keyword)) {
-            alert('Bu anahtar kelime zaten ekli!');
-            return;
-        }
-        
-        // Create badge
-        const badge = document.createElement('span');
-        badge.className = 'badge badge-secondary me-1 mb-1';
-        badge.style.cssText = 'padding: 6px 8px;';
-        badge.innerHTML = `
-            <span class="keyword-text">${keyword}</span>
-            <span class="keyword-remove" style="cursor: pointer; padding: 2px 4px; border-radius: 2px; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.2)'" onmouseout="this.style.backgroundColor='transparent'">&times;</span>
-        `;
-        
-        // Remove click event
-        badge.querySelector('.keyword-remove').addEventListener('click', function() {
-            badge.remove();
-            updateHiddenInput();
-        });
-        
-        keywordDisplay.appendChild(badge);
-        keywordInput.value = '';
-        updateHiddenInput();
-    }
-    
-    // Update hidden input
-    function updateHiddenInput() {
-        const keywords = Array.from(keywordDisplay.querySelectorAll('.keyword-text'))
-            .map(elem => elem.textContent.trim())
-            .filter(text => text.length > 0);
-        
-        hiddenInput.value = keywords.join(', ');
-        hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
-        
-        console.log('✅ Keywords updated:', keywords);
-    }
-    
-    // Event listeners
-    if (addKeywordBtn) {
-        addKeywordBtn.addEventListener('click', addKeyword);
-    }
-    
-    keywordInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addKeyword();
-        }
-    });
-    
-    // Existing remove buttons
-    keywordDisplay.querySelectorAll('.keyword-remove').forEach(btn => {
-        btn.addEventListener('click', function() {
-            btn.closest('.badge').remove();
-            updateHiddenInput();
-        });
-    });
-    
-    console.log('✅ Keyword sistemi hazır!');
-}
+// Keyword System moved to seo-tabs.js
 
 // Initialize system
 document.addEventListener('DOMContentLoaded', function() {
     window.pageManagement = new PageManagementSystem();
 });
 
-// Initialize manage page functions
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname.includes('/manage')) {
-        console.log('🔄 Manage sayfası yüklendi:', window.location.pathname);
-        
-        setupCharacterCounting();
-        setupKeywordSystem();
-        MultiLangFormSwitcher.init();
-    }
-});
+// Initialize manage page functions - moved to manage.js
+// document.addEventListener('DOMContentLoaded', function() {
+//     if (window.location.pathname.includes('/manage')) {
+//         setupCharacterCounting();
+//         MultiLangFormSwitcher.init();
+//     }
+// });
 
-// Livewire update handler
-document.addEventListener('livewire:updated', function() {
-    if (window.location.pathname.includes('/manage')) {
-        setTimeout(function() {
-            setupCharacterCounting();
-            setupKeywordSystem();
-            MultiLangFormSwitcher.init();
-        }, 100);
-    }
-});
+// Livewire update handler - moved to manage.js  
+// document.addEventListener('livewire:updated', function() {
+//     if (window.location.pathname.includes('/manage')) {
+//         setTimeout(function() {
+//             setupCharacterCounting();
+//             MultiLangFormSwitcher.init();
+//         }, 100);
+//     }
+// });
 
-// Multi-Language Form Switcher
-const MultiLangFormSwitcher = {
-    init() {
-        console.log('🌐 MultiLangFormSwitcher başlatılıyor...');
+// Multi-Language Form Switcher - moved to manage.js for manage pages
+// For non-manage pages, a simplified version will be added here if needed
+
+// ===== GLOBAL SEO WIDGET SYSTEM =====
+class GlobalSeoWidget {
+    constructor() {
+        this.baseUrl = '/admin/seo';
+        this.currentModel = null;
+        this.currentLanguage = 'tr';
+        // SEO cache artık seo-tabs.js'te yönetiliyor
+        this.init();
+    }
+
+    async init() {
+        if (this.isManagePage()) {
+            // GlobalSeoWidget context setup (SEO-specific kod seo-tabs.js'te)
+            if (window.currentPageId) {
+                this.setContext('Page', window.currentPageId);
+            }
+            
+            this.setupEventListeners();
+            this.setupKeywordSystem();
+            this.setupSlugSystem();
+        }
+    }
+
+    isManagePage() {
+        return window.location.pathname.includes('/manage');
+    }
+
+    // Model ve language bilgilerini set et
+    setContext(modelType, modelId, language = 'tr') {
+        this.currentModel = { type: modelType, id: modelId };
+        this.currentLanguage = language;
+        window.currentModelType = modelType;
+        window.currentModelId = modelId;
+    }
+
+    // Bu fonksiyonlar seo-tabs.js'e taşındı - sadece backward compatibility için tutuluyor
+
+    // Form'a SEO verilerini uygula
+    applySeoDataToForm(seoData, language) {
+        const elements = {
+            'seo-title': seoData.seoData?.seo_title || '',
+            'seo-description': seoData.seoData?.seo_description || '',
+            'seo-keywords-hidden': seoData.seoData?.seo_keywords || '',
+            'canonical-url': seoData.seoData?.canonical_url || ''
+        };
+
+        Object.entries(elements).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.value = value;
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+
+        // Keyword'leri güncelle
+        if (seoData.seoData?.seo_keywords) {
+            this.updateKeywordDisplay(seoData.seoData.seo_keywords);
+        }
+
+        // Livewire component'i güncelle
+        if (window.Livewire) {
+            window.Livewire.dispatch('seo-field-updated', {
+                language: language,
+                seoData: seoData.seoData
+            });
+        }
+    }
+
+    // Dil değiştiğinde SEO verilerini güncelle
+    async updateSeoDataForLanguage(language) {
+        console.log('🔍 updateSeoDataForLanguage çağrıldı - Model:', this.currentModel, 'Language:', language);
         
-        const languageButtons = document.querySelectorAll('.language-switch-btn');
-        const languageContents = document.querySelectorAll('.language-content');
-        
-        if (languageButtons.length === 0) {
-            console.warn('⚠️ Language switch buttons bulunamadı');
+        if (!this.currentModel) {
+            console.error('❌ currentModel yok! SEO güncelleme durdu:', this.currentModel);
             return;
         }
         
-        // Language button click events
-        languageButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
+        console.log('🎯 SEO verileri güncelleniyor:', language);
+        
+        const seoData = await this.fetchSeoData(language);
+        if (seoData) {
+            this.applySeoDataToForm(seoData, language);
+        }
+    }
+
+    // Keyword sistemi kurulumu
+    setupKeywordSystem() {
+        const keywordInput = document.getElementById('keyword-input');
+        const addKeywordBtn = document.getElementById('add-keyword');
+        
+        if (!keywordInput || !addKeywordBtn) return;
+
+        // Enter tuşu ile keyword ekleme
+        keywordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
                 e.preventDefault();
-                const targetLang = button.getAttribute('data-language');
-                
-                if (targetLang) {
-                    this.switchLanguage(targetLang);
+                const keyword = keywordInput.value.trim();
+                if (keyword) {
+                    this.addKeyword(keyword);
+                    keywordInput.value = '';
                 }
-            });
-        });
-        
-        console.log('✅ MultiLangFormSwitcher hazır!');
-    },
-    
-    switchLanguage(language) {
-        console.log('🔄 Dil geçişi:', language);
-        
-        // Update active button
-        const languageButtons = document.querySelectorAll('.language-switch-btn');
-        languageButtons.forEach(btn => {
-            if (btn.getAttribute('data-language') === language) {
-                btn.classList.add('text-primary');
-                btn.classList.remove('text-muted');
-                btn.style.borderBottom = '2px solid var(--primary-color) !important';
-            } else {
-                btn.classList.remove('text-primary');
-                btn.classList.add('text-muted');
-                btn.style.borderBottom = '2px solid transparent';
             }
         });
-        
-        // Update content visibility
-        const languageContents = document.querySelectorAll('.language-content');
-        languageContents.forEach(content => {
-            if (content.getAttribute('data-language') === language) {
-                content.style.display = 'block';
-            } else {
-                content.style.display = 'none';
+
+        // Button ile keyword ekleme
+        addKeywordBtn.addEventListener('click', () => {
+            const keyword = keywordInput.value.trim();
+            if (keyword) {
+                this.addKeyword(keyword);
+                keywordInput.value = '';
             }
         });
+
+        // Mevcut keyword'leri göster
+        const hiddenInput = document.getElementById('seo-keywords-hidden');
+        if (hiddenInput && hiddenInput.value) {
+            this.updateKeywordDisplay(hiddenInput.value);
+        }
+    }
+
+    // Keyword ekle
+    addKeyword(keyword) {
+        if (!keyword || keyword.trim() === '') return;
         
-        // Trigger Livewire language switch if available
-        if (window.Livewire) {
-            Livewire.dispatch('switchLanguage', { language: language });
+        const hiddenInput = document.getElementById('seo-keywords-hidden');
+        if (!hiddenInput) return;
+        
+        const currentKeywords = hiddenInput.value.split(',').map(k => k.trim()).filter(k => k !== '');
+        
+        // Duplicate kontrolü
+        if (currentKeywords.includes(keyword.trim())) return;
+        
+        // Limit kontrolü (maksimum 10)
+        if (currentKeywords.length >= 10) {
+            alert('En fazla 10 anahtar kelime ekleyebilirsiniz.');
+            return;
         }
         
-        console.log('✅ Dil geçişi tamamlandı:', language);
+        currentKeywords.push(keyword.trim());
+        hiddenInput.value = currentKeywords.join(', ');
+        hiddenInput.dispatchEvent(new Event('input'));
+        
+        this.updateKeywordDisplay(hiddenInput.value);
     }
-};
+
+    // Keyword kaldır
+    removeKeyword(keywordToRemove) {
+        const hiddenInput = document.getElementById('seo-keywords-hidden');
+        if (!hiddenInput) return;
+        
+        const currentKeywords = hiddenInput.value.split(',').map(k => k.trim()).filter(k => k !== '');
+        const updatedKeywords = currentKeywords.filter(k => k !== keywordToRemove);
+        
+        hiddenInput.value = updatedKeywords.join(', ');
+        hiddenInput.dispatchEvent(new Event('input'));
+        
+        this.updateKeywordDisplay(hiddenInput.value);
+    }
+
+    // Keyword display'i güncelle
+    updateKeywordDisplay(keywordsString) {
+        const keywordDisplay = document.getElementById('keyword-display');
+        if (!keywordDisplay) return;
+        
+        keywordDisplay.innerHTML = '';
+        
+        if (!keywordsString || keywordsString.trim() === '') return;
+        
+        const keywords = keywordsString.split(',').map(k => k.trim()).filter(k => k !== '');
+        
+        keywords.forEach(keyword => {
+            const badge = document.createElement('span');
+            badge.className = 'badge badge-secondary me-1 mb-1';
+            badge.style.padding = '6px 8px';
+            
+            badge.innerHTML = `
+                <span class="keyword-text">${keyword}</span>
+                <span class="keyword-remove" style="cursor: pointer; padding: 2px 4px; border-radius: 2px; transition: background-color 0.2s;" 
+                      onmouseover="this.style.backgroundColor='rgba(255,255,255,0.2)'" 
+                      onmouseout="this.style.backgroundColor='transparent'">&times;</span>
+            `;
+            
+            badge.querySelector('.keyword-remove').addEventListener('click', () => {
+                this.removeKeyword(keyword);
+            });
+            
+            keywordDisplay.appendChild(badge);
+        });
+    }
+
+    // Slug sistemi kurulumu
+    setupSlugSystem() {
+        const slugInput = document.getElementById('page-slug');
+        const slugStatus = document.getElementById('slug-status');
+        const titleInput = document.querySelector('[wire\\:model*=".title"]');
+        
+        if (!slugInput) return;
+
+        // Title'dan otomatik slug oluşturma
+        if (titleInput) {
+            titleInput.addEventListener('input', () => {
+                if (slugInput.value.trim() === '') {
+                    const slug = this.generateSlug(titleInput.value);
+                    slugInput.value = slug;
+                    slugInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    this.checkSlugUniqueness(slug);
+                }
+            });
+        }
+
+        // Slug değişikliklerini dinle
+        let slugTimeout;
+        slugInput.addEventListener('input', () => {
+            clearTimeout(slugTimeout);
+            const slug = slugInput.value.trim();
+            
+            if (slug === '') {
+                if (slugStatus) slugStatus.innerHTML = '';
+                slugInput.classList.remove('is-valid', 'is-invalid');
+                return;
+            }
+            
+            // Slug format kontrolü
+            const cleanSlug = this.generateSlug(slug);
+            if (slug !== cleanSlug) {
+                slugInput.value = cleanSlug;
+                slugInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            
+            slugTimeout = setTimeout(() => {
+                this.checkSlugUniqueness(cleanSlug);
+            }, 500);
+        });
+    }
+
+    // Slug benzersizlik kontrolü
+    async checkSlugUniqueness(slug) {
+        if (!slug || !this.currentModel) return;
+        
+        const slugStatus = document.getElementById('slug-status');
+        const slugInput = document.getElementById('page-slug');
+        
+        if (slugStatus) {
+            slugStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kontrol ediliyor...';
+        }
+        if (slugInput) {
+            slugInput.classList.remove('is-valid', 'is-invalid');
+        }
+        
+        try {
+            const response = await fetch(`${this.baseUrl}/check-slug`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    slug: slug,
+                    module: this.currentModel.type,
+                    exclude_id: this.currentModel.id
+                })
+            });
+
+            const data = await response.json();
+            
+            if (slugStatus && slugInput) {
+                if (data.unique) {
+                    slugStatus.innerHTML = '<i class="fas fa-check"></i> Kullanılabilir';
+                    slugInput.classList.remove('is-invalid');
+                    slugInput.classList.add('is-valid');
+                } else {
+                    slugStatus.innerHTML = '<i class="fas fa-times"></i> Bu slug zaten kullanılıyor';
+                    slugInput.classList.remove('is-valid');
+                    slugInput.classList.add('is-invalid');
+                }
+            }
+        } catch (error) {
+            console.error('Slug kontrolü hatası:', error);
+            if (slugStatus) {
+                slugStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Kontrol edilemiyor';
+            }
+        }
+    }
+
+    // Türkçe slug üretimi
+    generateSlug(text) {
+        if (!text) return '';
+        
+        const turkishChars = {
+            'Ç': 'C', 'ç': 'c', 'Ğ': 'G', 'ğ': 'g', 
+            'I': 'I', 'ı': 'i', 'İ': 'I', 'i': 'i',
+            'Ö': 'O', 'ö': 'o', 'Ş': 'S', 'ş': 's', 
+            'Ü': 'U', 'ü': 'u'
+        };
+        
+        return text
+            .replace(/[ÇçĞğIıİiÖöŞşÜü]/g, match => turkishChars[match] || match)
+            .toLowerCase()
+            .replace(/[^a-z0-9\s\-]/g, '')
+            .replace(/[\s\-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
+    // Event listener'ları kur
+    setupEventListeners() {
+        // SEO event listeners seo-tabs.js'te yönetiliyor
+    }
+}
+
+// Language Animation System
+class LanguageAnimationSystem {
+    constructor() {
+        this.container = null;
+        this.buttons = null;
+        this.badge = null;
+        this.isHovering = false;
+        this.hasInitialAnimationRun = false;
+        this.init();
+    }
+
+    init() {
+        // DOM hazır olduğunda sistemi başlat
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.setup());
+        } else {
+            this.setup();
+        }
+    }
+
+    setup() {
+        this.container = document.querySelector('.language-animation-container');
+        if (!this.container) return;
+
+        this.buttons = this.container.querySelector('.language-buttons');
+        this.badge = this.container.querySelector('.language-badge');
+        
+        if (!this.buttons || !this.badge) return;
+
+        this.setupHoverEvents();
+        this.startInitialAnimation();
+    }
+
+    setupHoverEvents() {
+        this.container.addEventListener('mouseenter', () => {
+            this.isHovering = true;
+            this.showButtons();
+        });
+
+        this.container.addEventListener('mouseleave', () => {
+            this.isHovering = false;
+            this.showBadge();
+        });
+    }
+
+    showButtons() {
+        // TR EN AR butonları zaten sabit - sadece badge'i gizle
+        this.badge.style.opacity = '0';
+        this.badge.style.visibility = 'hidden';
+        this.badge.style.transform = 'translateX(-50%) translateY(10px)';
+    }
+
+    showBadge() {
+        // Badge'i göster - TR EN AR butonları sabit kalır
+        this.badge.style.opacity = '1';
+        this.badge.style.visibility = 'visible';
+        this.badge.style.transform = 'translateX(-50%) translateY(0)';
+    }
+
+    startInitialAnimation() {
+        // Sadece sayfa açıldığında bir kez çalışır
+        if (this.hasInitialAnimationRun) return;
+        
+        // İlk yüklemede TR EN AR butonları göster (2 saniye)
+        this.showButtons();
+        
+        // 3 saniye sonra badge'i göster ve hover'a geç
+        setTimeout(() => {
+            if (!this.isHovering) {
+                this.showBadge();
+            }
+            this.hasInitialAnimationRun = true;
+        }, 3000);
+    }
+}
+
+// Global SEO Widget instance'ı oluştur
+window.GlobalSeoWidget = new GlobalSeoWidget();
+
+// Language Animation System'i başlat
+window.LanguageAnimationSystem = new LanguageAnimationSystem();
 
 // Global exports
 window.TabManager = TabManager;
-window.setupKeywordSystem = setupKeywordSystem;
 window.setupCharacterCounting = setupCharacterCounting;
-window.MultiLangFormSwitcher = MultiLangFormSwitcher;
+// window.MultiLangFormSwitcher = MultiLangFormSwitcher; // Moved to manage.js

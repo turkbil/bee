@@ -101,6 +101,17 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         Route::post('/send-message', [\Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController::class, 'sendMessage'])->name('send-message');
     });
     
+    // Global SEO Widget Routes - Tüm modüller için
+    Route::group(['prefix' => 'seo', 'as' => 'seo.'], function () {
+        Route::post('/get-data', [\App\Http\Controllers\Admin\SeoController::class, 'getSeoData'])->name('get-data');
+        Route::post('/save-data', [\App\Http\Controllers\Admin\SeoController::class, 'saveSeoData'])->name('save-data');
+        Route::post('/check-slug', [\App\Http\Controllers\Admin\SeoController::class, 'checkSlug'])->name('check-slug');
+        Route::post('/calculate-score', [\App\Http\Controllers\Admin\SeoController::class, 'calculateScore'])->name('calculate-score');
+        Route::post('/generate-suggestion', [\App\Http\Controllers\Admin\SeoController::class, 'generateSuggestion'])->name('generate-suggestion');
+        Route::post('/clear-cache', [\App\Http\Controllers\Admin\SeoController::class, 'clearCache'])->name('clear-cache');
+        Route::get('/cache-stats', [\App\Http\Controllers\Admin\SeoController::class, 'cacheStats'])->name('cache-stats');
+    });
+    
     // Debug routes
     Route::get('/debug-language', function() {
         return view('admin.debug-language');
@@ -115,6 +126,32 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         session()->forget(['admin_locale', 'tenant_locale']);
         return response()->json(['status' => 'success', 'message' => 'Sessions cleared']);
     })->name('debug.clear.sessions');
+    
+    // JavaScript Language Session Route - CRITICAL FIX
+    Route::post('/set-js-language', function() {
+        $language = request()->input('language');
+        
+        if (in_array($language, ['tr', 'en', 'ar'])) {
+            session(['js_current_language' => $language]);
+            
+            \Log::info('📝 AJAX: JavaScript language session\'a kaydedildi', [
+                'language' => $language,
+                'session_set' => true,
+                'request_method' => 'AJAX'
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'language' => $language,
+                'message' => 'Language saved to session'
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid language'
+        ], 400);
+    })->name('set.js.language');
     
     Route::post('/debug-site-language/{locale}', function($locale) {
         // Tenant language kodlarını kontrol et

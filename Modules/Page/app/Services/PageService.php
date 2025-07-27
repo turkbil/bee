@@ -5,15 +5,15 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Modules\Page\App\Contracts\PageRepositoryInterface;
-use Modules\Page\App\Contracts\PageSeoRepositoryInterface;
-use Modules\Page\App\Services\PageTabService;
+use App\Contracts\GlobalSeoRepositoryInterface;
+use App\Services\GlobalTabService;
 use Modules\Page\App\Models\Page;
 
 class PageService
 {
     public function __construct(
         protected PageRepositoryInterface $pageRepository,
-        protected PageSeoRepositoryInterface $seoRepository
+        protected GlobalSeoRepositoryInterface $seoRepository
     ) {}
     
     public function getPage(int $id): ?Page
@@ -296,14 +296,14 @@ class PageService
         
         // Tab completion durumunu hesapla
         $allData = array_merge($page->toArray(), $seoData);
-        $tabCompletion = PageTabService::getTabCompletionStatus($allData);
+        $tabCompletion = GlobalTabService::getTabCompletionStatus($allData, 'page');
 
         return [
             'page' => $page,
             'seoData' => $seoData, // Tekrar çekme!
             'tabCompletion' => $tabCompletion,
-            'tabConfig' => PageTabService::getJavaScriptConfig(),
-            'seoLimits' => $this->seoRepository->getFieldLimits()
+            'tabConfig' => GlobalTabService::getJavaScriptConfig('page'),
+            'seoLimits' => $this->seoRepository->getFieldLimits('page')
         ];
     }
 
@@ -325,9 +325,9 @@ class PageService
         return [
             'page' => null,
             'seoData' => $emptyData,
-            'tabCompletion' => PageTabService::getTabCompletionStatus($emptyData),
-            'tabConfig' => PageTabService::getJavaScriptConfig(),
-            'seoLimits' => $this->seoRepository->getFieldLimits()
+            'tabCompletion' => GlobalTabService::getTabCompletionStatus($emptyData, 'page'),
+            'tabConfig' => GlobalTabService::getJavaScriptConfig('page'),
+            'seoLimits' => $this->seoRepository->getFieldLimits('page')
         ];
     }
 
@@ -351,7 +351,7 @@ class PageService
         }
         
         // SEO validation kuralları
-        $seoRules = $this->seoRepository->getValidationRules();
+        $seoRules = $this->seoRepository->getValidationRules('page');
         
         return array_merge($rules, $seoRules);
     }
@@ -361,7 +361,7 @@ class PageService
      */
     public function calculateSeoScore(array $seoData): array
     {
-        return $this->seoRepository->calculateSeoScore($seoData);
+        return $this->seoRepository->calculateSeoScore($seoData, 'page');
     }
 
     public function clearCache(): void

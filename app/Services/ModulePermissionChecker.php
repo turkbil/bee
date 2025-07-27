@@ -15,13 +15,6 @@ class ModulePermissionChecker
     {
         // ROOT her zaman erişebilir
         if ($user->isRoot()) {
-            if (app()->environment(['local', 'staging'])) {
-                Log::debug("ROOT user modül erişimi onaylandı", [
-                    'user_id' => $user->id,
-                    'module' => $module->name,
-                    'permission' => $permissionType
-                ]);
-            }
             return true;
         }
         
@@ -50,13 +43,6 @@ class ModulePermissionChecker
             $isAssigned = $moduleAccessService->isModuleAssignedToTenant($module->module_id, tenant()->id);
             
             if (!$isAssigned) {
-                if (app()->environment(['local', 'staging'])) {
-                    Log::debug("Admin kullanıcı - modül tenant'a atanmamış", [
-                        'user_id' => $user->id,
-                        'module' => $module->name,
-                        'tenant_id' => tenant()->id
-                    ]);
-                }
                 return false;
             }
         }
@@ -73,14 +59,6 @@ class ModulePermissionChecker
         $permission = $module->name . '.' . $permissionType;
         
         $hasPermission = $user->can($permission);
-        
-        if (app()->environment(['local', 'staging'])) {
-            Log::debug("Editor yetki kontrolü", [
-                'user_id' => $user->id,
-                'permission' => $permission,
-                'result' => $hasPermission
-            ]);
-        }
         
         return $hasPermission;
     }

@@ -1,47 +1,46 @@
 <?php
 
-namespace Modules\Page\App\Repositories;
+namespace App\Repositories;
 
-use Modules\Page\App\Contracts\PageSeoRepositoryInterface;
-use Modules\Page\App\Services\PageSeoService;
-use Modules\Page\App\Models\Page;
+use App\Contracts\GlobalSeoRepositoryInterface;
+use App\Services\GlobalSeoService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
-class PageSeoRepository implements PageSeoRepositoryInterface
+class GlobalSeoRepository implements GlobalSeoRepositoryInterface
 {
-    protected string $cachePrefix = 'page_seo';
+    protected string $cachePrefix = 'global_seo';
     protected int $cacheTtl = 1800; // 30 dakika
 
     /**
      * SEO verilerini getir
      */
-    public function getSeoData(Page $page, string $language): array
+    public function getSeoData(Model $model, string $language): array
     {
         // Admin panelinde cache kullanma - Fresh data
         if (request()->is('admin*')) {
-            return $this->getFreshSeoData($page, $language);
+            return $this->getFreshSeoData($model, $language);
         }
         
         // Public sayfalarda cache kullan
-        $cacheKey = $this->getCacheKey("seo_data.{$page->page_id}.{$language}");
+        $cacheKey = $this->getCacheKey($model, "seo_data.{$language}");
         
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($page, $language) {
-            return $this->getFreshSeoData($page, $language);
+        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($model, $language) {
+            return $this->getFreshSeoData($model, $language);
         });
     }
     
     /**
      * Fresh SEO data çek (cache'siz)
-     * 🚨 PERFORMANCE FIX: Relationship zaten yüklenmişse tekrar sorgu atma
      */
-    protected function getFreshSeoData(Page $page, string $language): array
+    protected function getFreshSeoData(Model $model, string $language): array
     {
-        // 🚨 FIX: Relationship zaten yüklenmişse DB'ye tekrar sorgu atma
-        if (!$page->relationLoaded('seoSetting')) {
-            $page->load('seoSetting');
+        // SEO relationship'i kontrol et
+        if (!$model->relationLoaded('seoSetting')) {
+            $model->load('seoSetting');
         }
         
-        $seoSettings = $page->seoSetting;
+        $seoSettings = $model->seoSetting;
         
         if (!$seoSettings) {
             return $this->getEmptySeoData();
@@ -62,29 +61,30 @@ class PageSeoRepository implements PageSeoRepositoryInterface
     /**
      * SEO verilerini kaydet
      */
-    public function saveSeoData(Page $page, string $language, array $seoData): bool
+    public function saveSeoData(Model $model, string $language, array $seoData): bool
     {
         try {
-            $seoSettings = $page->seoSetting;
+            $seoSettings = $model->seoSetting;
             
             if (!$seoSettings) {
-                $seoSettings = $page->seoSetting()->create([
-                    'model_type' => Page::class,
-                    'model_id' => $page->page_id,
+                $seoSettings = $model->seoSetting()->create([
+                    'model_type' => get_class($model),
+                    'model_id' => $model->getKey(),
                 ]);
             }
 
             // Her alanı ayrı ayrı kaydet
             foreach ($seoData as $field => $value) {
-                $this->updateSeoField($page, $language, $field, $value);
+                $this->updateSeoField($model, $language, $field, $value);
             }
 
-            $this->clearSeoCache($page);
+            $this->clearSeoCache($model);
             return true;
             
         } catch (\Exception $e) {
             \Log::error('SEO data save failed', [
-                'page_id' => $page->page_id,
+                'model_type' => get_class($model),
+                'model_id' => $model->getKey(),
                 'language' => $language,
                 'error' => $e->getMessage()
             ]);
@@ -95,10 +95,10 @@ class PageSeoRepository implements PageSeoRepositoryInterface
     /**
      * Belirli bir SEO alanını güncelle
      */
-    public function updateSeoField(Page $page, string $language, string $field, mixed $value): bool
+    public function updateSeoField(Model $model, string $language, string $field, mixed $value): bool
     {
         try {
-            $seoSettings = $page->seoSetting;
+            $seoSettings = $model->seoSetting;
             
             if (!$seoSettings) {
                 return false;
@@ -120,7 +120,7 @@ class PageSeoRepository implements PageSeoRepositoryInterface
                 $seoSettings->$method($language, $value);
                 $seoSettings->save();
                 
-                $this->clearSeoCache($page);
+                $this->clearSeoCache($model);
                 return true;
             }
 
@@ -128,7 +128,8 @@ class PageSeoRepository implements PageSeoRepositoryInterface
             
         } catch (\Exception $e) {
             \Log::error('SEO field update failed', [
-                'page_id' => $page->page_id,
+                'model_type' => get_class($model),
+                'model_id' => $model->getKey(),
                 'language' => $language,
                 'field' => $field,
                 'error' => $e->getMessage()
@@ -140,25 +141,25 @@ class PageSeoRepository implements PageSeoRepositoryInterface
     /**
      * SEO skorunu hesapla
      */
-    public function calculateSeoScore(array $seoData): array
+    public function calculateSeoScore(array $seoData, string $module = 'default'): array
     {
-        return PageSeoService::calculateSeoScore($seoData);
+        return GlobalSeoService::calculateSeoScore($seoData, $module);
     }
 
     /**
      * SEO validation kurallarını getir
      */
-    public function getValidationRules(): array
+    public function getValidationRules(string $module = 'default'): array
     {
-        return PageSeoService::getSeoValidationRules();
+        return GlobalSeoService::getSeoValidationRules($module);
     }
 
     /**
      * SEO alanlarının limitlerini getir
      */
-    public function getFieldLimits(): array
+    public function getFieldLimits(string $module = 'default'): array
     {
-        return PageSeoService::getSeoLimits();
+        return GlobalSeoService::getSeoLimits($module);
     }
 
     /**
@@ -166,27 +167,53 @@ class PageSeoRepository implements PageSeoRepositoryInterface
      */
     public function parseKeywords(?string $keywords): array
     {
-        return PageSeoService::parseKeywords($keywords);
+        return GlobalSeoService::parseKeywords($keywords);
     }
 
     /**
      * SEO verilerini temizle/cache'den sil
      */
-    public function clearSeoCache(Page $page): void
+    public function clearSeoCache(Model $model): void
     {
         $tenantId = tenant() ? tenant()->id : 'landlord';
-        $pattern = "{$this->cachePrefix}.tenant.{$tenantId}.seo_data.{$page->page_id}.*";
+        $modelKey = $model->getKey();
+        $modelType = class_basename($model);
         
-        // Laravel cache'de pattern-based clear yoksa manuel clear
-        // Tenant languages'den aktif dilleri al
+        // Aktif dilleri al
         $languages = \Modules\LanguageManagement\app\Models\TenantLanguage::where('is_active', true)
             ->pluck('code')
             ->toArray();
         
         foreach ($languages as $lang) {
-            $cacheKey = $this->getCacheKey("seo_data.{$page->page_id}.{$lang}");
+            $cacheKey = $this->getCacheKey($model, "seo_data.{$lang}");
             Cache::forget($cacheKey);
         }
+    }
+
+    /**
+     * Model için SEO ayarlarını al
+     */
+    public function getSeoSetting(Model $model): mixed
+    {
+        return $model->seoSetting;
+    }
+
+    /**
+     * Model için SEO ayarlarını oluştur/güncelle
+     */
+    public function createOrUpdateSeoSetting(Model $model, array $data): mixed
+    {
+        $seoSettings = $model->seoSetting;
+        
+        if (!$seoSettings) {
+            return $model->seoSetting()->create(array_merge($data, [
+                'model_type' => get_class($model),
+                'model_id' => $model->getKey(),
+            ]));
+        }
+        
+        $seoSettings->update($data);
+        return $seoSettings;
     }
 
     /**
@@ -209,9 +236,12 @@ class PageSeoRepository implements PageSeoRepositoryInterface
     /**
      * Cache key oluştur
      */
-    private function getCacheKey(string $key): string
+    private function getCacheKey(Model $model, string $key): string
     {
         $tenantId = tenant() ? tenant()->id : 'landlord';
-        return "{$this->cachePrefix}.tenant.{$tenantId}.{$key}";
+        $modelType = class_basename($model);
+        $modelId = $model->getKey();
+        
+        return "{$this->cachePrefix}.tenant.{$tenantId}.{$modelType}.{$modelId}.{$key}";
     }
 }

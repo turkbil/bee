@@ -33,10 +33,7 @@ class AdminAccessMiddleware
         preg_match('/^admin\/([^\/]+)/', $path, $matches);
         $moduleName = $matches[1] ?? null;
         
-        // Log sadece debug modunda - performans için
-        if (config('app.debug')) {
-            Log::debug("Admin erişim - User: {$user->id}, Path: {$path}, Module: {$moduleName}");
-        }
+        // Debug logları kaldırıldı - performans için
         
         // Root her yere erişebilir
         if ($user->isRoot()) {

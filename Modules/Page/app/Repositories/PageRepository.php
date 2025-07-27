@@ -38,7 +38,7 @@ class PageRepository implements PageRepositoryInterface
     {
         // Admin panelinde global cache service kullan
         if (request()->is('admin*')) {
-            return \Modules\Page\App\Services\PageCacheService::getPageWithSeo($id);
+            return \App\Services\GlobalCacheService::getPageWithSeo($id);
         }
         
         // Public sayfalarda Laravel cache kullan

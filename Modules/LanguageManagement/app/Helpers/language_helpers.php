@@ -11,9 +11,6 @@ if (!function_exists('current_admin_language')) {
     {
         // 1. ACTIVE CHOICE - Session'dan
         if (session()->has('admin_locale') && is_valid_admin_locale(session('admin_locale'))) {
-            \Log::info('🔍 current_admin_language - Session değeri kullanıldı', [
-                'admin_locale' => session('admin_locale')
-            ]);
             return session('admin_locale');
         }
         
@@ -21,10 +18,6 @@ if (!function_exists('current_admin_language')) {
         if (auth()->check() && auth()->user()->admin_locale && is_valid_admin_locale(auth()->user()->admin_locale)) {
             // Session'a da kaydet (1. aşama için)
             session(['admin_locale' => auth()->user()->admin_locale]);
-            \Log::info('🔍 current_admin_language - User DB değeri kullanıldı', [
-                'user_admin_locale' => auth()->user()->admin_locale,
-                'session_updated' => true
-            ]);
             return auth()->user()->admin_locale;
         }
         
@@ -33,9 +26,6 @@ if (!function_exists('current_admin_language')) {
             $cookieLocale = Cookie::get('admin_locale_preference');
             if ($cookieLocale && is_valid_admin_locale($cookieLocale)) {
                 session(['admin_locale' => $cookieLocale]);
-                \Log::info('🔍 current_admin_language - Cookie değeri kullanıldı', [
-                    'cookie_locale' => $cookieLocale
-                ]);
                 return $cookieLocale;
             }
         }
@@ -43,11 +33,6 @@ if (!function_exists('current_admin_language')) {
         // 3. SMART DEFAULT
         $default = config('app.admin_default_locale', 'tr');
         session(['admin_locale' => $default]);
-        \Log::info('🔍 current_admin_language - Default değer kullanıldı', [
-            'default' => $default,
-            'auth_check' => auth()->check(),
-            'user_admin_locale' => auth()->check() ? auth()->user()->admin_locale : 'NOT_AUTH'
-        ]);
         return $default;
     }
 }

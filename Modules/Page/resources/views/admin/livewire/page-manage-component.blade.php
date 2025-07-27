@@ -74,10 +74,13 @@
                                 </div>
 
                                 <!-- İçerik editörü -->
-                                @include('page::admin.includes.content-editor', [
+                                @include('admin.components.content-editor', [
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
+                                    'fieldName' => 'body',
+                                    'label' => __('page::admin.content'),
+                                    'placeholder' => __('page::admin.content_placeholder')
                                 ])
                             </div>
                         @endforeach

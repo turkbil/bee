@@ -50,15 +50,7 @@ class ModuleAccessCache
         Cache::tags($this->getCacheTags())->put($cacheKey, $hasAccess, now()->addMinutes(self::CACHE_TTL));
         self::$memoryCache[$cacheKey] = $hasAccess;
         
-        if (app()->environment(['local', 'staging'])) {
-            Log::debug("Modül erişim cache'i kaydedildi", [
-                'cache_key' => $cacheKey,
-                'user_id' => $userId,
-                'module' => $moduleName,
-                'permission' => $permissionType,
-                'access' => $hasAccess
-            ]);
-        }
+        // Debug logları kaldırıldı - performans için
     }
     
     /**
@@ -95,12 +87,7 @@ class ModuleAccessCache
             }
         }
         
-        if (app()->environment(['local', 'staging'])) {
-            Log::debug("Kullanıcı modül erişim cache'i temizleniyor", [
-                'user_id' => $userId,
-                'pattern' => $pattern
-            ]);
-        }
+        // Debug logları kaldırıldı - performans için
         
         // Redis kullanıyorsak pattern ile silme
         $this->clearCacheByPattern($pattern);
@@ -116,11 +103,7 @@ class ModuleAccessCache
         
         Cache::tags($this->getCacheTags())->flush();
         
-        if (app()->environment(['local', 'staging'])) {
-            Log::debug("Tüm modül erişim cache'i temizlendi", [
-                'tags' => $this->getCacheTags()
-            ]);
-        }
+        // Debug logları kaldırıldı - performans için
     }
     
     /**

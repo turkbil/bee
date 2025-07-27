@@ -4,8 +4,8 @@ namespace Modules\Page\App\Http\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\Page\App\Models\Page;
-use Modules\Page\App\Services\PageSeoService;
-use Modules\Page\App\Services\PageTabService;
+use App\Services\GlobalSeoService;
+use App\Services\GlobalTabService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -105,7 +105,7 @@ class PageManageComponent extends Component
    public function boot()
    {
        $this->pageService = app(\Modules\Page\App\Services\PageService::class);
-       $this->seoRepository = app(\Modules\Page\App\Contracts\PageSeoRepositoryInterface::class);
+       $this->seoRepository = app(\App\Contracts\GlobalSeoRepositoryInterface::class);
    }
    
    public function updated($propertyName)
@@ -132,7 +132,7 @@ class PageManageComponent extends Component
            ]
        );
        
-       $this->tabCompletionStatus = PageTabService::getTabCompletionStatus($allData);
+       $this->tabCompletionStatus = GlobalTabService::getTabCompletionStatus($allData, 'page');
    }
 
    public function mount($id = null)
@@ -166,9 +166,9 @@ class PageManageComponent extends Component
     */
    protected function loadConfigurations()
    {
-       $this->tabConfig = PageTabService::getAllTabs();
-       $this->seoConfig = PageSeoService::getSeoConfig();
-       $this->activeTab = PageTabService::getDefaultTabKey();
+       $this->tabConfig = GlobalTabService::getAllTabs('page');
+       $this->seoConfig = GlobalSeoService::getSeoConfig('page');
+       $this->activeTab = GlobalTabService::getDefaultTabKey('page');
    }
    
    /**
@@ -354,9 +354,6 @@ class PageManageComponent extends Component
            $rules["seoDataCache.{$lang}.canonical_url"] = 'nullable|url';
        }
        
-       // Backward compatibility - eski SEO field'ları (KARAKTER LİMİTİ KALDIRILDI)
-       // $seoRules = PageSeoService::getSeoValidationRules();
-       // $rules = array_merge($rules, $seoRules);
        
        return $rules;
    }
@@ -719,7 +716,7 @@ class PageManageComponent extends Component
            return null;
        }
        
-       return \Modules\Page\App\Services\PageCacheService::getPageWithSeo($this->pageId);
+       return \App\Services\GlobalCacheService::getPageWithSeo($this->pageId);
    }
    
    /**

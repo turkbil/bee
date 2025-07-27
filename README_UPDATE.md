@@ -14,3 +14,20 @@
 - Fixed: Mobile form header `.nav-item` spacing optimization
 - Fixed: Language container mobile alignment `justify-content: flex-end`
 - Fixed: Removed theme button from navigation (clean UI)
+
+### ✅ HugeRTE Theme Switching Fix - Editor Duplication Prevention - v3.1.1
+**BAŞARI**: HugeRTE editor'ün dark/light mod değişiminde çoklanma sorunu tamamen çözüldü!
+
+**SİSTEM ÖZELLİKLERİ**:
+- 🎨 **Theme Switch Detection**: Dark/Light mod değişimi anlık algılama
+- 🧹 **Complete Cleanup**: Editor instance'ları + DOM elementleri tam temizlik
+- ⏱️ **Debounced Updates**: 500ms debounce ile çoklu trigger önleme
+- 🔄 **Safe Reinit**: Temizlik sonrası güvenli yeniden başlatma
+- 🎯 **Single Panel**: Her mod değişiminde tek, temiz editor paneli
+
+**TEKNİK DÜZELTMELER**:
+- Fixed: `hugerte.remove()` + DOM cleanup for complete cleanup
+- Fixed: 500ms debounce timeout prevents multiple triggers
+- Fixed: `shouldUpdate` flag prevents unnecessary reinitializations
+- Fixed: Extended 300ms timeout for safe editor reinitialization
+- Fixed: Theme detection via MutationObserver with proper filtering

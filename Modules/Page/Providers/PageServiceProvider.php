@@ -59,14 +59,12 @@ class PageServiceProvider extends ServiceProvider
         );
         
         $this->app->bind(
-            \Modules\Page\App\Contracts\PageSeoRepositoryInterface::class,
-            \Modules\Page\App\Repositories\PageSeoRepository::class
+            \App\Contracts\GlobalSeoRepositoryInterface::class,
+            \App\Repositories\GlobalSeoRepository::class
         );
         
         // Service Layer bindings
         $this->app->singleton(\Modules\Page\App\Services\PageService::class);
-        $this->app->singleton(\Modules\Page\App\Services\PageTabService::class);
-        $this->app->singleton(\Modules\Page\App\Services\PageSeoService::class);
     }
 
     /**

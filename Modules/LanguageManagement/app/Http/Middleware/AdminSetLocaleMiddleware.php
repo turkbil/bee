@@ -17,22 +17,10 @@ class AdminSetLocaleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        \Log::info('🎯 AdminSetLocaleMiddleware BAŞLADI', [
-            'url' => $request->url(),
-            'path' => $request->path()
-        ]);
-        
         $locale = $this->resolveAdminLocale();
         
         // Laravel app locale'i admin dili ile ayarla (admin çevirileri için)
         app()->setLocale($locale);
-        
-        \Log::info('🔧 AdminSetLocaleMiddleware - Admin locale ayarlandı', [
-            'admin_locale' => $locale,
-            'session_admin_locale' => session('admin_locale'),
-            'app_locale' => app()->getLocale(),
-            'url' => $request->url()
-        ]);
         
         // Session'da da sakla (consistency için)
         if (!session()->has('admin_locale') || session('admin_locale') !== $locale) {
@@ -47,17 +35,8 @@ class AdminSetLocaleMiddleware
      */
     private function resolveAdminLocale(): string
     {
-        \Log::info('🔧 resolveAdminLocale BAŞLADI', [
-            'session_admin_locale' => session('admin_locale'),
-            'auth_check' => auth()->check(),
-            'user_admin_locale' => auth()->check() ? auth()->user()->admin_locale : 'NOT_AUTH'
-        ]);
-        
         // 1. ACTIVE CHOICE - Session'da bu oturum için ayarlanmış dil var mı?
         if (session()->has('admin_locale') && $this->isValidAdminLocale(session('admin_locale'))) {
-            \Log::info('🔧 resolveAdminLocale - Session değeri döndürülüyor', [
-                'admin_locale' => session('admin_locale')
-            ]);
             return session('admin_locale');
         }
         
@@ -68,10 +47,6 @@ class AdminSetLocaleMiddleware
             
             // Cookie'ye de kaydet (logout sonrası hatırlama için)
             Cookie::queue('admin_locale_preference', auth()->user()->admin_locale, 525600);
-            
-            \Log::info('🔧 resolveAdminLocale - User DB değeri döndürülüyor', [
-                'user_admin_locale' => auth()->user()->admin_locale
-            ]);
             
             return auth()->user()->admin_locale;
         }
@@ -88,11 +63,6 @@ class AdminSetLocaleMiddleware
         // 3. SMART DEFAULT - Sistem varsayılanı + fallback
         $defaultLocale = config('app.admin_default_locale', 'tr');
         
-        \Log::info('🔧 resolveAdminLocale - Default değer kontrolü', [
-            'default_locale' => $defaultLocale,
-            'is_valid' => $this->isValidAdminLocale($defaultLocale)
-        ]);
-        
         if ($this->isValidAdminLocale($defaultLocale)) {
             session(['admin_locale' => $defaultLocale]);
             return $defaultLocale;
@@ -100,7 +70,6 @@ class AdminSetLocaleMiddleware
         
         // Final fallback
         session(['admin_locale' => 'tr']);
-        \Log::info('🔧 resolveAdminLocale - Final fallback: tr');
         return 'tr';
     }
 

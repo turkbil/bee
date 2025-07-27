@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id('announcement_id');
-            $table->json('title'); // Çok dilli destek
-            $table->json('slug'); // Çok dilli destek
-            $table->json('body')->nullable(); // Çok dilli destek
-            $table->json('metakey')->nullable(); // Çok dilli destek
-            $table->json('metadesc')->nullable(); // Çok dilli destek
-            $table->json('seo')->nullable(); // SEO JSON column
+            $table->json('title')->comment('Çoklu dil başlık: {"tr": "Duyuru Başlığı", "en": "Announcement Title"}');
+            $table->json('slug')->comment('Çoklu dil slug: {"tr": "duyuru-basligi", "en": "announcement-title"}');
+            $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "Duyuru İçeriği", "en": "Announcement Content"}');
+            $table->text('css')->nullable();
+            $table->text('js')->nullable();
+            $table->json('seo')->nullable()->comment('SEO verileri: {"tr": {"meta_title": "Başlık", "meta_description": "Açıklama", "keywords": [], "og_image": "image.jpg"}}');
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();
@@ -28,6 +28,10 @@ return new class extends Migration
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'deleted_at'], 'announcements_active_deleted_idx');
             $table->index(['is_active', 'deleted_at', 'created_at'], 'announcements_active_deleted_created_idx');
+            
+            // JSON slug arama için virtual column index (MySQL 5.7+) - Optional
+            // $table->rawIndex('(CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) AS CHAR(255)))', 'announcements_slug_tr_idx');
+            // $table->rawIndex('(CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) AS CHAR(255)))', 'announcements_slug_en_idx');
         });
     }
 

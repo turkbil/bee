@@ -31,6 +31,13 @@ return [
 'status' => 'Durum',
 'title' => 'Duyuru',
 'updating' => 'Güncelleniyor',
-'announcement_updated' => 'TODO: \'announcement_updated\' çevirisini ekleyin',
-'announcement_created' => 'TODO: \'announcement_created\' çevirisini ekleyin'
+'announcement_updated' => 'Duyuru güncellendi',
+'announcement_created' => 'Duyuru oluşturuldu',
+'title_field' => 'Başlık',
+'slug_field' => 'URL Adı',
+'announcement_url_slug' => 'URL Adı',
+'content_placeholder' => 'Duyuru içeriğini giriniz...',
+'studio' => [
+    'editor' => 'Studio Editor'
+]
 ];

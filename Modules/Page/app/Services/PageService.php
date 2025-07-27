@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Modules\Page\App\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -8,22 +11,27 @@ use Modules\Page\App\Contracts\PageRepositoryInterface;
 use App\Contracts\GlobalSeoRepositoryInterface;
 use App\Services\GlobalTabService;
 use Modules\Page\App\Models\Page;
+use Modules\Page\App\DataTransferObjects\{PageOperationResult, BulkOperationResult};
+use Modules\Page\App\Exceptions\{PageNotFoundException, PageCreationException, HomepageProtectionException};
+use Throwable;
 
-class PageService
+readonly class PageService
 {
     public function __construct(
-        protected PageRepositoryInterface $pageRepository,
-        protected GlobalSeoRepositoryInterface $seoRepository
+        private PageRepositoryInterface $pageRepository,
+        private GlobalSeoRepositoryInterface $seoRepository
     ) {}
     
-    public function getPage(int $id): ?Page
+    public function getPage(int $id): Page
     {
-        return $this->pageRepository->findById($id);
+        return $this->pageRepository->findById($id) 
+            ?? throw PageNotFoundException::withId($id);
     }
     
-    public function getPageBySlug(string $slug, string $locale = 'tr'): ?Page
+    public function getPageBySlug(string $slug, string $locale = 'tr'): Page
     {
-        return $this->pageRepository->findBySlug($slug, $locale);
+        return $this->pageRepository->findBySlug($slug, $locale)
+            ?? throw PageNotFoundException::withSlug($slug, $locale);
     }
     
     public function getActivePages(): Collection
@@ -46,114 +54,144 @@ class PageService
         return $this->pageRepository->search($term, $locales);
     }
     
-    public function createPage(array $data): Page
+    public function createPage(array $data): PageOperationResult
     {
-        // Slug otomatik oluşturma
-        if (isset($data['title']) && is_array($data['title'])) {
-            $data['slug'] = $this->generateSlugsFromTitles($data['title']);
+        try {
+            // Slug otomatik oluşturma
+            if (isset($data['title']) && is_array($data['title'])) {
+                $data['slug'] = $this->generateSlugsFromTitles($data['title']);
+            }
+            
+            // SEO verileri hazırlama
+            if (isset($data['seo']) && is_array($data['seo'])) {
+                $data['seo'] = $this->prepareSeoData($data['seo']);
+            }
+            
+            $page = $this->pageRepository->create($data);
+            
+            Log::info('Page created', [
+                'page_id' => $page->page_id,
+                'title' => $page->title,
+                'user_id' => auth()->id()
+            ]);
+            
+            return PageOperationResult::success(
+                message: __('page::admin.page_created_successfully'),
+                data: $page
+            );
+            
+        } catch (Throwable $e) {
+            Log::error('Page creation failed', [
+                'error' => $e->getMessage(),
+                'data' => $data,
+                'user_id' => auth()->id()
+            ]);
+            
+            throw PageCreationException::withDatabaseError($e->getMessage());
         }
-        
-        // SEO verileri hazırlama
-        if (isset($data['seo']) && is_array($data['seo'])) {
-            $data['seo'] = $this->prepareSeoData($data['seo']);
-        }
-        
-        $page = $this->pageRepository->create($data);
-        
-        Log::info('Page created', [
-            'page_id' => $page->page_id,
-            'title' => $page->title,
-            'user_id' => auth()->id()
-        ]);
-        
-        return $page;
     }
     
-    public function updatePage(int $id, array $data): bool
+    public function updatePage(int $id, array $data): PageOperationResult
     {
-        $page = $this->pageRepository->findById($id);
-        
-        if (!$page) {
-            return false;
-        }
-        
-        // Slug güncelleme
-        if (isset($data['title']) && is_array($data['title'])) {
-            $data['slug'] = $this->generateSlugsFromTitles($data['title'], $page->slug ?? []);
-        }
-        
-        // SEO verileri hazırlama
-        if (isset($data['seo']) && is_array($data['seo'])) {
-            $data['seo'] = $this->prepareSeoData($data['seo'], $page->seo ?? []);
-        }
-        
-        $result = $this->pageRepository->update($id, $data);
-        
-        if ($result) {
+        try {
+            $page = $this->pageRepository->findById($id)
+                ?? throw PageNotFoundException::withId($id);
+            
+            // Slug güncelleme
+            if (isset($data['title']) && is_array($data['title'])) {
+                $data['slug'] = $this->generateSlugsFromTitles($data['title'], $page->slug ?? []);
+            }
+            
+            // SEO verileri hazırlama
+            if (isset($data['seo']) && is_array($data['seo'])) {
+                $data['seo'] = $this->prepareSeoData($data['seo'], $page->seo ?? []);
+            }
+            
+            $this->pageRepository->update($id, $data);
+            
             Log::info('Page updated', [
                 'page_id' => $id,
                 'title' => $data['title'] ?? 'unchanged',
                 'user_id' => auth()->id()
             ]);
-        }
-        
-        return $result;
-    }
-    
-    public function deletePage(int $id): bool
-    {
-        $page = $this->pageRepository->findById($id);
-        
-        if (!$page) {
-            return false;
-        }
-        
-        // Ana sayfa silinmesine izin verme
-        if ($page->is_homepage) {
-            Log::warning('Attempted to delete homepage', [
+            
+            return PageOperationResult::success(
+                message: __('page::admin.page_updated_successfully'),
+                data: $page->refresh()
+            );
+            
+        } catch (PageNotFoundException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            Log::error('Page update failed', [
                 'page_id' => $id,
+                'error' => $e->getMessage(),
                 'user_id' => auth()->id()
             ]);
-            return false;
+            
+            return PageOperationResult::error(
+                message: __('page::admin.update_failed'),
+                type: 'error'
+            );
         }
-        
-        $result = $this->pageRepository->delete($id);
-        
-        if ($result) {
+    }
+    
+    public function deletePage(int $id): PageOperationResult
+    {
+        try {
+            $page = $this->pageRepository->findById($id)
+                ?? throw PageNotFoundException::withId($id);
+            
+            // Ana sayfa silinmesine izin verme
+            if ($page->is_homepage) {
+                Log::warning('Attempted to delete homepage', [
+                    'page_id' => $id,
+                    'user_id' => auth()->id()
+                ]);
+                
+                throw HomepageProtectionException::cannotDelete($id);
+            }
+            
+            $this->pageRepository->delete($id);
+            
             Log::info('Page deleted', [
                 'page_id' => $id,
                 'title' => $page->title,
                 'user_id' => auth()->id()
             ]);
+            
+            return PageOperationResult::success(
+                message: __('page::admin.page_deleted_successfully')
+            );
+            
+        } catch (PageNotFoundException|HomepageProtectionException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            Log::error('Page deletion failed', [
+                'page_id' => $id,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+            
+            return PageOperationResult::error(
+                message: __('page::admin.deletion_failed'),
+                type: 'error'
+            );
         }
-        
-        return $result;
     }
     
-    public function togglePageStatus(int $id): array
+    public function togglePageStatus(int $id): PageOperationResult
     {
-        $page = $this->pageRepository->findById($id);
-        
-        if (!$page) {
-            return [
-                'success' => false,
-                'message' => __('admin.page_not_found'),
-                'type' => 'error'
-            ];
-        }
-        
-        // Ana sayfa kontrolü
-        if ($page->is_homepage && $page->is_active) {
-            return [
-                'success' => false,
-                'message' => __('admin.homepage_cannot_be_deactivated'),
-                'type' => 'warning'
-            ];
-        }
-        
-        $result = $this->pageRepository->toggleActive($id);
-        
-        if ($result) {
+        try {
+            $page = $this->pageRepository->findById($id)
+                ?? throw PageNotFoundException::withId($id);
+            
+            // Ana sayfa kontrolü
+            if ($page->is_homepage && $page->is_active) {
+                throw HomepageProtectionException::cannotDeactivate($id);
+            }
+            
+            $this->pageRepository->toggleActive($id);
             $page->refresh();
             
             Log::info('Page status toggled', [
@@ -162,72 +200,115 @@ class PageService
                 'user_id' => auth()->id()
             ]);
             
-            return [
-                'success' => true,
-                'message' => __($page->is_active ? 'admin.activated' : 'admin.deactivated'),
-                'type' => $page->is_active ? 'success' : 'warning',
-                'new_status' => $page->is_active
-            ];
+            return PageOperationResult::success(
+                message: __($page->is_active ? 'admin.activated' : 'admin.deactivated'),
+                data: $page,
+                meta: ['new_status' => $page->is_active]
+            );
+            
+        } catch (PageNotFoundException $e) {
+            return PageOperationResult::error(
+                message: __('admin.page_not_found'),
+                type: 'error'
+            );
+        } catch (HomepageProtectionException $e) {
+            return PageOperationResult::warning(
+                message: __('admin.homepage_cannot_be_deactivated')
+            );
+        } catch (Throwable $e) {
+            Log::error('Page status toggle failed', [
+                'page_id' => $id,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+            
+            return PageOperationResult::error(
+                message: __('admin.operation_failed'),
+                type: 'error'
+            );
         }
-        
-        return [
-            'success' => false,
-            'message' => __('admin.operation_failed'),
-            'type' => 'error'
-        ];
     }
     
-    public function bulkDeletePages(array $ids): array
+    public function bulkDeletePages(array $ids): BulkOperationResult
     {
-        // Ana sayfaları çıkar
-        $homepageIds = [];
-        foreach ($ids as $id) {
-            $page = $this->pageRepository->findById($id);
-            if ($page && $page->is_homepage) {
-                $homepageIds[] = $id;
+        try {
+            // Ana sayfaları çıkar
+            $homepageIds = [];
+            foreach ($ids as $id) {
+                $page = $this->pageRepository->findById($id);
+                if ($page?->is_homepage) {
+                    $homepageIds[] = $id;
+                }
             }
+            
+            $allowedIds = array_diff($ids, $homepageIds);
+            
+            if (empty($allowedIds)) {
+                return BulkOperationResult::failure(
+                    message: __('admin.no_pages_can_be_deleted')
+                );
+            }
+            
+            $deletedCount = $this->pageRepository->bulkDelete($allowedIds);
+            
+            Log::info('Bulk delete performed', [
+                'deleted_count' => $deletedCount,
+                'skipped_homepages' => count($homepageIds),
+                'user_id' => auth()->id()
+            ]);
+            
+            return count($homepageIds) > 0
+                ? BulkOperationResult::partial(
+                    message: __('admin.bulk_delete_partial'),
+                    affectedCount: $deletedCount,
+                    skippedCount: count($homepageIds)
+                )
+                : BulkOperationResult::success(
+                    message: __('admin.deleted_successfully'),
+                    affectedCount: $deletedCount
+                );
+                
+        } catch (Throwable $e) {
+            Log::error('Bulk delete failed', [
+                'error' => $e->getMessage(),
+                'ids' => $ids,
+                'user_id' => auth()->id()
+            ]);
+            
+            return BulkOperationResult::failure(
+                message: __('admin.bulk_operation_failed'),
+                errors: [$e->getMessage()]
+            );
         }
-        
-        $allowedIds = array_diff($ids, $homepageIds);
-        
-        if (empty($allowedIds)) {
-            return [
-                'success' => false,
-                'message' => __('admin.no_pages_can_be_deleted'),
-                'deleted_count' => 0
-            ];
-        }
-        
-        $deletedCount = $this->pageRepository->bulkDelete($allowedIds);
-        
-        Log::info('Bulk delete performed', [
-            'deleted_count' => $deletedCount,
-            'skipped_homepages' => count($homepageIds),
-            'user_id' => auth()->id()
-        ]);
-        
-        return [
-            'success' => true,
-            'message' => __('admin.deleted_successfully') . ' (' . $deletedCount . ')',
-            'deleted_count' => $deletedCount,
-            'skipped_count' => count($homepageIds)
-        ];
     }
     
-    public function bulkToggleStatus(array $ids): array
+    public function bulkToggleStatus(array $ids): BulkOperationResult
     {
-        $affectedCount = $this->pageRepository->bulkToggleActive($ids);
-        
-        Log::info('Bulk status toggle performed', [
-            'affected_count' => $affectedCount,
-            'user_id' => auth()->id()
-        ]);
-        
-        return [
-            'success' => true,
-            'message' => __('admin.updated_successfully') . ' (' . $affectedCount . ')',
-            'affected_count' => $affectedCount
-        ];
+        try {
+            $affectedCount = $this->pageRepository->bulkToggleActive($ids);
+            
+            Log::info('Bulk status toggle performed', [
+                'affected_count' => $affectedCount,
+                'user_id' => auth()->id()
+            ]);
+            
+            return BulkOperationResult::success(
+                message: __('admin.updated_successfully'),
+                affectedCount: $affectedCount
+            );
+            
+        } catch (Throwable $e) {
+            Log::error('Bulk status toggle failed', [
+                'error' => $e->getMessage(),
+                'ids' => $ids,
+                'user_id' => auth()->id()
+            ]);
+            
+            return BulkOperationResult::failure(
+                message: __('admin.bulk_operation_failed'),
+                errors: [$e->getMessage()]
+            );
+        }
     }
     
     public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool

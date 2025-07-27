@@ -80,7 +80,8 @@ class GlobalCacheService
         $baseKey = class_basename($modelClass) . '_' . $modelId;
         
         if (!empty($relations)) {
-            $relationsKey = implode('_', sort($relations));
+            sort($relations);
+            $relationsKey = implode('_', $relations);
             return $baseKey . '_with_' . md5($relationsKey);
         }
         

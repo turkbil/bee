@@ -58,7 +58,10 @@ class AnnouncementServiceProvider extends ServiceProvider
         
         // Service Layer Bindings
         $this->app->singleton(AnnouncementService::class, function ($app) {
-            return new AnnouncementService($app->make(AnnouncementRepositoryInterface::class));
+            return new AnnouncementService(
+                $app->make(AnnouncementRepositoryInterface::class),
+                $app->make(\App\Contracts\GlobalSeoRepositoryInterface::class)
+            );
         });
     }
 

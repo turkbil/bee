@@ -272,8 +272,7 @@
     </div>
 </div>
 
-{{-- 🤖 Floating AI Chat Widget - Sağ Alt Köşe --}}
-@include('admin.includes.floating-ai-chat')
+{{-- 🤖 AI Widget System artık readme/ai-assistant klasöründe --}}
 
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>

@@ -499,6 +499,7 @@ return [
     'seo_keywords' => 'Anahtar Kelimeler',
     'canonical_url' => 'Canonical URL',
     'page_url_slug' => 'Sayfa URL (Slug)',
+    'announcement_url_slug' => 'Duyuru URL Adı',
     'slug_auto_generated' => 'Otomatik oluşur',
     
     // SEO Açıklamaları

@@ -96,12 +96,32 @@ class AnnouncementRepository implements AnnouncementRepositoryInterface
     {
         $query = Announcement::query();
 
-        // Filtreleri uygula
-        if (!empty($filters['title'])) {
-            $locale = app()->getLocale();
-            $query->where(function ($q) use ($filters, $locale) {
-                $q->whereRaw("JSON_EXTRACT(title, '$.\"{$locale}\"') LIKE ?", ["%{$filters['title']}%"])
-                  ->orWhereRaw("JSON_EXTRACT(title, '$.\"tr\"') LIKE ?", ["%{$filters['title']}%"]);
+        // Arama filtreleme
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $currentLocale = $filters['currentLocale'] ?? 'tr';
+            $locales = $filters['locales'] ?? ['tr'];
+            
+            $query->where(function ($q) use ($search, $currentLocale, $locales) {
+                // Title arama
+                $q->where(function ($titleQuery) use ($search, $currentLocale, $locales) {
+                    $titleQuery->whereRaw("JSON_EXTRACT(title, '$.\"{$currentLocale}\"') LIKE ?", ["%{$search}%"]);
+                    foreach ($locales as $locale) {
+                        if ($locale !== $currentLocale) {
+                            $titleQuery->orWhereRaw("JSON_EXTRACT(title, '$.\"{$locale}\"') LIKE ?", ["%{$search}%"]);
+                        }
+                    }
+                });
+                
+                // Slug arama
+                $q->orWhere(function ($slugQuery) use ($search, $currentLocale, $locales) {
+                    $slugQuery->whereRaw("JSON_EXTRACT(slug, '$.\"{$currentLocale}\"') LIKE ?", ["%{$search}%"]);
+                    foreach ($locales as $locale) {
+                        if ($locale !== $currentLocale) {
+                            $slugQuery->orWhereRaw("JSON_EXTRACT(slug, '$.\"{$locale}\"') LIKE ?", ["%{$search}%"]);
+                        }
+                    }
+                });
             });
         }
 
@@ -117,7 +137,11 @@ class AnnouncementRepository implements AnnouncementRepositoryInterface
             $query->whereDate('created_at', '<=', $filters['date_to']);
         }
 
-        return $query->latest()->paginate($perPage);
+        // Sıralama
+        $sortField = $filters['sortField'] ?? 'announcement_id';
+        $sortDirection = $filters['sortDirection'] ?? 'desc';
+        
+        return $query->orderBy($sortField, $sortDirection)->paginate($perPage);
     }
 
     public function create(array $data): Announcement

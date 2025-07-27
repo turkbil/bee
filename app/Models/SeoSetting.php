@@ -70,28 +70,14 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
-        // 🔍 DEBUG: getTitle çağrıldı
-        Log::info('🔍 SeoSetting::getTitle called', [
-            'locale' => $locale,
-            'titles_array' => $this->titles,
-            'meta_title' => $this->meta_title,
-            'default_language' => $this->default_language
-        ]);
+        // Debug logs removed - reducing log noise
         
         if (!$this->titles) {
-            Log::info('⚠️ Titles array boş, meta_title döndürülüyor', [
-                'meta_title' => $this->meta_title
-            ]);
             return $this->meta_title;
         }
 
         $result = SeoLanguageManager::getSafeValue($this->titles, $locale, $this->default_language)
             ?? $this->meta_title;
-            
-        Log::info('✅ getTitle sonucu', [
-            'locale' => $locale,
-            'result' => $result
-        ]);
         
         return $result;
     }
@@ -103,28 +89,14 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
-        // 🔍 DEBUG: getDescription çağrıldı
-        Log::info('🔍 SeoSetting::getDescription called', [
-            'locale' => $locale,
-            'descriptions_array' => $this->descriptions,
-            'meta_description' => $this->meta_description,
-            'default_language' => $this->default_language
-        ]);
+        // Debug logs removed - reducing log noise
         
         if (!$this->descriptions) {
-            Log::info('⚠️ Descriptions array boş, meta_description döndürülüyor', [
-                'meta_description' => $this->meta_description
-            ]);
             return $this->meta_description;
         }
 
         $result = SeoLanguageManager::getSafeValue($this->descriptions, $locale, $this->default_language)
             ?? $this->meta_description;
-            
-        Log::info('✅ getDescription sonucu', [
-            'locale' => $locale,
-            'result' => $result
-        ]);
         
         return $result;
     }

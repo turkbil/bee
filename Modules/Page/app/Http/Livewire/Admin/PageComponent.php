@@ -1,14 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Modules\Page\App\Http\Livewire\Admin;
 
-use Livewire\Attributes\Url;
-use Livewire\Attributes\Layout;
+use Livewire\Attributes\{Url, Layout, Computed};
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Page\App\Http\Livewire\Traits\InlineEditTitle;
-use Modules\Page\App\Http\Livewire\Traits\WithBulkActions;
+use Modules\Page\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActions};
 use Modules\Page\App\Services\PageService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
+use Modules\Page\App\DataTransferObjects\PageOperationResult;
 
 #[Layout('admin.layout')]
 class PageComponent extends Component
@@ -28,17 +30,17 @@ class PageComponent extends Component
     public $sortDirection = 'desc';
 
     // Hibrit dil sistemi için dinamik dil listesi
-    protected $availableSiteLanguages = null;
+    private ?array $availableSiteLanguages = null;
     
     // Event listeners
     protected $listeners = ['refreshPageData' => 'refreshPageData'];
     
-    public function __construct()
-    {
-        $this->pageService = app(PageService::class);
-    }
+    private PageService $pageService;
     
-    protected PageService $pageService;
+    public function boot(PageService $pageService): void
+    {
+        $this->pageService = $pageService;
+    }
     
     public function refreshPageData()
     {
@@ -55,35 +57,29 @@ class PageComponent extends Component
         return \Modules\Page\App\Models\Page::class;
     }
 
-    /**
-     * Site dillerini dinamik olarak getir
-     */
-    protected function getAvailableSiteLanguages()
+    #[Computed]
+    public function availableSiteLanguages(): array
     {
-        if ($this->availableSiteLanguages === null) {
-            $this->availableSiteLanguages = TenantLanguage::where('is_active', true)
-                ->orderBy('sort_order')
-                ->pluck('code')
-                ->toArray();
-        }
-        return $this->availableSiteLanguages;
+        return $this->availableSiteLanguages ??= TenantLanguage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->pluck('code')
+            ->toArray();
     }
 
-    /**
-     * Admin arayüzü için admin_locale, sayfa içerikleri için tenant_locale kullan
-     */
-    protected function getAdminLocale()
+    #[Computed]
+    public function adminLocale(): string
     {
         return session('admin_locale', 'tr');
     }
 
-    protected function getSiteLocale()
+    #[Computed]
+    public function siteLocale(): string
     {
         // Query string'den data_lang_changed parametresini kontrol et
         $dataLangChanged = request()->get('data_lang_changed');
         
         // Eğer query string'de dil değişim parametresi varsa onu kullan
-        if ($dataLangChanged && in_array($dataLangChanged, $this->getAvailableSiteLanguages())) {
+        if ($dataLangChanged && in_array($dataLangChanged, $this->availableSiteLanguages)) {
             // Session'ı da güncelle (query'den gelen dili session'a yaz)
             session(['tenant_locale' => $dataLangChanged]);
             session()->save();
@@ -104,9 +100,7 @@ class PageComponent extends Component
         }
         
         // 2. Session fallback
-        $siteLocale = session('tenant_locale', 'tr');
-        
-        return $siteLocale;
+        return session('tenant_locale', 'tr');
     }
 
     public function updatedPerPage()
@@ -130,44 +124,48 @@ class PageComponent extends Component
         }
     }
 
-    public function toggleActive($id)
+    public function toggleActive(int $id): void
     {
-        $result = $this->pageService->togglePageStatus($id);
-        
-        $this->dispatch('toast', [
-            'title' => $result['success'] ? __('admin.success') : __('admin.' . $result['type']),
-            'message' => $result['message'],
-            'type' => $result['type'],
-        ]);
-        
-        if ($result['success']) {
-            log_activity(
-                $this->pageService->getPage($id),
-                $result['new_status'] ? __('admin.activated') : __('admin.deactivated')
-            );
+        try {
+            $result = $this->pageService->togglePageStatus($id);
+            
+            $this->dispatch('toast', [
+                'title' => $result->success ? __('admin.success') : __('admin.' . $result->type),
+                'message' => $result->message,
+                'type' => $result->type,
+            ]);
+            
+            if ($result->success && $result->meta) {
+                log_activity(
+                    $result->data,
+                    $result->meta['new_status'] ? __('admin.activated') : __('admin.deactivated')
+                );
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
         }
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
-        $siteLanguages = $this->getAvailableSiteLanguages();
-        $currentSiteLocale = $this->getSiteLocale();
-        
-        // Service kullanarak paginated data al
         $filters = [
             'search' => $this->search,
-            'locales' => $siteLanguages,
+            'locales' => $this->availableSiteLanguages,
             'sortField' => $this->sortField,
             'sortDirection' => $this->sortDirection,
-            'currentLocale' => $currentSiteLocale
+            'currentLocale' => $this->siteLocale
         ];
         
         $pages = $this->pageService->getPaginatedPages($filters, $this->perPage);
     
         return view('page::admin.livewire.page-component', [
             'pages' => $pages,
-            'currentSiteLocale' => $currentSiteLocale,
-            'siteLanguages' => $siteLanguages,
+            'currentSiteLocale' => $this->siteLocale,
+            'siteLanguages' => $this->availableSiteLanguages,
         ]);
     }
 }

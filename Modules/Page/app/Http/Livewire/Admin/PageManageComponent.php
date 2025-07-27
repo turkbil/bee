@@ -201,7 +201,6 @@ class PageManageComponent extends Component
            // İlk yükleme - DAIMA TR default
            $defaultLanguage = session('site_default_language', 'tr');
            $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : 'tr';
-           \Log::info('🔥 İlk yükleme - TR default dil atandı:', ['language' => $this->currentLanguage]);
        }
    }
 

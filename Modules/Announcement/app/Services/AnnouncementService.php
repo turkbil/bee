@@ -1,300 +1,356 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Announcement\App\Services;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\{DB, Log};
 use Modules\Announcement\App\Contracts\AnnouncementRepositoryInterface;
+use App\Contracts\GlobalSeoRepositoryInterface;
+use App\Services\GlobalTabService;
 use Modules\Announcement\App\Models\Announcement;
+use Modules\Announcement\App\DataTransferObjects\AnnouncementOperationResult;
+use Modules\Announcement\App\Exceptions\{AnnouncementNotFoundException, AnnouncementCreationException};
+use Throwable;
 
-class AnnouncementService
+readonly class AnnouncementService
 {
-    protected AnnouncementRepositoryInterface $announcementRepository;
-
-    public function __construct(AnnouncementRepositoryInterface $announcementRepository)
+    public function __construct(
+        private AnnouncementRepositoryInterface $announcementRepository,
+        private GlobalSeoRepositoryInterface $seoRepository
+    ) {}
+    
+    public function getAnnouncement(int $id): Announcement
     {
-        $this->announcementRepository = $announcementRepository;
+        return $this->announcementRepository->findById($id) 
+            ?? throw AnnouncementNotFoundException::withId($id);
     }
-
-    /**
-     * Duyuru oluştur
-     */
-    public function create(array $data): Announcement
+    
+    public function getAnnouncementBySlug(string $slug, string $locale = 'tr'): Announcement
     {
-        try {
-            DB::beginTransaction();
-            
-            // Slug oluştur
-            $data = $this->prepareSlugs($data);
-            
-            // Meta description hazırla
-            $data = $this->prepareMetaDescription($data);
-            
-            // Duyuru oluştur
-            $announcement = $this->announcementRepository->create($data);
-            
-            // Log kaydı
-            Log::info('Duyuru oluşturuldu', [
-                'announcement_id' => $announcement->announcement_id,
-                'title' => $announcement->title,
-                'tenant_id' => tenant('id')
-            ]);
-            
-            // Activity log
-            if (function_exists('log_activity')) {
-                log_activity($announcement, 'oluşturuldu');
-            }
-            
-            DB::commit();
-            return $announcement;
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            Log::error('Duyuru oluşturma hatası', [
-                'error' => $e->getMessage(),
-                'data' => $data
-            ]);
-            
-            throw $e;
-        }
+        return $this->announcementRepository->findBySlug($slug, $locale)
+            ?? throw AnnouncementNotFoundException::withSlug($slug, $locale);
     }
-
-    /**
-     * Duyuru güncelle
-     */
-    public function update(int $id, array $data): Announcement
-    {
-        try {
-            DB::beginTransaction();
-            
-            // Mevcut duyuru
-            $existingAnnouncement = $this->announcementRepository->findById($id);
-            if (!$existingAnnouncement) {
-                throw new \Exception('Duyuru bulunamadı');
-            }
-            
-            // Slug oluştur
-            $data = $this->prepareSlugs($data, $id);
-            
-            // Meta description hazırla
-            $data = $this->prepareMetaDescription($data);
-            
-            // Duyuru güncelle
-            $announcement = $this->announcementRepository->update($id, $data);
-            
-            // Log kaydı
-            Log::info('Duyuru güncellendi', [
-                'announcement_id' => $announcement->announcement_id,
-                'title' => $announcement->title,
-                'tenant_id' => tenant('id')
-            ]);
-            
-            // Activity log
-            if (function_exists('log_activity')) {
-                log_activity($announcement, 'güncellendi');
-            }
-            
-            DB::commit();
-            return $announcement;
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            Log::error('Duyuru güncelleme hatası', [
-                'announcement_id' => $id,
-                'error' => $e->getMessage(),
-                'data' => $data
-            ]);
-            
-            throw $e;
-        }
-    }
-
-    /**
-     * Duyuru sil
-     */
-    public function delete(int $id): bool
-    {
-        try {
-            DB::beginTransaction();
-            
-            $announcement = $this->announcementRepository->findById($id);
-            if (!$announcement) {
-                throw new \Exception('Duyuru bulunamadı');
-            }
-            
-            // Activity log
-            if (function_exists('log_activity')) {
-                log_activity($announcement, 'silindi');
-            }
-            
-            $result = $this->announcementRepository->delete($id);
-            
-            Log::info('Duyuru silindi', [
-                'announcement_id' => $id,
-                'title' => $announcement->title,
-                'tenant_id' => tenant('id')
-            ]);
-            
-            DB::commit();
-            return $result;
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            Log::error('Duyuru silme hatası', [
-                'announcement_id' => $id,
-                'error' => $e->getMessage()
-            ]);
-            
-            throw $e;
-        }
-    }
-
-    /**
-     * Duyuru listesi (sayfalanmış)
-     */
-    public function getPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->announcementRepository->paginate($filters, $perPage);
-    }
-
-    /**
-     * Duyuru arama
-     */
-    public function search(array $filters = []): Collection
-    {
-        return $this->announcementRepository->search($filters);
-    }
-
-    /**
-     * Aktif duyuruları getir
-     */
-    public function getActive(): Collection
+    
+    public function getActiveAnnouncements(): Collection
     {
         return $this->announcementRepository->getActive();
     }
-
-    /**
-     * Son duyuruları getir
-     */
+    
+    public function getPaginatedAnnouncements(array $filters = [], int $perPage = 10): LengthAwarePaginator
+    {
+        return $this->announcementRepository->paginate($filters, $perPage);
+    }
+    
+    public function searchAnnouncements(string $term, array $locales = []): Collection
+    {
+        return $this->announcementRepository->search($term, $locales);
+    }
+    
+    public function createAnnouncement(array $data): AnnouncementOperationResult
+    {
+        try {
+            // Slug otomatik oluşturma
+            if (isset($data['title']) && is_array($data['title'])) {
+                $data['slug'] = $this->generateSlugsFromTitles($data['title']);
+            }
+            
+            // SEO verileri hazırlama
+            if (isset($data['seo']) && is_array($data['seo'])) {
+                $data['seo'] = $this->prepareSeoData($data['seo']);
+            }
+            
+            $announcement = $this->announcementRepository->create($data);
+            
+            Log::info('Announcement created', [
+                'announcement_id' => $announcement->announcement_id,
+                'title' => $announcement->title,
+                'user_id' => auth()->id()
+            ]);
+            
+            return AnnouncementOperationResult::success(
+                message: __('announcement::admin.announcement_created_successfully'),
+                data: $announcement
+            );
+            
+        } catch (Throwable $e) {
+            Log::error('Announcement creation failed', [
+                'error' => $e->getMessage(),
+                'data' => $data,
+                'user_id' => auth()->id()
+            ]);
+            
+            throw AnnouncementCreationException::withDatabaseError($e->getMessage());
+        }
+    }
+    
+    public function updateAnnouncement(int $id, array $data): AnnouncementOperationResult
+    {
+        try {
+            $announcement = $this->announcementRepository->findById($id)
+                ?? throw AnnouncementNotFoundException::withId($id);
+            
+            // Slug güncelleme
+            if (isset($data['title']) && is_array($data['title'])) {
+                $data['slug'] = $this->generateSlugsFromTitles($data['title'], $id);
+            }
+            
+            // SEO verileri hazırlama
+            if (isset($data['seo']) && is_array($data['seo'])) {
+                $data['seo'] = $this->prepareSeoData($data['seo']);
+            }
+            
+            $announcement = $this->announcementRepository->update($id, $data);
+            
+            Log::info('Announcement updated', [
+                'announcement_id' => $announcement->announcement_id,
+                'title' => $announcement->title,
+                'user_id' => auth()->id()
+            ]);
+            
+            return AnnouncementOperationResult::success(
+                message: __('announcement::admin.announcement_updated_successfully'),
+                data: $announcement
+            );
+            
+        } catch (Throwable $e) {
+            Log::error('Announcement update failed', [
+                'announcement_id' => $id,
+                'error' => $e->getMessage(),
+                'data' => $data,
+                'user_id' => auth()->id()
+            ]);
+            
+            return AnnouncementOperationResult::error(
+                message: __('announcement::admin.announcement_update_failed')
+            );
+        }
+    }
+    
+    public function deleteAnnouncement(int $id): AnnouncementOperationResult
+    {
+        try {
+            $announcement = $this->announcementRepository->findById($id)
+                ?? throw AnnouncementNotFoundException::withId($id);
+            
+            $this->announcementRepository->delete($id);
+            
+            Log::info('Announcement deleted', [
+                'announcement_id' => $id,
+                'title' => $announcement->title,
+                'user_id' => auth()->id()
+            ]);
+            
+            return AnnouncementOperationResult::success(
+                message: __('announcement::admin.announcement_deleted_successfully')
+            );
+            
+        } catch (Throwable $e) {
+            Log::error('Announcement deletion failed', [
+                'announcement_id' => $id,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+            
+            return AnnouncementOperationResult::error(
+                message: __('announcement::admin.announcement_deletion_failed')
+            );
+        }
+    }
+    
+    public function prepareAnnouncementForForm(int $id, string $currentLanguage): array
+    {
+        $announcement = $this->getAnnouncement($id);
+        
+        // SEO verilerini yükle
+        $seoData = $this->seoRepository->getSeoData(
+            $announcement,
+            $currentLanguage
+        );
+        
+        // Tab completion durumunu hesapla  
+        $announcementData = array_merge(
+            $announcement->only(['is_active']),
+            [
+                'title' => $announcement->getTranslated('title', $currentLanguage) ?? '',
+                'body' => $announcement->getTranslated('body', $currentLanguage) ?? '',
+                'slug' => $announcement->getTranslated('slug', $currentLanguage) ?? '',
+            ],
+            $seoData
+        );
+        
+        $tabCompletion = GlobalTabService::getTabCompletionStatus($announcementData, 'announcement');
+        
+        // SEO limitleri
+        $seoLimits = [
+            'title' => ['min' => 30, 'max' => 60],
+            'description' => ['min' => 120, 'max' => 160],
+            'keywords' => ['min' => 3, 'max' => 10]
+        ];
+        
+        return [
+            'announcement' => $announcement,
+            'seoData' => $seoData,
+            'tabCompletion' => $tabCompletion,
+            'seoLimits' => $seoLimits
+        ];
+    }
+    
+    // Eski methodları da koruyalım (backward compatibility)
+    public function create(array $data): Announcement
+    {
+        $result = $this->createAnnouncement($data);
+        return $result->data;
+    }
+    
+    public function update(int $id, array $data): Announcement
+    {
+        $result = $this->updateAnnouncement($id, $data);
+        return $result->data;
+    }
+    
+    public function delete(int $id): bool
+    {
+        $result = $this->deleteAnnouncement($id);
+        return $result->success;
+    }
+    
+    public function getPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->getPaginatedAnnouncements($filters, $perPage);
+    }
+    
+    public function search(array $filters = []): Collection
+    {
+        // Eski arayüzü destekle
+        $term = $filters['search'] ?? '';
+        $locales = $filters['locales'] ?? [];
+        return $this->searchAnnouncements($term, $locales);
+    }
+    
+    public function getActive(): Collection
+    {
+        return $this->getActiveAnnouncements();
+    }
+    
     public function getRecent(int $limit = 10): Collection
     {
         return $this->announcementRepository->getRecent($limit);
     }
-
-    /**
-     * Popüler duyuruları getir
-     */
+    
     public function getPopular(int $limit = 10): Collection
     {
         return $this->announcementRepository->getPopular($limit);
     }
-
-    /**
-     * Duyuru detayı getir
-     */
+    
     public function getById(int $id, array $with = []): ?Announcement
     {
         return $this->announcementRepository->findById($id, $with);
     }
-
-    /**
-     * Slug ile duyuru getir
-     */
+    
     public function getBySlug(string $slug): ?Announcement
     {
         return $this->announcementRepository->findBySlug($slug);
     }
-
-    /**
-     * SEO verilerini güncelle
-     */
+    
     public function updateSeo(int $id, array $seoData): Announcement
     {
         return $this->announcementRepository->updateSeo($id, $seoData);
     }
-
-    /**
-     * Cache temizle
-     */
+    
     public function clearCache(int $id = null): void
     {
         $this->announcementRepository->clearCache($id);
     }
-
-    /**
-     * Slug hazırla
-     */
-    protected function prepareSlugs(array $data, int $announcementId = null): array
+    
+    public function toggleAnnouncementStatus(int $id): AnnouncementOperationResult
     {
-        if (isset($data['title']) && is_array($data['title'])) {
-            $slugs = [];
+        try {
+            $announcement = $this->announcementRepository->findById($id)
+                ?? throw AnnouncementNotFoundException::withId($id);
             
-            foreach ($data['title'] as $locale => $title) {
-                if (!empty($title)) {
-                    $baseSlug = isset($data['slug'][$locale]) && !empty($data['slug'][$locale]) 
-                        ? $data['slug'][$locale] 
-                        : Str::slug($title);
-                    
-                    // Unique slug kontrolü
-                    $slugs[$locale] = $this->makeUniqueSlug($baseSlug, $announcementId);
-                }
+            $newStatus = !$announcement->is_active;
+            $announcement = $this->announcementRepository->update($id, ['is_active' => $newStatus]);
+            
+            $message = $newStatus 
+                ? __('admin.item_activated_successfully')
+                : __('admin.item_deactivated_successfully');
+            
+            Log::info('Announcement status toggled', [
+                'announcement_id' => $id,
+                'new_status' => $newStatus,
+                'user_id' => auth()->id()
+            ]);
+            
+            return AnnouncementOperationResult::success(
+                message: $message,
+                data: $announcement,
+                meta: ['new_status' => $newStatus]
+            );
+            
+        } catch (Throwable $e) {
+            Log::error('Announcement status toggle failed', [
+                'announcement_id' => $id,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+            
+            return AnnouncementOperationResult::error(
+                message: __('admin.operation_failed')
+            );
+        }
+    }
+    
+    /**
+     * Başlıklardan slug oluştur
+     */
+    protected function generateSlugsFromTitles(array $titles, int $announcementId = null): array
+    {
+        $slugs = [];
+        
+        foreach ($titles as $locale => $title) {
+            if (!empty($title)) {
+                $baseSlug = \Illuminate\Support\Str::slug($title);
+                $slugs[$locale] = $this->makeUniqueSlug($baseSlug, $locale, $announcementId);
             }
-            
-            $data['slug'] = $slugs;
         }
         
-        return $data;
+        return $slugs;
     }
-
+    
     /**
-     * Meta description hazırla
+     * SEO verilerini hazırla
      */
-    protected function prepareMetaDescription(array $data): array
+    protected function prepareSeoData(array $seoData): array
     {
-        if (isset($data['body']) && is_array($data['body'])) {
-            $metadescs = $data['metadesc'] ?? [];
-            
-            foreach ($data['body'] as $locale => $body) {
-                if (empty($metadescs[$locale]) && !empty($body)) {
-                    $metadescs[$locale] = Str::limit(strip_tags($body), 155, '');
-                }
-            }
-            
-            $data['metadesc'] = $metadescs;
-        }
-        
-        return $data;
+        // SEO verilerini normalize et
+        return array_filter($seoData, fn($value) => !empty(trim($value)));
     }
-
+    
     /**
      * Unique slug oluştur
      */
-    protected function makeUniqueSlug(string $slug, int $announcementId = null): string
+    protected function makeUniqueSlug(string $slug, string $locale, int $announcementId = null): string
     {
         $originalSlug = $slug;
         $counter = 1;
         
-        while ($this->slugExists($slug, $announcementId)) {
+        while ($this->slugExists($slug, $locale, $announcementId)) {
             $slug = $originalSlug . '-' . $counter;
             $counter++;
         }
         
         return $slug;
     }
-
+    
     /**
      * Slug varlık kontrolü
      */
-    protected function slugExists(string $slug, int $announcementId = null): bool
+    protected function slugExists(string $slug, string $locale, int $announcementId = null): bool
     {
-        $query = Announcement::whereRaw("JSON_EXTRACT(slug, '$.\"" . app()->getLocale() . "\"') = ?", [$slug])
-            ->orWhereRaw("JSON_EXTRACT(slug, '$.\"tr\"') = ?", [$slug]);
+        $query = Announcement::whereRaw("JSON_EXTRACT(slug, '$.\"" . $locale . "\"') = ?", [$slug]);
         
         if ($announcementId) {
             $query->where('announcement_id', '!=', $announcementId);

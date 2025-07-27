@@ -7,7 +7,7 @@
 
 @php
     // Eğer pageId geçilmişse Page modelini kullan, yoksa null
-    $page = $pageId ? \Modules\Page\App\Services\PageCacheService::getPageWithSeo($pageId) : null;
+    $page = $pageId ? \App\Services\GlobalCacheService::getPageWithSeo($pageId) : null;
     $seoSettings = $page ? $page->seoSetting : null;
 @endphp
 

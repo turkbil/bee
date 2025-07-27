@@ -31,7 +31,23 @@ trait HasTranslations
         
         $translations = $this->getAttribute($field);
         
-        // JSON değilse direkt döndür - ama string olduğundan emin ol
+        // Double-encoded JSON kontrolü ve düzeltme
+        if (is_string($translations)) {
+            try {
+                $decoded = json_decode($translations, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $translations = $decoded;
+                } else {
+                    // JSON decode edilemedi, direkt string döndür
+                    return $translations;
+                }
+            } catch (\Exception $e) {
+                // JSON decode hatası, direkt string döndür
+                return $translations;
+            }
+        }
+        
+        // Array değilse direkt döndür
         if (!is_array($translations)) {
             return is_string($translations) ? $translations : (string) $translations;
         }
@@ -174,6 +190,20 @@ trait HasTranslations
         }
         
         $translations = $this->getAttribute($field);
+        
+        // Double-encoded JSON kontrolü ve düzeltme
+        if (is_string($translations)) {
+            try {
+                $decoded = json_decode($translations, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $translations = $decoded;
+                } else {
+                    return !empty($translations);
+                }
+            } catch (\Exception $e) {
+                return !empty($translations);
+            }
+        }
         
         if (!is_array($translations)) {
             return !empty($translations);

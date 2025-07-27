@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Modules\Page\App\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -6,74 +9,81 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Modules\Page\App\Contracts\PageRepositoryInterface;
 use Modules\Page\App\Models\Page;
+use Modules\Page\App\Enums\CacheStrategy;
 
-class PageRepository implements PageRepositoryInterface
+readonly class PageRepository implements PageRepositoryInterface
 {
-    protected string $cachePrefix = 'page';
-    protected int $cacheTtl = 3600; // 1 saat
+    private readonly string $cachePrefix;
+    private readonly int $cacheTtl;
     
-    public function __construct(protected Page $model)
-    {
+    public function __construct(
+        private Page $model
+    ) {
+        $this->cachePrefix = 'page';
+        $this->cacheTtl = 3600;
     }
     
     public function findById(int $id): ?Page
     {
-        // Admin panelinde cache kullanma - Fresh data
-        if (request()->is('admin*')) {
+        $strategy = CacheStrategy::fromRequest();
+        
+        if (!$strategy->shouldCache()) {
             return $this->model->where('page_id', $id)->first();
         }
         
-        // Public sayfalarda cache kullan
         $cacheKey = $this->getCacheKey("find_by_id.{$id}");
         
-        return Cache::tags($this->getCacheTags())->remember($cacheKey, $this->cacheTtl, function () use ($id) {
-            return $this->model->where('page_id', $id)->first();
-        });
+        return Cache::tags($this->getCacheTags())
+            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
+                $this->model->where('page_id', $id)->first()
+            );
     }
     
-    /**
-     * 🚨 PERFORMANCE FIX: Global cache service kullan
-     */
     public function findByIdWithSeo(int $id): ?Page
     {
+        $strategy = CacheStrategy::fromRequest();
+        
         // Admin panelinde global cache service kullan
-        if (request()->is('admin*')) {
+        if ($strategy === CacheStrategy::ADMIN_FRESH) {
             return \App\Services\GlobalCacheService::getPageWithSeo($id);
         }
         
-        // Public sayfalarda Laravel cache kullan
         $cacheKey = $this->getCacheKey("find_by_id_with_seo.{$id}");
         
-        return Cache::tags($this->getCacheTags())->remember($cacheKey, $this->cacheTtl, function () use ($id) {
-            return $this->model->with('seoSetting')->where('page_id', $id)->first();
-        });
+        return Cache::tags($this->getCacheTags())
+            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
+                $this->model->with('seoSetting')->where('page_id', $id)->first()
+            );
     }
     
     public function findBySlug(string $slug, string $locale = 'tr'): ?Page
     {
+        $strategy = CacheStrategy::PUBLIC_CACHED; // Always cache for SEO
         $cacheKey = $this->getCacheKey("find_by_slug.{$slug}.{$locale}");
         
-        return Cache::tags($this->getCacheTags())->remember($cacheKey, $this->cacheTtl, function () use ($slug, $locale) {
-            return $this->model->where(function ($query) use ($slug, $locale) {
-                $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) = ?", [$slug])
-                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) = ?", [$slug]); // Fallback
-            })->active()->first();
-        });
+        return Cache::tags($this->getCacheTags())
+            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
+                $this->model->where(function ($query) use ($slug, $locale) {
+                    $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) = ?", [$slug])
+                          ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) = ?", [$slug]);
+                })->active()->first()
+            );
     }
     
     public function getActive(): Collection
     {
-        // Admin panelinde cache kullanma - Fresh data
-        if (request()->is('admin*')) {
+        $strategy = CacheStrategy::fromRequest();
+        
+        if (!$strategy->shouldCache()) {
             return $this->model->active()->orderBy('page_id', 'desc')->get();
         }
         
-        // Public sayfalarda cache kullan
         $cacheKey = $this->getCacheKey('active_pages');
         
-        return Cache::tags($this->getCacheTags())->remember($cacheKey, $this->cacheTtl, function () {
-            return $this->model->active()->orderBy('page_id', 'desc')->get();
-        });
+        return Cache::tags($this->getCacheTags())
+            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
+                $this->model->active()->orderBy('page_id', 'desc')->get()
+            );
     }
     
     public function getHomepage(): ?Page

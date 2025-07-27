@@ -16,6 +16,8 @@ class Announcement extends BaseModel
         'title',
         'slug',
         'body',
+        'css',
+        'js',
         'is_active',
     ];
 
@@ -30,6 +32,30 @@ class Announcement extends BaseModel
      * Çevrilebilir alanlar
      */
     protected $translatable = ['title', 'slug', 'body'];
+
+    /**
+     * Sluggable Ayarları - JSON çoklu dil desteği için devre dışı
+     * Artık HasTranslations trait'inde generateSlugForLocale() kullanılacak
+     */
+    public function sluggable(): array
+    {
+        return [
+            // JSON column çalışmadığı için devre dışı
+            // 'slug' => [
+            //     'source' => 'title',
+            //     'unique' => true,
+            //     'onUpdate' => false,
+            // ],
+        ];
+    }
+
+    /**
+     * Aktif duyuruları getir
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 
     /**
      * HasSeo trait fallback implementations
@@ -58,6 +84,25 @@ class Announcement extends BaseModel
     }
 
     /**
+     * Get fallback keywords for SEO
+     */
+    protected function getSeoFallbackKeywords(): array
+    {
+        $title = $this->getSeoFallbackTitle();
+        
+        if ($title) {
+            // Extract meaningful words from title
+            $words = array_filter(explode(' ', strtolower($title)), function($word) {
+                return strlen($word) > 3; // Only words longer than 3 chars
+            });
+            
+            return array_slice($words, 0, 5); // Max 5 keywords
+        }
+        
+        return [];
+    }
+
+    /**
      * Get fallback canonical URL
      */
     protected function getSeoFallbackCanonicalUrl(): ?string
@@ -66,6 +111,21 @@ class Announcement extends BaseModel
         
         if ($slug) {
             return url('/announcements/' . ltrim($slug, '/'));
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get fallback image for social sharing
+     */
+    protected function getSeoFallbackImage(): ?string
+    {
+        // Check if announcement has any images in content
+        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
+        
+        if (is_string($content) && preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $content, $matches)) {
+            return $matches[1];
         }
         
         return null;
@@ -94,16 +154,34 @@ class Announcement extends BaseModel
             ]
         ];
     }
-
-
+    
     /**
-     * Sluggable Ayarları - JSON slug alanları için devre dışı
+     * Get or create SEO setting for this announcement
      */
-    public function sluggable(): array
+    public function getOrCreateSeoSetting()
     {
-        return [
-            // JSON slug alanları manuel olarak yönetiliyor
-        ];
+        if (!$this->seoSetting) {
+            $this->seoSetting()->create([
+                'titles' => [],
+                'descriptions' => [],
+                'keywords' => [],
+                'focus_keywords' => [],
+                'og_title' => [],
+                'og_description' => [],
+                'robots_meta' => [
+                    'index' => true,
+                    'follow' => true,
+                    'archive' => true
+                ],
+                'status' => 'active',
+                'default_language' => 'tr'
+            ]);
+            
+            // Refresh relationship
+            $this->load('seoSetting');
+        }
+        
+        return $this->seoSetting;
     }
     
 }

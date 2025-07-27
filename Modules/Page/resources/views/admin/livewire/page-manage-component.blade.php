@@ -12,7 +12,7 @@
                     <li class="nav-item ms-3">
                         <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $pageId]) }}"
                             target="_blank" class="btn btn-outline-primary" style="padding: 0.20rem 0.75rem; margin-top: 5px;">
-                            <i class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>Edit with Studio
+                            <i class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('page::admin.studio.editor') }}
                         </a>
                     </li>
                 @endif

@@ -15,11 +15,6 @@ return new class extends Migration
             $table->json('slug'); // Çok dilli destek
             $table->json('body')->nullable(); // Çok dilli destek
             $table->string('image')->nullable(); // Resim alanı
-            $table->text('css')->nullable();
-            $table->text('js')->nullable();
-            $table->json('metakey')->nullable(); // Çok dilli destek
-            $table->json('metadesc')->nullable(); // Çok dilli destek
-            $table->json('seo')->nullable(); // SEO JSON column
             $table->string('client')->nullable();
             $table->string('date')->nullable();
             $table->string('url')->nullable();

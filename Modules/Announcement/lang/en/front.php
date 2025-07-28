@@ -8,5 +8,7 @@ return [
         'attachment' => 'Attachment',
         'no_announcements_yet' => 'No announcements published yet.',
         'date_format' => 'd.m.Y',
+        'read_more' => 'Read More',
+        'updated' => 'Updated',
     ],
 ];

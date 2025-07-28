@@ -6,14 +6,10 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">
-                            <i class="fas fa-edit me-2"></i>{{ __('portfolio::admin.basic_information') }}
-                        </a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ __('portfolio::admin.basic_information') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">
-                            <i class="fas fa-search me-2"></i>{{ __('portfolio::admin.seo') }}
-                        </a>
+                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">{{ __('portfolio::admin.seo') }}</a>
                     </li>
                     <li class="nav-item ms-auto">
                         @php
@@ -42,8 +38,7 @@
                         @foreach($availableLanguages as $lang)
                         @php
                             $langData = $multiLangInputs[$lang] ?? [];
-                            // Tenant languages'den dil ismini al
-                            $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
+                            $langName = $lang === 'tr' ? 'Türkçe' : ($lang === 'en' ? 'English' : 'العربية');
                         @endphp
                         
                         <div class="language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
@@ -66,8 +61,7 @@
                         @foreach($availableLanguages as $lang)
                         @php
                             $langData = $multiLangInputs[$lang] ?? [];
-                            // Tenant languages'den dil ismini al
-                            $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
+                            $langName = $lang === 'tr' ? 'Türkçe' : ($lang === 'en' ? 'English' : 'العربية');
                         @endphp
                         
                         <div class="language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
@@ -99,47 +93,11 @@
 
                     <!-- SEO -->
                     <div class="tab-pane fade" id="tabs-2">
-                        @foreach($availableLanguages as $lang)
-                        @php
-                            // Tenant languages'den dil ismini al
-                            $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
-                        @endphp
-                        
-                        <div class="language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
-                            <!-- Slug alanı -->
-                            <div class="form-floating mb-3">
-                                <input type="text" wire:model="multiLangInputs.{{ $lang }}.slug" 
-                                    class="form-control @error('multiLangInputs.' . $lang . '.slug') is-invalid @enderror"
-                                    placeholder="Slug ({{ strtoupper($lang) }})">
-                                <label>Slug ({{ $langName }})</label>
-                                @error('multiLangInputs.' . $lang . '.slug')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="form-hint">Boş bırakılırsa başlıktan otomatik oluşturulur</small>
-                            </div>
-                            
-                            <!-- Meta Keywords -->
-                            <div class="form-floating mb-3">
-                                <input type="text" 
-                                    wire:model.defer="multiLangInputs.{{ $lang }}.metakey"
-                                    class="form-control"
-                                    data-choices
-                                    data-choices-multiple="true"
-                                    data-choices-search="false"
-                                    data-choices-filter="true"
-                                    data-choices-placeholder="{{ __('portfolio::admin.meta_keywords_placeholder') }}"
-                                    placeholder="{{ __('portfolio::admin.meta_keywords_placeholder') }}">
-                                <label>{{ __('portfolio::admin.meta_keywords_label') }} ({{ $langName }})</label>
-                            </div>
-
-                            <!-- Meta Description -->
-                            <div class="form-floating mb-3">
-                                <textarea wire:model="multiLangInputs.{{ $lang }}.metadesc" class="form-control" data-bs-toggle="autosize"
-                                    placeholder="{{ __('portfolio::admin.meta_description_placeholder_text') }}"></textarea>
-                                <label>{{ __('portfolio::admin.meta_description_label') }} ({{ $langName }})</label>
-                            </div>
-                        </div>
-                        @endforeach
+                        <x-seomanagement::universal-seo-tab 
+                            :model="$this->currentCategory()" 
+                            :available-languages="$availableLanguages" 
+                            :current-language="$currentLanguage" 
+                            :seo-data-cache="$seoDataCache" />
                     </div>
                 </div>
             </div>

@@ -26,6 +26,10 @@ trait HasTranslations
             if (is_array($value)) {
                 return json_encode($value);
             }
+            // Array ise string'e çevir (keywords gibi alanlar için)
+            if (is_array($value)) {
+                return json_encode($value);
+            }
             return is_string($value) ? $value : (string) $value;
         }
         
@@ -54,7 +58,16 @@ trait HasTranslations
         
         // İstenen dil varsa döndür
         if (isset($translations[$locale]) && !empty($translations[$locale])) {
-            return $translations[$locale];
+            $value = $translations[$locale];
+            // Array ise string'e çevir (keywords gibi alanlar için)
+            if (is_array($value)) {
+                return json_encode($value);
+            }
+            // Array ise string'e çevir (keywords gibi alanlar için)
+            if (is_array($value)) {
+                return json_encode($value);
+            }
+            return is_string($value) ? $value : (string) $value;
         }
         
         // Fallback sistemi - null locale kontrolü
@@ -78,6 +91,10 @@ trait HasTranslations
                 'has_content' => !empty($value)
             ]);
             
+            // Array ise string'e çevir (keywords gibi alanlar için)
+            if (is_array($value)) {
+                return json_encode($value);
+            }
             return is_string($value) ? $value : (string) $value;
         }
         
@@ -92,6 +109,10 @@ trait HasTranslations
                 'has_content' => !empty($value)
             ]);
             
+            // Array ise string'e çevir (keywords gibi alanlar için)
+            if (is_array($value)) {
+                return json_encode($value);
+            }
             return is_string($value) ? $value : (string) $value;
         }
         
@@ -343,5 +364,14 @@ trait HasTranslations
         $slug = trim($slug, '-');
         
         return $slug;
+    }
+    
+    /**
+     * Alias metod - getTranslated() ile aynı işlevi görür
+     * Eski kod uyumluluğu için
+     */
+    public function getTranslation(string $field, ?string $locale = null): ?string
+    {
+        return $this->getTranslated($field, $locale);
     }
 }

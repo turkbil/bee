@@ -1,34 +1,30 @@
-@extends('portfolio::front.themes.blank.layouts.app')
+@extends('themes.blank.layouts.app')
 
 @section('module_content')
-<div class="animate-fade-in py-6">
-    <div class="max-w-5xl mx-auto">
+<div class="bg-white dark:bg-gray-900" x-data="portfolioCategoryList()" x-init="init()">
+    
+    <!-- Header -->
+    <div class="border-b border-gray-100 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="max-w-full">
+                <h1 class="text-4xl font-semibold text-gray-900 dark:text-white mb-4">
+                    {{ $category->getTranslated('title') }}
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         @php
             $currentLocale = app()->getLocale();
             $indexSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'index');
             $showSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'show');
             $portfolioIndexUrl = '/' . $indexSlug;
         @endphp
-        
-        <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $category->getTranslated('title') }} {{ __('portfolio::front.general.category') }}</h1>
-            
-            @if(isset($category->body) && trim(strip_tags($category->getTranslated('body'))) !== '')
-            <div class="prose max-w-none dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-a:text-primary dark:prose-a:text-primary-400 mb-6">
-                {!! $category->getTranslated('body') !!}
-            </div>
-            @endif
-            
-            <div class="mb-6">
-                <a href="{{ $portfolioIndexUrl }}" class="inline-flex items-center text-primary dark:text-primary-400 hover:underline font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    {{ __('portfolio::front.general.all_portfolios') }}
-                </a>
-            </div>
 
-        @if($items->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @if($items->count() > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12" x-show="loaded" x-transition.duration.300ms>
             @foreach($items as $item)
             @php
                 // JSON slug handling
@@ -41,75 +37,112 @@
                 
                 $itemShowUrl = '/' . $showSlug . '/' . $itemSlug;
             @endphp
-            <div class="portfolio-item overflow-hidden hover:shadow-sm transition-shadow duration-300">
-                @if($item->getMedia('images')->isNotEmpty())
-                <div class="relative overflow-hidden aspect-w-16 aspect-h-9">
-                    <a href="{{ $itemShowUrl }}">
-                        <img src="{{ $item->getFirstMedia('images')->getUrl() }}" alt="{{ $item->title }}" 
-                            class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105">
-                    </a>
-                </div>
-                @elseif(isset($item->getFirstMedia) && $item->getFirstMedia('image'))
-                <div class="relative overflow-hidden aspect-w-16 aspect-h-9">
-                    <a href="{{ $itemShowUrl }}">
-                        <img src="{{ $item->getFirstMedia('image')->getUrl() }}" alt="{{ $item->title }}" 
-                            class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105">
-                    </a>
-                </div>
-                @endif
-                
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
-                        <a href="{{ $itemShowUrl }}" 
-                            class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">{{ $item->title }}</a>
-                    </h3>
-                    
-                    <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        <span class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {{ $item->created_at->format('d.m.Y') }}
-                        </span>
+            <article class="group cursor-pointer transform hover:scale-[1.02] transition-transform duration-200" 
+                     @mouseenter="prefetch('{{ $itemShowUrl }}')"
+                     @click="navigate('{{ $itemShowUrl }}')">
+                <div class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg group-hover:border-purple-300 transition-colors">
+                    @if($item->getMedia('images')->isNotEmpty())
+                    <div class="relative overflow-hidden rounded-lg aspect-video mb-4">
+                        <img src="{{ $item->getFirstMedia('images')->getUrl() }}" alt="{{ $item->getTranslated('title') }}" 
+                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                             loading="lazy">
                         
-                    </div>
-                    
-                    @if(isset($item->metadesc) || isset($item->body) || isset($item->content))
-                    <div class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        @if(isset($item->metadesc))
-                            {{ Str::limit($item->metadesc, 120) }}
-                        @elseif(isset($item->body))
-                            {{ Str::limit(strip_tags($item->body), 120) }}
-                        @elseif(isset($item->content))
-                            {{ Str::limit(strip_tags($item->content), 120) }}
-                        @endif
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                            <svg class="h-12 w-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
                     </div>
                     @endif
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 transition-colors">
+                        {{ $item->getTranslated('title') }}
+                    </h3>
                     
-                    <div class="mt-4">
-                        <a href="{{ $itemShowUrl }}" class="inline-flex items-center text-sm text-primary dark:text-primary-400 hover:underline font-medium">
-                            {{ __('portfolio::front.general.view_details') }}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        <time class="flex items-center">
+                            <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
                             </svg>
-                        </a>
+                            {{ $item->created_at->format('d.m.Y') }}
+                        </time>
+                        
+                        <span class="flex items-center text-purple-500">
+                            <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ $category->getTranslated('title') }}
+                        </span>
                     </div>
+                    
+                    @php
+                        // Portfolio body alanından description al
+                        $bodyData = $item->getRawOriginal('body');
+                        if (is_string($bodyData)) {
+                            $bodyData = json_decode($bodyData, true) ?: [];
+                        }
+                        $currentLocale = app()->getLocale();
+                        $bodyContent = is_array($bodyData) ? ($bodyData[$currentLocale] ?? $bodyData['tr'] ?? reset($bodyData)) : $bodyData;
+                        
+                        // Metadesc varsa onu kullan, yoksa body'den al
+                        $description = $item->getTranslated('metadesc') ?? $bodyContent ?? '';
+                        // HTML decode et sonra strip_tags uygula
+                        $description = html_entity_decode($description, ENT_QUOTES, 'UTF-8');
+                        $description = strip_tags($description);
+                    @endphp
+                    @if($description)
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                        {{ Str::limit($description, 120) }}
+                    </p>
+                    @endif
+                    
+                    <span class="inline-flex items-center text-sm text-purple-600 dark:text-purple-400 font-medium group-hover:underline">
+                        {{ __('portfolio::front.general.view_details') }}
+                        <svg class="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </span>
                 </div>
-            </div>
+            </article>
             @endforeach
         </div>
 
-        <div class="mt-8">
-            {{ $items->links() }}
-        </div>
-        @else
-        <div class="p-8 text-center border-t-4 border-primary dark:border-primary-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p class="text-lg text-gray-600 dark:text-gray-400">{{ __('portfolio::front.general.no_portfolio_in_category') }}</p>
-        </div>
-        @endif
+    <div class="mt-8" x-show="loaded">
+        {{ $items->links() }}
     </div>
+        @else
+    <div class="border-t-4 border-purple-500 p-8 text-center rounded-lg">
+        <svg class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+        </svg>
+        <p class="text-lg text-gray-600 dark:text-gray-400">{{ __('portfolio::front.general.no_portfolio_in_category') }}</p>
+    </div>
+        @endif
 </div>
+
+<script>
+function portfolioCategoryList() {
+    return {
+        loaded: false,
+        prefetchedUrls: new Set(),
+        
+        init() {
+            this.loaded = true;
+        },
+        
+        prefetch(url) {
+            if (this.prefetchedUrls.has(url)) return;
+            
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = url;
+            document.head.appendChild(link);
+            this.prefetchedUrls.add(url);
+        },
+        
+        navigate(url) {
+            window.location.href = url;
+        }
+    }
+}
+</script>
 @endsection

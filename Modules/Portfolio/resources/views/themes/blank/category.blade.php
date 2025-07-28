@@ -1,7 +1,11 @@
 @extends('themes.blank.layouts.app')
 
 @section('module_content')
-<div class="container animate-fade-in">
+<div class="relative" x-data="portfolioCategoryList()" x-init="init()">
+    
+    <!-- Gradient Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
+    
     @php
         $currentLocale = app()->getLocale();
         
@@ -25,117 +29,194 @@
         $portfolioIndexUrl = '/' . $indexSlug;
     @endphp
     
-    <h1 class="text-2xl md:text-3xl font-bold mb-6 text-gray-900 dark:text-white">{{ $categoryTitle }} {{ __('portfolio::front.general.category') }}</h1>
-            
-    @if(isset($categoryBody) && trim(strip_tags($categoryBody ?? '')) !== '')
-    <div class="prose prose-sm sm:prose max-w-none dark:prose-invert mb-6 prose-headings:text-gray-900 dark:prose-headings:text-white prose-a:text-primary dark:prose-a:text-primary-400">
-        {!! $categoryBody !!}
-    </div>
-    @endif
-            
-    <div class="mb-6">
-        <a href="{{ $portfolioIndexUrl }}" class="inline-flex items-center text-sm text-primary dark:text-primary-400 hover:underline font-medium">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            {{ __('portfolio::front.general.all_portfolios') }}
-        </a>
-    </div>
-
-        @if($items->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @foreach($items as $item)
-            @php
-                $itemSlugData = $item->slug;
-                if (is_string($itemSlugData)) {
-                    $itemSlugData = json_decode($itemSlugData, true) ?: [];
-                }
-                $itemSlug = is_array($itemSlugData) ? ($itemSlugData[$currentLocale] ?? $itemSlugData['tr'] ?? reset($itemSlugData)) : $itemSlugData;
-                $itemSlug = $itemSlug ?: $item->portfolio_id; // Fallback to ID if no slug
+    <!-- Simple Title Section -->
+    <div class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
+                    {{ $categoryTitle }}
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400">
+                    {{ $categoryTitle }} kategorisindeki projelerimiz
+                </p>
                 
-                $itemTitleData = $item->title;
-                if (is_string($itemTitleData)) {
-                    $itemTitleData = json_decode($itemTitleData, true) ?: [];
-                }
-                $itemTitle = is_array($itemTitleData) ? ($itemTitleData[$currentLocale] ?? $itemTitleData['tr'] ?? reset($itemTitleData)) : $itemTitleData;
+                @if(isset($categoryBody) && trim(strip_tags($categoryBody ?? '')) !== '')
+                <div class="prose prose-lg max-w-none dark:prose-invert mt-6 
+                          prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white 
+                          prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed">
+                    {!! $categoryBody !!}
+                </div>
+                @endif
                 
-                $itemMetadescData = $item->metadesc;
-                if (is_string($itemMetadescData)) {
-                    $itemMetadescData = json_decode($itemMetadescData, true) ?: [];
-                }
-                $itemMetadesc = is_array($itemMetadescData) ? ($itemMetadescData[$currentLocale] ?? $itemMetadescData['tr'] ?? reset($itemMetadescData)) : $itemMetadescData;
-                
-                $itemBodyData = $item->body;
-                if (is_string($itemBodyData)) {
-                    $itemBodyData = json_decode($itemBodyData, true) ?: [];
-                }
-                $itemBody = is_array($itemBodyData) ? ($itemBodyData[$currentLocale] ?? $itemBodyData['tr'] ?? reset($itemBodyData)) : $itemBodyData;
-                
-                // İtem için dinamik URL
-                $itemShowUrl = '/' . $showSlug . '/' . $itemSlug;
-            @endphp
-            <div class="overflow-hidden hover:shadow-sm transition-shadow duration-300">
-                <div class="relative overflow-hidden aspect-w-16 aspect-h-9">
-                    <a href="{{ $itemShowUrl }}">
-                        @if($item->getMedia('images')->isNotEmpty())
-                        <img src="{{ $item->getFirstMedia('images')->getUrl() }}" alt="{{ $itemTitle }}" 
-                            class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105">
-                        @else
-                        <img src="https://placehold.co/600x400?text={{ urlencode($itemTitle) }}" alt="{{ $itemTitle }}" 
-                            class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105">
-                        @endif
+                <div class="mt-6">
+                    <a href="{{ $portfolioIndexUrl }}" 
+                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                       x-data="{ hover: false }"
+                       @mouseenter="hover = true"
+                       @mouseleave="hover = false">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transform transition-transform duration-200"
+                             :class="hover ? '-translate-x-1' : ''"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        {{ __('portfolio::front.general.all_portfolios') }}
                     </a>
                 </div>
+            </div>
+
+            @if($items->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach($items as $item)
+                @php
+                    $itemSlugData = $item->getRawOriginal('slug');
+                    
+                    if (is_string($itemSlugData)) {
+                        $itemSlugData = json_decode($itemSlugData, true) ?: [];
+                    }
+                    $itemSlug = is_array($itemSlugData) ? ($itemSlugData[$currentLocale] ?? $itemSlugData['tr'] ?? reset($itemSlugData)) : $itemSlugData;
+                    $itemSlug = $itemSlug ?: $item->portfolio_id;
+                    
+                    $itemTitle = $item->getTranslated('title') ?? $item->getRawOriginal('title') ?? $item->title ?? 'Başlıksız';
+                    
+                    $itemBodyData = $item->getRawOriginal('body');
+                    if (is_string($itemBodyData)) {
+                        $itemBodyData = json_decode($itemBodyData, true) ?: [];
+                    }
+                    $itemBodyContent = is_array($itemBodyData) ? ($itemBodyData[$currentLocale] ?? $itemBodyData['tr'] ?? reset($itemBodyData)) : $itemBodyData;
+                    
+                    $itemMetadesc = $item->getTranslated('metadesc') ?? $item->getRawOriginal('metadesc') ?? $item->metadesc ?? null;
+                    $itemDescription = $itemMetadesc ?? strip_tags($itemBodyContent) ?? null;
+                    
+                    // İtem için dinamik URL
+                    $itemShowUrl = '/' . $showSlug . '/' . $itemSlug;
+                @endphp
                 
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
-                        <a href="{{ $itemShowUrl }}" 
-                            class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">{{ $itemTitle }}</a>
-                    </h3>
+                <article class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700" 
+                         @click="navigate('{{ $itemShowUrl }}')" 
+                         @mouseenter="prefetch('{{ $itemShowUrl }}'); hover = {{ $loop->index }}" 
+                         @mouseleave="hover = null"
+                         x-data="{ localHover: false }"
+                         @mouseenter.self="localHover = true"
+                         @mouseleave.self="localHover = false">
                     
-                    <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        <span class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {{ $item->created_at->format('d.m.Y') }}
-                        </span>
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-green-600/5 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <div class="relative p-6 cursor-pointer">
                         
-                    </div>
-                    
-                    @if($itemMetadesc || $itemBody)
-                    <div class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        @if($itemMetadesc)
-                            {{ Str::limit($itemMetadesc, 120) }}
-                        @elseif($itemBody)
-                            {{ Str::limit(strip_tags($itemBody), 120) }}
+                        <!-- Category Badge if exists -->
+                        @if($item->category ?? false)
+                        <div class="absolute top-4 right-4 z-10">
+                            <span class="inline-flex items-center px-3 py-1 text-xs font-bold text-white bg-gradient-to-r from-green-500 to-teal-500 rounded-full shadow-lg">
+                                <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $item->category->getTranslated('title') }}
+                            </span>
+                        </div>
                         @endif
-                    </div>
-                    @endif
-                    
-                    <div class="mt-4">
-                        <a href="{{ $itemShowUrl }}" class="inline-flex items-center text-sm text-primary dark:text-primary-400 hover:underline font-medium">
-                            {{ __('portfolio::front.general.view_details') }}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+
+                        <!-- Date with Icon -->
+                        <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                             </svg>
-                        </a>
+                            {{ $item->created_at->format('d M Y') }}
+                        </div>
+
+                        <!-- Title with hover effect -->
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-green-600 group-hover:to-teal-600 group-hover:bg-clip-text transition-all duration-300">
+                            {{ $itemTitle }}
+                        </h2>
+
+                        <!-- Description -->
+                        @if($itemDescription)
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 line-clamp-3">
+                            {{ Str::limit($itemDescription, 120) }}
+                        </p>
+                        @endif
+
+                        <!-- Read More with Alpine animation -->
+                        <div class="inline-flex items-center text-sm font-semibold text-transparent bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text group-hover:from-green-700 group-hover:to-teal-700 transition-all duration-300"
+                             x-show="true"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-75 transform translate-x-0"
+                             x-transition:enter-end="opacity-100 transform translate-x-0">
+                            {{ __('portfolio::front.general.view_details') }}
+                            <svg class="h-4 w-4 ml-2 text-green-600 group-hover:text-teal-600 transition-all duration-300"
+                                 :class="localHover ? 'translate-x-1' : 'translate-x-0'"
+                                 fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Hover Border Effect -->
+                        <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-600 to-teal-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                     </div>
+                </article>
+                @endforeach
+            </div>
+
+            <!-- Pagination -->
+            @if($items->hasPages())
+            <div class="mt-20">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+                    {{ $items->links() }}
                 </div>
             </div>
-            @endforeach
+            @endif
+            @else
+            <!-- Empty State -->
+            <div class="text-center py-20" x-data="{ show: false }" x-init="setTimeout(() => show = true, 100)">
+                <div x-show="show"
+                     x-transition:enter="transition ease-out duration-500"
+                     x-transition:enter-start="opacity-0 transform scale-90"
+                     x-transition:enter-end="opacity-100 transform scale-100"
+                     class="inline-block">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-teal-200 dark:from-green-700 dark:to-teal-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <svg class="h-10 w-10 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Bu kategoride proje yok</h3>
+                    <p class="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">{{ __('portfolio::front.general.no_portfolio_in_category') }}</p>
+                </div>
+            </div>
+            @endif
         </div>
-
-        <div class="mt-8 pagination">
-            {{ $items->links() }}
-        </div>
-        @else
-        <div class="border-t-4 border-primary dark:border-primary-400 p-8 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p class="text-lg text-gray-600 dark:text-gray-400">{{ __('portfolio::front.general.no_portfolio_in_category') }}</p>
-        </div>
-        @endif
+    </div>
 </div>
+
+<script>
+function portfolioCategoryList() {
+    return {
+        loaded: false,
+        hover: null,
+        prefetchedUrls: new Set(),
+        
+        init() {
+            // Smooth fade in
+            this.$nextTick(() => {
+                this.loaded = true;
+            });
+        },
+        
+        prefetch(url) {
+            if (this.prefetchedUrls.has(url)) return;
+            
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = url;
+            document.head.appendChild(link);
+            this.prefetchedUrls.add(url);
+        },
+        
+        navigate(url) {
+            // Add a subtle loading state
+            document.body.style.cursor = 'wait';
+            window.location.href = url;
+        }
+    }
+}
+</script>
 @endsection

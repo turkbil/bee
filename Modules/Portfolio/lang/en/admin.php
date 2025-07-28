@@ -47,6 +47,11 @@ return [
 'status_tooltip' => 'Status tooltip',
 'studio_editor' => 'Studio Editor',
 'title' => 'Title',
+'title_field' => 'Title',
+'client_name' => 'Client Name',
+'project_date' => 'Project Date',
+'project_url' => 'Project URL',
+'content_placeholder' => 'Write content...',
 'basic_information' => 'Basic Information',
 'category_title' => 'Category title',
 'category_title_label' => 'Title',
@@ -60,6 +65,8 @@ return [
 'drop_it' => 'Drop it!',
 'uploaded_photo' => 'Uploaded Photo',
 'current_photo' => 'Current Photo',
-'portfolio_updated' => 'TODO: Add translation for \'portfolio_updated\'',
-'portfolio_created' => 'TODO: Add translation for \'portfolio_created\''
+'portfolio_updated' => 'Portfolio updated successfully',
+'portfolio_created' => 'Portfolio created successfully',
+'category_updated_successfully' => 'Category updated successfully',
+'category_created_successfully' => 'Category created successfully'
 ];

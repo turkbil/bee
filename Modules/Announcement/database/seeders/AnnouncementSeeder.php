@@ -68,33 +68,6 @@ class AnnouncementSeeder extends Seeder
                         <p>اتصل بنا للحصول على معلومات مفصلة.</p>
                     </div>'
                 ],
-                'metakey' => [
-                    'tr' => 'yeni hizmet, duyuru, müjde, güncelleme',
-                    'en' => 'new service, announcement, news, update',
-                    'ar' => 'خدمة جديدة، إعلان، أخبار، تحديث'
-                ],
-                'metadesc' => [
-                    'tr' => 'Yeni hizmetimiz hakkında önemli duyuru',
-                    'en' => 'Important announcement about our new service',
-                    'ar' => 'إعلان مهم حول خدمتنا الجديدة'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'title' => 'Yeni Hizmetimiz Yayında! | Önemli Duyuru',
-                        'description' => 'Müşterilerimize müjde! Uzun süredir üzerinde çalıştığımız yeni hizmetimiz artık yayında. Daha hızlı işlem süreleri ve gelişmiş özellikler.',
-                        'keywords' => 'yeni hizmet, duyuru, müjde, güncelleme, hızlı işlem, mobil destek'
-                    ],
-                    'en' => [
-                        'title' => 'Our New Service is Live! | Important Announcement',
-                        'description' => 'Great news for our customers! Our new service that we have been working on for a long time is now live. Faster processing and advanced features.',
-                        'keywords' => 'new service, announcement, news, update, fast processing, mobile support'
-                    ],
-                    'ar' => [
-                        'title' => 'خدمتنا الجديدة مباشرة! | إعلان مهم',
-                        'description' => 'أخبار رائعة لعملائنا! خدمتنا الجديدة التي كنا نعمل عليها لفترة طويلة متاحة الآن. معالجة أسرع وميزات متقدمة.',
-                        'keywords' => 'خدمة جديدة، إعلان، أخبار، تحديث، معالجة سريعة، دعم محمول'
-                    ]
-                ]
             ],
             [
                 'title' => [
@@ -145,16 +118,6 @@ class AnnouncementSeeder extends Seeder
                         <p>شكرا لتفهمك.</p>
                     </div>'
                 ],
-                'metakey' => [
-                    'tr' => 'bakım, sistem güncellemesi, duyuru, kesinti',
-                    'en' => 'maintenance, system update, announcement, outage',
-                    'ar' => 'صيانة، تحديث النظام، إعلان، انقطاع'
-                ],
-                'metadesc' => [
-                    'tr' => 'Planlı sistem bakımı hakkında duyuru',
-                    'en' => 'Announcement about scheduled system maintenance',
-                    'ar' => 'إعلان حول صيانة النظام المجدولة'
-                ]
             ],
             [
                 'title' => [
@@ -208,27 +171,14 @@ class AnnouncementSeeder extends Seeder
                         <p>لا تفوت هذه الفرصة! ابدأ التسوق الآن.</p>
                     </div>'
                 ],
-                'metakey' => [
-                    'tr' => 'kampanya, yılbaşı, indirim, fırsat',
-                    'en' => 'campaign, new year, discount, opportunity',
-                    'ar' => 'حملة، رأس السنة، خصم، فرصة'
-                ],
-                'metadesc' => [
-                    'tr' => 'Yılbaşına özel büyük indirim kampanyası',
-                    'en' => 'Special New Year discount campaign',
-                    'ar' => 'حملة خصم خاصة برأس السنة'
-                ]
             ]
         ];
 
         foreach ($announcements as $announcement) {
             Announcement::create([
-                'title' => json_encode($announcement['title']),
-                'slug' => json_encode($announcement['slug']),
-                'body' => json_encode($announcement['body']),
-                'metakey' => json_encode($announcement['metakey']),
-                'metadesc' => json_encode($announcement['metadesc']),
-                'seo' => isset($announcement['seo']) ? json_encode($announcement['seo']) : null,
+                'title' => $announcement['title'],
+                'slug' => $announcement['slug'],
+                'body' => $announcement['body'],
                 'is_active' => true,
             ]);
         }

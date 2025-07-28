@@ -5,9 +5,9 @@ namespace App\Contracts;
 interface DynamicRouteResolverInterface
 {
     /**
-     * Slug'ları çözümle ve controller/action döndür
+     * Slug'ları çözümle ve controller/action döndür - locale aware
      */
-    public function resolve(string $slug1, ?string $slug2 = null, ?string $slug3 = null): ?array;
+    public function resolve(string $slug1, ?string $slug2 = null, ?string $slug3 = null, ?string $locale = null): ?array;
     
     /**
      * Modül için route mapping'i al

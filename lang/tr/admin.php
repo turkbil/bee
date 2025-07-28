@@ -119,6 +119,11 @@ return [
     'favorites' => 'Favoriler',
     'bookmarks' => 'Yer İşaretleri',
     
+    // Dil Değiştirme
+    'language_switching' => 'Dil değiştiriliyor',
+    'language_changed_successfully' => 'Dil başarıyla değiştirildi',
+    'invalid_language' => 'Geçersiz dil seçimi',
+    
     // =============================================
     // ORTAK TEMEL ÇEVİRİLER (COMMON)
     // =============================================
@@ -146,6 +151,12 @@ return [
     'confirm' => 'Onayla',
     'approve' => 'Onayla',
     'reject' => 'Reddet',
+    
+    // Bilgilendirme
+    'note' => 'Not',
+    'info' => 'Bilgi',
+    'warning' => 'Uyarı',
+    'error' => 'Hata',
     
     // Durumlar
     'active' => 'Aktif',
@@ -270,6 +281,7 @@ return [
     'module_management' => 'Modül Yönetimi',
     'user_management' => 'Kullanıcı Yönetimi',
     'studio_editor' => 'Studio Editör',
+    'studio.editor' => 'Studio Editör',
     'system_settings' => 'Sistem Ayarları',
     'language_selection' => 'Dil Seçimi',
     'no_language_found' => 'Dil bulunamadı',
@@ -496,6 +508,33 @@ return [
     // SEO Alanları
     'seo_title' => 'SEO Başlığı',
     'seo_description' => 'SEO Açıklaması',
+    'meta_settings' => 'Meta Ayarları',
+    'social_media' => 'Sosyal Medya',
+    'advanced_settings' => 'Gelişmiş Ayarlar',
+    'keywords' => 'Anahtar Kelimeler',
+    'add_keyword' => 'Anahtar Kelime Ekle',
+    'focus_keyword' => 'Odak Anahtar Kelime',
+    'canonical_url' => 'Canonical URL',
+    'robots_meta' => 'Robots Meta',
+    'robots_index' => 'Dizine Ekle (Index)',
+    'robots_follow' => 'Linkleri Takip Et (Follow)',
+    'robots_archive' => 'Arşivle (Archive)',
+    'og_title' => 'Open Graph Başlık',
+    'og_description' => 'Open Graph Açıklama',
+    'og_image' => 'Open Graph Resim',
+    'og_type' => 'Open Graph Türü',
+    'website' => 'Web Sitesi',
+    'article' => 'Makale',
+    'product' => 'Ürün',
+    'twitter_card' => 'Twitter Kart Türü',
+    'twitter_site' => 'Twitter Site',
+    'summary' => 'Özet',
+    'summary_large_image' => 'Büyük Resimli Özet',
+    'auto_optimize' => 'Otomatik Optimizasyon',
+    'auto_optimize_help' => 'SEO verilerini otomatik olarak optimize et',
+    'seo_settings_saved_successfully' => 'SEO ayarları başarıyla kaydedildi',
+    'saving' => 'Kaydediliyor...',
+    'seo_description' => 'SEO Açıklaması',
     'seo_keywords' => 'Anahtar Kelimeler',
     'canonical_url' => 'Canonical URL',
     'page_url_slug' => 'Sayfa URL (Slug)',
@@ -511,4 +550,15 @@ return [
     'keywords_separator_note' => '(Virgülle ayırın)',
     'keywords_placeholder' => 'Virgülle ayırın: kelime1, kelime2, kelime3',
     'seo_score' => 'SEO Skoru',
+    
+    // =============================================
+    // SEO MANAGEMENT MODÜLÜ ÇEVİRİLERİ
+    // =============================================
+    'seo_management' => 'SEO Yönetimi',
+    'seo_management_title' => 'SEO Yönetimi',
+    'seo_management_description' => 'İçeriklerinizin arama motorlarında daha iyi sıralanması için SEO bilgilerini düzenleyebilirsiniz. Her içeriğin kendi SEO ayarları vardır ve düzenleme sayfalarındaki SEO sekmesinden yönetilebilir.',
+    'manage_pages_seo_preview' => 'Manage Sayfalarında SEO Sekmesi Önizlemesi',
+    'seo_tab_preview_description' => 'Aşağıda içerik düzenleme sayfalarındaki SEO sekmesinin nasıl göründüğünü görebilirsiniz:',
+    'preview_title' => 'Önizleme: İçerik Düzenleme - SEO Sekmesi',
+    'preview_note' => 'Bu önizlemedir. Gerçek SEO ayarlarını yapmak için herhangi bir içeriği düzenleyip SEO sekmesini kullanın.',
 ];

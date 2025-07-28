@@ -72,6 +72,19 @@
     <link rel="stylesheet" href="/admin-assets/css/tabler.min.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/theme-font-size.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/tabler-vendors.min.css?v={{ time() }}">
+    
+    {{-- Alternate Language Links for SEO (Admin Panel) --}}
+    @php
+        use App\Helpers\CanonicalHelper;
+        
+        // Admin panelde model yok, sadece route bazlı alternate link'ler
+        $alternateLinks = CanonicalHelper::generateAlternateLinks();
+        echo CanonicalHelper::generateAlternateMetaTags($alternateLinks);
+    @endphp
+    
+    <!-- CORE SYSTEM STYLES - DO NOT REMOVE OR MODIFY -->
+    <!-- Bu CSS tüm temalarda ve admin panelde zorunludur / This CSS is mandatory everywhere -->
+    <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.0">
     @if (Str::contains(Request::url(), ['create', 'edit', 'manage', 'form']))
     @else
     @endif
@@ -414,6 +427,10 @@ document.addEventListener('DOMContentLoaded', function() {
 @if($aiModuleActive ?? false)
 <script src="{{ asset('admin-assets/js/ai-widget.js') }}?v={{ time() }}"></script>
 @endif
+
+<!-- CORE SYSTEM SCRIPTS - DO NOT REMOVE OR MODIFY -->
+<!-- Bu script tüm temalarda ve admin panelde zorunludur / This script is mandatory everywhere -->
+<script src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
 @stack('scripts') @stack('js')
 

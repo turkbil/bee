@@ -99,9 +99,16 @@ class PortfolioCategoryComponent extends Component
             
             $maxOrder = PortfolioCategory::max('order') ?? 0;
             
+            // Varsayılan dili al
+            $defaultLang = $this->siteLocale();
+            
+            // JSON formatında title ve slug oluştur
+            $titleJson = [$defaultLang => $this->title];
+            $slugJson = [$defaultLang => Str::slug($this->title)];
+            
             $category = PortfolioCategory::create([
-                'title' => $this->title,
-                'slug' => Str::slug($this->title),
+                'title' => $titleJson,
+                'slug' => $slugJson,
                 'order' => $maxOrder + 1,
                 'is_active' => true,
             ]);
@@ -168,6 +175,14 @@ class PortfolioCategoryComponent extends Component
             'message' => __('admin.order_updated'),
             'type' => 'success',
         ]);
+    }
+
+    public function siteLocale(): string
+    {
+        $tenant = tenant();
+        $defaultLang = $tenant?->tenant_default_locale ?? 'tr';
+        
+        return $defaultLang;
     }
 
     public function render()

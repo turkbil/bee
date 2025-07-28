@@ -20,15 +20,16 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
     protected static array $moduleRouteCache = [];
     
     /**
-     * Slug'ları çözümle ve controller/action döndür
+     * Slug'ları çözümle ve controller/action döndür - locale aware
      */
-    public function resolve(string $slug1, ?string $slug2 = null, ?string $slug3 = null): ?array
+    public function resolve(string $slug1, ?string $slug2 = null, ?string $slug3 = null, ?string $locale = null): ?array
     {
-        $cacheKey = $this->generateCacheKey($slug1, $slug2, $slug3);
+        $locale = $locale ?? app()->getLocale();
+        $cacheKey = $this->generateCacheKey($slug1, $slug2, $slug3, $locale);
         $cacheTags = $this->getCacheTags();
         
-        return Cache::tags($cacheTags)->remember($cacheKey, now()->addMinutes(self::CACHE_TTL), function () use ($slug1, $slug2, $slug3) {
-            return $this->resolveSlugMapping($slug1, $slug2, $slug3);
+        return Cache::tags($cacheTags)->remember($cacheKey, now()->addMinutes(self::CACHE_TTL), function () use ($slug1, $slug2, $slug3, $locale) {
+            return $this->resolveSlugMapping($slug1, $slug2, $slug3, $locale);
         });
     }
     
@@ -116,9 +117,9 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
     }
     
     /**
-     * Slug mapping'ini çözümle
+     * Slug mapping'ini çözümle - locale aware
      */
-    protected function resolveSlugMapping(string $slug1, ?string $slug2, ?string $slug3): ?array
+    protected function resolveSlugMapping(string $slug1, ?string $slug2, ?string $slug3, string $locale): ?array
     {
         try {
             $moduleRouteMap = $this->getModuleRouteMap();
@@ -198,11 +199,11 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
     /**
      * Cache key oluştur
      */
-    protected function generateCacheKey(string $slug1, ?string $slug2, ?string $slug3): string
+    protected function generateCacheKey(string $slug1, ?string $slug2, ?string $slug3, ?string $locale = null): string
     {
         $tenant = tenant();
         $tenantPart = $tenant ? "tenant_{$tenant->id}" : 'central';
-        $locale = app()->getLocale();
+        $locale = $locale ?? app()->getLocale();
         
         $slugParts = [$slug1];
         if ($slug2) $slugParts[] = $slug2;
@@ -225,5 +226,29 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
         }
         
         return $tags;
+    }
+    
+    /**
+     * Slug'a göre modül bilgisini bul
+     */
+    public function findModuleBySlug(string $slug): ?array
+    {
+        $moduleRouteMap = $this->getModuleRouteMap();
+        
+        foreach ($moduleRouteMap as $moduleName => $routes) {
+            // Tüm action'ların slug'larını kontrol et
+            foreach ($routes as $action => $config) {
+                $actionSlug = ModuleSlugService::getSlug($moduleName, $action);
+                if ($slug === $actionSlug) {
+                    return [
+                        'module' => $moduleName,
+                        'action' => $action,
+                        'config' => $config
+                    ];
+                }
+            }
+        }
+        
+        return null;
     }
 }

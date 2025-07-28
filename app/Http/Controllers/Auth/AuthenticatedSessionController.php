@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Carbon\Carbon;
+use App\Services\CacheManager;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -78,14 +79,23 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        // 🧹 LOGIN CACHE TEMİZLEME - Tenant-aware tag ile sadece bu tenant'ın cache'ini temizle
+        // 🧹 LOGIN CACHE TEMİZLEME - Yeni CacheManager sistemi ile
         try {
-            // Tenant-specific response cache temizleme
-            $this->clearTenantResponseCache();
+            // Kullanıcı tercihlerine göre locale ayarla
+            if ($user->tenant_locale) {
+                app()->setLocale($user->tenant_locale);
+            }
+            
+            // Tüm ilgili cache'leri temizle
+            CacheManager::clearAllLanguageRelatedCaches();
             
             // Ek olarak guest cache'leri de temizle
             $this->clearGuestCaches();
-            \Log::info('🧹 LOGIN: Tenant-aware cache temizleme tamamlandı', ['user_id' => $user->id]);
+            
+            \Log::info('🧹 LOGIN: CacheManager ile tüm cache temizleme tamamlandı', [
+                'user_id' => $user->id,
+                'user_locale' => $user->tenant_locale
+            ]);
         } catch (\Exception $e) {
             \Log::warning('Login cache clear error: ' . $e->getMessage());
         }
@@ -133,11 +143,15 @@ class AuthenticatedSessionController extends Controller
                 })
                 ->log("\"{$user->name}\" çıkış yaptı");
                 
-            // 🧹 AUTH CACHE TEMİZLEME - Logout sonrası tenant-aware auth cache'leri gitsin
+            // 🧹 AUTH CACHE TEMİZLEME - Logout sonrası CacheManager ile temizle
             try {
+                // Kullanıcıya özel cache'leri temizle
                 $this->clearUserAuthCaches($user->id);
-                $this->clearTenantResponseCache(); // Tenant-specific response cache de temizle
-                \Log::info('🧹 LOGOUT: Auth cache\'leri ve tenant response cache temizlendi', ['user_id' => $user->id]);
+                
+                // Tenant cache'lerini temizle
+                CacheManager::clearTenantCaches();
+                
+                \Log::info('🧹 LOGOUT: CacheManager ile cache temizleme tamamlandı', ['user_id' => $user->id]);
             } catch (\Exception $e) {
                 \Log::warning('Auth cache clear error: ' . $e->getMessage());
             }

@@ -104,6 +104,9 @@ return [
     // Language Management
     'default_language' => 'Default Language',
     'default_language_description' => 'Default language to be used for URL prefix settings and multilingual content',
+    'language_switching' => 'Switching language',
+    'language_changed_successfully' => 'Language changed successfully',
+    'invalid_language' => 'Invalid language selection',
 
     // Status Messages
     'online' => 'Online',
@@ -272,6 +275,7 @@ return [
     'module_management' => 'Module Management',
     'user_management' => 'User Management',
     'studio_editor' => 'Studio Editor',
+    'studio.editor' => 'Studio Editor',
     'system_settings' => 'System Settings',
     'language_selection' => 'Language Selection',
     'no_language_found' => 'No language found',
@@ -509,4 +513,15 @@ return [
     'keywords_separator_note' => '(Comma separated)',
     'keywords_placeholder' => 'Comma separated: keyword1, keyword2, keyword3',
     'seo_score' => 'SEO Score',
+
+    // =============================================
+    // SEO MANAGEMENT MODULE TRANSLATIONS
+    // =============================================
+    'seo_management' => 'SEO Management',
+    'seo_management_title' => 'SEO Management',
+    'seo_management_description' => 'You can edit SEO information for better ranking of your content in search engines. Each content has its own SEO settings and can be managed from the SEO tab on editing pages.',
+    'manage_pages_seo_preview' => 'SEO Tab Preview in Manage Pages',
+    'seo_tab_preview_description' => 'Below you can see how the SEO tab looks in content editing pages:',
+    'preview_title' => 'Preview: Content Editing - SEO Tab',
+    'preview_note' => 'This is a preview. To make real SEO settings, edit any content and use the SEO tab.',
 ];

@@ -57,13 +57,13 @@
                             <img src="{{ cdn($temporaryImages[$imageKey]->temporaryUrl()) }}"
                                 class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('portfolio::admin.uploaded_photo') }}">
                         </div>
-                        @elseif ($model && $model->getFirstMedia('image'))
+                        @elseif ($portfolioId && isset($inputs['image']) && $inputs['image'])
                         <div class="position-relative" style="height: 156px;">
                             <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
                                 wire:click="removeImage()" wire:loading.attr="disabled">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
-                            <img src="{{ cdn($model->getFirstMedia('image')->getUrl()) }}"
+                            <img src="{{ cdn($inputs['image']) }}"
                                 class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('portfolio::admin.current_photo') }}">
                         </div>
                         @else

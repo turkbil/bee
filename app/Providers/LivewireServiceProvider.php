@@ -20,7 +20,7 @@ class LivewireServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Global SEO Form Component'i kaydet
-        Livewire::component('seo-form-component', \App\Http\Livewire\Components\SeoFormComponent::class);
+        // Universal SEO Management System kullanılıyor
+        // Eski SEO component'lar kaldırıldı
     }
 }

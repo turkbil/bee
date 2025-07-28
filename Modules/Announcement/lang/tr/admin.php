@@ -39,5 +39,10 @@ return [
 'content_placeholder' => 'Duyuru içeriğini giriniz...',
 'studio' => [
     'editor' => 'Studio Editor'
-]
+],
+'announcement_created_successfully' => 'Duyuru başarıyla oluşturuldu',
+'announcement_updated_successfully' => 'Duyuru başarıyla güncellendi',
+'announcement_update_failed' => 'Duyuru güncellenemedi',
+'announcement_deleted_successfully' => 'Duyuru başarıyla silindi',
+'announcement_deletion_failed' => 'Duyuru silinemedi'
 ];

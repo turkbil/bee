@@ -11,7 +11,10 @@ class PortfolioCategorySeeder extends Seeder
 {
     public function run(): void
     {
-        // Bu seeder hem central hem tenant'ta çalışabilir
+        // SEO alanlar seo_settings tablosunda tutulacak, sadece central'da çalış
+        $this->command->info('PortfolioCategorySeeder başlatılıyor...');
+        
+        // TenantHelpers ile çalışma durumunu kontrol et - HER TENANT'TA kategoriler olmalı
         if (TenantHelpers::isCentral()) {
             $this->command->info('PortfolioCategorySeeder central veritabanında çalışıyor...');
         } else {
@@ -26,7 +29,7 @@ class PortfolioCategorySeeder extends Seeder
         
         $faker = Faker::create('tr_TR');
 
-        // JSON formatında çoklu dil verileri
+        // JSON formatında çoklu dil verileri - SEO'lar seo_settings'de olacak
         $categories = [
             [
                 'title' => [
@@ -61,33 +64,6 @@ class PortfolioCategorySeeder extends Seeder
                             <li>ترميز متوافق مع SEO</li>
                             <li>صفحات سريعة التحميل</li>
                         </ul>'
-                ],
-                'metakey' => [
-                    'tr' => 'web tasarım, responsive, modern web, ui ux',
-                    'en' => 'web design, responsive, modern web, ui ux',
-                    'ar' => 'تصميم الويب، متجاوب، ويب حديث'
-                ],
-                'metadesc' => [
-                    'tr' => 'Modern ve kullanıcı dostu web tasarım projelerimiz',
-                    'en' => 'Our modern and user-friendly web design projects',
-                    'ar' => 'مشاريع تصميم الويب الحديثة وسهلة الاستخدام'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'title' => 'Web Tasarım Hizmetleri | Profesyonel Çözümler',
-                        'description' => 'Modern web tasarım anlayışı ile kullanıcı deneyimi odaklı, responsive ve SEO uyumlu web siteleri geliştiriyoruz.',
-                        'keywords' => 'web tasarım, responsive tasarım, modern web, ui ux, kullanıcı deneyimi'
-                    ],
-                    'en' => [
-                        'title' => 'Web Design Services | Professional Solutions',
-                        'description' => 'We develop user experience-focused, responsive and SEO-friendly websites with modern web design approach.',
-                        'keywords' => 'web design, responsive design, modern web, ui ux, user experience'
-                    ],
-                    'ar' => [
-                        'title' => 'خدمات تصميم الويب | حلول احترافية',
-                        'description' => 'نطور مواقع ويب تركز على تجربة المستخدم ومتجاوبة ومتوافقة مع SEO بنهج تصميم ويب حديث.',
-                        'keywords' => 'تصميم الويب، تصميم متجاوب، ويب حديث، تجربة المستخدم'
-                    ]
                 ]
             ],
             [
@@ -123,33 +99,6 @@ class PortfolioCategorySeeder extends Seeder
                             <li>Android أصلي (Kotlin)</li>
                             <li>متعدد المنصات (Flutter، React Native)</li>
                         </ul>'
-                ],
-                'metakey' => [
-                    'tr' => 'mobil uygulama, ios, android, flutter',
-                    'en' => 'mobile app, ios, android, flutter',
-                    'ar' => 'تطبيق محمول، ios، android، flutter'
-                ],
-                'metadesc' => [
-                    'tr' => 'iOS ve Android için mobil uygulama geliştirme hizmetleri',
-                    'en' => 'Mobile application development services for iOS and Android',
-                    'ar' => 'خدمات تطوير تطبيقات الهاتف المحمول لنظامي iOS و Android'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'title' => 'Mobil Uygulama Geliştirme | iOS & Android',
-                        'description' => 'iOS ve Android platformları için native ve cross-platform mobil uygulamalar geliştiriyoruz. Swift, Kotlin, Flutter uzmanı ekip.',
-                        'keywords' => 'mobil uygulama, ios, android, flutter, swift, kotlin, react native'
-                    ],
-                    'en' => [
-                        'title' => 'Mobile App Development | iOS & Android',
-                        'description' => 'We develop native and cross-platform mobile applications for iOS and Android platforms. Expert team in Swift, Kotlin, Flutter.',
-                        'keywords' => 'mobile app, ios, android, flutter, swift, kotlin, react native'
-                    ],
-                    'ar' => [
-                        'title' => 'تطوير تطبيقات الهاتف المحمول | iOS & Android',
-                        'description' => 'نطور تطبيقات الهاتف المحمول الأصلية ومتعددة المنصات لمنصات iOS و Android. فريق خبير في Swift و Kotlin و Flutter.',
-                        'keywords' => 'تطبيق محمول، ios، android، flutter، swift، kotlin، react native'
-                    ]
                 ]
             ],
             [
@@ -188,48 +137,32 @@ class PortfolioCategorySeeder extends Seeder
                             <li>إدارة المخزون والطلبات</li>
                             <li>حلول B2B و B2C</li>
                         </ul>'
-                ],
-                'metakey' => [
-                    'tr' => 'e-ticaret, online satış, ödeme sistemleri, b2b',
-                    'en' => 'e-commerce, online sales, payment systems, b2b',
-                    'ar' => 'التجارة الإلكترونية، المبيعات عبر الإنترنت، أنظمة الدفع'
-                ],
-                'metadesc' => [
-                    'tr' => 'Profesyonel e-ticaret çözümleri ve online satış sistemleri',
-                    'en' => 'Professional e-commerce solutions and online sales systems',
-                    'ar' => 'حلول التجارة الإلكترونية المهنية وأنظمة البيع عبر الإنترنت'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'title' => 'E-Ticaret Çözümleri | Online Satış Sistemleri',
-                        'description' => 'Güvenli ve kullanıcı dostu e-ticaret sistemleri kuruyoruz. Özel yazılım, ödeme entegrasyonları ve stok yönetimi.',
-                        'keywords' => 'e-ticaret, online satış, ödeme sistemleri, b2b, b2c, stok yönetimi'
-                    ],
-                    'en' => [
-                        'title' => 'E-Commerce Solutions | Online Sales Systems',
-                        'description' => 'We build secure and user-friendly e-commerce systems. Custom software, payment integrations and stock management.',
-                        'keywords' => 'e-commerce, online sales, payment systems, b2b, b2c, stock management'
-                    ],
-                    'ar' => [
-                        'title' => 'حلول التجارة الإلكترونية | أنظمة البيع عبر الإنترنت',
-                        'description' => 'نبني أنظمة تجارة إلكترونية آمنة وسهلة الاستخدام. برمجيات مخصصة وتكامل الدفع وإدارة المخزون.',
-                        'keywords' => 'التجارة الإلكترونية، المبيعات عبر الإنترنت، أنظمة الدفع، b2b، b2c، إدارة المخزون'
-                    ]
                 ]
             ]
         ];
 
         foreach ($categories as $index => $category) {
-            PortfolioCategory::create([
-                'title' => json_encode($category['title']),
-                'slug' => json_encode($category['slug']),
-                'body' => json_encode($category['body']),
-                'order' => $index,
-                'metakey' => json_encode($category['metakey']),
-                'metadesc' => json_encode($category['metadesc']),
-                'seo' => isset($category['seo']) ? json_encode($category['seo']) : null,
-                'is_active' => true,
-            ]);
+            // Var mı kontrol et - yoksa oluştur
+            $existingCategory = PortfolioCategory::where('slug->tr', $category['slug']['tr'])->first();
+            
+            if (!$existingCategory) {
+                PortfolioCategory::create([
+                    'title' => $category['title'],
+                    'slug' => $category['slug'],
+                    'body' => $category['body'],
+                    'order' => $index,
+                    'is_active' => true,
+                ]);
+                $this->command->info('Kategori oluşturuldu: ' . $category['title']['tr']);
+            } else {
+                $this->command->info('Kategori zaten var: ' . $category['title']['tr']);
+            }
+        }
+        
+        if (TenantHelpers::isCentral()) {
+            $this->command->info('Portfolio kategorileri central veritabanında oluşturuldu.');
+        } else {
+            $this->command->info('Portfolio kategorileri tenant veritabanında oluşturuldu.');
         }
     }
 }

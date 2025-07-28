@@ -5,6 +5,32 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Middleware\InitializeTenancy;
 
+// Cache temizleme endpoint'i
+Route::middleware(['admin', 'tenant'])->post('/admin/cache/clear', function () {
+    try {
+        // Tenant-specific cache temizleme
+        Cache::flush();
+        
+        // Response cache temizleme (eğer varsa)
+        if (config('responsecache.enabled')) {
+            Artisan::call('responsecache:clear');
+        }
+        
+        // View cache temizleme
+        Artisan::call('view:clear');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Tenant cache başarıyla temizlendi'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cache temizlenirken hata oluştu: ' . $e->getMessage()
+        ], 500);
+    }
+})->name('cache.clear');
+
 // Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için  
 Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
     
@@ -101,16 +127,9 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         Route::post('/send-message', [\Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController::class, 'sendMessage'])->name('send-message');
     });
     
-    // Global SEO Widget Routes - Tüm modüller için
-    Route::group(['prefix' => 'seo', 'as' => 'seo.'], function () {
-        Route::post('/get-data', [\App\Http\Controllers\Admin\SeoController::class, 'getSeoData'])->name('get-data');
-        Route::post('/save-data', [\App\Http\Controllers\Admin\SeoController::class, 'saveSeoData'])->name('save-data');
-        Route::post('/check-slug', [\App\Http\Controllers\Admin\SeoController::class, 'checkSlug'])->name('check-slug');
-        Route::post('/calculate-score', [\App\Http\Controllers\Admin\SeoController::class, 'calculateScore'])->name('calculate-score');
-        Route::post('/generate-suggestion', [\App\Http\Controllers\Admin\SeoController::class, 'generateSuggestion'])->name('generate-suggestion');
-        Route::post('/clear-cache', [\App\Http\Controllers\Admin\SeoController::class, 'clearCache'])->name('clear-cache');
-        Route::get('/cache-stats', [\App\Http\Controllers\Admin\SeoController::class, 'cacheStats'])->name('cache-stats');
-    });
+    // SEO Management Routes - Artık SeoManagement modülünde
+    
+    // Global SEO Widget Routes - Artık SeoManagement modülünde
     
     // Debug routes
     Route::get('/debug-language', function() {

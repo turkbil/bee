@@ -9,6 +9,7 @@ use App\Services\GlobalTabService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Computed;
 use App\Helpers\SlugHelper;
 
 #[Layout('admin.layout')]
@@ -58,6 +59,19 @@ class PageManageComponent extends Component
    // SOLID Dependencies
    protected $pageService;
    protected $seoRepository;
+   
+   /**
+    * Get current page model for universal SEO component
+    */
+   #[Computed]
+   public function currentPage()
+   {
+       if (!$this->pageId) {
+           return null;
+       }
+       
+       return $this->getCachedPageWithSeo() ?? Page::find($this->pageId);
+   }
    
    // Livewire Listeners
    protected $listeners = [

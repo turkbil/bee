@@ -1,0 +1,11 @@
+{
+    "name": "SeoManagement",
+    "alias": "seomanagement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SeoManagement\\Providers\\SeoManagementServiceProvider"
+    ],
+    "files": []
+}

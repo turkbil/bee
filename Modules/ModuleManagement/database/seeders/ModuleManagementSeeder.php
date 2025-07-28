@@ -132,6 +132,15 @@ class ModuleManagementSeeder extends Seeder
                     'type' => 'system',
                     'is_active' => true
                 ],
+                [
+                    'name' => 'seomanagement',
+                    'display_name' => 'SEO Yönetimi',
+                    'description' => 'Universal SEO yönetim sistemi - Çoklu dil desteği ile tüm modüller için merkezi SEO ayarları',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'is_active' => true
+                ],
             ];
 
             // Tablo var mı kontrol et

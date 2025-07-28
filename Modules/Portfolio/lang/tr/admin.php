@@ -47,6 +47,11 @@ return [
 'status_tooltip' => 'Durum ipucu',
 'studio_editor' => 'Studio Editör',
 'title' => 'Başlık',
+'title_field' => 'Başlık',
+'client_name' => 'Müşteri Adı',
+'project_date' => 'Proje Tarihi',
+'project_url' => 'Proje URL\'si',
+'content_placeholder' => 'İçerik yazın...',
 'basic_information' => 'Temel Bilgiler',
 
 // Dashboard Translations
@@ -69,6 +74,16 @@ return [
 'drop_it' => 'Bırakın!',
 'uploaded_photo' => 'Yüklenen Fotoğraf',
 'current_photo' => 'Mevcut Fotoğraf',
-'portfolio_updated' => 'TODO: \'portfolio_updated\' çevirisini ekleyin',
-'portfolio_created' => 'TODO: \'portfolio_created\' çevirisini ekleyin'
+'portfolio_updated' => 'Portfolio başarıyla güncellendi',
+'portfolio_created' => 'Portfolio başarıyla oluşturuldu',
+'category_updated_successfully' => 'Kategori başarıyla güncellendi',
+'category_created_successfully' => 'Kategori başarıyla oluşturuldu',
+'body' => 'İçerik',
+'body_label' => 'İçerik',
+'body_placeholder' => 'İçerik yazın...',
+'edit_category' => 'Kategori Düzenle',
+'create_category' => 'Kategori Oluştur',
+'save' => 'Kaydet',
+'cancel' => 'İptal',
+'close' => 'Kapat'
 ];

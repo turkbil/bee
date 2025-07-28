@@ -106,7 +106,7 @@
 
                     <!-- SEO Tab -->
                     <div class="tab-pane fade" id="1" role="tabpanel">
-                        <x-manage.seo.form :available-languages="$availableLanguages" :current-language="$currentLanguage" :seo-data-cache="$seoDataCache" :page-id="$pageId" />
+                        <x-seomanagement::universal-seo-tab :model="$this->currentPage" :available-languages="$availableLanguages" :current-language="$currentLanguage" :seo-data-cache="$seoDataCache" />
                     </div>
 
                     <!-- Code Tab -->

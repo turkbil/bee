@@ -36,13 +36,25 @@ class CategoryDeleteModal extends Component
             ->where($categoryIdColumn, '!=', $this->itemId)
             ->where('is_active', true)
             ->whereNull('deleted_at')
-            ->orderBy('title', 'asc')
-            ->get();
+            ->get()
+            ->map(function($category) {
+                // JSON title'ı decode et
+                if (isset($category->title)) {
+                    $titleData = json_decode($category->title, true);
+                    if (is_array($titleData)) {
+                        $category->display_title = $titleData['tr'] ?? $titleData[collect($titleData)->keys()->first()] ?? 'Başlıksız';
+                    } else {
+                        $category->display_title = $category->title;
+                    }
+                }
+                return $category;
+            })
+            ->sortBy('display_title');
 
         $this->showModal = true;
     }
 
-    public function delete()
+    public function deleteCategory()
     {
         // Silme yetkisi kontrolü
         if (!auth()->user()->hasModulePermission($this->module, 'delete')) {

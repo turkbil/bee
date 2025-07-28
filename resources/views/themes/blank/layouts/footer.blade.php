@@ -31,10 +31,11 @@
                     </div>
                 </div>
                 
-                <!-- SEO Tools -->
+                <!-- SEO Tools & Debug Info -->
                 <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                    <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
-                        <span class="text-gray-500 dark:text-gray-400">SEO:</span>
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-gray-500 dark:text-gray-400">SEO:</span>
                         
                         <!-- Sitemap -->
                         <a href="{{ route('sitemap') }}" 
@@ -68,15 +69,26 @@
                             Speed
                         </a>
                         
-                        <!-- Cache Status -->
+                        <!-- Cache Clear Button -->
                         @if(config('responsecache.enabled'))
-                        <span class="inline-flex items-center px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded">
+                        <button onclick="clearTenantCache()" 
+                                title="Tenant Cache Temizle" 
+                                class="inline-flex items-center px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors cursor-pointer">
                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
                             </svg>
                             Cache ✓
-                        </span>
+                        </button>
                         @endif
+                        
+                        <!-- Theme Badge -->
+                        <span class="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded text-xs font-medium">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path>
+                            </svg>
+                            Tema: blank
+                        </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,7 +104,38 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Livewire and Alpine.js initialization
         });
+        
+        // Tenant Cache Clear Function
+        function clearTenantCache() {
+            if (confirm('Tenant cache temizlensin mi?')) {
+                fetch('/admin/cache/clear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Tenant cache temizlendi!');
+                        location.reload();
+                    } else {
+                        alert('❌ Cache temizlenirken hata oluştu');
+                    }
+                })
+                .catch(error => {
+                    console.error('Cache clear error:', error);
+                    alert('❌ İstek sırasında hata oluştu');
+                });
+            }
+        }
     </script>
+    
+    <!-- CORE SYSTEM SCRIPTS - DO NOT REMOVE OR MODIFY -->
+    <!-- Bu script tüm temalarda zorunludur / This script is mandatory in all themes -->
+    <script src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
+    
     @stack('scripts')
 </body>
 </html>

@@ -14,14 +14,14 @@ class PortfolioSeeder extends Seeder
     {
         // Bu seeder hem central hem tenant'ta çalışabilir
         if (TenantHelpers::isCentral()) {
-            $this->command->info('PortfolioSeeder central veritabanında çalışıyor...');
+            if ($this->command) $this->command->info('PortfolioSeeder central veritabanında çalışıyor...');
         } else {
-            $this->command->info('PortfolioSeeder tenant veritabanında çalışıyor...');
+            if ($this->command) $this->command->info('PortfolioSeeder tenant veritabanında çalışıyor...');
         }
         
         // Tablo var mı kontrol et
         if (!Schema::hasTable('portfolio_categories') || !Schema::hasTable('portfolios')) {
-            $this->command->info('Portfolio tabloları bulunamadı, işlem atlanıyor...');
+            if ($this->command) $this->command->info('Portfolio tabloları bulunamadı, işlem atlanıyor...');
             return;
         }
 
@@ -102,17 +102,7 @@ class PortfolioSeeder extends Seeder
                 ],
                 'client' => 'ABC Holding A.Ş.',
                 'date' => '2024-03',
-                'url' => 'https://www.abcholding.com',
-                'metakey' => [
-                    'tr' => 'kurumsal web sitesi, holding, responsive tasarım',
-                    'en' => 'corporate website, holding, responsive design',
-                    'ar' => 'موقع الشركة، القابضة، تصميم متجاوب'
-                ],
-                'metadesc' => [
-                    'tr' => 'ABC Holding için geliştirdiğimiz modern kurumsal web sitesi projesi',
-                    'en' => 'Modern corporate website project developed for ABC Holding',
-                    'ar' => 'مشروع موقع الشركة الحديث الذي تم تطويره لشركة ABC القابضة'
-                ]
+                'url' => 'https://www.abcholding.com'
             ],
             // Mobil Uygulama Projeleri
             [
@@ -179,30 +169,20 @@ class PortfolioSeeder extends Seeder
                 ],
                 'client' => 'FastFood Technology Ltd.',
                 'date' => '2024-01',
-                'url' => null,
-                'metakey' => [
-                    'tr' => 'mobil uygulama, yemek siparişi, ios, android',
-                    'en' => 'mobile app, food ordering, ios, android',
-                    'ar' => 'تطبيق محمول، طلب طعام، ios، android'
-                ],
-                'metadesc' => [
-                    'tr' => 'FastFood için geliştirdiğimiz yemek sipariş mobil uygulaması',
-                    'en' => 'Food ordering mobile application developed for FastFood',
-                    'ar' => 'تطبيق طلب الطعام عبر الهاتف المحمول الذي تم تطويره لـ FastFood'
-                ]
+                'url' => null
             ],
             // E-Ticaret Projeleri
             [
                 'category_id' => $ecommerceCategory?->portfolio_category_id ?? 3,
                 'title' => [
-                    'tr' => 'B2B E-Ticaret Platformu - TechWholesale',
-                    'en' => 'B2B E-Commerce Platform - TechWholesale',
-                    'ar' => 'منصة التجارة الإلكترونية B2B - TechWholesale'
+                    'tr' => 'B2B E-Ticaret Platformu - Teknoloji Pazarı',
+                    'en' => 'B2B E-Commerce Platform - Tech Market',
+                    'ar' => 'منصة التجارة الإلكترونية B2B - سوق التكنولوجيا'
                 ],
                 'slug' => [
-                    'tr' => 'b2b-e-ticaret-platformu-techwholesale',
-                    'en' => 'b2b-e-commerce-platform-techwholesale',
-                    'ar' => 'منصة-التجارة-الإلكترونية-b2b-techwholesale'
+                    'tr' => 'b2b-e-ticaret-platformu-teknoloji-pazari',
+                    'en' => 'b2b-e-commerce-platform-tech-market',
+                    'ar' => 'منصة-التجارة-الإلكترونية-b2b-سوق-التكنولوجيا'
                 ],
                 'body' => [
                     'tr' => '<div class="portfolio-content">
@@ -257,39 +237,32 @@ class PortfolioSeeder extends Seeder
                         <p>SAP ERP، Paraşüt، İyzico، APIs الشحن</p>
                     </div>'
                 ],
-                'client' => 'TechWholesale Teknoloji A.Ş.',
+                'client' => 'Teknoloji Pazarı Ltd. Şti.',
                 'date' => '2023-11',
-                'url' => 'https://www.techwholesale.com.tr',
-                'metakey' => [
-                    'tr' => 'b2b e-ticaret, toptan satış, erp entegrasyon',
-                    'en' => 'b2b e-commerce, wholesale, erp integration',
-                    'ar' => 'التجارة الإلكترونية b2b، البيع بالجملة، تكامل erp'
-                ],
-                'metadesc' => [
-                    'tr' => 'TechWholesale için geliştirdiğimiz B2B e-ticaret platformu',
-                    'en' => 'B2B e-commerce platform developed for TechWholesale',
-                    'ar' => 'منصة التجارة الإلكترونية B2B المطورة لـ TechWholesale'
-                ]
+                'url' => 'https://www.techwholesale.com.tr'
             ]
         ];
 
         foreach ($portfolios as $portfolio) {
-            Portfolio::create([
-                'portfolio_category_id' => $portfolio['category_id'],
-                'title' => json_encode($portfolio['title']),
-                'slug' => json_encode($portfolio['slug']),
-                'body' => json_encode($portfolio['body']),
-                'image' => $portfolio['image'] ?? null,
-                'client' => isset($portfolio['client']) ? json_encode($portfolio['client']) : null,
-                'date' => $portfolio['date'] ?? null,
-                'url' => $portfolio['url'] ?? null,
-                'css' => null,
-                'js' => null,
-                'metakey' => json_encode($portfolio['metakey']),
-                'metadesc' => json_encode($portfolio['metadesc']),
-                'seo' => isset($portfolio['seo']) ? json_encode($portfolio['seo']) : null,
-                'is_active' => true,
-            ]);
+            // Var mı kontrol et - yoksa oluştur
+            $existingPortfolio = Portfolio::where('slug->tr', $portfolio['slug']['tr'])->first();
+            
+            if (!$existingPortfolio) {
+                Portfolio::create([
+                    'portfolio_category_id' => $portfolio['category_id'],
+                    'title' => $portfolio['title'],
+                    'slug' => $portfolio['slug'],
+                    'body' => $portfolio['body'],
+                    'image' => $portfolio['image'] ?? null,
+                    'client' => $portfolio['client'] ?? null,
+                    'date' => $portfolio['date'] ?? null,
+                    'url' => $portfolio['url'] ?? null,
+                    'is_active' => true,
+                ]);
+                if ($this->command) $this->command->info('Portfolio oluşturuldu: ' . $portfolio['title']['tr']);
+            } else {
+                if ($this->command) $this->command->info('Portfolio zaten var: ' . $portfolio['title']['tr']); 
+            }
         }
     }
 }

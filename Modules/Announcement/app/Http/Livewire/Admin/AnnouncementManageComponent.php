@@ -9,6 +9,7 @@ use App\Services\GlobalTabService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Computed;
 use App\Helpers\SlugHelper;
 
 #[Layout('admin.layout')]
@@ -47,7 +48,6 @@ class AnnouncementManageComponent extends Component
    public $tabCompletionStatus = [];
    public $seoLimits = [];
    
-   public $studioEnabled = false;
    
    // 🚨 PERFORMANCE FIX: Cached announcement with SEO
    protected $cachedAnnouncementWithSeo = null;
@@ -151,8 +151,6 @@ class AnnouncementManageComponent extends Component
            $this->initializeEmptyInputs();
        }
        
-       // Studio modül kontrolü
-       $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
        
        // Tab completion durumunu hesapla
        $this->updateTabCompletionStatus();
@@ -658,6 +656,19 @@ class AnnouncementManageComponent extends Component
        } else {
            return redirect()->route('admin.studio.editor', ['module' => 'announcement', 'id' => $this->announcementId]);
        }
+   }
+
+   /**
+    * Computed property for universal SEO component
+    */
+   #[Computed]
+   public function currentAnnouncement()
+   {
+       if (!$this->announcementId) {
+           return null;
+       }
+       
+       return $this->getCachedAnnouncementWithSeo() ?? Announcement::find($this->announcementId);
    }
 
    public function render()

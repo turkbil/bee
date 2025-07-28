@@ -7,15 +7,6 @@
         <div class="card">
             <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="announcement_active_tab">
 
-                {{-- Studio Edit Button --}}
-                @if ($studioEnabled && $announcementId)
-                    <li class="nav-item ms-3">
-                        <a href="{{ route('admin.studio.editor', ['module' => 'announcement', 'id' => $announcementId]) }}"
-                            target="_blank" class="btn btn-outline-primary" style="padding: 0.20rem 0.75rem; margin-top: 5px;">
-                            <i class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('announcement::admin.studio.editor') }}
-                        </a>
-                    </li>
-                @endif
 
                 <x-manage.language.switcher :current-language="$currentLanguage" />
 
@@ -106,7 +97,7 @@
 
                     <!-- SEO Tab -->
                     <div class="tab-pane fade" id="1" role="tabpanel">
-                        <x-manage.seo.form :available-languages="$availableLanguages" :current-language="$currentLanguage" :seo-data-cache="$seoDataCache" :page-id="$announcementId" />
+                        <x-seomanagement::universal-seo-tab :model="$this->currentAnnouncement" :available-languages="$availableLanguages" :current-language="$currentLanguage" :seo-data-cache="$seoDataCache" />
                     </div>
 
 

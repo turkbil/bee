@@ -18,51 +18,44 @@ class SiteSetLocaleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // 1. URL path'ten locale tespiti - EN BASİT VE NET YAKLAŞIM
+        $segments = $request->segments();
+        $defaultLocale = $this->getTenantDefaultLocale();
+        $detectedLocale = null;
         
-        
-        // URL prefix desteği kontrol et (mevcut sistem korunuyor)
-        if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
-            try {
-                $urlData = UrlPrefixService::parseUrl($request);
-            } catch (\Exception $e) {
-                \Log::error('🔍 UrlPrefixService hatası', ['error' => $e->getMessage()]);
-                $urlData = ['language' => null];
-            }
-            
-            if ($urlData['language']) {
-                $locale = $this->extractLocaleFromUrlData($urlData);
-                
-                if ($locale && $this->isValidTenantLocale($locale)) {
-                    // URL'den gelen dil aktif seçim olarak işle
-                    $this->setActiveTenantLocale($locale);
-                    
-                    // Request'e temiz path'i yeniden ata
-                    if ($urlData['has_prefix']) {
-                        $request->merge(['clean_path' => $urlData['clean_path']]);
-                    }
-                    
-                    return $next($request);
-                }
+        // URL analizi
+        if (count($segments) > 0 && strlen($segments[0]) == 2) {
+            // İlk segment 2 karakterli ise locale olabilir
+            if ($this->isValidTenantLocale($segments[0])) {
+                // Geçerli bir locale: /en/pages, /ar/announcements
+                $detectedLocale = $segments[0];
             }
         }
         
-        // Route parametresi kontrolü
-        $langFromRoute = $request->route('locale') ?? $request->route('lang');
-        if ($langFromRoute && $this->isValidTenantLocale($langFromRoute)) {
-            $this->setActiveTenantLocale($langFromRoute);
-            return $next($request);
+        // Locale yoksa varsayılan dili kullan
+        if (!$detectedLocale) {
+            // Prefix yok: /, /pages, /announcements = varsayılan dil
+            $detectedLocale = $defaultLocale;
         }
         
-        // Normal durum: 3 aşamalı sistem devreye girer
-        $locale = $this->resolveTenantLocale();
+        // 2. Locale'i set et
+        app()->setLocale($detectedLocale);
+        session(['tenant_locale' => $detectedLocale]);
         
-        // Laravel app locale'i ayarla (admin locale ile karışmasın!)
-        app()->setLocale($locale);
-        
-        // Session'da da sakla (consistency için)
-        if (!session()->has('tenant_locale') || session('tenant_locale') !== $locale) {
-            session(['tenant_locale' => $locale]);
+        // Kullanıcı ve cookie güncelle
+        if (auth()->check() && auth()->user()->tenant_locale !== $detectedLocale) {
+            auth()->user()->update(['tenant_locale' => $detectedLocale]);
         }
+        \Cookie::queue('tenant_locale_preference', $detectedLocale, 525600);
+        
+        // Debug log
+        \Log::debug('🌐 Locale Detection', [
+            'url' => $request->url(),
+            'segments' => $segments,
+            'detected_locale' => $detectedLocale,
+            'default_locale' => $defaultLocale,
+            'app_locale' => app()->getLocale()
+        ]);
 
         return $next($request);
     }

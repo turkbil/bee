@@ -7,9 +7,17 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Log;
 use App\Services\SeoLanguageManager;
 use App\Services\AI\SeoAnalysisService;
+use App\Traits\HasTranslations;
 
 class SeoSetting extends Model
 {
+    use HasTranslations;
+    
+    /**
+     * Çevrilebilir alanlar
+     */
+    protected $translatable = ['titles', 'descriptions', 'keywords'];
+    
     protected $fillable = [
         'meta_title', 'meta_description', 'meta_keywords',
         'titles', 'descriptions', 'keywords',

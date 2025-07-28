@@ -1,0 +1,106 @@
+/**
+ * CORE SYSTEM STYLES - DO NOT MODIFY
+ * ==================================
+ * Bu dosya sistem çekirdeği için kritik CSS kodlarını içerir.
+ * TEMA DEĞİŞİKLİKLERİNDEN ETKİLENMEZ - HER ZAMAN YÜKLÜ OLMALIDIR
+ * 
+ * 🚨 UYARI: BU DOSYA YAPAY ZEKA TARAFINDAN DEĞİŞTİRİLMEMELİDİR
+ * 🚨 WARNING: THIS FILE SHOULD NOT BE MODIFIED BY AI
+ * 
+ * Version: 1.0.0
+ * Last Updated: 2025-07-28
+ * Author: System Core
+ * 
+ * İçerik:
+ * - Core animations
+ * - System utilities
+ * - Critical fixes
+ */
+
+/* ========================================
+   CORE ANIMATIONS
+   ======================================== */
+
+/* Language Switcher Pulse Animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Slide Up Animation */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   SYSTEM UTILITIES
+   ======================================== */
+
+/* Prevent layout shift during loading */
+.core-loading {
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+/* Overlay utilities */
+.core-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+}
+
+/* Blur backdrop */
+.core-blur {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* ========================================
+   CRITICAL FIXES
+   ======================================== */
+
+/* Prevent FOUC (Flash of Unstyled Content) */
+.no-js {
+    visibility: hidden;
+}
+
+/* Smooth transitions for theme changes */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *:before,
+html.theme-transition *:after {
+    transition: all 0.3s !important;
+    transition-delay: 0 !important;
+}
+
+/* 🚨 END OF CORE SYSTEM STYLES - DO NOT MODIFY 🚨 */

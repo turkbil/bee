@@ -10,12 +10,11 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id('announcement_id');
-            $table->json('title')->comment('Çoklu dil başlık: {"tr": "Duyuru Başlığı", "en": "Announcement Title"}');
-            $table->json('slug')->comment('Çoklu dil slug: {"tr": "duyuru-basligi", "en": "announcement-title"}');
-            $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "Duyuru İçeriği", "en": "Announcement Content"}');
+            $table->json('title')->comment('Çoklu dil başlık: {"tr": "Duyuru Başlığı", "en": "Announcement Title", "ar": "عنوان الإعلان"}');
+            $table->json('slug')->comment('Çoklu dil slug: {"tr": "duyuru-basligi", "en": "announcement-title", "ar": "عنوان-الإعلان"}');
+            $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "Duyuru İçeriği", "en": "Announcement Content", "ar": "محتوى الإعلان"}');
             $table->text('css')->nullable();
             $table->text('js')->nullable();
-            $table->json('seo')->nullable()->comment('SEO verileri: {"tr": {"meta_title": "Başlık", "meta_description": "Açıklama", "keywords": [], "og_image": "image.jpg"}}');
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();

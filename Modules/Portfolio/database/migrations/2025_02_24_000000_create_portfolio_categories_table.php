@@ -10,13 +10,10 @@ return new class extends Migration
     {
         Schema::create('portfolio_categories', function (Blueprint $table) {
             $table->id('portfolio_category_id');
-            $table->json('title'); // Çok dilli destek
-            $table->json('slug'); // Çok dilli destek
-            $table->json('body')->nullable(); // Çok dilli destek
+            $table->json('title')->comment('Çoklu dil başlık: {"tr": "Kategori Başlığı", "en": "Category Title", "ar": "عنوان الفئة"}');
+            $table->json('slug')->comment('Çoklu dil slug: {"tr": "kategori-slug", "en": "category-slug", "ar": "فئة-slug"}');
+            $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "İçerik", "en": "Content", "ar": "المحتوى"}');
             $table->integer('order')->default(0)->index();
-            $table->json('metakey')->nullable(); // Çok dilli destek
-            $table->json('metadesc')->nullable(); // Çok dilli destek
-            $table->json('seo')->nullable(); // SEO JSON column
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();

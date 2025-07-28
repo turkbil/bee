@@ -27,6 +27,8 @@ class User extends Authenticatable implements HasMedia
         'admin_locale',
         'tenant_locale',
         'dashboard_preferences',
+        'phone',
+        'bio',
     ];
 
     /**

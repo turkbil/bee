@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
+use App\Models\SeoSetting;
 use App\Traits\HasTranslations;
-use App\Traits\HasSeo;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Portfolio extends BaseModel implements HasMedia
 {
-    use Sluggable, SoftDeletes, InteractsWithMedia, HasTranslations, HasSeo;
+    use Sluggable, SoftDeletes, InteractsWithMedia, HasTranslations;
 
     protected $primaryKey = 'portfolio_id';
 
@@ -23,8 +26,6 @@ class Portfolio extends BaseModel implements HasMedia
         'slug',
         'body',
         'image',
-        'css',
-        'js',
         'client',
         'date',
         'url',
@@ -44,118 +45,8 @@ class Portfolio extends BaseModel implements HasMedia
     protected $translatable = ['title', 'slug', 'body'];
 
     /**
-     * HasSeo trait fallback implementations
+     * Sluggable configuration (manuel yönetim)
      */
-    
-    /**
-     * Get fallback title for SEO
-     */
-    protected function getSeoFallbackTitle(): ?string
-    {
-        return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
-    }
-
-    /**
-     * Get fallback description for SEO
-     */
-    protected function getSeoFallbackDescription(): ?string
-    {
-        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
-        
-        if (is_string($content)) {
-            return \Illuminate\Support\Str::limit(strip_tags($content), 160);
-        }
-        
-        return null;
-    }
-
-    /**
-     * Get fallback keywords for SEO
-     */
-    protected function getSeoFallbackKeywords(): array
-    {
-        $keywords = [];
-        
-        // Extract from title
-        $title = $this->getSeoFallbackTitle();
-        if ($title) {
-            $words = array_filter(explode(' ', strtolower($title)), function($word) {
-                return strlen($word) > 3;
-            });
-            $keywords = array_merge($keywords, array_slice($words, 0, 3));
-        }
-        
-        // Add category name if available
-        if ($this->category) {
-            $categoryName = $this->category->getTranslated('name', app()->getLocale());
-            if ($categoryName) {
-                $keywords[] = strtolower($categoryName);
-            }
-        }
-        
-        return array_unique($keywords);
-    }
-
-    /**
-     * Get fallback canonical URL
-     */
-    protected function getSeoFallbackCanonicalUrl(): ?string
-    {
-        $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
-        
-        if ($slug) {
-            return url('/portfolio/' . ltrim($slug, '/'));
-        }
-        
-        return null;
-    }
-
-    /**
-     * Get fallback image for social sharing
-     */
-    protected function getSeoFallbackImage(): ?string
-    {
-        // First try direct image field
-        if ($this->image) {
-            return asset($this->image);
-        }
-        
-        // Try media library
-        $media = $this->getFirstMedia('images');
-        if ($media) {
-            return $media->getUrl();
-        }
-        
-        // Extract from content
-        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
-        if (is_string($content) && preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $content, $matches)) {
-            return $matches[1];
-        }
-        
-        return null;
-    }
-
-    /**
-     * Get fallback schema markup
-     */
-    protected function getSeoFallbackSchemaMarkup(): ?array
-    {
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'CreativeWork',
-            'name' => $this->getSeoFallbackTitle(),
-            'description' => $this->getSeoFallbackDescription(),
-            'url' => $this->getSeoFallbackCanonicalUrl(),
-            'image' => $this->getSeoFallbackImage(),
-            'dateCreated' => $this->created_at?->toISOString(),
-            'dateModified' => $this->updated_at?->toISOString(),
-            'creator' => [
-                '@type' => 'Organization',
-                'name' => config('app.name')
-            ]
-        ];
-    }
-
     public function sluggable(): array
     {
         return [
@@ -163,25 +54,109 @@ class Portfolio extends BaseModel implements HasMedia
         ];
     }
 
+    /**
+     * SEO Setting Relationship (Global SEO System)
+     */
+    public function seoSetting(): MorphOne
+    {
+        return $this->morphOne(SeoSetting::class, 'seoable');
+    }
+
+    /**
+     * Update SEO for specific language
+     */
+    public function updateSeoForLanguage(string $language, array $seoData): void
+    {
+        // SEO verisi boş mu kontrol et
+        $hasAnyData = false;
+        foreach (['seo_title', 'seo_description', 'seo_keywords'] as $field) {
+            if (!empty($seoData[$field])) {
+                $hasAnyData = true;
+                break;
+            }
+        }
+        if (!empty($seoData['canonical_url'])) {
+            $hasAnyData = true;
+        }
+        
+        // Eğer hiç SEO verisi yoksa işlem yapma
+        if (!$hasAnyData) {
+            return;
+        }
+        
+        // Mevcut SEO kaydını al veya yeni oluştur
+        $seoSetting = $this->seoSetting;
+        if (!$seoSetting) {
+            $seoSetting = new SeoSetting();
+            $seoSetting->seoable()->associate($this);
+        }
+        
+        // Update titles
+        $titles = $seoSetting->titles ?? [];
+        if (!empty($seoData['seo_title'])) {
+            $titles[$language] = $seoData['seo_title'];
+        }
+        $seoSetting->titles = $titles;
+        
+        // Update descriptions  
+        $descriptions = $seoSetting->descriptions ?? [];
+        if (!empty($seoData['seo_description'])) {
+            $descriptions[$language] = $seoData['seo_description'];
+        }
+        $seoSetting->descriptions = $descriptions;
+        
+        // Update keywords (convert string to array)
+        $keywords = $seoSetting->keywords ?? [];
+        if (!empty($seoData['seo_keywords'])) {
+            if (is_string($seoData['seo_keywords'])) {
+                $keywordArray = array_filter(array_map('trim', explode(',', $seoData['seo_keywords'])));
+                $keywords[$language] = $keywordArray;
+            } else {
+                $keywords[$language] = $seoData['seo_keywords'];
+            }
+        }
+        $seoSetting->keywords = $keywords;
+        
+        // Update canonical URL
+        if (!empty($seoData['canonical_url'])) {
+            $seoSetting->canonical_url = $seoData['canonical_url'];
+        }
+        
+        $seoSetting->save();
+    }
+
+    /**
+     * Portfolio Category Relationship
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(PortfolioCategory::class, 'portfolio_category_id', 'portfolio_category_id');
     }
 
-    protected static function booted()
-    {
-        static::saving(function ($portfolio) {
-            if ($portfolio->portfolio_category_id) {
-                $category = PortfolioCategory::find($portfolio->portfolio_category_id);
-            }
-        });
-    }
-
+    /**
+     * Media Collections
+     */
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
              ->singleFile()
              ->useDisk('public');
+             
+        $this->addMediaCollection('gallery')
+             ->useDisk('public');
     }
     
+    /**
+     * Model Events
+     */
+    protected static function booted(): void
+    {
+        static::saving(function ($portfolio) {
+            // Portfolio kategorisi kontrolü
+            if ($portfolio->portfolio_category_id) {
+                $category = PortfolioCategory::find($portfolio->portfolio_category_id);
+                // Category ile ilgili işlemler burada yapılabilir
+            }
+        });
+    }
 }

@@ -22,35 +22,8 @@ Route::middleware(['admin', 'tenant'])
                     return response()->json(['status' => 'success']);
                 })->name('set-editing-language');
                 
-                Route::get('/seo-data/{pageId}/{language}', function ($pageId, $language) {
-                    $page = \Modules\Page\App\Models\Page::findOrFail($pageId);
-                    $seoSettings = $page->seoSetting;
-                    
-                    $seoData = [
-                        'seo_title' => '',
-                        'seo_description' => '',
-                        'seo_keywords' => '',
-                        'canonical_url' => ''
-                    ];
-                    
-                    if ($seoSettings) {
-                        $titles = $seoSettings->titles ?? [];
-                        $descriptions = $seoSettings->descriptions ?? [];
-                        $keywords = $seoSettings->keywords ?? [];
-                        
-                        $seoData = [
-                            'seo_title' => $titles[$language] ?? '',
-                            'seo_description' => $descriptions[$language] ?? '',
-                            'seo_keywords' => is_array($keywords[$language] ?? []) ? implode(', ', $keywords[$language]) : '',
-                            'canonical_url' => $seoSettings->canonical_url ?? ''
-                        ];
-                    }
-                    
-                    return response()->json([
-                        'success' => true,
-                        'seoData' => $seoData
-                    ]);
-                })->name('seo-data');
+                // Universal SEO Management System kullanılıyor
+                // Eski seo-data route'u kaldırıldı
                 
             });
     });

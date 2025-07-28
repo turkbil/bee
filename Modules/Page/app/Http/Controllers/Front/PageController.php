@@ -6,6 +6,10 @@ use Modules\Page\App\Models\Page;
 use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
+use Spatie\ResponseCache\Facades\ResponseCache;
+use App\Services\ModuleSlugService;
 
 class PageController extends Controller
 {
@@ -60,6 +64,7 @@ class PageController extends Controller
     public function index()
     {
         $items = Page::where('is_active', true)
+            ->where('is_homepage', false)
             ->orderBy('created_at', 'desc')
             ->simplePaginate(10);
 
@@ -76,16 +81,93 @@ class PageController extends Controller
         }
     }
 
+    public function clearCache()
+    {
+        try {
+            // Tüm cache türlerini temizle
+            Cache::flush();
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('route:clear');
+            Artisan::call('view:clear');
+            
+            // Response Cache temizle
+            if (class_exists('Spatie\ResponseCache\Facades\ResponseCache')) {
+                ResponseCache::clear();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cache başarıyla temizlendi'
+            ])->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+              ->header('Pragma', 'no-cache')
+              ->header('Expires', '0');
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cache temizleme hatası: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function show($slug, $is_homepage_context = false)
     {
-        // JSON slug arama - tüm dillerde ara
+        // Aktif dili al
+        $currentLocale = app()->getLocale();
+        
+        // SADECE aktif dilde slug ara - locale-aware
         $item = Page::where('is_active', true)
-            ->where(function($query) use ($slug) {
-                $query->whereJsonContains('slug->tr', $slug)
-                      ->orWhereJsonContains('slug->en', $slug)
-                      ->orWhereJsonContains('slug->ar', $slug);
-            })
-            ->firstOrFail();
+            ->whereJsonContains("slug->{$currentLocale}", $slug)
+            ->first();
+            
+        // Bulunamazsa 404
+        if (!$item) {
+            // Mevcut dilde bulunamadı, tüm dillerde ara (fallback)
+            $allLocales = array_column(available_tenant_languages(), 'code');
+            
+            foreach ($allLocales as $locale) {
+                if ($locale === $currentLocale) {
+                    continue; // Zaten aradık
+                }
+                
+                $item = Page::where('is_active', true)
+                    ->whereJsonContains("slug->{$locale}", $slug)
+                    ->first();
+                    
+                if ($item) {
+                    // Farklı dilde bulundu, doğru URL'e redirect et
+                    Log::info("Page found in different locale, redirecting", [
+                        'slug' => $slug,
+                        'found_in' => $locale,
+                        'requested_in' => $currentLocale
+                    ]);
+                    
+                    // Doğru dil ve slug ile URL oluştur
+                    $correctUrl = $this->generatePageUrl($item, $locale);
+                    return redirect()->to($correctUrl, 301); // 301 = Permanent redirect
+                }
+            }
+            
+            // Hiçbir dilde bulunamadı
+            Log::warning("Page not found in any language", [
+                'slug' => $slug,
+                'searched_locales' => $allLocales
+            ]);
+            abort(404, "Page not found for slug '{$slug}'");
+        }
+        
+        // Canonical URL kontrolü - doğru slug kullanılıyor mu?
+        $expectedSlug = $item->getTranslated('slug', $currentLocale);
+        if ($slug !== $expectedSlug) {
+            Log::info("Redirecting to canonical slug", [
+                'requested' => $slug,
+                'canonical' => $expectedSlug,
+                'locale' => $currentLocale
+            ]);
+            // Yanlış slug ile erişim, doğru URL'e redirect
+            return redirect()->to($this->generatePageUrl($item, $currentLocale));
+        }
 
         // Eğer bu sayfa veritabanında ana sayfa olarak işaretlenmişse ($item->is_homepage == true)
         // VE bu 'show' metodu, ana sayfa route'u (`homepage()` metodu) tarafından çağrılmadıysa
@@ -112,5 +194,28 @@ class PageController extends Controller
             // Fallback view'a yönlendir
             return view('page::front.show', ['item' => $item, 'is_homepage' => $is_homepage_context]);
         }
+    }
+    
+    /**
+     * Sayfa için locale-aware URL oluştur
+     */
+    protected function generatePageUrl(Page $page, ?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        $slug = $page->getTranslated('slug', $locale);
+        
+        // Modül slug'ını al (tenant tarafından özelleştirilebilir)
+        $moduleSlug = ModuleSlugService::getSlug('Page', 'show');
+        
+        // Varsayılan dil kontrolü
+        $defaultLocale = get_tenant_default_locale();
+        
+        if ($locale === $defaultLocale) {
+            // Varsayılan dil için prefix yok
+            return url("/{$moduleSlug}/{$slug}");
+        }
+        
+        // Diğer diller için prefix ekle
+        return url("/{$locale}/{$moduleSlug}/{$slug}");
     }
 }

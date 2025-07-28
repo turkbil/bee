@@ -84,7 +84,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('site', [
             'web',
             'locale.site',
-            \Spatie\ResponseCache\Middlewares\CacheResponse::class, // SADECE SİTE ROTALARINDA CACHE
+            // \Spatie\ResponseCache\Middlewares\CacheResponse::class, // GEÇİCİ OLARAK DEVRE DIŞI - locale sorunları için
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü

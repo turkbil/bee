@@ -10,12 +10,9 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id('announcement_id');
-            $table->json('title'); // Çok dilli destek
-            $table->json('slug'); // Çok dilli destek
-            $table->json('body')->nullable(); // Çok dilli destek
-            $table->json('metakey')->nullable(); // Çok dilli destek
-            $table->json('metadesc')->nullable(); // Çok dilli destek
-            $table->json('seo')->nullable(); // SEO JSON column
+            $table->json('title'); // Çok dilli destek: {"tr":"Başlık","en":"Title","ar":"العنوان"}
+            $table->json('slug'); // Çok dilli destek: {"tr":"baslik","en":"title","ar":"العنوان"}
+            $table->json('body')->nullable(); // Çok dilli destek: {"tr":"İçerik","en":"Content","ar":"المحتوى"}
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();

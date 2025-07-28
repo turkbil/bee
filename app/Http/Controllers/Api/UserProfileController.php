@@ -21,17 +21,7 @@ class UserProfileController extends Controller
             
             return response()->json([
                 'message' => 'User profile retrieved successfully',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'avatar' => $user->avatar,
-                    'phone' => $user->phone,
-                    'bio' => $user->bio,
-                    'is_active' => $user->is_active,
-                    'created_at' => $user->created_at->format('Y-m-d H:i:s'),
-                    'updated_at' => $user->updated_at->format('Y-m-d H:i:s'),
-                ]
+                'user' => $user->toArray()
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -102,15 +92,7 @@ class UserProfileController extends Controller
 
             return response()->json([
                 'message' => 'Profile updated successfully',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'avatar' => $user->avatar,
-                    'phone' => $user->phone,
-                    'bio' => $user->bio,
-                    'updated_at' => $user->updated_at->format('Y-m-d H:i:s'),
-                ]
+                'user' => $user->fresh()->toArray()
             ]);
         } catch (\Exception $e) {
             return response()->json([

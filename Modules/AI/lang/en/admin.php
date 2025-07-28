@@ -335,6 +335,25 @@ return [
 'buy_tokens' => 'Buy Credits',
 'ai_module' => 'AI Module',
 'new_feature' => 'New Feature',
+'edit_category' => 'Edit Category',
+'new_category' => 'New Category',
+'category_title_placeholder' => 'Enter category title',
+'category_title' => 'Category Title',
+'category_slug_placeholder' => 'Enter category slug',
+'slug' => 'Slug',
+'auto_slug_note' => 'Auto-generated if left empty',
+'select_parent_category' => 'Select parent category',
+'add_as_main_category' => 'Add as main category',
+'parent_category' => 'Parent Category',
+'category_description_placeholder' => 'Enter category description',
+'icon_placeholder' => 'FontAwesome icon class (e.g. fas fa-brain)',
+'ai_feature_categories' => 'AI Feature Categories',
+'deactivate' => 'Deactivate',
+'activate' => 'Activate',
+'category_not_found' => 'Category not found',
+'no_category_match' => 'No categories match your search criteria',
+'no_category_yet' => 'No categories added yet',
+'clear_search' => 'Clear Search',
 'create_new_ai_feature' => 'Create New AI Feature',
 'system_feature' => 'System Feature',
 'copy_and_edit' => 'Copy and Edit',
@@ -471,6 +490,16 @@ return [
         'all_categories' => 'All',
         'capabilities_showing' => 'AI capabilities showing',
         'unknown_error' => 'Unknown error occurred'
+    ],
+    
+    'info' => [
+        'common_prompt_features_list' => [
+            'Automatic text generation and editing',
+            'Language translation support',
+            'Content summarization and analysis',
+            'Question-answer system',
+            'Creative writing assistance'
+        ]
     ],
     
     // AI Feature Management Missing Translations

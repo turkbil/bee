@@ -22,13 +22,23 @@ return [
 'no_pages_found' => 'No pages found',
 'no_results' => 'No results found',
 'menu' => 'Menu',
-'title_validation_error' => 'TODO: Add translation for \'title_validation_error\'',
-'title_updated' => 'TODO: Add translation for \'title_updated\'',
-'title_updated_successfully' => 'TODO: Add translation for \'title_updated_successfully\'',
-'page_not_found' => 'TODO: Add translation for \'page_not_found\'',
-'homepage_cannot_be_deactivated' => 'TODO: Add translation for \'homepage_cannot_be_deactivated\'',
-'operation_failed' => 'TODO: Add translation for \'operation_failed\'',
-'no_pages_can_be_deleted' => 'TODO: Add translation for \'no_pages_can_be_deleted\'',
+'title_validation_error' => 'Title is invalid. Please check.',
+'title_updated' => 'title updated',
+'title_updated_successfully' => 'Title updated successfully.',
+'page_not_found' => 'Page not found',
+'homepage_cannot_be_deactivated' => 'Homepage cannot be deactivated',
+'operation_failed' => 'Operation failed',
+'no_pages_can_be_deleted' => 'No pages can be deleted',
+
+// Service Messages
+'page_created_successfully' => 'Page created successfully',
+'page_updated_successfully' => 'Page updated successfully',
+'update_failed' => 'Update failed',
+'page_deleted_successfully' => 'Page deleted successfully',
+'deletion_failed' => 'Deletion failed',
+
+// Content Placeholders
+'content_placeholder' => 'Write your page content here',
 
 // Studio Editor
 'studio.editor' => 'Edit with Studio'

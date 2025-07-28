@@ -7,6 +7,7 @@ use Modules\Portfolio\App\Models\PortfolioCategory;
 use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use App\Services\ModuleSlugService;
 
 class PortfolioController extends Controller
 {
@@ -39,6 +40,9 @@ class PortfolioController extends Controller
 
     public function show($slug)
     {
+        // Aktif dili al
+        $currentLocale = app()->getLocale();
+        
         // Eğer sayısal ise direkt ID ile ara
         if (is_numeric($slug)) {
             $item = Portfolio::with('category')
@@ -46,18 +50,32 @@ class PortfolioController extends Controller
                 ->where('is_active', true)
                 ->first();
         } else {
-            // String slug ise slug alanında ara
+            // SADECE aktif dilde slug ara - locale-aware
             $item = Portfolio::with('category')
                 ->where('is_active', true)
-                ->where(function($query) use ($slug) {
-                    // Basit slug araması
-                    $query->where('slug', 'LIKE', '%"' . $slug . '"%');
-                })
+                ->whereJsonContains("slug->{$currentLocale}", $slug)
                 ->first();
         }
         
         if (!$item) {
-            abort(404);
+            Log::warning("Portfolio not found", [
+                'slug' => $slug,
+                'locale' => $currentLocale,
+                'searched_in' => "slug->{$currentLocale}"
+            ]);
+            abort(404, "Portfolio not found for slug '{$slug}' in language '{$currentLocale}'");
+        }
+        
+        // Canonical URL kontrolü - doğru slug kullanılıyor mu?
+        $expectedSlug = $item->getTranslated('slug', $currentLocale);
+        if (!is_numeric($slug) && $slug !== $expectedSlug) {
+            Log::info("Redirecting to canonical slug", [
+                'requested' => $slug,
+                'canonical' => $expectedSlug,
+                'locale' => $currentLocale
+            ]);
+            // Yanlış slug ile erişim, doğru URL'e redirect
+            return redirect()->to($this->generatePortfolioUrl($item, $currentLocale));
         }
 
 
@@ -76,19 +94,28 @@ class PortfolioController extends Controller
     
     public function category($slug)
     {
+        // Aktif dili al
+        $currentLocale = app()->getLocale();
+        
         // Eğer sayısal ise direkt ID ile ara
         if (is_numeric($slug)) {
             $category = PortfolioCategory::where('portfolio_category_id', $slug)
                 ->where('is_active', true)
                 ->firstOrFail();
         } else {
-            // String slug ise slug alanında ara
+            // SADECE aktif dilde slug ara - locale-aware
             $category = PortfolioCategory::where('is_active', true)
-                ->where(function($query) use ($slug) {
-                    // Basit slug araması
-                    $query->where('slug', 'LIKE', '%"' . $slug . '"%');
-                })
-                ->firstOrFail();
+                ->whereJsonContains("slug->{$currentLocale}", $slug)
+                ->first();
+                
+            if (!$category) {
+                Log::warning("Portfolio category not found", [
+                    'slug' => $slug,
+                    'locale' => $currentLocale,
+                    'searched_in' => "slug->{$currentLocale}"
+                ]);
+                abort(404, "Category not found for slug '{$slug}' in language '{$currentLocale}'");
+            }
         }
             
         $items = Portfolio::with(['category', 'media'])
@@ -108,5 +135,28 @@ class PortfolioController extends Controller
             // Fallback view'a yönlendir
             return view('portfolio::front.category', compact('category', 'items'));
         }
+    }
+    
+    /**
+     * Portfolio için locale-aware URL oluştur
+     */
+    protected function generatePortfolioUrl(Portfolio $portfolio, ?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        $slug = $portfolio->getTranslated('slug', $locale);
+        
+        // Modül slug'ını al (tenant tarafından özelleştirilebilir)
+        $moduleSlug = ModuleSlugService::getSlug('Portfolio', 'show');
+        
+        // Varsayılan dil kontrolü
+        $defaultLocale = get_tenant_default_locale();
+        
+        if ($locale === $defaultLocale) {
+            // Varsayılan dil için prefix yok
+            return url("/{$moduleSlug}/{$slug}");
+        }
+        
+        // Diğer diller için prefix ekle
+        return url("/{$locale}/{$moduleSlug}/{$slug}");
     }
 }

@@ -6,6 +6,7 @@ use Modules\Announcement\App\Models\Announcement;
 use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use App\Services\ModuleSlugService;
 
 class AnnouncementController extends Controller
 {
@@ -37,25 +38,66 @@ class AnnouncementController extends Controller
 
     public function show($slug)
     {
+        // Aktif dili al
+        $currentLocale = app()->getLocale();
+        
         // Eğer sayısal ise direkt ID ile ara
         if (is_numeric($slug)) {
             $item = Announcement::where('announcement_id', $slug)
                 ->where('is_active', true)
                 ->first();
         } else {
-            // String slug ise slug alanında ara (JSON field için)
+            // SADECE aktif dilde slug ara - locale-aware
             $item = Announcement::where('is_active', true)
-                ->where(function($query) use ($slug) {
-                    // Çoklu dil desteği ile slug arama
-                    $query->whereRaw('JSON_CONTAINS(slug, ?)', [json_encode($slug)])
-                          ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) = ?', [$slug])
-                          ->orWhereRaw('JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) = ?', [$slug]);
-                })
+                ->whereJsonContains("slug->{$currentLocale}", $slug)
                 ->first();
         }
         
         if (!$item) {
-            abort(404);
+            // Mevcut dilde bulunamadı, tüm dillerde ara (fallback)
+            $allLocales = array_column(available_tenant_languages(), 'code');
+            
+            foreach ($allLocales as $locale) {
+                if ($locale === $currentLocale) {
+                    continue; // Zaten aradık
+                }
+                
+                $item = Announcement::where('is_active', true)
+                    ->whereJsonContains("slug->{$locale}", $slug)
+                    ->first();
+                    
+                if ($item) {
+                    // Farklı dilde bulundu, doğru URL'e redirect et
+                    Log::info("Announcement found in different locale, redirecting", [
+                        'slug' => $slug,
+                        'found_in' => $locale,
+                        'requested_in' => $currentLocale
+                    ]);
+                    
+                    // Doğru dil ve slug ile URL oluştur
+                    $correctUrl = $this->generateAnnouncementUrl($item, $locale);
+                    return redirect()->to($correctUrl, 301); // 301 = Permanent redirect
+                }
+            }
+            
+            // Hiçbir dilde bulunamadı
+            Log::warning("Announcement not found in any language", [
+                'slug' => $slug,
+                'searched_locales' => $allLocales
+            ]);
+            abort(404, "Announcement not found for slug '{$slug}'");
+        }
+        
+        // Canonical URL kontrolü - doğru slug kullanılıyor mu?
+        $expectedSlug = $item->getTranslated('slug', $currentLocale);
+        if (!is_numeric($slug) && $slug !== $expectedSlug) {
+            Log::info("Redirecting to canonical slug", [
+                'requested' => $slug,
+                'canonical' => $expectedSlug,
+                'locale' => $currentLocale
+            ]);
+            // Yanlış slug ile erişim, doğru URL'e redirect
+            return redirect()->to($this->generateAnnouncementUrl($item, $currentLocale));
         }
 
 
@@ -70,5 +112,28 @@ class AnnouncementController extends Controller
             // Fallback view'a yönlendir
             return view('announcement::front.show', compact('item'));
         }
+    }
+    
+    /**
+     * Announcement için locale-aware URL oluştur
+     */
+    protected function generateAnnouncementUrl(Announcement $announcement, ?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        $slug = $announcement->getTranslated('slug', $locale);
+        
+        // Modül slug'ını al (tenant tarafından özelleştirilebilir)
+        $moduleSlug = ModuleSlugService::getSlug('Announcement', 'show');
+        
+        // Varsayılan dil kontrolü
+        $defaultLocale = get_tenant_default_locale();
+        
+        if ($locale === $defaultLocale) {
+            // Varsayılan dil için prefix yok
+            return url("/{$moduleSlug}/{$slug}");
+        }
+        
+        // Diğer diller için prefix ekle
+        return url("/{$locale}/{$moduleSlug}/{$slug}");
     }
 }

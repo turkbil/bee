@@ -31,6 +31,13 @@ return [
 'status' => 'Status',
 'title' => 'Announcement',
 'updating' => 'Updating',
-'announcement_updated' => 'TODO: Add translation for \'announcement_updated\'',
-'announcement_created' => 'TODO: Add translation for \'announcement_created\''
+'announcement_updated' => 'Announcement updated',
+'announcement_created' => 'Announcement created',
+'announcement_created_successfully' => 'Announcement created successfully',
+'announcement_updated_successfully' => 'Announcement updated successfully',
+'announcement_update_failed' => 'Announcement update failed',
+'announcement_deleted_successfully' => 'Announcement deleted successfully',
+'announcement_deletion_failed' => 'Announcement deletion failed',
+'title_field' => 'Title',
+'content_placeholder' => 'Enter announcement content...'
 ];

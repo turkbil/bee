@@ -50,6 +50,16 @@ return [
 'fullscreen' => 'Tam Ekran',
 'initializing_editor' => 'Editör başlatılıyor',
 
+// Service Messages
+'page_created_successfully' => 'Sayfa başarıyla oluşturuldu',
+'page_updated_successfully' => 'Sayfa başarıyla güncellendi',
+'update_failed' => 'Güncelleme başarısız',
+'page_deleted_successfully' => 'Sayfa başarıyla silindi',
+'deletion_failed' => 'Silme işlemi başarısız',
+
+// Content Placeholders
+'content_placeholder' => 'Sayfa içeriğinizi buraya yazın',
+
 // Studio Editor
 'studio.editor' => 'Studio ile Düzenle'
 ];

@@ -483,43 +483,43 @@ class PageSeeder extends Seeder
             
             // SEO Settings oluştur - trilingual format
             $page->seoSetting()->create([
-                'titles' => [
+                'titles' => $pageData['seo']['tr']['meta_title'] ? [
                     'tr' => $pageData['seo']['tr']['meta_title'],
                     'en' => $pageData['seo']['en']['meta_title'],
                     'ar' => $pageData['seo']['ar']['meta_title']
-                ],
-                'descriptions' => [
+                ] : [],
+                'descriptions' => $pageData['seo']['tr']['meta_description'] ? [
                     'tr' => $pageData['seo']['tr']['meta_description'],
                     'en' => $pageData['seo']['en']['meta_description'],
                     'ar' => $pageData['seo']['ar']['meta_description']
-                ],
-                'keywords' => [
+                ] : [],
+                'keywords' => $pageData['seo']['tr']['keywords'] ? [
                     'tr' => $pageData['seo']['tr']['keywords'],
                     'en' => $pageData['seo']['en']['keywords'],
                     'ar' => $pageData['seo']['ar']['keywords']
-                ],
+                ] : [],
                 'focus_keyword' => $pageData['seo']['tr']['keywords'][0] ?? '',
-                'focus_keywords' => [
+                'focus_keywords' => $pageData['seo']['tr']['keywords'] ? [
                     'tr' => $pageData['seo']['tr']['keywords'][0] ?? '',
                     'en' => $pageData['seo']['en']['keywords'][0] ?? '',
                     'ar' => $pageData['seo']['ar']['keywords'][0] ?? ''
-                ],
+                ] : [],
                 'canonical_url' => '',
                 'robots_meta' => [
                     'index' => true,
                     'follow' => true,
                     'archive' => true
                 ],
-                'og_title' => [
+                'og_title' => $pageData['seo']['tr']['og_title'] ? [
                     'tr' => $pageData['seo']['tr']['og_title'] ?? $pageData['seo']['tr']['meta_title'],
                     'en' => $pageData['seo']['en']['og_title'] ?? $pageData['seo']['en']['meta_title'],
                     'ar' => $pageData['seo']['ar']['og_title'] ?? $pageData['seo']['ar']['meta_title']
-                ],
-                'og_description' => [
+                ] : [],
+                'og_description' => $pageData['seo']['tr']['og_description'] ? [
                     'tr' => $pageData['seo']['tr']['og_description'] ?? $pageData['seo']['tr']['meta_description'],
                     'en' => $pageData['seo']['en']['og_description'] ?? $pageData['seo']['en']['meta_description'],
                     'ar' => $pageData['seo']['ar']['og_description'] ?? $pageData['seo']['ar']['meta_description']
-                ],
+                ] : [],
                 'og_image' => '',
                 'og_type' => 'website',
                 'twitter_card' => 'summary',

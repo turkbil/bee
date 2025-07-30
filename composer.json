@@ -62,6 +62,7 @@
             "Modules\\WidgetManagement\\App\\": "Modules/WidgetManagement/app/",
             "Modules\\ThemeManagement\\App\\": "Modules/ThemeManagement/app/",
             "Modules\\Announcement\\App\\": "Modules/Announcement/app/",
+            "Modules\\MenuManagement\\App\\": "Modules/MenuManagement/app/",
             "Modules\\LanguageManager\\App\\": "Modules/LanguageManager/app/",
             "Modules\\AI\\App\\": "Modules/AI/app/"
         },

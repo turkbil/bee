@@ -23,12 +23,14 @@ return new class extends Migration
             $table->string('tenant_locale', 5)->nullable(); // Tenant site language preference
             $table->rememberToken()->index();
             $table->timestamps();
+            $table->softDeletes(); // Soft delete için deleted_at kolonu
             
             // Tarih alanları için indeks
             $table->index('created_at');
             $table->index('updated_at');
             $table->index('admin_locale');
             $table->index('tenant_locale');
+            $table->index('deleted_at'); // Soft delete indeksi
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

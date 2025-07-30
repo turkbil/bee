@@ -1,287 +1,238 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="text-gray-500 dark:text-gray-400 text-sm">
-            {{ tenant('title') ?? config('app.name') }}
-        </div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
-            Hoş Geldiniz, {{ auth()->user()->name }}!
-        </h1>
-    </x-slot>
-
-    @push('styles')
-    <style>
-        .dashboard-card {
-            border: 1px solid rgb(229 231 235);
-        }
-        .dark .dashboard-card {
-            border-color: rgb(55 65 81);
-        }
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
-        .progress-ring-circle {
-            stroke-dasharray: 251.2;
-            stroke-dashoffset: 62.8;
-            transition: stroke-dashoffset 0.35s;
-        }
-    </style>
-    @endpush
-
-    <!-- Welcome Section -->
-    <div class="dashboard-card bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-xl p-8 mb-8">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold mb-2">Sisteme Hoş Geldiniz!</h2>
-                <p class="text-primary-100 mb-4">
-                    {{ tenant('title') ?? config('app.name') }} platformunda başarıyla giriş yaptınız.
-                </p>
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
-                        </svg>
-                        <span class="text-sm">Profil %85 Tamamlandı</span>
-                    </div>
-                </div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ __('admin.dashboard') }}</h2>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ __('admin.dashboard_welcome') }}</p>
             </div>
-            <div class="hidden lg:block">
-                <div class="relative">
-                    <svg class="progress-ring w-24 h-24" viewBox="0 0 84 84">
-                        <circle cx="42" cy="42" r="40" stroke="rgba(255,255,255,0.3)" stroke-width="4" fill="none"/>
-                        <circle class="progress-ring-circle" cx="42" cy="42" r="40" stroke="white" stroke-width="4" fill="none"/>
-                    </svg>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <span class="text-2xl font-bold">85%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Account Status -->
-        <div class="dashboard-card bg-white dark:bg-gray-800 rounded-lg p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                @if(auth()->user()->email_verified_at)
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                        Doğrulanmış
-                    </span>
-                @else
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                        Beklemede
-                    </span>
-                @endif
-            </div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Hesap Durumu</h3>
-            <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                {{ auth()->user()->email_verified_at ? 'Aktif' : 'Pasif' }}
-            </p>
-        </div>
-
-        <!-- Membership Duration -->
-        <div class="dashboard-card bg-white dark:bg-gray-800 rounded-lg p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <span class="text-xs text-gray-500 dark:text-gray-400">
-                    {{ auth()->user()->created_at->format('d.m.Y') }}
+            <div>
+                <span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/50 px-3 py-1 text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {{ tenant('title') ?? config('app.name') }}
                 </span>
             </div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Üyelik Süresi</h3>
-            <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                @php
-                    $createdAt = auth()->user()->created_at;
-                    $now = now();
-                    $diff = $createdAt->diff($now);
-                    $days = $diff->days;
-                    $hours = $diff->h;
-                    $minutes = $diff->i;
-                    
-                    // Anlaşılır format oluştur
-                    if ($days > 0) {
-                        $timeText = $days . ' gün';
-                        if ($hours > 0) {
-                            $timeText .= ', ' . $hours . ' saat';
-                        }
-                    } elseif ($hours > 0) {
-                        $timeText = $hours . ' saat';
-                        if ($minutes > 0) {
-                            $timeText .= ', ' . $minutes . ' dakika';
-                        }
-                    } else {
-                        $timeText = $minutes . ' dakika';
-                    }
-                @endphp
-                {{ $timeText }}
-            </p>
         </div>
+    </x-slot>
 
-        <!-- User Role -->
-        <div class="dashboard-card bg-white dark:bg-gray-800 rounded-lg p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                </div>
-                @forelse(auth()->user()->roles as $role)
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                        {{ $role->name }}
-                    </span>
-                @empty
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
-                        Kullanıcı
-                    </span>
-                @endforelse
-            </div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Rol</h3>
-            <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                @forelse(auth()->user()->roles as $role)
-                    {{ ucfirst($role->name) }}
-                @empty
-                    Kullanıcı
-                @endforelse
-            </p>
-        </div>
-
-        <!-- Last Activity -->
-        <div class="dashboard-card bg-white dark:bg-gray-800 rounded-lg p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
-                    <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"/>
-                    </svg>
-                </div>
-                <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">
-                    {{ request()->ip() }}
-                </span>
-            </div>
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Bağlantı</h3>
-            <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">Aktif</p>
-        </div>
-    </div>
-
-    <!-- Quick Actions & Account Summary -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Quick Actions -->
-        <div class="lg:col-span-2">
-            <div class="dashboard-card bg-white dark:bg-gray-800 rounded-lg p-6">
-                <div class="flex items-center mb-6">
-                    <div class="p-2 bg-primary-100 dark:bg-primary-900 rounded-lg mr-3">
-                        <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Welcome Card -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-lg shadow-lg overflow-hidden mb-6">
+                <div class="px-6 py-8 sm:p-10 sm:pb-6">
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white sm:text-3xl">
+                                {{ __('admin.welcome') }}, {{ auth()->user()->name }}!
+                            </h2>
+                            <p class="mt-2 text-blue-100">
+                                {{ tenant('title') ?? config('app.name') }} {{ __('admin.dashboard_subtitle') }}
+                            </p>
+                            <div class="mt-4 flex items-center gap-4">
+                                <span class="inline-flex items-center rounded-full bg-blue-800 dark:bg-blue-900 px-3 py-1 text-sm font-medium text-blue-100">
+                                    {{ __('admin.profile_completed') }} 85%
+                                </span>
+                                <span class="inline-flex items-center rounded-full bg-green-500 dark:bg-green-600 px-3 py-1 text-sm font-medium text-white">
+                                    {{ __('admin.active') }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="hidden lg:flex lg:items-center lg:justify-end">
+                            <div class="h-2 w-64 overflow-hidden rounded-full bg-blue-800 dark:bg-blue-900">
+                                <div class="h-2 bg-white" style="width: 85%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Hızlı İşlemler</h3>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="{{ route('profile.edit') }}" class="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
-                        <div class="flex items-center">
-                            <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
-                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-medium text-gray-900 dark:text-gray-100">Profil Düzenle</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Ad, email ve kişisel bilgiler</p>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="{{ route('profile.password') }}" class="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
-                        <div class="flex items-center">
-                            <div class="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg mr-3 group-hover:bg-yellow-200 dark:group-hover:bg-yellow-800 transition-colors">
-                                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m0 0a2 2 0 012 2m-2-2h-2m-2 2v6m0 0v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2m2-2h4m-4 0V9a2 2 0 012-2h4a2 2 0 012 2v2"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-medium text-gray-900 dark:text-gray-100">Şifre Değiştir</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Hesap güvenliğini artır</p>
-                            </div>
-                        </div>
-                    </a>
-
-                    @if(auth()->user()->hasAnyRole(['admin', 'root', 'editor']))
-                    <a href="{{ route('admin.dashboard') }}" class="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 transition-colors">
-                        <div class="flex items-center">
-                            <div class="p-2 bg-green-100 dark:bg-green-900 rounded-lg mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
-                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-medium text-gray-900 dark:text-gray-100">Yönetim Paneli</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Site yönetimi ve içerik</p>
-                            </div>
-                        </div>
-                    </a>
-                    @endif
-
-                    <button onclick="checkForUpdates()" class="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 transition-colors text-left">
-                        <div class="flex items-center">
-                            <div class="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-800 transition-colors">
-                                <svg id="update-icon" class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 id="update-title" class="font-medium text-gray-900 dark:text-gray-100">Güncellemeleri Kontrol Et</h4>
-                                <p id="update-desc" class="text-sm text-gray-500 dark:text-gray-400">Sistem güncellemelerini kontrol et</p>
-                            </div>
-                        </div>
-                    </button>
                 </div>
             </div>
-        </div>
 
-        <!-- Account Summary -->
-        <div class="dashboard-card bg-white dark:bg-gray-800 rounded-lg p-6">
-            <div class="flex items-center mb-6">
-                <div class="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg mr-3">
-                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+                <!-- Account Status -->
+                <div class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6">
+                    <dt>
+                        <div class="absolute rounded-md bg-indigo-500 dark:bg-indigo-600 p-3">
+                            @if(auth()->user()->email_verified_at)
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            @else
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                </svg>
+                            @endif
+                        </div>
+                        <p class="ml-16 text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ __('admin.account_status') }}</p>
+                    </dt>
+                    <dd class="ml-16 flex items-baseline">
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                            {{ auth()->user()->email_verified_at ? __('admin.verified') : __('admin.pending') }}
+                        </p>
+                    </dd>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Hesap Özeti</h3>
+
+                <!-- Membership Duration -->
+                <div class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6">
+                    <dt>
+                        <div class="absolute rounded-md bg-blue-500 dark:bg-blue-600 p-3">
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ __('admin.membership_duration') }}</p>
+                    </dt>
+                    <dd class="ml-16 flex items-baseline">
+                        @php
+                            $createdAt = auth()->user()->created_at;
+                            $diff = $createdAt->diff(now());
+                            $days = $diff->days;
+                            
+                            if ($days > 0) {
+                                $timeText = $days . ' ' . __('admin.days');
+                            } else {
+                                $timeText = $diff->h . ' ' . __('admin.hours');
+                            }
+                        @endphp
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ $timeText }}</p>
+                    </dd>
+                </div>
+
+                <!-- User Role -->
+                <div class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6">
+                    <dt>
+                        <div class="absolute rounded-md bg-purple-500 dark:bg-purple-600 p-3">
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ __('admin.user_role') }}</p>
+                    </dt>
+                    <dd class="ml-16 flex items-baseline">
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                            @forelse(auth()->user()->roles as $role)
+                                {{ ucfirst($role->name) }}
+                            @empty
+                                {{ __('admin.users') }}
+                            @endforelse
+                        </p>
+                    </dd>
+                </div>
+
+                <!-- Connection Status -->
+                <div class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6">
+                    <dt>
+                        <div class="absolute rounded-md bg-green-500 dark:bg-green-600 p-3">
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ __('admin.connection_status') }}</p>
+                    </dt>
+                    <dd class="ml-16 flex items-baseline">
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ __('admin.active') }}</p>
+                    </dd>
+                </div>
             </div>
 
-            <div class="space-y-4">
-                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Kullanıcı ID</span>
-                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100 font-mono">#{{ auth()->user()->id }}</span>
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <!-- Quick Actions -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">{{ __('admin.quick_actions') }}</h3>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <a href="{{ route('profile.edit') }}" class="relative group bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
+                                    <div>
+                                        <span class="rounded-lg inline-flex p-3 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/70">
+                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="mt-4">
+                                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('admin.edit_profile') }}</h3>
+                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('admin.personal_info') }}</p>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('profile.password') }}" class="relative group bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
+                                    <div>
+                                        <span class="rounded-lg inline-flex p-3 bg-yellow-50 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-300 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/70">
+                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="mt-4">
+                                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('admin.change_password') }}</h3>
+                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('admin.increase_security') }}</p>
+                                    </div>
+                                </a>
+
+                                <a href="{{ url('/') }}" class="relative group bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
+                                    <div>
+                                        <span class="rounded-lg inline-flex p-3 bg-purple-50 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/70">
+                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="mt-4">
+                                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('admin.view_website') }}</h3>
+                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('admin.go_to_homepage') }}</p>
+                                    </div>
+                                </a>
+
+                                <button onclick="checkForUpdates(event)" class="relative group bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left">
+                                    <div>
+                                        <span class="rounded-lg inline-flex p-3 bg-green-50 dark:bg-green-900/50 text-green-700 dark:text-green-300 group-hover:bg-green-100 dark:group-hover:bg-green-900/70">
+                                            <svg id="update-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="mt-4">
+                                        <h3 id="update-title" class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('admin.check_updates') }}</h3>
+                                        <p id="update-desc" class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('admin.check_system_updates') }}</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Email</span>
-                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ auth()->user()->email }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Telefon</span>
-                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ auth()->user()->phone ?? 'Belirtilmemiş' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Kayıt Tarihi</span>
-                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ auth()->user()->created_at->format('d.m.Y') }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Son Güncelleme</span>
-                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ auth()->user()->updated_at->format('d.m.Y') }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">IP Adresi</span>
-                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100 font-mono">{{ request()->ip() }}</span>
+
+                <!-- Account Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">{{ __('admin.account_summary') }}</h3>
+                            <dl class="space-y-3">
+                                <div class="flex justify-between text-sm">
+                                    <dt class="text-gray-500 dark:text-gray-400">{{ __('admin.user_id') }}</dt>
+                                    <dd class="text-gray-900 dark:text-gray-100 font-medium">#{{ auth()->user()->id }}</dd>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <dt class="text-gray-500 dark:text-gray-400">{{ __('admin.email') }}</dt>
+                                    <dd class="text-gray-900 dark:text-gray-100 truncate ml-2">{{ auth()->user()->email }}</dd>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <dt class="text-gray-500 dark:text-gray-400">{{ __('admin.phone') }}</dt>
+                                    <dd class="text-gray-900 dark:text-gray-100">{{ auth()->user()->phone ?? __('admin.not_specified') }}</dd>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <dt class="text-gray-500 dark:text-gray-400">{{ __('admin.registration_date') }}</dt>
+                                    <dd class="text-gray-900 dark:text-gray-100">{{ auth()->user()->created_at->format('d.m.Y') }}</dd>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <dt class="text-gray-500 dark:text-gray-400">{{ __('admin.last_update') }}</dt>
+                                    <dd class="text-gray-900 dark:text-gray-100">{{ auth()->user()->updated_at->format('d.m.Y') }}</dd>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <dt class="text-gray-500 dark:text-gray-400">{{ __('admin.ip_address') }}</dt>
+                                    <dd class="text-gray-900 dark:text-gray-100 font-mono text-xs">{{ request()->ip() }}</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -289,31 +240,29 @@
 
     @push('scripts')
     <script>
-        function checkForUpdates() {
-            const button = event.target.closest('button');
+        function checkForUpdates(event) {
+            event.preventDefault();
+            
             const icon = document.getElementById('update-icon');
             const title = document.getElementById('update-title');
             const desc = document.getElementById('update-desc');
             
-            // Loading state
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>';
+            // Add rotation animation
             icon.classList.add('animate-spin');
-            title.textContent = 'Kontrol Ediliyor...';
-            desc.textContent = 'Güncellemeler aranıyor';
-            button.disabled = true;
+            title.textContent = '{{ __("admin.checking_updates") }}';
+            desc.textContent = '{{ __("admin.searching_updates") }}';
             
             // Simulate update check
             setTimeout(() => {
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>';
                 icon.classList.remove('animate-spin');
-                title.textContent = 'Güncel';
-                desc.textContent = 'Tüm sistemler güncel';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />';
+                title.textContent = '{{ __("admin.system_updated") }}';
+                desc.textContent = '{{ __("admin.all_systems_updated") }}';
                 
                 setTimeout(() => {
-                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>';
-                    title.textContent = 'Güncellemeleri Kontrol Et';
-                    desc.textContent = 'Sistem güncellemelerini kontrol et';
-                    button.disabled = false;
+                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />';
+                    title.textContent = '{{ __("admin.check_updates") }}';
+                    desc.textContent = '{{ __("admin.check_system_updates") }}';
                 }, 3000);
             }, 2000);
         }

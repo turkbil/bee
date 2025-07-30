@@ -4,8 +4,8 @@
             @click="open = !open"
             @click.away="open = false"
             aria-label="Open user menu">
-        @if($user && $user->avatar)
-            <img src="{{ asset('storage/' . $user->avatar) }}" 
+        @if($user && $user->getFirstMedia('avatar'))
+            <img src="{{ $user->getFirstMedia('avatar')->getUrl() }}?v={{ time() }}" 
                  alt="Avatar" 
                  class="w-8 h-8 rounded-full object-cover">
         @else

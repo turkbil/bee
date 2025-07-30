@@ -250,6 +250,7 @@ class ProfileController extends Controller
 
         Auth::logout();
 
+        // Soft delete - kullanıcı silinir ama veritabanında kalır
         $user->delete();
 
         $request->session()->invalidate();

@@ -26,14 +26,19 @@ return new class extends Migration
             $table->json('dashboard_preferences')->nullable(); // Dashboard tercihleri
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes(); // Soft delete için deleted_at kolonu
             
             // Dil tercihleri için indeksler  
             $table->index('admin_locale');
             $table->index('tenant_locale');
             
+            // Soft delete için indeks
+            $table->index('deleted_at');
+            
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'last_login_at'], 'users_active_last_login_idx');
             $table->index(['email_verified_at', 'is_active'], 'users_verified_active_idx');
+            $table->index(['deleted_at', 'is_active'], 'users_deleted_active_idx');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -7,14 +7,20 @@ use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use App\Services\ModuleSlugService;
+use App\Traits\HasModuleAccessControl;
 
 class AnnouncementController extends Controller
 {
+    use HasModuleAccessControl;
+    
     protected $themeService;
 
     public function __construct(ThemeService $themeService)
     {
         $this->themeService = $themeService;
+        
+        // 🔒 MODÜL ERİŞİM KONTROLÜ
+        $this->checkModuleAccess('Announcement');
     }
 
     public function index()
@@ -68,13 +74,6 @@ class AnnouncementController extends Controller
                     
                 if ($item) {
                     // Farklı dilde bulundu, doğru URL'e redirect et
-                    Log::info("Announcement found in different locale, redirecting", [
-                        'slug' => $slug,
-                        'found_in' => $locale,
-                        'requested_in' => $currentLocale
-                    ]);
-                    
-                    // Doğru dil ve slug ile URL oluştur
                     $correctUrl = $this->generateAnnouncementUrl($item, $locale);
                     return redirect()->to($correctUrl, 301); // 301 = Permanent redirect
                 }
@@ -91,11 +90,6 @@ class AnnouncementController extends Controller
         // Canonical URL kontrolü - doğru slug kullanılıyor mu?
         $expectedSlug = $item->getTranslated('slug', $currentLocale);
         if (!is_numeric($slug) && $slug !== $expectedSlug) {
-            Log::info("Redirecting to canonical slug", [
-                'requested' => $slug,
-                'canonical' => $expectedSlug,
-                'locale' => $currentLocale
-            ]);
             // Yanlış slug ile erişim, doğru URL'e redirect
             return redirect()->to($this->generateAnnouncementUrl($item, $currentLocale));
         }

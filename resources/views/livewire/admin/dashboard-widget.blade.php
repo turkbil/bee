@@ -1,806 +1,1095 @@
 <div>
-    <div class="row row-deck row-cards" id="dashboard-cards" style="opacity: 0; transition: opacity 0.3s ease;">
-        
-        {{-- First Row - Main Statistics (4 cards) --}}
-        @if(in_array('ai', $activeModules))
-        <div class="col-sm-6 col-lg-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center drag-handle">
-                        <div class="subheader">{{ __('ai::admin.dashboard.ai_profile') }}</div>
-                        <div class="ms-auto lh-1">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('ai::admin.dashboard.details') }}</a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="{{ route('admin.ai.profile.show') }}">{{ __('ai::admin.view_profile') }}</a>
-                                    <a class="dropdown-item" href="{{ route('admin.ai.profile.edit', 1) }}">{{ __('ai::admin.edit_profile') }}</a>
-                                </div>
+    {{-- Modern Welcome Header --}}
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar avatar-lg me-3" style="background: linear-gradient(135deg, #206bc4 0%, #1d4ed8 100%);">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                                <path d="M12 1l3 6l6 3l-6 3l-3 6l-3 -6l-6 -3l6 -3z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="page-title mb-1">
+                                {{ __('admin.dashboard_welcome') }}
+                            </h2>
+                            <div>
+                                {{ __('admin.welcome') }}, <strong>{{ auth()->user()->name }}</strong>! {{ tenant('title') ?? config('app.name') }} {{ __('admin.dashboard_subtitle') }}
                             </div>
-                        </div>
-                    </div>
-                    @if($aiProfile)
-                        <div class="h1 mb-3">{{ $aiCompletionPercentage }}%</div>
-                        <div class="d-flex mb-2">
-                            <div>{{ __('ai::admin.dashboard.completion_rate') }}</div>
-                            <div class="ms-auto">
-                                <span class="text-{{ $aiIsCompleted ? 'green' : 'yellow' }} d-inline-flex align-items-center lh-1">
-                                    {{ $aiIsCompleted ? '✓' : '⏳' }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon ms-1 icon-2">
-                                        <path d="M3 17l6 -6l4 4l8 -8" />
-                                        <path d="M14 7l7 0l0 7" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="progress progress-sm">
-                            <div class="progress-bar bg-{{ $aiIsCompleted ? 'success' : 'primary' }}" style="width: {{ $aiCompletionPercentage }}%" role="progressbar" aria-valuenow="{{ $aiCompletionPercentage }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ $aiCompletionPercentage }}% Complete">
-                                <span class="visually-hidden">{{ $aiCompletionPercentage }}% Complete</span>
-                            </div>
-                        </div>
-                    @else
-                        <div class="h1 mb-3">0%</div>
-                        <div class="d-flex mb-2">
-                            <div>{{ __('ai::admin.dashboard.no_profile') }}</div>
-                            <div class="ms-auto">
-                                <span class="text-red d-inline-flex align-items-center lh-1">
-                                    {{ __('ai::admin.dashboard.setup_needed') }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="progress progress-sm">
-                            <div class="progress-bar bg-muted" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                <span class="visually-hidden">0% Complete</span>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endif
-
-        @if(in_array('ai', $activeModules))
-        <div class="col-sm-6 col-lg-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center drag-handle">
-                        <div class="subheader">AI Kredileri</div>
-                        <div class="ms-auto lh-1">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="{{ route('admin.ai.credits.index') }}">Kredi Yönetimi</a>
-                                    <a class="dropdown-item" href="{{ route('admin.ai.conversations.index') }}">Usage History</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="h1 mb-3">{{ $remainingTokensFormatted }}</div>
-                    <div class="d-flex mb-2">
-                        <div>Kalan Krediler</div>
-                        <div class="ms-auto">
-                            <span class="text-{{ $statusColor }} d-inline-flex align-items-center lh-1">
-                                {{ $statusText }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress progress-sm">
-                        <div class="progress-bar bg-{{ $statusColor }}" style="width: {{ 100 - ($usagePercentage ?? 0) }}%" role="progressbar" aria-valuenow="{{ 100 - ($usagePercentage ?? 0) }}" aria-valuemin="0" aria-valuemax="100">
-                            <span class="visually-hidden">{{ 100 - ($usagePercentage ?? 0) }}% Remaining</span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        @endif
-
-        @if(in_array('page', $activeModules))
-        <div class="col-sm-6 col-lg-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center drag-handle">
-                        <div class="subheader">Pages</div>
-                        <div class="ms-auto lh-1">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="{{ route('admin.page.index') }}">All Pages</a>
-                                    <a class="dropdown-item" href="{{ route('admin.page.manage') }}">Create Page</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="h1 mb-3">{{ $totalPages }}</div>
-                    <div class="d-flex mb-2">
-                        <div>{{ __('page::admin.total_pages') }}</div>
-                        <div class="ms-auto">
-                            <span class="text-blue d-inline-flex align-items-center lh-1">
-                                {{ __('ai::admin.dashboard.active') }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress progress-sm">
-                        <div class="progress-bar bg-primary" style="width: {{ min(100, ($totalPages ?? 0) * 10) }}%" role="progressbar">
-                            <span class="visually-hidden">{{ $totalPages ?? 0 }} pages</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
-        @if(in_array('portfolio', $activeModules))
-        <div class="col-sm-6 col-lg-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center drag-handle">
-                        <div class="subheader">Portfolio</div>
-                        <div class="ms-auto lh-1">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="{{ route('admin.portfolio.index') }}">All Portfolios</a>
-                                    <a class="dropdown-item" href="{{ route('admin.portfolio.manage') }}">Create Portfolio</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="h1 mb-3">{{ $totalPortfolios }}</div>
-                    <div class="d-flex mb-2">
-                        <div>{{ __('portfolio::admin.total_portfolios') }}</div>
-                        <div class="ms-auto">
-                            <span class="text-green d-inline-flex align-items-center lh-1">
-                                {{ __('ai::admin.dashboard.active') }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress progress-sm">
-                        <div class="progress-bar bg-success" style="width: {{ min(100, ($totalPortfolios ?? 0) * 15) }}%" role="progressbar">
-                            <span class="visually-hidden">{{ $totalPortfolios ?? 0 }} portfolios</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
-        {{-- Second Row - Charts and Stats (3 equal columns) --}}
-        @if(in_array('ai', $activeModules))
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="card-title">{{ __('ai::admin.dashboard.activity_overview') }}</h3>
-                        <div class="dropdown">
-                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('ai::admin.dashboard.this_month') }}</a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="#">Bu Hafta</a>
-                                <a class="dropdown-item" href="#">Bu Ay</a>
-                                <a class="dropdown-item" href="#">Bu Yıl</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="height: 250px; position: relative;">
-                        <canvas id="chart-mentions"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
-        @if(in_array('ai', $activeModules))
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="card-title">{{ __('ai::admin.dashboard.performance') }}</h3>
-                        <span class="badge bg-success">+12%</span>
-                    </div>
-                    <div style="height: 250px; position: relative;">
-                        <canvas id="chart-performance"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
-        {{-- Third Row - AI Chat --}}
-        @if(in_array('ai', $activeModules))
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="card-title">{{ __('ai::admin.dashboard.quick_ai_chat') }}</h3>
-                        <a href="{{ route('admin.ai.index') }}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-expand me-1"></i>
-                            {{ __('ai::admin.dashboard.full_screen') }}
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                        <a href="{{ route('admin.page.manage') }}" class="btn btn-outline-primary d-none d-sm-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M12 5l0 14" />
+                                <path d="M5 12l14 0" />
+                            </svg>
+                            {{ __('admin.create_content') }}
                         </a>
-                    </div>
-                    
-                    <div class="dashboard-chat-container">
-                        <div id="dashboard-chat-messages" class="chat-messages"></div>
-                        <div class="chat-input-container">
-                            <div class="d-flex">
-                                <textarea id="dashboard-chat-input" class="form-control" rows="2" placeholder="{{ __('ai::admin.dashboard.chat_placeholder') }}" style="resize: none;"></textarea>
-                                <button id="dashboard-chat-send" class="btn btn-primary ms-2">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <small class="text-muted">Token: {{ $remainingTokens ?? 0 }} {{ __('ai::admin.dashboard.tokens_left') }}</small>
-                                <div id="dashboard-chat-status" class="text-muted"></div>
-                            </div>
-                        </div>
+                        <button class="btn btn-primary d-none d-sm-inline-block" onclick="refreshDashboard()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
+                            </svg>
+                            {{ __('admin.refresh') }}
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-        @endif
-
-        {{-- Fourth Row - Recent Items (3 equal columns) --}}
-        @if(in_array('page', $activeModules))
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="card-title">{{ __('page::admin.recent_pages') }}</h3>
-                        <a href="{{ route('admin.page.index') }}" class="btn btn-sm btn-outline-primary">{{ __('page::admin.view_all') }}</a>
-                    </div>
-                    @if($recentPages && count($recentPages) > 0)
-                        <div class="list-group list-group-flush">
-                            @foreach($recentPages as $page)
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">{{ is_array($page->title) ? ($page->title[app()->getLocale()] ?? array_first($page->title)) : $page->title }}</div>
-                                    <small class="text-muted">{{ $page->created_at->diffForHumans() }}</small>
-                                </div>
-                                <span class="badge bg-{{ $page->is_active ? 'success' : 'secondary' }} rounded-pill">
-                                    {{ $page->is_active ? __('ai::admin.dashboard.active') : __('ai::admin.dashboard.draft') }}
-                                </span>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">{{ __('page::admin.no_pages_yet') }}</p>
-                            <a href="{{ route('admin.page.manage') }}" class="btn btn-primary btn-sm">{{ __('page::admin.create_first_page') }}</a>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endif
-
-        @if(in_array('portfolio', $activeModules))
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="card-title">{{ __('portfolio::admin.recent_portfolios') }}</h3>
-                        <a href="{{ route('admin.portfolio.index') }}" class="btn btn-sm btn-outline-primary">{{ __('portfolio::admin.view_all') }}</a>
-                    </div>
-                    @if($recentPortfolios && count($recentPortfolios) > 0)
-                        <div class="list-group list-group-flush">
-                            @foreach($recentPortfolios as $portfolio)
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">{{ is_array($portfolio->title) ? ($portfolio->title[app()->getLocale()] ?? array_first($portfolio->title)) : $portfolio->title }}</div>
-                                    <small class="text-muted">{{ $portfolio->created_at->diffForHumans() }}</small>
-                                </div>
-                                <span class="badge bg-{{ $portfolio->is_active ? 'success' : 'secondary' }} rounded-pill">
-                                    {{ $portfolio->is_active ? __('ai::admin.dashboard.active') : __('ai::admin.dashboard.draft') }}
-                                </span>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">{{ __('portfolio::admin.no_portfolios_yet') }}</p>
-                            <a href="{{ route('admin.portfolio.manage') }}" class="btn btn-primary btn-sm">{{ __('portfolio::admin.create_first_portfolio') }}</a>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endif
-
-        @if(in_array('announcement', $activeModules))
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="card-title">Duyurular</h3>
-                        <span class="badge bg-primary">{{ $totalAnnouncements ?? 0 }}</span>
-                    </div>
-                    @if($recentAnnouncements && count($recentAnnouncements) > 0)
-                        <div class="list-group list-group-flush">
-                            @foreach($recentAnnouncements as $announcement)
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">{{ is_array($announcement->title) ? ($announcement->title[app()->getLocale()] ?? array_first($announcement->title)) : $announcement->title }}</div>
-                                    <small class="text-muted">{{ $announcement->created_at->diffForHumans() }}</small>
-                                </div>
-                                <span class="badge bg-{{ $announcement->is_active ? 'success' : 'secondary' }} rounded-pill">
-                                    {{ $announcement->is_active ? __('ai::admin.dashboard.active') : __('ai::admin.dashboard.draft') }}
-                                </span>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">Henüz duyuru yok</p>
-                            <a href="{{ route('admin.announcement.manage') }}" class="btn btn-primary btn-sm">İlk Duyuru Oluştur</a>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endif
-
     </div>
+
+    {{-- Main Dashboard Content --}}
+    <div class="page-body">
+        <div class="container-xl">
+            
+            {{-- Modern Stats Cards Row --}}
+            <div class="row row-deck row-cards mb-4">
+                {{-- System Status Card --}}
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card card-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <span class="avatar" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                            <path d="M9 12l2 2l4 -4" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium">
+                                        {{ __('admin.system_online') }}
+                                    </div>
+                                    <div class="small">
+                                        {{ __('admin.account_status') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- User Role Card --}}
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card card-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <span class="avatar" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium">
+                                        {{ auth()->user()->roles->first()->name ?? __('admin.admin') }}
+                                    </div>
+                                    <div class="small">
+                                        {{ __('admin.user_role') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if(in_array('page', $activeModules))
+                {{-- Pages Count --}}
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card card-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <span class="avatar" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium">
+                                        {{ $totalPages ?? 0 }}
+                                    </div>
+                                    <div class="small">
+                                        {{ __('admin.pages') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                @if(in_array('portfolio', $activeModules))
+                {{-- Portfolio Count --}}
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card card-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <span class="avatar" style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                            <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium">
+                                        {{ $totalPortfolios ?? 0 }}
+                                    </div>
+                                    <div class="small">
+                                        {{ __('admin.portfolio') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+
+            {{-- Main Content Row --}}
+            <div class="row row-deck row-cards">
+                {{-- Quick Actions Card --}}
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ __('admin.quick_actions') }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                {{-- Create New Page --}}
+                                @if(in_array('page', $activeModules))
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.page.manage') }}" class="card card-link">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                            <path d="M12 5l0 14" />
+                                                            <path d="M5 12l14 0" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">{{ __('admin.create') }} {{ __('admin.pages') }}</div>
+                                                    <div>{{ __('admin.create') }} yeni sayfa</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                @endif
+
+                                {{-- Create Portfolio --}}
+                                @if(in_array('portfolio', $activeModules))
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.portfolio.manage') }}" class="card card-link">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                                            <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+                                                            <path d="M12 5l0 14" />
+                                                            <path d="M5 12l14 0" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">{{ __('admin.create') }} Portfolio</div>
+                                                    <div>Yeni portfolio projesi</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                @endif
+
+                                {{-- Create Announcement --}}
+                                @if(in_array('announcement', $activeModules))
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.announcement.manage') }}" class="card card-link">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M18 8a3 3 0 0 1 0 6" />
+                                                            <path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5" />
+                                                            <path d="M12 8h0l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">{{ __('admin.create') }} Duyuru</div>
+                                                    <div>Yeni duyuru oluştur</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                @endif
+
+                                {{-- AI Features --}}
+                                @if(in_array('ai', $activeModules))
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.ai.index') }}" class="card card-link">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M8 9h8" />
+                                                            <path d="M8 13h6" />
+                                                            <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">AI {{ __('admin.assistant') }}</div>
+                                                    <div>Yapay zeka yardımcısı</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                @endif
+
+                                {{-- System Settings --}}
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.dashboard') }}" class="card card-link">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c.996 .608 2.296 .07 2.572 -1.065z" />
+                                                            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">{{ __('admin.system_settings') }}</div>
+                                                    <div>Dil ve sistem ayarları</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                {{-- Cache Clear --}}
+                                <div class="col-md-6">
+                                    <a href="#" onclick="clearSystemCache()" class="card card-link">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">{{ __('admin.clear_cache') }}</div>
+                                                    <div>Sistem önbelleğini temizle</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            {{-- AI Sohbet Widget --}}
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <path d="M8 9h8" />
+                                                    <path d="M8 13h6" />
+                                                    <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+                                                </svg>
+                                                AI Asistan
+                                            </h3>
+                                            <span class="badge">Hızlı Sohbet</span>
+                                        </div>
+                                        <div class="card-body">
+                                            {{-- Chat Messages --}}
+                                            <div class="ai-chat-widget-messages border rounded" id="aiChatWidgetMessages" style="min-height: 300px; max-height: 400px; overflow-y: auto; padding: 20px; margin-bottom: 20px;">
+                                                <div class="ai-message-widget assistant mb-3">
+                                                    <div class="d-flex align-items-start">
+                                                        <div class="avatar avatar-sm me-3">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                                                                <path d="M12 1l3 6l6 3l-6 3l-3 6l-3 -6l-6 -3l6 -3z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="flex-fill">
+                                                            <div class="card p-3 mb-2">
+                                                                <div>Selam! Nasıl yardımcı olabilirim?</div>
+                                                            </div>
+                                                            <small>Az önce</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Quick Action Buttons --}}
+                                            <div class="mb-4">
+                                                <div class="row g-2">
+                                                </div>
+                                            </div>
+
+                                            {{-- Chat Input --}}
+                                            <div class="input-group input-group-lg">
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       placeholder="Mesaj yazın..."
+                                                       id="aiChatWidgetInput"
+                                                       wire:model.live="aiChatMessage"
+                                                       wire:keydown.enter.prevent="sendAiMessage">
+                                                <button class="btn" type="button" wire:click="sendAiMessage">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                        <path d="M10 14l11 -11" />
+                                                        <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Recent Activity & Info --}}
+                <div class="col-lg-4">
+                    <div class="row row-cards">
+                        {{-- Account Info --}}
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">{{ __('admin.account_summary') }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col text-muted">{{ __('admin.user_id') }}</div>
+                                                <div class="col-auto">
+                                                    <span class="badge">#{{ auth()->user()->id }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col text-muted">{{ __('admin.email') }}</div>
+                                                <div class="col-auto text-end">
+                                                    <small>{{ auth()->user()->email }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col text-muted">{{ __('admin.registration_date') }}</div>
+                                                <div class="col-auto text-end">
+                                                    <small>{{ auth()->user()->created_at->format('d.m.Y') }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col text-muted">{{ __('admin.last_update') }}</div>
+                                                <div class="col-auto text-end">
+                                                    <small>{{ auth()->user()->updated_at->format('d.m.Y') }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col text-muted">{{ __('admin.ip_address') }}</div>
+                                                <div class="col-auto text-end">
+                                                    <small class="font-monospace">{{ request()->ip() }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Recent Pages --}}
+                        @if(in_array('page', $activeModules))
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">{{ __('admin.pages') }}</h3>
+                                    <div class="card-actions">
+                                        <a href="{{ route('admin.page.index') }}" class="btn btn-sm btn-outline-primary">
+                                            {{ __('admin.view_all') }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    @if($recentPages && count($recentPages) > 0)
+                                        <div class="list-group list-group-flush">
+                                            @foreach($recentPages->take(3) as $page)
+                                            <div class="list-group-item px-0">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <div class="font-weight-medium">
+                                                            {{ is_array($page->title) ? ($page->title[app()->getLocale()] ?? array_first($page->title)) : $page->title }}
+                                                        </div>
+                                                        <div class="text-muted">{{ $page->created_at->diffForHumans() }}</div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <span class="badge badge-outline text-{{ $page->is_active ? 'green' : 'gray' }}">
+                                                            {{ $page->is_active ? __('admin.active') : __('admin.draft') }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="text-center py-4">
+                                            <div class="text-muted">{{ __('admin.no_pages_yet') }}</div>
+                                            <a href="{{ route('admin.page.manage') }}" class="btn btn-primary btn-sm mt-2">
+                                                {{ __('admin.create_first_page') }}
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- System Status --}}
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">{{ __('admin.system') }} {{ __('admin.status') }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="status-dot status-dot-animated bg-green me-2"></span>
+                                                        PHP {{ PHP_VERSION }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="badge text-green">{{ __('admin.active') }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="status-dot status-dot-animated bg-green me-2"></span>
+                                                        Laravel {{ app()->version() }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="badge text-green">{{ __('admin.active') }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item px-0">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="status-dot status-dot-animated bg-green me-2"></span>
+                                                        Database
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="badge text-green">{{ __('admin.connected') }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Create Modal --}}
+    <div class="modal modal-blur fade" id="modal-create" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ __('admin.create') }} {{ __('admin.content') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        @if(in_array('page', $activeModules))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.page.manage') }}" class="card card-link h-100">
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <span class="avatar avatar-xl">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <h3 class="card-title">{{ __('admin.pages') }}</h3>
+                                    <p class="text-muted">Yeni sayfa oluştur</p>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+
+                        @if(in_array('portfolio', $activeModules))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.portfolio.manage') }}" class="card card-link h-100">
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <span class="avatar avatar-xl">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                                <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <h3 class="card-title">Portfolio</h3>
+                                    <p class="text-muted">Yeni portfolio projesi</p>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @push('styles')
 <style>
-.dashboard-chat-container {
-    height: 250px;
+/* AI Assistant Panel - Modern Floating Design */
+.ai-assistant-panel {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 99999;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Toggle Button */
+.ai-toggle-btn {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    flex-direction: column;
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.375rem;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
 }
 
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-    background-color: var(--bs-body-bg);
+.ai-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
 }
 
-.chat-input-container {
-    padding: 1rem;
-    background-color: var(--bs-body-bg);
-    border-top: 1px solid var(--bs-border-color);
+.ai-icon {
+    font-size: 24px;
+    z-index: 2;
 }
 
-.user-message-compact {
-    background-color: #206bc4;
+.ai-pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: aiPulse 2s infinite;
+}
+
+@keyframes aiPulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Main Panel */
+.ai-panel {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 400px;
+    max-height: 600px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: aiPanelSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes aiPanelSlideIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Panel Header */
+.ai-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
-    margin-bottom: 0.5rem;
-    margin-left: 2rem;
-    text-align: right;
 }
 
-.ai-message-compact {
-    background-color: var(--bs-secondary-bg);
-    color: var(--bs-body-color);
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
-    margin-bottom: 0.5rem;
-    margin-right: 2rem;
+.ai-panel-title {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
 }
 
-.drag-handle {
-    cursor: grab;
+.ai-status-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-left: 12px;
 }
 
-.drag-handle:active {
-    cursor: grabbing;
+.ai-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
 }
 
-.sortable-ghost {
-    opacity: 0.4;
+.ai-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.sortable-chosen {
-    transform: scale(1.02);
+/* Panel Content */
+.ai-panel-content {
+    max-height: 520px;
+    overflow-y: auto;
+    padding: 24px;
 }
 
-.sortable-drag {
-    transform: rotate(2deg);
+.ai-section-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
 }
 
-#dashboard-cards {
-    min-height: 400px;
+/* Chat Section */
+.ai-chat-messages {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
 }
 
-.toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1055;
+.ai-message {
+    display: flex;
+    margin-bottom: 16px;
 }
 
-.dashboard-toast {
-    background-color: var(--bs-primary);
-    color: var(--bs-white);
-    padding: 0.75rem 1rem;
-    border-radius: 0.375rem;
-    margin-bottom: 0.5rem;
-    animation: slideIn 0.3s ease-out;
+.ai-message:last-child {
+    margin-bottom: 0;
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
+.ai-message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.ai-message-content {
+    flex: 1;
+}
+
+.ai-message-text {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ai-message-time {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 4px;
+    margin-left: 16px;
+}
+
+/* Chat Input */
+.ai-input-container {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.ai-chat-field {
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 14px;
+    color: #374151;
+}
+
+.ai-chat-field::placeholder {
+    color: #9ca3af;
+}
+
+.ai-send-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-send-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Quick Actions */
+.ai-action-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.ai-action-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.ai-action-card:hover {
+    border-color: #667eea;
+    background: #f8faff;
+    transform: translateX(4px);
+}
+
+.ai-action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 18px;
+    color: white;
+}
+
+.ai-action-icon.seo { background: linear-gradient(135deg, #10b981, #059669); }
+.ai-action-icon.content { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.ai-action-icon.analysis { background: linear-gradient(135deg, #10b981, #059669); }
+
+.ai-action-content {
+    flex: 1;
+}
+
+.ai-action-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.ai-action-desc {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ai-assistant-panel {
+        bottom: 20px;
+        right: 20px;
     }
-    to {
-        transform: translateX(0);
-        opacity: 1;
+    
+    .ai-panel {
+        width: calc(100vw - 40px);
+        max-width: 360px;
     }
 }
 </style>
 @endpush
 
 @push('scripts')
-<!-- Sortable Library -->
-<script src="/admin-assets/libs/sortable/sortable.min.js"></script>
-<!-- ApexCharts - Modern charting library -->
-<script src="/admin-assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-
 <script>
-// Global variables
-let dashboardConversationId = null;
-let dashboardEventSource = null;
-let dashboardWordBuffer = null;
-
-// Dashboard sortable initialization
-$(document).ready(function() {
-    console.log('🚀 Dashboard sortable initializing...');
+function refreshDashboard() {
+    // Show loading animation
+    const refreshBtn = document.querySelector('a[onclick="refreshDashboard()"]');
+    const icon = refreshBtn.querySelector('.icon');
     
-    const dashboardContainer = document.getElementById('dashboard-cards');
-    if (!dashboardContainer) {
-        console.error('❌ Dashboard container not found');
+    icon.classList.add('icon-tabler-rotate');
+    
+    // Reload page after animation
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
+}
+
+function clearSystemCache() {
+    if (!confirm('{{ __("admin.confirm_clear_cache") }}')) {
         return;
     }
-
-    // Initialize Sortable
-    window.dashboardSortable = Sortable.create(dashboardContainer, {
-        animation: 250,
-        delay: 50,
-        delayOnTouchOnly: true,
-        handle: '.drag-handle',
-        ghostClass: 'sortable-ghost',
-        chosenClass: 'sortable-chosen',
-        dragClass: 'sortable-drag',
-        forceFallback: false,
-        fallbackClass: 'sortable-fallback',
-        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-        
-        onStart: function(evt) {
-            document.body.style.cursor = 'grabbing';
-            document.body.classList.add('sortable-grabbing');
-            $(evt.item).addClass('dragging');
-        },
-        
-        onEnd: function(evt) {
-            document.body.style.cursor = 'default';
-            document.body.classList.remove('sortable-grabbing');
-            $(evt.item).removeClass('dragging');
-            
-            // Save layout
-            saveDashboardLayout();
+    
+    fetch('/admin/cache/clear-all', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('{{ __("admin.cache_cleared_successfully") }}', 'success');
+        } else {
+            showToast('{{ __("admin.error") }}: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showToast('{{ __("admin.error") }}: ' + error.message, 'error');
     });
-
-    // Show dashboard with animation
-    setTimeout(function() {
-        dashboardContainer.style.opacity = '1';
-        console.log('✅ Dashboard visible');
-    }, 100);
-
-    // Initialize charts
-    setTimeout(initializeCharts, 300);
-});
-
-// Chart initialization with ApexCharts
-function initializeCharts() {
-    if (!window.ApexCharts) {
-        console.warn('⚠️ ApexCharts not loaded, retrying...');
-        setTimeout(initializeCharts, 500);
-        return;
-    }
-    
-    setTimeout(function() {
-        console.log('📊 Initializing charts with ApexCharts...');
-        
-        // Activity chart
-        const mentionsElement = document.getElementById('chart-mentions');
-        if (mentionsElement) {
-            try {
-                const mentionsData = [{{ count($recentLogins ?? []) }}, {{ count($newUsers ?? []) }}, {{ $totalPages ?? 0 }}, {{ $totalPortfolios ?? 0 }}, {{ $totalAnnouncements ?? 0 }}];
-                
-                const mentionsOptions = {
-                    chart: {
-                        type: 'area',
-                        height: 250,
-                        toolbar: {
-                            show: false
-                        }
-                    },
-                    series: [{
-                        name: 'Activity',
-                        data: mentionsData
-                    }],
-                    xaxis: {
-                        categories: ['Logins', 'New Users', 'Pages', 'Portfolio', 'Announcements']
-                    },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 2
-                    },
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.3,
-                            opacityTo: 0.05,
-                            stops: [0, 100]
-                        }
-                    },
-                    colors: ['#206bc4'],
-                    legend: {
-                        show: false
-                    }
-                };
-                
-                window.mentionsChart = new ApexCharts(mentionsElement, mentionsOptions);
-                window.mentionsChart.render();
-                
-                console.log('✅ Activity chart rendered');
-            } catch (e) {
-                console.error('❌ Activity chart error:', e);
-            }
-        }
-
-        // Performance chart
-        const performanceElement = document.getElementById('chart-performance');
-        if (performanceElement) {
-            try {
-                const performanceData = [65, 59, 80, 81, 56, 55, 40];
-                
-                const performanceOptions = {
-                    chart: {
-                        type: 'line',
-                        height: 250,
-                        toolbar: {
-                            show: false
-                        }
-                    },
-                    series: [{
-                        name: 'Performance',
-                        data: performanceData
-                    }],
-                    xaxis: {
-                        categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                    },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 3
-                    },
-                    colors: ['#2fb344'],
-                    legend: {
-                        show: false
-                    },
-                    yaxis: {
-                        min: 0
-                    }
-                };
-                
-                window.performanceChart = new ApexCharts(performanceElement, performanceOptions);
-                window.performanceChart.render();
-                
-                console.log('✅ Performance chart rendered');
-            } catch (e) {
-                console.error('❌ Performance chart error:', e);
-            }
-        }
-
-        console.log('📊 All charts initialized');
-    }, 300);
 }
 
-// Save dashboard layout
-function saveDashboardLayout() {
-    try {
-        const layout = [];
-        $('#dashboard-cards .col-12, #dashboard-cards .col-sm-6, #dashboard-cards .col-lg-3, #dashboard-cards .col-lg-4, #dashboard-cards .col-lg-6, #dashboard-cards .col-lg-8').each(function(index) {
-            layout.push($(this).attr('class'));
-        });
-        
-        localStorage.setItem('dashboard_layout', JSON.stringify(layout));
-        console.log('✅ Dashboard layout saved:', layout);
-        
-        // Also save to server
-        fetch('/admin/dashboard/save-layout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ layout: layout })
-        }).catch(e => console.error('❌ Server save error:', e));
-    } catch (e) {
-        console.error('❌ Dashboard layout save error:', e);
-    }
-}
-
-// AI Chat Functions
-function sendDashboardAIMessage() {
-    const input = document.getElementById('dashboard-chat-input');
-    const message = input.value.trim();
-    
-    if (!message) {
-        showDashboardToast('Lütfen bir mesaj yazın');
-        return;
-    }
-    
-    // Add user message
-    addDashboardMessage('user', message);
-    input.value = '';
-    
-    // Show AI thinking
-    const aiMessageId = addDashboardMessage('ai', '');
-    const aiMessageElement = document.getElementById(aiMessageId);
-    
-    // Initialize conversation
-    if (!dashboardConversationId) {
-        dashboardConversationId = 'dashboard_' + Date.now();
-    }
-    
-    // Setup Server-Sent Events
-    const eventSource = new EventSource(`/admin/ai/stream?message=${encodeURIComponent(message)}&conversation_id=${dashboardConversationId}`);
-    dashboardEventSource = eventSource;
-    
-    // Initialize word buffer
-    dashboardWordBuffer = createAIWordBuffer(aiMessageElement);
-    
-    eventSource.onmessage = function(event) {
-        try {
-            const data = JSON.parse(event.data);
-            
-            if (data.type === 'content') {
-                dashboardWordBuffer.addContent(data.content);
-            } else if (data.type === 'done') {
-                dashboardWordBuffer.finalize();
-                eventSource.close();
-                dashboardEventSource = null;
-            } else if (data.type === 'error') {
-                aiMessageElement.innerHTML = `<div class="text-danger">Error: ${data.message}</div>`;
-                eventSource.close();
-                dashboardEventSource = null;
-            }
-        } catch (e) {
-            console.error('Stream parsing error:', e);
-        }
-    };
-    
-    eventSource.onerror = function(event) {
-        console.error('EventSource error:', event);
-        aiMessageElement.innerHTML = '<div class="text-danger">Connection error occurred.</div>';
-        eventSource.close();
-        dashboardEventSource = null;
-    };
-}
-
-function addDashboardMessage(type, content) {
-    const messagesContainer = document.getElementById('dashboard-chat-messages');
-    const messageId = 'message_' + Date.now();
-    
-    const messageDiv = document.createElement('div');
-    messageDiv.id = messageId;
-    messageDiv.className = type === 'user' ? 'user-message-compact' : 'ai-message-compact';
-    messageDiv.innerHTML = content;
-    
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
-    return messageId;
-}
-
-function createAIWordBuffer(element) {
-    let buffer = '';
-    let isProcessing = false;
-    
-    return {
-        addContent: function(content) {
-            buffer += content;
-            if (!isProcessing) {
-                this.processBuffer();
-            }
-        },
-        
-        processBuffer: function() {
-            if (buffer.length === 0) return;
-            
-            isProcessing = true;
-            const words = buffer.split(/(\s+)/);
-            buffer = '';
-            
-            let currentContent = element.innerHTML;
-            let wordIndex = 0;
-            
-            const processWord = () => {
-                if (wordIndex < words.length) {
-                    currentContent += words[wordIndex];
-                    element.innerHTML = currentContent;
-                    
-                    // Auto-scroll
-                    const messagesContainer = document.getElementById('dashboard-chat-messages');
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                    
-                    wordIndex++;
-                    setTimeout(processWord, 50);
-                } else {
-                    isProcessing = false;
-                    if (buffer.length > 0) {
-                        this.processBuffer();
-                    }
-                }
-            };
-            
-            processWord();
-        },
-        
-        finalize: function() {
-            if (buffer.length > 0) {
-                element.innerHTML += buffer;
-                buffer = '';
-            }
-            isProcessing = false;
-        }
-    };
-}
-
-function showDashboardToast(message) {
+function showToast(message, type = 'info') {
+    // Simple toast notification
     const toast = document.createElement('div');
-    toast.className = 'dashboard-toast';
-    toast.textContent = message;
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible`;
+    toast.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;min-width:300px;';
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+    `;
     
-    let container = document.querySelector('.toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-    }
-    
-    container.appendChild(toast);
+    document.body.appendChild(toast);
     
     setTimeout(() => {
-        toast.remove();
-    }, 3000);
+        if (toast.parentElement) {
+            toast.remove();
+        }
+    }, 5000);
 }
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // AI Chat send button
-    const sendButton = document.getElementById('dashboard-chat-send');
-    if (sendButton) {
-        sendButton.addEventListener('click', sendDashboardAIMessage);
+// Auto-refresh dashboard data every 5 minutes
+setInterval(() => {
+    // Livewire refresh if available
+    if (typeof Livewire !== 'undefined') {
+        Livewire.emit('refreshDashboard');
     }
+}, 300000);
+
+// AI Chat Functions  
+document.addEventListener('DOMContentLoaded', function() {
+    const aiToggleBtn = document.getElementById('aiToggleBtn');
+    const aiPanel = document.getElementById('aiPanel');
+    const aiCloseBtn = document.getElementById('aiCloseBtn');
+    const aiChatMessages = document.getElementById('aiChatWidgetMessages');
     
-    // AI Chat input enter key
-    const chatInput = document.getElementById('dashboard-chat-input');
-    if (chatInput) {
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendDashboardAIMessage();
+    // Panel toggle
+    if (aiToggleBtn && aiPanel) {
+        aiToggleBtn.addEventListener('click', function() {
+            if (aiPanel.style.display === 'none' || aiPanel.style.display === '') {
+                aiPanel.style.display = 'block';
+                aiPanel.style.animation = 'aiPanelSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            } else {
+                aiPanel.style.animation = 'aiPanelSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                setTimeout(() => {
+                    aiPanel.style.display = 'none';
+                }, 300);
             }
         });
     }
-});
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', function() {
-    if (dashboardEventSource) {
-        dashboardEventSource.close();
+    
+    // Close panel
+    if (aiCloseBtn && aiPanel) {
+        aiCloseBtn.addEventListener('click', function() {
+            aiPanel.style.display = 'none';
+        });
+    }
+    
+    // Close panel when clicking outside
+    document.addEventListener('click', function(event) {
+        if (aiPanel && !event.target.closest('.ai-assistant-panel')) {
+            aiPanel.style.display = 'none';
+        }
+    });
+    
+    // Auto-scroll chat messages
+    function scrollChatToBottom() {
+        if (aiChatMessages) {
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        }
+    }
+    
+    // Add message to chat
+    window.addAiMessage = function(message, isUser = false) {
+        if (!aiChatMessages) return;
+        
+        const messageEl = document.createElement('div');
+        messageEl.className = `ai-message ${isUser ? 'user' : 'assistant'}`;
+        
+        const now = new Date().toLocaleTimeString('tr-TR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        messageEl.innerHTML = `
+            <div class="ai-message-avatar">
+                <i class="fas fa-${isUser ? 'user' : 'robot'}"></i>
+            </div>
+            <div class="ai-message-content">
+                <div class="ai-message-text">${message}</div>
+                <div class="ai-message-time">${now}</div>
+            </div>
+        `;
+        
+        aiChatMessages.appendChild(messageEl);
+        scrollChatToBottom();
+    };
+    
+    // Livewire message sent listener
+    Livewire.on('message-sent', (data) => {
+        console.log('Livewire message-sent data:', data); // Debug
+        
+        // Add user message  
+        addMessageToChat(data.userMessage, true);
+        
+        // Add AI response after delay
+        setTimeout(() => {
+            addMessageToChat(data.aiResponse, false);
+        }, 1000);
+    });
+    
+    // Add message to chat function
+    function addMessageToChat(message, isUser) {
+        if (!aiChatMessages) return;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `ai-message-widget ${isUser ? 'user' : 'assistant'} mb-3`;
+        
+        const now = new Date().toLocaleTimeString('tr-TR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        messageDiv.innerHTML = `
+            <div class="d-flex align-items-start">
+                <div class="avatar avatar-sm me-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        ${isUser ? 
+                            '<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />' : 
+                            '<path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M12 1l3 6l6 3l-6 3l-3 6l-3 -6l-6 -3l6 -3z" />'
+                        }
+                    </svg>
+                </div>
+                <div class="flex-fill">
+                    <div class="card p-3 mb-2">
+                        <div>${message || 'Mesaj boş'}</div>
+                    </div>
+                    <small>${now}</small>
+                </div>
+            </div>
+        `;
+        
+        aiChatMessages.appendChild(messageDiv);
+        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
     }
 });
 </script>

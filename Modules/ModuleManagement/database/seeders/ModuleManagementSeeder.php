@@ -61,6 +61,15 @@ class ModuleManagementSeeder extends Seeder
                     'is_active' => true
                 ],
                 [
+                    'name' => 'menumanagement',
+                    'display_name' => 'Menü Yönetimi',
+                    'description' => 'Site menü yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'management',
+                    'is_active' => true
+                ],
+                [
                     'name' => 'settingmanagement',
                     'display_name' => 'Ayarlar Yönetimi',
                     'description' => 'Sistem ayarlarının yönetimi',

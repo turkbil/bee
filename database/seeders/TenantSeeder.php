@@ -49,6 +49,7 @@ class TenantSeeder extends Seeder
             'is_active' => true,
             'central' => true,
             'theme_id' => 1,
+            'tenant_default_locale' => 'tr',
             'data' => json_encode([]),
             'created_at' => now(),
             'updated_at' => now(),
@@ -110,18 +111,21 @@ class TenantSeeder extends Seeder
                 'domain' => 'a.test',
                 'email' => 'a@test',
                 'db_name' => 'tenant_a',
+                'default_locale' => 'en',
             ],
             [
                 'title' => 'Sarı',
                 'domain' => 'b.test',
                 'email' => 'b@test',
                 'db_name' => 'tenant_b',
+                'default_locale' => 'ar',
             ],
             [
                 'title' => 'Mavi',
                 'domain' => 'c.test',
                 'email' => 'c@test',
                 'db_name' => 'tenant_c',
+                'default_locale' => 'en',
             ]
         ];
 
@@ -134,6 +138,7 @@ class TenantSeeder extends Seeder
                 'is_active' => true,
                 'central' => false,
                 'theme_id' => 1,
+                'tenant_default_locale' => $config['default_locale'],
                 'data' => [],
             ]);
 

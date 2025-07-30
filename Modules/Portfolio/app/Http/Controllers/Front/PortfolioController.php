@@ -8,14 +8,20 @@ use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use App\Services\ModuleSlugService;
+use App\Traits\HasModuleAccessControl;
 
 class PortfolioController extends Controller
 {
+    use HasModuleAccessControl;
+    
     protected $themeService;
 
     public function __construct(ThemeService $themeService)
     {
         $this->themeService = $themeService;
+        
+        // 🔒 MODÜL ERİŞİM KONTROLÜ
+        $this->checkModuleAccess('Portfolio');
     }
 
     public function index()
@@ -50,20 +56,50 @@ class PortfolioController extends Controller
                 ->where('is_active', true)
                 ->first();
         } else {
-            // SADECE aktif dilde slug ara - locale-aware
+            // Önce aktif dilde slug ara
             $item = Portfolio::with('category')
                 ->where('is_active', true)
                 ->whereJsonContains("slug->{$currentLocale}", $slug)
                 ->first();
+                
+            // Bulunamazsa tüm dillerde ara (yeni eklenen kısım)
+            if (!$item) {
+                Log::info("Portfolio not found in {$currentLocale}, searching all languages", [
+                    'slug' => $slug
+                ]);
+                
+                // Tüm aktif dillerde ara
+                $activeLangs = \DB::table('tenant_languages')
+                    ->where('is_active', true)
+                    ->pluck('code');
+                    
+                foreach ($activeLangs as $lang) {
+                    if ($lang === $currentLocale) continue; // Zaten aradık
+                    
+                    $item = Portfolio::with('category')
+                        ->where('is_active', true)
+                        ->whereJsonContains("slug->{$lang}", $slug)
+                        ->first();
+                        
+                    if ($item) {
+                        // Doğru URL'e 301 redirect
+                        $correctUrl = $this->generatePortfolioUrl($item, $lang);
+                        Log::info("Portfolio found in {$lang}, redirecting", [
+                            'from' => request()->fullUrl(),
+                            'to' => $correctUrl
+                        ]);
+                        return redirect()->to($correctUrl, 301);
+                    }
+                }
+            }
         }
         
         if (!$item) {
-            Log::warning("Portfolio not found", [
+            Log::warning("Portfolio not found in any language", [
                 'slug' => $slug,
-                'locale' => $currentLocale,
-                'searched_in' => "slug->{$currentLocale}"
+                'searched_languages' => \DB::table('tenant_languages')->where('is_active', true)->pluck('code')
             ]);
-            abort(404, "Portfolio not found for slug '{$slug}' in language '{$currentLocale}'");
+            abort(404, "Portfolio not found");
         }
         
         // Canonical URL kontrolü - doğru slug kullanılıyor mu?
@@ -103,18 +139,56 @@ class PortfolioController extends Controller
                 ->where('is_active', true)
                 ->firstOrFail();
         } else {
-            // SADECE aktif dilde slug ara - locale-aware
+            // Önce aktif dilde slug ara
             $category = PortfolioCategory::where('is_active', true)
                 ->whereJsonContains("slug->{$currentLocale}", $slug)
                 ->first();
                 
+            // Bulunamazsa tüm dillerde ara (yeni eklenen kısım)
             if (!$category) {
-                Log::warning("Portfolio category not found", [
-                    'slug' => $slug,
-                    'locale' => $currentLocale,
-                    'searched_in' => "slug->{$currentLocale}"
+                Log::info("Category not found in {$currentLocale}, searching all languages", [
+                    'slug' => $slug
                 ]);
-                abort(404, "Category not found for slug '{$slug}' in language '{$currentLocale}'");
+                
+                // Tüm aktif dillerde ara
+                $activeLangs = \DB::table('tenant_languages')
+                    ->where('is_active', true)
+                    ->pluck('code');
+                    
+                foreach ($activeLangs as $lang) {
+                    if ($lang === $currentLocale) continue; // Zaten aradık
+                    
+                    $category = PortfolioCategory::where('is_active', true)
+                        ->whereJsonContains("slug->{$lang}", $slug)
+                        ->first();
+                        
+                    if ($category) {
+                        // Doğru URL'e 301 redirect
+                        $categorySlug = $category->getTranslated('slug', $lang);
+                        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'category');
+                        $defaultLocale = get_tenant_default_locale();
+                        
+                        if ($lang === $defaultLocale) {
+                            $correctUrl = url("/{$moduleSlug}/{$categorySlug}");
+                        } else {
+                            $correctUrl = url("/{$lang}/{$moduleSlug}/{$categorySlug}");
+                        }
+                        
+                        Log::info("Category found in {$lang}, redirecting", [
+                            'from' => request()->fullUrl(),
+                            'to' => $correctUrl
+                        ]);
+                        return redirect()->to($correctUrl, 301);
+                    }
+                }
+            }
+                
+            if (!$category) {
+                Log::warning("Category not found in any language", [
+                    'slug' => $slug,
+                    'searched_languages' => \DB::table('tenant_languages')->where('is_active', true)->pluck('code')
+                ]);
+                abort(404, "Category not found");
             }
         }
             

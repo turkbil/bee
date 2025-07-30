@@ -10,14 +10,20 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Spatie\ResponseCache\Facades\ResponseCache;
 use App\Services\ModuleSlugService;
+use App\Traits\HasModuleAccessControl;
 
 class PageController extends Controller
 {
+    use HasModuleAccessControl;
+    
     protected $themeService;
 
     public function __construct(ThemeService $themeService)
     {
         $this->themeService = $themeService;
+        
+        // 🔒 MODÜL ERİŞİM KONTROLÜ
+        $this->checkModuleAccess('Page');
     }
 
     /**
@@ -28,23 +34,12 @@ class PageController extends Controller
         $isAuthenticated = auth()->check();
         $userId = $isAuthenticated ? auth()->id() : 'guest';
         
-        \Log::info('🏠 HOMEPAGE CONTROLLER', [
-            'app_locale' => app()->getLocale(),
-            'session_tenant_locale' => session('tenant_locale'),
-            'is_authenticated' => $isAuthenticated,
-            'user_id' => $userId
-        ]);
         
         // Aktif ve ana sayfa olarak işaretli sayfayı al
         $page = Page::where('is_homepage', true)
             ->where('is_active', true)
             ->firstOrFail();
             
-        \Log::info('📄 PAGE CONTENT DEBUG', [
-            'page_id' => $page->page_id,
-            'title_translated' => $page->getTranslated('title', app()->getLocale()),
-            'available_locales' => $page->title ? array_keys($page->title) : 'none'
-        ]);
 
         
         try {
@@ -137,13 +132,6 @@ class PageController extends Controller
                     
                 if ($item) {
                     // Farklı dilde bulundu, doğru URL'e redirect et
-                    Log::info("Page found in different locale, redirecting", [
-                        'slug' => $slug,
-                        'found_in' => $locale,
-                        'requested_in' => $currentLocale
-                    ]);
-                    
-                    // Doğru dil ve slug ile URL oluştur
                     $correctUrl = $this->generatePageUrl($item, $locale);
                     return redirect()->to($correctUrl, 301); // 301 = Permanent redirect
                 }
@@ -160,11 +148,6 @@ class PageController extends Controller
         // Canonical URL kontrolü - doğru slug kullanılıyor mu?
         $expectedSlug = $item->getTranslated('slug', $currentLocale);
         if ($slug !== $expectedSlug) {
-            Log::info("Redirecting to canonical slug", [
-                'requested' => $slug,
-                'canonical' => $expectedSlug,
-                'locale' => $currentLocale
-            ]);
             // Yanlış slug ile erişim, doğru URL'e redirect
             return redirect()->to($this->generatePageUrl($item, $currentLocale));
         }
@@ -175,7 +158,6 @@ class PageController extends Controller
         // o zaman ana sayfa route'una yönlendir.
         if ($item->is_homepage && !$is_homepage_context) {
             // Yönlendirme yapıldığını loglayalım.
-            Log::info("Page '{$slug}' is a designated homepage and accessed via its slug. Redirecting to the main homepage route.");
             // 'homepage' isimli bir route olduğunu ve PageController@homepage metoduna işaret ettiğini varsayıyoruz.
             return redirect()->route('home');
         }

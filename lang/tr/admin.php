@@ -22,6 +22,8 @@ return [
     'login' => 'Giriş Yap',
     'welcome' => 'Hoş Geldiniz',
     'hello' => 'Merhaba',
+    'view_website' => 'Web Sitesini Görüntüle',
+    'go_to_homepage' => 'Ana sayfaya git',
     
     // Yönetim Alanları
     'users' => 'Kullanıcılar',
@@ -48,6 +50,46 @@ return [
     'overview' => 'Genel Bakış',
     'summary' => 'Özet',
     'activity' => 'Aktivite',
+    
+    // Dashboard
+    'dashboard_welcome' => 'Sisteme Hoş Geldiniz!',
+    'dashboard_subtitle' => 'platformunda başarıyla giriş yaptınız.',
+    'create_content' => 'İçerik Oluştur',
+    'system_online' => 'Sistem Aktif',
+    'admin' => 'Yönetici',
+    'account_status' => 'Hesap Durumu',
+    'membership_duration' => 'Üyelik Süresi',
+    'user_role' => 'Kullanıcı Rolü',
+    'connection_status' => 'Bağlantı Durumu',
+    'quick_actions' => 'Hızlı İşlemler',
+    'account_summary' => 'Hesap Özeti',
+    'verified' => 'Doğrulanmış',
+    'pending' => 'Beklemede',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
+    'days' => 'gün',
+    'hours' => 'saat',
+    'minutes' => 'dakika',
+    'edit_profile' => 'Profil Düzenle',
+    'change_password' => 'Şifre Değiştir',
+    'admin_panel' => 'Yönetim Paneli',
+    'check_updates' => 'Güncellemeleri Kontrol Et',
+    'checking_updates' => 'Kontrol Ediliyor...',
+    'system_updated' => 'Sistem Güncel',
+    'user_id' => 'Kullanıcı ID',
+    'email' => 'E-posta',
+    'phone' => 'Telefon',
+    'registration_date' => 'Kayıt Tarihi',
+    'last_update' => 'Son Güncelleme',
+    'ip_address' => 'IP Adresi',
+    'not_specified' => 'Belirtilmemiş',
+    'profile_completed' => 'Profil Tamamlandı',
+    'personal_info' => 'Ad, email ve kişisel bilgiler',
+    'increase_security' => 'Hesap güvenliğini artır',
+    'site_management' => 'Site yönetimi ve içerik',
+    'check_system_updates' => 'Sistem güncellemelerini kontrol et',
+    'searching_updates' => 'Güncellemeler aranıyor',
+    'all_systems_updated' => 'Tüm sistemler güncel',
     'logs' => 'Loglar',
     'history' => 'Geçmiş',
     
@@ -123,6 +165,11 @@ return [
     'language_switching' => 'Dil değiştiriliyor',
     'language_changed_successfully' => 'Dil başarıyla değiştirildi',
     'invalid_language' => 'Geçersiz dil seçimi',
+    
+    // Menu Management Modülü - Global Keys
+    'menu_management' => 'Menü Yönetimi',
+    'menus' => 'Menüler',
+    'menu_items' => 'Menü Öğeleri',
     
     // =============================================
     // ORTAK TEMEL ÇEVİRİLER (COMMON)
@@ -538,6 +585,7 @@ return [
     'seo_keywords' => 'Anahtar Kelimeler',
     'canonical_url' => 'Canonical URL',
     'page_url_slug' => 'Sayfa URL (Slug)',
+    'menu_url_slug' => 'Menü URL (Slug)',
     'announcement_url_slug' => 'Duyuru URL Adı',
     'slug_auto_generated' => 'Otomatik oluşur',
     

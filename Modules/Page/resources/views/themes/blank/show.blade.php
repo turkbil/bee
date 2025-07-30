@@ -17,27 +17,19 @@
         $body = $item->getTranslated('body', $currentLocale);
     @endphp
     
-    <!-- Simple Title Section -->
-    <div class="py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-12">
-                <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
-                    {{ $title ?: 'Hoşgeldiniz' }}
-                </h1>
-            </div>
-            
-            <!-- Homepage Content -->
-            <div class="prose prose-lg max-w-none dark:prose-invert mb-12
-                      prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white 
-                      prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
-                      prose-a:text-transparent prose-a:bg-gradient-to-r prose-a:from-blue-600 prose-a:to-purple-600 prose-a:bg-clip-text hover:prose-a:from-blue-700 hover:prose-a:to-purple-700
-                      prose-strong:text-gray-900 dark:prose-strong:text-white
-                      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:italic
-                      prose-code:text-purple-600 dark:prose-code:text-purple-400 prose-code:bg-purple-50 dark:prose-code:bg-purple-900/20 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
-                      prose-pre:bg-gray-900 prose-pre:shadow-xl
-                      prose-img:rounded-xl prose-img:shadow-lg">
-                @parsewidgets($body ?? '')
-            </div>
+    <!-- Homepage Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="prose prose-lg max-w-none dark:prose-invert mb-12
+                  prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white 
+                  prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
+                  prose-a:text-transparent prose-a:bg-gradient-to-r prose-a:from-blue-600 prose-a:to-purple-600 prose-a:bg-clip-text hover:prose-a:from-blue-700 hover:prose-a:to-purple-700
+                  prose-strong:text-gray-900 dark:prose-strong:text-white
+                  prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:italic
+                  prose-code:text-purple-600 dark:prose-code:text-purple-400 prose-code:bg-purple-50 dark:prose-code:bg-purple-900/20 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+                  prose-pre:bg-gray-900 prose-pre:shadow-xl
+                  prose-img:rounded-xl prose-img:shadow-lg">
+            @parsewidgets($body ?? '')
+        </div>
             
         </div>
     </div>

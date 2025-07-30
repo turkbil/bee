@@ -82,9 +82,9 @@ class LanguageSwitcher extends Component
                 \Log::info('LanguageSwitcher: Redirecting to admin route');
                 return redirect()->route('admin.language.switch', $languageCode);
             } else {
-                // Site context - basit route ile yönlendir
-                \Log::info('LanguageSwitcher: Redirecting to site route');
-                return redirect()->route('site.language.switch', $languageCode);
+                // Site context - mevcut language.switch route'unu kullan
+                \Log::info('LanguageSwitcher: Redirecting to language.switch route');
+                return redirect()->route('language.switch', $languageCode);
             }
         } else {
             \Log::warning('LanguageSwitcher: Language not available', ['languageCode' => $languageCode]);

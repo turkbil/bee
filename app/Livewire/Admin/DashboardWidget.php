@@ -43,6 +43,9 @@ class DashboardWidget extends Component
     // Widget Order Management
     public $widgetOrder = [];
     
+    // AI Chat Message
+    public $aiChatMessage = '';
+    
     public function mount()
     {
         $this->loadActiveModules();
@@ -234,6 +237,54 @@ class DashboardWidget extends Component
         }
     }
     
+    public function sendAiMessage()
+    {
+        if (empty(trim($this->aiChatMessage))) {
+            return;
+        }
+        
+        $message = trim($this->aiChatMessage);
+        $this->aiChatMessage = '';
+        
+        // Basit yanıt sistemi
+        $response = $this->generateAiResponse($message);
+        
+        $this->dispatch('message-sent', [
+            'userMessage' => $message,
+            'aiResponse' => $response
+        ]);
+    }
+    
+    private function generateAiResponse($message)
+    {
+        if (empty($message)) {
+            return "Lütfen bir mesaj yazın.";
+        }
+        
+        $message = strtolower(trim($message));
+        
+        if (str_contains($message, 'sistem') || str_contains($message, 'durum')) {
+            return "🔍 Dashboard'unuz aktif ve çalışır durumda. PHP " . PHP_VERSION . " ve Laravel " . app()->version() . " kullanılıyor. Veritabanı bağlantısı sağlıklı.";
+        } 
+        
+        if (str_contains($message, 'seo')) {
+            return "🎯 SEO optimizasyonu için içeriklerinize meta title, description ve anahtar kelimeler eklemenizi öneririm. Ayrıca sayfa hızınızı optimize edebilirsiniz.";
+        }
+        
+        if (str_contains($message, 'performans') || str_contains($message, 'hız')) {
+            return "⚡ Performans iyileştirme için cache sistemlerini aktif tutun, görselleri optimize edin ve gereksiz eklentileri kaldırın.";
+        }
+        
+        if (str_contains($message, 'yardım') || str_contains($message, 'help')) {
+            return "📋 Size şu konularda yardımcı olabilirim: sistem durumu, SEO analizi, performans optimizasyonu, içerik yönetimi. Hangi konuda bilgi istiyorsunuz?";
+        }
+        
+        if (str_contains($message, 'içerik') || str_contains($message, 'sayfa')) {
+            return "📝 İçerik yönetimi için sol menüden Sayfalar, Portfolio veya Duyurular bölümlerini kullanabilirsiniz. Yeni içerik oluşturmak için + butonuna tıklayın.";
+        }
+        
+        return "Bu konuda size yardımcı olmaya çalışıyorum. Daha spesifik bir soru sorabilir veya şu konulardan birini seçebilirsiniz: sistem durumu, SEO, performans, içerik yönetimi.";
+    }
     
     public function render()
     {

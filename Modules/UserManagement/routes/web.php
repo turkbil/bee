@@ -9,6 +9,4 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile/avatar', [ProfileController::class, 'avatar'])->name('profile.avatar');
-});
+// Profile routes moved to main routes/web.php to avoid conflicts

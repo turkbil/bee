@@ -1,3 +1,5 @@
+{{-- Tek dil varsa language switcher'ı gizle --}}
+@if(count($languages) > 1)
 @if($context === 'admin')
 <!-- Admin Panel - Tabler.io Bootstrap Style -->
 <div class="nav-item dropdown me-2">
@@ -239,4 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+@endif {{-- count($languages) > 1 --}}
 

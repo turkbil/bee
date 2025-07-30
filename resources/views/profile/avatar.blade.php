@@ -291,10 +291,6 @@
                             setTimeout(() => {
                                 this.updateAvatarDisplay(data.avatar_url);
                                 this.clearPreview();
-                                // Diğer componentleri bilgilendir
-                                window.dispatchEvent(new CustomEvent('avatar-updated', {
-                                    detail: { url: data.avatar_url }
-                                }));
                             }, 500);
                         } else {
                             this.showMessage(data.message, 'error');
@@ -329,10 +325,6 @@
                         if (data.success) {
                             this.showMessage(data.message, 'success');
                             this.updateAvatarToPlaceholder();
-                            // Diğer componentleri bilgilendir
-                            window.dispatchEvent(new CustomEvent('avatar-updated', {
-                                detail: { url: '' }
-                            }));
                         } else {
                             this.showMessage(data.message, 'error');
                         }
@@ -352,11 +344,6 @@
                 updateAvatarToPlaceholder() {
                     // Avatar URL'ini temizle - placeholder otomatik gösterilecek
                     this.avatarUrl = '';
-                    
-                    // Diğer componentleri de güncelle
-                    window.dispatchEvent(new CustomEvent('avatar-updated', {
-                        detail: { url: '' }
-                    }));
                 },
 
                 showMessage(text, type = 'success') {

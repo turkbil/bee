@@ -3,15 +3,20 @@
 namespace App\Services;
 
 use App\Contracts\DynamicRouteResolverInterface;
+use App\Services\ModuleAccessService;
 use Illuminate\Support\Facades\Log;
 
 class DynamicRouteService
 {
     protected DynamicRouteResolverInterface $resolver;
+    protected ModuleAccessService $moduleAccessService;
     
-    public function __construct(DynamicRouteResolverInterface $resolver)
-    {
+    public function __construct(
+        DynamicRouteResolverInterface $resolver,
+        ModuleAccessService $moduleAccessService
+    ) {
         $this->resolver = $resolver;
+        $this->moduleAccessService = $moduleAccessService;
     }
     
     /**
@@ -46,11 +51,25 @@ class DynamicRouteService
     }
     
     /**
-     * Route'u execute et
+     * Route'u execute et - Modül-Tenant kontrol sistemi ile
      */
     protected function executeRoute(array $routeInfo)
     {
         try {
+            $moduleName = $routeInfo['module'] ?? 'unknown';
+            
+            // 🔒 MODÜL-TENANT KONTROLü
+            if (!$this->isModuleAccessible($moduleName)) {
+                if (app()->environment(['local', 'staging'])) {
+                    Log::warning('Module access denied', [
+                        'module' => $moduleName,
+                        'tenant_id' => tenant()?->id ?? 'central',
+                        'url' => request()->fullUrl()
+                    ]);
+                }
+                abort(404, 'Page not found');
+            }
+            
             $controller = app($routeInfo['controller']);
             $method = $routeInfo['method'];
             $params = $routeInfo['params'] ?? [];
@@ -59,8 +78,10 @@ class DynamicRouteService
                 Log::debug('Executing dynamic route', [
                     'controller' => $routeInfo['controller'],
                     'method' => $method,
-                    'module' => $routeInfo['module'] ?? 'unknown',
-                    'params' => $params
+                    'module' => $moduleName,
+                    'params' => $params,
+                    'locale' => $routeInfo['locale'] ?? app()->getLocale(),
+                    'app_locale' => app()->getLocale()
                 ]);
             }
             
@@ -73,6 +94,32 @@ class DynamicRouteService
             ]);
             
             abort(500, 'Internal server error');
+        }
+    }
+    
+    /**
+     * Modülün frontend'te erişilebilir olup olmadığını kontrol et
+     */
+    protected function isModuleAccessible(string $moduleName): bool
+    {
+        try {
+            // Modül tenant'a atanmış mı kontrol et
+            $module = $this->moduleAccessService->getModuleByName($moduleName);
+            
+            if (!$module || !$module->is_active) {
+                return false;
+            }
+            
+            // Tenant'a atanmış mı kontrol et
+            $tenantId = tenant()?->id ?? 1;
+            return $this->moduleAccessService->isModuleAssignedToTenant($module->module_id, $tenantId);
+            
+        } catch (\Exception $e) {
+            Log::error('Module accessibility check failed', [
+                'module' => $moduleName,
+                'error' => $e->getMessage()
+            ]);
+            return false;
         }
     }
     

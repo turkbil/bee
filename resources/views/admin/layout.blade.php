@@ -296,8 +296,10 @@
 <script src="/admin-assets/js/translations.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/theme.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/main.js?v={{ time() }}"></script>
-{{-- YENİ SEO TABS V2 SİSTEMİ --}}
+{{-- YENİ SEO TABS V2 SİSTEMİ - Sadece manage sayfalarında --}}
+@if (request()->routeIs('admin.*.manage*'))
 <script src="/admin-assets/js/seo-tabs-v2.js?v={{ time() }}"></script>
+@endif
 <script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
 
 <!-- Global Loading Bar Script - Tabler Native -->

@@ -11,5 +11,6 @@
     "Announcement": true,
     "AI": true,
     "LanguageManagement": true,
-    "SeoManagement": true
+    "SeoManagement": true,
+    "MenuManagement": true
 }

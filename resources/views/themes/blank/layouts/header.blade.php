@@ -207,10 +207,15 @@
                     </button>
 
                     {{-- Site Dil Değiştirici - DİREKT ALTERNATE LINKS KULLANAN --}}
+                    @php
+                        $currentLang = app()->getLocale();
+                        $languageSwitcherLinks = CanonicalHelper::getLanguageSwitcherLinks($currentModel ?? null, $moduleAction ?? 'show');
+                    @endphp
+                    
+                    {{-- Tek dil varsa language switcher'ı gizle --}}
+                    @if(count($languageSwitcherLinks) > 1)
                     <div class="language-switcher-header relative" x-data="{ open: false }">
                         @php
-                            $currentLang = app()->getLocale();
-                            $languageSwitcherLinks = CanonicalHelper::getLanguageSwitcherLinks($currentModel ?? null, $moduleAction ?? 'show');
                             
                             // Mevcut dil için flag ve isim al
                             $currentLangData = null;
@@ -290,6 +295,7 @@
                             @endif
                         </div>
                     </div>
+                    @endif {{-- count($languageSwitcherLinks) > 1 --}}
                     
                     {{-- AUTH CONTROL VIA LIVEWIRE - CACHE-SAFE --}}
                     @livewire('auth.header-menu')

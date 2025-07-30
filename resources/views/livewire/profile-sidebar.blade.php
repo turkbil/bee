@@ -1,8 +1,8 @@
 <div class="profile-sidebar bg-white dark:bg-gray-800 rounded-xl p-6 sticky top-6">
     <!-- User Info -->
     <div class="text-center mb-6">
-        @if($user && $user->avatar)
-            <img src="{{ asset('storage/' . $user->avatar) }}" 
+        @if($user && $user->getFirstMedia('avatar'))
+            <img src="{{ $user->getFirstMedia('avatar')->getUrl() }}?v={{ time() }}" 
                  alt="Avatar" 
                  class="w-20 h-20 rounded-full mx-auto mb-4 object-cover ring-4 ring-gray-100 dark:ring-gray-700">
         @else

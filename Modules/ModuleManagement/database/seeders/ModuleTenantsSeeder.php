@@ -49,16 +49,23 @@ class ModuleTenantsSeeder extends Seeder
             $zorunluModuller = [
                 'modulemanagement',
                 'usermanagement',
+                'menumanagement',
                 'settingmanagement',
                 'widgetmanagement',
                 'thememanagement',
                 'studio',
                 'ai',
-            ];
-            // Rastgele atanacak modüller
-            $rastgeleModuller = [
-                'announcement',
                 'page',
+                'languagemanagement',
+                'seomanagement',
+            ];
+            // Sadece central tenant'a atanacak modüller
+            $centralModuller = [
+                'tenantmanagement',
+            ];
+            // Özel atama yapılacak modüller (tenant bazında manuel kontrol)
+            $ozelModuller = [
+                'announcement',
                 'portfolio',
             ];
 
@@ -69,7 +76,7 @@ class ModuleTenantsSeeder extends Seeder
                 // Önce zorunlu modülleri ata
                 foreach ($modules as $module) {
                     if (in_array($module->name, $zorunluModuller)) {
-                        $isActive = rand(1, 100) <= 90; // %90 aktif olsun
+                        $isActive = true; // Zorunlu modüller %100 aktif olmalı
                         DB::table('module_tenants')->insert([
                             'tenant_id' => $tenant,
                             'module_id' => $module->module_id,
@@ -82,12 +89,53 @@ class ModuleTenantsSeeder extends Seeder
                         }
                     }
                 }
-                // Sonra rastgele modülleri ata
+                
+                // Central modülleri sadece central tenant'a ata
                 foreach ($modules as $module) {
-                    if (in_array($module->name, $rastgeleModuller)) {
-                        // %50 ihtimalle tenant'a eklensin
-                        if (rand(1, 100) <= 50) {
-                            $isActive = rand(1, 100) <= 90;
+                    if (in_array($module->name, $centralModuller)) {
+                        $tenantDomain = DB::table('domains')->where('tenant_id', $tenant)->value('domain');
+                        
+                        if ($tenantDomain === 'laravel.test') {
+                            // Sadece central tenant'ta olsun
+                            $isActive = true;
+                            DB::table('module_tenants')->insert([
+                                'tenant_id' => $tenant,
+                                'module_id' => $module->module_id,
+                                'is_active' => $isActive,
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                            if ($isActive) {
+                                $this->createPermissionsForTenant($tenant, $module->name);
+                            }
+                        }
+                    }
+                }
+                
+                // Özel modülleri tenant bazında ata
+                foreach ($modules as $module) {
+                    if (in_array($module->name, $ozelModuller)) {
+                        $shouldAdd = false;
+                        
+                        // Tenant domain'ine göre özel atama kuralları
+                        $tenantDomain = DB::table('domains')->where('tenant_id', $tenant)->value('domain');
+                        
+                        if ($tenantDomain === 'laravel.test') {
+                            // Central tenant'ta tüm özel modüller olsun
+                            $shouldAdd = true;
+                        } elseif ($tenantDomain === 'a.test') {
+                            // a.test'te hem announcement hem portfolio olsun
+                            $shouldAdd = true;
+                        } elseif ($tenantDomain === 'b.test' && $module->name === 'portfolio') {
+                            // b.test'te sadece portfolio olsun
+                            $shouldAdd = true;
+                        } elseif ($tenantDomain === 'c.test' && $module->name === 'announcement') {
+                            // c.test'te sadece announcement olsun
+                            $shouldAdd = true;
+                        }
+                        
+                        if ($shouldAdd) {
+                            $isActive = true; // Özel modüller hep aktif
                             DB::table('module_tenants')->insert([
                                 'tenant_id' => $tenant,
                                 'module_id' => $module->module_id,
@@ -127,23 +175,27 @@ class ModuleTenantsSeeder extends Seeder
             $moduleSlug = Str::slug(Str::snake($moduleName), '');
             $displayName = Str::title(Str::snake($moduleName, ' '));
 
-            // SettingManagement modülü kontrolü - Dikkat: Dosya adları ekranda settingmanagement.* şeklinde
-            $isSettingManagement = (
+            // SettingManagement ve UserManagement türü modüller kontrolü
+            $isUserTypeModule = (
                 $moduleSlug === 'settingmanagement' || 
                 $moduleSlug === 'settingsmanagement' || 
+                $moduleSlug === 'usermanagement' ||
+                $moduleSlug === 'menumanagement' ||
                 strtolower($moduleName) === 'settingmanagement' || 
-                strtolower($moduleName) === 'settingsmanagement'
+                strtolower($moduleName) === 'settingsmanagement' ||
+                strtolower($moduleName) === 'usermanagement' ||
+                strtolower($moduleName) === 'menumanagement'
             );
 
-            // Temel izin tipleri - Setting Management için sadece view ve update olacak
-            if ($isSettingManagement) {
-                // Setting Management için sadece görüntüleme ve güncelleme izinleri
+            // Temel izin tipleri - User type modüller için sadece view ve update olacak
+            if ($isUserTypeModule) {
+                // User type modüller için sadece görüntüleme ve güncelleme izinleri
                 $permissionTypes = [
                     'view' => 'Görüntüleme',
                     'update' => 'Güncelleme',
                 ];
                 
-                $this->command->info("Setting Management modülü için sadece view ve update izinleri oluşturuluyor - Tenant: {$tenantId}");
+                $this->command->info("User type modülü ({$moduleName}) için sadece view ve update izinleri oluşturuluyor - Tenant: {$tenantId}");
             } else {
                 // Diğer modüller için tüm izinler
                 $permissionTypes = [

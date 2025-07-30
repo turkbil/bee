@@ -89,6 +89,7 @@ return array(
     'Modules\\Portfolio\\App\\' => array($baseDir . '/Modules/Portfolio/app'),
     'Modules\\Page\\App\\' => array($baseDir . '/Modules/Page/app'),
     'Modules\\ModuleManagement\\App\\' => array($baseDir . '/Modules/ModuleManagement/app'),
+    'Modules\\MenuManagement\\App\\' => array($baseDir . '/Modules/MenuManagement/app'),
     'Modules\\LanguageManager\\App\\' => array($baseDir . '/Modules/LanguageManager/app'),
     'Modules\\Announcement\\App\\' => array($baseDir . '/Modules/Announcement/app'),
     'Modules\\AI\\App\\' => array($baseDir . '/Modules/AI/app'),

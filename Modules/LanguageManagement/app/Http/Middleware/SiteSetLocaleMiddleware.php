@@ -48,14 +48,6 @@ class SiteSetLocaleMiddleware
         }
         \Cookie::queue('tenant_locale_preference', $detectedLocale, 525600);
         
-        // Debug log
-        \Log::debug('🌐 Locale Detection', [
-            'url' => $request->url(),
-            'segments' => $segments,
-            'detected_locale' => $detectedLocale,
-            'default_locale' => $defaultLocale,
-            'app_locale' => app()->getLocale()
-        ]);
 
         return $next($request);
     }

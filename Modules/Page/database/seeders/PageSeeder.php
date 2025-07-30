@@ -5,526 +5,1417 @@ namespace Modules\Page\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\Page\App\Models\Page;
 use App\Models\SeoSetting;
-use Faker\Factory as Faker;
 use App\Helpers\TenantHelpers;
 
 class PageSeeder extends Seeder
 {
     public function run(): void
     {
-        // Bu seeder hem central hem tenant'ta çalışabilir
+        // Mevcut sayfaları sil
+        Page::truncate();
+        SeoSetting::where('seoable_type', 'like', '%Page%')->delete();
+        
         if (TenantHelpers::isCentral()) {
+            // Central veritabanında - tenant 1 (laravel.test)
             $this->command->info('PageSeeder central veritabanında çalışıyor...');
+            $currentDomain = 'laravel.test';
+            $this->command->info("Creating CENTRAL pages for domain: {$currentDomain}");
+            $this->createCentralPages();
         } else {
-            $this->command->info('PageSeeder tenant veritabanında çalışıyor...');
-        }
-        $faker = Faker::create('tr_TR');
+            // Tenant veritabanında - domain'i tenant ID'den belirle
+            $tenantId = tenant('id');
+            $this->command->info("PageSeeder tenant veritabanında çalışıyor... Tenant ID: {$tenantId}");
+            
+            $currentDomain = $this->getDomainFromTenantId($tenantId);
+            $this->command->info("Creating TENANT pages for tenant: {$tenantId}, domain: {$currentDomain}");
 
-        // JSON formatında çoklu dil verileri
-        $pages = [
-            [
-                'title' => [
-                    'tr' => 'Anasayfa',
-                    'en' => 'Homepage',
-                    'ar' => 'الصفحة الرئيسية'
-                ],
-                'slug' => [
-                    'tr' => 'anasayfa',
-                    'en' => 'homepage',
-                    'ar' => 'الصفحة-الرئيسية'
-                ],
-                'body' => [
-                    'tr' => '<div class="hero-section">
-                        <h1 class="display-4">Turkbil Bee\'ye Hoşgeldiniz</h1>
-                        <p class="lead">Modern web teknolojileri ile güçlü çözümler üretiyoruz. Dijital dünyanın geleceğini birlikte inşa ediyoruz.</p>
-                        <div class="features mt-4">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <h3>🚀 Hızlı Geliştirme</h3>
-                                    <p>Laravel 11 ve modern araçlarla hızlı prototipleme.</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h3>🔒 Güvenlik Odaklı</h3>
-                                    <p>En son güvenlik standartları ile korumalı uygulamalar.</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h3>📱 Responsive Tasarım</h3>
-                                    <p>Tüm cihazlarda mükemmel görünüm.</p>
-                                </div>
-                            </div>
+            // Domain'e göre sayfa oluştur
+            switch ($currentDomain) {
+                case 'a.test':
+                    $this->createDigitalAgencyPages();
+                    break;
+                case 'b.test':
+                    $this->createEcommercePages();
+                    break;
+                case 'c.test':
+                    $this->createTechCompanyPages();
+                    break;
+                default:
+                    $this->createDefaultPages();
+                    break;
+            }
+        }
+    }
+    
+    private function createCentralPages(): void
+    {
+        $this->command->info('Creating CENTRAL (CMS) pages...');
+        
+        $page = Page::create([
+            'title' => ['tr' => 'Anasayfa', 'en' => 'Homepage', 'ar' => 'الصفحة الرئيسية'],
+            'slug' => ['tr' => 'anasayfa', 'en' => 'homepage', 'ar' => 'الصفحة-الرئيسية'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-blue-600 dark:text-blue-400">Turkbil</span> <span class="text-yellow-500 dark:text-yellow-400">CMS</span>
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
+                            Modern web siteleri için güçlü içerik yönetim sistemi. Laravel\'in gücü, Tailwind\'in esnekliği.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg">
+                                🚀 Demo İzle
+                            </button>
+                            <button class="border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-3 rounded-lg">
+                                📖 Dokümantasyon
+                            </button>
                         </div>
-                    </div>',
-                    'en' => '<div class="hero-section">
-                        <h1 class="display-4">Welcome to Turkbil Bee</h1>
-                        <p class="lead">We create powerful solutions with modern web technologies. Building the future of the digital world together.</p>
-                        <div class="features mt-4">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <h3>🚀 Fast Development</h3>
-                                    <p>Rapid prototyping with Laravel 11 and modern tools.</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h3>🔒 Security Focused</h3>
-                                    <p>Protected applications with latest security standards.</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h3>📱 Responsive Design</h3>
-                                    <p>Perfect appearance on all devices.</p>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">⚡</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Hızlı & Verimli</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Modern Laravel mimarisi ile optimize edilmiş performans.</p>
                         </div>
-                    </div>',
-                    'ar' => '<div class="hero-section">
-                        <h1 class="display-4">مرحباً بكم في Turkbil Bee</h1>
-                        <p class="lead">نحن ننشئ حلولاً قوية بتقنيات الويب الحديثة. نبني مستقبل العالم الرقمي معاً.</p>
-                        <div class="features mt-4">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <h3>🚀 تطوير سريع</h3>
-                                    <p>نماذج سريعة باستخدام Laravel 11 والأدوات الحديثة.</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h3>🔒 مركز على الأمان</h3>
-                                    <p>تطبيقات محمية بأحدث معايير الأمان.</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h3>📱 تصميم متجاوب</h3>
-                                    <p>مظهر مثالي على جميع الأجهزة.</p>
-                                </div>
-                            </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🔒</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Güvenli</h3>
+                            <p class="text-gray-600 dark:text-gray-400">En son güvenlik standartları ile korumalı sistem.</p>
                         </div>
-                    </div>'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'meta_title' => 'Turkbil Bee - Anasayfa | Modern Web Çözümleri',
-                        'meta_description' => 'Turkbil Bee ile dijital dünyanın geleceğini keşfedin. Laravel 11, güvenlik odaklı geliştirme ve responsive tasarım ile güçlü web çözümleri sunuyoruz.',
-                        'keywords' => ['anasayfa', 'web tasarım', 'Laravel', 'modern teknoloji', 'dijital çözümler', 'web geliştirme', 'Turkbil Bee'],
-                        'og_title' => 'Turkbil Bee - Modern Web Teknolojileri ve Dijital Çözümler',
-                        'og_description' => 'Hızlı geliştirme, güvenlik odaklı yaklaşım ve responsive tasarım ile dijital geleceği inşa ediyoruz.',
-                        'robots' => 'index,follow'
-                    ],
-                    'en' => [
-                        'meta_title' => 'Turkbil Bee - Homepage | Modern Web Solutions', 
-                        'meta_description' => 'Discover the future of the digital world with Turkbil Bee. We offer powerful web solutions with Laravel 11, security-focused development and responsive design.',
-                        'keywords' => ['homepage', 'web design', 'Laravel', 'modern technology', 'digital solutions', 'web development', 'Turkbil Bee'],
-                        'og_title' => 'Turkbil Bee - Modern Web Technologies and Digital Solutions',
-                        'og_description' => 'Building the digital future with fast development, security-focused approach and responsive design.',
-                        'robots' => 'index,follow'
-                    ],
-                    'ar' => [
-                        'meta_title' => 'Turkbil Bee - الصفحة الرئيسية | حلول الويب الحديثة',
-                        'meta_description' => 'اكتشف مستقبل العالم الرقمي مع تورك بيل بي. نقدم حلول ويب قوية باستخدام Laravel 11 والتطوير المركز على الأمان والتصميم المتجاوب.',
-                        'keywords' => ['الصفحة الرئيسية', 'تصميم الويب', 'Laravel', 'التكنولوجيا الحديثة', 'الحلول الرقمية', 'تطوير الويب', 'Turkbil Bee'],
-                        'og_title' => 'Turkbil Bee - تقنيات الويب الحديثة والحلول الرقمية',
-                        'og_description' => 'بناء المستقبل الرقمي بالتطوير السريع والنهج المركز على الأمان والتصميم المتجاوب.',
-                        'robots' => 'index,follow'
-                    ]
-                ],
-                'is_homepage' => true,
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🎨</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Esnek Tasarım</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Tailwind CSS ile sınırsız özelleştirme imkanı.</p>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-blue-600 dark:text-blue-400">Turkbil</span> <span class="text-yellow-500 dark:text-yellow-400">CMS</span>
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
+                            Powerful content management system for modern websites. The power of Laravel, the flexibility of Tailwind.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg">
+                                🚀 Watch Demo
+                            </button>
+                            <button class="border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-3 rounded-lg">
+                                📖 Documentation
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">⚡</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Fast & Efficient</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Optimized performance with modern Laravel architecture.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🔒</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Secure</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Protected system with latest security standards.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🎨</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Flexible Design</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Unlimited customization possibilities with Tailwind CSS.</p>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-blue-600 dark:text-blue-400">تركبيل</span> <span class="text-yellow-500 dark:text-yellow-400">سي إم إس</span>
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
+                            نظام إدارة محتوى قوي للمواقع الحديثة. قوة لارافيل، مرونة تيلوند.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg">
+                                🚀 مشاهدة العرض
+                            </button>
+                            <button class="border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-3 rounded-lg">
+                                📖 التوثيق
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">⚡</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">سريع وفعال</h3>
+                            <p class="text-gray-600 dark:text-gray-400">أداء محسن مع هندسة لارافيل الحديثة.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🔒</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">آمن</h3>  
+                            <p class="text-gray-600 dark:text-gray-400">نظام محمي بأحدث معايير الأمان.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🎨</div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">تصميم مرن</h3>
+                            <p class="text-gray-600 dark:text-gray-400">إمكانيات تخصيص لا محدودة مع تيلوند سي إس إس.</p>
+                        </div>
+                    </div>
+                </div>'
             ],
-            [
-                'title' => [
-                    'tr' => 'Çerez Politikası',
-                    'en' => 'Cookie Policy',
-                    'ar' => 'سياسة ملفات تعريف الارتباط'
-                ],
-                'slug' => [
-                    'tr' => 'cerez-politikasi',
-                    'en' => 'cookie-policy',
-                    'ar' => 'سياسة-ملفات-تعريف-الارتباط'
-                ],
-                'body' => [
-                    'tr' => '<h1>Çerez Politikası</h1><p>Çerez politikamız hakkında bilgiler.</p>',
-                    'en' => '<h1>Cookie Policy</h1><p>Information about our cookie policy.</p>',
-                    'ar' => '<h1>سياسة ملفات تعريف الارتباط</h1><p>معلومات حول سياسة ملفات تعريف الارتباط الخاصة بنا.</p>'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'meta_title' => 'Çerez Politikası: Web Deneyiminizi İyileştirmek İçin - Turkbil Bee',
-                        'meta_description' => 'Turkbil Bee çerez politikası hakkında detaylı bilgi edinin. Web sitemizde kullandığımız çerezler ve gizlilik haklarınız hakkında şeffaf bilgilendirme.',
-                        'keywords' => ['çerez politikası', 'cookie policy', 'web çerezleri', 'gizlilik hakları', 'veri toplama', 'web deneyimi', 'çerez yönetimi'],
-                        'og_title' => 'Şeffaf Çerez Politikamız | Turkbil Bee',
-                        'og_description' => 'Web deneyiminizi iyileştirmek için kullandığımız çerezler hakkında şeffaf bilgilendirme.',
-                        'robots' => 'index,follow'
-                    ],
-                    'en' => [
-                        'meta_title' => 'Cookie Policy: Improving Your Web Experience - Turkbil Bee',
-                        'meta_description' => 'Learn about Turkbil Bee\'s cookie policy. Transparent information about cookies we use on our website and your privacy rights.',
-                        'keywords' => ['cookie policy', 'web cookies', 'privacy rights', 'data collection', 'web experience', 'cookie management', 'transparency'],
-                        'og_title' => 'Our Transparent Cookie Policy | Turkbil Bee',
-                        'og_description' => 'Transparent information about cookies we use to improve your web experience.',
-                        'robots' => 'index,follow'
-                    ],
-                    'ar' => [
-                        'meta_title' => 'سياسة ملفات تعريف الارتباط: تحسين تجربة الويب الخاصة بك - Turkbil Bee',
-                        'meta_description' => 'تعرف على سياسة ملفات تعريف الارتباط في تورك بيل بي. معلومات شفافة حول الكوكيز التي نستخدمها في موقعنا وحقوق الخصوصية الخاصة بك.',
-                        'keywords' => ['سياسة الكوكيز', 'ملفات تعريف الارتباط', 'حقوق الخصوصية', 'جمع البيانات', 'تجربة الويب', 'إدارة الكوكيز', 'الشفافية'],
-                        'og_title' => 'سياسة الكوكيز الشفافة | Turkbil Bee',
-                        'og_description' => 'معلومات شفافة حول ملفات تعريف الارتباط التي نستخدمها لتحسين تجربة الويب.',
-                        'robots' => 'index,follow'
-                    ]
-                ],
-                'is_homepage' => false,
+            'is_active' => true,
+            'is_homepage' => true,
+        ]);
+        
+        $this->createSeoSetting($page, 'Turkbil CMS - Modern İçerik Yönetim Sistemi', 'Laravel tabanlı güçlü CMS çözümü.');
+
+        $page = Page::create([
+            'title' => ['tr' => 'Hakkımızda', 'en' => 'About Us', 'ar' => 'من نحن'],
+            'slug' => ['tr' => 'hakkimizda', 'en' => 'about-us', 'ar' => 'من-نحن'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-4xl font-bold mb-8">Hakkımızda</h1>
+                    <div class="prose max-w-none">
+                        <p class="text-lg mb-6">Turkbil CMS, modern web geliştirme ihtiyaçları için tasarlanmış güçlü bir içerik yönetim sistemidir.</p>
+                        <p>Laravel framework üzerine inşa edilen sistemimiz, yüksek performans ve güvenlik standartları sunar.</p>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-4xl font-bold mb-8">About Us</h1>
+                    <div class="prose max-w-none">
+                        <p class="text-lg mb-6">Turkbil CMS is a powerful content management system designed for modern web development needs.</p>
+                        <p>Our system built on Laravel framework offers high performance and security standards.</p>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <h1 class="text-4xl font-bold mb-8">من نحن</h1>
+                    <div class="prose max-w-none">
+                        <p class="text-lg mb-6">تركبيل سي إم إس هو نظام إدارة محتوى قوي مصمم لاحتياجات تطوير الويب الحديثة.</p>
+                        <p>نظامنا المبني على إطار لارافيل يوفر معايير عالية الأداء والأمان.</p>
+                    </div>
+                </div>'
             ],
-            [
-                'title' => [
-                    'tr' => 'Kişisel Verilerin İşlenmesi Politikası',
-                    'en' => 'Personal Data Processing Policy',
-                    'ar' => 'سياسة معالجة البيانات الشخصية'
-                ],
-                'slug' => [
-                    'tr' => 'kisisel-verilerin-islenmesi-politikasi',
-                    'en' => 'personal-data-processing-policy',
-                    'ar' => 'سياسة-معالجة-البيانات-الشخصية'
-                ],
-                'body' => [
-                    'tr' => '<h1>Kişisel Verilerin İşlenmesi Politikası</h1><p>Kişisel verilerinizin işlenmesi ile ilgili bilgiler.</p>',
-                    'en' => '<h1>Personal Data Processing Policy</h1><p>Information about processing your personal data.</p>',
-                    'ar' => '<h1>سياسة معالجة البيانات الشخصية</h1><p>معلومات حول معالجة بياناتك الشخصية.</p>'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'meta_title' => 'Kişisel Veri Politikası: Güvenliğiniz Bizim İçin Öncelik - Turkbil Bee',
-                        'meta_description' => 'Türk Bilişim\'in kişisel verilerin işlenmesi politikası hakkında detaylı bilgi edinin. KVKK uyumlu güvenli veri işleme süreçlerimizle kişisel verilerinizi koruyoruz.',
-                        'keywords' => ['kişisel veriler', 'veri işleme', 'kişisel veri politikası', 'veri koruma', 'gizlilik politikası', 'KVKK', 'kişisel verilerin korunması'],
-                        'og_title' => 'Güvenli Veri İşleme Politikamız | Turkbil Bee',
-                        'og_description' => 'KVKK uyumlu kişisel veri işleme politikamızla verilerinizi güvende tutuyoruz.',
-                        'robots' => 'index,follow'
-                    ],
-                    'en' => [
-                        'meta_title' => 'Personal Data Policy: Your Security is Our Priority - Turkbil Bee',
-                        'meta_description' => 'Learn about Turkbil\'s personal data processing policy. We protect your personal data with GDPR-compliant secure data processing procedures.',
-                        'keywords' => ['personal data', 'data processing', 'personal data policy', 'data protection', 'privacy policy', 'GDPR', 'data security'],
-                        'og_title' => 'Secure Data Processing Policy | Turkbil Bee',
-                        'og_description' => 'We keep your data safe with our GDPR-compliant personal data processing policy.',
-                        'robots' => 'index,follow'
-                    ],
-                    'ar' => [
-                        'meta_title' => 'سياسة البيانات الشخصية: أمانكم أولويتنا - Turkbil Bee',
-                        'meta_description' => 'تعرف على سياسة معالجة البيانات الشخصية في تورك بيليشيم. نحمي بياناتكم الشخصية بإجراءات معالجة آمنة متوافقة مع قوانين حماية البيانات.',
-                        'keywords' => ['البيانات الشخصية', 'معالجة البيانات', 'سياسة البيانات الشخصية', 'حماية البيانات', 'سياسة الخصوصية', 'أمان البيانات'],
-                        'og_title' => 'سياسة معالجة البيانات الآمنة | Turkbil Bee',
-                        'og_description' => 'نحافظ على بياناتكم بأمان من خلال سياسة معالجة البيانات الشخصية المتوافقة مع القوانين.',
-                        'robots' => 'index,follow'
-                    ]
-                ],
-                'is_homepage' => false,
-            ],
-            [
-                'title' => [
-                    'tr' => 'Hakkımızda',
-                    'en' => 'About Us',
-                    'ar' => 'من نحن'
-                ],
-                'slug' => [
-                    'tr' => 'hakkimizda',
-                    'en' => 'about-us',
-                    'ar' => 'من-نحن'
-                ],
-                'body' => [
-                    'tr' => '<div class="about-content">
-                        <h1>Hakkımızda</h1>
-                        <p class="lead">Turkbil Bee, teknoloji dünyasında yenilikçi çözümler üreten dinamik bir ekiptir.</p>
-                        
-                        <h2>Misyonumuz</h2>
-                        <p>Dijital çağın gereksinimlerini karşılayan, kullanıcı dostu ve güvenli web uygulamaları geliştirmek. Müşterilerimizin dijital dönüşüm yolculuğunda onlara rehberlik etmek.</p>
-                        
-                        <h2>Vizyonumuz</h2>
-                        <p>Türkiye\'nin öncü teknoloji şirketlerinden biri olmak ve global pazarda rekabet edebilir çözümler sunmak.</p>
-                        
-                        <h2>Değerlerimiz</h2>
-                        <ul>
-                            <li><strong>Yenilikçilik:</strong> Sürekli öğrenme ve gelişim</li>
-                            <li><strong>Kalite:</strong> En yüksek standartlarda hizmet</li>
-                            <li><strong>Güvenilirlik:</strong> Sözümüzün arkasında durma</li>
-                            <li><strong>Müşteri Odaklılık:</strong> Her projede müşteri memnuniyeti</li>
-                        </ul>
-                    </div>',
-                    'en' => '<div class="about-content">
-                        <h1>About Us</h1>
-                        <p class="lead">Turkbil Bee is a dynamic team that produces innovative solutions in the technology world.</p>
-                        
-                        <h2>Our Mission</h2>
-                        <p>To develop user-friendly and secure web applications that meet the requirements of the digital age. To guide our customers in their digital transformation journey.</p>
-                        
-                        <h2>Our Vision</h2>
-                        <p>To become one of Turkey\'s leading technology companies and offer solutions that can compete in the global market.</p>
-                        
-                        <h2>Our Values</h2>
-                        <ul>
-                            <li><strong>Innovation:</strong> Continuous learning and development</li>
-                            <li><strong>Quality:</strong> Service at the highest standards</li>
-                            <li><strong>Reliability:</strong> Standing behind our word</li>
-                            <li><strong>Customer Focus:</strong> Customer satisfaction in every project</li>
-                        </ul>
-                    </div>',
-                    'ar' => '<div class="about-content">
-                        <h1>من نحن</h1>
-                        <p class="lead">Turkbil Bee هو فريق ديناميكي ينتج حلولاً مبتكرة في عالم التكنولوجيا.</p>
-                        
-                        <h2>مهمتنا</h2>
-                        <p>تطوير تطبيقات ويب سهلة الاستخدام وآمنة تلبي متطلبات العصر الرقمي. توجيه عملائنا في رحلة التحول الرقمي.</p>
-                        
-                        <h2>رؤيتنا</h2>
-                        <p>أن نصبح إحدى شركات التكنولوجيا الرائدة في تركيا وأن نقدم حلولاً قادرة على المنافسة في السوق العالمي.</p>
-                        
-                        <h2>قيمنا</h2>
-                        <ul>
-                            <li><strong>الابتكار:</strong> التعلم والتطوير المستمر</li>
-                            <li><strong>الجودة:</strong> خدمة بأعلى المعايير</li>
-                            <li><strong>الموثوقية:</strong> الوقوف وراء كلمتنا</li>
-                            <li><strong>التركيز على العميل:</strong> رضا العميل في كل مشروع</li>
-                        </ul>
-                    </div>'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'meta_title' => 'Hakkımızda: Teknoloji Dünyasında Yenilikçi Çözümler - Turkbil Bee',
-                        'meta_description' => 'Turkbil Bee ekibi hakkında bilgi edinin. Misyonumuz, vizyonumuz ve değerlerimizle dijital dönüşüm yolculuğunda müşterilerimize rehberlik ediyoruz.',
-                        'keywords' => ['hakkımızda', 'Turkbil Bee', 'teknoloji şirketi', 'dijital dönüşüm', 'yenilikçilik', 'kalite', 'güvenilirlik', 'müşteri odaklılık'],
-                        'og_title' => 'Turkbil Bee: Yenilikçi Teknoloji Çözümleri',
-                        'og_description' => 'Teknoloji dünyasında yenilikçi çözümler üreten dinamik ekibimizle tanışın.',
-                        'robots' => 'index,follow'
-                    ],
-                    'en' => [
-                        'meta_title' => 'About Us: Innovative Solutions in Technology World - Turkbil Bee',
-                        'meta_description' => 'Learn about Turkbil Bee team. With our mission, vision and values, we guide our customers in their digital transformation journey.',
-                        'keywords' => ['about us', 'Turkbil Bee', 'technology company', 'digital transformation', 'innovation', 'quality', 'reliability', 'customer focus'],
-                        'og_title' => 'Turkbil Bee: Innovative Technology Solutions',
-                        'og_description' => 'Meet our dynamic team that produces innovative solutions in the technology world.',
-                        'robots' => 'index,follow'
-                    ],
-                    'ar' => [
-                        'meta_title' => 'من نحن: حلول مبتكرة في عالم التكنولوجيا - Turkbil Bee',
-                        'meta_description' => 'تعرف على فريق تورك بيل بي. برسالتنا ورؤيتنا وقيمنا، نوجه عملاءنا في رحلة التحول الرقمي.',
-                        'keywords' => ['من نحن', 'Turkbil Bee', 'شركة تكنولوجيا', 'التحول الرقمي', 'الابتكار', 'الجودة', 'الموثوقية', 'التركيز على العميل'],
-                        'og_title' => 'Turkbil Bee: حلول تكنولوجية مبتكرة',
-                        'og_description' => 'تعرف على فريقنا الديناميكي الذي ينتج حلولاً مبتكرة في عالم التكنولوجيا.',
-                        'robots' => 'index,follow'
-                    ]
-                ],
-                'is_homepage' => false,
-            ],
-            [
-                'title' => [
-                    'tr' => 'İletişim',
-                    'en' => 'Contact',
-                    'ar' => 'اتصل بنا'
-                ],
-                'slug' => [
-                    'tr' => 'iletisim',
-                    'en' => 'contact',
-                    'ar' => 'اتصل-بنا'
-                ],
-                'body' => [
-                    'tr' => '<div class="contact-content">
-                        <h1>İletişim</h1>
-                        <p class="lead">Bizimle iletişime geçmek için aşağıdaki bilgileri kullanabilirsiniz.</p>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <h3>📧 E-posta</h3>
-                                <p><a href="mailto:info@turkbilbee.com">info@turkbilbee.com</a></p>
-                                
-                                <h3>📞 Telefon</h3>
-                                <p><a href="tel:+902123456789">+90 (212) 345 67 89</a></p>
-                                
-                                <h3>📍 Adres</h3>
-                                <p>Teknoloji Caddesi No: 123<br>
-                                Şişli / İstanbul<br>
-                                Türkiye</p>
+            'is_active' => true,
+            'is_homepage' => false,
+        ]);
+
+        $this->createSeoSetting($page, 'Hakkımızda - Turkbil CMS', 'Turkbil CMS hakkında bilgi edinin.');
+
+        // İletişim sayfası
+        $page = Page::create([
+            'title' => ['tr' => 'İletişim', 'en' => 'Contact', 'ar' => 'اتصل بنا'],
+            'slug' => ['tr' => 'iletisim', 'en' => 'contact', 'ar' => 'اتصل-بنا'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-12">
+                            <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">İletişim</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400">Bizimle iletişime geçin. Size yardımcı olmak için buradayız.</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div class="space-y-8">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📍</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Adres</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">Teknokent Mahallesi<br>İstanbul Üniversitesi Teknoparkı<br>34469 Sarıyer/İstanbul</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📧</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">E-posta</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">info@turkbilcms.com<br>destek@turkbilcms.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📱</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Telefon</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">+90 212 555 0123<br>+90 532 555 0123</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h3>🕒 Çalışma Saatleri</h3>
-                                <p><strong>Pazartesi - Cuma:</strong> 09:00 - 18:00<br>
-                                <strong>Cumartesi:</strong> 10:00 - 16:00<br>
-                                <strong>Pazar:</strong> Kapalı</p>
-                                
-                                <h3>🌐 Sosyal Medya</h3>
-                                <p>
-                                    <a href="#" class="me-3">LinkedIn</a>
-                                    <a href="#" class="me-3">Twitter</a>
-                                    <a href="#">GitHub</a>
-                                </p>
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Mesaj Gönderin</h3>
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ad Soyad</label>
+                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-posta</label>
+                                        <input type="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mesaj</label>
+                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
+                                        Mesaj Gönder
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    </div>',
-                    'en' => '<div class="contact-content">
-                        <h1>Contact</h1>
-                        <p class="lead">You can use the information below to contact us.</p>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <h3>📧 Email</h3>
-                                <p><a href="mailto:info@turkbilbee.com">info@turkbilbee.com</a></p>
-                                
-                                <h3>📞 Phone</h3>
-                                <p><a href="tel:+902123456789">+90 (212) 345 67 89</a></p>
-                                
-                                <h3>📍 Address</h3>
-                                <p>Technology Street No: 123<br>
-                                Şişli / Istanbul<br>
-                                Turkey</p>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-12">
+                            <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">Contact</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400">Get in touch with us. We are here to help you.</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div class="space-y-8">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📍</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Address</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">Teknokent District<br>Istanbul University Technopark<br>34469 Sarıyer/Istanbul</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📧</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Email</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">info@turkbilcms.com<br>support@turkbilcms.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📱</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Phone</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">+90 212 555 0123<br>+90 532 555 0123</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h3>🕒 Working Hours</h3>
-                                <p><strong>Monday - Friday:</strong> 09:00 - 18:00<br>
-                                <strong>Saturday:</strong> 10:00 - 16:00<br>
-                                <strong>Sunday:</strong> Closed</p>
-                                
-                                <h3>🌐 Social Media</h3>
-                                <p>
-                                    <a href="#" class="me-3">LinkedIn</a>
-                                    <a href="#" class="me-3">Twitter</a>
-                                    <a href="#">GitHub</a>
-                                </p>
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Send Message</h3>
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                                        <input type="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
+                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
+                                        Send Message
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    </div>',
-                    'ar' => '<div class="contact-content">
-                        <h1>اتصل بنا</h1>
-                        <p class="lead">يمكنكم استخدام المعلومات أدناه للاتصال بنا.</p>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <h3>📧 البريد الإلكتروني</h3>
-                                <p><a href="mailto:info@turkbilbee.com">info@turkbilbee.com</a></p>
-                                
-                                <h3>📞 الهاتف</h3>
-                                <p><a href="tel:+902123456789">+90 (212) 345 67 89</a></p>
-                                
-                                <h3>📍 العنوان</h3>
-                                <p>شارع التكنولوجيا رقم: 123<br>
-                                شيشلي / اسطنبول<br>
-                                تركيا</p>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-12">
+                            <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">اتصل بنا</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400">تواصل معنا. نحن هنا لمساعدتك.</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div class="space-y-8">
+                                <div class="flex items-start space-x-4 space-x-reverse">
+                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📍</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">العنوان</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">حي تكنوكنت<br>حديقة جامعة اسطنبول التقنية<br>34469 ساريير/اسطنبول</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4 space-x-reverse">
+                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📧</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">البريد الإلكتروني</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">info@turkbilcms.com<br>support@turkbilcms.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4 space-x-reverse">
+                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                                        <span class="text-2xl">📱</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">الهاتف</h3>
+                                        <p class="text-gray-600 dark:text-gray-400">+90 212 555 0123<br>+90 532 555 0123</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h3>🕒 ساعات العمل</h3>
-                                <p><strong>الاثنين - الجمعة:</strong> 09:00 - 18:00<br>
-                                <strong>السبت:</strong> 10:00 - 16:00<br>
-                                <strong>الأحد:</strong> مغلق</p>
-                                
-                                <h3>🌐 وسائل التواصل الاجتماعي</h3>
-                                <p>
-                                    <a href="#" class="me-3">LinkedIn</a>
-                                    <a href="#" class="me-3">Twitter</a>
-                                    <a href="#">GitHub</a>
-                                </p>
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">إرسال رسالة</h3>
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الاسم الكامل</label>
+                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">البريد الإلكتروني</label>
+                                        <input type="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الرسالة</label>
+                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
+                                        إرسال الرسالة
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    </div>'
-                ],
-                'seo' => [
-                    'tr' => [
-                        'meta_title' => 'İletişim: Projeleriniz İçin Bizimle İletişime Geçin - Turkbil Bee',
-                        'meta_description' => 'Turkbil Bee ile iletişime geçin. Web tasarım, dijital çözümler ve teknoloji projeleri için detaylı bilgi alın. İstanbul ofisimiz ve iletişim bilgilerimiz.',
-                        'keywords' => ['iletişim', 'proje danışmanlığı', 'web tasarım teklifi', 'İstanbul ofis', 'teknoloji projeleri', 'dijital çözüm', 'teklif al'],
-                        'og_title' => 'Projeleriniz İçin Bizimle İletişime Geçin | Turkbil Bee',
-                        'og_description' => 'Web tasarım ve dijital çözüm projeleriniz için ücretsiz danışmanlık alın.',
-                        'robots' => 'index,follow'
-                    ],
-                    'en' => [
-                        'meta_title' => 'Contact: Get in Touch for Your Projects - Turkbil Bee',
-                        'meta_description' => 'Contact Turkbil Bee. Get detailed information for web design, digital solutions and technology projects. Our Istanbul office and contact information.',
-                        'keywords' => ['contact', 'project consultation', 'web design quote', 'Istanbul office', 'technology projects', 'digital solution', 'get quote'],
-                        'og_title' => 'Get in Touch for Your Projects | Turkbil Bee',
-                        'og_description' => 'Get free consultation for your web design and digital solution projects.',
-                        'robots' => 'index,follow'
-                    ],
-                    'ar' => [
-                        'meta_title' => 'اتصل بنا: تواصل معنا لمشاريعك - Turkbil Bee',
-                        'meta_description' => 'تواصل مع تورك بيل بي. احصل على معلومات مفصلة لتصميم الويب والحلول الرقمية ومشاريع التكنولوجيا. مكتبنا في اسطنبول ومعلومات الاتصال.',
-                        'keywords' => ['اتصال', 'استشارة المشاريع', 'عرض أسعار تصميم الويب', 'مكتب اسطنبول', 'مشاريع التكنولوجيا', 'حل رقمي', 'احصل على عرض'],
-                        'og_title' => 'تواصل معنا لمشاريعك | Turkbil Bee',
-                        'og_description' => 'احصل على استشارة مجانية لمشاريع تصميم الويب والحلول الرقمية.',
-                        'robots' => 'index,follow'
-                    ]
-                ],
-                'is_homepage' => false,
+                    </div>
+                </div>'
             ],
+            'is_active' => true,
+            'is_homepage' => false,
+        ]);
+
+        $this->createSeoSetting($page, 'İletişim - Turkbil CMS', 'Bizimle iletişime geçin. Size yardımcı olmak için buradayız.');
+    }
+    
+    private function createDigitalAgencyPages(): void
+    {
+        $this->command->info('Creating DIGITAL AGENCY pages...');
+        
+        $page = Page::create([
+            'title' => ['tr' => 'Anasayfa', 'en' => 'Homepage', 'ar' => 'الصفحة الرئيسية'],
+            'slug' => ['tr' => 'anasayfa', 'en' => 'homepage', 'ar' => 'الصفحة-الرئيسية'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            Dijital Dünyada Fark Yaratan Ajans
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8">
+                            Markanızı dijital alemde öne çıkarıyoruz. Yaratıcı tasarım ve etkili stratejilerle hedef kitlenize ulaşın.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-lg font-semibold">
+                                🚀 Projeye Başla
+                            </button>
+                            <button class="border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-4 rounded-full text-lg font-semibold">
+                                📁 Portfolyo İzle
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-yellow-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">🎨</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Web Tasarım</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Modern ve kullanıcı dostu arayüzler</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-indigo-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">📱</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Mobil Uygulama</h3>
+                            <p class="text-gray-600 dark:text-gray-400">iOS ve Android uygulamaları</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">📈</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Dijital Pazarlama</h3>
+                            <p class="text-gray-600 dark:text-gray-400">SEO, SEM ve sosyal medya</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">✨</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Görsel Tasarım</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Logo, kimlik ve kurumsal tasarım</p>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            Digital Agency That Makes a Difference
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8">
+                            We make your brand stand out in the digital world. Reach your target audience with creative design and effective strategies.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-lg font-semibold">
+                                🚀 Start Project
+                            </button>
+                            <button class="border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-4 rounded-full text-lg font-semibold">
+                                📁 View Portfolio
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-yellow-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">🎨</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Web Design</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Modern and user-friendly interfaces</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-indigo-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">📱</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Mobile Apps</h3>
+                            <p class="text-gray-600 dark:text-gray-400">iOS and Android applications</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">📈</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Digital Marketing</h3>
+                            <p class="text-gray-600 dark:text-gray-400">SEO, SEM and social media</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">✨</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Visual Design</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Logo, identity and corporate design</p>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="text-center mb-16">
+                        <h1 class="text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            وكالة رقمية تصنع الفارق
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8">
+                            نجعل علامتك التجارية متميزة في العالم الرقمي. وصول إلى جمهورك المستهدف بتصميم إبداعي واستراتيجيات فعالة.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-lg font-semibold">
+                                🚀 ابدأ مشروع
+                            </button>
+                            <button class="border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-4 rounded-full text-lg font-semibold">
+                                📁 عرض المحفظة
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-yellow-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">🎨</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">تصميم المواقع</h3>
+                            <p class="text-gray-600 dark:text-gray-400">واجهات حديثة وسهلة الاستخدام</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-indigo-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">📱</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">تطبيقات الهاتف</h3>
+                            <p class="text-gray-600 dark:text-gray-400">تطبيقات iOS و Android</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">📈</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">التسويق الرقمي</h3>
+                            <p class="text-gray-600 dark:text-gray-400">SEO، SEM ووسائل التواصل الاجتماعي</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-rose-400 rounded-full flex items-center justify-center mb-4">
+                                <span class="text-2xl">✨</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">التصميم البصري</h3>
+                            <p class="text-gray-600 dark:text-gray-400">شعار وهوية وتصميم مؤسسي</p>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+            'is_homepage' => true,
+        ]);
+        
+        $this->createSeoSetting($page, 'Dijital Ajans - Web Tasarım ve Dijital Pazarlama', 'Profesyonel dijital ajans hizmetleri.');
+
+        // Hakkımızda ve İletişim sayfaları da ekle
+        $this->addCommonPages();
+    }
+    
+    private function createEcommercePages(): void
+    {
+        $this->command->info('Creating E-COMMERCE pages...');
+        
+        $page = Page::create([
+            'title' => ['tr' => 'Anasayfa', 'en' => 'Homepage', 'ar' => 'الصفحة الرئيسية'],
+            'slug' => ['tr' => 'anasayfa', 'en' => 'homepage', 'ar' => 'الصفحة-الرئيسية'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-green-600 dark:text-green-400">🛒</span> E-Ticaret Mağazanız
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
+                            Kaliteli ürünler, uygun fiyatlar ve hızlı teslimat. Online alışverişin keyfini çıkarın.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg">
+                                🔍 Ürünleri Keşfet
+                            </button>
+                            <button class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg">
+                                🏷️ Kampanyalar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🚚</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Ücretsiz Kargo</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">150 TL üzeri siparişlerde</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">↩️</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Kolay İade</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">30 gün içinde ücretsiz</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🔒</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Güvenli Ödeme</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">SSL sertifikası ile korumalı</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🎧</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">7/24 Destek</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Müşteri hizmetleri</p>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-green-600 dark:text-green-400">🛒</span> Your E-Commerce Store
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
+                            Quality products, affordable prices and fast delivery. Enjoy online shopping.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg">
+                                🔍 Discover Products
+                            </button>
+                            <button class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg">
+                                🏷️ Campaigns
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🚚</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Free Shipping</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">On orders over $50</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">↩️</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Easy Returns</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Free within 30 days</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🔒</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Secure Payment</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Protected with SSL certificate</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🎧</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">24/7 Support</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Customer service</p>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-green-600 dark:text-green-400">🛒</span> متجرك الإلكتروني
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8">
+                            منتجات عالية الجودة وأسعار مناسبة وتسليم سريع. استمتع بالتسوق عبر الإنترنت.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg">
+                                🔍 اكتشف المنتجات
+                            </button>
+                            <button class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg">
+                                🏷️ الحملات
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🚚</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">شحن مجاني</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">على الطلبات أكثر من 50 دولار</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">↩️</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">إرجاع سهل</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">مجاني خلال 30 يوم</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🔒</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">دفع آمن</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">محمي بشهادة SSL</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="text-4xl mb-4">🎧</div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">دعم 24/7</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">خدمة العملاء</p>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+            'is_homepage' => true,
+        ]);
+        
+        $this->createSeoSetting($page, 'E-Ticaret Mağazası - Online Alışveriş', 'Güvenli online alışveriş deneyimi.');
+        
+        // Hakkımızda ve İletişim sayfaları da ekle
+        $this->addCommonPages();
+        
+        // Hakkımızda ve İletişim sayfaları da ekle
+        $this->addCommonPages();
+    }
+    
+    private function createTechCompanyPages(): void
+    {
+        $this->command->info('Creating TECH COMPANY pages...');
+        
+        $page = Page::create([
+            'title' => ['tr' => 'Anasayfa', 'en' => 'Homepage', 'ar' => 'الصفحة الرئيسية'],
+            'slug' => ['tr' => 'anasayfa', 'en' => 'homepage', 'ar' => 'الصفحة-الرئيسية'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-indigo-600 dark:text-indigo-400">💻</span> Teknoloji & İnovasyon
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8">
+                            Geleceğin teknolojilerini bugün geliştiriyoruz. Yapay zeka, bulut çözümleri ve yazılım geliştirme.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg">
+                                🚀 Çözümlerimiz
+                            </button>
+                            <button class="border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-3 rounded-lg">
+                                👥 Ekibimiz
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">🧠</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Yapay Zeka</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Machine Learning ve Deep Learning çözümleri ile akıllı sistemler.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">☁️</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Bulut Çözümleri</h3>
+                            <p class="text-gray-600 dark:text-gray-400">AWS, Azure ve Google Cloud platformlarında ölçeklenebilir altyapı.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">⚡</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Yazılım Geliştirme</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Modern teknolojilerle kurumsal yazılım çözümleri.</p>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-indigo-600 dark:text-indigo-400">💻</span> Technology & Innovation
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8">
+                            We develop tomorrow\'s technologies today. Artificial intelligence, cloud solutions and software development.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg">
+                                🚀 Our Solutions
+                            </button>
+                            <button class="border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-3 rounded-lg">
+                                👥 Our Team
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">🧠</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Artificial Intelligence</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Smart systems with Machine Learning and Deep Learning solutions.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">☁️</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Cloud Solutions</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Scalable infrastructure on AWS, Azure and Google Cloud platforms.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">⚡</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Software Development</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Enterprise software solutions with modern technologies.</p>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="text-center mb-16">
+                        <h1 class="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+                            <span class="text-indigo-600 dark:text-indigo-400">💻</span> التكنولوجيا والابتكار
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-8">
+                            نطور تقنيات الغد اليوم. الذكاء الاصطناعي وحلول السحابة وتطوير البرمجيات.
+                        </p>
+                        <div class="flex gap-4 justify-center">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg">
+                                🚀 حلولنا
+                            </button>
+                            <button class="border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 px-8 py-3 rounded-lg">
+                                👥 فريقنا
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">🧠</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">الذكاء الاصطناعي</h3>
+                            <p class="text-gray-600 dark:text-gray-400">أنظمة ذكية مع حلول التعلم الآلي والتعلم العميق.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">☁️</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">الحلول السحابية</h3>
+                            <p class="text-gray-600 dark:text-gray-400">بنية تحتية قابلة للتوسع على منصات AWS و Azure و Google Cloud.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg text-center border border-gray-100 dark:border-gray-700">
+                            <div class="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-3xl">⚡</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">تطوير البرمجيات</h3>
+                            <p class="text-gray-600 dark:text-gray-400">حلول برمجيات المؤسسات بالتقنيات الحديثة.</p>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+            'is_homepage' => true,
+        ]);
+        
+        $this->createSeoSetting($page, 'Teknoloji Şirketi - Yapay Zeka ve Bulut Çözümleri', 'Geleceğin teknolojileri ile inovasyon.');
+        
+        // Hakkımızda ve İletişim sayfaları da ekle
+        $this->addCommonPages();
+    }
+    
+    private function createDefaultPages(): void
+    {
+        $this->command->info('Creating DEFAULT pages...');
+        
+        $page = Page::create([
+            'title' => ['tr' => 'Anasayfa', 'en' => 'Homepage', 'ar' => 'الصفحة الرئيسية'],
+            'slug' => ['tr' => 'anasayfa', 'en' => 'homepage', 'ar' => 'الصفحة-الرئيسية'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-6">Hoşgeldiniz</h1>
+                        <p class="text-xl text-gray-600">Bu bir varsayılan anasayfa tasarımıdır.</p>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="text-center">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-6">Welcome</h1>
+                        <p class="text-xl text-gray-600">This is a default homepage design.</p>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="text-center">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-6">أهلاً وسهلاً</h1>
+                        <p class="text-xl text-gray-600">هذا تصميم افتراضي للصفحة الرئيسية.</p>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+            'is_homepage' => true,
+        ]);
+        
+        $this->createSeoSetting($page, 'Anasayfa', 'Varsayılan anasayfa.');
+        
+        // Hakkımızda ve İletişim sayfaları da ekle
+        $this->addCommonPages();
+    }
+    
+    private function getDomainFromTenantId($tenantId): string
+    {
+        if (!$tenantId) {
+            return 'laravel.test'; // Central
+        }
+        
+        // Tenant ID'sine göre domain mapping (hem string hem integer desteği)
+        $domainMap = [
+            1 => 'laravel.test',
+            2 => 'a.test',
+            3 => 'b.test', 
+            4 => 'c.test',
+            '1' => 'laravel.test',
+            '2' => 'a.test',
+            '3' => 'b.test', 
+            '4' => 'c.test',
         ];
+        
+        return $domainMap[$tenantId] ?? 'laravel.test';
+    }
 
-        foreach ($pages as $pageData) {
-            // Force recreate - duplicate check yapma
-            $existingPage = Page::where('title->tr', $pageData['title']['tr'])->first();
-            
-            if ($existingPage) {
-                $this->command->info('Force updating existing page: ' . $pageData['title']['tr']);
-                
-                // Page'i güncelle
-                $existingPage->update([
-                    'title' => $pageData['title'],
-                    'slug' => $pageData['slug'],
-                    'body' => $pageData['body'],
-                    'is_active' => true,
-                    'is_homepage' => $pageData['is_homepage'],
-                ]);
-                
-                $page = $existingPage;
-            } else {
-                $page = Page::create([
-                    'title' => $pageData['title'],
-                    'slug' => $pageData['slug'],
-                    'body' => $pageData['body'],
-                    'css' => null,
-                    'js' => null,
-                    'is_active' => true,
-                    'is_homepage' => $pageData['is_homepage'],
-                ]);
-            }
+    private function createSeoSetting($page, $title, $description): void
+    {
+        $page->seoSetting()->create([
+            'titles' => ['tr' => $title, 'en' => $title, 'ar' => $title],
+            'descriptions' => ['tr' => $description, 'en' => $description, 'ar' => $description],
+            'keywords' => ['tr' => [], 'en' => [], 'ar' => []],
+            'focus_keyword' => '',
+            'canonical_url' => '',
+            'robots_meta' => ['index' => true, 'follow' => true, 'archive' => true],
+            'og_type' => 'website',
+            'twitter_card' => 'summary',
+            'seo_score' => rand(80, 95),
+        ]);
+    }
+    
+    private function addCommonPages(): void
+    {
+        // Hakkımızda sayfası
+        $page = Page::create([
+            'title' => ['tr' => 'Hakkımızda', 'en' => 'About Us', 'ar' => 'من نحن'],
+            'slug' => ['tr' => 'hakkimizda', 'en' => 'about-us', 'ar' => 'من-نحن'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6">Hakkımızda</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                                Kaliteli hizmet ve müşteri memnuniyeti odaklı çalışma prensiplerimizle sektörde öncü olmaya devam ediyoruz.
+                            </p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-16 items-center mb-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Misyonumuz</h2>
+                                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                                    Modern teknolojiler kullanarak müşterilerimize en iyi hizmeti sunmak ve onların dijital dönüşüm süreçlerinde güvenilir bir partner olmak.
+                                </p>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    İnovasyon ve yaratıcılığı harmanlayarak, her projede fark yaratan çözümler üretmekteyiz.
+                                </p>
+                            </div>
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
+                                <h3 class="text-2xl font-bold mb-4">Neden Bizi Seçmelisiniz?</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center"><span class="mr-3">✅</span> 10+ yıl deneyim</li>
+                                    <li class="flex items-center"><span class="mr-3">✅</span> 500+ başarılı proje</li>
+                                    <li class="flex items-center"><span class="mr-3">✅</span> 7/24 teknik destek</li>
+                                    <li class="flex items-center"><span class="mr-3">✅</span> Yenilikçi çözümler</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-12">
+                            <div class="text-center mb-12">
+                                <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Değerlerimiz</h2>
+                                <p class="text-gray-600 dark:text-gray-400">İş yapış şeklimizi şekillendiren temel değerlerimiz</p>
+                            </div>
+                            <div class="grid md:grid-cols-4 gap-8">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">🎯</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Kalite</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Her projede mükemmeli hedefliyoruz</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">🤝</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Güven</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Şeffaf ve dürüst iletişim</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">💡</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">İnovasyon</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Sürekli gelişim ve yenilik</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">⚡</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Hız</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Zamanında teslimat garantisi</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6">About Us</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                                We continue to be a pioneer in the industry with our quality service and customer satisfaction focused working principles.
+                            </p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-16 items-center mb-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Our Mission</h2>
+                                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                                    To provide the best service to our customers using modern technologies and to be a reliable partner in their digital transformation processes.
+                                </p>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    By blending innovation and creativity, we produce solutions that make a difference in every project.
+                                </p>
+                            </div>
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
+                                <h3 class="text-2xl font-bold mb-4">Why Choose Us?</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center"><span class="mr-3">✅</span> 10+ years experience</li>
+                                    <li class="flex items-center"><span class="mr-3">✅</span> 500+ successful projects</li>
+                                    <li class="flex items-center"><span class="mr-3">✅</span> 24/7 technical support</li>
+                                    <li class="flex items-center"><span class="mr-3">✅</span> Innovative solutions</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-12">
+                            <div class="text-center mb-12">
+                                <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Our Values</h2>
+                                <p class="text-gray-600 dark:text-gray-400">Core values that shape our way of doing business</p>
+                            </div>
+                            <div class="grid md:grid-cols-4 gap-8">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">🎯</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Quality</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">We aim for perfection in every project</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">🤝</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Trust</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Transparent and honest communication</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">💡</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Innovation</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Continuous development and innovation</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">⚡</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">Speed</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">On-time delivery guarantee</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6">من نحن</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                                نواصل كوننا رواد في هذا المجال بمبادئ عملنا التي تركز على الخدمة الجيدة ورضا العملاء.
+                            </p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-16 items-center mb-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">مهمتنا</h2>
+                                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                                    تقديم أفضل خدمة لعملائنا باستخدام التقنيات الحديثة وأن نكون شريكاً موثوقاً في عمليات التحول الرقمي الخاصة بهم.
+                                </p>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    من خلال مزج الابتكار والإبداع، ننتج حلولاً تصنع الفارق في كل مشروع.
+                                </p>
+                            </div>
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
+                                <h3 class="text-2xl font-bold mb-4">لماذا تختارنا؟</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center space-x-reverse space-x-3"><span class="ml-3">✅</span> أكثر من 10 سنوات خبرة</li>
+                                    <li class="flex items-center space-x-reverse space-x-3"><span class="ml-3">✅</span> أكثر من 500 مشروع ناجح</li>
+                                    <li class="flex items-center space-x-reverse space-x-3"><span class="ml-3">✅</span> دعم فني 24/7</li>
+                                    <li class="flex items-center space-x-reverse space-x-3"><span class="ml-3">✅</span> حلول مبتكرة</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-12">
+                            <div class="text-center mb-12">
+                                <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">قيمنا</h2>
+                                <p class="text-gray-600 dark:text-gray-400">القيم الأساسية التي تشكل طريقة عملنا</p>
+                            </div>
+                            <div class="grid md:grid-cols-4 gap-8">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">🎯</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">الجودة</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">نهدف للكمال في كل مشروع</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">🤝</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">الثقة</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">تواصل شفاف وصادق</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">💡</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">الابتكار</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">التطوير والابتكار المستمر</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl">⚡</span>
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2">السرعة</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">ضمان التسليم في الوقت المحدد</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+            'is_homepage' => false,
+        ]);
 
-            // SEO Settings force recreate
-            $existingSeo = $page->seoSetting;
-            if ($existingSeo) {
-                $this->command->info('Force deleting and recreating SEO for page: ' . $pageData['title']['tr']);
-                $existingSeo->delete();
-            }
-            
-            // SEO Settings oluştur - trilingual format
-            $page->seoSetting()->create([
-                'titles' => $pageData['seo']['tr']['meta_title'] ? [
-                    'tr' => $pageData['seo']['tr']['meta_title'],
-                    'en' => $pageData['seo']['en']['meta_title'],
-                    'ar' => $pageData['seo']['ar']['meta_title']
-                ] : [],
-                'descriptions' => $pageData['seo']['tr']['meta_description'] ? [
-                    'tr' => $pageData['seo']['tr']['meta_description'],
-                    'en' => $pageData['seo']['en']['meta_description'],
-                    'ar' => $pageData['seo']['ar']['meta_description']
-                ] : [],
-                'keywords' => $pageData['seo']['tr']['keywords'] ? [
-                    'tr' => $pageData['seo']['tr']['keywords'],
-                    'en' => $pageData['seo']['en']['keywords'],
-                    'ar' => $pageData['seo']['ar']['keywords']
-                ] : [],
-                'focus_keyword' => $pageData['seo']['tr']['keywords'][0] ?? '',
-                'focus_keywords' => $pageData['seo']['tr']['keywords'] ? [
-                    'tr' => $pageData['seo']['tr']['keywords'][0] ?? '',
-                    'en' => $pageData['seo']['en']['keywords'][0] ?? '',
-                    'ar' => $pageData['seo']['ar']['keywords'][0] ?? ''
-                ] : [],
-                'canonical_url' => '',
-                'robots_meta' => [
-                    'index' => true,
-                    'follow' => true,
-                    'archive' => true
-                ],
-                'og_title' => $pageData['seo']['tr']['og_title'] ? [
-                    'tr' => $pageData['seo']['tr']['og_title'] ?? $pageData['seo']['tr']['meta_title'],
-                    'en' => $pageData['seo']['en']['og_title'] ?? $pageData['seo']['en']['meta_title'],
-                    'ar' => $pageData['seo']['ar']['og_title'] ?? $pageData['seo']['ar']['meta_title']
-                ] : [],
-                'og_description' => $pageData['seo']['tr']['og_description'] ? [
-                    'tr' => $pageData['seo']['tr']['og_description'] ?? $pageData['seo']['tr']['meta_description'],
-                    'en' => $pageData['seo']['en']['og_description'] ?? $pageData['seo']['en']['meta_description'],
-                    'ar' => $pageData['seo']['ar']['og_description'] ?? $pageData['seo']['ar']['meta_description']
-                ] : [],
-                'og_image' => '',
-                'og_type' => 'website',
-                'twitter_card' => 'summary',
-                'seo_score' => rand(75, 95),
-            ]);
-        }
+        $this->createSeoSetting($page, 'Hakkımızda', 'Şirketimiz hakkında detaylı bilgiler.');
+
+        // İletişim sayfası
+        $page = Page::create([
+            'title' => ['tr' => 'İletişim', 'en' => 'Contact', 'ar' => 'اتصل بنا'],
+            'slug' => ['tr' => 'iletisim', 'en' => 'contact', 'ar' => 'اتصل-بنا'],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6">İletişim</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400">
+                                Bizimle iletişime geçin. Size yardımcı olmak için buradayız.
+                            </p>
+                        </div>
+                        <div class="grid lg:grid-cols-2 gap-16">
+                            <div class="space-y-12">
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8">İletişim Bilgileri</h3>
+                                    <div class="space-y-8">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📍</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Adres</h4>
+                                                <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                                                    Teknokent Mahallesi<br>
+                                                    İstanbul Üniversitesi Teknoparkı<br>
+                                                    34469 Sarıyer/İstanbul
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📧</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">E-posta</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    <a href="mailto:info@example.com" class="hover:text-blue-600 dark:hover:text-blue-400">info@example.com</a><br>
+                                                    <a href="mailto:destek@example.com" class="hover:text-blue-600 dark:hover:text-blue-400">destek@example.com</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📱</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Telefon</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    <a href="tel:+902125550123" class="hover:text-blue-600 dark:hover:text-blue-400">+90 212 555 0123</a><br>
+                                                    <a href="tel:+905325550123" class="hover:text-blue-600 dark:hover:text-blue-400">+90 532 555 0123</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">🕒</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Çalışma Saatleri</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    Pazartesi - Cuma: 09:00 - 18:00<br>
+                                                    Cumartesi: 10:00 - 16:00<br>
+                                                    Pazar: Kapalı
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8">Mesaj Gönderin</h3>
+                                <form class="space-y-6">
+                                    <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Ad Soyad</label>
+                                            <input type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">E-posta</label>
+                                            <input type="email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Konu</label>
+                                        <input type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Mesaj</label>
+                                        <textarea rows="6" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors resize-none"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105">
+                                        Mesaj Gönder 📧
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6">Contact</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400">
+                                Get in touch with us. We are here to help you.
+                            </p>
+                        </div>
+                        <div class="grid lg:grid-cols-2 gap-16">
+                            <div class="space-y-12">
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8">Contact Information</h3>
+                                    <div class="space-y-8">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📍</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Address</h4>
+                                                <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                                                    Teknokent District<br>
+                                                    Istanbul University Technopark<br>
+                                                    34469 Sarıyer/Istanbul
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📧</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Email</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    <a href="mailto:info@example.com" class="hover:text-blue-600 dark:hover:text-blue-400">info@example.com</a><br>
+                                                    <a href="mailto:support@example.com" class="hover:text-blue-600 dark:hover:text-blue-400">support@example.com</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📱</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Phone</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    <a href="tel:+902125550123" class="hover:text-blue-600 dark:hover:text-blue-400">+90 212 555 0123</a><br>
+                                                    <a href="tel:+905325550123" class="hover:text-blue-600 dark:hover:text-blue-400">+90 532 555 0123</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">🕒</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Working Hours</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    Monday - Friday: 09:00 - 18:00<br>
+                                                    Saturday: 10:00 - 16:00<br>
+                                                    Sunday: Closed
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8">Send Message</h3>
+                                <form class="space-y-6">
+                                    <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                                            <input type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                                            <input type="email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Subject</label>
+                                        <input type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Message</label>
+                                        <textarea rows="6" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors resize-none"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105">
+                                        Send Message 📧
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6">اتصل بنا</h1>
+                            <p class="text-xl text-gray-600 dark:text-gray-400">
+                                تواصل معنا. نحن هنا لمساعدتك.
+                            </p>
+                        </div>
+                        <div class="grid lg:grid-cols-2 gap-16">
+                            <div class="space-y-12">
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8">معلومات الاتصال</h3>
+                                    <div class="space-y-8">
+                                        <div class="flex items-start space-x-4 space-x-reverse">
+                                            <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📍</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">العنوان</h4>
+                                                <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                                                    حي تكنوكنت<br>
+                                                    حديقة جامعة اسطنبول التقنية<br>
+                                                    34469 ساريير/اسطنبول
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4 space-x-reverse">
+                                            <div class="w-14 h-14 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📧</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">البريد الإلكتروني</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    <a href="mailto:info@example.com" class="hover:text-blue-600 dark:hover:text-blue-400">info@example.com</a><br>
+                                                    <a href="mailto:support@example.com" class="hover:text-blue-600 dark:hover:text-blue-400">support@example.com</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4 space-x-reverse">
+                                            <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">📱</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">الهاتف</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    <a href="tel:+902125550123" class="hover:text-blue-600 dark:hover:text-blue-400">+90 212 555 0123</a><br>
+                                                    <a href="tel:+905325550123" class="hover:text-blue-600 dark:hover:text-blue-400">+90 532 555 0123</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-4 space-x-reverse">
+                                            <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl">🕒</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">ساعات العمل</h4>
+                                                <p class="text-gray-600 dark:text-gray-400">
+                                                    الاثنين - الجمعة: 09:00 - 18:00<br>
+                                                    السبت: 10:00 - 16:00<br>
+                                                    الأحد: مغلق
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-8">إرسال رسالة</h3>
+                                <form class="space-y-6">
+                                    <div class="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">الاسم الكامل</label>
+                                            <input type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">البريد الإلكتروني</label>
+                                            <input type="email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">الموضوع</label>
+                                        <input type="text" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">الرسالة</label>
+                                        <textarea rows="6" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-200 transition-colors resize-none"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105">
+                                        إرسال الرسالة 📧
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+            'is_homepage' => false,
+        ]);
+
+        $this->createSeoSetting($page, 'İletişim', 'Bizimle iletişime geçin.');
     }
 }

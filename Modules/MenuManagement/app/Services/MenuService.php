@@ -6,7 +6,6 @@ namespace Modules\MenuManagement\App\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Modules\MenuManagement\App\Contracts\{MenuRepositoryInterface, MenuItemRepositoryInterface};
 use App\Contracts\GlobalSeoRepositoryInterface;
 use App\Services\GlobalTabService;
@@ -80,12 +79,8 @@ readonly class MenuService
             
             $menu = $this->menuRepository->create($data);
             
-            Log::info('Menu created', [
-                'menu_id' => $menu->menu_id,
-                'name' => $menu->name,
-                'slug' => $menu->slug,
-                'user_id' => auth()->id()
-            ]);
+            // Clear all menu caches
+            clearMenuCaches();
             
             return MenuOperationResult::success(
                 message: __('menumanagement::admin.menu_created_successfully'),
@@ -93,12 +88,6 @@ readonly class MenuService
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu creation failed', [
-                'error' => $e->getMessage(),
-                'data' => $data,
-                'user_id' => auth()->id()
-            ]);
-            
             throw MenuCreationException::withDatabaseError($e->getMessage());
         }
     }
@@ -123,11 +112,8 @@ readonly class MenuService
                 return MenuOperationResult::error(__('menumanagement::admin.menu_update_failed'));
             }
             
-            Log::info('Menu updated', [
-                'menu_id' => $id,
-                'data' => $data,
-                'user_id' => auth()->id()
-            ]);
+            // Clear menu caches
+            clearMenuCaches($id);
             
             return MenuOperationResult::success(
                 message: __('menumanagement::admin.menu_updated_successfully'),
@@ -135,12 +121,6 @@ readonly class MenuService
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu update failed', [
-                'menu_id' => $id,
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id()
-            ]);
-            
             return MenuOperationResult::error($e->getMessage());
         }
     }
@@ -163,23 +143,14 @@ readonly class MenuService
                 return MenuOperationResult::error(__('menumanagement::admin.menu_delete_failed'));
             }
             
-            Log::info('Menu deleted', [
-                'menu_id' => $id,
-                'name' => $menu->name,
-                'user_id' => auth()->id()
-            ]);
+            // Clear menu caches
+            clearMenuCaches($id);
             
             return MenuOperationResult::success(
                 message: __('menumanagement::admin.menu_deleted_successfully')
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu deletion failed', [
-                'menu_id' => $id,
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id()
-            ]);
-            
             return MenuOperationResult::error($e->getMessage());
         }
     }
@@ -204,11 +175,8 @@ readonly class MenuService
             
             $newStatus = !$menu->is_active;
             
-            Log::info('Menu status toggled', [
-                'menu_id' => $id,
-                'new_status' => $newStatus,
-                'user_id' => auth()->id()
-            ]);
+            // Clear menu caches
+            clearMenuCaches($id);
             
             return MenuOperationResult::success(
                 message: $newStatus 
@@ -219,12 +187,6 @@ readonly class MenuService
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu status toggle failed', [
-                'menu_id' => $id,
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id()
-            ]);
-            
             return MenuOperationResult::error($e->getMessage());
         }
     }
@@ -273,12 +235,8 @@ readonly class MenuService
             
             $menuItem = $this->menuItemRepository->create($data);
             
-            Log::info('Menu item created', [
-                'item_id' => $menuItem->item_id,
-                'menu_id' => $menuItem->menu_id,
-                'title' => $menuItem->title,
-                'user_id' => auth()->id()
-            ]);
+            // Clear menu caches
+            clearMenuCaches($data['menu_id']);
             
             return MenuItemOperationResult::success(
                 message: __('menumanagement::admin.menu_item_created_successfully'),
@@ -286,12 +244,6 @@ readonly class MenuService
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu item creation failed', [
-                'error' => $e->getMessage(),
-                'data' => $data,
-                'user_id' => auth()->id()
-            ]);
-            
             return MenuItemOperationResult::error($e->getMessage());
         }
     }
@@ -308,11 +260,8 @@ readonly class MenuService
                 return MenuItemOperationResult::error(__('menumanagement::admin.menu_item_update_failed'));
             }
             
-            Log::info('Menu item updated', [
-                'item_id' => $id,
-                'data' => $data,
-                'user_id' => auth()->id()
-            ]);
+            // Clear menu caches
+            clearMenuCaches($menuItem->menu_id);
             
             return MenuItemOperationResult::success(
                 message: __('menumanagement::admin.menu_item_updated_successfully'),
@@ -320,16 +269,61 @@ readonly class MenuService
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu item update failed', [
-                'item_id' => $id,
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id()
-            ]);
-            
             return MenuItemOperationResult::error($e->getMessage());
         }
     }
     
+    public function toggleMenuItemStatus(int $id): MenuItemOperationResult
+    {
+        try {
+            $menuItem = $this->menuItemRepository->findById($id)
+                ?? throw MenuItemNotFoundException::withId($id);
+            
+            $toggled = $this->menuItemRepository->toggleActive($id);
+            
+            if (!$toggled) {
+                return MenuItemOperationResult::error(__('menumanagement::admin.menu_item_status_toggle_failed'));
+            }
+            
+            $newStatus = !$menuItem->is_active;
+            
+            // Clear menu caches
+            clearMenuCaches($menuItem->menu_id);
+            
+            return MenuItemOperationResult::success(
+                message: $newStatus 
+                    ? __('menumanagement::admin.menu_item_activated_successfully')
+                    : __('menumanagement::admin.menu_item_deactivated_successfully'),
+                data: $this->menuItemRepository->findById($id),
+                meta: ['new_status' => $newStatus]
+            );
+            
+        } catch (Throwable $e) {
+            return MenuItemOperationResult::error($e->getMessage());
+        }
+    }
+    
+    public function updateMenuItemOrder(array $itemIds): MenuItemOperationResult
+    {
+        try {
+            $updated = $this->menuItemRepository->updateOrder($itemIds);
+            
+            if (!$updated) {
+                return MenuItemOperationResult::error(__('menumanagement::admin.menu_item_order_update_failed'));
+            }
+            
+            // Clear all menu caches as order affects all items
+            clearMenuCaches();
+            
+            return MenuItemOperationResult::success(
+                message: __('menumanagement::admin.menu_item_order_updated_successfully')
+            );
+            
+        } catch (Throwable $e) {
+            return MenuItemOperationResult::error($e->getMessage());
+        }
+    }
+
     public function deleteMenuItem(int $id): MenuItemOperationResult
     {
         try {
@@ -342,23 +336,14 @@ readonly class MenuService
                 return MenuItemOperationResult::error(__('menumanagement::admin.menu_item_delete_failed'));
             }
             
-            Log::info('Menu item deleted', [
-                'item_id' => $id,
-                'title' => $menuItem->title,
-                'user_id' => auth()->id()
-            ]);
+            // Clear menu caches
+            clearMenuCaches($menuItem->menu_id);
             
             return MenuItemOperationResult::success(
                 message: __('menumanagement::admin.menu_item_deleted_successfully')
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu item deletion failed', [
-                'item_id' => $id,
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id()
-            ]);
-            
             return MenuItemOperationResult::error($e->getMessage());
         }
     }
@@ -372,23 +357,14 @@ readonly class MenuService
                 return MenuItemOperationResult::error(__('menumanagement::admin.menu_items_reorder_failed'));
             }
             
-            Log::info('Menu items reordered', [
-                'menu_id' => $menuId,
-                'items_count' => count($order),
-                'user_id' => auth()->id()
-            ]);
+            // Clear menu caches
+            clearMenuCaches($menuId);
             
             return MenuItemOperationResult::success(
                 message: __('menumanagement::admin.menu_items_reordered_successfully')
             );
             
         } catch (Throwable $e) {
-            Log::error('Menu items reorder failed', [
-                'menu_id' => $menuId,
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id()
-            ]);
-            
             return MenuItemOperationResult::error($e->getMessage());
         }
     }

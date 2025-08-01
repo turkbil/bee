@@ -204,6 +204,11 @@ if (!function_exists('ai_get_credit_balance')) {
                 return (float) $tenant->ai_credits_balance;
             }
             
+            // Alternatif alan adları dene
+            if (isset($tenant->credit_balance)) {
+                return (float) $tenant->credit_balance;
+            }
+            
             // Fallback: Token balance'ı credit'e çevir (legacy support)
             if (isset($tenant->ai_tokens_balance)) {
                 $tokenBalance = (float) $tenant->ai_tokens_balance;
@@ -765,5 +770,34 @@ if (!function_exists('ai_get_token_balance')) {
         $creditBalance = ai_get_credit_balance($tenantId);
         
         return (int) round($creditBalance * 1000);
+    }
+}
+
+if (!function_exists('can_use_ai_credits')) {
+    /**
+     * AI kredi kullanım kontrolü (ConversationService uyumluluğu için)
+     * 
+     * @param float $creditAmount Gerekli kredi miktarı
+     * @param Tenant|null $tenant Tenant modeli
+     * @return bool Kullanılabilir mi?
+     */
+    function can_use_ai_credits(float $creditAmount, ?Tenant $tenant = null): bool
+    {
+        $tenantId = $tenant?->id ?? tenant('id');
+        return ai_can_use_credits($creditAmount, $tenantId);
+    }
+}
+
+if (!function_exists('ai_credit_balance')) {
+    /**
+     * AI kredi bakiyesi (ConversationService uyumluluğu için)  
+     * 
+     * @param Tenant|null $tenant Tenant modeli
+     * @return float Kredi bakiyesi
+     */
+    function ai_credit_balance(?Tenant $tenant = null): float
+    {
+        $tenantId = $tenant?->id ?? tenant('id');
+        return ai_get_credit_balance($tenantId);
     }
 }

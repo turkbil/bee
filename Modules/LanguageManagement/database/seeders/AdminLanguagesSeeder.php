@@ -37,6 +37,15 @@ class AdminLanguagesSeeder extends Seeder
                 'is_active' => true,
                 'sort_order' => 2,
             ],
+            [
+                'code' => 'ar',
+                'name' => 'Arabic',
+                'native_name' => 'العربية',
+                'direction' => 'rtl',
+                'flag_icon' => '🇸🇦',
+                'is_active' => true,
+                'sort_order' => 3,
+            ],
         ];
 
         foreach ($languages as $language) {

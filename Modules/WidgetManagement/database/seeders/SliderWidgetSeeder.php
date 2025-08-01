@@ -556,7 +556,7 @@ class SliderWidgetSeeder extends Seeder
             }
             
             try {
-                $tenant->run(function () use ($widget, $tenant) {
+                $tenant->run(function () use ($widget, $tenant, $tenantCacheKey) {
                     
                     $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
                     

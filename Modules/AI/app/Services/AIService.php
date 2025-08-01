@@ -82,9 +82,9 @@ class AIService
         // YENİ PRIORITY ENGINE SİSTEMİ - Tenant context ile
         $customPrompt = '';
         if (isset($options['prompt_id'])) {
-            $prompt = \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
-            if ($prompt) {
-                $customPrompt = $prompt->content;
+            $promptModel = \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
+            if ($promptModel) {
+                $customPrompt = $promptModel->content;
             }
         } elseif (isset($options['custom_prompt'])) {
             $customPrompt = $options['custom_prompt'];
@@ -103,6 +103,35 @@ class AIService
                 'role' => 'system',
                 'content' => $systemPrompt
             ];
+        }
+        
+        // Conversation history'yi ekle (eğer varsa)
+        if (isset($options['conversation_history']) && is_array($options['conversation_history'])) {
+            foreach ($options['conversation_history'] as $historyMessage) {
+                if (isset($historyMessage['role']) && isset($historyMessage['content'])) {
+                    $messages[] = [
+                        'role' => $historyMessage['role'],
+                        'content' => $historyMessage['content']
+                    ];
+                }
+            }
+        }
+        
+        // DEBUG: Prompt tipini kontrol et
+        if (!is_string($prompt)) {
+            \Log::error('🚨 Prompt is not string!', [
+                'prompt_type' => gettype($prompt),
+                'prompt_content' => $prompt,
+                'is_array' => is_array($prompt),
+                'is_object' => is_object($prompt)
+            ]);
+            
+            // Eğer array ise, muhtemelen yanlış parametre sırası
+            if (is_array($prompt)) {
+                $prompt = 'Debug: Array received as prompt';
+            } else {
+                $prompt = 'Debug: Non-string prompt received';
+            }
         }
         
         $messages[] = [
@@ -155,9 +184,9 @@ class AIService
         // YENİ PRIORITY ENGINE SİSTEMİ - Tenant context ile
         $customPrompt = '';
         if (isset($options['prompt_id'])) {
-            $prompt = \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
-            if ($prompt) {
-                $customPrompt = $prompt->content;
+            $promptModel = \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
+            if ($promptModel) {
+                $customPrompt = $promptModel->content;
             }
         } elseif (isset($options['custom_prompt'])) {
             $customPrompt = $options['custom_prompt'];

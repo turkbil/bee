@@ -34,17 +34,6 @@ class MenuManageComponent extends Component
         'is_default' => false,
     ];
     
-    // SEO Alanları
-    public $seo_title = '';
-    public $seo_description = '';
-    public $seo_keywords = '';
-    public $canonical_url = '';
-   
-    // SEO Cache - Tüm dillerin SEO verileri (Performance Optimization)
-    public $seoDataCache = [];
-    
-    // JavaScript için tüm dillerin SEO verileri (Blade exposure)
-    public $allLanguagesSeoData = [];
     
     // Konfigürasyon verileri
     public $tabConfig = [];
@@ -57,7 +46,6 @@ class MenuManageComponent extends Component
     
     // SOLID Dependencies
     protected $menuService;
-    protected $seoRepository;
     
     /**
      * Get current menu model for universal SEO component
@@ -76,8 +64,6 @@ class MenuManageComponent extends Component
     protected $listeners = [
         'refreshComponent' => '$refresh',
         'tab-changed' => 'handleTabChange',
-        'seo-keywords-updated' => 'updateSeoKeywords',
-        'seo-field-updated' => 'handleSeoFieldUpdate',
         'switchLanguage' => 'switchLanguage',
         'js-language-sync' => 'handleJavaScriptLanguageSync',
         'handleTestEvent' => 'handleTestEvent',
@@ -88,49 +74,6 @@ class MenuManageComponent extends Component
         'set-continue-mode' => 'setContinueMode'
     ];
     
-    /**
-     * SEO Keywords Updated Handler
-     */
-    public function updateSeoKeywords($data)
-    {
-        $language = $data['lang'] ?? $this->currentLanguage;
-        $keywords = $data['keywords'] ?? '';
-        
-        // seoDataCache'e kaydet
-        if (!isset($this->seoDataCache[$language])) {
-            $this->seoDataCache[$language] = [];
-        }
-        
-        $this->seoDataCache[$language]['keywords'] = $keywords;
-        
-        // Global SEO verisini güncelle
-        $this->allLanguagesSeoData[$language]['keywords'] = $keywords;
-    }
-
-    /**
-     * Handle SEO field updates from Universal SEO Component
-     */
-    public function handleSeoFieldUpdate($data)
-    {
-        $field = $data['field'] ?? '';
-        $value = $data['value'] ?? '';
-        $language = $data['language'] ?? $this->currentLanguage;
-        
-        // Cache'e kaydet
-        if (!isset($this->seoDataCache[$language])) {
-            $this->seoDataCache[$language] = [];
-        }
-        
-        $this->seoDataCache[$language][$field] = $value;
-        
-        // Global SEO verisini güncelle
-        $this->allLanguagesSeoData[$language][$field] = $value;
-        
-        // Component property'sini güncelle
-        if (property_exists($this, $field)) {
-            $this->$field = $value;
-        }
-    }
 
     /**
      * Tab değişimi handler
@@ -188,7 +131,6 @@ class MenuManageComponent extends Component
     public function boot(): void
     {
         $this->menuService = app(\Modules\MenuManagement\App\Services\MenuService::class);
-        $this->seoRepository = app(\App\Repositories\Contracts\GlobalSeoRepositoryInterface::class);
     }
 
     /**
@@ -196,7 +138,7 @@ class MenuManageComponent extends Component
      */
     public function mount($id = null): void
     {
-        $this->menuId = $id;
+        $this->menuId = $id ? (int)$id : null;
         $this->loadConfiguration();
         $this->initializeLanguages();
         $this->initializeInputs();
@@ -213,10 +155,10 @@ class MenuManageComponent extends Component
      */
     private function loadConfiguration(): void
     {
-        $this->tabConfig = config('menumanagement.tabs', [
-            ['key' => 'basic', 'name' => 'Temel Bilgiler'],
-            ['key' => 'seo', 'name' => 'SEO']
-        ]);
+        // Load tabs config - sadece basic tab
+        $this->tabConfig = [
+            ['key' => 'basic', 'name' => 'Temel Bilgiler']
+        ];
         
         $this->seoConfig = config('menumanagement.seo', []);
         $this->activeTab = !empty($this->tabConfig) ? $this->tabConfig[0]['key'] : 'basic';
@@ -277,8 +219,6 @@ class MenuManageComponent extends Component
                 'is_default' => $menu->is_default ?? false,
             ];
             
-            // Load SEO data
-            $this->loadSeoData($menu);
             
         } catch (\Exception $e) {
             logger('MenuManageComponent load error: ' . $e->getMessage());
@@ -286,31 +226,6 @@ class MenuManageComponent extends Component
         }
     }
 
-    /**
-     * Load SEO data for all languages
-     */
-    private function loadSeoData($menu): void
-    {
-        foreach ($this->availableLanguages as $language) {
-            $seoData = $menu->seoSetting ? $menu->seoSetting->getSeoData($language->code) : [];
-            
-            $this->seoDataCache[$language->code] = [
-                'title' => $seoData['title'] ?? '',
-                'description' => $seoData['description'] ?? '',
-                'keywords' => $seoData['keywords'] ?? '',
-                'canonical_url' => $seoData['canonical_url'] ?? '',
-            ];
-            
-            $this->allLanguagesSeoData[$language->code] = $this->seoDataCache[$language->code];
-        }
-        
-        // Set current language SEO data
-        $currentSeoData = $this->seoDataCache[$this->currentLanguage] ?? [];
-        $this->seo_title = $currentSeoData['title'] ?? '';
-        $this->seo_description = $currentSeoData['description'] ?? '';
-        $this->seo_keywords = $currentSeoData['keywords'] ?? '';
-        $this->canonical_url = $currentSeoData['canonical_url'] ?? '';
-    }
 
     /**
      * Set active tab based on configuration
@@ -342,9 +257,6 @@ class MenuManageComponent extends Component
                 $currentInput = $this->multiLangInputs[$this->currentLanguage] ?? [];
                 return !empty($currentInput['name']);
                 
-            case 'seo':
-                $currentSeo = $this->seoDataCache[$this->currentLanguage] ?? [];
-                return !empty($currentSeo['title']) || !empty($currentSeo['description']);
                 
             default:
                 return false;
@@ -360,35 +272,13 @@ class MenuManageComponent extends Component
             return;
         }
         
-        // Save current language data before switching
-        $this->saveSeoDataToCache();
         
         $this->currentLanguage = $language;
         
-        // Load SEO data for new language
-        $currentSeoData = $this->seoDataCache[$language] ?? [];
-        $this->seo_title = $currentSeoData['title'] ?? '';
-        $this->seo_description = $currentSeoData['description'] ?? '';
-        $this->seo_keywords = $currentSeoData['keywords'] ?? '';
-        $this->canonical_url = $currentSeoData['canonical_url'] ?? '';
         
         $this->updateTabCompletionStatus();
     }
 
-    /**
-     * Save SEO data to cache
-     */
-    private function saveSeoDataToCache(): void
-    {
-        $this->seoDataCache[$this->currentLanguage] = [
-            'title' => $this->seo_title,
-            'description' => $this->seo_description,
-            'keywords' => $this->seo_keywords,
-            'canonical_url' => $this->canonical_url,
-        ];
-        
-        $this->allLanguagesSeoData[$this->currentLanguage] = $this->seoDataCache[$this->currentLanguage];
-    }
 
     /**
      * Get cached menu with SEO
@@ -434,17 +324,35 @@ class MenuManageComponent extends Component
      */
     public function save(): void
     {
-        $this->validate([
-            'multiLangInputs.*.name' => 'required|string|max:255',
-            'inputs.location' => 'required|string|in:header,footer,sidebar,mobile',
-        ], [
-            'multiLangInputs.*.name.required' => __('menumanagement::admin.menu_name') . ' ' . __('admin.required'),
-            'multiLangInputs.*.name.max' => __('menumanagement::admin.menu_name') . ' ' . __('admin.field_too_long'),
-            'inputs.location.required' => __('menumanagement::admin.menu_location') . ' ' . __('admin.required'),
-            'inputs.location.in' => __('menumanagement::admin.menu_location') . ' ' . __('admin.invalid_input'),
+        logger('🔍 MenuManageComponent save başladı', [
+            'menuId' => $this->menuId,
+            'multiLangInputs' => $this->multiLangInputs,
+            'inputs' => $this->inputs
         ]);
 
         try {
+            $this->validate([
+                'multiLangInputs.*.name' => 'required|string|max:255',
+                'inputs.location' => 'required|string|in:header,footer,sidebar,mobile',
+            ], [
+                'multiLangInputs.*.name.required' => __('menumanagement::admin.menu_name') . ' ' . __('admin.required'),
+                'multiLangInputs.*.name.max' => __('menumanagement::admin.menu_name') . ' ' . __('admin.field_too_long'),
+                'inputs.location.required' => __('menumanagement::admin.menu_location') . ' ' . __('admin.required'),
+                'inputs.location.in' => __('menumanagement::admin.menu_location') . ' ' . __('admin.invalid_input'),
+            ]);
+
+            logger('✅ MenuManageComponent validation başarılı');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            logger('🚨 MenuManageComponent validation HATASI!', [
+                'validation_errors' => $e->errors(),
+                'multiLangInputs' => $this->multiLangInputs,
+                'inputs' => $this->inputs
+            ]);
+            throw $e; // Re-throw validation exception
+        }
+
+        try {
+            logger('🔄 Slug işleme başlıyor');
             // Process slugs using SlugHelper
             $processedSlugs = $this->processMultiLanguageSlugs(
                 Menu::class,
@@ -453,13 +361,13 @@ class MenuManageComponent extends Component
                 $this->menuId
             );
 
+            logger('✅ Slug işleme tamamlandı', ['processedSlugs' => $processedSlugs]);
+
             // Update multiLangInputs with processed slugs
             foreach ($processedSlugs as $langCode => $slugData) {
                 $this->multiLangInputs[$langCode]['slug'] = $slugData['slug'];
             }
 
-            // Save current SEO data to cache before saving
-            $this->saveSeoDataToCache();
 
             // Prepare data for service
             $menuData = [
@@ -471,54 +379,59 @@ class MenuManageComponent extends Component
                 'is_default' => $this->inputs['is_default'],
             ];
 
+            logger('🔄 Service işlemi başlıyor', ['menuData' => $menuData]);
+
             // Save via service
             if ($this->menuId) {
+                logger('🔄 Menü güncelleniyor: ' . $this->menuId);
                 $result = $this->menuService->updateMenu($this->menuId, $menuData);
             } else {
+                logger('🔄 Yeni menü oluşturuluyor');
                 $result = $this->menuService->createMenu($menuData);
                 $this->menuId = $result->data?->menu_id;
             }
 
-            // Save SEO data
-            if ($result->success && $this->menuId) {
-                $this->saveSeoData();
-            }
+            logger('✅ Service işlemi tamamlandı', ['result' => $result]);
+
 
             // Flash message and redirect
             session()->flash($result->type, $result->message);
             
             if ($result->success) {
-                $this->redirect(route('admin.menumanagement.manage', ['id' => $this->menuId]));
+                $this->redirect(route('admin.menumanagement.menu.manage', ['id' => $this->menuId]));
             }
 
         } catch (\Exception $e) {
-            logger('MenuManageComponent save error: ' . $e->getMessage());
-            session()->flash('error', __('menumanagement::admin.menu_creation_failed'));
+            logger('🚨 MenuManageComponent save HATA!', [
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'stack_trace' => $e->getTraceAsString(),
+                'menuId' => $this->menuId,
+                'multiLangInputs' => $this->multiLangInputs,
+                'inputs' => $this->inputs
+            ]);
+            
+            session()->flash('error', __('menumanagement::admin.menu_creation_failed') . ': ' . $e->getMessage());
         }
     }
 
     /**
-     * Save SEO data for all languages
+     * Save and Continue
      */
-    private function saveSeoData(): void
+    public function saveAndContinue(): void
     {
-        try {
-            foreach ($this->availableLanguages as $language) {
-                $seoData = $this->seoDataCache[$language->code] ?? [];
-                
-                if (!empty(array_filter($seoData))) {
-                    $this->seoRepository->updateSeoData(
-                        'menu',
-                        $this->menuId,
-                        $language->code,
-                        $seoData
-                    );
-                }
-            }
-        } catch (\Exception $e) {
-            logger('MenuManageComponent SEO save error: ' . $e->getMessage());
+        logger('🔍 MenuManageComponent saveAndContinue başladı');
+        
+        // Save first
+        $this->save();
+        
+        // If successful, redirect to new menu form
+        if (session()->has('success')) {
+            $this->redirect(route('admin.menumanagement.menu.manage'));
         }
     }
+
 
     /**
      * Render component

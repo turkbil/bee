@@ -104,6 +104,16 @@ if (!function_exists('is_valid_tenant_locale')) {
      */
     function is_valid_tenant_locale(string $locale): bool
     {
+        // LocaleValidationService varsa onu kullan
+        if (class_exists('\App\Services\LocaleValidationService')) {
+            try {
+                return app(\App\Services\LocaleValidationService::class)->isValidTenantLocale($locale);
+            } catch (\Exception $e) {
+                // Fallback to old system
+            }
+        }
+        
+        // Eski sistem fallback
         if (empty($locale) || strlen($locale) > 5) {
             return false;
         }

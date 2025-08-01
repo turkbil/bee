@@ -7,7 +7,7 @@ document.addEventListener('livewire:init', () => {
     
     // Cache Loading States - Quick Actions Button
     Livewire.on('cacheStarted', (event) => {
-        console.log('🔄 Cache temizleme başladı, quick actions loading gösteriliyor...');
+        // console.log('🔄 Cache temizleme başladı, quick actions loading gösteriliyor...');
         showQuickActionsLoading();
     });
     
@@ -18,12 +18,12 @@ document.addEventListener('livewire:init', () => {
     
     // Language Loading States - Language Switcher Button
     Livewire.on('languageStarted', (event) => {
-        console.log('🌍 Dil değiştirme başladı, language loading gösteriliyor...');
+        // console.log('🌍 Dil değiştirme başladı, language loading gösteriliyor...');
         showLanguageSwitcherLoading();
     });
     
     Livewire.on('languageFinished', (event) => {
-        console.log('🌍 Dil değiştirme bitti, language loading gizleniyor...');
+        // console.log('🌍 Dil değiştirme bitti, language loading gizleniyor...');
         hideLanguageSwitcherLoading();
     });
 });
@@ -32,7 +32,7 @@ document.addEventListener('livewire:init', () => {
  * Quick Actions Button Loading
  */
 function showQuickActionsLoading() {
-    console.log('🔄 showQuickActionsLoading çağrıldı');
+    // console.log('🔄 showQuickActionsLoading çağrıldı');
     const icon = document.getElementById('quick-actions-icon');
     if (icon) {
         console.log('✅ quick-actions-icon bulundu, spinner yapılıyor');

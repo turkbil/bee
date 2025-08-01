@@ -19,7 +19,7 @@ class AISEOFeaturesSeeder extends Seeder
     {
         // SEO Features'ları central veritabanında oluştur
         TenantHelpers::central(function() {
-            $this->command->info('SEO AI Features oluşturuluyor...');
+            // $this->command->info('SEO AI Features oluşturuluyor...');
             
             // SEO Prompt'ları önce yükle
             $this->call(AISEOPromptsSeeder::class);
@@ -30,7 +30,7 @@ class AISEOFeaturesSeeder extends Seeder
             // SEO Feature'larını oluştur
             $this->createSEOFeatures();
             
-            $this->command->info('✅ SEO AI Features başarıyla oluşturuldu!');
+            // $this->command->info('✅ SEO AI Features başarıyla oluşturuldu!');
         });
     }
 
@@ -57,7 +57,7 @@ class AISEOFeaturesSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
-            $this->command->info("✓ Sayfa SEO Araçları kategorisi oluşturuldu");
+            // $this->command->info("✓ Sayfa SEO Araçları kategorisi oluşturuldu");
         }
     }
 
@@ -270,7 +270,7 @@ class AISEOFeaturesSeeder extends Seeder
                 ]);
             }
 
-            $this->command->info("✓ SEO Feature oluşturuldu: {$featureData['name']}");
+            // $this->command->info("✓ SEO Feature oluşturuldu: {$featureData['name']}");
         }
     }
 }

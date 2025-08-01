@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\MenuManagement\App\Http\Livewire\Admin\MenuComponent;
 use Modules\MenuManagement\App\Http\Livewire\Admin\MenuManageComponent;
+use Modules\MenuManagement\App\Http\Livewire\Admin\MenuItemManageComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -23,8 +24,9 @@ class MenuManagementServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Menu Observer kaydı
+        // Observer kayıtları
         \Modules\MenuManagement\App\Models\Menu::observe(\Modules\MenuManagement\App\Observers\MenuObserver::class);
+        \Modules\MenuManagement\App\Models\MenuItem::observe(\Modules\MenuManagement\App\Observers\MenuItemObserver::class);
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
@@ -44,6 +46,7 @@ class MenuManagementServiceProvider extends ServiceProvider
 
         Livewire::component('menu-component', MenuComponent::class);
         Livewire::component('menu-manage-component', MenuManageComponent::class);
+        Livewire::component('menu-item-manage-component', MenuItemManageComponent::class);
     }
 
     /**
@@ -72,6 +75,7 @@ class MenuManagementServiceProvider extends ServiceProvider
         
         // Service Layer bindings
         $this->app->singleton(\Modules\MenuManagement\App\Services\MenuService::class);
+        $this->app->singleton(\Modules\MenuManagement\App\Services\MenuUrlBuilderService::class);
     }
 
     /**

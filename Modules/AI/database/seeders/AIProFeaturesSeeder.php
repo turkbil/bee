@@ -518,6 +518,6 @@ class AIProFeaturesSeeder extends Seeder
             );
         }
 
-        $this->command->info("✅ AI Pro Features başarıyla eklendi: " . count($features) . " adet feature");
+        // $this->command->info("✅ AI Pro Features başarıyla eklendi: " . count($features) . " adet feature");
     }
 }

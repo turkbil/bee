@@ -153,16 +153,16 @@ class PortfolioCategorySeeder extends Seeder
                     'order' => $index,
                     'is_active' => true,
                 ]);
-                $this->command->info('Kategori oluşturuldu: ' . $category['title']['tr']);
+                // $this->command->info("Oluşturuldu"): ' . $category['title']['tr']);
             } else {
                 $this->command->info('Kategori zaten var: ' . $category['title']['tr']);
             }
         }
         
         if (TenantHelpers::isCentral()) {
-            $this->command->info('Portfolio kategorileri central veritabanında oluşturuldu.');
+            // $this->command->info("Oluşturuldu").');
         } else {
-            $this->command->info('Portfolio kategorileri tenant veritabanında oluşturuldu.');
+            // $this->command->info("Oluşturuldu").');
         }
     }
 }

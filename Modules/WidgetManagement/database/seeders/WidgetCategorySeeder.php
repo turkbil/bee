@@ -98,7 +98,7 @@ class WidgetCategorySeeder extends Seeder
             $this->createModuleSubcategories($modulesCategory);
             
             if ($this->command) {
-                $this->command->info('Widget kategorileri ve widget\'lar başarıyla oluşturuldu.');
+                // $this->command->info("Oluşturuldu").');
             }
             
             // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)

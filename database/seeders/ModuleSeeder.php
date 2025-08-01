@@ -42,6 +42,10 @@ class ModuleSeeder extends Seeder
             $moduleBaseName = basename($modulePath);
             $seederPath = $modulePath . '/Database/Seeders';
             
+            // Debug: Her modül için context durumunu kontrol et
+            $contextStatus = TenantHelpers::isCentral() ? 'CENTRAL' : 'TENANT';
+            $this->command->info("🔍 Processing module: {$moduleBaseName} - Context: {$contextStatus}");
+            
             if (!File::exists($seederPath)) {
                 continue;
             }
@@ -61,6 +65,12 @@ class ModuleSeeder extends Seeder
                 // SettingManagement modülü özel durum - alt seeder'ları tekrar çalıştırmaya çalışma
                 if ($moduleBaseName === 'SettingManagement') {
                     $this->command->info("SettingManagement module seeders already run through the main seeder, skipping individual seeders");
+                    continue;
+                }
+                
+                // Page ve Announcement modülleri için ana seeder varsa sadece onu çalıştır
+                if (in_array($moduleBaseName, ['Page', 'Announcement'])) {
+                    $this->command->info("{$moduleBaseName} module has main seeder, skipping individual seeders");
                     continue;
                 }
             }
@@ -117,11 +127,8 @@ class ModuleSeeder extends Seeder
         }
         
         foreach ($tenants as $tenant) {
-            // Tenant 1 (central) için seeder'ı çalıştırma, çünkü central olarak zaten çalıştırıldı
-            if ($tenant->id == 1) {
-                $this->command->info("Skipping tenant {$tenant->id} seeders as it's the central database");
-                continue;
-            }
+            // MenuManagement gibi tenant tabloları için tenant 1'de de çalıştırmalıyız
+            // Sadece central-only işlemler atlanır
             $this->command->info("Initializing tenant: {$tenant->id}");
             
             // Tenant bağlamını başlat

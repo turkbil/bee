@@ -52,6 +52,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'a211fe5eb7136ac3d49924193e91eae0' => __DIR__ . '/../..' . '/app/Helpers/AIHelper.php',
         '1396d18559aff122f3c2aa74b73a2e76' => __DIR__ . '/../..' . '/app/Helpers/CreditHelpers.php',
         '83bd2eaaa0c8f246d1feccb8de5192b9' => __DIR__ . '/../..' . '/app/Helpers/TranslationHelper.php',
+        'c71260c1cf084f756474d36b60f4fe08' => __DIR__ . '/../..' . '/app/Helpers/MenuHelper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -5086,13 +5087,17 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'Modules\\MenuManagement\\App\\Exceptions\\MenuItemNotFoundException' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Exceptions/MenuItemNotFoundException.php',
         'Modules\\MenuManagement\\App\\Exceptions\\MenuNotFoundException' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Exceptions/MenuNotFoundException.php',
         'Modules\\MenuManagement\\App\\Http\\Livewire\\Admin\\MenuComponent' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Http/Livewire/Admin/MenuComponent.php',
+        'Modules\\MenuManagement\\App\\Http\\Livewire\\Admin\\MenuItemManageComponent' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Http/Livewire/Admin/MenuItemManageComponent.php',
         'Modules\\MenuManagement\\App\\Http\\Livewire\\Admin\\MenuManageComponent' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Http/Livewire/Admin/MenuManageComponent.php',
+        'Modules\\MenuManagement\\App\\Http\\Requests\\StoreMenuItemRequest' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Http/Requests/StoreMenuItemRequest.php',
         'Modules\\MenuManagement\\App\\Models\\Menu' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Models/Menu.php',
         'Modules\\MenuManagement\\App\\Models\\MenuItem' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Models/MenuItem.php',
+        'Modules\\MenuManagement\\App\\Observers\\MenuItemObserver' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Observers/MenuItemObserver.php',
         'Modules\\MenuManagement\\App\\Observers\\MenuObserver' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Observers/MenuObserver.php',
         'Modules\\MenuManagement\\App\\Repositories\\MenuItemRepository' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Repositories/MenuItemRepository.php',
         'Modules\\MenuManagement\\App\\Repositories\\MenuRepository' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Repositories/MenuRepository.php',
         'Modules\\MenuManagement\\App\\Services\\MenuService' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Services/MenuService.php',
+        'Modules\\MenuManagement\\App\\Services\\MenuUrlBuilderService' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Services/MenuUrlBuilderService.php',
         'Modules\\MenuManagement\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/MenuManagement/Providers/EventServiceProvider.php',
         'Modules\\MenuManagement\\Providers\\MenuManagementServiceProvider' => __DIR__ . '/../..' . '/Modules/MenuManagement/Providers/MenuManagementServiceProvider.php',
         'Modules\\MenuManagement\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/MenuManagement/Providers/RouteServiceProvider.php',

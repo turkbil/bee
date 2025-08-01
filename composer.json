@@ -71,7 +71,8 @@
             "app/Helpers/TenantHelpers.php",
             "app/Helpers/AIHelper.php",
             "app/Helpers/CreditHelpers.php",
-            "app/Helpers/TranslationHelper.php"
+            "app/Helpers/TranslationHelper.php",
+            "app/Helpers/MenuHelper.php"
         ]
     },
     "autoload-dev": {

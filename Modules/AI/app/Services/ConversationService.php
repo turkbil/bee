@@ -25,28 +25,28 @@ class ConversationService
     }
 
     /**
-     * Tenant'ın mevcut token bakiyesini kontrol et
+     * Tenant'ın mevcut kredi bakiyesini kontrol et
      */
-    public function checkTenantTokenBalance(int $requiredTokens = 0): bool
+    public function checkTenantCreditBalance(float $requiredCredits = 1.0): bool
     {
-        // Helper function kullanarak token kontrolü yap
+        // Helper function kullanarak kredi kontrolü yap
         $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
         
-        Log::info('Token kontrolü yapılıyor', [
+        Log::info('Kredi kontrolü yapılıyor', [
             'tenant_id' => $tenantId,
-            'required_tokens' => $requiredTokens,
+            'required_credits' => $requiredCredits,
             'is_central' => \App\Helpers\TenantHelpers::isCentral()
         ]);
         
-        // AI token helper'ını kullan
+        // AI kredi helper'ını kullan
         $tenant = \App\Models\Tenant::find($tenantId);
         if (!$tenant) {
             Log::warning('Tenant bulunamadı', ['tenant_id' => $tenantId]);
             return false;
         }
         
-        $canUse = can_use_ai_tokens($requiredTokens, $tenant);
-        Log::info('Token kontrolü sonucu', ['can_use' => $canUse, 'balance' => ai_token_balance($tenant)]);
+        $canUse = can_use_ai_credits($requiredCredits, $tenant);
+        Log::info('Kredi kontrolü sonucu', ['can_use' => $canUse, 'balance' => ai_credit_balance($tenant)]);
         
         return $canUse;
     }
@@ -76,27 +76,29 @@ class ConversationService
     }
 
     /**
-     * Token kullanımını kaydet
+     * Kredi kullanımını kaydet
      */
-    public function recordTokenUsage(Conversation $conversation, Message $message, int $promptTokens, int $completionTokens, string $model = null): void
+    public function recordCreditUsage(Conversation $conversation, Message $message, int $promptTokens, int $completionTokens, string $model = null): void
     {
         $totalTokens = $promptTokens + $completionTokens;
         
-        // Helper kullanarak token kullanımını kaydet
+        // Helper kullanarak kredi kullanımını kaydet
         $tenant = \App\Models\Tenant::find($conversation->tenant_id);
         if ($tenant) {
-            use_ai_tokens(
-                $totalTokens, 
-                'chat', 
-                'AI Chat: ' . \Str::limit($message->content, 50),
-                $conversation->id,
-                $tenant
-            );
+            $creditAmount = round($totalTokens / 1000, 4); // Token → Credit dönüşümü
+            ai_use_credits($creditAmount, $tenant->id, [
+                'usage_type' => 'chat',
+                'description' => 'AI Chat: ' . \Str::limit($message->content, 50),
+                'reference_id' => $conversation->id,
+                'input_tokens' => $promptTokens,
+                'output_tokens' => $completionTokens,
+                'provider_name' => $model ?: 'unknown'
+            ]);
             
-            Log::info('Token kullanımı kaydedildi', [
+            Log::info('Kredi kullanımı kaydedildi', [
                 'tenant_id' => $conversation->tenant_id,
-                'tokens_used' => $totalTokens,
-                'remaining_balance' => ai_token_balance($tenant)
+                'credits_used' => $creditAmount,
+                'remaining_balance' => ai_credit_balance($tenant)
             ]);
         }
 
@@ -167,9 +169,9 @@ class ConversationService
 
     public function getAIResponse(Conversation $conversation, string $userMessage, bool $stream = false)
     {
-        // Token kontrolü
-        if (!$this->checkTenantTokenBalance(1000)) {
-            return "Üzgünüm, tenant token bakiyeniz yetersiz. Lütfen token satın alınız.";
+        // Kredi kontrolü
+        if (!$this->checkTenantCreditBalance(1.0)) {
+            return "Üzgünüm, tenant kredi bakiyeniz yetersiz. Lütfen kredi satın alınız.";
         }
     
         $userMsg = $this->addMessage($conversation, $userMessage, 'user');
@@ -191,8 +193,8 @@ class ConversationService
                 $aiMessage->completion_tokens = $completionTokens;
                 $aiMessage->save();
                 
-                // Token kullanımını kaydet
-                $this->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens);
+                // Kredi kullanımını kaydet
+                $this->recordCreditUsage($conversation, $aiMessage, $promptTokens, $completionTokens);
             }
     
             return $aiResponse;
@@ -201,9 +203,9 @@ class ConversationService
 
     public function getStreamingAIResponse(Conversation $conversation, string $userMessage, callable $callback): Message
     {
-        // Token kontrolü - tahmini 1000 token
-        if (!$this->checkTenantTokenBalance(1000)) {
-            $errorMsg = "Üzgünüm, tenant token bakiyeniz yetersiz. Lütfen token satın alınız.";
+        // Kredi kontrolü - tahmini 1.0 kredi
+        if (!$this->checkTenantCreditBalance(1.0)) {
+            $errorMsg = "Üzgünüm, tenant kredi bakiyeniz yetersiz. Lütfen kredi satın alınız.";
             $callback($errorMsg);
             return $this->addMessage($conversation, $errorMsg, 'assistant');
         }
@@ -251,8 +253,8 @@ class ConversationService
             $aiMessage->tokens = $promptTokens + $completionTokens;
             $aiMessage->save();
             
-            // Token usage kayıt
-            $this->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens);
+            // Kredi kullanımını kaydet
+            $this->recordCreditUsage($conversation, $aiMessage, $promptTokens, $completionTokens);
         }
         
         return $aiMessage;

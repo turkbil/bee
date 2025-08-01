@@ -3,7 +3,7 @@
 return [
     'name' => 'Page',
     'slugs' => [
-        'index' => 'pages',
+        'index' => 'page',
         'show' => 'page',
     ],
     'routes' => [
@@ -67,5 +67,15 @@ return [
             'real_time' => true,
             'submit_button_states' => true
         ]
+    ],
+
+    // Menu URL tipleri - MenuManagement için dinamik yapı
+    'menu_url_types' => [
+        [
+            'type' => 'detail',
+            'label' => 'page::admin.page_detail',
+            'needs_selection' => true
+        ]
+        // Page modülünde sadece detay var, liste yok çünkü sayfalar genelde tek tek linklenır
     ]
 ];

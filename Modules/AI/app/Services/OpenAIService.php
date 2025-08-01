@@ -20,7 +20,7 @@ class OpenAIService
     }
 
     /**
-     * STREAMING completion generation
+     * GERÇEK STREAMING completion generation
      */
     public function generateCompletionStream($messages, ?callable $streamCallback = null)
     {
@@ -32,30 +32,81 @@ class OpenAIService
         ]);
 
         try {
-            // Non-streaming request payload
+            // DEBUG: Messages'ı log'la
+            Log::info('🔍 OpenAI Messages Debug', [
+                'messages_count' => count($messages),
+                'messages' => array_map(function($msg) {
+                    return [
+                        'role' => $msg['role'],
+                        'content_type' => gettype($msg['content']),
+                        'content_preview' => is_string($msg['content']) ? substr($msg['content'], 0, 100) : 'NOT_STRING'
+                    ];
+                }, $messages)
+            ]);
+            
+            // GERÇEK STREAMING REQUEST PAYLOAD
             $payload = [
                 'model' => $this->model,
                 'messages' => $messages,
                 'max_tokens' => 800,
                 'temperature' => 0.7,
-                'stream' => false,
+                'stream' => true, // ✨ STREAMING AÇIK!
+                'stream_options' => [
+                    'include_usage' => true // Token usage bilgisi için
+                ]
             ];
 
-            // ✨ NORMAL HTTP REQUEST
+            // ✨ STREAMING HTTP REQUEST
+            $fullResponse = '';
+            $inputTokens = 0;
+            $outputTokens = 0;
+            $totalTokens = 0;
+            
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->timeout(120)->post($this->baseUrl . '/chat/completions', $payload);
 
             if ($response->successful()) {
-                $responseData = $response->json();
+                // SSE formatını parse et
+                $lines = explode("\n", $response->body());
                 
-                $fullResponse = $responseData['choices'][0]['message']['content'] ?? '';
-                
-                // OpenAI token usage bilgilerini al
-                $inputTokens = $responseData['usage']['prompt_tokens'] ?? 0;
-                $outputTokens = $responseData['usage']['completion_tokens'] ?? 0;
-                $totalTokens = $responseData['usage']['total_tokens'] ?? 0;
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    
+                    // SSE veri satırlarını filtrele
+                    if (strpos($line, 'data: ') === 0) {
+                        $jsonData = substr($line, 6); // "data: " kısmını çıkar
+                        
+                        // [DONE] kontrolü
+                        if ($jsonData === '[DONE]') {
+                            break;
+                        }
+                        
+                        // JSON parse et
+                        $data = json_decode($jsonData, true);
+                        if (!$data) continue;
+                        
+                        // Content chunk'ını al
+                        $chunk = $data['choices'][0]['delta']['content'] ?? '';
+                        
+                        if (!empty($chunk)) {
+                            $fullResponse .= $chunk;
+                            
+                            // Callback varsa çağır (Frontend'e gönder)
+                            if ($streamCallback && is_callable($streamCallback)) {
+                                call_user_func($streamCallback, $chunk);
+                            }
+                        }
+                        
+                        // Token usage bilgilerini al (varsa)
+                        if (isset($data['usage'])) {
+                            $inputTokens = $data['usage']['prompt_tokens'] ?? 0;
+                            $outputTokens = $data['usage']['completion_tokens'] ?? 0;
+                            $totalTokens = $data['usage']['total_tokens'] ?? 0;
+                        }
+                    }
+                }
                 
                 Log::info('⚡ OpenAI yanıt alındı', [
                     'response_time_ms' => round((microtime(true) - $apiStartTime) * 1000, 2),
@@ -84,7 +135,11 @@ class OpenAIService
                 'provider' => 'openai',
                 'model' => $this->model,
                 'time_ms' => $totalTime,
-                'usage_details' => $responseData['usage'] ?? []
+                'usage_details' => [
+                    'prompt_tokens' => $inputTokens,
+                    'completion_tokens' => $outputTokens,
+                    'total_tokens' => $totalTokens
+                ]
             ];
 
         } catch (\Exception $e) {

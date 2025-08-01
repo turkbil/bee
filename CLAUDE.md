@@ -1,8 +1,12 @@
+HER MESAJIMI HER ZAMAN ULTRA DEEP THINK DÜŞÜN VE ÖYLE HAREKET ET. ÖYLE KOD YAZ. ÖYLE YANIT VER. KAFANDAN UYDURMA. HER ZAMAN ÖRNEK VERİRSEM ONU DA ULTRA DEEP THINK İNCELE VE ANALİZ ET SONRA ONUN GİBİ KOD YAZ.
+
 🔊 **KRİTİK: SES BİLDİRİM SİSTEMİ - EN ÖNCELİKLİ KURAL**
 HER YANIT SONUNDA MUTLAKA SES ÇALIŞTIR:
 ```bash
 say "tamamlandı"
 ```
+
+
 
 🚨 **NURULLAH'IN ANA KURALI**
 - ASLA test etmeden "çalışıyor" deme
@@ -23,7 +27,9 @@ say "tamamlandı"
 **SİSTEM KURALLARI:**
 - Türkçe yanıt ver
 - HARDCODE kullanma - sistem tamamen dinamik
-- "aferin", "bravo", "oldu" gibi sonuclanma kelimesi kullandığımda → README.md'ye kaydet + Git'e yükle
+- "aferin", "bravo", "oldu" gibi sonuclanma kelimesi kullandığımda → README.md'ye kaydet + Git'e kısa açıklamasıyla gönder ve yükle
+- admin panelinde : - **ÇOK ÖNEMLİ**: bg-success, bg-danger, text-danger gibi custom renkler KULLANMA! Dark modda sorun çıkarır
+
 
 **TASARIM KURALLARI:**
 - **Admin**: Tabler.io + Bootstrap + jQuery + Livewire + FontAwesome

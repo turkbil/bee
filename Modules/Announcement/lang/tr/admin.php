@@ -6,6 +6,8 @@ return [
 'announcement_management' => 'Duyuru Yönetimi',
 'announcement_title_placeholder' => 'Duyuru başlığı giriniz',
 'announcements' => 'Duyurular',
+'all_announcements' => 'Tüm Duyurular',
+'announcement_detail' => 'Duyuru Detayı',
 'basic_info' => 'Temel Bilgiler',
 'bulk_delete' => 'Toplu Sil',
 'content' => 'İçerik',

@@ -36,6 +36,20 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\ModuleRepository::class
         );
         
+        // URL Builder Interface binding - YENİ
+        $this->app->bind(
+            \App\Contracts\UrlBuilderInterface::class,
+            \App\Services\UnifiedUrlBuilderService::class
+        );
+        
+        // ModuleService binding
+        $this->app->singleton(\App\Services\ModuleService::class);
+        
+        // URL ve Locale servisleri - YENİ
+        $this->app->singleton(\App\Services\UnifiedUrlBuilderService::class);
+        $this->app->singleton(\App\Services\LocaleValidationService::class);
+        $this->app->singleton(\App\Services\HomepageRouteService::class);
+        
         // Service singletons
         $this->app->singleton(ModuleTenantPermissionService::class, function ($app) {
             return new ModuleTenantPermissionService();

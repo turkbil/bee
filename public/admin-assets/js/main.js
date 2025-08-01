@@ -124,7 +124,7 @@ function setupCharacterCounting() {
                      document.querySelector(`[wire\\:model*="${fieldName}"]`);
         
         if (!input) {
-            console.warn(`⚠️ Input bulunamadı: ${fieldName}`);
+            // console.warn(`⚠️ Input bulunamadı: ${fieldName}`);
             return;
         }
         
@@ -211,7 +211,7 @@ class GlobalSeoWidget {
     constructor() {
         this.baseUrl = '/admin/seo';
         this.currentModel = null;
-        this.currentLanguage = 'tr';
+        this.seoCurrentLanguage = 'tr'; // Renamed to avoid conflict with manage.js
         // SEO cache artık seo-tabs.js'te yönetiliyor
         this.init();
     }
@@ -236,7 +236,7 @@ class GlobalSeoWidget {
     // Model ve language bilgilerini set et
     setContext(modelType, modelId, language = 'tr') {
         this.currentModel = { type: modelType, id: modelId };
-        this.currentLanguage = language;
+        this.seoCurrentLanguage = language;
         window.currentModelType = modelType;
         window.currentModelId = modelId;
     }
@@ -276,14 +276,14 @@ class GlobalSeoWidget {
 
     // Dil değiştiğinde SEO verilerini güncelle
     async updateSeoDataForLanguage(language) {
-        console.log('🔍 updateSeoDataForLanguage çağrıldı - Model:', this.currentModel, 'Language:', language);
+        // console.log('🔍 updateSeoDataForLanguage çağrıldı - Model:', this.currentModel, 'Language:', language);
         
         if (!this.currentModel) {
             console.error('❌ currentModel yok! SEO güncelleme durdu:', this.currentModel);
             return;
         }
         
-        console.log('🎯 SEO verileri güncelleniyor:', language);
+        // console.log('🎯 SEO verileri güncelleniyor:', language);
         
         const seoData = await this.fetchSeoData(language);
         if (seoData) {

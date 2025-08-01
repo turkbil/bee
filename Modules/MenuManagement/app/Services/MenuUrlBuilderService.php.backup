@@ -1,0 +1,370 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\MenuManagement\App\Services;
+
+use Illuminate\Support\Facades\Route;
+use Nwidart\Modules\Facades\Module;
+use App\Services\ModuleService;
+
+/**
+ * Menu URL Builder Service
+ * 
+ * Bu servis menu itemları için URL oluşturma ve çözümleme işlemlerini yönetir.
+ * Modül bazlı dinamik URL'ler, sayfalar ve harici linkler için merkezi bir çözüm sunar.
+ */
+readonly class MenuUrlBuilderService
+{
+    public function __construct(
+        private ModuleService $moduleService
+    ) {}
+    /**
+     * URL tipine göre URL oluştur
+     */
+    public function buildUrl(string $urlType, array $urlData, string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        return match($urlType) {
+            'internal' => $this->buildInternalUrl($urlData),
+            'external' => $this->buildExternalUrl($urlData),
+            'module' => $this->buildModuleUrl($urlData, $locale),
+            default => '#'
+        };
+    }
+    
+    /**
+     * Site içi URL oluştur (örn: /hakkimizda, /iletisim)
+     */
+    private function buildInternalUrl(array $urlData): string
+    {
+        $url = $urlData['url'] ?? '/';
+        
+        // URL'nin başında / yoksa ekle
+        if (!str_starts_with($url, '/')) {
+            $url = '/' . $url;
+        }
+        
+        return url($url);
+    }
+    
+    /**
+     * Harici URL oluştur (örn: https://google.com)
+     */
+    private function buildExternalUrl(array $urlData): string
+    {
+        $url = $urlData['url'] ?? '#';
+        
+        // http:// veya https:// ile başlamıyorsa ekle
+        if (!preg_match('/^https?:\/\//', $url)) {
+            $url = 'https://' . $url;
+        }
+        
+        return $url;
+    }
+    
+    /**
+     * Modül bazlı URL oluştur
+     */
+    private function buildModuleUrl(array $urlData, string $locale): string
+    {
+        $module = $urlData['module'] ?? null;
+        $type = $urlData['type'] ?? 'list';
+        $id = $urlData['id'] ?? null;
+        
+        if (!$module) {
+            return '#';
+        }
+        
+        // Page modülü için özel işlem
+        if ($module === 'page' && $id) {
+            return $this->buildPageUrl($id, $locale);
+        }
+        
+        // Diğer modüller için genel pattern
+        return match($type) {
+            'detail' => url("/{$module}/{$id}"),
+            'category' => url("/{$module}/category/{$id}"),
+            'list' => url("/{$module}"),
+            default => url("/{$module}")
+        };
+    }
+    
+    /**
+     * Page modülü için URL oluştur
+     */
+    private function buildPageUrl(int $pageId, string $locale): string
+    {
+        try {
+            $pageClass = 'Modules\Page\App\Models\Page';
+            if (class_exists($pageClass)) {
+                $page = $pageClass::find($pageId);
+                if ($page) {
+                    $slug = $page->getTranslated('slug', $locale);
+                    return url('/' . ltrim($slug, '/'));
+                }
+            }
+        } catch (\Exception $e) {
+            logger('MenuUrlBuilderService::buildPageUrl error: ' . $e->getMessage());
+        }
+        
+        return '#';
+    }
+    
+    /**
+     * URL'den veri çıkar (tersine işlem)
+     */
+    public function parseUrl(string $url): array
+    {
+        // URL'i parse et
+        $parsedUrl = parse_url($url);
+        $path = $parsedUrl['path'] ?? '';
+        $host = $parsedUrl['host'] ?? '';
+        
+        // Harici URL kontrolü
+        if ($host && $host !== request()->getHost()) {
+            return [
+                'type' => 'external',
+                'data' => ['url' => $url]
+            ];
+        }
+        
+        // Site içi URL analizi
+        $segments = array_filter(explode('/', $path));
+        
+        if (empty($segments)) {
+            return [
+                'type' => 'internal',
+                'data' => ['url' => '/']
+            ];
+        }
+        
+        // Modül kontrolü
+        $firstSegment = reset($segments);
+        if ($this->isModule($firstSegment)) {
+            return $this->parseModuleUrl($segments);
+        }
+        
+        // Normal site içi URL
+        return [
+            'type' => 'internal',
+            'data' => ['url' => $path]
+        ];
+    }
+    
+    /**
+     * Modül URL'sini parse et
+     */
+    private function parseModuleUrl(array $segments): array
+    {
+        $module = array_shift($segments);
+        
+        if (empty($segments)) {
+            return [
+                'type' => 'module',
+                'data' => [
+                    'module' => $module,
+                    'type' => 'list'
+                ]
+            ];
+        }
+        
+        $nextSegment = array_shift($segments);
+        
+        if ($nextSegment === 'category' && !empty($segments)) {
+            return [
+                'type' => 'module',
+                'data' => [
+                    'module' => $module,
+                    'type' => 'category',
+                    'id' => array_shift($segments)
+                ]
+            ];
+        }
+        
+        return [
+            'type' => 'module',
+            'data' => [
+                'module' => $module,
+                'type' => 'detail',
+                'id' => $nextSegment
+            ]
+        ];
+    }
+    
+    /**
+     * Verilen ismin bir modül olup olmadığını kontrol et
+     */
+    private function isModule(string $name): bool
+    {
+        return Module::has(ucfirst($name));
+    }
+    
+    /**
+     * Kullanılabilir modülleri getir
+     */
+    public function getAvailableModules(): array
+    {
+        $modules = [];
+        
+        // Tenant ID'yi al
+        $tenantId = tenant() ? tenant()->id : null;
+        
+        // ModuleService'ten tenant'a atanmış modülleri getir
+        $tenantModules = $tenantId 
+            ? $this->moduleService->getTenantModuleAssignments($tenantId)
+            : $this->moduleService->getActiveModules();
+        
+        // Sadece content tipindeki modülleri filtrele
+        $contentModules = $tenantModules->filter(function ($module) {
+            return $module->type === 'content';
+        });
+        
+        foreach ($contentModules as $module) {
+            $moduleSlug = strtolower($module->name);
+            
+            // Nwidart Module paketi ile de kontrol et (aktif modül olmalı)
+            if (!Module::has($module->name)) {
+                continue;
+            }
+            
+            // Her modülün desteklediği URL tiplerini belirle
+            $urlTypes = $this->getModuleUrlTypes($moduleSlug);
+            
+            $modules[] = [
+                'name' => $module->name,
+                'slug' => $moduleSlug,
+                'label' => $module->display_name ?? $module->name, // display_name kullan
+                'url_types' => $urlTypes
+            ];
+        }
+        
+        return $modules;
+    }
+    
+    /**
+     * Modülün desteklediği URL tiplerini getir
+     */
+    private function getModuleUrlTypes(string $moduleSlug): array
+    {
+        // Modül config'inden veya varsayılan değerlerden al
+        return match($moduleSlug) {
+            'page' => [
+                ['type' => 'detail', 'label' => 'Sayfa Detay', 'needs_selection' => true]
+            ],
+            'portfolio' => [
+                ['type' => 'list', 'label' => 'Tüm Portföy'],
+                ['type' => 'category', 'label' => 'Kategori', 'needs_selection' => true],
+                ['type' => 'detail', 'label' => 'Portföy Detay', 'needs_selection' => true]
+            ],
+            'announcement' => [
+                ['type' => 'list', 'label' => 'Tüm Duyurular'],
+                ['type' => 'detail', 'label' => 'Duyuru Detay', 'needs_selection' => true]
+            ],
+            default => [
+                ['type' => 'list', 'label' => 'Liste Sayfası']
+            ]
+        };
+    }
+    
+    /**
+     * Modül etiketi getir (i18n desteği)
+     */
+    private function getModuleLabel(string $moduleName): string
+    {
+        $key = strtolower($moduleName) . '::admin.module_name';
+        $translated = __($key);
+        
+        return $translated !== $key ? $translated : $moduleName;
+    }
+    
+    /**
+     * Modül içeriklerini getir (dropdown için)
+     */
+    public function getModuleContent(string $module, string $type = 'list'): array
+    {
+        $content = [];
+        
+        try {
+            switch ($module) {
+                case 'page':
+                    if (class_exists('Modules\Page\App\Services\PageService')) {
+                        $pageService = app('Modules\Page\App\Services\PageService');
+                        $pages = $pageService->getActivePages();
+                        
+                        foreach ($pages as $page) {
+                            $content[] = [
+                                'id' => $page->page_id,
+                                'label' => $page->getTranslated('title'),
+                                'slug' => $page->getTranslated('slug')
+                            ];
+                        }
+                        
+                        // Alfabetik sıralama
+                        usort($content, function($a, $b) {
+                            return strcoll($a['label'], $b['label']);
+                        });
+                    }
+                    break;
+                    
+                case 'portfolio':
+                    if ($type === 'category' && class_exists('Modules\Portfolio\App\Models\PortfolioCategory')) {
+                        $categories = \Modules\Portfolio\App\Models\PortfolioCategory::where('is_active', true)->get();
+                        
+                        foreach ($categories as $category) {
+                            $content[] = [
+                                'id' => $category->portfolio_category_id,
+                                'label' => $category->getTranslated('title')
+                            ];
+                        }
+                        
+                        // Alfabetik sıralama
+                        usort($content, function($a, $b) {
+                            return strcoll($a['label'], $b['label']);
+                        });
+                        
+                    } elseif ($type === 'detail' && class_exists('Modules\Portfolio\App\Models\Portfolio')) {
+                        $portfolios = \Modules\Portfolio\App\Models\Portfolio::where('is_active', true)->get();
+                        
+                        foreach ($portfolios as $portfolio) {
+                            $content[] = [
+                                'id' => $portfolio->portfolio_id,
+                                'label' => $portfolio->getTranslated('title')
+                            ];
+                        }
+                        
+                        // Alfabetik sıralama
+                        usort($content, function($a, $b) {
+                            return strcoll($a['label'], $b['label']);
+                        });
+                    }
+                    break;
+                    
+                case 'announcement':
+                    if ($type === 'detail' && class_exists('Modules\Announcement\App\Models\Announcement')) {
+                        $announcements = \Modules\Announcement\App\Models\Announcement::where('is_active', true)->get();
+                        
+                        foreach ($announcements as $announcement) {
+                            $content[] = [
+                                'id' => $announcement->announcement_id,
+                                'label' => $announcement->getTranslated('title')
+                            ];
+                        }
+                        
+                        // Alfabetik sıralama
+                        usort($content, function($a, $b) {
+                            return strcoll($a['label'], $b['label']);
+                        });
+                    }
+                    break;
+                    
+                // Diğer modüller için benzer logic eklenebilir
+            }
+        } catch (\Exception $e) {
+            logger('MenuUrlBuilderService::getModuleContent error: ' . $e->getMessage());
+        }
+        
+        return $content;
+    }
+}

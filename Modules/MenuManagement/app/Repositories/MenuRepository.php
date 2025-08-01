@@ -122,12 +122,14 @@ readonly class MenuRepository implements MenuRepositoryInterface
         }
         
         // Status filter
-        if (isset($filters['is_active'])) {
+        if (isset($filters['status']) && $filters['status'] !== 'all') {
+            $query->where('is_active', $filters['status'] === 'active');
+        } elseif (isset($filters['is_active'])) {
             $query->where('is_active', $filters['is_active']);
         }
         
         // Location filter
-        if (!empty($filters['location'])) {
+        if (!empty($filters['location']) && $filters['location'] !== 'all') {
             $query->where('location', $filters['location']);
         }
         

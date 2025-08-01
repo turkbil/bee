@@ -8,7 +8,21 @@ window.allLanguagesSeoData = {};
 
 // ===== SYSTEM INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Page Manage sayfası başlatılıyor...');
+    // Dinamik sayfa tespiti
+    const currentPath = window.location.pathname;
+    let pageName = 'Manage';
+    
+    if (currentPath.includes('/page/manage')) {
+        pageName = 'Page Manage';
+    } else if (currentPath.includes('/menumanagement')) {
+        pageName = 'Menu Management';
+    } else if (currentPath.includes('/portfolio/manage')) {
+        pageName = 'Portfolio Manage';
+    } else if (currentPath.includes('/announcement/manage')) {
+        pageName = 'Announcement Manage';
+    }
+    
+    // console.log(`🚀 ${pageName} sayfası başlatılıyor...`);
     
     // Initialize core systems
     setupLanguageSwitching();
@@ -17,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTabSystem();
     setupSlugNormalization();
     
-    console.log('✅ Page Manage sayfası hazır!');
+    // console.log(`✅ ${pageName} sayfası hazır!`);
 });
 
 // ===== LANGUAGE SWITCHING SYSTEM =====
@@ -26,14 +40,42 @@ function setupLanguageSwitching() {
         const language = $(this).data('language');
         const nativeName = $(this).data('native-name');
         
+        console.log('🚨 === TETİKLENME ANALİZİ BAŞLIYOR ===');
         console.log('🌍 Dil değiştirildi:', language);
+        console.log('🔍 Tıklanan element:', this);
+        console.log('📍 Element data-language:', $(this).data('language'));
+        console.log('📍 Element data-native-name:', $(this).data('native-name'));
+        
+        // *** ELEMENT TİPİ TESPİTİ ***
+        console.log('🔍 Element tag name:', this.tagName);
+        console.log('🔍 Element class list:', this.className);
+        console.log('🔍 Element wire:click attribute:', $(this).attr('wire:click'));
+        console.log('🔍 Element onclick attribute:', $(this).attr('onclick'));
+        
+        // *** LIVEWIRE VARLIQ KONTROL ***
+        const livewireExists = typeof Livewire !== 'undefined';
+        console.log('🔍 Livewire tanımlı mı?', livewireExists);
+        if (livewireExists) {
+            console.log('🔍 Livewire versiyonu:', Livewire.version || 'Versiyon bulunamadı');
+        }
+        
+        // *** WIRE DİRECTİVE KONTROL ***
+        const hasWireClick = $(this).attr('wire:click');
+        console.log('🔍 wire:click directive var mı?', !!hasWireClick);
+        if (hasWireClick) {
+            console.log('🔍 wire:click değeri:', hasWireClick);
+        }
         
         // Update button states
         $('.language-switch-btn').removeClass('text-primary').addClass('text-muted')
-            .css('border-bottom', '2px solid transparent');
+            .css('border-bottom', '2px solid transparent')
+            .prop('disabled', false); // KRİTİK: Tüm buttonları enable et
         
         $(this).removeClass('text-muted').addClass('text-primary')
-            .css('border-bottom', '2px solid var(--primary-color)');
+            .css('border-bottom', '2px solid var(--primary-color)')
+            .prop('disabled', true); // Mevcut dil button'u disable
+        
+        console.log('✅ Button states güncellendi');
         
         // Update language badge
         const languageBadge = document.getElementById('languageBadge');
@@ -41,6 +83,7 @@ function setupLanguageSwitching() {
             const badgeContent = languageBadge.querySelector('.nav-link');
             if (badgeContent) {
                 badgeContent.innerHTML = `<i class="fas fa-language me-2"></i>${nativeName}<i class="fas fa-chevron-down ms-2"></i>`;
+                console.log('✅ Language badge güncellendi:', nativeName);
             }
         }
         
@@ -50,16 +93,131 @@ function setupLanguageSwitching() {
         
         if (activeTab && activeTab === '#2') {
             console.log('🎯 Code tab aktif - dil değişikliği engellendi');
+            return; // Don't proceed with language switching
         } else {
             console.log('🎯 Normal dil değişikliği yapılıyor');
         }
         
-        // Update language content visibility
-        $('.language-content').hide();
-        $(`.language-content[data-language="${language}"]`).show();
+        // *** LANGUAGE CONTENT ELEMANLARI TESPİTİ ***
+        console.log('🔍 Language content elementleri aranıyor...');
+        
+        // MenuManagement için SEO content'leri hariç tut
+        const currentPath = window.location.pathname;
+        const isMenuManagement = currentPath.includes('/menumanagement');
+        
+        let allLanguageContents, targetLanguageContent;
+        
+        if (isMenuManagement) {
+            // Sadece basic content'ler
+            allLanguageContents = $('.language-content');
+            targetLanguageContent = $(`.language-content[data-language="${language}"]`);
+            console.log('🚫 MenuManagement - SEO contentler atlandı');
+        } else {
+            // Hem basic hem SEO content'ler
+            allLanguageContents = $('.language-content, .seo-language-content');
+            targetLanguageContent = $(`.language-content[data-language="${language}"], .seo-language-content[data-language="${language}"]`);
+        }
+        
+        console.log('📊 Toplam language-content sayısı:', allLanguageContents.length);
+        console.log('🎯 Hedef dil content sayısı:', targetLanguageContent.length);
+        
+        // Language content detayları
+        console.log('🔍 Tüm language-content elementleri:');
+        allLanguageContents.each(function(index) {
+            console.log(`  📦 Element ${index}:`);
+            console.log(`     - data-language: "${$(this).data('language')}"`);
+            console.log(`     - görünür mü: ${$(this).is(':visible')}`);
+            console.log(`     - display style: ${$(this).css('display')}`);
+            console.log(`     - class list: ${this.className}`);
+        });
+        
+        console.log('🔍 Hedef dil elementleri:');
+        targetLanguageContent.each(function(index) {
+            console.log(`  🎯 Hedef element ${index}:`);
+            console.log(`     - data-language: "${$(this).data('language')}"`);
+            console.log(`     - görünür mü: ${$(this).is(':visible')}`);
+            console.log(`     - display style: ${$(this).css('display')}`);
+        });
+        
+        // *** KARAR VERME - LIVEWIRE MI JQUERY MI? ***
+        if (livewireExists && hasWireClick) {
+            console.log('🚨 LIVEWIRE TETİKLENECEK - wire:click mevcut');
+            console.log('⚠️ jQuery işlemi iptal ediliyor, Livewire devralıyor');
+            return; // Let Livewire handle this
+        }
+        
+        if (allLanguageContents.length === 0) {
+            console.log('🚨 HATA: LANGUAGE-CONTENT ELEMANLARI BULUNAMADI!');
+            console.log('🔍 DOM yapısı kontrol ediliyor...');
+            const anyDataLanguageElements = $('[data-language]');
+            console.log('📦 DOM içinde data-language attribute olan elementler:', anyDataLanguageElements.length);
+            anyDataLanguageElements.each(function(index) {
+                console.log(`  📍 Element ${index}: tag=${this.tagName}, class="${this.className}", data-language="${$(this).data('language')}"`);
+            });
+            return;
+        }
+        
+        console.log('🚨 JQUERY TETİKLENİYOR - Manuel language switching');
+        
+        // *** JQUERY İLE LANGUAGE CONTENT DEĞİŞİMİ ***
+        console.log('🔄 Language content değiştirme işlemi başlıyor...');
+        
+        // Önce tüm elementleri gizle ve durumlarını logla
+        console.log('👁️ Tüm language content elementleri gizleniyor...');
+        allLanguageContents.each(function(index) {
+            const beforeHide = $(this).is(':visible');
+            // KRİTİK: Hide için de force et
+            $(this).hide().css('display', 'none');
+            const afterHide = $(this).is(':visible');
+            console.log(`  📦 Element ${index} (${$(this).data('language')}): ${beforeHide} → ${afterHide}`);
+        });
+        
+        // Hedef dili göster ve durumunu logla
+        console.log('👁️ Hedef dil content elementleri gösteriliyor...');
+        targetLanguageContent.each(function(index) {
+            const beforeShow = $(this).is(':visible');
+            
+            // KRİTİK FİX: TÜM elementler için CSS display force et
+            $(this).css('display', 'block').removeClass('d-none').show();
+            
+            if (!isMenuManagement && $(this).hasClass('seo-language-content')) {
+                console.log(`  🔧 SEO element için display:block force edildi`);
+            }
+            
+            const afterShow = $(this).is(':visible');
+            console.log(`  🎯 Hedef element ${index} (${$(this).data('language')}): ${beforeShow} → ${afterShow}`);
+        });
+        
+        // Final durum kontrolü
+        console.log('🔍 Final durum kontrolü:');
+        allLanguageContents.each(function(index) {
+            const isVisible = $(this).is(':visible');
+            const dataLang = $(this).data('language');
+            const shouldBeVisible = dataLang === language;
+            const status = isVisible === shouldBeVisible ? '✅' : '❌';
+            console.log(`  ${status} Element ${index} (${dataLang}): görünür=${isVisible}, olması gereken=${shouldBeVisible}`);
+        });
+        
+        console.log('✅ Language content güncellendi:', language);
         
         // Update global variables
         window.currentLanguage = language;
+        console.log('✅ Global currentLanguage güncellendi:', window.currentLanguage);
+        
+        // *** LIVEWIRE DİSPATCH - SERVER VERI GÜNCELLEMESİ ***
+        if (livewireExists) {
+            console.log('🚀 Livewire dispatch gönderiliyor: switchLanguage');
+            try {
+                Livewire.dispatch('switchLanguage', { language: language });
+                console.log('✅ Livewire switchLanguage dispatch başarılı:', language);
+            } catch (error) {
+                console.error('❌ Livewire dispatch hatası:', error);
+            }
+        } else {
+            console.log('⚠️ Livewire yok - sadece jQuery çalıştı');
+        }
+        
+        console.log('🚨 === TETİKLENME ANALİZİ BİTTİ ===');
     });
 }
 
@@ -107,6 +265,15 @@ function setupSaveAndContinueSystem() {
 
 // ===== SEO CHARACTER COUNTERS =====
 function setupSeoCharacterCounters() {
+    // Sadece content tipindeki modüllerde SEO çalıştır
+    const currentPath = window.location.pathname;
+    const isMenuManagement = currentPath.includes('/menumanagement');
+    
+    if (isMenuManagement) {
+        // console.log('🚫 MenuManagement - SEO sistemi atlandı');
+        return; // MenuManagement için SEO sistemini çalıştırma
+    }
+    
     setTimeout(function() {
         const languages = ['tr', 'en', 'ar'];
         
@@ -506,7 +673,7 @@ function setupSlugNormalization() {
                     }
                 });
                 
-                console.log(`✅ Slug normalization enabled for ${lang}`);
+                // console.log(`✅ Slug normalization enabled for ${lang}`);
             }
         });
     }, 500); // Wait for DOM to be ready

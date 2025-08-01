@@ -296,10 +296,7 @@
 <script src="/admin-assets/js/translations.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/theme.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/main.js?v={{ time() }}"></script>
-{{-- YENİ SEO TABS V2 SİSTEMİ - Sadece manage sayfalarında --}}
-@if (request()->routeIs('admin.*.manage*'))
-<script src="/admin-assets/js/seo-tabs-v2.js?v={{ time() }}"></script>
-@endif
+{{-- SEO functionality moved to main.js and manage.js --}}
 <script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
 
 <!-- Global Loading Bar Script - Tabler Native -->
@@ -460,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endif
 
-@if (request()->routeIs('admin.*.manage*'))
+@if (request()->routeIs('admin.*.manage*') || request()->routeIs('admin.menumanagement.index'))
     <x-head.hugerte-config />
     
     {{-- Load Manage.js for manage pages --}}

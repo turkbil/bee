@@ -259,7 +259,7 @@ class PortfolioSeeder extends Seeder
                     'url' => $portfolio['url'] ?? null,
                     'is_active' => true,
                 ]);
-                if ($this->command) $this->command->info('Portfolio oluşturuldu: ' . $portfolio['title']['tr']);
+                // if ($this->command) $this->command->info("Oluşturuldu: " . $portfolio['title']['tr']);
             } else {
                 if ($this->command) $this->command->info('Portfolio zaten var: ' . $portfolio['title']['tr']); 
             }

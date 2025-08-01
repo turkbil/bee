@@ -4,6 +4,7 @@ return [
 'pages' => 'Sayfalar',
 'page_management' => 'Sayfa Yönetimi',
 'new_page' => 'Yeni Sayfa',
+'page_detail' => 'Sayfa Detayı',
 'home' => 'Anasayfa',
 'title_field' => 'Başlık',
 'content' => 'İçerik',

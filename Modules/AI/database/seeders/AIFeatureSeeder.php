@@ -19,30 +19,30 @@ class AIFeatureSeeder extends Seeder
     {
         // Tüm işlemleri central veritabanında yap
         TenantHelpers::central(function() {
-            $this->command->info('AI Features central veritabanında oluşturuluyor...');
+            // $this->command->info('AI Features central veritabanında oluşturuluyor...');
             
             // ÖNCE MEVCUT VERİLERİ TEMİZLE
-            $this->command->info('Mevcut AI Features temizleniyor...');
+            // $this->command->info('Mevcut AI Features temizleniyor...');
             DB::table('ai_feature_prompts')->delete();
             DB::table('ai_features')->delete();
-            $this->command->info('✅ Mevcut veriler temizlendi!');
+            // $this->command->info('✅ Mevcut veriler temizlendi!');
             
             // Kategorilerin var olduğunu kontrol et, yoksa oluştur
             $categoryCount = DB::table('ai_feature_categories')->count();
             if ($categoryCount === 0) {
-                $this->command->info('⚠️ Kategoriler yok, oluşturuluyor...');
+                // $this->command->info('⚠️ Kategoriler yok, oluşturuluyor...');
                 $this->call(AIFeatureCategorySeeder::class);
                 $categoryCount = DB::table('ai_feature_categories')->count();
-                $this->command->info("✅ {$categoryCount} kategori oluşturuldu!");
+                // $this->command->info("✅ {$categoryCount} kategori oluşturuldu!");
             } else {
-                $this->command->info("✅ {$categoryCount} kategori mevcut, devam ediliyor...");
+                // $this->command->info("✅ {$categoryCount} kategori mevcut, devam ediliyor...");
             }
             
             // Kategori mapping'ini debug için yazdır
             $categories = DB::table('ai_feature_categories')->select('ai_feature_category_id', 'title')->get();
-            $this->command->info("📊 Kategori ID'leri:");
+            // $this->command->info("📊 Kategori ID'leri:");
             foreach ($categories as $category) {
-                $this->command->info("  - {$category->title}: ID={$category->ai_feature_category_id}");
+                // $this->command->info("  - {$category->title}: ID={$category->ai_feature_category_id}");
             }
             
             // Önce feature-specific prompt'ları oluştur
@@ -51,7 +51,7 @@ class AIFeatureSeeder extends Seeder
             // Sonra AI özelliklerini oluştur ve prompt'larla eşleştir
             $this->createAIFeatures();
             
-            $this->command->info('AI Features başarıyla oluşturuldu!');
+            // $this->command->info('AI Features başarıyla oluşturuldu!');
         });
     }
 
@@ -4101,7 +4101,7 @@ CONVERSION CONTENT:
                 'example_inputs' => isset($featureData['example_inputs']) ? json_encode($featureData['example_inputs']) : null,
             ]);
 
-            $this->command->info("Feature oluşturuldu: {$feature->name}");
+            // $this->command->info("Feature oluşturuldu: {$feature->name}");
 
             // Feature-Prompt ilişkilerini oluştur
             if (isset($featureData['prompts'])) {
@@ -4114,7 +4114,7 @@ CONVERSION CONTENT:
                             'role' => $promptData['role'],
                             'priority' => $promptData['priority']
                         ]);
-                        $this->command->info("  - Prompt bağlandı: {$prompt->name}");
+                        // $this->command->info("  - Prompt bağlandı: {$prompt->name}");
                     }
                 }
             }

@@ -38,10 +38,8 @@ return [
 'page_url' => 'Page URL',
 'module_url' => 'Module URL',
 'external_url' => 'External URL',
-'same_window' => 'Same Window',
-'new_window' => 'New Window',
-'parent_window' => 'Parent Window',
-'top_window' => 'Top Window',
+'same_window' => 'Same Tab',
+'new_window' => 'New Tab',
 'advanced_options' => 'Advanced Options',
 'title' => 'Title',
 'url_value' => 'URL',
@@ -60,8 +58,6 @@ return [
 'deletion_failed' => 'Deletion failed',
 'operation_failed' => 'Operation failed',
 'menu_not_found' => 'Menu not found',
-
-// Menu Locations
 'locations' => [
     'header' => 'Header Menu',
     'footer' => 'Footer Menu',
@@ -73,19 +69,13 @@ return [
     'social' => 'Social Media Menu',
     'breadcrumb' => 'Breadcrumb Menu',
     'category' => 'Category Menu'
-],
-
-// Default Menu Settings
+    ],
 'default_menu' => 'Default Menu',
 'custom_menu' => 'Custom Menu',
 'default_menu_help' => 'This menu is automatically created by the system',
-
-// Cache Settings
 'cache_enabled' => 'Cache Enabled',
 'cache_disabled' => 'Cache Disabled',
 'cache_help' => 'Store menu data in cache (recommended for performance)',
-
-// Advanced Settings
 'advanced_settings' => 'Advanced Settings',
 'max_depth' => 'Maximum Depth',
 'max_depth_help' => 'Maximum nested level of menu items (1-10)',
@@ -99,8 +89,6 @@ return [
 'template_mega' => 'Mega Menu',
 'show_icons' => 'Show Icons',
 'hide_icons' => 'Hide Icons',
-
-// Dashboard
 'total_menus' => 'Total Menus',
 'all_menus' => 'All Menus',
 'recent_menus' => 'Recent Menus',
@@ -108,8 +96,6 @@ return [
 'create_first_menu' => 'Create First Menu',
 'view_all' => 'View All',
 'manage' => 'Manage',
-
-// Additional Messages
 'menu_duplicated_successfully' => 'Menu duplicated successfully',
 'menu_location' => 'Menu Location',
 'menu_creation_failed' => 'Menu creation failed',
@@ -137,4 +123,48 @@ return [
 'is_default' => 'Default',
 'duplicate_menu' => 'Duplicate Menu',
 'confirm_menu_delete' => 'Are you sure you want to delete this menu?',
+'select_module' => 'Select Module',
+'select_page' => 'Select Page',
+'select_url_option' => 'Select URL Option',
+'loading_modules' => 'Loading modules...',
+'loading_pages' => 'Loading pages...',
+'loading_options' => 'Loading options...',
+'no_modules_found' => 'No modules found',
+'no_pages_found' => 'No pages found',
+'no_options_found' => 'No options found',
+'module_main_page' => 'Main Page',
+'module_categories' => 'Categories',
+'module_category_detail' => 'Category Detail',
+'module_content_detail' => 'Content Detail',
+'custom_route' => 'Custom Route',
+'site_content' => '📋 Site Content',
+'custom_links' => '🔗 Links',
+'module_content' => 'Module Content (Page, Portfolio, Announcement etc.)',
+'internal_url' => 'Internal Link',
+'internal_url_info' => 'Internal link: /about, /contact etc. Links not starting with http.',
+'external_url_info' => 'External link: https://google.com etc. Must start with http:// or https://.',
+'title_required' => 'Title field is required',
+'url_required' => 'URL field is required',
+'invalid_url_format' => 'Invalid URL format',
+'module_required' => 'Module selection is required',
+'url_type_required' => 'URL type is required',
+'url' => 'URL',
+'module' => 'Module',
+'select_content' => 'Select Content',
+'alt_text' => 'Alt Text',
+'menu_items_order_updated' => 'Menu order saved',
+'menu_item_status_toggle_failed' => 'Failed to toggle menu item status',
+'menu_item_activated_successfully' => 'Menu item activated successfully',
+'menu_item_deactivated_successfully' => 'Menu item deactivated successfully',
+'menu_item_order_updated_successfully' => 'Menu item order updated successfully',
+'url_link' => 'URL Link',
+'url_info' => 'Internal or external link. Automatically detected.',
+'search_menu_items' => 'Search menu items (title, link, icon)',
+'main_menu' => 'Main Menu',
+'loading' => 'Loading...',
+'edit_menu_items' => 'Edit Menu Items',
+'edit_menu_settings' => 'Edit Menu Settings',
+'delete_menu' => 'Delete Menu',
+'no_menus_found_subtitle' => 'No menus have been created yet',
+'header_menu_description' => 'You can manage main menu items from here'
 ];

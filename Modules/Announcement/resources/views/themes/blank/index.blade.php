@@ -42,7 +42,13 @@
                 $title = $item->getTranslated('title') ?? $item->getRawOriginal('title') ?? $item->title ?? 'Başlıksız';
                 
                 $showSlug = \App\Services\ModuleSlugService::getSlug('Announcement', 'show');
-                $dynamicUrl = '/' . $showSlug . '/' . $slug;
+                // Locale-aware URL
+                $defaultLocale = get_tenant_default_locale();
+                if ($currentLocale === $defaultLocale) {
+                    $dynamicUrl = '/' . $showSlug . '/' . $slug;
+                } else {
+                    $dynamicUrl = '/' . $currentLocale . '/' . $showSlug . '/' . $slug;
+                }
 
                 $metadesc = $item->getTranslated('metadesc') ?? $item->getRawOriginal('metadesc') ?? $item->metadesc ?? null;
                 $body = $item->getTranslated('body') ?? $item->getRawOriginal('body') ?? $item->body ?? null;

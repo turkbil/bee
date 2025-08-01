@@ -15,11 +15,11 @@ class AIProviderSeeder extends Seeder
     {
         // AI Providers sadece central veritabanında çalışır
         if (!TenantHelpers::isCentral()) {
-            $this->command->info('AIProviderSeeder sadece central veritabanında çalışır, tenant\'ta atlanıyor...');
+            // $this->command->info('AIProviderSeeder sadece central veritabanında çalışır, tenant\'ta atlanıyor...');
             return;
         }
 
-        $this->command->info('AIProviderSeeder central veritabanında çalışıyor...');
+        // $this->command->info('AIProviderSeeder central veritabanında çalışıyor...');
 
         $providers = [
             [
@@ -44,13 +44,13 @@ class AIProviderSeeder extends Seeder
                     'max_tokens' => 4000,
                     'top_p' => 0.9
                 ],
-                'api_key' => 'sk-deepseek-placeholder-key-for-testing-purposes',
+                'api_key' => 'sk-035528bc068943e0918fbe37646077c1',
                 'base_url' => 'https://api.deepseek.com',
                 'is_active' => true,
                 'is_default' => false,
-                'priority' => 80,
+                'priority' => 30,
                 'average_response_time' => 0,
-                'description' => 'DeepSeek AI - Yüksek performanslı AI modeli',
+                'description' => 'DeepSeek AI - Yüksek performanslı AI modeli (Fallback)',
                 'token_cost_multiplier' => 0.5000, // DeepSeek en ucuz
                 'tokens_per_request_estimate' => 120,
                 'cost_structure' => [
@@ -90,7 +90,7 @@ class AIProviderSeeder extends Seeder
                 'base_url' => 'https://api.openai.com/v1',
                 'is_active' => true, // API key eklendiği için aktif
                 'is_default' => true,
-                'priority' => 100,
+                'priority' => 10,
                 'average_response_time' => 0,
                 'description' => 'OpenAI GPT modelleri - Güçlü dil modeli',
                 'token_cost_multiplier' => 1.0000, // OpenAI baseline
@@ -127,7 +127,7 @@ class AIProviderSeeder extends Seeder
                 'base_url' => 'https://api.anthropic.com',
                 'is_active' => true, // API key eklendiği için aktif
                 'is_default' => false,
-                'priority' => 80,
+                'priority' => 20,
                 'average_response_time' => 0,
                 'description' => 'Anthropic Claude - Güvenli ve akıllı AI asistan',
                 'token_cost_multiplier' => 1.2000, // Claude biraz daha pahalı
@@ -147,6 +147,6 @@ class AIProviderSeeder extends Seeder
             );
         }
 
-        $this->command->info('AI Provider\'lar başarıyla oluşturuldu!');
+        // $this->command->info('AI Provider\'lar başarıyla oluşturuldu!');
     }
 }

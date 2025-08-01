@@ -11,6 +11,22 @@ class AnnouncementSeeder extends Seeder
 {
     public function run(): void
     {
+        // Duplicate kontrolü - eğer zaten duyuru varsa atla
+        // Context bilgisi ile count kontrolü  
+        $contextInfo = TenantHelpers::isCentral() ? 'CENTRAL' : 'TENANT';
+        $existingCount = Announcement::count();
+        
+        if ($existingCount > 0) {
+            if (TenantHelpers::isCentral()) {
+                $this->command->info("Announcements already exist in CENTRAL database ({$existingCount} announcements), skipping seeder...");
+            } else {
+                $this->command->info("Announcements already exist in TENANT database ({$existingCount} announcements), skipping seeder...");
+            }
+            return;
+        }
+        
+        $this->command->info("No existing announcements found in {$contextInfo} database, proceeding with seeding...");
+        
         // Bu seeder hem central hem tenant'ta çalışabilir
         if (TenantHelpers::isCentral()) {
             $this->command->info('AnnouncementSeeder central veritabanında çalışıyor...');

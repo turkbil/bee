@@ -21,7 +21,7 @@ class AIPurchaseSeeder extends Seeder
     {
         // Bu seeder sadece central veritabanında çalışmalı
         if (!TenantHelpers::isCentral()) {
-            $this->command->info('Bu seeder sadece central veritabanında çalışır.');
+            // $this->command->info('Bu seeder sadece central veritabanında çalışır.');
             return;
         }
 
@@ -96,10 +96,10 @@ class AIPurchaseSeeder extends Seeder
         DB::table('ai_token_purchases')->insert($purchases);
         $createdPurchases = $purchases;
 
-        $this->command->info('✅ AI Token satın alma verileri başarıyla oluşturuldu!');
-        $this->command->info("🎯 Tenant 1: Unlimited paketi x5 (" . ($largestPackage->token_amount * 5) . " token)");
-        $this->command->info("🧪 Tenant 2,3,4: Başlangıç paketi x1 (" . $smallestPackage->token_amount . " token her biri)");
-        $this->command->info("📊 Toplam " . count($createdPurchases) . " satın alma kaydı oluşturuldu.");
-        $this->command->info("💰 Token bakiyeleri otomatik olarak güncellendi!");
+        // $this->command->info('✅ AI Token satın alma verileri başarıyla oluşturuldu!');
+        // $this->command->info("🎯 Tenant 1: Unlimited paketi x5 (" . ($largestPackage->token_amount * 5) . " token)");
+        // $this->command->info("🧪 Tenant 2,3,4: Başlangıç paketi x1 (" . $smallestPackage->token_amount . " token her biri)");
+        // $this->command->info("📊 Toplam " . count($createdPurchases) . " satın alma kaydı oluşturuldu.");
+        // $this->command->info("💰 Token bakiyeleri otomatik olarak güncellendi!");
     }
 }

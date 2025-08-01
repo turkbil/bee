@@ -72,7 +72,7 @@ class TenantLanguagesSeeder extends Seeder
         
         // Tenant'a göre hangi dilleri aktif edecek
         if (TenantHelpers::isCentral()) {
-            // Central tenant: Tüm diller
+            // Central tenant: Tüm diller (tr, en, ar)
             return array_values($allLanguages);
         }
         
@@ -90,6 +90,10 @@ class TenantLanguagesSeeder extends Seeder
         
         // Domain'e göre dil konfigürasyonu - DİNAMİK SİSTEM
         switch ($currentDomain) {
+            case 'laravel.test':
+                // laravel.test: Central domain - Tüm diller (TR, EN, AR)
+                return array_values($allLanguages);
+                
             case 'a.test':
                 // a.test: EN varsayılan + TR
                 return [

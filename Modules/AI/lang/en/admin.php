@@ -626,5 +626,22 @@ return [
         'info' => 'Information',
         'priority_explanation' => 'Lower priority numbers indicate higher preference. Priority 1 will be used first.',
         'error_updating' => 'Error updating provider'
+    ],
+    
+    // Status Messages
+    'status' => [
+        'warning' => 'Warning',
+        'successful' => 'Successful'
+    ],
+    
+    // Info Messages
+    'info' => [
+        'greeting' => 'Hello! How can I help you today?',
+        'common_prompt_description' => 'Common prompt system description',
+        'what_is_this_prompt' => 'What is this prompt?',
+        'common_prompt_features' => 'Common prompt features',
+        'common_prompt_features_list' => 'List of common prompt features',
+        'no_prompts' => 'No prompts found',
+        'no_prompts_description' => 'No prompts have been added yet'
     ]
 ];

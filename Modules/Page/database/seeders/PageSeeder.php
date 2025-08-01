@@ -11,7 +11,23 @@ class PageSeeder extends Seeder
 {
     public function run(): void
     {
-        // Mevcut sayfaları sil
+        // Duplicate kontrolü - eğer zaten sayfa varsa atla
+        // Context bilgisi ile count kontrolü
+        $contextInfo = TenantHelpers::isCentral() ? 'CENTRAL' : 'TENANT';
+        $existingCount = Page::count();
+        
+        if ($existingCount > 0) {
+            if (TenantHelpers::isCentral()) {
+                $this->command->info("Pages already exist in CENTRAL database ({$existingCount} pages), skipping seeder...");
+            } else {
+                $this->command->info("Pages already exist in TENANT database ({$existingCount} pages), skipping seeder...");
+            }
+            return;
+        }
+        
+        $this->command->info("No existing pages found in {$contextInfo} database, proceeding with seeding...");
+        
+        // Mevcut sayfaları sil (sadece boşsa)
         Page::truncate();
         SeoSetting::where('seoable_type', 'like', '%Page%')->delete();
         

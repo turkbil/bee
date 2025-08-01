@@ -165,13 +165,14 @@ class PortfolioController extends Controller
                     if ($category) {
                         // Doğru URL'e 301 redirect
                         $categorySlug = $category->getTranslated('slug', $lang);
-                        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'category');
+                        $portfolioSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'index'); // portfolio
+                        $categoryActionSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'category'); // category
                         $defaultLocale = get_tenant_default_locale();
                         
                         if ($lang === $defaultLocale) {
-                            $correctUrl = url("/{$moduleSlug}/{$categorySlug}");
+                            $correctUrl = url("/{$portfolioSlug}/{$categoryActionSlug}/{$categorySlug}");
                         } else {
-                            $correctUrl = url("/{$lang}/{$moduleSlug}/{$categorySlug}");
+                            $correctUrl = url("/{$lang}/{$portfolioSlug}/{$categoryActionSlug}/{$categorySlug}");
                         }
                         
                         Log::info("Category found in {$lang}, redirecting", [

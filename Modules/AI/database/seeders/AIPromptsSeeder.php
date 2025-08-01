@@ -40,9 +40,9 @@ class AIPromptsSeeder extends Seeder
             // Seeder tamamlandıktan sonra da cache'leri temizle
             $this->clearAllAICache();
             
-            $this->command->info('🔄 AI Cache temizlendi - Widget\'lar anlık veri çekecek!');
+            // $this->command->info('🔄 AI Cache temizlendi - Widget\'lar anlık veri çekecek!');
         } else {
-            $this->command->info('Tenant contextinde çalışıyor, AI promptları central veritabanında saklanır.');
+            // $this->command->info('Tenant contextinde çalışıyor, AI promptları central veritabanında saklanır.');
         }
     }
 
@@ -859,7 +859,7 @@ APPLICATION TYPES:
     private function createSettings(): void
     {
         // AI ayarları artık config/ai.php dosyasında
-        $this->command->info('AI ayarları config/ai.php dosyasından yönetiliyor.');
+        // $this->command->info('AI ayarları config/ai.php dosyasından yönetiliyor.');
     }
 
     /**
@@ -917,7 +917,7 @@ APPLICATION TYPES:
                 }
             }
             
-            $this->command->info('🗑️ Tüm AI cache\'leri temizlendi (Token, Widget, Stats)');
+            // $this->command->info('🗑️ Tüm AI cache\'leri temizlendi (Token, Widget, Stats)');
             
         } catch (\Exception $e) {
             $this->command->warn('⚠️ Cache temizleme sırasında hata: ' . $e->getMessage());

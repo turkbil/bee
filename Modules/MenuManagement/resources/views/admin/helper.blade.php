@@ -23,7 +23,15 @@
                 <div class="dropdown-menu">
                     @hasmoduleaccess('menumanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.menumanagement.index') }}">
-                        <i class="icon-menu fas fa-bars"></i>{{ __('menumanagement::admin.menus') }}
+                        <i class="icon-menu fas fa-home"></i>{{ __('menumanagement::admin.main_menu') }}
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    @hasmoduleaccess('menumanagement', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.menumanagement.menu.index') }}">
+                        <i class="icon-menu fas fa-list"></i>{{ __('menumanagement::admin.menus') }}
                     </a>
                     @endhasmoduleaccess
                     
@@ -34,9 +42,9 @@
                     @endhasmoduleaccess
                 </div>
             </div>
-            @hasmoduleaccess('menumanagement', 'create')
-            <a href="{{ route('admin.menumanagement.menu.manage') }}" class="btn btn-primary">
-                <i class="icon-menu fas fa-plus"></i>{{ __('menumanagement::admin.new_menu') }}
+            @hasmoduleaccess('menumanagement', 'view')
+            <a href="{{ route('admin.menumanagement.menu.index') }}" class="btn btn-primary">
+                <i class="icon-menu fas fa-list"></i>{{ __('menumanagement::admin.menus') }}
             </a>
             @endhasmoduleaccess
         </div>

@@ -10,7 +10,16 @@ if (!function_exists('getSupportedLanguageRegex')) {
      */
     function getSupportedLanguageRegex(): string
     {
-        // Static memory cache - request boyunca sadece 1 kez hesaplanır
+        // LocaleValidationService varsa onu kullan
+        if (class_exists('\App\Services\LocaleValidationService')) {
+            try {
+                return app(\App\Services\LocaleValidationService::class)->getLocaleRegexPattern();
+            } catch (\Exception $e) {
+                // Fallback to old system
+            }
+        }
+        
+        // Eski sistem - Static memory cache
         static $cachedRegex = null;
         
         if ($cachedRegex !== null) {

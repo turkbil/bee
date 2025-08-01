@@ -14,7 +14,7 @@ class AIPageManagementFeaturesSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->command->info('🚀 Page Management AI Features seeding started...');
+        // $this->command->info('🚀 Page Management AI Features seeding started...');
 
         // Sayfa SEO Araçları kategorisini kullan (kategori ID 1)
         $pageCategory = AIFeatureCategory::firstOrCreate([
@@ -511,16 +511,16 @@ class AIPageManagementFeaturesSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ Page Management AI Features created successfully!');
-        $this->command->info('📊 Created features:');
-        $this->command->info('   - İçerik Optimizasyonu (icerik-optimizasyonu)');
-        $this->command->info('   - Anahtar Kelime Araştırması (anahtar-kelime-arastirmasi)');
-        $this->command->info('   - Çevirmen (cevirmen)');
-        $this->command->info('   - Otomatik Optimize (otomatik-optimize)');
-        $this->command->info('   - Rekabet Analizi (rekabet-analizi)');
-        $this->command->info('   - İçerik Kalite Skoru (icerik-kalite-skoru)');
-        $this->command->info('   - Schema Markup Üretici (schema-markup-uretici)');
-        $this->command->info('   - Çoklu Dil Çevirisi (coklu-dil-cevirisi)');
-        $this->command->info('   - AI Asistan Sohbet (ai-asistan-sohbet)');
+        // $this->command->info('✅ Page Management AI Features created successfully!');
+        // $this->command->info('📊 Created features:');
+        // $this->command->info('   - İçerik Optimizasyonu (icerik-optimizasyonu)');
+        // $this->command->info('   - Anahtar Kelime Araştırması (anahtar-kelime-arastirmasi)');
+        // $this->command->info('   - Çevirmen (cevirmen)');
+        // $this->command->info('   - Otomatik Optimize (otomatik-optimize)');
+        // $this->command->info('   - Rekabet Analizi (rekabet-analizi)');
+        // $this->command->info('   - İçerik Kalite Skoru (icerik-kalite-skoru)');
+        // $this->command->info('   - Schema Markup Üretici (schema-markup-uretici)');
+        // $this->command->info('   - Çoklu Dil Çevirisi (coklu-dil-cevirisi)');
+        // $this->command->info('   - AI Asistan Sohbet (ai-asistan-sohbet)');
     }
 }

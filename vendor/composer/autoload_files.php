@@ -51,4 +51,5 @@ return array(
     'a211fe5eb7136ac3d49924193e91eae0' => $baseDir . '/app/Helpers/AIHelper.php',
     '1396d18559aff122f3c2aa74b73a2e76' => $baseDir . '/app/Helpers/CreditHelpers.php',
     '83bd2eaaa0c8f246d1feccb8de5192b9' => $baseDir . '/app/Helpers/TranslationHelper.php',
+    'c71260c1cf084f756474d36b60f4fe08' => $baseDir . '/app/Helpers/MenuHelper.php',
 );

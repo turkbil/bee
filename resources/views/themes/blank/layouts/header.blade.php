@@ -112,6 +112,12 @@
             $moduleAction = 'index';
         }
         
+        // Kategori sayfası kontrolü
+        if (isset($category)) {
+            $currentModel = $category;
+            $moduleAction = 'category';
+        }
+        
         // Alternate link'leri oluştur
         $alternateLinks = CanonicalHelper::generateAlternateLinks($currentModel, $moduleAction);
         
@@ -153,12 +159,71 @@
                         </a>
                     </div>
                     <nav class="ml-6 flex space-x-4">
-                        <a href="{{ href('Page', 'index') }}"
-                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Sayfalar</a>
-                        <a href="{{ href('Announcement', 'index') }}"
-                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Duyurular</a>
-                        <a href="{{ href('Portfolio', 'index') }}"
-                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Portfolyo</a>
+                        @php
+                            $currentLocale = app()->getLocale();
+                            $headerMenu = getDefaultMenu($currentLocale);
+                        @endphp
+                        
+                        @if($headerMenu && !empty($headerMenu['items']))
+                            @foreach($headerMenu['items'] as $menuItem)
+                                @if(!empty($menuItem['children']))
+                                    {{-- Dropdown menü --}}
+                                    <div class="relative dropdown-menu" x-data="{ open: false }">
+                                        <button @click="open = !open" 
+                                                class="px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors duration-300 {{ $menuItem['has_active_child'] ? 'text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30 dark:hover:bg-blue-900/40' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' }}">
+                                            @if($menuItem['icon'])
+                                                <i class="{{ $menuItem['icon'] }} mr-2"></i>
+                                            @endif
+                                            {{ $menuItem['title'] }}
+                                            <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
+                                        
+                                        {{-- Dropdown içeriği --}}
+                                        <div x-show="open" 
+                                             @click.away="open = false"
+                                             x-transition:enter="transition ease-out duration-200"
+                                             x-transition:enter-start="opacity-0 scale-95"
+                                             x-transition:enter-end="opacity-100 scale-100"
+                                             x-transition:leave="transition ease-in duration-75"
+                                             x-transition:leave-start="opacity-100 scale-100"
+                                             x-transition:leave-end="opacity-0 scale-95"
+                                             class="absolute left-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                                            
+                                            @foreach($menuItem['children'] as $child)
+                                                <a href="{{ $child['url'] }}" 
+                                                   {{ $child['target'] === '_blank' ? 'target="_blank"' : '' }}
+                                                   class="block px-4 py-2 text-sm transition-colors duration-200 {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                    @if($child['icon'])
+                                                        <i class="{{ $child['icon'] }} mr-2"></i>
+                                                    @endif
+                                                    {{ $child['title'] }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @else
+                                    {{-- Normal menü item --}}
+                                    <a href="{{ $menuItem['url'] }}" 
+                                       {{ $menuItem['target'] === '_blank' ? 'target="_blank"' : '' }}
+                                       class="px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 {{ $menuItem['is_active'] ? 'text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30 dark:hover:bg-blue-900/40' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' }}">
+                                        @if($menuItem['icon'])
+                                            <i class="{{ $menuItem['icon'] }} mr-2"></i>
+                                        @endif
+                                        {{ $menuItem['title'] }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @else
+                            {{-- Fallback hardcode menu if no dynamic menu found --}}
+                            <a href="{{ href('Page', 'index') }}"
+                                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Sayfalar</a>
+                            <a href="{{ href('Announcement', 'index') }}"
+                                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Duyurular</a>
+                            <a href="{{ href('Portfolio', 'index') }}"
+                                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Portfolyo</a>
+                        @endif
                         <button onclick="clearSystemCache(this)"
                             class="inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors duration-200">
                             <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">

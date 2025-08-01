@@ -79,16 +79,15 @@ class AIChatController extends Controller
             
             // Kullanıcı mesajı için token kullanımını kaydet
             $userPromptTokens = (int) (strlen($message) / 4);
-            $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, $this->getCurrentProviderModel());
+            $this->conversationService->recordCreditUsage($conversation, $userMessage, $userPromptTokens, 0, $this->getCurrentProviderModel());
             
-            // Konuşma geçmişini oluştur
+            // Konuşma geçmişini oluştur (OpenAI formatına uygun)
             $conversationHistory = [];
             $messages = $conversation->messages()->orderBy('created_at')->get();
             foreach ($messages as $msg) {
                 $conversationHistory[] = [
                     'role' => $msg->role,
                     'content' => $msg->content,
-                    'timestamp' => $msg->created_at->toIso8601String(),
                 ];
             }
             
@@ -119,7 +118,7 @@ class AIChatController extends Controller
             
             // AI yanıtı için token kullanımını kaydet
             $aiCompletionTokens = (int) (strlen($response) / 4);
-            $this->conversationService->recordTokenUsage($conversation, $aiMessage, 0, $aiCompletionTokens, $this->getCurrentProviderModel());
+            $this->conversationService->recordCreditUsage($conversation, $aiMessage, 0, $aiCompletionTokens, $this->getCurrentProviderModel());
             
             // Geriye uyumluluk için Redis cache'ini de güncelle
             $this->updateRedisCache($conversation->id, $conversationHistory, $response);
@@ -201,10 +200,28 @@ class AIChatController extends Controller
                 ]);
                 
                 // Konuşma nesnesini bul veya oluştur (tenant-aware)
-                if ($conversationId && is_numeric($conversationId)) {
-                    $conversation = Conversation::where('tenant_id', tenancy()->tenant?->id)
-                        ->find($conversationId);
-                    Log::info('Mevcut konuşma aranıyor', ['found' => $conversation ? 'yes' : 'no']);
+                $conversation = null;
+                if ($conversationId) {
+                    $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
+                    
+                    // Numeric ID kontrolü (database ID)
+                    if (is_numeric($conversationId)) {
+                        $conversation = Conversation::where('tenant_id', $tenantId)
+                            ->find($conversationId);
+                    } else {
+                        // String hash ID kontrolü (frontend session ID)
+                        $conversation = Conversation::where('tenant_id', $tenantId)
+                            ->where('session_id', $conversationId)
+                            ->first();
+                    }
+                    
+                    Log::info('Mevcut konuşma aranıyor', [
+                        'conversation_id' => $conversationId,
+                        'tenant_id' => $tenantId,
+                        'id_type' => is_numeric($conversationId) ? 'database_id' : 'session_hash',
+                        'found' => $conversation ? 'yes' : 'no',
+                        'conversation_db_id' => $conversation?->id
+                    ]);
                 }
                 
                 if (!isset($conversation) || !$conversation) {
@@ -216,26 +233,31 @@ class AIChatController extends Controller
                     $conversation->user_id = Auth::id();
                     $conversation->tenant_id = $tenantId;
                     $conversation->prompt_id = $promptId;
+                    $conversation->session_id = $conversationId; // Frontend session ID'yi kaydet
                     $conversation->save();
-                    Log::info('Yeni konuşma oluşturuldu', ['id' => $conversation->id, 'tenant_id' => $tenantId]);
+                    Log::info('Yeni konuşma oluşturuldu', [
+                        'id' => $conversation->id, 
+                        'tenant_id' => $tenantId,
+                        'session_id' => $conversationId
+                    ]);
                 }
                 
-                Log::info('Token kontrolü yapılıyor');
-                // Token kontrolü yap
-                if (!$this->conversationService->checkTenantTokenBalance(1000)) {
-                    Log::info('Token yetersiz');
+                Log::info('Kredi kontrolü yapılıyor');
+                // Kredi kontrolü yap
+                if (!$this->conversationService->checkTenantCreditBalance(1.0)) {
+                    Log::info('Kredi yetersiz');
                     echo "event: error\n";
-                    echo "data: " . json_encode(['error' => 'Token bakiyeniz yetersiz. Lütfen token satın alınız.']) . "\n\n";
+                    echo "data: " . json_encode(['error' => 'Kredi bakiyeniz yetersiz. Lütfen kredi satın alınız.']) . "\n\n";
                     ob_flush();
                     flush();
                     return;
                 }
-                Log::info('Token kontrolü geçti');
+                Log::info('Kredi kontrolü geçti');
                 
                 Log::info('Stream API isteği başlatılıyor', [
                     'conversation_id' => $conversation->id,
                     'message_length' => strlen($message),
-                    'has_api_key' => !empty($this->deepSeekService->getApiKey()),
+                    'has_api_key' => false, // AIService otomatik provider seçecek
                     'prompt_id' => $promptId,
                     'timestamp' => now()->toIso8601String(),
                 ]);
@@ -250,28 +272,27 @@ class AIChatController extends Controller
                 
                 // Kullanıcı mesajı için token kullanımını kaydet
                 $userPromptTokens = (int) (strlen($message) / 4);
-                $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, $this->getCurrentProviderModel());
+                $this->conversationService->recordCreditUsage($conversation, $userMessage, $userPromptTokens, 0, $this->getCurrentProviderModel());
                 
-                // Konuşma geçmişini oluştur
+                // Konuşma geçmişini oluştur (OpenAI formatına uygun)
                 $conversationHistory = [];
                 $messages = $conversation->messages()->orderBy('created_at')->get();
                 foreach ($messages as $msg) {
                     $conversationHistory[] = [
                         'role' => $msg->role,
                         'content' => $msg->content,
-                        'timestamp' => $msg->created_at->toIso8601String(),
                     ];
                 }
                 
-                // DeepSeek API Stream yanıtını al
-                $this->deepSeekService->streamCompletion($message, $conversationHistory, function ($chunk) {
+                // AI Service ile Stream yanıtını al (provider otomatik seçilir)
+                $fullResponse = $this->aiService->askStream($message, [
+                    'conversation_history' => $conversationHistory,
+                    'prompt_id' => $promptId
+                ], function ($chunk) {
                     echo "data: " . json_encode(['content' => $chunk]) . "\n\n";
                     ob_flush();
                     flush();
-                }, $promptId);
-                
-                // Son AI yanıtını kaydet
-                $fullResponse = $this->deepSeekService->getLastFullResponse();
+                });
                 
                 // AI yanıtını veritabanına kaydet
                 $aiMessage = new Message();
@@ -286,13 +307,12 @@ class AIChatController extends Controller
                 $aiMessage->save();
                 
                 // Token kullanımını kaydet
-                $this->conversationService->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens, $this->getCurrentProviderModel());
+                $this->conversationService->recordCreditUsage($conversation, $aiMessage, $promptTokens, $completionTokens, $this->getCurrentProviderModel());
                 
                 // Geriye uyumluluk için Redis cache'ini de güncelle
                 $conversationHistory[] = [
                     'role' => 'assistant',
                     'content' => $fullResponse,
-                    'timestamp' => now()->toIso8601String(),
                 ];
                 $this->updateRedisCache($conversation->id, $conversationHistory);
                 
@@ -408,7 +428,6 @@ class AIChatController extends Controller
                 $conversationHistory[] = [
                     'role' => 'assistant',
                     'content' => $newResponseContent,
-                    'timestamp' => now()->toIso8601String(),
                 ];
             }
             

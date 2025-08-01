@@ -13,11 +13,12 @@ return new class extends Migration
             $table->foreignId('menu_id')->constrained('menus', 'menu_id')->onDelete('cascade');
             $table->foreignId('parent_id')->nullable()->constrained('menu_items', 'item_id')->onDelete('cascade');
             $table->json('title')->comment('Çoklu dil başlık: {"tr": "Anasayfa", "en": "Home"}');
-            $table->enum('url_type', ['page', 'module', 'external', 'custom'])->default('page');
+            $table->enum('url_type', ['internal', 'external', 'module'])->default('internal');
             $table->json('url_data')->comment('URL verileri: {"page_id": 1} veya {"url": "https://..."}');
             $table->string('target')->default('_self')->comment('_self, _blank');
-            $table->string('css_class')->nullable()->comment('Özel CSS sınıfları');
+            $table->string('icon')->nullable()->comment('Menü ikonu (FontAwesome class)');
             $table->boolean('is_active')->default(true)->index();
+            $table->string('visibility')->default('public')->comment('public, logged_in, guest');
             $table->integer('sort_order')->default(0)->comment('Parent içinde sıralama');
             $table->tinyInteger('depth_level')->default(0)->comment('Menü derinlik seviyesi: 0,1,2,3');
             $table->timestamps();

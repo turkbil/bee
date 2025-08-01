@@ -87,8 +87,13 @@
                     $itemMetadesc = $item->getTranslated('metadesc') ?? $item->getRawOriginal('metadesc') ?? $item->metadesc ?? null;
                     $itemDescription = $itemMetadesc ?? strip_tags($itemBodyContent) ?? null;
                     
-                    // İtem için dinamik URL
-                    $itemShowUrl = '/' . $showSlug . '/' . $itemSlug;
+                    // İtem için dinamik URL - locale aware
+                    $defaultLocale = get_tenant_default_locale();
+                    if ($currentLocale === $defaultLocale) {
+                        $itemShowUrl = '/' . $showSlug . '/' . $itemSlug;
+                    } else {
+                        $itemShowUrl = '/' . $currentLocale . '/' . $showSlug . '/' . $itemSlug;
+                    }
                 @endphp
                 
                 <article class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700" 

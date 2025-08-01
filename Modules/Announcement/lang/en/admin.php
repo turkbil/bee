@@ -6,6 +6,8 @@ return [
 'announcement_management' => 'Announcement Management',
 'announcement_title_placeholder' => 'Enter announcement title',
 'announcements' => 'Announcements',
+'all_announcements' => 'All Announcements',
+'announcement_detail' => 'Announcement Detail',
 'basic_info' => 'Basic Information',
 'bulk_delete' => 'Bulk Delete',
 'content' => 'Content',

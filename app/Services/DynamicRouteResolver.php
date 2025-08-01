@@ -166,17 +166,16 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                 // Three slug pattern - üç parametre gerekli action'lar için
                 if ($slug2 && $slug3) {
                     foreach ($moduleSlugMap as $action => $actionSlug) {
-                        // Kategori route pattern - index/kategori/category-slug şeklinde
-                        if ($slug1 === $moduleSlugMap['index'] && $action === 'category' && $slug2 === 'kategori') {
-                            if (isset($routes[$action])) {
-                                return [
-                                    'controller' => $routes[$action]['controller'],
-                                    'method' => $routes[$action]['method'],
-                                    'module' => $moduleName,
-                                    'action' => $action,
-                                    'params' => [$slug3] // kategori slug'ını geç
-                                ];
-                            }
+                        // DİNAMİK pattern - index/[herhangi-action]/[slug] şeklinde
+                        // category, tag, etiket, label ne olursa olsun çalışır
+                        if ($slug1 === $moduleSlugMap['index'] && $slug2 === $actionSlug && isset($routes[$action])) {
+                            return [
+                                'controller' => $routes[$action]['controller'],
+                                'method' => $routes[$action]['method'],
+                                'module' => $moduleName,
+                                'action' => $action,
+                                'params' => [$slug3] // içerik slug'ını geç
+                            ];
                         }
                     }
                 }

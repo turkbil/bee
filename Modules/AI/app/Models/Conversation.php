@@ -27,6 +27,7 @@ class Conversation extends Model
         'user_id',
         'tenant_id',
         'prompt_id',
+        'session_id',
         'total_tokens_used',
         'metadata',
         'status',

@@ -4,6 +4,7 @@ return [
 'pages' => 'Pages',
 'page_management' => 'Page Management',
 'new_page' => 'New Page',
+'page_detail' => 'Page Detail',
 'home' => 'Homepage',
 'title_field' => 'Title',
 'content' => 'Content',

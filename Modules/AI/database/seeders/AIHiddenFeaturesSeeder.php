@@ -73,10 +73,10 @@ Doğal, samimi ve yardımsever ol.',
                 ]);
             }
             
-            $this->command->info('✅ AI gizli özellikleri central DB\'ye kaydedildi!');
-            $this->command->info('🔒 Gizli sistem promptu oluşturuldu');
-            $this->command->info('🤐 Gizli bilgi tabanı oluşturuldu');
-            $this->command->info('❓ Şartlı yanıtlar hazırlandı');
+            // $this->command->info('✅ AI gizli özellikleri central DB\'ye kaydedildi!');
+            // $this->command->info('🔒 Gizli sistem promptu oluşturuldu');
+            // $this->command->info('🤐 Gizli bilgi tabanı oluşturuldu');
+            // $this->command->info('❓ Şartlı yanıtlar hazırlandı');
         } finally {
             // Eğer tenant context'i varsa geri yükle
             if ($originalConnection) {

@@ -16,11 +16,11 @@ class AISEOPromptsSeeder extends Seeder
     {
         // SEO özelinde AI prompts oluştur - central veritabanında
         TenantHelpers::central(function() {
-            $this->command->info('SEO AI Prompts oluşturuluyor...');
+            // $this->command->info('SEO AI Prompts oluşturuluyor...');
             
             $this->createSEOPrompts();
             
-            $this->command->info('✅ SEO AI Prompts başarıyla oluşturuldu!');
+            // $this->command->info('✅ SEO AI Prompts başarıyla oluşturuldu!');
         });
     }
 
@@ -279,7 +279,7 @@ Stratejiyi düz metin formatında sun!',
 
         foreach ($seoPrompts as $promptData) {
             Prompt::create($promptData);
-            $this->command->info("✓ SEO Prompt oluşturuldu: {$promptData['name']}");
+            // $this->command->info("✓ SEO Prompt oluşturuldu: {$promptData['name']}");
         }
     }
 }

@@ -254,6 +254,60 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
         return $updated > 0;
     }
     
+    /**
+     * Widget pattern'ından uyarlanan updateOrder metodu - drag-drop için
+     * Parent-child ilişkileri dahil tam güncelleme
+     */
+    public function updateOrder(array $items): bool
+    {
+        try {
+            
+            $updated = 0;
+            
+            foreach ($items as $index => $item) {
+                $sortOrder = $index + 1;
+                
+                // Item array veya sadece ID olabilir
+                if (is_array($item)) {
+                    $rawItemId = $item['id'] ?? $item;
+                    $rawParentId = $item['parentId'] ?? null;
+                    
+                    // JavaScript'ten gelen string'leri int'e çevir
+                    $itemId = (int)$rawItemId;
+                    $parentId = $rawParentId === null ? null : (int)$rawParentId;
+                } else {
+                    $itemId = (int)$item;
+                    $parentId = null;
+                }
+                
+                // Update data prepare
+                $updateData = ['sort_order' => $sortOrder];
+                
+                // Parent ID update (null için de geçerli)
+                $updateData['parent_id'] = $parentId;
+                
+                // Depth level hesapla
+                $updateData['depth_level'] = $this->calculateDepthLevel($parentId);
+                
+                $result = $this->model->where('item_id', $itemId)
+                    ->update($updateData);
+                
+                if ($result) {
+                    $updated++;
+                }
+            }
+            
+            if ($updated > 0) {
+                $this->clearCache();
+            }
+            
+            return $updated > 0;
+            
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function bulkDelete(array $ids): int
     {
         $count = 0;

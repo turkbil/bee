@@ -5,6 +5,7 @@ namespace Modules\MenuManagement\App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasTranslations;
+use Modules\MenuManagement\App\Services\MenuUrlBuilderService;
 
 class MenuItem extends Model
 {
@@ -17,9 +18,8 @@ class MenuItem extends Model
         'parent_id',
         'title',
         'url_type',
-        'url_value',
+        'url_data',
         'target',
-        'css_class',
         'is_active',
         'sort_order',
         'depth_level',
@@ -29,7 +29,7 @@ class MenuItem extends Model
 
     protected $casts = [
         'title' => 'array',
-        'url_value' => 'array',
+        'url_data' => 'array',
         'is_active' => 'boolean',
         'sort_order' => 'integer',
         'depth_level' => 'integer',
@@ -38,7 +38,7 @@ class MenuItem extends Model
     /**
      * Çevrilebilir alanlar
      */
-    protected $translatable = ['title', 'url_value'];
+    protected $translatable = ['title'];
 
     /**
      * Menu relationship
@@ -109,49 +109,104 @@ class MenuItem extends Model
 
     /**
      * Get resolved URL based on type and data
+     * LOCALE AWARE - Her zaman doğru dil için URL üretir
      */
-    public function getResolvedUrl()
+    public function getResolvedUrl(string $locale = null)
     {
-        $locale = app()->getLocale();
+        // Locale yoksa mevcut app locale'ini kullan
+        $locale = $locale ?? app()->getLocale();
         
-        switch ($this->url_type) {
-            case 'page':
-                if (isset($this->url_data['page_id'])) {
-                    $page = \Modules\Page\App\Models\Page::find($this->url_data['page_id']);
-                    if ($page) {
-                        $slug = $page->getTranslated('slug', $locale);
-                        return url('/' . ltrim($slug, '/'));
-                    }
-                }
-                break;
-                
-            case 'module':
-                if (isset($this->url_data['module'])) {
-                    $module = $this->url_data['module'];
-                    $action = $this->url_data['action'] ?? 'index';
-                    return url("/{$module}/{$action}");
-                }
-                break;
-                
-            case 'external':
-                return $this->url_data['url'] ?? '#';
-                
-            case 'custom':
-                return url('/' . ltrim($this->url_data['url'] ?? '', '/'));
-        }
-
-        return '#';
+        // URL data'ya locale bilgisini ekle
+        $urlData = $this->url_data ?? [];
+        $urlData['_locale'] = $locale;
+        
+        $urlBuilder = app(MenuUrlBuilderService::class);
+        return $urlBuilder->buildUrl($this->url_type, $urlData, $locale);
     }
 
     /**
      * Check if current URL matches this menu item
+     * OPTIMIZED VERSION
      */
-    public function isActive()
+    public function isActive(): bool
     {
-        $currentUrl = request()->url();
+        $currentPath = request()->path();
         $itemUrl = $this->getResolvedUrl();
         
-        return $currentUrl === $itemUrl;
+        // Quick exact match
+        if (request()->url() === $itemUrl) {
+            return true;
+        }
+        
+        // Normalize paths by removing locale prefix
+        $itemPath = $this->normalizeLocalePath(parse_url($itemUrl, PHP_URL_PATH) ?? '');
+        $currentPath = $this->normalizeLocalePath($currentPath);
+        
+        // Direct path match
+        if ($itemPath === $currentPath) {
+            return true;
+        }
+        
+        // Check if current path starts with item path (for nested routes)
+        if ($itemPath && str_starts_with($currentPath, rtrim($itemPath, '/') . '/')) {
+            return true;
+        }
+        
+        // Module-specific active state handling
+        if ($this->url_type === 'module' && isset($this->url_data['module'])) {
+            return $this->checkModuleActiveState($currentPath);
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Normalize path by removing locale prefix
+     */
+    private function normalizeLocalePath(string $path): string
+    {
+        $path = trim($path, '/');
+        
+        // Cache active locales for better performance
+        static $locales = null;
+        if ($locales === null) {
+            $locales = \Cache::remember('active_tenant_locales', 3600, function() {
+                return \Modules\LanguageManagement\App\Models\TenantLanguage::where('is_active', true)
+                    ->pluck('code')
+                    ->toArray();
+            });
+        }
+        
+        // Remove locale prefix if exists
+        foreach ($locales as $locale) {
+            if (str_starts_with($path, $locale . '/')) {
+                return substr($path, strlen($locale) + 1);
+            }
+        }
+        
+        return $path;
+    }
+    
+    /**
+     * Check module-specific active states
+     */
+    private function checkModuleActiveState(string $currentPath): bool
+    {
+        $module = $this->url_data['module'] ?? '';
+        $type = $this->url_data['type'] ?? '';
+        
+        // Module index pages
+        if ($type === 'index' && str_starts_with($currentPath, $module)) {
+            return true;
+        }
+        
+        // Category pages
+        if ($type === 'category' && isset($this->url_data['id'])) {
+            $pattern = $module . '/[^/]+/' . $this->url_data['id'];
+            return (bool) preg_match("~^{$pattern}~", $currentPath);
+        }
+        
+        return false;
     }
 
     /**

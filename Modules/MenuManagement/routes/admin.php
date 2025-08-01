@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\MenuManagement\App\Http\Livewire\Admin\MenuComponent;
 use Modules\MenuManagement\App\Http\Livewire\Admin\MenuManageComponent;
+use Modules\MenuManagement\App\Http\Livewire\Admin\MenuItemManageComponent;
 
 // Admin rotaları
 Route::middleware(['admin', 'tenant'])
@@ -13,7 +14,7 @@ Route::middleware(['admin', 'tenant'])
             ->name('menumanagement.')
             ->group(function () {
                 // Ana sayfa - header menü yönetimi (menü öğesi ekleme/düzenleme)
-                Route::get('/', \Modules\MenuManagement\App\Http\Livewire\Admin\MenuItemManageComponent::class)
+                Route::get('/', MenuItemManageComponent::class)
                     ->middleware('module.permission:menumanagement,view')
                     ->name('index');
                     
@@ -22,10 +23,16 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:menumanagement,view')
                     ->name('menu.index');
                     
-                // Menü oluşturma/düzenleme sayfası
+                // Menü oluşturma/düzenleme sayfası (Menü ayarları)
                 Route::get('/menu/manage/{id?}', MenuManageComponent::class)
                     ->middleware('module.permission:menumanagement,update')
                     ->name('menu.manage');
+                    
+                // Belirli menünün öğelerini düzenle (ID=1 dışındaki menüler için)
+                Route::get('/menu/{id}', MenuItemManageComponent::class)
+                    ->middleware('module.permission:menumanagement,view')
+                    ->name('menu.edit')
+                    ->where('id', '[0-9]+');
                     
                 Route::post('/set-editing-language', function () {
                     return response()->json(['status' => 'success']);
@@ -40,5 +47,6 @@ Route::middleware(['admin', 'tenant'])
                 Route::post('/duplicate/{id}', function ($id) {
                     return response()->json(['status' => 'success']);
                 })->name('duplicate');
+                
             });
     });

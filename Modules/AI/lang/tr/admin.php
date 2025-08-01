@@ -674,5 +674,22 @@ return [
     'edit_profile' => 'Profili Düzenle',
     
     // Dashboard Translations
-    'ai_tokens' => 'AI Kredileri'
+    'ai_tokens' => 'AI Kredileri',
+    
+    // Status Messages
+    'status' => [
+        'warning' => 'Uyarı',
+        'successful' => 'Başarılı'
+    ],
+    
+    // Info Messages
+    'info' => [
+        'greeting' => 'Merhaba! Size nasıl yardımcı olabilirim?',
+        'common_prompt_description' => 'Ortak prompt sistemi açıklaması',
+        'what_is_this_prompt' => 'Bu prompt nedir?',
+        'common_prompt_features' => 'Ortak prompt özellikleri',
+        'common_prompt_features_list' => 'Ortak prompt özelliklerinin listesi',
+        'no_prompts' => 'Prompt bulunamadı',
+        'no_prompts_description' => 'Henüz prompt eklenmemiş'
+    ]
 ];

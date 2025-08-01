@@ -300,17 +300,40 @@
             }
         });
         
+        // 🚨 ANTI-SPAM MECHANISM - Duplicate Request Prevention
+        let isProcessingMessage = false;
+        let lastMessageTime = 0;
+        const MINIMUM_MESSAGE_INTERVAL = 2000; // 2 saniye minimum aralık
+        
         // Mesaj gönderimi
         messageForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // ANTI-SPAM: Eğer mesaj işleniyorsa dur
+            if (isProcessingMessage) {
+                console.warn('⚠️ Duplicate request prevented - Message is still processing');
+                return false;
+            }
+            
+            // RATE LIMITING: Çok hızlı mesaj gönderimini engelle
+            const currentTime = Date.now();
+            if (currentTime - lastMessageTime < MINIMUM_MESSAGE_INTERVAL) {
+                const remainingTime = Math.ceil((MINIMUM_MESSAGE_INTERVAL - (currentTime - lastMessageTime)) / 1000);
+                showToast('Çok Hızlı', `Lütfen ${remainingTime} saniye bekleyin`, 'warning');
+                return false;
+            }
             
             const message = userMessage.value.trim();
             if (!message) {
                 const warning = chatContainer.dataset.tWarning;
                 const emptyMessage = chatContainer.dataset.tEmptyMessage;
                 showToast(warning, emptyMessage, 'warning');
-                return;
+                return false;
             }
+            
+            // ANTI-SPAM: İşlem başladığını işaretle
+            isProcessingMessage = true;
+            lastMessageTime = currentTime;
             
             // Kullanıcı mesajını ekle
             addMessage(message, 'user');
@@ -360,16 +383,16 @@
             const typingText = chatContainer.dataset.tTyping || 'Yazıyor';
             aiResponseContent.innerHTML = `<span class="typing-animation">${typingText}<span>.</span><span>.</span><span>.</span></span>`;
             
-            // 🚀 UNIVERSAL WORD-BASED BUFFER SYSTEM - SLOW MOTION SMOOTH
+            // 🚀 UNIVERSAL WORD-BASED BUFFER SYSTEM - OPTIMIZED SPEED
             const wordBuffer = createAIWordBuffer(aiResponseContent, {
-                typewriterSpeed: 150,  // Daktilo base hızı (smooth için biraz yavaş)
-                minWordLength: 2,      // Minimum 2 karakter olan kelimeler
-                showTypingWhileBuffering: true, // Buffer dolarken "yazıyor" göster
+                typewriterSpeed: 80,   // Hızlı ve responsive (eskiden 150)
+                minWordLength: 1,      // Tek karakterli kelimeler de dahil
+                showTypingWhileBuffering: false, // Buffer dolarken direkt göster
                 scrollCallback: scrollToBottom,  // Her kelime sonrası scroll
-                punctuationDelay: 100, // Noktalama işaretlerinde ek gecikme (smooth için)
+                punctuationDelay: 30,  // Noktalama işaretlerinde minimal gecikme (eskiden 100)
                 enableMarkdown: true,  // Markdown desteği
-                fadeEffect: true,      // SLOW MOTION slide-in efekti
-                initialDelay: 80       // İlk kelime için kısa bekleme
+                fadeEffect: false,     // Fade efektini devre dışı bırak (hız için)
+                initialDelay: 20       // İlk kelime için minimal bekleme (eskiden 80)
             });
             
             // Stream veri alındığında
@@ -412,6 +435,9 @@
                 
                 // Yükleniyor göstergesini kapat
                 loadingIndicator.style.display = 'none';
+                
+                // ANTI-SPAM: İşlem tamamlandığını işaretle
+                isProcessingMessage = false;
                 
                 // EventSource'ı kapat
                 eventSource.close();
@@ -488,6 +514,9 @@
                 
                 // Yükleniyor göstergesini kapat
                 loadingIndicator.style.display = 'none';
+                
+                // ANTI-SPAM: Hata durumunda işlem tamamlandığını işaretle
+                isProcessingMessage = false;
                 
                 // EventSource'ı kapat
                 eventSource.close();

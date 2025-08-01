@@ -29,6 +29,8 @@ interface MenuItemRepositoryInterface
     
     public function updateSortOrder(array $items): bool;
     
+    public function updateOrder(array $itemIds): bool;
+    
     public function moveToParent(int $itemId, ?int $parentId): bool;
     
     public function reorderItems(int $menuId, array $order): bool;

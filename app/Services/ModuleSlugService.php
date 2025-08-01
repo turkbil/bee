@@ -45,6 +45,65 @@ class ModuleSlugService
     }
     
     /**
+     * Belirli bir locale için slug getir - YENİ
+     * 
+     * @param string $moduleName
+     * @param string $slugKey
+     * @param string $locale
+     * @return string|null
+     */
+    public static function getSlugForLocale(string $moduleName, string $slugKey, string $locale): ?string
+    {
+        // Memory cache kontrolü - locale specific
+        $memoryCacheKey = $moduleName . '.' . $slugKey . '.' . $locale;
+        if (isset(self::$memoryCache[$memoryCacheKey])) {
+            return self::$memoryCache[$memoryCacheKey];
+        }
+        
+        try {
+            // Önce locale-specific tenant ayarlarına bak
+            $cacheKey = "module_slug_{$moduleName}_{$slugKey}_{$locale}";
+            
+            $slug = Cache::remember($cacheKey, 60, function() use ($moduleName, $slugKey, $locale) {
+                // Locale-specific ayar var mı kontrol et
+                $setting = ModuleTenantSetting::where('module_name', $moduleName)
+                    ->where('locale', $locale)
+                    ->first();
+                
+                if ($setting && isset($setting->settings['slugs'][$slugKey])) {
+                    return $setting->settings['slugs'][$slugKey];
+                }
+                
+                // Locale-specific config var mı bak
+                $configKey = strtolower($moduleName) . ".slugs.{$locale}.{$slugKey}";
+                $localeSlug = config($configKey);
+                
+                if ($localeSlug) {
+                    return $localeSlug;
+                }
+                
+                return null;
+            });
+            
+            if ($slug) {
+                self::$memoryCache[$memoryCacheKey] = $slug;
+                return $slug;
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('ModuleSlugService: Failed to get locale slug', [
+                'module' => $moduleName,
+                'key' => $slugKey,
+                'locale' => $locale,
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        // Locale-specific bulunamazsa normal slug'ı döndür
+        return self::getSlug($moduleName, $slugKey);
+    }
+    
+    /**
      * Global ayarları tek seferde yükle - performans için optimized
      */
     private static function loadGlobalSettings(): void

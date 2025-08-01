@@ -10,7 +10,7 @@ class GlobalAIFeaturesSeeder extends Seeder
 {
     public function run()
     {
-        $this->command->info('🚀 Global AI Features Seeder başlatılıyor...');
+        // $this->command->info('🚀 Global AI Features Seeder başlatılıyor...');
         
         // Kategorileri tanımla
         $categories = [
@@ -50,7 +50,7 @@ class GlobalAIFeaturesSeeder extends Seeder
                 'has_subcategories' => false
             ]));
             
-            $this->command->info('✅ Kategori: ' . $category->title);
+            // $this->command->info('✅ Kategori: ' . $category->title);
         }
         
         // Sayfa SEO Araçları kategorisini al (kategori 1)
@@ -344,9 +344,9 @@ class GlobalAIFeaturesSeeder extends Seeder
                 'response_template' => $responseTemplate
             ]));
             
-            $this->command->info('✅ Feature: ' . $feature->name . ' (' . $feature->slug . ')');
+            // $this->command->info('✅ Feature: ' . $feature->name . ' (' . $feature->slug . ')');
         }
 
-        $this->command->info('🎉 Global AI Features seeded! Total: ' . count($features) . ' features');
+        // $this->command->info('🎉 Global AI Features seeded! Total: ' . count($features) . ' features');
     }
 }

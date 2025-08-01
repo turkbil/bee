@@ -17,7 +17,7 @@ class AITenantSetupSeeder extends Seeder
     {
         // Bu seeder sadece central veritabanında çalışmalı
         if (!TenantHelpers::isCentral()) {
-            $this->command->info('Bu seeder sadece central veritabanında çalışır.');
+            // $this->command->info('Bu seeder sadece central veritabanında çalışır.');
             return;
         }
 
@@ -79,10 +79,10 @@ class AITenantSetupSeeder extends Seeder
             }
         }
 
-        $this->command->info('AI Tenant ayarları tamamlandı:');
-        $this->command->info('- Tüm tenant\'larda AI aktif hale getirildi');
-        $this->command->info('- Token bakiyeleri purchase verilerine göre güncellendi');
-        $this->command->info('- Kullanım geçmişleri oluşturuldu');
+        // $this->command->info('AI Tenant ayarları tamamlandı:');
+        // $this->command->info('- Tüm tenant\'larda AI aktif hale getirildi');
+        // $this->command->info('- Token bakiyeleri purchase verilerine göre güncellendi');
+        // $this->command->info('- Kullanım geçmişleri oluşturuldu');
     }
 
     /**

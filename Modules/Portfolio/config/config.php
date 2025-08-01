@@ -3,9 +3,9 @@
 return [
     'name' => 'Portfolio',
     'slugs' => [
-        'index' => 'portfolios',
+        'index' => 'portfolio',
         'show' => 'portfolio',
-        'category' => 'portfolio-category',
+        'category' => 'category',
     ],
     'routes' => [
         'index' => [
@@ -19,6 +19,24 @@ return [
         'category' => [
             'controller' => \Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class,
             'method' => 'category'
+        ]
+    ],
+    // Menu URL tipleri - MenuManagement için dinamik yapı
+    'menu_url_types' => [
+        [
+            'type' => 'list',
+            'label' => 'portfolio::admin.all_portfolios',
+            'needs_selection' => false
+        ],
+        [
+            'type' => 'category',
+            'label' => 'portfolio::admin.portfolio_category',
+            'needs_selection' => true
+        ],
+        [
+            'type' => 'detail',
+            'label' => 'portfolio::admin.portfolio_detail',
+            'needs_selection' => true
         ]
     ]
 ];

@@ -9,7 +9,7 @@ window.aiWidgetConfig = window.aiWidgetConfig || {};
 
 // Initialize AI Widget System
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🤖 Global AI Widget System başlatılıyor...');
+    // console.log('🤖 Global AI Widget System başlatılıyor...');
     initializeAIWidgets();
 });
 
@@ -109,7 +109,7 @@ window.toggleAIWidget = function(widgetId) {
  * Execute AI Widget Feature
  */
 window.executeAIWidgetFeature = function(widgetId, featureSlug, featureName) {
-    console.log('🚀 AI Widget Feature:', widgetId, featureSlug, featureName);
+    // console.log('🚀 AI Widget Feature:', widgetId, featureSlug, featureName);
     
     const resultsContainer = document.getElementById('results-' + widgetId);
     const clearBtn = document.getElementById('clear-' + widgetId);
@@ -169,7 +169,7 @@ function executeAIFeatureAjax(widgetId, featureSlug, featureName, config, result
         current_data: getCurrentPageData() // Get fresh data
     };
     
-    console.log('🚀 AI Widget AJAX Request:', requestData);
+    // console.log('🚀 AI Widget AJAX Request:', requestData);
     
     fetch(config.apiEndpoints.executeFeature, {
         method: 'POST',

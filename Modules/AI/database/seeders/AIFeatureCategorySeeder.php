@@ -15,7 +15,7 @@ class AIFeatureCategorySeeder extends Seeder
     {
         // Central veritabanında kategoriler oluştur
         TenantHelpers::central(function() {
-            $this->command->info('AI Feature Categories central veritabanında oluşturuluyor...');
+            // $this->command->info('AI Feature Categories central veritabanında oluşturuluyor...');
             
             // Mevcut kategorileri temizle
             AIFeatureCategory::query()->delete();
@@ -140,10 +140,10 @@ class AIFeatureCategorySeeder extends Seeder
             
             foreach ($categories as $categoryData) {
                 AIFeatureCategory::create($categoryData);
-                $this->command->info("✅ Kategori oluşturuldu: {$categoryData['title']}");
+                // $this->command->info("✅ Kategori oluşturuldu: {$categoryData['title']}");
             }
             
-            $this->command->info('AI Feature Categories başarıyla oluşturuldu!');
+            // $this->command->info('AI Feature Categories başarıyla oluşturuldu!');
         });
     }
 }

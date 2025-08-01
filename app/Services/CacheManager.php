@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Spatie\ResponseCache\Facades\ResponseCache;
+use App\Services\UnifiedUrlBuilderService;
+use App\Services\LocaleValidationService;
+use App\Services\HomepageRouteService;
 
 class CacheManager 
 {
@@ -87,12 +90,45 @@ class CacheManager
                 }
             }
             
-            // 9. OPcache Reset (if available)
+            // 9. Menu Cache'leri - YENİ
+            Cache::forget('menu_default');
+            Cache::forget('menu_by_location');
+            Cache::tags(['menus'])->flush();
+            
+            // Menu helper cache'leri
+            if (tenant()) {
+                $tenantId = tenant()->id;
+                Cache::forget("menu_tenant_{$tenantId}");
+                Cache::forget("menu_items_tenant_{$tenantId}");
+            }
+            
+            // 10. Unified URL Builder Cache'leri - YENİ
+            if (class_exists('\App\Services\UnifiedUrlBuilderService')) {
+                if (method_exists('\App\Services\UnifiedUrlBuilderService', 'clearCache')) {
+                    app(UnifiedUrlBuilderService::class)->clearCache();
+                }
+            }
+            
+            // 11. Locale Validation Cache'leri - YENİ
+            if (class_exists('\App\Services\LocaleValidationService')) {
+                if (method_exists('\App\Services\LocaleValidationService', 'clearCache')) {
+                    app(LocaleValidationService::class)->clearCache();
+                }
+            }
+            
+            // 12. Homepage Route Cache'leri - YENİ
+            if (class_exists('\App\Services\HomepageRouteService')) {
+                if (method_exists('\App\Services\HomepageRouteService', 'clearCache')) {
+                    app(HomepageRouteService::class)->clearCache();
+                }
+            }
+            
+            // 13. OPcache Reset (if available)
             if (function_exists('opcache_reset')) {
                 opcache_reset();
             }
             
-            // 10. Session Flash Message
+            // 14. Session Flash Message
             session()->flash('cache_cleared', true);
             session()->flash('cache_clear_time', now()->toDateTimeString());
             
@@ -146,10 +182,28 @@ class CacheManager
             Cache::forget('admin_languages_switcher');
             Cache::forget('tenant_languages_switcher');
             Cache::forget('supported_language_regex');
+            Cache::forget('valid_locales');
+            Cache::forget('valid_locales_tenant');
+            Cache::forget('valid_locales_data');
             
             // URL prefix cache
             if (class_exists('\Modules\LanguageManagement\app\Services\UrlPrefixService')) {
                 \Modules\LanguageManagement\app\Services\UrlPrefixService::clearCache();
+            }
+            
+            // Menu cache'leri - dil değişiminde menüler de yenilenmeli
+            Cache::forget('menu_default');
+            Cache::forget('menu_by_location');
+            Cache::tags(['menus'])->flush();
+            
+            // Unified URL Builder - dil bazlı cache'ler
+            if (class_exists('\App\Services\UnifiedUrlBuilderService')) {
+                app(UnifiedUrlBuilderService::class)->clearCache();
+            }
+            
+            // Locale Validation Service
+            if (class_exists('\App\Services\LocaleValidationService')) {
+                app(LocaleValidationService::class)->clearCache();
             }
             
             // View cache (language files)
@@ -159,6 +213,67 @@ class CacheManager
             
         } catch (\Exception $e) {
             Log::error('CacheManager: Error clearing language caches', [
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+    
+    /**
+     * Menu cache'lerini temizle - YENİ
+     */
+    public static function clearMenuCaches(): void 
+    {
+        try {
+            Cache::forget('menu_default');
+            Cache::forget('menu_by_location');
+            Cache::tags(['menus'])->flush();
+            
+            if (tenant()) {
+                $tenantId = tenant()->id;
+                Cache::forget("menu_tenant_{$tenantId}");
+                Cache::forget("menu_items_tenant_{$tenantId}");
+                Cache::tags(["tenant_{$tenantId}:menus"])->flush();
+            }
+            
+            Log::info('CacheManager: Menu caches cleared');
+            
+        } catch (\Exception $e) {
+            Log::error('CacheManager: Error clearing menu caches', [
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+    
+    /**
+     * URL cache'lerini temizle - YENİ
+     */
+    public static function clearUrlCaches(): void 
+    {
+        try {
+            // Unified URL Builder
+            if (class_exists('\App\Services\UnifiedUrlBuilderService')) {
+                app(UnifiedUrlBuilderService::class)->clearCache();
+            }
+            
+            // Dynamic Route Resolver
+            if (class_exists('\App\Services\DynamicRouteResolver')) {
+                app(\App\Contracts\DynamicRouteResolverInterface::class)->clearRouteCache();
+            }
+            
+            // Module Slug Service
+            if (class_exists('\App\Services\ModuleSlugService')) {
+                \App\Services\ModuleSlugService::clearCache();
+            }
+            
+            // Homepage Route Service
+            if (class_exists('\App\Services\HomepageRouteService')) {
+                app(HomepageRouteService::class)->clearCache();
+            }
+            
+            Log::info('CacheManager: URL caches cleared');
+            
+        } catch (\Exception $e) {
+            Log::error('CacheManager: Error clearing URL caches', [
                 'error' => $e->getMessage()
             ]);
         }

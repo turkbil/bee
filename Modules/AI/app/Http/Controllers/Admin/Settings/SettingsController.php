@@ -396,7 +396,10 @@ class SettingsController extends Controller
             ]);
             $responseTime = round((microtime(true) - $startTime) * 1000, 2);
             
-            if ($response && strlen($response) > 0) {
+            // Response array ise string'e çevir
+            $responseText = is_array($response) ? ($response['content'] ?? $response['message'] ?? json_encode($response)) : (string) $response;
+            
+            if ($response && strlen($responseText) > 0) {
                 // Performansı güncelle
                 $provider->average_response_time = $responseTime;
                 $provider->save();
@@ -404,7 +407,7 @@ class SettingsController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Provider test başarılı!',
-                    'response' => substr($response, 0, 200) . (strlen($response) > 200 ? '...' : ''),
+                    'response' => substr($responseText, 0, 200) . (strlen($responseText) > 200 ? '...' : ''),
                     'response_time' => $responseTime,
                     'api_endpoint' => $provider->base_url,
                     'model_used' => $provider->default_model,

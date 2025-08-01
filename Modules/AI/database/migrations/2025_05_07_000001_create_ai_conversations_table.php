@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('tenant_id')->nullable(); // hangi tenant
             $table->unsignedBigInteger('prompt_id')->nullable();
+            $table->string('session_id')->nullable(); // Frontend session ID (hash)
             $table->integer('total_tokens_used')->default(0); // toplam token kullanımı
             $table->json('metadata')->nullable(); // ek bilgiler
             $table->string('status')->default('active'); // active, archived, deleted
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->index('type');
             $table->index('feature_name');
             $table->index('tenant_id');
+            $table->index('session_id');
             $table->index('status');
             $table->index('created_at');
             $table->index('updated_at');

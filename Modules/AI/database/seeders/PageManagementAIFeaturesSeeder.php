@@ -25,7 +25,7 @@ class PageManagementAIFeaturesSeeder extends Seeder
             'has_subcategories' => false
         ]);
         
-        $this->command->info('Kategori bulundu: ' . $category->title . ' (ID: ' . $category->ai_feature_category_id . ')');
+        // $this->command->info('Kategori bulundu: ' . $category->title . ' (ID: ' . $category->ai_feature_category_id . ')');
 
         $features = [
             // SEO & ANALİZ ARAÇLARI
@@ -320,9 +320,9 @@ class PageManagementAIFeaturesSeeder extends Seeder
                     ]
                 ])
             ]));
-            $this->command->info('Feature eklendi/bulundu: ' . $feature->name . ' (ID: ' . $feature->id . ')');
+            // $this->command->info('Feature eklendi/bulundu: ' . $feature->name . ' (ID: ' . $feature->id . ')');
         }
 
-        $this->command->info('✅ Sayfa Yönetimi için ' . count($features) . ' AI feature eklendi!');
+        // $this->command->info('✅ Sayfa Yönetimi için ' . count($features) . ' AI feature eklendi!');
     }
 }

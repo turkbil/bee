@@ -63,7 +63,7 @@
     ];
 @endphp
 
-<div class="language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
+<div class="seo-language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
     <!-- SEO Widget - Bu dil için - Orijinal tasarım -->
     <div class="seo-widget-container">
         <div class="row">

@@ -138,6 +138,6 @@
     <script>
         window.currentPageId = {{ $pageId ?? 'null' }};
         window.currentLanguage = '{{ $currentLanguage }}';
-        let currentLanguage = '{{ $currentLanguage }}';
+        // currentLanguage variable is now available as window.currentLanguage (no local let needed)
     </script>
 @endpush

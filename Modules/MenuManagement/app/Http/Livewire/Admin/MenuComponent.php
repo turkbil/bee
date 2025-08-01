@@ -26,7 +26,7 @@ class MenuComponent extends Component
     public $sortField = 'menu_id';
 
     #[Url]
-    public $sortDirection = 'desc';
+    public $sortDirection = 'asc';
     
     #[Url]
     public $statusFilter = 'all';

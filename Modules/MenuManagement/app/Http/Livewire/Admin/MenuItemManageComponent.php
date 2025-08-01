@@ -6,46 +6,109 @@ namespace Modules\MenuManagement\App\Http\Livewire\Admin;
 
 use Livewire\Attributes\{Layout, Computed};
 use Livewire\Component;
-use Modules\MenuManagement\App\Services\MenuService;
+use Modules\MenuManagement\App\Services\{MenuService, MenuUrlBuilderService};
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\MenuManagement\App\Models\Menu;
 use Modules\MenuManagement\App\Models\MenuItem;
+use Nwidart\Modules\Facades\Module;
 
 #[Layout('admin.layout')]
 class MenuItemManageComponent extends Component
 {
     public $currentLanguage = 'tr';
+    public $availableLanguages = [];
     public $multiLangInputs = [];
     public $inputs = [];
     
+    // Tab Configuration
+    public $tabConfig = [];
+    public $tabCompletionStatus = [];
+    
     // MenuItem form data
     public $title = '';
-    public $url_value = '';
-    public $url_type = 'custom';
+    public $url_type = '';
+    public $url_data = [];
     public $parent_id = null;
     public $sort_order = 0;
     public $target = '_self';
-    public $css_class = '';
     public $icon = '';
     public $is_active = true;
     public $editingMenuItemId = null;
     
+    // Delete Modal Properties
+    public $showDeleteModal = false;
+    public $deleteItemId = null;
+    public $deleteItemTitle = '';
+    
+    // Search Property
+    public $search = '';
+    
+    // Dynamic URL options
+    public $availableModules = [];
+    public $moduleUrlTypes = [];
+    public $moduleContent = [];
+    public $selectedModule = '';
+    public $selectedUrlType = '';
+    
     private MenuService $menuService;
+    private MenuUrlBuilderService $urlBuilder;
     private ?Menu $headerMenu = null;
     
-    public function boot(MenuService $menuService): void
+    // SOLID Dependencies - Page pattern
+    protected $pageService;
+    protected $seoRepository;
+    
+    // Livewire Listeners - Page pattern ile aynı
+    protected $listeners = [
+        'refreshComponent' => '$refresh',
+        'tab-changed' => 'handleTabChange',
+        'switchLanguage' => 'switchLanguage',
+        'js-language-sync' => 'handleJavaScriptLanguageSync',
+        'handleTestEvent' => 'handleTestEvent',
+        'simple-test' => 'handleSimpleTest',
+        'handleJavaScriptLanguageSync' => 'handleJavaScriptLanguageSync',
+        'debug-test' => 'handleDebugTest',
+        'set-js-language' => 'setJavaScriptLanguage',
+        'set-continue-mode' => 'setContinueMode',
+        'updateOrder' => 'updateOrder',
+        'itemDeleted' => 'handleItemDeleted'
+    ];
+    
+    public function boot(MenuService $menuService, MenuUrlBuilderService $urlBuilder): void
     {
         $this->menuService = $menuService;
+        $this->urlBuilder = $urlBuilder;
     }
     
-    public function mount(): void
+    public function mount($id = null): void
     {
-        // Get default header menu
-        $this->headerMenu = $this->menuService->getDefaultMenu();
+        // Initialize available languages for global language switcher
+        $this->availableLanguages = TenantLanguage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->pluck('code')
+            ->toArray();
+            
+        // Set default current language
+        $this->currentLanguage = $this->availableLanguages[0] ?? 'tr';
         
-        if (!$this->headerMenu) {
-            // Create default menu if doesn't exist
-            $this->createDefaultMenu();
+        // Initialize tab configuration
+        $this->tabConfig = [
+            ['name' => __('menumanagement::admin.add_menu_item'), 'icon' => 'fas fa-plus']
+        ];
+        
+        $this->tabCompletionStatus = [0 => true];
+        
+        // Get menu by ID or default header menu
+        if ($id) {
+            $this->headerMenu = $this->menuService->getMenu($id);
+            if (!$this->headerMenu) {
+                session()->flash('error', __('menumanagement::admin.menu_not_found'));
+                $this->redirect(route('admin.menumanagement.menu.index'));
+                return;
+            }
+        } else {
+            // Default behavior for main page (ID=1)
+            $this->headerMenu = $this->menuService->getDefaultMenu();
         }
         
         $this->initializeFormData();
@@ -60,7 +123,7 @@ class MenuItemManageComponent extends Component
     }
     
     #[Computed] 
-    public function headerMenu()
+    public function currentHeaderMenu()
     {
         return $this->headerMenu ??= $this->menuService->getDefaultMenu();
     }
@@ -77,17 +140,58 @@ class MenuItemManageComponent extends Component
     #[Computed]
     public function headerMenuItems()
     {
-        if (!$this->headerMenu) {
+        if (!$this->currentHeaderMenu) {
+            logger('❌ currentHeaderMenu null');
             return collect();
         }
         
-        return $this->headerMenu->items()
-            ->with(['children' => function ($query) {
-                $query->orderBy('sort_order');
-            }])
-            ->whereNull('parent_id')
-            ->orderBy('sort_order')
-            ->get();
+        // CACHE BYPASS: Doğrudan MenuItem modelinden çek - relation cache sorunu için
+        $query = MenuItem::where('menu_id', $this->currentHeaderMenu->menu_id)
+            ->orderByRaw('COALESCE(parent_id, item_id), parent_id IS NOT NULL, sort_order');
+        
+        // Search filter
+        if (!empty($this->search)) {
+            $search = strtolower($this->search);
+            $query->where(function($q) use ($search) {
+                // JSON title alanında arama
+                $q->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr'))) LIKE ?", ["%{$search}%"])
+                  ->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.en'))) LIKE ?", ["%{$search}%"])
+                  // URL data arama
+                  ->orWhere('url_data', 'LIKE', "%{$search}%")
+                  // Icon arama
+                  ->orWhere('icon', 'LIKE', "%{$search}%")
+                  // Target arama
+                  ->orWhere('target', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        $items = $query->get();
+        
+        // DETAILED DEBUG - Temporarily
+        foreach ($items as $index => $item) {
+            $title = $item->getTranslated('title', app()->getLocale());
+            $urlData = is_array($item->url_data) ? $item->url_data : json_decode($item->url_data, true);
+            $module = $urlData['module'] ?? 'N/A';
+            $parentInfo = $item->parent_id ? "Child of: {$item->parent_id}" : 'MAIN ITEM';
+            
+            // logger("🔍 ITEM #{$index}", [
+            //     'id' => $item->item_id,
+            //     'parent_id' => $item->parent_id,
+            //     'title' => $title,
+            //     'module' => $module,
+            //     'sort_order' => $item->sort_order,
+            //     'relationship' => $parentInfo
+            // ]);
+        }
+            
+        // logger('🔍 headerMenuItems DEBUG', [
+        //     'menu_id' => $this->currentHeaderMenu->menu_id ?? 'null',
+        //     'items_count' => $items->count(),
+        //     'search_term' => $this->search,
+        //     'filtered' => !empty($this->search)
+        // ]);
+        
+        return $items;
     }
 
     private function loadHeaderMenu(): void
@@ -95,35 +199,65 @@ class MenuItemManageComponent extends Component
         $this->headerMenu = $this->menuService->getDefaultMenu();
     }
     
-    public function switchLanguage($language): void
-    {
-        $this->currentLanguage = $language;
-    }
     
     public function addMenuItem(): void
     {
-        $this->validate([
-            'multiLangInputs.*.title' => 'required|string|max:255',
-            'multiLangInputs.*.url_value' => 'required|string|max:255',
-            'url_type' => 'required|in:custom,page,module,external',
+
+        // Validation rules
+        $validationRules = [
+            'url_type' => 'required|in:internal,external,module',
             'target' => 'required|in:_self,_blank,_parent,_top',
-            'sort_order' => 'required|integer|min:0',
-        ]);
+        ];
+        
+        // Multi-language title validation
+        foreach ($this->multiLangInputs as $lang => $data) {
+            if (!empty($data['title'])) {
+                $validationRules["multiLangInputs.{$lang}.title"] = 'required|string|max:255';
+            }
+        }
+        
+        // En az bir dil dolu olmalı
+        $hasContent = false;
+        foreach ($this->multiLangInputs as $data) {
+            if (!empty($data['title'])) {
+                $hasContent = true;
+                break;
+            }
+        }
+        
+        if (!$hasContent) {
+            $this->addError('multiLangInputs', 'En az bir dil için başlık girilmelidir.');
+            return;
+        }
+        
+        // URL data validation based on type
+        if ($this->url_type === 'internal' || $this->url_type === 'external') {
+            $validationRules['url_data.url'] = 'required|string';
+        } elseif ($this->url_type === 'module') {
+            $validationRules['url_data.module'] = 'required|string';
+            $validationRules['url_data.type'] = 'required|string';
+        }
+        
+        $this->validate($validationRules);
         
         try {
+            // Title array oluştur
+            $titleArray = [];
+            foreach ($this->multiLangInputs as $lang => $data) {
+                if (!empty($data['title'])) {
+                    $titleArray[$lang] = $data['title'];
+                }
+            }
+            
             $data = [
-                'menu_id' => $this->headerMenu->menu_id,
-                'title' => $this->multiLangInputs,
-                'url_value' => $this->multiLangInputs,
+                'menu_id' => $this->currentHeaderMenu->menu_id,
+                'title' => $titleArray,
                 'url_type' => $this->url_type,
+                'url_data' => $this->url_data,
                 'parent_id' => $this->parent_id,
-                'sort_order' => $this->sort_order,
                 'target' => $this->target,
-                'css_class' => $this->css_class,
                 'icon' => $this->icon,
                 'is_active' => $this->is_active,
-                'visibility' => 'public',
-                'depth_level' => 0
             ];
             
             $result = $this->menuService->createMenuItem($data);
@@ -137,6 +271,9 @@ class MenuItemManageComponent extends Component
                 
                 $this->resetForm();
                 $this->headerMenu = null; // Reset cache
+                
+                // Manuel sortable refresh
+                $this->dispatch('refresh-sortable');
             } else {
                 $this->dispatch('toast', [
                     'title' => __('admin.error'),
@@ -147,7 +284,7 @@ class MenuItemManageComponent extends Component
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => __('admin.error'),
-                'message' => __('admin.operation_failed'),
+                'message' => __('admin.operation_failed') . ': ' . $e->getMessage(),
                 'type' => 'error'
             ]);
         }
@@ -159,15 +296,28 @@ class MenuItemManageComponent extends Component
             $menuItem = MenuItem::findOrFail($menuItemId);
             
             // Form alanlarını doldur
-            $this->multiLangInputs = $menuItem->title;
+            foreach ($this->availableLanguages as $lang) {
+                $this->multiLangInputs[$lang]['title'] = $menuItem->getTranslated('title', $lang) ?? '';
+            }
+            
             $this->url_type = $menuItem->url_type;
+            $this->url_data = $menuItem->url_data ?? [];
             $this->target = $menuItem->target;
             $this->sort_order = $menuItem->sort_order;
             $this->parent_id = $menuItem->parent_id;
-            $this->css_class = $menuItem->css_class;
             $this->icon = $menuItem->icon;
             $this->is_active = $menuItem->is_active;
             $this->editingMenuItemId = $menuItemId;
+            
+            // URL tipine göre form hazırlığı
+            if ($this->url_type === 'module' && isset($this->url_data['module'])) {
+                $this->loadAvailableModules();
+                $this->moduleSelected($this->url_data['module']);
+                
+                if (isset($this->url_data['type'])) {
+                    $this->urlTypeSelected($this->url_data['type']);
+                }
+            }
             
             $this->dispatch('toast', [
                 'title' => __('admin.success'),
@@ -220,6 +370,7 @@ class MenuItemManageComponent extends Component
             
             if ($result->success) {
                 $this->loadHeaderMenu();
+                $this->dispatch('refresh-sortable');
             }
             
         } catch (\Exception $e) {
@@ -244,6 +395,7 @@ class MenuItemManageComponent extends Component
             
             if ($result->success) {
                 $this->loadHeaderMenu();
+                $this->dispatch('refresh-sortable');
             }
             
         } catch (\Exception $e) {
@@ -258,6 +410,175 @@ class MenuItemManageComponent extends Component
     public function refreshMenuItems(): void
     {
         $this->loadHeaderMenu();
+        $this->dispatch('refresh-sortable');
+    }
+    
+    /**
+     * Circular reference problemini düzelt
+     */
+    public function fixCircularReference(): void
+    {
+        try {
+            // ID: 15'i ana kategoriye çevir
+            MenuItem::where('item_id', 15)->update([
+                'parent_id' => null,
+                'depth_level' => 0
+            ]);
+            
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => 'Circular reference problemi düzeltildi',
+                'type' => 'success'
+            ]);
+            
+            $this->loadHeaderMenu();
+            $this->dispatch('refresh-sortable');
+            
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => 'Düzeltme başarısız: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Widget pattern'ından uyarlanan updateOrder metodu - JavaScript drag-drop için
+     */
+    public function updateOrder($list = null)
+    {
+        try {
+            // KRİTİK DEBUG: Bu metod çağrılıyor mu?
+            \Log::info('🚨 UPDATEORDER METODU ÇAĞRILDI!', [
+                'received_list' => $list,
+                'list_type' => gettype($list),
+                'timestamp' => now()->format('H:i:s'),
+                'user_id' => auth()->id()
+            ]);
+            
+            logger('🔄 MenuManagement drag-drop updateOrder başladı', [
+                'received_list' => $list,
+                'list_type' => gettype($list)
+            ]);
+
+            // JavaScript'ten gelen veri formatını kontrol et: list array direkt geliyor
+            $items = $list;
+            
+            if (!is_array($items) || empty($items)) {
+                logger('❌ updateOrder: Geçersiz items parametresi', [
+                    'items' => $items
+                ]);
+                return;
+            }
+
+            logger('🎯 Tam item verisi alındı', [
+                'items' => $items,
+                'count' => count($items)
+            ]);
+
+            // Service metodunu çağır - tam item array'i gönder (id, parentId dahil)
+            $result = $this->menuService->updateMenuItemOrder($items);
+            
+            if ($result->success) {
+                // Anlık güncelleme için cache'i temizle
+                $this->headerMenu = null;
+                
+                logger('✅ MenuManagement drag-drop başarılı', [
+                    'updated_items' => count($items)
+                ]);
+                
+                // Başarı bildirimi - diğer sistemlerdeki gibi görünür bildirim
+                $this->dispatch('toast', [
+                    'title' => __('admin.success'),
+                    'message' => __('menumanagement::admin.menu_items_order_updated'),
+                    'type' => 'success',
+                    'duration' => 3000
+                ]);
+                
+                // Manuel sortable refresh - sonsuz döngü önlemi
+                $this->dispatch('refresh-sortable');
+            } else {
+                logger('❌ MenuManagement drag-drop başarısız', [
+                    'error' => $result->message
+                ]);
+                
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => $result->message,
+                    'type' => 'error'
+                ]);
+            }
+            
+        } catch (\Exception $e) {
+            logger('🚨 MenuManagement updateOrder exception', [
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
+            
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Show delete modal for menu item
+     */
+    public function openDeleteModal(int $itemId, string $title)
+    {
+        $this->deleteItemId = $itemId;
+        $this->deleteItemTitle = $title;
+        $this->showDeleteModal = true;
+    }
+    
+    /**
+     * Close delete modal
+     */
+    public function closeDeleteModal()
+    {
+        $this->showDeleteModal = false;
+        $this->deleteItemId = null;
+        $this->deleteItemTitle = '';
+    }
+    
+    /**
+     * Confirm delete action
+     */
+    public function confirmDelete()
+    {
+        if (!$this->deleteItemId) {
+            $this->closeDeleteModal();
+            return;
+        }
+        
+        try {
+            $result = $this->menuService->deleteMenuItem($this->deleteItemId);
+            
+            $this->dispatch('toast', [
+                'title' => $result->success ? __('admin.success') : __('admin.error'),
+                'message' => $result->message,
+                'type' => $result->success ? 'success' : 'error'
+            ]);
+            
+            if ($result->success) {
+                $this->loadHeaderMenu();
+                $this->dispatch('refresh-sortable');
+            }
+            
+            $this->closeDeleteModal();
+            
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error'
+            ]);
+            $this->closeDeleteModal();
+        }
     }
     
     private function createDefaultMenu(): void
@@ -273,8 +594,8 @@ class MenuItemManageComponent extends Component
             'slug' => 'header-menu'
         ];
         
-        foreach ($languages as $language) {
-            $menuData['name'][$language->code] = $language->code === 'tr' ? 'Ana Menü' : 'Main Menu';
+        foreach ($languages as $languageCode) {
+            $menuData['name'][$languageCode] = $languageCode === 'tr' ? 'Ana Menü' : 'Main Menu';
         }
         
         $result = $this->menuService->createMenu($menuData);
@@ -286,10 +607,9 @@ class MenuItemManageComponent extends Component
     private function initializeFormData(): void
     {
         $this->multiLangInputs = [];
-        foreach ($this->availableLanguages as $language) {
-            $this->multiLangInputs[$language->code] = [
-                'title' => '',
-                'url_value' => ''
+        foreach ($this->availableLanguages as $languageCode) {
+            $this->multiLangInputs[$languageCode] = [
+                'title' => ''
             ];
         }
         
@@ -298,20 +618,288 @@ class MenuItemManageComponent extends Component
     
     private function resetForm(): void
     {
-        foreach ($this->availableLanguages as $language) {
-            $this->multiLangInputs[$language->code] = [
-                'title' => '',
-                'url_value' => ''
+        foreach ($this->availableLanguages as $languageCode) {
+            $this->multiLangInputs[$languageCode] = [
+                'title' => ''
             ];
         }
         
-        $this->url_type = 'custom';
+        $this->url_type = '';
+        $this->url_data = [];
         $this->parent_id = null;
         $this->sort_order = 0;
         $this->target = '_self';
-        $this->css_class = '';
         $this->icon = '';
         $this->is_active = true;
+        $this->selectedModule = '';
+        $this->selectedUrlType = '';
+        $this->moduleUrlTypes = [];
+        $this->moduleContent = [];
+    }
+    
+    /**
+     * Language switcher method - same as Page pattern
+     */
+    public function switchLanguage($language)
+    {
+        if (in_array($language, $this->availableLanguages)) {
+            $oldLanguage = $this->currentLanguage;
+            $this->currentLanguage = $language;
+            
+            // Session'a kaydet - save sonrası dil koruması için
+            session(['menu_manage_language' => $language]);
+            
+            // KRİTİK FİX: Dil değişince form verilerini kontrol et ve initialize et
+            if (!isset($this->multiLangInputs[$language]) || empty($this->multiLangInputs[$language])) {
+                $this->multiLangInputs[$language] = [
+                    'title' => '',
+                    'url_value' => ''
+                ];
+                \Log::info('🔧 Dil değişince boş form verileri initialize edildi', [
+                    'language' => $language,
+                    'initialized_fields' => ['title', 'url_value']
+                ]);
+            }
+            
+            \Log::info('🎯 MenuItemManageComponent switchLanguage çağrıldı', [
+                'old_language' => $oldLanguage,
+                'new_language' => $language,
+                'current_language' => $this->currentLanguage,
+                'is_successfully_changed' => $this->currentLanguage === $language,
+                'form_data_ready' => isset($this->multiLangInputs[$language])
+            ]);
+            
+            // JavaScript'e dil değişikliğini bildir (TinyMCE için)
+            $this->dispatch('language-switched', [
+                'language' => $language,
+                'editorId' => "editor_{$language}",
+                'content' => $this->multiLangInputs[$language]['title'] ?? ''
+            ]);
+            
+            // KRİTİK: $refresh kaldırıldı - dil değişiminde validation tetiklenmemeli
+        }
+    }
+
+    // ===== JAVASCRIPT SYNC METHODS - PAGE PATTERN =====
+    
+    // JavaScript Language Sync Handler
+    public function handleJavaScriptLanguageSync($data)
+    {
+        $jsLanguage = $data['language'] ?? '';
+        $oldLanguage = $this->currentLanguage;
+        
+        \Log::info('🚨 KRİTİK: MenuManagement handleJavaScriptLanguageSync çağrıldı', [
+            'js_language' => $jsLanguage,
+            'current_language' => $this->currentLanguage,
+            'data' => $data,
+            'will_change' => in_array($jsLanguage, $this->availableLanguages) && $jsLanguage !== $this->currentLanguage
+        ]);
+        
+        if (in_array($jsLanguage, $this->availableLanguages) && $jsLanguage !== $this->currentLanguage) {
+            $this->currentLanguage = $jsLanguage;
+            
+            // JavaScript'e confirmation gönder
+            $this->dispatch('language-sync-completed', [
+                'language' => $jsLanguage,
+                'oldLanguage' => $oldLanguage,
+                'success' => true
+            ]);
+            
+            \Log::info('🔄 MenuManagement JavaScript Language Sync - Livewire güncellendi', [
+                'old_language' => $oldLanguage,
+                'new_language' => $jsLanguage,
+                'current_language' => $this->currentLanguage,
+                'sync_successful' => true
+            ]);
+        } else {
+            // Değişiklik yoksa da confirmation gönder
+            $this->dispatch('language-sync-completed', [
+                'language' => $this->currentLanguage,
+                'oldLanguage' => $oldLanguage,
+                'success' => false,
+                'reason' => 'no_change_needed'
+            ]);
+        }
+    }
+
+    // Test event handler
+    public function handleTestEvent($data)
+    {
+        \Log::info('🧪 MenuManagement TEST EVENT ALINDI! Livewire listener calisiyor!', [
+            'data' => $data,
+            'timestamp' => now(),
+            'component' => 'MenuItemManageComponent',  
+            'event_working' => 'YES - JavaScript to Livewire works!'
+        ]);
+    }
+
+    // Simple test handler
+    public function handleSimpleTest($data)
+    {
+        \Log::info('🎯 MenuManagement SIMPLE TEST EVENT ALINDI! jQuery + Livewire 3.6.3 calisiyor!', [
+            'data' => $data,
+            'timestamp' => now(),
+            'message' => $data['message'] ?? 'no message',
+            'language' => $data['language'] ?? 'no language',
+            'test_successful' => true
+        ]);
+    }
+
+    // Debug Test Handler
+    public function handleDebugTest($data)
+    {
+        \Log::info('🔥 MenuManagement DEBUG TEST EVENT ALINDI!', [
+            'data' => $data,
+            'current_language' => $this->currentLanguage,
+            'message' => $data['message'] ?? 'no message',
+            'language' => $data['language'] ?? 'no language',
+            'timestamp' => $data['timestamp'] ?? 'no timestamp',
+            'livewire_working' => true
+        ]);
+    }
+
+    // JavaScript Language Session Handler
+    public function setJavaScriptLanguage($data)
+    {
+        $jsLanguage = $data['language'] ?? '';
+        
+        // Session'a JavaScript currentLanguage'i kaydet
+        session(['js_current_language' => $jsLanguage]);
+        
+        \Log::info('📝 MenuManagement JavaScript language session\'a kaydedildi', [
+            'js_language' => $jsLanguage,
+            'session_set' => true,
+            'current_livewire_language' => $this->currentLanguage
+        ]);
+    }
+
+    // Kaydet ve Devam Et Handler
+    public function setContinueMode($data)
+    {
+        session([
+            'menu_continue_mode' => $data['continue_mode'] ?? false,
+            'js_saved_language' => $data['saved_language'] ?? 'tr'
+        ]);
+
+        \Log::info('✅ MenuManagement Kaydet ve Devam Et - session verileri kaydedildi', [
+            'continue_mode' => $data['continue_mode'] ?? false,
+            'saved_language' => $data['saved_language'] ?? 'tr',
+            'session_set' => true
+        ]);
+    }
+
+    // Tab Change Handler  
+    public function handleTabChange($data)
+    {
+        \Log::info('🔄 MenuManagement Tab değişti', [
+            'tab_data' => $data,
+            'current_language' => $this->currentLanguage
+        ]);
+    }
+    
+    /**
+     * Property değişimlerini dinle
+     */
+    public function updated($propertyName)
+    {
+        if ($propertyName === 'url_type') {
+            $this->urlTypeChanged();
+        }
+    }
+    
+    /**
+     * URL tipi değiştiğinde
+     */
+    public function urlTypeChanged()
+    {
+        // Reset selections
+        $this->url_data = [];
+        $this->selectedModule = '';
+        $this->selectedUrlType = '';
+        $this->moduleUrlTypes = [];
+        $this->moduleContent = [];
+        
+        // Module seçimi için hazırla
+        if ($this->url_type === 'module') {
+            $this->loadAvailableModules();
+        }
+        
+        $this->dispatch('url-type-changed', ['url_type' => $this->url_type]);
+    }
+    
+    /**
+     * Mevcut modülleri yükle (sadece type=content olanlar)
+     */
+    public function loadAvailableModules()
+    {
+        // MenuUrlBuilderService artık sadece content tipindeki modülleri döndürüyor
+        $this->availableModules = $this->urlBuilder->getAvailableModules();
+        
+        \Log::info('🔍 MenuManagement - Available modules loaded', [
+            'modules' => $this->availableModules,
+            'count' => count($this->availableModules)
+        ]);
+        
+        $this->dispatch('modules-loaded', ['modules' => $this->availableModules]);
+    }
+    
+    /**
+     * Modül seçildiğinde URL tiplerini yükle
+     */
+    public function moduleSelected($moduleSlug)
+    {
+        $this->selectedModule = $moduleSlug;
+        $this->selectedUrlType = '';
+        $this->moduleContent = [];
+        $this->url_data = ['module' => $moduleSlug];
+        
+        // Bu modülün desteklediği URL tiplerini al
+        $module = collect($this->availableModules)->firstWhere('slug', $moduleSlug);
+        
+        if ($module) {
+            $this->moduleUrlTypes = $module['url_types'];
+            $this->dispatch('module-url-types-loaded', [
+                'module' => $moduleSlug,
+                'types' => $this->moduleUrlTypes
+            ]);
+        }
+    }
+    
+    /**
+     * URL tipi seçildiğinde içerik yükle
+     */
+    public function urlTypeSelected($urlType)
+    {
+        $this->selectedUrlType = $urlType;
+        $this->url_data['type'] = $urlType;
+        
+        // Bu tip için içerik seçimi gerekiyorsa yükle
+        $typeConfig = collect($this->moduleUrlTypes)->firstWhere('type', $urlType);
+        
+        if ($typeConfig && ($typeConfig['needs_selection'] ?? false)) {
+            $this->moduleContent = $this->urlBuilder->getModuleContent($this->selectedModule, $urlType);
+            $this->dispatch('module-content-loaded', [
+                'module' => $this->selectedModule,
+                'type' => $urlType,
+                'content' => $this->moduleContent
+            ]);
+        }
+    }
+    
+    /**
+     * İçerik seçildiğinde
+     */
+    public function contentSelected($contentId)
+    {
+        $this->url_data['id'] = $contentId;
+    }
+    
+    /**
+     * Manuel URL girişi (internal/external)
+     */
+    public function updateUrlData($url)
+    {
+        $this->url_data = ['url' => $url];
     }
     
     public function render()
@@ -319,7 +907,9 @@ class MenuItemManageComponent extends Component
         return view('menumanagement::admin.livewire.menu-item-manage-component', [
             'headerMenu' => $this->headerMenu,
             'headerMenuItems' => $this->headerMenuItems,
-            'availableLanguages' => $this->availableLanguages
+            'availableLanguages' => $this->availableLanguages,
+            'showDeleteModal' => $this->showDeleteModal,
+            'deleteItemTitle' => $this->deleteItemTitle
         ]);
     }
 }

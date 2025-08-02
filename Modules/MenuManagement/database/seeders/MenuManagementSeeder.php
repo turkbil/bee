@@ -68,7 +68,7 @@ class MenuManagementSeeder extends Seeder
             }
             $menuItems[] = array_merge($pageTranslations, [
                 'url_type' => 'module',
-                'url_data' => ['module' => 'page', 'type' => 'list'],
+                'url_data' => ['module' => 'Page', 'type' => 'list', '_locale' => 'tr'],
                 'sort_order' => $sortOrder++,
             ]);
         }
@@ -99,32 +99,54 @@ class MenuManagementSeeder extends Seeder
                         $categoryItem[$lang->code] = [
                             'title' => $categoryTitle
                         ];
-                        if ($this->command) {
-                            $this->command->info("    Dil {$lang->code}: {$categoryTitle}");
-                        }
                     }
                     $categoryItem['url_type'] = 'module';
                     $categoryItem['url_data'] = [
-                        'module' => 'portfolio', 
+                        'module' => 'Portfolio', 
                         'type' => 'category', 
-                        'slug' => $category->getTranslated('slug', $languages->first()->code)
+                        'id' => $category->portfolio_category_id,
+                        'slug' => $category->getTranslated('slug', 'tr'),
+                        '_locale' => 'tr'
                     ];
                     $categoryItem['sort_order'] = $childOrder++;
                     
-                    $portfolioChildren[] = $categoryItem;
-                    
-                    if ($this->command) {
-                        $this->command->info("  + Kategori eklendi: " . $category->getTranslated('title', $languages->first()->code));
-                        $this->command->info("    Kategori ID: " . $category->portfolio_category_id);
-                        $this->command->info("    URL Data: " . json_encode($categoryItem['url_data']));
+                    // Tenant'a göre portfolio örnekleri ekle
+                    $tenantId = $this->getCurrentTenantId();
+                    if ($tenantId % 2 == 0) { // Çift ID'li tenant'lar için
+                        $categoryItem['children'] = [];
+                        
+                        $portfolios = \Modules\Portfolio\App\Models\Portfolio::where('portfolio_category_id', $category->portfolio_category_id)
+                            ->where('is_active', true)
+                            ->limit(2) // Her kategoriden 2 örnek
+                            ->get();
+                            
+                        $portfolioOrder = 1;
+                        foreach ($portfolios as $portfolio) {
+                            $portfolioItem = [];
+                            foreach ($languages as $lang) {
+                                $portfolioItem[$lang->code] = [
+                                    'title' => $portfolio->getTranslated('title', $lang->code)
+                                ];
+                            }
+                            $portfolioItem['url_type'] = 'module';
+                            $portfolioItem['url_data'] = [
+                                'module' => 'Portfolio',
+                                'type' => 'detail',
+                                'id' => $portfolio->portfolio_id,
+                                'slug' => $portfolio->getTranslated('slug', 'tr'),
+                                '_locale' => 'tr'
+                            ];
+                            $portfolioItem['sort_order'] = $portfolioOrder++;
+                            
+                            $categoryItem['children'][] = $portfolioItem;
+                        }
                     }
+                    
+                    $portfolioChildren[] = $categoryItem;
                 }
                 
                 if ($this->command) {
                     $this->command->info("📋 Toplam portfolio alt kategorisi: " . count($portfolioChildren));
-                    if (count($portfolioChildren) > 0) {
-                        $this->command->info("🔧 Portfolio ana menüye alt kategoriler eklenecek...");
-                    }
                 }
             } catch (\Exception $e) {
                 // Eğer kategori bulunamazsa boş bırak
@@ -135,7 +157,7 @@ class MenuManagementSeeder extends Seeder
             
             $menuItems[] = array_merge($portfolioTranslations, [
                 'url_type' => 'module',
-                'url_data' => ['module' => 'portfolio', 'type' => 'list'],
+                'url_data' => ['module' => 'Portfolio', 'type' => 'list', '_locale' => 'tr'],
                 'sort_order' => $sortOrder++,
                 'children' => $portfolioChildren
             ]);
@@ -149,7 +171,7 @@ class MenuManagementSeeder extends Seeder
             }
             $menuItems[] = array_merge($announcementTranslations, [
                 'url_type' => 'module',
-                'url_data' => ['module' => 'announcement', 'type' => 'list'],
+                'url_data' => ['module' => 'Announcement', 'type' => 'list', '_locale' => 'tr'],
                 'sort_order' => $sortOrder++,
             ]);
         }

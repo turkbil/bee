@@ -78,4 +78,8 @@ return [
     'version_placeholder' => 'Versiyon girin...',
     'view_detail' => 'Detayı Görüntüle',
     'widget_modules' => 'Bileşen Modülleri',
+    'module_name' => 'Modül Adı',
+    'module_name_info' => 'Bu dilde modülün görünen adı. Menülerde ve başlıklarda kullanılır.',
+    'module_name_used_in' => 'Bu ad menülerde, başlıklarda ve kullanıcı arayüzünde görünecektir.',
+    'multilanguage_support' => 'Çoklu Dil Desteği',
 ];

@@ -10,9 +10,17 @@
         $title = $item->getTranslated('title', $currentLocale);
         $body = $item->getTranslated('body', $currentLocale);
         
-        // Get index URL
-        $indexSlug = \App\Services\ModuleSlugService::getSlug('Announcement', 'index');
-        $announcementIndexUrl = '/' . $indexSlug;
+        // Get index URL - LOCALE AWARE
+        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+        
+        // Mevcut dil için index slug'ını al
+        $indexSlug = $moduleSlugService->getMultiLangSlug('Announcement', 'index', $currentLocale);
+        
+        // Locale prefix'i kontrol et
+        $defaultLocale = get_tenant_default_locale();
+        $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+        
+        $announcementIndexUrl = $localePrefix . '/' . $indexSlug;
     @endphp
     
     <!-- Simple Title Section -->
@@ -129,8 +137,17 @@ function announcementShow() {
             const link = document.createElement('link');
             link.rel = 'prefetch';
             @php
-                $indexSlug = \App\Services\ModuleSlugService::getSlug('Announcement', 'index');
-                $announcementIndexUrl = '/' . $indexSlug;
+                $currentLocale = app()->getLocale();
+                $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                
+                // Mevcut dil için index slug'ını al
+                $indexSlug = $moduleSlugService->getMultiLangSlug('Announcement', 'index', $currentLocale);
+                
+                // Locale prefix'i kontrol et
+                $defaultLocale = get_tenant_default_locale();
+                $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                
+                $announcementIndexUrl = $localePrefix . '/' . $indexSlug;
             @endphp
             link.href = '{{ $announcementIndexUrl }}';
             document.head.appendChild(link);
@@ -141,8 +158,20 @@ function announcementShow() {
                 history.back();
             } else {
                 @php
-                    $indexSlug = \App\Services\ModuleSlugService::getSlug('Announcement', 'index');
-                    $announcementIndexUrl = '/' . $indexSlug;
+                    $currentLocale = app()->getLocale();
+                    $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                    
+                    // Mevcut dil için index slug'ını al
+                    $indexSlug = $moduleSlugService->getSlugForLocale('Announcement', 'index', $currentLocale);
+                    if (!$indexSlug) {
+                        $indexSlug = $moduleSlugService->getSlug('Announcement', 'index');
+                    }
+                    
+                    // Locale prefix'i kontrol et
+                    $defaultLocale = get_tenant_default_locale();
+                    $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                    
+                    $announcementIndexUrl = $localePrefix . '/' . $indexSlug;
                 @endphp
                 window.location.href = '{{ $announcementIndexUrl }}';
             }

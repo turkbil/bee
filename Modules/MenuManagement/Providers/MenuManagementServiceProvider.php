@@ -75,7 +75,18 @@ class MenuManagementServiceProvider extends ServiceProvider
         
         // Service Layer bindings
         $this->app->singleton(\Modules\MenuManagement\App\Services\MenuService::class);
-        $this->app->singleton(\Modules\MenuManagement\App\Services\MenuUrlBuilderService::class);
+        
+        // MenuUrlBuilderService with UnifiedUrlService
+        $this->app->singleton(\Modules\MenuManagement\App\Services\MenuUrlBuilderService::class, function ($app) {
+            return new \Modules\MenuManagement\App\Services\MenuUrlBuilderService(
+                $app->make(\App\Services\ModuleService::class),
+                null, // UnifiedUrlBuilderService - optional
+                $app->make(\App\Services\UnifiedUrlService::class) // New UnifiedUrlService
+            );
+        });
+        
+        // UnifiedUrlService
+        $this->app->singleton(\App\Services\UnifiedUrlService::class);
     }
 
     /**
@@ -83,7 +94,9 @@ class MenuManagementServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\MenuManagement\App\Console\MigrateMenuItemSlugs::class,
+        ]);
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasTranslations;
 use Modules\MenuManagement\App\Services\MenuUrlBuilderService;
+use Illuminate\Support\Facades\Cache;
 
 class MenuItem extends Model
 {
@@ -116,12 +117,18 @@ class MenuItem extends Model
         // Locale yoksa mevcut app locale'ini kullan
         $locale = $locale ?? app()->getLocale();
         
-        // URL data'ya locale bilgisini ekle
+        // Cache key - locale ve menu item specific
+        $cacheKey = "menu_item_url_{$this->item_id}_{$locale}";
+        
+        // Cache devre dışı - direkt URL oluştur
+        // return Cache::remember($cacheKey, 300, function() use ($locale) {
+        // URL data'yı direkt kullan, locale ekleme
         $urlData = $this->url_data ?? [];
-        $urlData['_locale'] = $locale;
+        // $urlData['_locale'] = $locale; // REMOVED - locale is passed as parameter
         
         $urlBuilder = app(MenuUrlBuilderService::class);
         return $urlBuilder->buildUrl($this->url_type, $urlData, $locale);
+        // });
     }
 
     /**

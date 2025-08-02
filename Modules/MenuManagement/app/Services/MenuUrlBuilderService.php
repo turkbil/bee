@@ -21,9 +21,10 @@ readonly class MenuUrlBuilderService
 {
     public function __construct(
         private ModuleService $moduleService,
-        private ?UnifiedUrlBuilderService $unifiedUrlBuilder = null
+        private ?UnifiedUrlBuilderService $unifiedUrlBuilder = null,
+        private ?\App\Services\UnifiedUrlService $unifiedUrlService = null
     ) {
-        // Unified URL Builder is handled via dependency injection
+        // Services are handled via dependency injection
     }
     /**
      * URL tipine göre URL oluştur
@@ -32,9 +33,29 @@ readonly class MenuUrlBuilderService
     {
         $locale = $locale ?? app()->getLocale();
         
+        // Debug log
+        Log::info('MenuUrlBuilderService::buildUrl called', [
+            'urlType' => $urlType,
+            'urlData' => $urlData,
+            'locale' => $locale
+        ]);
+        
         try {
-            // Unified URL Builder varsa onu kullan
+            // UnifiedUrlService varsa onu kullan (en yeni sistem)
+            if ($this->unifiedUrlService) {
+                return match($urlType) {
+                    'internal' => $this->buildInternalUrlWithUnified($urlData, $locale),
+                    'external' => $this->buildExternalUrl($urlData),
+                    'module' => $this->buildModuleUrlWithUnifiedService($urlData, $locale),
+                    default => '#'
+                };
+            }
+            
+            // UnifiedUrlBuilder varsa onu kullan
             if ($this->unifiedUrlBuilder) {
+                Log::info('MenuUrlBuilderService: Using UnifiedUrlBuilder', [
+                    'urlType' => $urlType
+                ]);
                 return match($urlType) {
                     'internal' => $this->unifiedUrlBuilder->buildUrlForPath($urlData['url'] ?? '/', $locale),
                     'external' => $this->buildExternalUrl($urlData),
@@ -44,17 +65,30 @@ readonly class MenuUrlBuilderService
             }
             
             // Fallback: eski sistem
-            return match($urlType) {
-                'internal' => $this->buildInternalUrl($urlData),
+            Log::info('MenuUrlBuilderService: Using legacy system', [
+                'urlType' => $urlType
+            ]);
+            
+            $result = match($urlType) {
+                'internal' => $this->buildInternalUrl($urlData, $locale),
                 'external' => $this->buildExternalUrl($urlData),
                 'module' => $this->buildModuleUrl($urlData, $locale),
                 default => '#'
             };
+            
+            Log::info('MenuUrlBuilderService::buildUrl result', [
+                'urlType' => $urlType,
+                'result' => $result,
+                'urlData' => $urlData
+            ]);
+            
+            return $result;
         } catch (\Exception $e) {
             Log::error('MenuUrlBuilderService: URL build error', [
                 'type' => $urlType,
                 'data' => $urlData,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             
             return '#';
@@ -64,13 +98,28 @@ readonly class MenuUrlBuilderService
     /**
      * Site içi URL oluştur (örn: /hakkimizda, /iletisim)
      */
-    private function buildInternalUrl(array $urlData): string
+    private function buildInternalUrl(array $urlData, string $locale = null): string
     {
         $url = $urlData['url'] ?? '/';
+        $locale = $locale ?? app()->getLocale();
         
         // URL'nin başında / yoksa ekle
         if (!str_starts_with($url, '/')) {
             $url = '/' . $url;
+        }
+        
+        // Anasayfa için özel kontrol
+        if ($url === '/') {
+            // Locale prefix kontrolü
+            if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                return url('/' . $locale);
+            }
+            return url('/');
+        }
+        
+        // Diğer internal URL'ler için locale prefix ekle
+        if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+            return url('/' . $locale . $url);
         }
         
         return url($url);
@@ -92,9 +141,43 @@ readonly class MenuUrlBuilderService
     }
     
     /**
-     * Modül bazlı URL oluştur - TAMAMEN DİNAMİK
+     * UnifiedUrlService ile internal URL oluştur
      */
-    private function buildModuleUrl(array $urlData, string $locale): string
+    private function buildInternalUrlWithUnified(array $urlData, string $locale): string
+    {
+        $url = $urlData['url'] ?? '/';
+        
+        // Page modülünde ara
+        if ($url !== '/' && !str_starts_with($url, '/')) {
+            $url = '/' . $url;
+        }
+        
+        // URL'den slash'leri temizle
+        $slug = trim($url, '/');
+        
+        if (empty($slug)) {
+            return url('/');
+        }
+        
+        // Page modülünde bu slug'ı ara
+        $page = $this->unifiedUrlService->findContentBySlug('Page', $slug, $locale);
+        
+        if ($page) {
+            return $this->unifiedUrlService->buildUrlForModel($page, $locale);
+        }
+        
+        // Bulunamazsa direkt URL döndür - prefix kontrolü ile
+        if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+            return url('/' . $locale . $url);
+        }
+        
+        return url($url);
+    }
+    
+    /**
+     * UnifiedUrlService ile module URL oluştur
+     */
+    private function buildModuleUrlWithUnifiedService(array $urlData, string $locale): string
     {
         $module = $urlData['module'] ?? null;
         $type = $urlData['type'] ?? 'list';
@@ -105,8 +188,108 @@ readonly class MenuUrlBuilderService
             return '#';
         }
         
+        $module = ucfirst(strtolower($module));
+        
+        // Type'a göre işle
+        switch ($type) {
+            case 'list':
+            case 'index':
+                return $this->unifiedUrlService->buildUrlForModule($module, 'index', null, $locale);
+                
+            case 'detail':
+            case 'show':
+                if ($slug) {
+                    // Slug ile içeriği bul
+                    $model = $this->unifiedUrlService->findContentBySlug($module, $slug, $locale);
+                    if ($model) {
+                        return $this->unifiedUrlService->buildUrlForModel($model, $locale);
+                    }
+                } elseif ($id) {
+                    // ID ile model bul
+                    $modelClass = "\\Modules\\{$module}\\App\\Models\\{$module}";
+                    if (class_exists($modelClass)) {
+                        $model = $modelClass::find($id);
+                        if ($model) {
+                            return $this->unifiedUrlService->buildUrlForModel($model, $locale);
+                        }
+                    }
+                }
+                break;
+                
+            default:
+                // Category, tag vs. action'lar
+                $params = [];
+                
+                if ($slug) {
+                    $params[] = $slug;
+                } elseif ($id) {
+                    // Action model'ini bul
+                    $actionModel = $this->findActionModel($module, $type, $id);
+                    if ($actionModel) {
+                        $params[] = $actionModel;
+                    } else {
+                        $params[] = $id;
+                    }
+                }
+                
+                return $this->unifiedUrlService->buildUrlForModule($module, $type, $params, $locale);
+        }
+        
+        return '#';
+    }
+    
+    /**
+     * Action model'ini bul
+     */
+    private function findActionModel(string $module, string $action, int $id): ?object
+    {
+        $module = ucfirst($module);
+        $action = ucfirst($action);
+        
+        $possibleClasses = [
+            "\\Modules\\{$module}\\App\\Models\\{$module}{$action}",
+            "\\Modules\\{$module}\\App\\Models\\{$module}" . rtrim($action, 's'),
+        ];
+        
+        foreach ($possibleClasses as $modelClass) {
+            if (class_exists($modelClass)) {
+                $model = $modelClass::find($id);
+                if ($model) {
+                    return $model;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Modül bazlı URL oluştur - TAMAMEN DİNAMİK
+     */
+    private function buildModuleUrl(array $urlData, string $locale): string
+    {
+        $module = $urlData['module'] ?? null;
+        $type = $urlData['type'] ?? 'list';
+        $id = $urlData['id'] ?? null;
+        $slug = $urlData['slug'] ?? null;
+        
+        Log::info('buildModuleUrl debug', [
+            'module' => $module,
+            'type' => $type,
+            'id' => $id,
+            'slug' => $slug,
+            'locale' => $locale
+        ]);
+        
+        if (!$module) {
+            return '#';
+        }
+        
+        // Module ismini standartlaştır (ilk harf büyük)
+        $module = ucfirst(strtolower($module));
+        
         // Page modülü için özel işlem
-        if ($module === 'page' && $id) {
+        if ($module === 'Page' && $id) {
             return $this->buildPageUrl($id, $locale);
         }
         
@@ -117,12 +300,42 @@ readonly class MenuUrlBuilderService
         
         // Detail tipinde ise
         if ($type === 'detail' || $type === 'show') {
-            return $this->buildModuleDetailUrl($module, $id, $locale);
+            
+            // Eğer slug varsa direkt onu kullan
+            if (!empty($slug)) {
+                return $this->buildModuleDetailUrlWithSlug($module, (string)$slug, $locale);
+            } else if (!empty($id)) {
+                return $this->buildModuleDetailUrl($module, (int)$id, $locale);
+            }
+            return '#';
         }
         
         // Diğer tüm tipler için (category, tag, etiket, label vs.)
         // Bunlar genelde 3-segment URL'ler: module/action/slug
-        return $this->buildModuleActionUrl($module, $type, $slug ?? $id, $locale);
+        // ID varsa onu kullan, yoksa slug kullan
+        // ID daha güvenilir çünkü dil bağımsız
+        
+        Log::info('buildModuleUrl calling buildModuleActionUrl', [
+            'module' => $module,
+            'type' => $type,
+            'id' => $id,
+            'slug' => $slug,
+            'selected' => $id ?? $slug,
+            'locale' => $locale
+        ]);
+        
+        // Web Tasarım kategorisi için özel debug
+        if ($module === 'Portfolio' && $type === 'category' && $id == 1) {
+            Log::warning('WEB TASARIM DEBUG', [
+                'module' => $module,
+                'type' => $type,
+                'id' => $id,
+                'locale' => $locale,
+                'calling_buildModuleActionUrl' => true
+            ]);
+        }
+        
+        return $this->buildModuleActionUrl($module, $type, $id ?? $slug, $locale);
     }
     
     /**
@@ -138,13 +351,13 @@ readonly class MenuUrlBuilderService
                     $slug = $page->getTranslated('slug', $locale);
                     $defaultLocale = get_tenant_default_locale();
                     
-                    // Varsayılan dil ise prefix yok
-                    if ($locale === $defaultLocale) {
-                        return url('/' . ltrim($slug, '/'));
-                    } else {
-                        // Diğer diller için dil prefix'i ekle
-                        return url('/' . $locale . '/' . ltrim($slug, '/'));
+                    // URL oluştur - prefix kontrolü ile
+                    $prefix = '';
+                    if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                        $prefix = '/' . $locale;
                     }
+                    
+                    return url($prefix . '/' . ltrim($slug, '/'));
                 }
             }
         } catch (\Exception $e) {
@@ -431,7 +644,8 @@ readonly class MenuUrlBuilderService
                         $content[] = [
                             'id' => $item->getKey(),
                             'label' => $item->getTranslated('title', $locale),
-                            'slug' => $item->getTranslated('slug', $locale)
+                            'slug' => $item->getTranslated('slug', $locale),
+                            'type' => $type // Type bilgisini de ekleyelim
                         ];
                     }
                 }
@@ -444,7 +658,8 @@ readonly class MenuUrlBuilderService
                         $content[] = [
                             'id' => $item->getKey(),
                             'label' => $item->getTranslated('title', $locale),
-                            'slug' => $item->getTranslated('slug', $locale)
+                            'slug' => $item->getTranslated('slug', $locale),
+                            'type' => $type // Type bilgisini de ekleyelim
                         ];
                     }
                 }
@@ -534,27 +749,75 @@ readonly class MenuUrlBuilderService
     }
     
     /**
-     * Modül detay URL oluştur (slug tabanlı)
+     * Modül detay URL oluştur - Slug ile
+     */
+    private function buildModuleDetailUrlWithSlug(string $module, string $slug, string $locale): string
+    {
+        try {
+            // Module ismini standartlaştır
+            $module = ucfirst(strtolower($module));
+            $defaultLocale = get_tenant_default_locale();
+            
+            // ModuleSlugService'i kullan
+            $moduleService = app(\App\Services\ModuleSlugService::class);
+            
+            // Detay sayfalar için 'show' slug'ını kullan
+            $moduleSlug = $moduleService->getMultiLangSlug($module, 'show', $locale);
+            if (!$moduleSlug) {
+                $moduleSlug = $moduleService->getSlug($module, 'show', $locale);
+            }
+            
+            // URL oluştur: module/item-slug formatında - prefix kontrolü ile
+            $prefix = '';
+            if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                $prefix = '/' . $locale;
+            }
+            
+            return url($prefix . '/' . $moduleSlug . '/' . ltrim($slug, '/'));
+        } catch (\Exception $e) {
+            Log::error('MenuUrlBuilderService::buildModuleDetailUrlWithSlug error', [
+                'module' => $module,
+                'slug' => $slug,
+                'locale' => $locale,
+                'error' => $e->getMessage()
+            ]);
+            return '#';
+        }
+    }
+    
+    /**
+     * Modül detay URL oluştur (ID tabanlı - legacy)
      */
     private function buildModuleDetailUrl(string $module, int $id, string $locale): string
     {
         try {
+            // Module ismini standartlaştır
+            $module = ucfirst(strtolower($module));
             $defaultLocale = get_tenant_default_locale();
             
-            // Modül bazlı slug bulma
-            $slug = $this->getModuleItemSlug($module, $id, $locale);
+            // ModuleSlugService'i kullan
+            $moduleService = app(\App\Services\ModuleSlugService::class);
             
-            if (!$slug) {
+            // Detay sayfalar için 'show' slug'ını kullan
+            $moduleSlug = $moduleService->getMultiLangSlug($module, 'show', $locale);
+            if (!$moduleSlug) {
+                $moduleSlug = $moduleService->getSlug($module, 'show', $locale);
+            }
+            
+            // Modül bazlı item slug bulma
+            $itemSlug = $this->getModuleItemSlug($module, $id, $locale);
+            
+            if (!$itemSlug) {
                 return '#';
             }
             
-            // Varsayılan dil ise prefix yok
-            if ($locale === $defaultLocale) {
-                return url('/' . ltrim($slug, '/'));
-            } else {
-                // Diğer diller için dil prefix'i ekle
-                return url('/' . $locale . '/' . ltrim($slug, '/'));
+            // URL oluştur: module/item-slug formatında - prefix kontrolü ile
+            $prefix = '';
+            if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                $prefix = '/' . $locale;
             }
+            
+            return url($prefix . '/' . $moduleSlug . '/' . ltrim($itemSlug, '/'));
         } catch (\Exception $e) {
             logger('MenuUrlBuilderService::buildModuleDetailUrl error: ' . $e->getMessage());
             return '#';
@@ -563,42 +826,46 @@ readonly class MenuUrlBuilderService
     
     /**
      * Modül action URL oluştur - DİNAMİK (category, tag, etiket, label vs.)
+     * ID ve slug parametreleri ayrı olarak alınır
      */
     private function buildModuleActionUrl(string $module, string $action, mixed $idOrSlug, string $locale): string
     {
         try {
+            // Module ismini standartlaştır
+            $module = ucfirst(strtolower($module));
             $defaultLocale = get_tenant_default_locale();
             
             // Modül slug'larını dinamik al - HER DİL İÇİN FARKLI OLABİLİR!
             $moduleService = app(\App\Services\ModuleSlugService::class);
             
-            // Şu anki dil için slug'ları al
-            $moduleSlug = $moduleService->getSlugForLocale($module, 'index', $locale);
+            // Modül index slug'ını al - sadece slug kısmı, tam URL değil
+            $moduleSlug = $moduleService->getSlug($module, 'index');
             if (!$moduleSlug) {
-                $moduleSlug = $moduleService->getSlug($module, 'index');
+                // Fallback: modül adını küçük harfe çevir
+                $moduleSlug = strtolower($module);
             }
             
             // Action slug'ını al (category, tag, etiket, label vs. ne olursa olsun)
-            $actionSlug = $moduleService->getSlugForLocale($module, $action, $locale);
+            $actionSlug = $moduleService->getSlug($module, $action);
             if (!$actionSlug) {
-                $actionSlug = $moduleService->getSlug($module, $action);
+                // Fallback: action adını kullan
+                $actionSlug = strtolower($action);
             }
             
-            // Debug log
-            logger('MenuUrlBuilderService::buildModuleActionUrl DEBUG', [
+            logger('MenuUrlBuilderService: Module and action slugs', [
                 'module' => $module,
-                'action' => $action,
-                'idOrSlug' => $idOrSlug,
-                'locale' => $locale,
                 'moduleSlug' => $moduleSlug,
+                'action' => $action,
                 'actionSlug' => $actionSlug,
-                'defaultLocale' => $defaultLocale
+                'locale' => $locale
             ]);
+            
             
             // İçerik slug'ını al
             $contentSlug = null;
             
-            if (is_numeric($idOrSlug)) {
+            // ÖNCE: ID kontrolü yap (sayısal veya sayısal string)
+            if (is_numeric($idOrSlug) && $idOrSlug > 0) {
                 // ID verilmişse, ilgili model'den slug'ı al
                 $model = $this->getModuleActionModel($module, $action, (int)$idOrSlug);
                 if ($model) {
@@ -609,9 +876,30 @@ readonly class MenuUrlBuilderService
                     if (!$contentSlug) {
                         $contentSlug = $model->getTranslated('slug', $defaultLocale);
                     }
+                    
+                    logger('MenuUrlBuilderService: Found model slug', [
+                        'module' => $module,
+                        'action' => $action,
+                        'id' => $idOrSlug,
+                        'locale' => $locale,
+                        'slug' => $contentSlug
+                    ]);
+                    
+                    // Web Tasarım debug
+                    if ($idOrSlug == 1 && $action === 'category') {
+                        Log::warning('WEB TASARIM CATEGORY FOUND', [
+                            'id' => $idOrSlug,
+                            'model_class' => get_class($model),
+                            'slug_tr' => $model->getTranslated('slug', 'tr'),
+                            'slug_en' => $model->getTranslated('slug', 'en'),
+                            'slug_ar' => $model->getTranslated('slug', 'ar'),
+                            'current_locale' => $locale,
+                            'found_slug' => $contentSlug
+                        ]);
+                    }
                 }
             } else {
-                // Zaten slug verilmiş
+                // ID değilse, direkt slug olarak kullan
                 $contentSlug = $idOrSlug;
             }
             
@@ -620,12 +908,27 @@ readonly class MenuUrlBuilderService
                 $contentSlug = (string)$idOrSlug;
             }
             
-            // URL oluştur - module/action/content formatında
-            if ($locale === $defaultLocale) {
-                return url('/' . $moduleSlug . '/' . $actionSlug . '/' . ltrim($contentSlug, '/'));
-            } else {
-                return url('/' . $locale . '/' . $moduleSlug . '/' . $actionSlug . '/' . ltrim($contentSlug, '/'));
+            // URL oluştur - module/action/content formatında - prefix kontrolü ile
+            $prefix = '';
+            if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                $prefix = '/' . $locale;
             }
+            
+            $finalUrl = url($prefix . '/' . $moduleSlug . '/' . $actionSlug . '/' . ltrim($contentSlug, '/'));
+            
+            // Web Tasarım final URL debug
+            if ($idOrSlug == 1 && $action === 'category') {
+                Log::warning('WEB TASARIM FINAL URL', [
+                    'prefix' => $prefix,
+                    'moduleSlug' => $moduleSlug,
+                    'actionSlug' => $actionSlug,
+                    'contentSlug' => $contentSlug,
+                    'finalUrl' => $finalUrl,
+                    'locale' => $locale
+                ]);
+            }
+            
+            return $finalUrl;
             
         } catch (\Exception $e) {
             logger('MenuUrlBuilderService::buildModuleCategoryUrl error: ' . $e->getMessage());
@@ -724,22 +1027,24 @@ readonly class MenuUrlBuilderService
     private function buildModuleListUrl(string $module, string $locale): string
     {
         try {
+            // Module ismini standartlaştır
+            $module = ucfirst(strtolower($module));
             $defaultLocale = get_tenant_default_locale();
             
             // ModuleSlugService kullanarak doğru slug'ı al
             $moduleService = app(\App\Services\ModuleSlugService::class);
-            $moduleSlug = $moduleService->getSlugForLocale($module, 'index', $locale);
+            $moduleSlug = $moduleService->getMultiLangSlug($module, 'index', $locale);
             if (!$moduleSlug) {
-                $moduleSlug = $moduleService->getSlug($module, 'index');
+                $moduleSlug = $moduleService->getSlug($module, 'index', $locale);
             }
             
-            // Varsayılan dil ise prefix yok
-            if ($locale === $defaultLocale) {
-                return url('/' . $moduleSlug);
-            } else {
-                // Diğer diller için dil prefix'i ekle
-                return url('/' . $locale . '/' . $moduleSlug);
+            // URL oluştur - prefix kontrolü ile
+            $prefix = '';
+            if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                $prefix = '/' . $locale;
             }
+            
+            return url($prefix . '/' . $moduleSlug);
         } catch (\Exception $e) {
             logger('MenuUrlBuilderService::buildModuleListUrl error: ' . $e->getMessage());
             return '#';
@@ -828,7 +1133,25 @@ readonly class MenuUrlBuilderService
             // Diğer modüller için
             switch ($type) {
                 case 'detail':
-                    if ($id) {
+                    // Önce slug varsa direkt onu kullan
+                    if ($slug) {
+                        // Module slug için direkt ModuleSlugService kullan
+                        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                        // Detay sayfalar için 'show' slug'ını kullan
+                        $moduleSlug = $moduleSlugService->getMultiLangSlug($module, 'show', $locale);
+                        if (!$moduleSlug) {
+                            $moduleSlug = $moduleSlugService->getSlug($module, 'show');
+                        }
+                        
+                        $defaultLocale = get_tenant_default_locale();
+                        
+                        $prefix = '';
+                        if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                            $prefix = '/' . $locale;
+                        }
+                        
+                        return url($prefix . '/' . $moduleSlug . '/' . $slug);
+                    } else if ($id) {
                         $model = $this->getModuleModel($module, $id);
                         if ($model) {
                             return $this->unifiedUrlBuilder->buildUrlForModel($model, 'show', $locale);

@@ -316,6 +316,15 @@ class MenuItemManageComponent extends Component
                 
                 if (isset($this->url_data['type'])) {
                     $this->urlTypeSelected($this->url_data['type']);
+                    
+                    // Eğer slug yoksa ama ID varsa, slug'ı bul
+                    if (!isset($this->url_data['slug']) && isset($this->url_data['id'])) {
+                        $contents = $this->moduleContents;
+                        $selectedContent = collect($contents)->firstWhere('id', $this->url_data['id']);
+                        if ($selectedContent && isset($selectedContent['slug'])) {
+                            $this->url_data['slug'] = $selectedContent['slug'];
+                        }
+                    }
                 }
             }
             
@@ -891,7 +900,23 @@ class MenuItemManageComponent extends Component
      */
     public function contentSelected($contentId)
     {
-        $this->url_data['id'] = $contentId;
+        if (!$contentId) {
+            $this->url_data = [];
+            return;
+        }
+        
+        // Module content listesinden seçilen içeriği bul
+        $contents = $this->moduleContents;
+        $selectedContent = collect($contents)->firstWhere('id', $contentId);
+        
+        if ($selectedContent) {
+            $this->url_data = [
+                'id' => $contentId,
+                'slug' => $selectedContent['slug'] ?? null
+            ];
+        } else {
+            $this->url_data['id'] = $contentId;
+        }
     }
     
     /**

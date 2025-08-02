@@ -19,6 +19,17 @@
         }
     @endphp
     <title>{{ $pageTitle }} - {{ config('app.name') }}</title>
+    
+    {{-- Favicon --}}
+    @php
+        $favicon = setting('site_favicon');
+    @endphp
+    @if($favicon && $favicon !== 'Favicon yok')
+        <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ cdn($favicon) }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -154,8 +165,19 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <a href="{{ url('/') }}" class="text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300">
-                            {{ config('app.name') }}
+                        @php
+                            $currentLocale = app()->getLocale();
+                            $defaultLocale = get_tenant_default_locale();
+                            $homeUrl = $currentLocale === $defaultLocale ? url('/') : url('/' . $currentLocale);
+                            $siteLogo = setting('site_logo');
+                            $siteTitle = setting('site_title', config('app.name'));
+                        @endphp
+                        <a href="{{ $homeUrl }}" class="inline-flex items-center text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300" title="{{ $siteTitle }}" alt="{{ $siteTitle }}">
+                            @if($siteLogo && $siteLogo !== 'Logo yok')
+                                <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" title="{{ $siteTitle }}" class="h-8 w-auto">
+                            @else
+                                {{ $siteTitle }}
+                            @endif
                         </a>
                     </div>
                     <nav class="ml-6 flex space-x-4">

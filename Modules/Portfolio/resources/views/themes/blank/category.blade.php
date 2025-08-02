@@ -23,10 +23,25 @@
         }
         $categoryBody = is_array($categoryBodyData) ? ($categoryBodyData[$currentLocale] ?? $categoryBodyData['tr'] ?? reset($categoryBodyData)) : $categoryBodyData;
         
-        // DİNAMİK URL'ler
-        $indexSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'index');
-        $showSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'show');
-        $portfolioIndexUrl = '/' . $indexSlug;
+        // DİNAMİK URL'ler - LOCALE AWARE
+        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+        
+        // Mevcut dil için index slug'ını al
+        $indexSlug = $moduleSlugService->getMultiLangSlug('Portfolio', 'index', $currentLocale);
+        if (!$indexSlug) {
+            $indexSlug = $moduleSlugService->getSlug('Portfolio', 'index', $currentLocale);
+        }
+        
+        $showSlug = $moduleSlugService->getMultiLangSlug('Portfolio', 'show', $currentLocale);
+        if (!$showSlug) {
+            $showSlug = $moduleSlugService->getSlug('Portfolio', 'show', $currentLocale);
+        }
+        
+        // Locale prefix'i kontrol et
+        $defaultLocale = get_tenant_default_locale();
+        $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+        
+        $portfolioIndexUrl = $localePrefix . '/' . $indexSlug;
     @endphp
     
     <!-- Simple Title Section -->

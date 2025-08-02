@@ -119,7 +119,7 @@
                                 @endif
 
                                 @if($module->type === 'content')
-                                <a href="{{ route('admin.modulemanagement.slug-settings', $module->name) }}"
+                                <a href="{{ route('admin.modulemanagement.slug-manage', $module->name) }}"
                                     class="dropdown-item">
                                     <i class="fas fa-link me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.url_settings') }}
                                 </a>

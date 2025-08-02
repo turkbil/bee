@@ -98,7 +98,7 @@ class MenuItemObserver
      */
     private function clearMenuCache(MenuItem $menuItem): void
     {
-        $tenantId = tenant() ? tenant()->id : 'landlord';
+        $tenantId = tenant() ? tenant()->id : 'central';
         
         // Clear specific menu cache
         Cache::tags([
@@ -109,6 +109,37 @@ class MenuItemObserver
         
         // Clear general menu cache
         Cache::tags(["menus", "tenant.{$tenantId}"])->flush();
+        
+        // Clear menu item URL caches for all locales
+        $locales = \Modules\LanguageManagement\App\Models\TenantLanguage::where('is_active', true)
+            ->pluck('code')
+            ->toArray();
+            
+        foreach ($locales as $locale) {
+            // Clear this item's URL cache
+            Cache::forget("menu_item_url_{$menuItem->item_id}_{$locale}");
+            
+            // Clear parent menu cache
+            Cache::forget("menu.id.{$menuItem->menu_id}.{$locale}");
+            Cache::forget("menu.default.{$locale}");
+            Cache::forget("menu.location.header.{$locale}");
+            Cache::forget("menu.location.footer.{$locale}");
+            Cache::forget("menu.location.sidebar.{$locale}");
+            
+            // Clear sibling items' URL caches (eğer parent değiştiyse)
+            if ($menuItem->isDirty('parent_id')) {
+                $siblings = MenuItem::where('menu_id', $menuItem->menu_id)
+                    ->where('parent_id', $menuItem->parent_id)
+                    ->get();
+                
+                foreach ($siblings as $sibling) {
+                    Cache::forget("menu_item_url_{$sibling->item_id}_{$locale}");
+                }
+            }
+        }
+        
+        // Clear default menu cache
+        Cache::forget("default_menu_{$tenantId}");
     }
 
     /**

@@ -18,41 +18,92 @@ class ModuleSlugService
     private static $tableIsEmpty = null;
     private static $configCache = []; // Config dosyaları için memory cache
     
-    public static function getSlug(string $moduleName, string $slugKey): string
+    public static function getSlug(string $moduleName, string $slugKey, ?string $locale = null): string
     {
-        
-        // Memory cache kontrolü
-        $memoryCacheKey = $moduleName . '.' . $slugKey;
-        if (isset(self::$memoryCache[$memoryCacheKey])) {
-            return self::$memoryCache[$memoryCacheKey];
-        }
-        
-        // Global ayarları yükle (eğer yüklenmediyse)
-        if (!self::$globalSettingsLoaded) {
-            self::loadGlobalSettings();
-        }
-        
-        // loadGlobalSettings memory cache'i doldurmuş olmalı, tekrar kontrol et
-        if (isset(self::$memoryCache[$memoryCacheKey])) {
-            return self::$memoryCache[$memoryCacheKey];
-        }
-        
-        // Hala yoksa config'den al ve memory cache'e kaydet
-        $result = self::getConfigSlug($moduleName, $slugKey);
-        self::$memoryCache[$memoryCacheKey] = $result;
-        
-        return $result;
+        // Her zaman multiLang slug kullan
+        $locale = $locale ?? app()->getLocale();
+        return self::getMultiLangSlug($moduleName, $slugKey, $locale);
     }
     
     /**
-     * Belirli bir locale için slug getir - YENİ
+     * Multi-language modül adı getir
+     * 
+     * @param string $moduleName
+     * @param string $locale
+     * @return string
+     */
+    public static function getModuleName(string $moduleName, string $locale): string
+    {
+        // Memory cache kontrolü
+        $memoryCacheKey = $moduleName . '.name.' . $locale;
+        if (isset(self::$memoryCache[$memoryCacheKey])) {
+            return self::$memoryCache[$memoryCacheKey];
+        }
+        
+        try {
+            $cacheKey = "module_name_{$moduleName}_{$locale}";
+            
+            $name = Cache::remember($cacheKey, 60, function() use ($moduleName, $locale) {
+                // ModuleTenantSetting'den multiLangNames'i al
+                $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
+                
+                if ($setting && isset($setting->settings['multiLangNames'][$locale])) {
+                    return $setting->settings['multiLangNames'][$locale];
+                }
+                
+                // Default modül adı
+                return self::getDefaultModuleName($moduleName, $locale);
+            });
+            
+            self::$memoryCache[$memoryCacheKey] = $name;
+            return $name;
+            
+        } catch (\Exception $e) {
+            Log::warning('ModuleSlugService: Failed to get module name', [
+                'module' => $moduleName,
+                'locale' => $locale,
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        return self::getDefaultModuleName($moduleName, $locale);
+    }
+    
+    /**
+     * Default modül adını getir
+     */
+    public static function getDefaultModuleName(string $moduleName, string $locale): string
+    {
+        $defaultNames = [
+            'Page' => [
+                'tr' => 'Sayfalar',
+                'en' => 'Pages',
+                'ar' => 'الصفحات'
+            ],
+            'Portfolio' => [
+                'tr' => 'Portfolyo',
+                'en' => 'Portfolio',
+                'ar' => 'المحفظة'
+            ],
+            'Announcement' => [
+                'tr' => 'Duyurular',
+                'en' => 'Announcements',
+                'ar' => 'الإعلانات'
+            ]
+        ];
+        
+        return $defaultNames[$moduleName][$locale] ?? $moduleName;
+    }
+    
+    /**
+     * Multi-language slug getir - YENİ YAPІ
      * 
      * @param string $moduleName
      * @param string $slugKey
      * @param string $locale
-     * @return string|null
+     * @return string
      */
-    public static function getSlugForLocale(string $moduleName, string $slugKey, string $locale): ?string
+    public static function getMultiLangSlug(string $moduleName, string $slugKey, string $locale): string
     {
         // Memory cache kontrolü - locale specific
         $memoryCacheKey = $moduleName . '.' . $slugKey . '.' . $locale;
@@ -61,37 +112,27 @@ class ModuleSlugService
         }
         
         try {
-            // Önce locale-specific tenant ayarlarına bak
-            $cacheKey = "module_slug_{$moduleName}_{$slugKey}_{$locale}";
+            // MultiLang ayarlarından al
+            $cacheKey = "module_multilang_slug_{$moduleName}_{$slugKey}_{$locale}";
             
             $slug = Cache::remember($cacheKey, 60, function() use ($moduleName, $slugKey, $locale) {
-                // Locale-specific ayar var mı kontrol et
-                $setting = ModuleTenantSetting::where('module_name', $moduleName)
-                    ->where('locale', $locale)
-                    ->first();
+                // ModuleTenantSetting'den multiLangSlugs'ı al
+                $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
                 
-                if ($setting && isset($setting->settings['slugs'][$slugKey])) {
-                    return $setting->settings['slugs'][$slugKey];
+                if ($setting && isset($setting->settings['multiLangSlugs'][$locale][$slugKey])) {
+                    return $setting->settings['multiLangSlugs'][$locale][$slugKey];
                 }
                 
-                // Locale-specific config var mı bak
-                $configKey = strtolower($moduleName) . ".slugs.{$locale}.{$slugKey}";
-                $localeSlug = config($configKey);
                 
-                if ($localeSlug) {
-                    return $localeSlug;
-                }
-                
-                return null;
+                // Config'den default al
+                return self::getConfigSlug($moduleName, $slugKey);
             });
             
-            if ($slug) {
-                self::$memoryCache[$memoryCacheKey] = $slug;
-                return $slug;
-            }
+            self::$memoryCache[$memoryCacheKey] = $slug;
+            return $slug;
             
         } catch (\Exception $e) {
-            Log::warning('ModuleSlugService: Failed to get locale slug', [
+            Log::warning('ModuleSlugService: Failed to get multiLang slug', [
                 'module' => $moduleName,
                 'key' => $slugKey,
                 'locale' => $locale,
@@ -99,8 +140,8 @@ class ModuleSlugService
             ]);
         }
         
-        // Locale-specific bulunamazsa normal slug'ı döndür
-        return self::getSlug($moduleName, $slugKey);
+        // Hata durumunda config slug'ını döndür
+        return self::getConfigSlug($moduleName, $slugKey);
     }
     
     /**
@@ -131,14 +172,14 @@ class ModuleSlugService
             foreach ($modules as $moduleName) {
                 $configSlugs = self::getAllConfigSlugs($moduleName);
                 
-                // Case-insensitive arama (veritabanında küçük harf olabilir)
+                // Sadece multiLangSlugs kullan artık
                 $dbSetting = $allSettings[$moduleName] ?? $allSettings[strtolower($moduleName)] ?? null;
-                if ($dbSetting && isset($dbSetting->settings['slugs'])) {
-                    // Custom ayarlar varsa onları kullan
-                    $customSlugs = $dbSetting->settings['slugs'];
-                    foreach ($configSlugs as $key => $defaultSlug) {
-                        $finalSlug = $customSlugs[$key] ?? $defaultSlug;
-                        self::$memoryCache[$moduleName . '.' . $key] = $finalSlug;
+                if ($dbSetting && isset($dbSetting->settings['multiLangSlugs'])) {
+                    // MultiLang slug ayarları varsa memory'ye yükle
+                    foreach ($dbSetting->settings['multiLangSlugs'] as $locale => $slugs) {
+                        foreach ($slugs as $key => $slug) {
+                            self::$memoryCache[$moduleName . '.' . $key . '.' . $locale] = $slug;
+                        }
                     }
                 } else {
                     // Custom ayar yoksa config kullan
@@ -191,8 +232,13 @@ class ModuleSlugService
     /**
      * Belirli bir slug'ın diğer modüllerde kullanılıp kullanılmadığını kontrol et
      */
-    public static function isSlugConflict(string $newSlug, string $currentModule, string $currentKey): bool
+    public static function isSlugConflict(string $newSlug, string $currentModule, string $currentKey, ?string $locale = null): bool
     {
+        // MultiLang slug çakışma kontrolü
+        if ($locale) {
+            return self::isMultiLangSlugConflict($newSlug, $currentModule, $currentKey, $locale);
+        }
+        
         // Global ayarları yükle
         if (!self::$globalSettingsLoaded) {
             self::loadGlobalSettings();
@@ -210,6 +256,46 @@ class ModuleSlugService
             if ($slug === $newSlug) {
                 return true; // Çakışma var
             }
+        }
+        
+        return false; // Çakışma yok
+    }
+    
+    /**
+     * MultiLang slug çakışma kontrolü
+     */
+    public static function isMultiLangSlugConflict(string $newSlug, string $currentModule, string $currentKey, string $locale): bool
+    {
+        try {
+            $modules = ['Page', 'Portfolio', 'Announcement'];
+            
+            foreach ($modules as $moduleName) {
+                // Aynı modülün aynı key'i ise skip et
+                if ($moduleName === $currentModule) {
+                    continue;
+                }
+                
+                $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
+                
+                if ($setting && isset($setting->settings['multiLangSlugs'][$locale])) {
+                    $slugs = $setting->settings['multiLangSlugs'][$locale];
+                    
+                    foreach ($slugs as $key => $slug) {
+                        if ($slug === $newSlug) {
+                            return true; // Çakışma var
+                        }
+                    }
+                }
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('ModuleSlugService: Failed to check multiLang conflict', [
+                'slug' => $newSlug,
+                'module' => $currentModule,
+                'key' => $currentKey,
+                'locale' => $locale,
+                'error' => $e->getMessage()
+            ]);
         }
         
         return false; // Çakışma yok
@@ -244,6 +330,22 @@ class ModuleSlugService
         Cache::forget('module_config_Portfolio');
         Cache::forget('module_config_Announcement');
         
+        // MultiLang cache'lerini temizle
+        $modules = ['Page', 'Portfolio', 'Announcement'];
+        $locales = ['tr', 'en', 'ar'];
+        $keys = ['index', 'show', 'category'];
+        
+        foreach ($modules as $module) {
+            foreach ($locales as $locale) {
+                // Slug cache'leri
+                foreach ($keys as $key) {
+                    Cache::forget("module_multilang_slug_{$module}_{$key}_{$locale}");
+                }
+                // Modül adı cache'leri
+                Cache::forget("module_name_{$module}_{$locale}");
+            }
+        }
+        
         // Tüm cache tag'lerini temizle
         try {
             Cache::flush();
@@ -251,7 +353,7 @@ class ModuleSlugService
             // Cache driver flush desteklemiyorsa sessizce devam et
         }
         
-        Log::info('ModuleSlugService: All caches cleared');
+        Log::info('ModuleSlugService: All caches cleared (including multiLang)');
     }
     
     /**
@@ -262,5 +364,47 @@ class ModuleSlugService
         self::$tableIsEmpty = false;
         Cache::forget(self::$tableEmptyCacheKey);
         Cache::forget(self::$globalCacheKey);
+    }
+    
+    /**
+     * Belirli bir locale için slug al
+     * UnifiedUrlBuilderService tarafından kullanılıyor
+     */
+    public static function getSlugForLocale(string $moduleName, string $slugKey, string $locale): string
+    {
+        return self::getMultiLangSlug($moduleName, $slugKey, $locale);
+    }
+    
+    /**
+     * Tüm modüllerin listesini al
+     */
+    public static function getAllModules(): array
+    {
+        $modules = [];
+        
+        // ModuleManagement service'i varsa ondan al
+        if (class_exists('\Modules\ModuleManagement\App\Services\ModuleManagementService')) {
+            try {
+                $moduleService = app('\Modules\ModuleManagement\App\Services\ModuleManagementService');
+                if (method_exists($moduleService, 'getActiveModules')) {
+                    return $moduleService->getActiveModules();
+                }
+            } catch (\Exception $e) {
+                Log::warning('ModuleManagementService kullanılamadı: ' . $e->getMessage());
+            }
+        }
+        
+        // Fallback: Laravel Modules'dan al
+        if (class_exists('\Nwidart\Modules\Facades\Module')) {
+            try {
+                $moduleNames = \Nwidart\Modules\Facades\Module::allEnabled();
+                return array_keys($moduleNames);
+            } catch (\Exception $e) {
+                Log::warning('Laravel Modules kullanılamadı: ' . $e->getMessage());
+            }
+        }
+        
+        // Hardcode fallback
+        return ['Page', 'Portfolio', 'Announcement', 'UserManagement', 'ModuleManagement'];
     }
 }

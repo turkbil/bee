@@ -58,8 +58,17 @@ class Setting extends Model
 
     public function getValue()
     {
-        $settingValue = $this->values()->first();
+        // Tenant varsa tenant'ın settings_values tablosundan al
+        if (tenant()) {
+            // Tenant context'inde SettingValue'yu bul
+            $settingValue = SettingValue::where('setting_id', $this->id)->first();
+            
+            if ($settingValue) {
+                return $settingValue->value;
+            }
+        }
         
-        return $settingValue ? $settingValue->value : $this->default_value;
+        // Tenant'ta değer yoksa veya central'daysa default_value kullan
+        return $this->default_value;
     }
 }

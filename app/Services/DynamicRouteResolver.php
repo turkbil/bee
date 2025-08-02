@@ -125,11 +125,25 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
             $moduleRouteMap = $this->getModuleRouteMap();
             
             foreach ($moduleRouteMap as $moduleName => $routes) {
-                // Tüm modül action'larının slug'larını al (DİNAMİK!)
+                // Tüm modül action'larının slug'larını al (DİNAMİK + LOCALE AWARE!)
                 $moduleSlugMap = [];
                 foreach ($routes as $action => $config) {
-                    $actionSlug = ModuleSlugService::getSlug($moduleName, $action);
+                    // Önce locale-specific slug'ı dene
+                    $actionSlug = ModuleSlugService::getMultiLangSlug($moduleName, $action, $locale);
+                    if (!$actionSlug) {
+                        // Yoksa default slug'ı kullan  
+                        $actionSlug = ModuleSlugService::getMultiLangSlug($moduleName, $action, $locale);
+                    }
                     $moduleSlugMap[$action] = $actionSlug;
+                }
+                
+                // Debug log
+                if (app()->environment(['local', 'staging'])) {
+                    Log::debug("Checking module: {$moduleName}", [
+                        'locale' => $locale,
+                        'slug1' => $slug1,
+                        'moduleSlugMap' => $moduleSlugMap
+                    ]);
                 }
                 
                 // Single slug pattern - index action için
@@ -149,6 +163,18 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                 
                 // Two slug pattern - show action veya diğer action'lar için
                 if ($slug2 && !$slug3) {
+                    // 1. Önce index slug + content slug pattern'ini kontrol et (portfolio/web-design gibi)
+                    if ($slug1 === $moduleSlugMap['index'] && isset($routes['show'])) {
+                        return [
+                            'controller' => $routes['show']['controller'],
+                            'method' => $routes['show']['method'],
+                            'module' => $moduleName,
+                            'action' => 'show',
+                            'params' => [$slug2]
+                        ];
+                    }
+                    
+                    // 2. Sonra diğer action'ları kontrol et
                     foreach ($moduleSlugMap as $action => $actionSlug) {
                         // Eğer slug1 bu action'ın slug'ı ise
                         if ($slug1 === $actionSlug && $action !== 'index' && isset($routes[$action])) {

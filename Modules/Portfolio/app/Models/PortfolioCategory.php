@@ -4,13 +4,14 @@ namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
+use App\Traits\HasSeo;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PortfolioCategory extends BaseModel 
 {
-    use Sluggable, SoftDeletes, HasTranslations;
+    use Sluggable, SoftDeletes, HasTranslations, HasSeo;
 
     protected $primaryKey = 'portfolio_category_id';
 

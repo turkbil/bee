@@ -98,7 +98,7 @@
     @widgetstyles
     @widgetscripts
     @livewireScripts
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {{-- Alpine.js is already loaded by Livewire, don't load it again --}}
     <script>
         // Initialize Livewire and Alpine
         document.addEventListener('DOMContentLoaded', function() {

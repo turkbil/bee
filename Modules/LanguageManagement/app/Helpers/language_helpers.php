@@ -174,6 +174,17 @@ if (!function_exists('available_admin_languages')) {
     }
 }
 
+if (!function_exists('get_tenant_languages')) {
+    /**
+     * Tenant dillerinin kod listesini al
+     */
+    function get_tenant_languages(): array
+    {
+        $languages = available_tenant_languages();
+        return array_column($languages, 'code');
+    }
+}
+
 if (!function_exists('available_tenant_languages')) {
     /**
      * Kullanılabilir tenant dillerini al (unified tenant system)
@@ -364,28 +375,80 @@ if (!function_exists('current_url_for_locale')) {
     function current_url_for_locale(string $locale): string
     {
         try {
+            // UnifiedUrlService kullan - modül slug değişikliklerini de handle eder
+            $unifiedUrlService = app(\App\Services\UnifiedUrlService::class);
+            
             $request = request();
             $currentLocale = app()->getLocale();
+            $currentUrl = $request->url();
             $path = $request->path();
             
             // Ana sayfa kontrolü
-            if ($path === '/') {
+            if ($path === '/' || $path === '') {
                 return needs_locale_prefix($locale) ? url('/' . $locale) : url('/');
             }
             
+            // URL'i çözümle
+            $routeInfo = $unifiedUrlService->resolveUrl($currentUrl, $currentLocale);
+            
+            if ($routeInfo) {
+                // Modül içeriği ise
+                if (isset($routeInfo['module']) && isset($routeInfo['model'])) {
+                    $model = $routeInfo['model'];
+                    return $unifiedUrlService->buildUrlForModel($model, $locale);
+                }
+                
+                // Modül action (category, tag) ise
+                if (isset($routeInfo['type']) && $routeInfo['type'] === 'module_action') {
+                    $params = [];
+                    if (isset($routeInfo['model'])) {
+                        $params[] = $routeInfo['model'];
+                    }
+                    return $unifiedUrlService->buildUrlForModule(
+                        $routeInfo['module'],
+                        $routeInfo['action'],
+                        $params,
+                        $locale
+                    );
+                }
+                
+                // Modül index/list sayfası ise
+                if (isset($routeInfo['module']) && isset($routeInfo['action'])) {
+                    return $unifiedUrlService->buildUrlForModule(
+                        $routeInfo['module'],
+                        $routeInfo['action'] ?? 'index',
+                        $routeInfo['params'] ?? [],
+                        $locale
+                    );
+                }
+            }
+            
+            // Fallback: Basit path değişimi
             // Mevcut URL'den locale prefix'ini temizle
-            if (needs_locale_prefix($currentLocale)) {
-                $path = preg_replace('/^' . preg_quote($currentLocale, '/') . '\//', '', $path);
+            $pathParts = explode('/', trim($path, '/'));
+            $firstPart = $pathParts[0] ?? '';
+            
+            // İlk kısım bir dil kodu mu kontrol et
+            $validLocales = get_tenant_languages();
+            if (in_array($firstPart, $validLocales)) {
+                array_shift($pathParts);
             }
             
-            // Yeni locale için prefix ekle (gerekirse)
+            $cleanPath = implode('/', $pathParts);
+            
+            // Yeni locale için URL oluştur
             if (needs_locale_prefix($locale)) {
-                $path = $locale . '/' . $path;
+                return url('/' . $locale . '/' . $cleanPath);
             }
             
-            return url('/' . ltrim($path, '/'));
+            return url('/' . $cleanPath);
             
         } catch (\Exception $e) {
+            \Log::error('current_url_for_locale failed', [
+                'locale' => $locale,
+                'error' => $e->getMessage()
+            ]);
+            
             // Fallback to language switch route
             return url('/language/' . $locale);
         }

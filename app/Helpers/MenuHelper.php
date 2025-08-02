@@ -21,7 +21,9 @@ if (!function_exists('getMenuById')) {
             $locale = $locale ?? app()->getLocale();
             $cacheKey = "menu.id.{$menuId}.{$locale}";
             
-            return Cache::remember($cacheKey, now()->addHours(24), function() use ($menuId, $locale) {
+            // Cache devre dışı - direkt veri döndür
+            // return Cache::remember($cacheKey, now()->addHours(24), function() use ($menuId, $locale) {
+            return (function() use ($menuId, $locale) {
                 $menu = Menu::with(['rootItems' => function($query) {
                     $query->where('is_active', true)->orderBy('sort_order');
                 }, 'rootItems.activeChildren' => function($query) {
@@ -69,7 +71,7 @@ if (!function_exists('getMenuById')) {
                         return $menuItem;
                     })->toArray()
                 ];
-            });
+            })();
         } catch (\Exception $e) {
             \Log::error('MenuHelper getMenuById error: ' . $e->getMessage());
             return null;
@@ -90,7 +92,9 @@ if (!function_exists('getDefaultMenu')) {
             $locale = $locale ?? app()->getLocale();
             $cacheKey = "menu.default.{$locale}";
             
-            return Cache::remember($cacheKey, now()->addHours(24), function() use ($locale) {
+            // Cache devre dışı - direkt veri döndür
+            // return Cache::remember($cacheKey, now()->addHours(24), function() use ($locale) {
+            return (function() use ($locale) {
                 $menu = Menu::with(['rootItems' => function($query) {
                     $query->where('is_active', true)->orderBy('sort_order');
                 }, 'rootItems.activeChildren' => function($query) {
@@ -150,7 +154,7 @@ if (!function_exists('getDefaultMenu')) {
                         return $menuItem;
                     })->toArray()
                 ];
-            });
+            })();
         } catch (\Exception $e) {
             \Log::error('MenuHelper getDefaultMenu error: ' . $e->getMessage());
             return null;
@@ -172,7 +176,9 @@ if (!function_exists('getMenuByLocation')) {
             $locale = $locale ?? app()->getLocale();
             $cacheKey = "menu.location.{$location}.{$locale}";
             
-            return Cache::remember($cacheKey, now()->addHours(24), function() use ($location, $locale) {
+            // Cache devre dışı - direkt veri döndür
+            // return Cache::remember($cacheKey, now()->addHours(24), function() use ($location, $locale) {
+            return (function() use ($location, $locale) {
                 $menu = Menu::with(['rootItems' => function($query) {
                     $query->where('is_active', true)->orderBy('sort_order');
                 }, 'rootItems.activeChildren' => function($query) {
@@ -221,7 +227,7 @@ if (!function_exists('getMenuByLocation')) {
                         return $menuItem;
                     })->toArray()
                 ];
-            });
+            })();
         } catch (\Exception $e) {
             \Log::error('MenuHelper getMenuByLocation error: ' . $e->getMessage());
             return null;

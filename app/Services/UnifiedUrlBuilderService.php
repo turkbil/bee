@@ -156,10 +156,25 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
 
         foreach ($availableLocales as $locale) {
             if ($model) {
-                $url = $this->buildUrlForModel($model, $action, $locale);
+                // Action 'show' değilse (category, tag, author, vb.) özel işlem yap
+                if ($action !== 'show' && $action !== 'index' && method_exists($model, 'getTranslated')) {
+                    // Bu bir action model'i (PortfolioCategory, AnnouncementTag, vb.)
+                    $moduleName = $this->getModuleNameFromModel($model);
+                    $slug = $model->getTranslated('slug', $locale);
+                    
+                    if ($slug) {
+                        $url = $this->buildUrlForModule($moduleName, $action, [$slug], $locale);
+                    } else {
+                        // Slug yoksa ID kullan
+                        $url = $this->buildUrlForModule($moduleName, $action, [$model->getKey()], $locale);
+                    }
+                } else {
+                    // Normal model URL'i (show action)
+                    $url = $this->buildUrlForModel($model, $action, $locale);
+                }
             } else {
-                // Mevcut path'i al ve locale değiştir
-                $url = $this->buildUrlForCurrentPath($locale);
+                // Model yoksa mevcut URL'in path'ini analiz et
+                $url = $this->buildAlternateUrlFromCurrentPath($locale);
             }
 
             $links[$locale] = [
@@ -279,8 +294,8 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
             throw new \Exception('No slug found for model');
         }
 
-        // Module slug al
-        $moduleSlug = $this->moduleSlugService->getSlug($moduleName, $action);
+        // Module slug al - locale parametresi ile
+        $moduleSlug = $this->moduleSlugService->getSlug($moduleName, $action, $locale);
         
         // URL oluştur
         $defaultLocale = get_tenant_default_locale();
@@ -337,6 +352,65 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
         
         return $this->buildUrlForPath($cleanPath, $locale);
     }
+    
+    /**
+     * Mevcut URL'den alternatif dil URL'i oluştur
+     * Modül/action/slug yapısını koruyarak
+     */
+    private function buildAlternateUrlFromCurrentPath(string $locale): string
+    {
+        $currentPath = request()->path();
+        $segments = array_filter(explode('/', $currentPath));
+        
+        // Mevcut locale prefix'ini kaldır
+        $firstSegment = reset($segments);
+        if ($this->localeValidator->isValidLocale($firstSegment)) {
+            array_shift($segments);
+        }
+        
+        // URL yapısını analiz et
+        if (count($segments) >= 3) {
+            // 3 segment: module/action/slug pattern
+            $moduleSlug = $segments[0];
+            $actionSlug = $segments[1];
+            $contentSlug = $segments[2];
+            
+            // Modül adını bul
+            $moduleName = $this->findModuleNameBySlug($moduleSlug);
+            if ($moduleName) {
+                // Action'ı bul
+                $action = $this->findActionBySlug($moduleName, $actionSlug);
+                if ($action) {
+                    // Yeni dil için slug'ları al
+                    $newModuleSlug = $this->moduleSlugService->getSlug($moduleName, 'index', $locale);
+                    $newActionSlug = $this->moduleSlugService->getSlug($moduleName, $action, $locale);
+                    
+                    // URL'i oluştur
+                    return $this->buildUrlWithLocale(
+                        $newModuleSlug . '/' . $newActionSlug . '/' . $contentSlug,
+                        $locale
+                    );
+                }
+            }
+        } elseif (count($segments) >= 2) {
+            // 2 segment: module/slug pattern
+            $moduleSlug = $segments[0];
+            $contentSlug = $segments[1];
+            
+            // Modül adını bul
+            $moduleName = $this->findModuleNameBySlug($moduleSlug);
+            if ($moduleName) {
+                $newModuleSlug = $this->moduleSlugService->getSlug($moduleName, 'show', $locale);
+                return $this->buildUrlWithLocale(
+                    $newModuleSlug . '/' . $contentSlug,
+                    $locale
+                );
+            }
+        }
+        
+        // Fallback: basit path çevirisi
+        return $this->buildUrlForPath(implode('/', $segments), $locale);
+    }
 
     private function getAvailableLocales(): array
     {
@@ -375,6 +449,73 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
         Cache::increment('url_builder_total');
         
         return $key;
+    }
+    
+    /**
+     * Model'den modül adını çıkar
+     */
+    private function getModuleNameFromModel(Model $model): string
+    {
+        $className = get_class($model);
+        
+        // PortfolioCategory -> Portfolio
+        // AnnouncementCategory -> Announcement
+        if (str_contains($className, 'Category')) {
+            $baseName = str_replace('Category', '', class_basename($model));
+            return $baseName;
+        }
+        
+        // Namespace'den modül adını çıkar
+        // Modules\Portfolio\App\Models\Portfolio -> Portfolio
+        if (preg_match('/Modules\\\\([^\\\\]+)\\\\/', $className, $matches)) {
+            return $matches[1];
+        }
+        
+        // Fallback: class basename
+        return class_basename($model);
+    }
+    
+    /**
+     * Slug'dan modül adını bul
+     */
+    private function findModuleNameBySlug(string $slug): ?string
+    {
+        $modules = $this->moduleSlugService->getAllModules();
+        
+        foreach ($modules as $module) {
+            // Her dil için index slug'ını kontrol et
+            $availableLocales = $this->getAvailableLocales();
+            foreach ($availableLocales as $locale) {
+                $moduleSlug = $this->moduleSlugService->getSlug($module, 'index', $locale);
+                if ($moduleSlug === $slug) {
+                    return $module;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Modül ve slug'dan action'ı bul
+     */
+    private function findActionBySlug(string $moduleName, string $actionSlug): ?string
+    {
+        // Tüm olası action'ları kontrol et
+        $possibleActions = ['category', 'tag', 'author', 'label', 'type', 'group'];
+        
+        foreach ($possibleActions as $action) {
+            // Her dil için action slug'ını kontrol et
+            $availableLocales = $this->getAvailableLocales();
+            foreach ($availableLocales as $locale) {
+                $slug = $this->moduleSlugService->getSlug($moduleName, $action, $locale);
+                if ($slug === $actionSlug) {
+                    return $action;
+                }
+            }
+        }
+        
+        return null;
     }
 
     private function analyzeModuleRoute(array $segments, ?string $locale): array

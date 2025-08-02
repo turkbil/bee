@@ -38,6 +38,9 @@ class SiteSetLocaleMiddleware
             $detectedLocale = $defaultLocale;
         }
         
+        // Önceki locale'i sakla
+        $previousLocale = app()->getLocale();
+        
         // 2. Locale'i set et
         app()->setLocale($detectedLocale);
         session(['tenant_locale' => $detectedLocale]);
@@ -48,6 +51,10 @@ class SiteSetLocaleMiddleware
         }
         \Cookie::queue('tenant_locale_preference', $detectedLocale, 525600);
         
+        // Dil değişmişse cache'leri temizle
+        if ($previousLocale !== $detectedLocale) {
+            $this->clearLanguageRelatedCaches();
+        }
 
         return $next($request);
     }
@@ -177,6 +184,60 @@ class SiteSetLocaleMiddleware
         } catch (\Exception $e) {
             // DB hatası durumunda basic locale kontrolü
             return in_array($locale, ['tr', 'en']);
+        }
+    }
+    
+    /**
+     * Dil değişiminde ilgili cache'leri temizle
+     */
+    private function clearLanguageRelatedCaches(): void
+    {
+        try {
+            // AGRESIF MENU CACHE TEMİZLİĞİ
+            if (function_exists('clearMenuCaches')) {
+                // Tüm menu cache'lerini sil
+                clearMenuCaches();
+            }
+            
+            // Tüm diller için menü cache'lerini temizle
+            $languages = \get_tenant_languages();
+            foreach ($languages as $lang) {
+                \Cache::forget("menu.default.{$lang}");
+                \Cache::forget("menu.header.{$lang}");
+                \Cache::forget("menu.footer.{$lang}");
+                \Cache::forget("menu.items.{$lang}");
+                \Cache::forget("menu.location.header.{$lang}");
+                \Cache::forget("menu.location.footer.{$lang}");
+                \Cache::forget("menu.location.sidebar.{$lang}");
+                
+                // Tüm menu ID'leri için cache temizle
+                for ($i = 1; $i <= 100; $i++) {
+                    \Cache::forget("menu.id.{$i}.{$lang}");
+                }
+            }
+            
+            // Module slug cache'lerini temizle
+            if (class_exists('\App\Services\ModuleSlugService')) {
+                \App\Services\ModuleSlugService::clearCache();
+            }
+            
+            // Route cache'lerini temizle
+            if (class_exists('\App\Services\DynamicRouteResolver')) {
+                app(\App\Services\DynamicRouteResolver::class)->clearRouteCache();
+            }
+            
+            // Widget cache'lerini temizle (varsa)
+            \Cache::tags(['widgets'])->flush();
+            
+            // View cache'lerini temizle
+            \Artisan::call('view:clear');
+            
+            \Log::debug('Language related caches cleared due to locale change');
+            
+        } catch (\Exception $e) {
+            \Log::warning('Failed to clear language caches', [
+                'error' => $e->getMessage()
+            ]);
         }
     }
 }

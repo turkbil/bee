@@ -70,9 +70,17 @@ function homepage() {
         $title = $item->getTranslated('title', $currentLocale);
         $body = $item->getTranslated('body', $currentLocale);
         
-        // Get index URL
-        $indexSlug = \App\Services\ModuleSlugService::getSlug('Page', 'index');
-        $pageIndexUrl = '/' . $indexSlug;
+        // Get index URL - LOCALE AWARE
+        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+        
+        // Mevcut dil için index slug'ını al
+        $indexSlug = $moduleSlugService->getMultiLangSlug('Page', 'index', $currentLocale);
+        
+        // Locale prefix'i kontrol et
+        $defaultLocale = get_tenant_default_locale();
+        $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+        
+        $pageIndexUrl = $localePrefix . '/' . $indexSlug;
     @endphp
     
     <!-- Simple Title Section -->
@@ -165,8 +173,17 @@ function pageShow() {
             const link = document.createElement('link');
             link.rel = 'prefetch';
             @php
-                $indexSlug = \App\Services\ModuleSlugService::getSlug('Page', 'index');
-                $pageIndexUrl = '/' . $indexSlug;
+                $currentLocale = app()->getLocale();
+                $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                
+                // Mevcut dil için index slug'ını al
+                $indexSlug = $moduleSlugService->getMultiLangSlug('Page', 'index', $currentLocale);
+                
+                // Locale prefix'i kontrol et
+                $defaultLocale = get_tenant_default_locale();
+                $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                
+                $pageIndexUrl = $localePrefix . '/' . $indexSlug;
             @endphp
             link.href = '{{ $pageIndexUrl }}';
             document.head.appendChild(link);

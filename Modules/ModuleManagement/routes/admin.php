@@ -18,8 +18,8 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/manage/{id?}', ModuleManageComponent::class)
                     ->middleware('module.permission:modulemanagement,update')
                     ->name('manage');
-                Route::get('/slug-settings/{module}', ModuleSlugSettingsComponent::class)
+                Route::get('/slug-manage/{module}', ModuleSlugSettingsComponent::class)
                     ->middleware('module.permission:modulemanagement,update')
-                    ->name('slug-settings');
+                    ->name('slug-manage');
             });
     });

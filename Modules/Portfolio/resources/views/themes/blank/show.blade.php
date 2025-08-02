@@ -38,10 +38,21 @@
             }
             $categorySlug = is_array($categorySlugData) ? ($categorySlugData[$currentLocale] ?? $categorySlugData['tr'] ?? reset($categorySlugData)) : $categorySlugData;
             
-            // DİNAMİK URL'ler
-            $indexSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'index');
-            $portfolioIndexUrl = '/' . $indexSlug;
-            $categoryDynamicUrl = '/' . $indexSlug . '/kategori/' . $categorySlug;
+            // DİNAMİK URL'ler - LOCALE AWARE
+            $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+            
+            // Mevcut dil için index slug'ını al
+            $indexSlug = $moduleSlugService->getMultiLangSlug('Portfolio', 'index', $currentLocale);
+            
+            // Mevcut dil için category slug'ını al
+            $categoryActionSlug = $moduleSlugService->getMultiLangSlug('Portfolio', 'category', $currentLocale);
+            
+            // Locale prefix'i kontrol et
+            $defaultLocale = get_tenant_default_locale();
+            $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+            
+            $portfolioIndexUrl = $localePrefix . '/' . $indexSlug;
+            $categoryDynamicUrl = $localePrefix . '/' . $indexSlug . '/' . $categoryActionSlug . '/' . $categorySlug;
         }
         
         // Body için JSON decode

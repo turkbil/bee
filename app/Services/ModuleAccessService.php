@@ -165,4 +165,26 @@ class ModuleAccessService implements ModuleAccessServiceInterface
             $this->cache->clearAllCache();
         }
     }
+    
+    /**
+     * Tenant'a atanmış modülleri getirir
+     * Central DB'den sorgular
+     */
+    public function getTenantModules(int $tenantId): \Illuminate\Support\Collection
+    {
+        return TenantHelpers::central(function () use ($tenantId) {
+            // Central tenant tüm modüllere erişir
+            if ($tenantId === 1) {
+                return Module::where('is_active', true)->get();
+            }
+            
+            // Diğer tenant'lar için module_tenants tablosundan kontrol
+            return Module::select('modules.*')
+                ->join('module_tenants', 'modules.module_id', '=', 'module_tenants.module_id')
+                ->where('module_tenants.tenant_id', $tenantId)
+                ->where('module_tenants.is_active', true)
+                ->where('modules.is_active', true)
+                ->get();
+        });
+    }
 }

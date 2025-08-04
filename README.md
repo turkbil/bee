@@ -2,6 +2,35 @@
 
 Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-tenancy) bir web uygulamasıdır.
 
+## 🎉 SİSTEM BAŞARILARI - 04.08.2025 - DİNAMİK MODÜL TİTLE & URL ÇAKIŞMA SİSTEMİ v5.5.0
+
+### 🚀 DİNAMİK MODÜL TİTLE SİSTEMİ TAMAMLANDI
+**BAŞARI**: Modül title'ları artık JSON kolonda saklanıyor ve frontend'de dinamik çalışıyor!
+
+**🎯 ÇÖZÜLEN SORUNLAR:**
+✅ **Veri Migrasyonu**: `multiLangNames` settings JSON'dan `title` kolonuna başarıyla taşındı
+✅ **Frontend Entegrasyonu**: Page, Announcement, Portfolio modüllerinde `$moduleTitle` değişkeni kullanılıyor
+✅ **Fallback Sistemi**: Eğer custom title yoksa default modül adları kullanılıyor
+✅ **Auto-Save Kaldırıldı**: Module management'ta manuel kaydetme sistemi (footer button)
+
+### 🔧 URL ÇAKIŞMA MANTIK DÜZELTMESİ - KRİTİK
+**BAŞARI**: URL çakışma kontrolü Nurullah'ın kurallarına göre düzeltildi!
+
+**🎯 DOĞRU ÇAKIŞMA KURALLARI:**
+✅ **Aynı modül farklı key'ler**: Aynı slug kullanabilir (ÇAKIŞMA YOK)
+✅ **Farklı diller**: Aynı slug kullanabilir (prefix sistemi var)
+❌ **Farklı modüller**: Aynı slug kullanamaz (ÇAKIŞMA VAR)
+❌ **Central modül isimleri**: Slug, modül ismi olamaz (ÇAKIŞMA VAR)
+
+**⚡ TEKNİK DETAYLAR:**
+- `ModuleSlugService::isMultiLangSlugConflict()`: Case-insensitive kontrol eklendi
+- `ModuleTenantSetting`: `title` JSON kolonu eklendi, fillable/casts güncellendi
+- `ModuleSlugSettingsComponent`: Auto-save kaldırıldı, manuel save sistemi
+- Frontend controllers: `getModuleTitle()` metodları eklendi
+
+**🐛 ÇÖZÜLEN HATA:**
+- `"Announcement"` vs `"announcement"` case sensitivity hatası → `strtolower()` ile düzeltildi
+
 ## 🎉 SİSTEM BAŞARILARI - 02.08.2025 - SETTING HELPER SİSTEMİ & HEADER ENTEGRASYONİ
 
 ### 🚀 GLOBAL SETTING HELPER SİSTEMİ - v5.4.0

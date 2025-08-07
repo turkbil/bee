@@ -65,10 +65,8 @@ class LanguageSettingsComponent extends Component
         
         $defaultLanguageCode = $currentTenant ? $currentTenant->tenant_default_locale : 'tr';
         
-        // Recent tenant languages'e is_default property'sini ekle
-        $this->recentTenantLanguages->each(function ($language) use ($defaultLanguageCode) {
-            $language->is_default = $language->code === $defaultLanguageCode;
-        });
+        // is_default kolonunu senkronize et
+        app(\Modules\LanguageManagement\app\Services\TenantLanguageService::class)->syncDefaultLanguageColumn();
             
         // URL Prefix ayarlarını yükle
         $this->loadUrlPrefixSettings();

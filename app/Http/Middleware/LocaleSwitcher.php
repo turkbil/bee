@@ -20,7 +20,7 @@ class LocaleSwitcher
         $urlLocale = $segments[0] ?? null;
         
         // Geçerli locale'ler
-        $validLocales = array_column(available_tenant_languages(), 'code');
+        $validLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
         $defaultLocale = get_tenant_default_locale();
         
         // Öncelik sırası:

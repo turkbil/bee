@@ -80,7 +80,6 @@
                                                         <div class="mb-2">
                                                             <label class="form-label mb-1">
                                                                 <strong><i class="fas fa-signature me-1"></i>{{ __('modulemanagement::admin.module_name') }}</strong>
-                                                                <span class="text-muted ms-1">({{ strtoupper($lang) }})</span>
                                                             </label>
                                                             <div class="text-muted small">
                                                                 {{ __('modulemanagement::admin.module_name_info') }}
@@ -93,11 +92,13 @@
                                                             </span>
                                                             <input 
                                                                 type="text" 
-                                                                class="form-control"
+                                                                class="form-control module-name-input"
                                                                 value="{{ $multiLangNames[$lang] ?? '' }}"
                                                                 wire:blur="updateModuleName($event.target.value, '{{ $lang }}')"
                                                                 wire:keydown.enter="updateModuleName($event.target.value, '{{ $lang }}')"
                                                                 placeholder="{{ \App\Services\ModuleSlugService::getDefaultModuleName($moduleName, $lang) }}"
+                                                                data-debug-value="{{ $multiLangNames[$lang] ?? 'NULL' }}"
+                                                                data-debug-placeholder="{{ \App\Services\ModuleSlugService::getDefaultModuleName($moduleName, $lang) }}"
                                                             >
                                                         </div>
                                                         
@@ -131,7 +132,6 @@
                                                         <div class="mb-2">
                                                             <label class="form-label mb-1">
                                                                 <strong>{{ ucfirst($key) }} {{ __('modulemanagement::admin.page_url') }}</strong>
-                                                                <span class="text-muted ms-1">({{ strtoupper($lang) }})</span>
                                                             </label>
                                                             <div class="text-muted small">
                                                                 @switch($key)
@@ -201,63 +201,58 @@
                             </div>
                         @endforeach
 
-                        @if(!empty($defaultSlugs))
-                        <div class="mt-4">
-                            <div class="alert alert-info">
-                                <div class="d-flex">
-                                    <div>
-                                        <i class="fas fa-info-circle me-2"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="alert-title">{{ __('modulemanagement::admin.url_customization_info') }}</h4>
-                                        <ul class="mb-0">
-                                            <li>{{ __('modulemanagement::admin.url_changes_saved_instantly') }}</li>
-                                            <li>{{ __('modulemanagement::admin.user_friendly_urls') }}</li>
-                                            <li>{{ __('modulemanagement::admin.invalid_chars_cleaned') }}</li>
-                                            <li>{{ __('modulemanagement::admin.empty_fields_use_default') }}</li>
-                                            <li>{{ __('modulemanagement::admin.seo_friendly_urls') }}</li>
-                                            <li><strong>{{ __('modulemanagement::admin.multilanguage_support') }}</strong></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <div class="alert alert-light">
-                                <div class="d-flex">
-                                    <div>
-                                        <i class="fas fa-code me-2"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="alert-title">{{ __('modulemanagement::admin.for_developers') }}</h4>
-                                        <div class="mb-3">
-                                            <label class="form-label">{{ __('modulemanagement::admin.template_usage_example') }}:</label>
-                                            <div class="bg-dark text-light p-3 rounded">
-                                                <code class="text-success">
-                                                    &lt;!-- {{ __('modulemanagement::admin.list_page_link') }} --&gt;<br>
-                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'index') &#125;&#125;"&gt;{{ ucfirst($moduleName) }} {{ __('modulemanagement::admin.list') }}&lt;/a&gt;<br><br>
-                                                    &lt;!-- {{ __('modulemanagement::admin.detail_page_link') }} --&gt;<br>
-                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'show', $item-&gt;slug) &#125;&#125;"&gt;{{ __('modulemanagement::admin.view_detail') }}&lt;/a&gt;
-                                                </code>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="small text-muted">
-                                            <i class="fas fa-lightbulb me-1"></i>
-                                            {{ __('modulemanagement::admin.href_function_info') }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
 
                     </div>
+
+                    <!-- SEO Tab - Page pattern'ından birebir kopyalanan -->
+                    <div class="tab-pane fade" id="1" role="tabpanel">
+                        <x-seomanagement::universal-seo-tab 
+                            :model="null" 
+                            :available-languages="$availableLanguages" 
+                            :current-language="$currentLanguage" 
+                            :seo-data-cache="$seoDataCache" 
+                        />
+                    </div>
+
                 </div>
             </div>
 
-            <x-form-footer route="admin.modulemanagement" :model-id="null" />
+            <!-- Özel Footer - ModuleSlugSettings için -->
+            <div class="card-footer">
+                <div wire:loading="" class="position-fixed top-0 start-0 w-100" style="z-index: 1050;" wire:target="save,saveAndReturn">
+                    <div class="progress rounded-0" style="height: 12px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-indeterminate bg-primary"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ route('admin.modulemanagement.index') }}" class="btn btn-link text-decoration-none">İptal</a>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success save-button" wire:loading.attr="disabled" wire:target="save,saveAndReturn">
+                            <span class="d-flex align-items-center">
+                                <span wire:loading.remove="" wire:target="save,saveAndReturn">
+                                    <i class="fa-thin fa-floppy-disk me-2"></i> Kaydet ve Devam Et
+                                </span>
+                                <span wire:loading="" wire:target="save,saveAndReturn">
+                                    <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> Kaydet ve Devam Et
+                                </span>
+                            </span>
+                        </button>
+
+                        <button type="button" class="btn btn-primary save-button" wire:click="saveAndReturn()" wire:loading.attr="disabled" wire:target="saveAndReturn">
+                            <span class="d-flex align-items-center">
+                                <span wire:loading.remove="" wire:target="saveAndReturn">
+                                    <i class="fa-thin fa-arrow-left me-2"></i> Kaydet ve Geri Dön
+                                </span>
+                                <span wire:loading="" wire:target="saveAndReturn">
+                                    <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> Kaydet ve Geri Dön
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </form>
@@ -269,7 +264,17 @@
         window.currentPageId = null;
         window.currentModuleName = '{{ $moduleName }}';
         window.currentLanguage = '{{ $currentLanguage }}';
-        window.allLanguagesSeoData = {};
+        
+        // SEO Data - Page pattern'ından kopyalanan sistem
+        try {
+            window.allLanguagesSeoData = @json($allLanguagesSeoData ?? []);
+            console.log('✅ Module SEO Data JSON başarıyla yüklendi:', window.allLanguagesSeoData);
+            console.log('🔍 Mevcut diller:', Object.keys(window.allLanguagesSeoData || {}));
+            console.log('🌍 Mevcut aktif dil:', window.currentLanguage);
+        } catch (error) {
+            console.error('❌ Module SEO Data JSON hatası:', error);
+            window.allLanguagesSeoData = {};
+        }
         
         document.addEventListener('DOMContentLoaded', function() {
             // Dinamik sayfa tespiti - Module slug manage için
@@ -320,6 +325,10 @@
                 $('.language-content').hide();
                 $(`.language-content[data-language="${language}"]`).show();
                 
+                // SEO dil değiştirme - Universal SEO component için
+                $('.seo-language-content').hide();
+                $(`.seo-language-content[data-language="${language}"]`).show();
+                
                 // Update global language variable
                 window.currentLanguage = language;
                 
@@ -355,9 +364,9 @@
         
         // ===== SLUG NORMALIZATION =====
         function setupSlugNormalization() {
-            // Input alanlarında sadece URL uyumlu karakterlere izin ver
+            // Input alanlarında sadece URL uyumlu karakterlere izin ver (modül adı hariç)
             document.addEventListener('input', function(e) {
-                if (e.target.type === 'text' && e.target.closest('.input-group')) {
+                if (e.target.type === 'text' && e.target.closest('.input-group') && !e.target.classList.contains('module-name-input')) {
                     let value = e.target.value;
                     // Türkçe karakterleri dönüştür ve sadece URL uyumlu karakterlere izin ver
                     value = value

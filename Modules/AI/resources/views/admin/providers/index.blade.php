@@ -1,25 +1,10 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('page-title', __('ai::admin.providers.title'))
 
 @section('content')
-    <div class="page-wrapper">
-        <div class="page-header d-print-none">
-            <div class="container-xl">
-                <div class="row g-2 align-items-center">
-                    <div class="col">
-                        <h2 class="page-title">
-                            <i class="fas fa-robot me-2"></i>
-                            {{ __('ai::admin.providers.management') }}
-                        </h2>
-                        <div class="text-muted mt-1">{{ __('ai::admin.providers.description') }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="page-body">
-            <div class="container-xl">
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -147,9 +132,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Provider Edit Modals -->
     @foreach($providers as $provider)

@@ -122,8 +122,7 @@ if (!function_exists('is_valid_tenant_locale')) {
         static $cachedValidTenantLocales = null;
         if ($cachedValidTenantLocales === null) {
             try {
-                $tenantLanguages = available_tenant_languages();
-                $cachedValidTenantLocales = array_column($tenantLanguages, 'code');
+                $cachedValidTenantLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
             } catch (\Exception $e) {
                 $cachedValidTenantLocales = ['tr', 'en'];
             }
@@ -180,8 +179,7 @@ if (!function_exists('get_tenant_languages')) {
      */
     function get_tenant_languages(): array
     {
-        $languages = available_tenant_languages();
-        return array_column($languages, 'code');
+        return \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
     }
 }
 

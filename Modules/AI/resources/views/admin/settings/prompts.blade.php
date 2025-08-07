@@ -175,8 +175,7 @@
                                             </div>
                                         </td>
                                         <td class="text-center align-middle" style="width: 160px">
-                                            <div class="container">
-                                                <div class="row">
+                                            <div class="row">
                                                     @if(!$prompt->is_system || $prompt->is_common || in_array($prompt->prompt_type, ['hidden_system', 'secret_knowledge', 'conditional']))
                                                     <div class="col">
                                                         <a href="{{ route('admin.ai.settings.prompts.manage', $prompt->id) }}"

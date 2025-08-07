@@ -153,7 +153,7 @@ return [
 'debug_analytics' => 'Debug & Analytics',
 'purchase_history' => 'Satın Alma Geçmişi',
 'conversation_detail' => 'Konuşma Detayı',
-'status' => [
+'status_info' => [
     'warning' => 'Uyarı',
     'successful' => 'Başarılı',
     'current_balance' => 'Mevcut Bakiye',
@@ -677,7 +677,7 @@ return [
     'ai_tokens' => 'AI Kredileri',
     
     // Status Messages
-    'status' => [
+    'status_messages' => [
         'warning' => 'Uyarı',
         'successful' => 'Başarılı'
     ],

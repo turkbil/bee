@@ -127,6 +127,10 @@ trait HasTranslations
                     'has_content' => !empty($content)
                 ]);
                 
+                // Array ise string'e çevir (keywords gibi alanlar için)
+                if (is_array($content)) {
+                    return implode(', ', $content);
+                }
                 return is_string($content) ? $content : (string) $content;
             }
         }

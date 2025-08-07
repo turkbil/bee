@@ -40,137 +40,197 @@ class AIChatController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $request->validate([
-            'message' => 'required|string',
-            'conversation_id' => 'nullable|string',
-        ]);
-
         try {
+            // Validate input
+            $request->validate([
+                'message' => 'required|string|max:2000',
+                'conversation_id' => 'nullable', // Both string session IDs and numeric IDs allowed
+                'prompt_id' => 'nullable|integer|exists:ai_prompts,id',
+            ]);
+
             $message = trim($request->message);
             $conversationId = $request->conversation_id;
+            $promptId = $request->prompt_id;
             
-            // Konuşma nesnesini bul veya oluştur
-            if ($conversationId) {
-                $conversation = Conversation::find($conversationId);
-                if (!$conversation) {
-                    // Yoksa yeni konuşma oluştur
-                    $conversation = new Conversation();
-                    $conversation->title = mb_substr($message, 0, 25) . '...';
-                    $conversation->user_id = Auth::id();
-                    $conversation->tenant_id = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
-                    $conversation->save();
-                }
-            } else {
-                // Yeni konuşma oluştur
-                $conversation = new Conversation();
-                $conversation->title = substr($message, 0, 30) . '...';
-                $conversation->user_id = Auth::id();
-                $conversation->tenant_id = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
-                $conversation->save();
+            if (empty($message)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mesaj boş olamaz.'
+                ], 400);
             }
             
-            // Kullanıcı mesajını kaydet
+            // Get tenant ID
+            $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: '1';
+            
+            // Find or create conversation
+            $conversation = null;
+            if ($conversationId) {
+                // Try to find by database ID first
+                if (is_numeric($conversationId)) {
+                    $conversation = Conversation::where('id', $conversationId)
+                        ->where('user_id', Auth::id())
+                        ->where('tenant_id', $tenantId)
+                        ->first();
+                } else {
+                    // Try to find by session ID
+                    $conversation = Conversation::where('session_id', $conversationId)
+                        ->where('user_id', Auth::id())
+                        ->where('tenant_id', $tenantId)
+                        ->first();
+                }
+            }
+            
+            // Create new conversation if not found
+            if (!$conversation) {
+                $conversation = new Conversation();
+                $conversation->title = mb_substr($message, 0, 50) . (strlen($message) > 50 ? '...' : '');
+                $conversation->user_id = Auth::id();
+                $conversation->tenant_id = $tenantId;
+                $conversation->prompt_id = $promptId;
+                $conversation->session_id = $conversationId ?: 'conv_' . time() . '_' . uniqid();
+                $conversation->save();
+                
+                Log::info('🆕 New conversation created', [
+                    'id' => $conversation->id,
+                    'session_id' => $conversation->session_id,
+                    'tenant_id' => $tenantId
+                ]);
+            }
+            
+            // Check credit balance
+            $creditBalance = ai_get_credit_balance($tenantId);
+            if ($creditBalance < 0.01) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kredi bakiyeniz yetersiz. Lütfen kredi yükleyin.'
+                ], 402);
+            }
+            
+            // Save user message
             $userMessage = new Message();
             $userMessage->conversation_id = $conversation->id;
             $userMessage->role = 'user';
             $userMessage->content = $message;
-            $userMessage->tokens = strlen($message) / 4;
+            $userMessage->tokens = (int)(strlen($message) / 4);
             $userMessage->save();
             
-            // Kullanıcı mesajı için token kullanımını kaydet
-            $userPromptTokens = (int) (strlen($message) / 4);
-            $this->conversationService->recordCreditUsage($conversation, $userMessage, $userPromptTokens, 0, $this->getCurrentProviderModel());
+            Log::info('💬 User message saved', [
+                'conversation_id' => $conversation->id,
+                'message_length' => strlen($message),
+                'tokens' => $userMessage->tokens
+            ]);
             
-            // Konuşma geçmişini oluştur (OpenAI formatına uygun)
-            $conversationHistory = [];
-            $messages = $conversation->messages()->orderBy('created_at')->get();
-            foreach ($messages as $msg) {
-                $conversationHistory[] = [
+            // Prepare conversation history - CONNECTION ERROR FIX
+            $messages = $conversation->messages()
+                ->orderBy('created_at', 'asc')
+                ->limit(20) // Son 20 mesajla sınırla - memory/connection sorununu önler
+                ->get();
+                
+            $conversationHistory = $messages->map(function($msg) {
+                return [
                     'role' => $msg->role,
-                    'content' => $msg->content,
+                    'content' => trim($msg->content) // Content'i temizle
                 ];
-            }
+            })->toArray();
             
-            // Modern AIService ile provider-aware request
-            $response = $this->aiService->ask($message, ['source' => 'admin_chat']);
+            Log::info('📚 Conversation history prepared', [
+                'conversation_id' => $conversation->id,
+                'history_count' => count($conversationHistory),
+                'total_messages' => $conversation->messages()->count()
+            ]);
             
-            if (empty($response) || is_string($response) && str_contains($response, 'üzgünüm')) {
-                Log::error('AI API boş yanıt döndü', [
-                    'request' => $message,
-                    'response' => $response,
+            // Call AI Service
+            $aiResponse = $this->aiService->ask($message, [
+                'source' => 'admin_chat',
+                'conversation_history' => $conversationHistory,
+                'prompt_id' => $promptId,
+                'tenant_id' => $tenantId
+            ]);
+            
+            // Validate AI response
+            if (empty($aiResponse) || !is_string($aiResponse)) {
+                Log::error('❌ Empty AI response', [
+                    'message' => $message,
+                    'response' => $aiResponse
                 ]);
                 
                 return response()->json([
                     'success' => false,
-                    'status' => 'error',
-                    'message' => 'AI yanıt üretemedi. Lütfen tekrar deneyin.',
-                    'response' => 'AI yanıt üretemedi.'
+                    'message' => 'AI yanıt üretemedi. Lütfen tekrar deneyin.'
                 ], 500);
             }
             
-            // AI yanıtını kaydet
+            // Save AI message
             $aiMessage = new Message();
             $aiMessage->conversation_id = $conversation->id;
             $aiMessage->role = 'assistant';
-            $aiMessage->content = $response;
-            $aiMessage->tokens = strlen($response) / 4;
+            $aiMessage->content = $aiResponse;
+            $aiMessage->tokens = (int)(strlen($aiResponse) / 4);
             $aiMessage->save();
             
-            // AI yanıtı için token kullanımını kaydet
-            $aiCompletionTokens = (int) (strlen($response) / 4);
-            $this->conversationService->recordCreditUsage($conversation, $aiMessage, 0, $aiCompletionTokens, $this->getCurrentProviderModel());
+            Log::info('🤖 AI message saved', [
+                'conversation_id' => $conversation->id,
+                'response_length' => strlen($aiResponse),
+                'tokens' => $aiMessage->tokens
+            ]);
             
-            // Geriye uyumluluk için Redis cache'ini de güncelle
-            $this->updateRedisCache($conversation->id, $conversationHistory, $response);
+            // Record token usage (Global AI Monitoring)
+            $tokenData = [
+                'input_tokens' => $userMessage->tokens,
+                'output_tokens' => $aiMessage->tokens,
+                'credits_used' => ($userMessage->tokens + $aiMessage->tokens) / 1000,
+                'credit_cost' => (($userMessage->tokens + $aiMessage->tokens) / 1000) * 0.00001
+            ];
             
-            // Token bilgileri hesapla
-            $totalTokensUsed = $userPromptTokens + $aiCompletionTokens;
-            
-            // ARTIK KULLANILMIYOR - ai_use_calculated_credits() AIService'de otomatik çalışıyor
-            // Credit kullanımı AIService.ask() içinde gerçek token bilgileri ile yapılacak
-            $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
-            
-            // İşlemi kaydet
-            activity()
-                ->causedBy(Auth::user())
-                ->withProperties([
+            $usageResult = ai_use_tokens(
+                $userMessage->tokens,     // tokensUsed
+                'admin-chat',            // module 
+                'conversation',          // action
+                $tenantId,              // tenantId
+                [                       // metadata
                     'conversation_id' => $conversation->id,
-                    'message_length' => strlen($message),
-                    'response_length' => strlen($response),
-                ])
-                ->log('ai_message_sent');
+                    'user_message_id' => $userMessage->id,
+                    'ai_message_id' => $aiMessage->id
+                ],
+                $aiMessage->tokens,     // outputTokens
+                $message,               // userInput
+                $aiResponse             // aiResponse
+            );
             
-            // Markdown kontrolü ve dönüşüm
-            $content = $response;
-            $hasMarkdown = $this->markdownService->hasMarkdown($content);
-            $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
+            Log::info('💳 Token usage recorded', $usageResult);
+            
+            // Get updated balance
             $newBalance = ai_get_credit_balance($tenantId);
             
             return response()->json([
                 'success' => true,
-                'status' => 'success',
-                'response' => $content,
-                'content' => $content,
-                'has_markdown' => $hasMarkdown,
-                'html_content' => $hasMarkdown ? $this->markdownService->convertToHtml($content) : null,
+                'response' => $aiResponse,
                 'conversation_id' => $conversation->id,
-                'tokens_used' => $totalTokensUsed,
-                'tokens_used_formatted' => ai_format_token_count($totalTokensUsed) . ' kullanıldı',
+                'session_id' => $conversation->session_id,
+                'tokens_used' => $userMessage->tokens + $aiMessage->tokens,
+                'credits_used' => $tokenData['credits_used'],
                 'new_balance' => $newBalance,
-                'new_balance_formatted' => number_format($newBalance, 4) . ' kredi'
+                'usage_tracking' => $usageResult
             ]);
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Geçersiz veri: ' . $e->getMessage()
+            ], 422);
+            
         } catch (\Exception $e) {
-            Log::error('AI mesaj gönderme hatası: ' . $e->getMessage(), [
-                'exception' => $e,
-                'user_id' => Auth::id(),
+            Log::error('❌ AI sendMessage error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
                 'request' => $request->all(),
+                'user_id' => Auth::id()
             ]);
             
             return response()->json([
                 'success' => false,
-                'status' => 'error',
-                'message' => 'Bir hata oluştu: ' . $e->getMessage(),
-                'response' => 'Sistem hatası oluştu.'
+                'message' => 'Sistem hatası oluştu. Lütfen tekrar deneyin.',
+                'debug' => app()->isLocal() ? $e->getMessage() : null
             ], 500);
         }
     }

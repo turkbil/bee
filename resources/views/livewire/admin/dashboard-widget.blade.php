@@ -51,6 +51,31 @@
             
             {{-- Modern Stats Cards Row --}}
             <div class="row row-deck row-cards mb-4">
+                {{-- 🎯 EN ÖNEMLİ KART: KALAN KREDİ --}}
+                @if(function_exists('ai_get_credit_balance'))
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card card-sm border-warning">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <span class="avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                                        💰
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium text-warning">
+                                        {{ format_credit(ai_get_credit_balance()) }}
+                                    </div>
+                                    <div class="small">
+                                        💰 Mevcut Bakiye
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                
                 {{-- System Status Card --}}
                 <div class="col-sm-6 col-lg-3">
                     <div class="card card-sm">

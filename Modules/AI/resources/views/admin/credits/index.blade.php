@@ -1,10 +1,11 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('page-title', 'Kredi Yönetimi')
 @section('page-subtitle', 'AI kredi paketleri ve kullanım yönetimi')
 
 @section('content')
-<div class="container-xl">
     <div class="row">
         <!-- Kredi Paketleri Kartı -->
         <div class="col-12">
@@ -40,7 +41,7 @@
                                         
                                         <div class="my-3">
                                             <span class="display-6 fw-bold text-primary">
-                                                {{ number_format($package->credits, 0) }}
+                                                {{ format_credit($package->credit_amount, false) }}
                                             </span>
                                             <span class="text-muted fs-4">kredi</span>
                                         </div>
@@ -48,25 +49,19 @@
                                         <div class="mb-3">
                                             @if($package->discount_percentage > 0)
                                                 <span class="text-decoration-line-through text-muted">
-                                                    ${{ number_format($package->price_usd, 2) }}
+                                                    {{ $package->formatted_price }}
                                                 </span>
                                                 <br>
                                                 <span class="h4 text-success">
-                                                    ${{ number_format($package->discounted_price, 2) }}
+                                                    {{ $package->formatted_price }}
                                                 </span>
                                                 <span class="badge bg-success ms-1">
                                                     %{{ $package->discount_percentage }} İndirim
                                                 </span>
                                             @else
                                                 <span class="h4 text-primary">
-                                                    ${{ number_format($package->price_usd, 2) }}
+                                                    {{ $package->formatted_price }}
                                                 </span>
-                                            @endif
-                                            
-                                            @if($package->price_try)
-                                                <div class="text-muted small">
-                                                    (₺{{ number_format($package->price_try, 2) }})
-                                                </div>
                                             @endif
                                         </div>
                                         
@@ -162,7 +157,7 @@
                     </div>
                     <div class="h1 mb-0 text-info">
                         @if($packages->count() > 0)
-                            ${{ number_format($packages->min('price_usd'), 0) }} - ${{ number_format($packages->max('price_usd'), 0) }}
+                            {{ number_format($packages->min('price'), 0) }} - {{ number_format($packages->max('price'), 0) }} {{ $packages->first()->currency }}
                         @else
                             -
                         @endif
@@ -213,5 +208,4 @@
             </div>
         </div>
     </div>
-</div>
 @endsection

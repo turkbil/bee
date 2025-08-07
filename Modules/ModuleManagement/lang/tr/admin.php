@@ -55,7 +55,7 @@ return [
     'no_slug_configuration' => 'Slug yapılandırması yok',
     'page_url' => 'Sayfa URL',
     'preview' => 'Önizle',
-    'reset_all_button' => 'Tümünü Sıfırla',
+    'reset_all_button' => 'URL Ayarlarını Sıfırla',
     'reset_to_default' => 'Varsayılana Sıfırla',
     'search_placeholder' => 'Modül ara...',
     'seo_friendly_urls' => 'SEO Dostu URL\'ler',

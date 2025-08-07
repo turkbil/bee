@@ -49,8 +49,7 @@
             $langSeoData = [
                 'seo_title' => $seoDataCache[$lang]['seo_title'] ?? '',
                 'seo_description' => $seoDataCache[$lang]['seo_description'] ?? '',
-                'seo_keywords' => $seoDataCache[$lang]['seo_keywords'] ?? '',
-                'canonical_url' => $seoDataCache[$lang]['canonical_url'] ?? ''
+                'seo_keywords' => $seoDataCache[$lang]['seo_keywords'] ?? ''
             ];
             
             // Var olan model ise veritabanından al
@@ -138,24 +137,6 @@
         </div>
     @endforeach
     
-    {{-- Language neutral SEO fields --}}
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="form-floating">
-                <input type="url" 
-                       wire:model="seoDataCache.canonical_url"
-                       class="form-control @error('seoDataCache.canonical_url') is-invalid @enderror"
-                       placeholder="{{ __('admin.canonical_url') }}">
-                <label>
-                    {{ __('admin.canonical_url') }}
-                    <small class="text-muted">{{ __('admin.canonical_url_help') }}</small>
-                </label>
-                @error('seoDataCache.canonical_url')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-        </div>
-    </div>
     
     {{-- SEO Preview Card --}}
     <div class="card bg-light mt-4">
@@ -168,7 +149,7 @@
                     {{ $seoDataCache[$currentLanguage]['seo_title'] ?? 'SEO Başlık' }}
                 </div>
                 <div class="preview-url text-success small">
-                    {{ $seoDataCache['canonical_url'] ?? request()->url() }}
+                    {{ request()->url() }}
                 </div>
                 <div class="preview-description text-muted">
                     {{ $seoDataCache[$currentLanguage]['seo_description'] ?? 'SEO açıklama metni burada görünecek...' }}

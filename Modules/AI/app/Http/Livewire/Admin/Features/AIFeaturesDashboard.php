@@ -279,7 +279,7 @@ class AIFeaturesDashboard extends Component
                 return [
                     'id' => $usage->id,
                     'type' => ucfirst($usage->feature_slug ?? 'ai_general'),
-                    'tokens' => number_format($usage->credit_cost, 4) . ' kredi',
+                    'tokens' => format_credit($usage->credit_cost),
                     'description' => 'AI İşlemi (' . ($usage->provider_name ?? 'unknown') . ')',
                     'user' => $usage->user?->name ?? 'Bilinmeyen',
                     'time' => $timeAgo,

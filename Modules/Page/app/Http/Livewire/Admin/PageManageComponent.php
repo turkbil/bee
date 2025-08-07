@@ -212,9 +212,9 @@ class PageManageComponent extends Component
            $this->currentLanguage = session('js_current_language');
            \Log::info('🔄 Normal kaydet - JS dili korundu:', ['language' => $this->currentLanguage]);
        } else {
-           // İlk yükleme - DAIMA TR default
-           $defaultLanguage = session('site_default_language', 'tr');
-           $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : 'tr';
+           // İlk yükleme - dinamik default dil
+           $defaultLanguage = session('site_default_language', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
+           $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
        }
    }
 
@@ -702,7 +702,7 @@ class PageManageComponent extends Component
    
       if ($resetForm && !$this->pageId) {
           $this->reset();
-          $this->currentLanguage = 'tr';
+          $this->currentLanguage = get_tenant_default_locale();
           // Dinamik olarak aktif dillerden boş inputs oluştur
           $this->initializeEmptyInputs();
       }

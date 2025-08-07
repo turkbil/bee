@@ -13,7 +13,7 @@ class TenantLanguageSwitcher extends Component
     {
         // 3 Aşamalı Hibrit Sistem ile tenant dili al
         $this->currentLanguage = current_tenant_language();
-        $this->availableLanguages = available_tenant_languages();
+        $this->availableLanguages = \App\Services\TenantLanguageProvider::getActiveLanguages();
     }
 
     public function switchLanguage($locale)
@@ -48,7 +48,7 @@ class TenantLanguageSwitcher extends Component
     public function render()
     {
         // En güncel dil listesi al
-        $this->availableLanguages = available_tenant_languages();
+        $this->availableLanguages = \App\Services\TenantLanguageProvider::getActiveLanguages();
         
         return view('languagemanagement::livewire.tenant-language-switcher');
     }

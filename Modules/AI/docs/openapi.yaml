@@ -1,0 +1,679 @@
+openapi: 3.0.3
+info:
+  title: AI Module API V2
+  description: |
+    # AI Module API Documentation
+    
+    This API provides access to AI features including chat, feature-specific processing, credit management, and more.
+    
+    ## Authentication
+    - Public endpoints: Rate-limited access for guest users
+    - Authenticated endpoints: Requires Bearer token (Laravel Sanctum)
+    
+    ## Rate Limiting
+    - Public chat: 10 requests per hour per IP
+    - Public features: 5 requests per hour per IP per feature
+    - Status endpoint: 120 requests per minute
+    
+    ## Credit System
+    - Authenticated users have credit-based access
+    - Credits are consumed based on feature usage and response length
+    - Public access doesn't consume credits but has strict rate limits
+    
+  version: 2.0.0
+  contact:
+    name: AI Module Support
+    email: support@turkbilbee.com
+  license:
+    name: Proprietary
+    url: https://turkbilbee.com/license
+
+servers:
+  - url: https://api.turkbilbee.com/api/ai/v1
+    description: Production Server
+  - url: https://staging.turkbilbee.com/api/ai/v1
+    description: Staging Server
+  - url: http://localhost:8000/api/ai/v1
+    description: Development Server
+
+tags:
+  - name: Public Chat
+    description: Public chat endpoints with rate limiting
+  - name: Public Features
+    description: Access to specific AI features
+  - name: Authenticated
+    description: Endpoints requiring authentication
+  - name: System
+    description: System status and health checks
+
+paths:
+  /status:
+    get:
+      tags:
+        - System
+      summary: Get API Status
+      description: Returns the current operational status of the AI API
+      operationId: getStatus
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+      security: []
+
+  /features/public:
+    get:
+      tags:
+        - Public Features
+      summary: List Public Features
+      description: Returns a list of all available public AI features
+      operationId: getPublicFeatures
+      responses:
+        '200':
+          description: List of public features
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicFeaturesResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+
+  /chat:
+    post:
+      tags:
+        - Public Chat
+      summary: Public Chat
+      description: |
+        Send a message to the AI chat system as a guest user.
+        
+        Rate limited to 10 requests per hour per IP address.
+        Supports optional feature selection for specialized responses.
+      operationId: publicChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicChatRequest'
+            examples:
+              simple:
+                summary: Simple chat message
+                value:
+                  message: "What is artificial intelligence?"
+              with_feature:
+                summary: Chat with specific feature
+                value:
+                  message: "Translate this to Turkish: Hello world"
+                  feature: "translation"
+              with_context:
+                summary: Chat with context
+                value:
+                  message: "Continue the conversation"
+                  context:
+                    previous_message: "We were discussing AI"
+                    session_id: "abc123"
+      responses:
+        '200':
+          description: Successful chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicChatResponse'
+              examples:
+                success:
+                  summary: Successful response
+                  value:
+                    success: true
+                    data:
+                      message: "Artificial intelligence is..."
+                      feature_used: null
+                      remaining_requests: 9
+                      credits_used: 0
+                      response_id: "resp_123"
+        '404':
+          description: Feature not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+
+  /feature/{slug}:
+    post:
+      tags:
+        - Public Features
+      summary: Use Public Feature
+      description: |
+        Access a specific AI feature by its slug.
+        
+        Rate limited to 5 requests per hour per IP per feature.
+        Each feature may have specific input requirements.
+      operationId: publicFeature
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: The unique slug identifier of the AI feature
+          schema:
+            type: string
+            example: translation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicFeatureRequest'
+            examples:
+              translation:
+                summary: Translation feature
+                value:
+                  input: "Hello world"
+                  options:
+                    target_language: "tr"
+              seo_analysis:
+                summary: SEO analysis feature
+                value:
+                  input: "This is my blog post content..."
+                  options:
+                    include_keywords: true
+                    max_suggestions: 5
+      responses:
+        '200':
+          description: Successful feature response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicFeatureResponse'
+        '404':
+          description: Feature not found or not public
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+        '500':
+          description: Feature processing failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+
+  /chat/user:
+    post:
+      tags:
+        - Authenticated
+      summary: Authenticated User Chat
+      description: |
+        Send a message to the AI chat system as an authenticated user.
+        
+        Consumes credits based on feature usage and response length.
+        Provides enhanced context and personalization.
+      operationId: userChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserChatRequest'
+      responses:
+        '200':
+          description: Successful chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserChatResponse'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Insufficient credits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsufficientCreditsError'
+        '500':
+          description: Chat processing failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+
+  /credits/balance:
+    get:
+      tags:
+        - Authenticated
+      summary: Get Credit Balance
+      description: |
+        Returns the current credit balance and usage statistics for the authenticated user.
+        
+        Includes recent usage history and summary statistics.
+      operationId: getCreditBalance
+      responses:
+        '200':
+          description: Credit balance information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditBalanceResponse'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to get credit balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+
+components:
+  schemas:
+    StatusResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - status
+            - version
+            - features_available
+            - public_access
+            - timestamp
+          properties:
+            status:
+              type: string
+              enum: [operational, degraded, maintenance]
+              example: operational
+            version:
+              type: string
+              example: "2.0"
+            features_available:
+              type: boolean
+              example: true
+            public_access:
+              type: boolean
+              example: true
+            timestamp:
+              type: string
+              format: date-time
+              example: "2025-01-08T10:30:00Z"
+
+    PublicFeaturesResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - features
+            - total
+          properties:
+            features:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicFeature'
+            total:
+              type: integer
+              example: 15
+
+    PublicFeature:
+      type: object
+      required:
+        - slug
+        - name
+        - description
+      properties:
+        slug:
+          type: string
+          example: translation
+        name:
+          type: string
+          example: Translation Assistant
+        description:
+          type: string
+          example: Translate text between multiple languages
+        icon:
+          type: string
+          nullable: true
+          example: fas fa-language
+        category:
+          type: string
+          nullable: true
+          example: language
+
+    PublicChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          minLength: 3
+          maxLength: 500
+          example: "What is artificial intelligence?"
+        feature:
+          type: string
+          nullable: true
+          description: Optional feature slug for specialized responses
+          example: translation
+        context:
+          type: object
+          nullable: true
+          description: Optional context for the conversation
+          additionalProperties: true
+
+    PublicChatResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - message
+            - remaining_requests
+            - credits_used
+          properties:
+            message:
+              type: string
+              example: "Artificial intelligence is..."
+            feature_used:
+              type: string
+              nullable: true
+              example: translation
+            remaining_requests:
+              type: integer
+              example: 9
+            credits_used:
+              type: integer
+              example: 0
+            response_id:
+              type: string
+              nullable: true
+              example: "resp_123"
+
+    PublicFeatureRequest:
+      type: object
+      required:
+        - input
+      properties:
+        input:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          example: "Text to process"
+        options:
+          type: object
+          nullable: true
+          description: Feature-specific options
+          additionalProperties: true
+
+    PublicFeatureResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - response
+            - feature
+            - remaining_requests
+          properties:
+            response:
+              type: string
+              example: "Processed response"
+            feature:
+              type: object
+              required:
+                - slug
+                - name
+                - description
+              properties:
+                slug:
+                  type: string
+                  example: translation
+                name:
+                  type: string
+                  example: Translation Assistant
+                description:
+                  type: string
+                  example: Translate text between languages
+            formatted_response:
+              type: object
+              nullable: true
+              description: Feature-specific formatted response
+              additionalProperties: true
+            remaining_requests:
+              type: integer
+              example: 4
+            execution_time:
+              type: number
+              nullable: true
+              example: 0.523
+
+    UserChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          minLength: 3
+          maxLength: 1000
+          example: "Explain quantum computing"
+        feature:
+          type: string
+          nullable: true
+          example: technical_writer
+        context:
+          type: object
+          nullable: true
+          additionalProperties: true
+
+    UserChatResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - message
+            - credits_used
+            - credits_remaining
+          properties:
+            message:
+              type: string
+              example: "Quantum computing is..."
+            credits_used:
+              type: integer
+              example: 2
+            credits_remaining:
+              type: integer
+              example: 98
+            feature_used:
+              type: string
+              nullable: true
+              example: technical_writer
+            response_id:
+              type: string
+              nullable: true
+              example: "resp_456"
+
+    CreditBalanceResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - credits_available
+            - recent_usage
+            - usage_summary
+          properties:
+            credits_available:
+              type: integer
+              example: 150
+            recent_usage:
+              type: array
+              items:
+                type: object
+                properties:
+                  feature_slug:
+                    type: string
+                    example: translation
+                  credits_used:
+                    type: integer
+                    example: 5
+                  created_at:
+                    type: string
+                    format: date-time
+            usage_summary:
+              type: object
+              properties:
+                last_30_days:
+                  type: integer
+                  example: 45
+                most_used_feature:
+                  type: string
+                  nullable: true
+                  example: translation
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "An error occurred"
+
+    RateLimitError:
+      type: object
+      required:
+        - success
+        - error
+        - retry_after
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Rate limit exceeded"
+        retry_after:
+          type: integer
+          description: Seconds until the rate limit resets
+          example: 3600
+
+    InsufficientCreditsError:
+      type: object
+      required:
+        - success
+        - error
+        - credits_available
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Insufficient credits"
+        credits_available:
+          type: integer
+          example: 0
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Laravel Sanctum Bearer token authentication.
+        
+        Include the token in the Authorization header:
+        ```
+        Authorization: Bearer YOUR_TOKEN_HERE
+        ```
+
+security:
+  - bearerAuth: []

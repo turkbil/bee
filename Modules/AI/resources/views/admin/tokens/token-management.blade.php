@@ -154,7 +154,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Gerçek Bakiye</label>
-                        <div class="form-control-plaintext">{{ number_format($currentBalance, 0) }} kredi</div>
+                        <div class="form-control-plaintext">{{ format_credit($currentBalance) }}</div>
                         <small class="text-muted">
                             Satın alınan: {{ \App\Helpers\TokenHelper::format($selectedTenant->total_purchased ?? 0) }} | 
                             Kullanılan: {{ \App\Helpers\TokenHelper::format($selectedTenant->total_used ?? 0) }}

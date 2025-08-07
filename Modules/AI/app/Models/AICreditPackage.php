@@ -14,9 +14,9 @@ class AICreditPackage extends Model
     protected $fillable = [
         'name',
         'description', 
-        'credits',
-        'price_usd',
-        'price_try',
+        'credit_amount',
+        'price',
+        'currency',
         'is_popular',
         'is_active',
         'sort_order',
@@ -25,9 +25,8 @@ class AICreditPackage extends Model
     ];
     
     protected $casts = [
-        'credits' => 'decimal:2',
-        'price_usd' => 'decimal:2',
-        'price_try' => 'decimal:2',
+        'credit_amount' => 'decimal:2',
+        'price' => 'decimal:2',
         'is_popular' => 'boolean',
         'is_active' => 'boolean',
         'features' => 'array',
@@ -41,7 +40,7 @@ class AICreditPackage extends Model
     {
         return self::where('is_active', true)
             ->orderBy('sort_order')
-            ->orderBy('price_usd')
+            ->orderBy('price')
             ->get();
     }
     
@@ -56,11 +55,11 @@ class AICreditPackage extends Model
     }
     
     /**
-     * Kredi/USD oranını hesapla
+     * Kredi/Fiyat oranını hesapla
      */
-    public function getCreditPerDollarAttribute()
+    public function getCreditPerPriceAttribute()
     {
-        return $this->price_usd > 0 ? round($this->credits / $this->price_usd, 2) : 0;
+        return $this->price > 0 ? round($this->credit_amount / $this->price, 2) : 0;
     }
     
     /**
@@ -69,20 +68,26 @@ class AICreditPackage extends Model
     public function getDiscountedPriceAttribute()
     {
         if ($this->discount_percentage > 0) {
-            return round($this->price_usd * (1 - $this->discount_percentage / 100), 2);
+            return round($this->price * (1 - $this->discount_percentage / 100), 2);
         }
-        return $this->price_usd;
+        return $this->price;
     }
     
     /**
-     * TL fiyat varsa onu döndür, yoksa USD*TL kurunu hesapla
+     * Paranın türüne göre formatlanmış fiyat
      */
-    public function getPriceInTry($usdToTryRate = 34.0)
+    public function getFormattedPriceAttribute()
     {
-        if ($this->price_try) {
-            return $this->price_try;
+        $price = $this->discounted_price;
+        
+        if ($this->currency === 'TRY') {
+            return number_format($price, 2) . ' ₺';
+        } elseif ($this->currency === 'USD') {
+            return '$' . number_format($price, 2);
+        } elseif ($this->currency === 'EUR') {
+            return '€' . number_format($price, 2);
         }
         
-        return round($this->discounted_price * $usdToTryRate, 2);
+        return number_format($price, 2) . ' ' . $this->currency;
     }
 }

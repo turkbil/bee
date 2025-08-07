@@ -4,6 +4,7 @@ namespace Modules\AI\App\Services;
 
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\AIPriorityEngine;
+use Modules\AI\App\Services\SmartResponseFormatter;
 use Modules\AI\App\Models\AIFeature;
 use App\Helpers\TenantHelpers;
 use Illuminate\Support\Facades\Log;
@@ -30,11 +31,13 @@ class AIResponseRepository
 {
     private AIService $aiService;
     private AIPriorityEngine $priorityEngine;
+    private SmartResponseFormatter $formatter;
 
     public function __construct(AIService $aiService)
     {
         $this->aiService = $aiService;
         $this->priorityEngine = new AIPriorityEngine();
+        $this->formatter = new SmartResponseFormatter();
     }
 
     /**
@@ -530,17 +533,36 @@ class AIResponseRepository
             }
         }
         
-        // AI'ın direkt HTML response vermesi bekleniyor artık
-        // Template sistemini bypass et, direkt response'u kullan
-        if ($this->isHtmlResponse($response)) {
-            // AI HTML format vermiş, direkt kullan
-            $formattedResponse = $response;
-        } elseif ($responseTemplate && is_array($responseTemplate)) {
-            // Fallback: Template sistem uygula (eski yöntem)
-            $formattedResponse = $this->applyResponseTemplate($response, $responseTemplate, $feature);
-        } else {
-            // Template yoksa basit HTML wrap
-            $formattedResponse = $this->wrapResponseInCard($response, $feature->name);
+        // 🎨 SMART RESPONSE FORMATTER - Monoton 1-2-3 formatını kır
+        try {
+            // Orijinal input'u da göndermek için context'ten al
+            $originalInput = $feature->quick_prompt ?? 'AI İsteği';
+            
+            // Smart formatter uygula
+            $smartFormattedResponse = $this->formatter->format($originalInput, $response, $feature);
+            
+            Log::info('🎨 Smart Response Formatter applied', [
+                'feature' => $feature->slug,
+                'original_length' => strlen($response),
+                'formatted_length' => strlen($smartFormattedResponse)
+            ]);
+            
+            $formattedResponse = $smartFormattedResponse;
+            
+        } catch (\Exception $e) {
+            Log::warning('Smart Response Formatter failed, using fallback', [
+                'error' => $e->getMessage(),
+                'feature' => $feature->slug
+            ]);
+            
+            // Fallback: Eski sistem
+            if ($this->isHtmlResponse($response)) {
+                $formattedResponse = $response;
+            } elseif ($responseTemplate && is_array($responseTemplate)) {
+                $formattedResponse = $this->applyResponseTemplate($response, $responseTemplate, $feature);
+            } else {
+                $formattedResponse = $this->wrapResponseInCard($response, $feature->name);
+            }
         }
         
         return [

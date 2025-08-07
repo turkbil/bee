@@ -14,7 +14,7 @@
             </div>
             <div class="text-right">
                 <div class="text-4xl font-bold" id="currentBalance">
-                    {{ number_format(ai_get_credit_balance(), 4) }}
+                    {{ format_credit(ai_get_credit_balance(), false) }}
                 </div>
                 <div class="text-blue-100">Kredi</div>
             </div>
@@ -24,11 +24,11 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-blue-400">
             <div class="text-center">
                 <div class="text-lg font-semibold">Bu Ay Kullanılan</div>
-                <div class="text-2xl font-bold">{{ number_format(ai_get_monthly_credits_used(), 4) }}</div>
+                <div class="text-2xl font-bold">{{ format_credit(ai_get_monthly_credits_used(), false) }}</div>
             </div>
             <div class="text-center">
                 <div class="text-lg font-semibold">Toplam Kullanılan</div>
-                <div class="text-2xl font-bold">{{ number_format(ai_get_total_credits_used(), 4) }}</div>
+                <div class="text-2xl font-bold">{{ format_credit(ai_get_total_credits_used(), false) }}</div>
             </div>
             <div class="text-center">
                 <div class="text-lg font-semibold">Kalan Süre</div>
@@ -60,7 +60,7 @@
                         <!-- Kredi Miktarı -->
                         <div class="text-center mb-4">
                             <div class="text-3xl font-bold text-blue-600">
-                                {{ number_format($package->credits, 0) }}
+                                {{ format_credit($package->credits, false) }}
                             </div>
                             <div class="text-gray-500">Kredi</div>
                         </div>

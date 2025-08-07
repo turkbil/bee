@@ -103,7 +103,6 @@ class UniversalSeoComponent extends Component
                 'meta_title' => $seoSettings->meta_title,
                 'meta_description' => $seoSettings->meta_description,
                 'meta_keywords' => $seoSettings->meta_keywords,
-                'canonical_url' => $seoSettings->canonical_url,
                 'og_image' => $seoSettings->og_image,
                 'og_type' => $seoSettings->og_type,
                 'twitter_card' => $seoSettings->twitter_card,
@@ -146,7 +145,6 @@ class UniversalSeoComponent extends Component
             'meta_title' => '',
             'meta_description' => '',
             'meta_keywords' => '',
-            'canonical_url' => '',
             'og_image' => '',
             'og_type' => 'website',
             'twitter_card' => 'summary',
@@ -247,8 +245,7 @@ class UniversalSeoComponent extends Component
             || !empty($this->seoData['og_image']);
 
         // Advanced tab
-        $this->tabCompletionStatus['advanced'] = !empty($this->seoData['schema_markup']) 
-            || !empty($this->seoData['canonical_url']);
+        $this->tabCompletionStatus['advanced'] = !empty($this->seoData['schema_markup']);
     }
 
     protected function getValidationRules(): array

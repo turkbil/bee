@@ -1,16 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\AI\App\Http\Controllers\Admin\Tokens;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use Modules\AI\App\Models\AICreditPackage;
+use Modules\AI\App\Models\AICreditPurchase;
 use Modules\AI\App\Models\AICreditUsage;
+use Modules\AI\App\Services\AICreditService;
+use Modules\AI\App\Exceptions\AICreditException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class TokenManagementController extends Controller
 {
+    private AICreditService $creditService;
+
+    public function __construct()
+    {        
+        // Use manual service resolution to avoid constructor injection issues
+        $this->creditService = app(AICreditService::class);
+    }
     /**
      * Display AI kredi management dashboard
      */
@@ -34,8 +49,8 @@ class TokenManagementController extends Controller
         $systemStats = [
             'total_tenants' => Tenant::count(),
             'active_ai_tenants' => Tenant::where('ai_enabled', true)->count(),
-            'total_credits_distributed' => AITokenPurchase::where('status', 'completed')->sum('token_amount'),
-            'total_credits_used' => AITokenUsage::sum('tokens_used'),
+            'total_credits_distributed' => AICreditPurchase::where('status', 'completed')->sum('credit_amount'),
+            'total_credits_used' => AICreditUsage::sum('credit_used'),
         ];
 
         return view('ai::admin.tokens.index', compact('tenants', 'systemStats'));
@@ -51,44 +66,46 @@ class TokenManagementController extends Controller
             abort(403, 'Bu sayfaya erişim yetkiniz bulunmamaktadır.');
         }
 
-        $tenant->load(['aiTokenPurchases' => function($query) {
+        $tenant->load(['aiCreditPurchases' => function($query) {
             $query->with('package')->latest()->limit(10);
         }]);
 
-        $recentUsage = AITokenUsage::where('tenant_id', $tenant->id)
+        $recentUsage = AICreditUsage::where('tenant_id', $tenant->id)
             ->latest('used_at')
             ->limit(20)
             ->get();
 
-        $monthlyUsage = AITokenUsage::where('tenant_id', $tenant->id)
+        $monthlyUsage = AICreditUsage::where('tenant_id', $tenant->id)
             ->whereBetween('used_at', [now()->startOfMonth(), now()->endOfMonth()])
-            ->selectRaw('DATE(used_at) as date, SUM(tokens_used) as total_tokens')
+            ->selectRaw('DATE(used_at) as date, SUM(credit_used) as total_credits')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
 
-        // Calculate real kredi statistics for this tenant
-        $totalPurchasedTokens = AITokenPurchase::where('tenant_id', $tenant->id)
-            ->where('status', 'completed')
-            ->sum('token_amount');
-
-        $totalUsedTokens = AITokenUsage::where('tenant_id', $tenant->id)
-            ->sum('tokens_used');
-
-        $realTokenBalance = max(0, $totalPurchasedTokens - $totalUsedTokens);
+        // Calculate real credit statistics using new service
+        try {
+            $creditBalance = $this->creditService->getTenantCreditBalance($tenant->id);
+            $totalPurchasedCredits = $creditBalance['total_purchased'];
+            $totalUsedCredits = $creditBalance['total_used'];
+            $realCreditBalance = $creditBalance['remaining_balance'];
+        } catch (AICreditException $e) {
+            $totalPurchasedCredits = 0;
+            $totalUsedCredits = 0;
+            $realCreditBalance = 0;
+        }
         
         // Bu ay kullanımı hesapla
-        $monthlyUsedTokens = AITokenUsage::where('tenant_id', $tenant->id)
+        $monthlyUsedCredits = AICreditUsage::where('tenant_id', $tenant->id)
             ->whereBetween('used_at', [now()->startOfMonth(), now()->endOfMonth()])
-            ->sum('tokens_used');
+            ->sum('credit_used');
 
-        return view('ai::admin.tokens.show', compact('tenant', 'recentUsage', 'monthlyUsage', 'totalPurchasedTokens', 'totalUsedTokens', 'realTokenBalance', 'monthlyUsedTokens'));
+        return view('ai::admin.tokens.show', compact('tenant', 'recentUsage', 'monthlyUsage', 'totalPurchasedCredits', 'totalUsedCredits', 'realCreditBalance', 'monthlyUsedCredits'));
     }
 
     /**
      * Update tenant AI settings
      */
-    public function updateTenantSettings(Request $request, Tenant $tenant)
+    public function updateTenantSettings(Request $request, Tenant $tenant): JsonResponse|RedirectResponse
     {
         // Root admin check
         if (!auth()->user()->hasRole('root')) {
@@ -102,13 +119,13 @@ class TokenManagementController extends Controller
             'adjustment_reason' => 'string|nullable'
         ]);
 
-        // Calculate real kredi balance
-        $totalPurchased = AITokenPurchase::where('tenant_id', $tenant->id)
-            ->where('status', 'completed')
-            ->sum('token_amount');
-        $totalUsed = AITokenUsage::where('tenant_id', $tenant->id)
-            ->sum('tokens_used');
-        $realBalance = max(0, $totalPurchased - $totalUsed);
+        // Calculate real credit balance using service
+        try {
+            $creditBalance = $this->creditService->getTenantCreditBalance($tenant->id);
+            $realBalance = $creditBalance['remaining_balance'];
+        } catch (AICreditException $e) {
+            $realBalance = 0;
+        }
 
         $oldBalance = $tenant->ai_tokens_balance; // OLD METHOD
         $oldRealBalance = $realBalance; // NEW CORRECT METHOD
@@ -119,64 +136,47 @@ class TokenManagementController extends Controller
             'ai_monthly_token_limit' => $request->integer('ai_monthly_token_limit', 0)
         ]);
 
-        // Handle token adjustment
+        // Handle credit adjustment using service
         if ($request->filled('token_adjustment') && $request->integer('token_adjustment') != 0) {
-            $adjustment = $request->integer('token_adjustment');
+            $adjustment = (float) $request->integer('token_adjustment');
             
-            // Validation for negative adjustments using real balance
-            if ($adjustment < 0 && abs($adjustment) > $realBalance) {
+            try {
+                if ($adjustment > 0) {
+                    // Add credits using service
+                    $result = $this->creditService->addCreditsToTenant(
+                        tenantId: $tenant->id,
+                        amount: $adjustment,
+                        reason: $request->input('adjustment_reason', 'Admin tarafından kredi ekleme'),
+                        adminUserId: auth()->id()
+                    );
+                } else {
+                    // Deduct credits using service
+                    $result = $this->creditService->deductCreditsFromTenant(
+                        tenantId: $tenant->id,
+                        amount: abs($adjustment),
+                        reason: $request->input('adjustment_reason', 'Admin tarafından kredi düşürme'),
+                        adminUserId: auth()->id()
+                    );
+                }
+                
+                if (!$result->success) {
+                    if (request()->expectsJson()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => $result->message
+                        ]);
+                    }
+                    return redirect()->back()->with('error', $result->message);
+                }
+                
+            } catch (AICreditException $e) {
                 if (request()->expectsJson()) {
                     return response()->json([
-                        'success' => false, 
-                        'message' => 'Mevcut bakiyeden fazla kredi çıkarılamaz. Gerçek bakiye: ' . number_format($realBalance) . ' kredi'
+                        'success' => false,
+                        'message' => $e->getMessage()
                     ]);
                 }
-                return redirect()->back()->with('error', 'Mevcut bakiyeden fazla kredi çıkarılamaz.');
-            }
-            
-            // Calculate new balance (we still update the old field for backward compatibility)
-            $newBalance = max(0, $oldBalance + $adjustment);
-            
-            // Update tenant balance
-            $tenant->update(['ai_tokens_balance' => $newBalance]);
-            
-            // Log the adjustment
-            AITokenUsage::create([
-                'tenant_id' => $tenant->id,
-                'user_id' => auth()->id(),
-                'tokens_used' => abs($adjustment),
-                'prompt_tokens' => 0,
-                'completion_tokens' => 0,
-                'usage_type' => 'admin_adjustment',
-                'model' => 'admin',
-                'purpose' => $adjustment > 0 ? 'token_addition' : 'token_deduction',
-                'description' => $request->input('adjustment_reason', 'Admin tarafından kredi düzenlemesi'),
-                'metadata' => json_encode([
-                    'admin_id' => auth()->id(),
-                    'adjustment_amount' => $adjustment,
-                    'old_balance' => $oldBalance,
-                    'new_balance' => $newBalance
-                ]),
-                'used_at' => now()
-            ]);
-
-            // If tokens are added, record as purchase (free admin addition)
-            if ($adjustment > 0) {
-                AITokenPurchase::create([
-                    'tenant_id' => $tenant->id,
-                    'user_id' => auth()->id(),
-                    'package_id' => null, // No package for admin additions
-                    'token_amount' => $adjustment,
-                    'price_paid' => 0, // Free admin addition
-                    'amount' => 0,
-                    'currency' => 'TRY',
-                    'status' => 'completed',
-                    'payment_method' => 'admin_free',
-                    'payment_transaction_id' => null,
-                    'payment_data' => null,
-                    'notes' => 'Admin tarafından ücretsiz kredi ekleme: ' . $request->input('adjustment_reason', ''),
-                    'purchased_at' => now()
-                ]);
+                return redirect()->back()->with('error', $e->getMessage());
             }
         }
 
@@ -197,7 +197,7 @@ class TokenManagementController extends Controller
             abort(403, 'Bu sayfaya erişim yetkiniz bulunmamaktadır.');
         }
 
-        $packages = AITokenPackage::ordered()->get();
+        $packages = AICreditPackage::ordered()->get();
         
         return view('ai::admin.tokens.packages', compact('packages'));
     }
@@ -222,7 +222,7 @@ class TokenManagementController extends Controller
             'sort_order' => 'integer|min:0'
         ]);
 
-        AITokenPackage::create($request->all());
+        AICreditPackage::create($request->all());
 
         return redirect()->back()->with('success', 'Kredi paketi oluşturuldu.');
     }
@@ -230,7 +230,7 @@ class TokenManagementController extends Controller
     /**
      * Show package edit data
      */
-    public function editPackage(AITokenPackage $package)
+    public function editPackage(AICreditPackage $package): JsonResponse
     {
         // Root admin check
         if (!auth()->user()->hasRole('root')) {
@@ -254,7 +254,7 @@ class TokenManagementController extends Controller
     /**
      * Update token package
      */
-    public function updatePackage(Request $request, AITokenPackage $package)
+    public function updatePackage(Request $request, AICreditPackage $package): JsonResponse|RedirectResponse
     {
         // Root admin check
         if (!auth()->user()->hasRole('root')) {
@@ -284,7 +284,7 @@ class TokenManagementController extends Controller
     /**
      * Delete kredi package
      */
-    public function destroyPackage(AITokenPackage $package)
+    public function destroyPackage(AICreditPackage $package): JsonResponse|RedirectResponse
     {
         // Root admin check
         if (!auth()->user()->hasRole('root')) {
@@ -370,7 +370,7 @@ class TokenManagementController extends Controller
         $tenants = Tenant::select('id', 'title')->get();
 
         // Base query
-        $baseQuery = AITokenPurchase::with(['tenant', 'package']);
+        $baseQuery = AICreditPurchase::with(['tenant', 'package']);
         if ($selectedTenant) {
             $baseQuery->where('tenant_id', $selectedTenant);
         }
@@ -638,7 +638,7 @@ class TokenManagementController extends Controller
 
         try {
             foreach ($request->packages as $packageData) {
-                AITokenPackage::where('id', $packageData['id'])
+                AICreditPackage::where('id', $packageData['id'])
                     ->update(['sort_order' => $packageData['sort_order']]);
             }
 

@@ -85,19 +85,6 @@
                                         @enderror
                                     </div>
 
-                                    {{-- Canonical URL --}}
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-floating">
-                                            <input type="url" 
-                                                   wire:model.live="seoData.canonical_url"
-                                                   class="form-control @error('seoData.canonical_url') is-invalid @enderror"
-                                                   placeholder="{{ __('admin.canonical_url') }}">
-                                            <label>{{ __('admin.canonical_url') }}</label>
-                                            @error('seoData.canonical_url')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
 
                                     {{-- Focus Keyword --}}
                                     <div class="col-md-6 mb-3">
@@ -138,7 +125,7 @@
                                                 {{ $multiLangInputs[$currentLanguage]['title'] ?? 'SEO Başlık' }}
                                             </div>
                                             <div class="preview-url text-success small">
-                                                {{ $seoData['canonical_url'] ?? request()->url() }}
+                                                {{ request()->url() }}
                                             </div>
                                             <div class="preview-description text-muted">
                                                 {{ $multiLangInputs[$currentLanguage]['description'] ?? 'SEO açıklama metni burada görünecek...' }}

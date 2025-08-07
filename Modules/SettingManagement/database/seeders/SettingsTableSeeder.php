@@ -39,7 +39,7 @@ class SettingsTableSeeder extends Seeder
                 'label' => 'Favicon',
                 'key' => 'site_favicon',
                 'type' => 'file',
-                'default_value' => null,
+                'default_value' => 'favicon.ico',
                 'sort_order' => 3,
                 'is_active' => true,
                 'is_system' => true,

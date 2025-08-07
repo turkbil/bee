@@ -51,8 +51,8 @@ class AIProviderSeeder extends Seeder
                 'priority' => 30,
                 'average_response_time' => 0,
                 'description' => 'DeepSeek AI - Yüksek performanslı AI modeli (Fallback)',
-                'token_cost_multiplier' => 0.5000, // DeepSeek en ucuz
-                'tokens_per_request_estimate' => 120,
+                'credit_cost_multiplier' => 0.5000, // DeepSeek en ucuz
+                'credits_per_request_estimate' => 120,
                 'cost_structure' => [
                     'chat' => ['input' => 0.07, 'output' => 0.27],
                     'reasoning' => ['input' => 0.14, 'output' => 0.95]
@@ -93,8 +93,8 @@ class AIProviderSeeder extends Seeder
                 'priority' => 10,
                 'average_response_time' => 0,
                 'description' => 'OpenAI GPT modelleri - Güçlü dil modeli',
-                'token_cost_multiplier' => 1.0000, // OpenAI baseline
-                'tokens_per_request_estimate' => 100,
+                'credit_cost_multiplier' => 1.0000, // OpenAI baseline
+                'credits_per_request_estimate' => 100,
                 'cost_structure' => [
                     'gpt-4o-mini' => ['input' => 0.150, 'output' => 0.600],
                     'gpt-4o' => ['input' => 2.50, 'output' => 10.00],
@@ -130,8 +130,8 @@ class AIProviderSeeder extends Seeder
                 'priority' => 20,
                 'average_response_time' => 0,
                 'description' => 'Anthropic Claude - Güvenli ve akıllı AI asistan',
-                'token_cost_multiplier' => 1.2000, // Claude biraz daha pahalı
-                'tokens_per_request_estimate' => 90,
+                'credit_cost_multiplier' => 1.2000, // Claude biraz daha pahalı
+                'credits_per_request_estimate' => 90,
                 'cost_structure' => [
                     'claude-3-haiku' => ['input' => 0.25, 'output' => 1.25],
                     'claude-3.5-sonnet' => ['input' => 3.00, 'output' => 15.00]

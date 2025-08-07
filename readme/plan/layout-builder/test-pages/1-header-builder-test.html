@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Builder Test Sayfası</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .test-section {
+            border: 2px dashed #dee2e6;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .header-demo {
+            position: relative;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+        .config-panel {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .sticky-demo {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sol Panel: Konfigürasyon -->
+            <div class="col-md-4 bg-light p-4">
+                <h2 class="h4 mb-4">🎯 Header Builder Konfigürasyonu</h2>
+                
+                <!-- Layout Ayarları -->
+                <div class="config-panel">
+                    <h5>Layout Ayarları</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Header Tipi</label>
+                        <select class="form-select" id="headerType">
+                            <option value="horizontal">Horizontal (Yatay)</option>
+                            <option value="split">Split (Bölünmüş)</option>
+                            <option value="centered">Centered (Ortalanmış)</option>
+                            <option value="vertical">Vertical (Dikey)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yükseklik</label>
+                        <select class="form-select" id="headerHeight">
+                            <option value="auto">Auto</option>
+                            <option value="60px">60px</option>
+                            <option value="80px" selected>80px</option>
+                            <option value="100px">100px</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="stickyHeader" checked>
+                        <label class="form-check-label" for="stickyHeader">
+                            Sticky Header
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Logo Ayarları -->
+                <div class="config-panel">
+                    <h5>Logo Ayarları</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Logo Pozisyonu</label>
+                        <select class="form-select" id="logoPosition">
+                            <option value="left" selected>Sol</option>
+                            <option value="center">Orta</option>
+                            <option value="right">Sağ</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Logo Boyutu</label>
+                        <select class="form-select" id="logoSize">
+                            <option value="small">Küçük</option>
+                            <option value="medium" selected>Orta</option>
+                            <option value="large">Büyük</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-outline-primary btn-sm w-100">
+                            <i class="fas fa-upload me-2"></i>Logo Yükle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigasyon Ayarları -->
+                <div class="config-panel">
+                    <h5>Navigasyon Ayarları</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Menü Stili</label>
+                        <select class="form-select" id="menuStyle">
+                            <option value="minimal">Minimal</option>
+                            <option value="modern" selected>Modern</option>
+                            <option value="classic">Klasik</option>
+                            <option value="dropdown">Dropdown</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showMenuIcons">
+                        <label class="form-check-label" for="showMenuIcons">
+                            Menü İkonları Göster
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mobil Menü Tipi</label>
+                        <select class="form-select" id="mobileMenu">
+                            <option value="hamburger" selected>Hamburger</option>
+                            <option value="slide">Slide</option>
+                            <option value="accordion">Accordion</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- İletişim Bilgileri -->
+                <div class="config-panel">
+                    <h5>İletişim Bilgileri</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showPhone" checked>
+                        <label class="form-check-label" for="showPhone">Telefon Göster</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showEmail" checked>
+                        <label class="form-check-label" for="showEmail">E-posta Göster</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showAddress">
+                        <label class="form-check-label" for="showAddress">Adres Göster</label>
+                    </div>
+                </div>
+
+                <!-- Sosyal Medya -->
+                <div class="config-panel">
+                    <h5>Sosyal Medya</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showSocial" checked>
+                        <label class="form-check-label" for="showSocial">Sosyal Medya Göster</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="showFacebook" checked>
+                                <label class="form-check-label" for="showFacebook">Facebook</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="showTwitter" checked>
+                                <label class="form-check-label" for="showTwitter">Twitter</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="showInstagram" checked>
+                                <label class="form-check-label" for="showInstagram">Instagram</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="showLinkedin">
+                                <label class="form-check-label" for="showLinkedin">LinkedIn</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ek Özellikler -->
+                <div class="config-panel">
+                    <h5>Ek Özellikler</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showSearch" checked>
+                        <label class="form-check-label" for="showSearch">Arama Kutusu</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showLanguage" checked>
+                        <label class="form-check-label" for="showLanguage">Dil Değiştirici</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showCTA">
+                        <label class="form-check-label" for="showCTA">CTA Butonu</label>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" onclick="updatePreview()">
+                        <i class="fas fa-eye me-2"></i>Önizleme Güncelle
+                    </button>
+                    <button class="btn btn-success" onclick="saveConfiguration()">
+                        <i class="fas fa-save me-2"></i>Konfigürasyonu Kaydet
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetConfiguration()">
+                        <i class="fas fa-undo me-2"></i>Varsayılana Dön
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sağ Panel: Önizleme -->
+            <div class="col-md-8 p-4">
+                <h2 class="h4 mb-4">👁️ Header Önizleme</h2>
+
+                <!-- Test Başlığı -->
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Aşağıdaki örnekler farklı header tiplerini göstermektedir. Sol panelden konfigürasyonu değiştirerek canlı önizleme yapabilirsiniz.
+                </div>
+
+                <!-- Horizontal Header Demo -->
+                <div class="test-section">
+                    <h5>1. Horizontal Header (Yatay)</h5>
+                    <div class="header-demo" id="horizontal-header">
+                        <div class="container-fluid">
+                            <div class="row align-items-center py-3">
+                                <div class="col-md-2">
+                                    <div class="logo-area">
+                                        <img src="https://via.placeholder.com/150x40/007bff/ffffff?text=LOGO" alt="Logo" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <nav class="navbar navbar-expand-lg">
+                                        <ul class="navbar-nav d-flex flex-row">
+                                            <li class="nav-item me-3"><a class="nav-link" href="#">Ana Sayfa</a></li>
+                                            <li class="nav-item me-3"><a class="nav-link" href="#">Hakkımızda</a></li>
+                                            <li class="nav-item me-3"><a class="nav-link" href="#">Hizmetler</a></li>
+                                            <li class="nav-item me-3"><a class="nav-link" href="#">İletişim</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="header-actions d-flex align-items-center justify-content-end">
+                                        <div class="search-box me-3">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <div class="language-switcher me-3">
+                                            <img src="https://via.placeholder.com/20x15/ff0000/ffffff?text=TR" alt="TR" class="me-1">
+                                            <span>TR</span>
+                                        </div>
+                                        <div class="social-links">
+                                            <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+                                            <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                                            <a href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split Header Demo -->
+                <div class="test-section">
+                    <h5>2. Split Header (Bölünmüş)</h5>
+                    <div class="header-demo">
+                        <!-- Üst Bar -->
+                        <div style="background: #f8f9fa; padding: 8px 0; font-size: 14px;">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="contact-info">
+                                            <i class="fas fa-phone me-2"></i>0555 123 45 67
+                                            <i class="fas fa-envelope ms-3 me-2"></i>info@example.com
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <div class="social-links">
+                                            <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+                                            <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                                            <a href="#"><i class="fab fa-instagram"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Ana Header -->
+                        <div class="container-fluid">
+                            <div class="row align-items-center py-3">
+                                <div class="col-md-3">
+                                    <div class="logo-area text-center">
+                                        <img src="https://via.placeholder.com/180x50/007bff/ffffff?text=COMPANY+LOGO" alt="Logo" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <nav class="navbar navbar-expand-lg justify-content-center">
+                                        <ul class="navbar-nav d-flex flex-row">
+                                            <li class="nav-item me-4"><a class="nav-link fw-bold" href="#">Ana Sayfa</a></li>
+                                            <li class="nav-item me-4"><a class="nav-link fw-bold" href="#">Ürünler</a></li>
+                                            <li class="nav-item me-4"><a class="nav-link fw-bold" href="#">Hizmetler</a></li>
+                                            <li class="nav-item me-4"><a class="nav-link fw-bold" href="#">Blog</a></li>
+                                            <li class="nav-item"><a class="nav-link fw-bold" href="#">İletişim</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <div class="header-actions">
+                                        <div class="search-box d-inline-block me-3">
+                                            <input type="text" class="form-control form-control-sm d-inline-block" style="width: 150px;" placeholder="Ara...">
+                                        </div>
+                                        <button class="btn btn-primary btn-sm">İletişime Geç</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Centered Header Demo -->
+                <div class="test-section">
+                    <h5>3. Centered Header (Ortalanmış)</h5>
+                    <div class="header-demo">
+                        <div class="container-fluid text-center py-4">
+                            <div class="logo-area mb-3">
+                                <img src="https://via.placeholder.com/200x60/28a745/ffffff?text=BRAND+LOGO" alt="Logo" class="img-fluid">
+                            </div>
+                            <nav class="navbar navbar-expand-lg justify-content-center">
+                                <div class="d-flex align-items-center">
+                                    <ul class="navbar-nav d-flex flex-row align-items-center">
+                                        <li class="nav-item me-4"><a class="nav-link" href="#">Ana Sayfa</a></li>
+                                        <li class="nav-item me-4"><a class="nav-link" href="#">Portföy</a></li>
+                                        <li class="nav-item me-4">
+                                            <div class="search-box">
+                                                <i class="fas fa-search"></i>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item me-4"><a class="nav-link" href="#">Hakkımda</a></li>
+                                        <li class="nav-item me-4"><a class="nav-link" href="#">İletişim</a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                            <div class="social-languages mt-3">
+                                <div class="social-links d-inline-block me-4">
+                                    <a href="#" class="me-2"><i class="fab fa-behance"></i></a>
+                                    <a href="#" class="me-2"><i class="fab fa-dribbble"></i></a>
+                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                                <div class="language-switcher d-inline-block">
+                                    <img src="https://via.placeholder.com/20x15/ff0000/ffffff?text=TR" alt="TR" class="me-1">
+                                    <span class="me-2">TR</span>
+                                    <img src="https://via.placeholder.com/20x15/0000ff/ffffff?text=EN" alt="EN" class="me-1">
+                                    <span>EN</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Header Demo -->
+                <div class="test-section">
+                    <h5>4. Mobile Header (Responsive)</h5>
+                    <div class="header-demo" style="max-width: 375px; margin: 0 auto;">
+                        <div class="container-fluid">
+                            <div class="row align-items-center py-3">
+                                <div class="col-3">
+                                    <button class="btn btn-link p-0">
+                                        <i class="fas fa-bars fs-5"></i>
+                                    </button>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <img src="https://via.placeholder.com/100x30/dc3545/ffffff?text=LOGO" alt="Logo" class="img-fluid">
+                                </div>
+                                <div class="col-3 text-end">
+                                    <i class="fas fa-search me-2"></i>
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile Menu (Collapsed) -->
+                        <div class="mobile-menu bg-light p-3" style="display: none;">
+                            <ul class="list-unstyled mb-0">
+                                <li class="py-2 border-bottom"><a href="#" class="text-decoration-none">Ana Sayfa</a></li>
+                                <li class="py-2 border-bottom"><a href="#" class="text-decoration-none">Hakkımızda</a></li>
+                                <li class="py-2 border-bottom"><a href="#" class="text-decoration-none">Hizmetler</a></li>
+                                <li class="py-2 border-bottom"><a href="#" class="text-decoration-none">İletişim</a></li>
+                            </ul>
+                            <div class="mt-3 pt-3 border-top">
+                                <div class="contact-info small">
+                                    <div class="mb-2"><i class="fas fa-phone me-2"></i>0555 123 45 67</div>
+                                    <div class="mb-2"><i class="fas fa-envelope me-2"></i>info@example.com</div>
+                                </div>
+                                <div class="social-links mt-3">
+                                    <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+                                    <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sticky Header Demo -->
+                <div class="test-section">
+                    <h5>5. Sticky Header Davranışı</h5>
+                    <div class="header-demo sticky-demo bg-white">
+                        <div class="container-fluid">
+                            <div class="row align-items-center py-2">
+                                <div class="col-md-2">
+                                    <img src="https://via.placeholder.com/120x35/6f42c1/ffffff?text=STICKY" alt="Logo" class="img-fluid">
+                                </div>
+                                <div class="col-md-8">
+                                    <nav class="navbar navbar-expand-lg">
+                                        <ul class="navbar-nav d-flex flex-row">
+                                            <li class="nav-item me-4"><a class="nav-link" href="#">Ana Sayfa</a></li>
+                                            <li class="nav-item me-4"><a class="nav-link" href="#">Hakkımızda</a></li>
+                                            <li class="nav-item me-4"><a class="nav-link" href="#">Hizmetler</a></li>
+                                            <li class="nav-item me-4"><a class="nav-link" href="#">Blog</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="#">İletişim</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <i class="fas fa-search me-2"></i>
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Bu header sayfayı kaydırdığınızda sabit kalacak ve boyutu küçülecektir.
+                    </div>
+                </div>
+
+                <!-- Content for scroll test -->
+                <div class="mt-5">
+                    <h4>Test İçeriği</h4>
+                    <p>Bu alan sticky header'ın çalışmasını test etmek için eklendi. Sayfayı aşağı kaydırın ve header'ın davranışını gözlemleyin.</p>
+                    <div style="height: 1000px; background: linear-gradient(to bottom, #f8f9fa, #e9ecef); display: flex; align-items: center; justify-content: center;">
+                        <div class="text-center">
+                            <h3>Sayfa İçeriği</h3>
+                            <p>Header'ın sticky davranışını test edin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updatePreview() {
+            // Konfigürasyon değerlerini al
+            const headerType = document.getElementById('headerType').value;
+            const stickyHeader = document.getElementById('stickyHeader').checked;
+            const logoPosition = document.getElementById('logoPosition').value;
+            
+            // Sticky class'ını güncelle
+            const stickyDemo = document.querySelector('.sticky-demo');
+            if (stickyHeader) {
+                stickyDemo.classList.add('sticky-demo');
+            } else {
+                stickyDemo.classList.remove('sticky-demo');
+            }
+            
+            alert(`Header konfigürasyonu güncellendi!\n\nTip: ${headerType}\nSticky: ${stickyHeader ? 'Aktif' : 'Pasif'}\nLogo: ${logoPosition}`);
+        }
+
+        function saveConfiguration() {
+            // Konfigürasyonu topla
+            const config = {
+                layout: {
+                    type: document.getElementById('headerType').value,
+                    height: document.getElementById('headerHeight').value,
+                    sticky: document.getElementById('stickyHeader').checked
+                },
+                logo: {
+                    position: document.getElementById('logoPosition').value,
+                    size: document.getElementById('logoSize').value
+                },
+                navigation: {
+                    style: document.getElementById('menuStyle').value,
+                    show_icons: document.getElementById('showMenuIcons').checked,
+                    mobile_type: document.getElementById('mobileMenu').value
+                },
+                contact: {
+                    show_phone: document.getElementById('showPhone').checked,
+                    show_email: document.getElementById('showEmail').checked,
+                    show_address: document.getElementById('showAddress').checked
+                },
+                social: {
+                    show: document.getElementById('showSocial').checked,
+                    platforms: {
+                        facebook: document.getElementById('showFacebook').checked,
+                        twitter: document.getElementById('showTwitter').checked,
+                        instagram: document.getElementById('showInstagram').checked,
+                        linkedin: document.getElementById('showLinkedin').checked
+                    }
+                },
+                features: {
+                    search: document.getElementById('showSearch').checked,
+                    language: document.getElementById('showLanguage').checked,
+                    cta: document.getElementById('showCTA').checked
+                }
+            };
+            
+            console.log('Header Konfigürasyonu:', config);
+            alert('Header konfigürasyonu kaydedildi! Konsolu kontrol edin.');
+        }
+
+        function resetConfiguration() {
+            // Varsayılan değerlere dön
+            document.getElementById('headerType').value = 'horizontal';
+            document.getElementById('headerHeight').value = '80px';
+            document.getElementById('stickyHeader').checked = true;
+            document.getElementById('logoPosition').value = 'left';
+            document.getElementById('logoSize').value = 'medium';
+            document.getElementById('menuStyle').value = 'modern';
+            document.getElementById('showMenuIcons').checked = false;
+            document.getElementById('mobileMenu').value = 'hamburger';
+            
+            alert('Konfigürasyon varsayılan değerlere sıfırlandı!');
+        }
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.querySelector('.fa-bars').parentElement;
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (hamburgerBtn && mobileMenu) {
+                hamburgerBtn.addEventListener('click', function() {
+                    if (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') {
+                        mobileMenu.style.display = 'block';
+                    } else {
+                        mobileMenu.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

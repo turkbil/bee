@@ -85,11 +85,6 @@ return [
                 'required' => false,
                 'ai_suggest' => true
             ],
-            'canonical_url' => [
-                'type' => 'url',
-                'required' => false,
-                'auto_generate' => true
-            ],
             'og_title' => [
                 'type' => 'text',
                 'max_length' => 60,
@@ -139,7 +134,7 @@ return [
                 'key' => 'basic_seo',
                 'name' => 'Temel SEO',
                 'icon' => 'search',
-                'fields' => ['meta_title', 'meta_description', 'meta_keywords', 'canonical_url']
+                'fields' => ['meta_title', 'meta_description', 'meta_keywords']
             ],
             [
                 'key' => 'social_media',
@@ -226,7 +221,6 @@ return [
             'meta_title.*' => 'nullable|string|max:60',
             'meta_description.*' => 'nullable|string|max:160',
             'meta_keywords.*' => 'nullable|string|max:255',
-            'canonical_url' => 'nullable|url|max:255',
             'og_title.*' => 'nullable|string|max:60',
             'og_description.*' => 'nullable|string|max:160',
             'og_image' => 'nullable|image|max:2048',
@@ -245,8 +239,22 @@ return [
         */
         'multilingual' => [
             'enabled' => true,
-            'default_language' => 'tr',
-            'supported_languages' => ['tr', 'en', 'ar'],
+            'default_language' => function() {
+                // Dinamik default dil
+                try {
+                    return \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
+                } catch (\Exception $e) {
+                    return 'tr'; // Fallback
+                }
+            },
+            'supported_languages' => function() {
+                // Dinamik desteklenen diller
+                try {
+                    return \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+                } catch (\Exception $e) {
+                    return ['tr', 'en']; // Fallback
+                }
+            },
             'field_suffix' => '_multilang'
         ],
 

@@ -13,7 +13,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-3xl">
                 <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
-                    {{ $title ?? __('announcement::front.general.announcements') }}
+                    {{ $moduleTitle ?? __('announcement::front.general.announcements') }}
                 </h1>
                 <p class="text-lg text-gray-600 dark:text-gray-400">
                     Güncel duyuru ve haberlerimiz
@@ -116,6 +116,11 @@
                 </div>
             </article>
             @endforeach
+            @php
+                // Foreach döngüsü sonrası $item değişkenini temizle
+                // Böylece header.blade.php'de yanlış kullanılmaz
+                unset($item);
+            @endphp
         </div>
 
             <!-- Pagination -->

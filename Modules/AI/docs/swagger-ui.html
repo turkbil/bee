@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Module API V2 - Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.10.3/swagger-ui.css">
+    <link rel="icon" type="image/png" href="https://petstore.swagger.io/favicon-32x32.png" sizes="32x32">
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            background: #fafafa;
+        }
+
+        .swagger-ui .topbar {
+            background-color: #2c3e50;
+        }
+
+        .swagger-ui .topbar .download-url-wrapper {
+            display: flex;
+            flex: 3;
+            justify-content: flex-end;
+        }
+
+        .swagger-ui .topbar .download-url-wrapper .select-label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 0;
+            color: #f0f0f0;
+        }
+
+        .swagger-ui .topbar .download-url-wrapper .select-label span {
+            font-size: 14px;
+            flex: 1;
+            padding: 0 10px 0 0;
+            text-align: right;
+        }
+
+        .swagger-ui .topbar .download-url-wrapper .select-label select {
+            flex: 2;
+            width: 100%;
+            border: 2px solid #547f00;
+            outline: none;
+            box-shadow: none;
+            border-radius: 4px;
+            background: #fff;
+            padding: 5px;
+        }
+
+        .swagger-ui .info .title {
+            color: #2c3e50;
+        }
+
+        .swagger-ui .scheme-container {
+            background: #fff;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .swagger-ui .btn.authorize {
+            background-color: #547f00;
+            border-color: #547f00;
+        }
+
+        .swagger-ui .btn.authorize:hover {
+            background-color: #6d9f00;
+            border-color: #6d9f00;
+        }
+
+        .swagger-ui .opblock.opblock-post .opblock-summary-method {
+            background: #49cc90;
+        }
+
+        .swagger-ui .opblock.opblock-get .opblock-summary-method {
+            background: #61affe;
+        }
+
+        .swagger-ui .opblock.opblock-put .opblock-summary-method {
+            background: #fca130;
+        }
+
+        .swagger-ui .opblock.opblock-delete .opblock-summary-method {
+            background: #f93e3e;
+        }
+
+        .topbar-wrapper {
+            background: #2c3e50;
+            padding: 10px;
+        }
+
+        .topbar-wrapper img {
+            height: 40px;
+        }
+
+        .topbar-wrapper .link {
+            display: flex;
+            align-items: center;
+        }
+
+        .topbar-wrapper .link span {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        #swagger-ui {
+            margin-top: 60px;
+        }
+
+        .api-info-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .api-info-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+
+        .api-info-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .server-selector-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .server-selector-wrapper h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+<div class="topbar-wrapper">
+    <div class="link">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgNDAwIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4uY2xzLTF7ZmlsbDojZmZmO308L3N0eWxlPgogIDwvZGVmcz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE4MCIgZmlsbD0iIzY2N2VlYSIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMjIwIiBmb250LXNpemU9IjEyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiPkFJPC90ZXh0Pgo8L3N2Zz4=" alt="AI API">
+        <span>AI Module API V2</span>
+    </div>
+</div>
+
+<div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+    <div class="api-info-header">
+        <h1>🤖 AI Module API Documentation</h1>
+        <p>Complete API reference for AI features, chat, and credit management</p>
+    </div>
+
+    <div class="server-selector-wrapper">
+        <h3>Server Selection</h3>
+        <select id="server-selector" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #667eea; border-radius: 5px;">
+            <option value="http://localhost:8000/api/ai/v1">Development - http://localhost:8000/api/ai/v1</option>
+            <option value="https://staging.turkbilbee.com/api/ai/v1">Staging - https://staging.turkbilbee.com/api/ai/v1</option>
+            <option value="https://api.turkbilbee.com/api/ai/v1">Production - https://api.turkbilbee.com/api/ai/v1</option>
+        </select>
+    </div>
+</div>
+
+<div id="swagger-ui"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.10.3/swagger-ui-bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"></script>
+<script>
+    window.onload = function() {
+        // Get the OpenAPI spec - in production, this would be served from your server
+        const spec = './openapi.yaml';
+
+        // Initialize SwaggerUI
+        const ui = SwaggerUIBundle({
+            url: spec,
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout",
+            defaultModelsExpandDepth: 1,
+            defaultModelExpandDepth: 1,
+            docExpansion: "list",
+            filter: true,
+            showExtensions: true,
+            showCommonExtensions: true,
+            onComplete: function() {
+                console.log("Swagger UI loaded successfully");
+                
+                // Custom server selector
+                document.getElementById('server-selector').addEventListener('change', function(e) {
+                    ui.specActions.setSelectedServer(e.target.value);
+                });
+            },
+            requestInterceptor: (request) => {
+                // Add any custom headers here if needed
+                console.log('Request:', request);
+                return request;
+            },
+            responseInterceptor: (response) => {
+                console.log('Response:', response);
+                return response;
+            }
+        });
+
+        window.ui = ui;
+
+        // Add authentication token handler
+        const authBtn = document.querySelector('.btn.authorize');
+        if (authBtn) {
+            authBtn.addEventListener('click', function() {
+                console.log('Authorization dialog opened');
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

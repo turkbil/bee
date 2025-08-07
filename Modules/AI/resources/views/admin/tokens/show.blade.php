@@ -167,7 +167,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Gerçek Bakiye</label>
-                        <div class="form-control-plaintext">{{ number_format($realTokenBalance, 0) }} kredi</div>
+                        <div class="form-control-plaintext">{{ format_credit($realTokenBalance) }}</div>
                         <small class="text-muted">Satın alınan ({{ ai_format_token_count($totalPurchasedTokens) }}) - Kullanılan ({{ ai_format_token_count($totalUsedTokens) }}) = {{ ai_format_token_count($realTokenBalance) }}</small>
                     </div>
                     

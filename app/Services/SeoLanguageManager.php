@@ -21,10 +21,28 @@ class SeoLanguageManager
      * Layer 7: Audit Logging
      */
 
-    private static array $supportedLanguages = ['tr', 'en', 'de', 'fr', 'es', 'it', 'ru', 'ar'];
-    private static string $defaultLanguage = 'tr';
+    // Dinamik dil listesi - artık hardcode değil
+    private static ?array $supportedLanguages = null;
+    private static ?string $defaultLanguage = null;
     private static int $maxStringLength = 500;
     private static int $maxArrayItems = 50;
+
+    /**
+     * Dinamik dil listesi alma - TenantLanguageProvider entegrasyonu
+     */
+    private static function initializeLanguages(): void
+    {
+        if (self::$supportedLanguages === null) {
+            try {
+                self::$supportedLanguages = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+                self::$defaultLanguage = \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
+            } catch (\Exception $e) {
+                // Fallback to basic languages if service fails
+                self::$supportedLanguages = ['tr', 'en'];
+                self::$defaultLanguage = 'tr';
+            }
+        }
+    }
 
     /**
      * Layer 1: JSON Structure Validation
@@ -70,6 +88,8 @@ class SeoLanguageManager
      */
     public static function sanitizeLanguageData($data): array
     {
+        self::initializeLanguages();
+        
         if (!is_array($data)) {
             if (is_string($data)) {
                 // Convert string to default language structure
@@ -103,6 +123,7 @@ class SeoLanguageManager
      */
     public static function getSafeValue(array|string $data, string $locale, string $fallbackLocale = null): mixed
     {
+        self::initializeLanguages();
         $fallbackLocale = $fallbackLocale ?? self::$defaultLanguage;
         
         // Eğer string gelirse direkt döndür
@@ -508,11 +529,13 @@ class SeoLanguageManager
 
     public static function getSupportedLanguages(): array
     {
+        self::initializeLanguages();
         return self::$supportedLanguages;
     }
 
     public static function getDefaultLanguage(): string
     {
+        self::initializeLanguages();
         return self::$defaultLanguage;
     }
 

@@ -29,6 +29,9 @@ class TenantLanguagesSeeder extends Seeder
         foreach ($tenantSpecificLanguages as $language) {
             TenantLanguage::create($language);
         }
+        
+        // is_default kolonunu tenant'ın varsayılan locale'ine göre ayarla
+        $this->syncDefaultLanguageColumn();
     }
     
     /**
@@ -125,6 +128,34 @@ class TenantLanguagesSeeder extends Seeder
                 }
                 
                 return $languages;
+        }
+    }
+    
+    /**
+     * is_default kolonunu tenant'ın varsayılan locale'ine göre senkronize et
+     */
+    private function syncDefaultLanguageColumn(): void
+    {
+        try {
+            // Önce tüm is_default'ları false yap
+            TenantLanguage::query()->update(['is_default' => false]);
+            
+            // Tenant default locale'i bul
+            $tenant = null;
+            if (TenantHelpers::isCentral()) {
+                // Central: laravel.test
+                $defaultCode = 'tr';
+            } else {
+                $tenant = tenant();
+                $defaultCode = $tenant?->tenant_default_locale ?? 'tr';
+            }
+            
+            // Varsayılan dili true yap
+            TenantLanguage::where('code', $defaultCode)
+                ->update(['is_default' => true]);
+                
+        } catch (\Exception $e) {
+            $this->command->warn("is_default sync failed: " . $e->getMessage());
         }
     }
 }

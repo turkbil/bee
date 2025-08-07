@@ -43,8 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // 4. TEMA - Dil'den sonra
         $middleware->appendToGroup('web', \App\Http\Middleware\CheckThemeStatus::class);
         
-        // 5. SEO - Son sırada (CACHE KALDIRILDI - Sadece site rotalarında)
-        $middleware->appendToGroup('web', \App\Http\Middleware\SeoMetaTagMiddleware::class);
+        // 5. MissingPageRedirector
         $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
         
         // Middleware alias tanımları

@@ -165,7 +165,8 @@
       "mcp__claude-code-server__WebFetch",
       "Bash(valet:*)",
       "Bash(ping:*)",
-      "Bash(sudo lsof:*)"
+      "Bash(sudo lsof:*)",
+      "mcp__claude-code-server__WebSearch"
     ],
     "deny": []
   },

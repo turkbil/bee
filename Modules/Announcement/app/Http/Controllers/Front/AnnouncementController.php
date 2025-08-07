@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use App\Services\ModuleSlugService;
 use App\Traits\HasModuleAccessControl;
+use App\Models\ModuleTenantSetting;
 
 class AnnouncementController extends Controller
 {
@@ -29,16 +30,19 @@ class AnnouncementController extends Controller
             ->orderBy('created_at', 'desc')
             ->simplePaginate(10);
 
+        // Modül title'ını al
+        $moduleTitle = $this->getModuleTitle('Announcement');
+
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('index', 'announcement');
-            return view($viewPath, compact('items'));
+            return view($viewPath, compact('items', 'moduleTitle'));
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
-            return view('announcement::front.index', compact('items'));
+            return view('announcement::front.index', compact('items', 'moduleTitle'));
         }
     }
 
@@ -61,7 +65,7 @@ class AnnouncementController extends Controller
         
         if (!$item) {
             // Mevcut dilde bulunamadı, tüm dillerde ara (fallback)
-            $allLocales = array_column(available_tenant_languages(), 'code');
+            $allLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
             
             foreach ($allLocales as $locale) {
                 if ($locale === $currentLocale) {
@@ -129,5 +133,23 @@ class AnnouncementController extends Controller
         
         // Diğer diller için prefix ekle
         return url("/{$locale}/{$moduleSlug}/{$slug}");
+    }
+
+    /**
+     * Modül title'ını al - settings tablosundan varsa onu, yoksa fallback
+     */
+    private function getModuleTitle(string $moduleName): string
+    {
+        $currentLocale = app()->getLocale();
+        
+        // ModuleTenantSetting'den title al
+        $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
+        
+        if ($setting && $setting->title && isset($setting->title[$currentLocale])) {
+            return $setting->title[$currentLocale];
+        }
+        
+        // Fallback - ModuleSlugService'den default display name
+        return ModuleSlugService::getDefaultModuleName($moduleName, $currentLocale);
     }
 }

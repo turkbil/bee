@@ -173,10 +173,8 @@ class TenantLanguageComponent extends Component
             ->orderBy('name')
             ->get(); // paginate yerine get kullan çünkü sortable
 
-        // Her dile is_default property'sini ekle
-        $languages->each(function ($language) use ($defaultLanguageCode) {
-            $language->is_default = $language->code === $defaultLanguageCode;
-        });
+        // is_default kolonunu senkronize et
+        app(TenantLanguageService::class)->syncDefaultLanguageColumn();
 
         return view('languagemanagement::admin.livewire.site-language-component', [
             'languages' => $languages

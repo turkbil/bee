@@ -22,8 +22,6 @@ return [
     'seo_keywords_help' => 'Keywords related to your content (separate with commas)',
     'keywords_placeholder' => 'keyword 1, keyword 2',
     'keywords_separator_note' => '(separate with commas)',
-    'canonical_url' => 'Canonical URL',
-    'canonical_url_help' => 'The main URL address of this page (optional)',
     
     // Characters and limits
     'characters' => 'characters',

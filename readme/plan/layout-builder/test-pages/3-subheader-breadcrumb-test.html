@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subheader & Breadcrumb Builder Test Sayfası</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .test-section {
+            border: 2px dashed #dee2e6;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .subheader-demo {
+            position: relative;
+            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .config-panel {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .breadcrumb-item {
+            color: #6c757d;
+        }
+        .breadcrumb-item.active {
+            color: #495057;
+        }
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: var(--bs-breadcrumb-divider, "/");
+            color: #6c757d;
+        }
+        .page-title {
+            margin: 0;
+            font-weight: 600;
+        }
+        .cta-button {
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .subheader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%);
+        }
+        .subheader-content {
+            position: relative;
+            z-index: 2;
+        }
+        .badge-custom {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sol Panel: Konfigürasyon -->
+            <div class="col-md-4 bg-light p-4" style="height: 100vh; overflow-y: auto;">
+                <h2 class="h4 mb-4">🎯 Subheader & Breadcrumb Builder</h2>
+                
+                <!-- Genel Ayarlar -->
+                <div class="config-panel">
+                    <h5>Genel Ayarlar</h5>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showSubheader" checked>
+                        <label class="form-check-label" for="showSubheader">
+                            Subheader Göster
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subheader Tipi</label>
+                        <select class="form-select" id="subheaderType">
+                            <option value="simple" selected>Basit</option>
+                            <option value="with_bg">Arka Plan ile</option>
+                            <option value="hero">Hero Style</option>
+                            <option value="minimal">Minimal</option>
+                            <option value="centered">Ortalanmış</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yükseklik</label>
+                        <select class="form-select" id="subheaderHeight">
+                            <option value="small">Küçük (80px)</option>
+                            <option value="medium" selected>Orta (120px)</option>
+                            <option value="large">Büyük (180px)</option>
+                            <option value="xl">Çok Büyük (250px)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sayfa Başlığı Ayarları -->
+                <div class="config-panel">
+                    <h5>Sayfa Başlığı</h5>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showPageTitle" checked>
+                        <label class="form-check-label" for="showPageTitle">
+                            Sayfa Başlığı Göster
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Başlık Metni</label>
+                        <input type="text" class="form-control" id="pageTitleText" value="Ürünlerimiz">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Başlık Boyutu</label>
+                        <select class="form-select" id="titleSize">
+                            <option value="h1">H1 (En Büyük)</option>
+                            <option value="h2" selected>H2 (Büyük)</option>
+                            <option value="h3">H3 (Orta)</option>
+                            <option value="h4">H4 (Küçük)</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showPageDescription">
+                        <label class="form-check-label" for="showPageDescription">
+                            Sayfa Açıklaması Göster
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Açıklama Metni</label>
+                        <textarea class="form-control" id="pageDescriptionText" rows="2" placeholder="İsteğe bağlı sayfa açıklaması">Kaliteli ürünlerimizi keşfedin ve ihtiyacınıza uygun olanı bulun.</textarea>
+                    </div>
+                </div>
+
+                <!-- Breadcrumb Ayarları -->
+                <div class="config-panel">
+                    <h5>Breadcrumb Ayarları</h5>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showBreadcrumb" checked>
+                        <label class="form-check-label" for="showBreadcrumb">
+                            Breadcrumb Göster
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Breadcrumb Stili</label>
+                        <select class="form-select" id="breadcrumbStyle">
+                            <option value="default" selected>Varsayılan</option>
+                            <option value="pills">Pills</option>
+                            <option value="arrows">Oklar</option>
+                            <option value="dots">Noktalar</option>
+                            <option value="minimal">Minimal</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ayırıcı</label>
+                        <select class="form-select" id="breadcrumbSeparator">
+                            <option value="/" selected>/</option>
+                            <option value=">">></option>
+                            <option value="→">→</option>
+                            <option value="•">•</option>
+                            <option value="|">|</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showBreadcrumbIcons">
+                        <label class="form-check-label" for="showBreadcrumbIcons">
+                            Breadcrumb İkonları
+                        </label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showHomeIcon" checked>
+                        <label class="form-check-label" for="showHomeIcon">
+                            Ana Sayfa İkonu
+                        </label>
+                    </div>
+                </div>
+
+                <!-- CTA Buton Ayarları -->
+                <div class="config-panel">
+                    <h5>CTA Buton Ayarları</h5>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showCTAButton">
+                        <label class="form-check-label" for="showCTAButton">
+                            CTA Buton Göster
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Buton Metni</label>
+                        <input type="text" class="form-control" id="ctaButtonText" value="İletişime Geç">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Buton Stili</label>
+                        <select class="form-select" id="ctaButtonStyle">
+                            <option value="primary" selected>Primary</option>
+                            <option value="secondary">Secondary</option>
+                            <option value="success">Success</option>
+                            <option value="warning">Warning</option>
+                            <option value="outline-primary">Outline Primary</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Arka Plan Ayarları -->
+                <div class="config-panel">
+                    <h5>Arka Plan Ayarları</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Arka Plan Tipi</label>
+                        <select class="form-select" id="backgroundType">
+                            <option value="color" selected>Renk</option>
+                            <option value="gradient">Gradient</option>
+                            <option value="image">Resim</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Arka Plan Rengi</label>
+                        <input type="color" class="form-control form-control-color" id="backgroundColor" value="#f8f9fa">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Metin Rengi</label>
+                        <input type="color" class="form-control form-control-color" id="textColor" value="#333333">
+                    </div>
+                </div>
+
+                <!-- Responsive Ayarları -->
+                <div class="config-panel">
+                    <h5>Responsive Ayarları</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="hideMobileBreadcrumb">
+                        <label class="form-check-label" for="hideMobileBreadcrumb">
+                            Mobilde Breadcrumb Gizle
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="hideMobileCTA">
+                        <label class="form-check-label" for="hideMobileCTA">
+                            Mobilde CTA Gizle
+                        </label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="centerMobileContent" checked>
+                        <label class="form-check-label" for="centerMobileContent">
+                            Mobilde İçeriği Ortala
+                        </label>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" onclick="updatePreview()">
+                        <i class="fas fa-eye me-2"></i>Önizleme Güncelle
+                    </button>
+                    <button class="btn btn-success" onclick="saveConfiguration()">
+                        <i class="fas fa-save me-2"></i>Konfigürasyonu Kaydet
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetConfiguration()">
+                        <i class="fas fa-undo me-2"></i>Varsayılana Dön
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sağ Panel: Önizleme -->
+            <div class="col-md-8 p-4" style="height: 100vh; overflow-y: auto;">
+                <h2 class="h4 mb-4">👁️ Subheader & Breadcrumb Önizleme</h2>
+
+                <!-- Test Başlığı -->
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Aşağıdaki örnekler farklı subheader ve breadcrumb tiplerini göstermektedir. Sol panelden konfigürasyonu değiştirerek canlı önizleme yapabilirsiniz.
+                </div>
+
+                <!-- Simple Subheader Demo -->
+                <div class="test-section">
+                    <h5>1. Basit Subheader</h5>
+                    <div class="subheader-demo bg-light py-4">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <!-- Breadcrumb -->
+                                    <nav aria-label="breadcrumb" class="mb-3">
+                                        <ol class="breadcrumb mb-0">
+                                            <li class="breadcrumb-item">
+                                                <a href="#" class="text-decoration-none">
+                                                    <i class="fas fa-home me-1"></i>Ana Sayfa
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item">
+                                                <a href="#" class="text-decoration-none">Kategoriler</a>
+                                            </li>
+                                            <li class="breadcrumb-item active" aria-current="page">Ürünler</li>
+                                        </ol>
+                                    </nav>
+                                    
+                                    <!-- Page Title -->
+                                    <h2 class="page-title mb-2">Ürünlerimiz</h2>
+                                    <p class="text-muted mb-0">Kaliteli ürünlerimizi keşfedin ve ihtiyacınıza uygun olanı bulun.</p>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <button class="btn btn-primary cta-button">
+                                        <i class="fas fa-envelope me-2"></i>İletişime Geç
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Style Subheader Demo -->
+                <div class="test-section">
+                    <h5>2. Hero Style Subheader</h5>
+                    <div class="subheader-demo position-relative" style="height: 250px; background: url('https://via.placeholder.com/1200x400/4a90e2/ffffff?text=HERO+BACKGROUND') center/cover;">
+                        <div class="subheader-overlay"></div>
+                        <div class="subheader-content d-flex align-items-center h-100">
+                            <div class="container text-white">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <!-- Breadcrumb -->
+                                        <nav aria-label="breadcrumb" class="mb-3">
+                                            <ol class="breadcrumb mb-0">
+                                                <li class="breadcrumb-item">
+                                                    <a href="#" class="text-white-50 text-decoration-none">
+                                                        <i class="fas fa-home me-1"></i>Ana Sayfa
+                                                    </a>
+                                                </li>
+                                                <li class="breadcrumb-item">
+                                                    <a href="#" class="text-white-50 text-decoration-none">Hizmetler</a>
+                                                </li>
+                                                <li class="breadcrumb-item text-white" aria-current="page">Web Tasarım</li>
+                                            </ol>
+                                        </nav>
+                                        
+                                        <!-- Page Title -->
+                                        <h1 class="page-title mb-3 display-5">Profesyonel Web Tasarım</h1>
+                                        <p class="lead mb-4">Modern, responsive ve kullanıcı dostu web siteleri tasarlıyoruz. İşletmenizi dijital dünyada öne çıkarın.</p>
+                                        
+                                        <!-- CTA Buttons -->
+                                        <div class="d-flex gap-3">
+                                            <button class="btn btn-light btn-lg cta-button">
+                                                <i class="fas fa-play me-2"></i>Portfolyoyu İncele
+                                            </button>
+                                            <button class="btn btn-outline-light btn-lg cta-button">
+                                                <i class="fas fa-phone me-2"></i>Hemen Ara
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gradient Background Subheader Demo -->
+                <div class="test-section">
+                    <h5>3. Gradient Background Subheader</h5>
+                    <div class="subheader-demo py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="container text-white">
+                            <div class="row align-items-center">
+                                <div class="col-md-9">
+                                    <!-- Breadcrumb with Pills Style -->
+                                    <nav aria-label="breadcrumb" class="mb-3">
+                                        <ol class="breadcrumb mb-0">
+                                            <li class="breadcrumb-item">
+                                                <span class="badge bg-light text-dark me-2">
+                                                    <i class="fas fa-home me-1"></i>Ana Sayfa
+                                                </span>
+                                            </li>
+                                            <li class="breadcrumb-item">
+                                                <span class="badge bg-light text-dark me-2">Blog</span>
+                                            </li>
+                                            <li class="breadcrumb-item">
+                                                <span class="badge bg-white text-primary">Teknoloji</span>
+                                            </li>
+                                        </ol>
+                                    </nav>
+                                    
+                                    <!-- Page Title with Badge -->
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h1 class="page-title mb-0 me-3">Blog Yazıları</h1>
+                                        <span class="badge badge-custom bg-warning text-dark">Yeni</span>
+                                    </div>
+                                    <p class="mb-0 opacity-75">Teknoloji dünyasından son haberler ve güncel makaleler</p>
+                                </div>
+                                <div class="col-md-3 text-md-end">
+                                    <button class="btn btn-warning btn-lg cta-button text-dark">
+                                        <i class="fas fa-rss me-2"></i>Abone Ol
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minimal Subheader Demo -->
+                <div class="test-section">
+                    <h5>4. Minimal Subheader</h5>
+                    <div class="subheader-demo border-bottom py-3">
+                        <div class="container">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <!-- Simple Breadcrumb -->
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb mb-2 small">
+                                            <li class="breadcrumb-item">
+                                                <a href="#" class="text-decoration-none text-muted">Ana Sayfa</a>
+                                            </li>
+                                            <li class="breadcrumb-item text-muted" aria-current="page">İletişim</li>
+                                        </ol>
+                                    </nav>
+                                    <h3 class="page-title mb-0">İletişim</h3>
+                                </div>
+                                <div>
+                                    <button class="btn btn-outline-primary btn-sm cta-button">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Haritada Gör
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Centered Subheader Demo -->
+                <div class="test-section">
+                    <h5>5. Ortalanmış Subheader</h5>
+                    <div class="subheader-demo bg-primary text-white py-5">
+                        <div class="container text-center">
+                            <!-- Breadcrumb Centered -->
+                            <nav aria-label="breadcrumb" class="d-flex justify-content-center mb-3">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item">
+                                        <a href="#" class="text-white-50 text-decoration-none">
+                                            <i class="fas fa-home me-1"></i>Ana Sayfa
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="#" class="text-white-50 text-decoration-none">Şirket</a>
+                                    </li>
+                                    <li class="breadcrumb-item text-white" aria-current="page">Hakkımızda</li>
+                                </ol>
+                            </nav>
+                            
+                            <!-- Centered Title -->
+                            <h1 class="page-title mb-3 display-6">Hakkımızda</h1>
+                            <p class="lead mb-4 mx-auto" style="max-width: 600px;">
+                                10 yılı aşkın deneyimimizle müşterilerimize en iyi hizmeti sunmak için çalışıyoruz.
+                            </p>
+                            
+                            <!-- Centered CTA -->
+                            <div class="d-flex justify-content-center gap-3">
+                                <button class="btn btn-light btn-lg cta-button">
+                                    <i class="fas fa-users me-2"></i>Ekibimizi Tanı
+                                </button>
+                                <button class="btn btn-outline-light btn-lg cta-button">
+                                    <i class="fas fa-history me-2"></i>Tarihçemiz
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E-commerce Subheader Demo -->
+                <div class="test-section">
+                    <h5>6. E-commerce Subheader</h5>
+                    <div class="subheader-demo bg-white border py-4">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <!-- Breadcrumb with Product Info -->
+                                    <nav aria-label="breadcrumb" class="mb-3">
+                                        <ol class="breadcrumb mb-0">
+                                            <li class="breadcrumb-item">
+                                                <a href="#" class="text-decoration-none">
+                                                    <i class="fas fa-home me-1"></i>Ana Sayfa
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item">
+                                                <a href="#" class="text-decoration-none">Elektronik</a>
+                                            </li>
+                                            <li class="breadcrumb-item">
+                                                <a href="#" class="text-decoration-none">Telefon</a>
+                                            </li>
+                                            <li class="breadcrumb-item active" aria-current="page">iPhone 15 Pro</li>
+                                        </ol>
+                                    </nav>
+                                    
+                                    <!-- Product Title with Rating -->
+                                    <div class="d-flex align-items-center mb-2">
+                                        <h2 class="page-title mb-0 me-3">iPhone 15 Pro</h2>
+                                        <div class="rating">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-muted"></i>
+                                            <span class="text-muted ms-2">(128 değerlendirme)</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Product Info -->
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="badge bg-success">Stokta</span>
+                                        <span class="text-muted">SKU: IPH15PRO-256</span>
+                                        <span class="text-muted">Marka: Apple</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <div class="price-section mb-3">
+                                        <div class="h4 text-primary mb-0">₺45.999</div>
+                                        <small class="text-muted text-decoration-line-through">₺49.999</small>
+                                    </div>
+                                    <button class="btn btn-success btn-lg cta-button">
+                                        <i class="fas fa-shopping-cart me-2"></i>Sepete Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Subheader Demo -->
+                <div class="test-section">
+                    <h5>7. Mobile Subheader (Responsive)</h5>
+                    <div class="subheader-demo bg-light py-3" style="max-width: 375px; margin: 0 auto;">
+                        <div class="container-fluid px-3">
+                            <!-- Mobile Breadcrumb (Simplified) -->
+                            <nav aria-label="breadcrumb" class="mb-2">
+                                <ol class="breadcrumb mb-0 small">
+                                    <li class="breadcrumb-item">
+                                        <a href="#" class="text-decoration-none">
+                                            <i class="fas fa-arrow-left me-1"></i>Geri
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">Ürün Detayı</li>
+                                </ol>
+                            </nav>
+                            
+                            <!-- Mobile Title (Centered) -->
+                            <div class="text-center">
+                                <h4 class="page-title mb-2">Ürün Adı</h4>
+                                <p class="text-muted small mb-3">Kategori: Elektronik</p>
+                                <button class="btn btn-primary btn-sm cta-button w-100">
+                                    <i class="fas fa-heart me-2"></i>Favorilere Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breadcrumb Stilleri -->
+                <div class="test-section">
+                    <h5>8. Farklı Breadcrumb Stilleri</h5>
+                    
+                    <!-- Arrows Style -->
+                    <div class="mb-4">
+                        <h6>Arrow Style</h6>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="#" class="text-decoration-none">Ana Sayfa</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="#" class="text-decoration-none">Kategori</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Sayfa</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <!-- Pills Style -->
+                    <div class="mb-4">
+                        <h6>Pills Style</h6>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary">Ana Sayfa</span>
+                            <i class="fas fa-chevron-right text-muted"></i>
+                            <span class="badge bg-secondary">Kategori</span>
+                            <i class="fas fa-chevron-right text-muted"></i>
+                            <span class="badge bg-success">Mevcut Sayfa</span>
+                        </div>
+                    </div>
+
+                    <!-- Dots Style -->
+                    <div class="mb-4">
+                        <h6>Dots Style</h6>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="#" class="text-decoration-none">Ana Sayfa</a>
+                            <span class="text-muted">•</span>
+                            <a href="#" class="text-decoration-none">Kategori</a>
+                            <span class="text-muted">•</span>
+                            <span class="text-muted">Mevcut Sayfa</span>
+                        </div>
+                    </div>
+
+                    <!-- Minimal Style -->
+                    <div class="mb-4">
+                        <h6>Minimal Style</h6>
+                        <div class="small text-muted">
+                            Ana Sayfa / Kategori / <span class="text-dark">Mevcut Sayfa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updatePreview() {
+            const subheaderType = document.getElementById('subheaderType').value;
+            const showSubheader = document.getElementById('showSubheader').checked;
+            const pageTitleText = document.getElementById('pageTitleText').value;
+            const showBreadcrumb = document.getElementById('showBreadcrumb').checked;
+            const backgroundColor = document.getElementById('backgroundColor').value;
+            
+            // Subheader'ları göster/gizle
+            const subheaderDemos = document.querySelectorAll('.subheader-demo');
+            subheaderDemos.forEach(subheader => {
+                subheader.style.display = showSubheader ? 'block' : 'none';
+            });
+            
+            // Breadcrumb'ları göster/gizle
+            const breadcrumbs = document.querySelectorAll('[aria-label="breadcrumb"]');
+            breadcrumbs.forEach(breadcrumb => {
+                breadcrumb.style.display = showBreadcrumb ? 'block' : 'none';
+            });
+            
+            alert(`Subheader konfigürasyonu güncellendi!\n\nTip: ${subheaderType}\nGörünüm: ${showSubheader ? 'Aktif' : 'Gizli'}\nBaşlık: ${pageTitleText}\nBreadcrumb: ${showBreadcrumb ? 'Göster' : 'Gizle'}`);
+        }
+
+        function saveConfiguration() {
+            const config = {
+                general: {
+                    show: document.getElementById('showSubheader').checked,
+                    type: document.getElementById('subheaderType').value,
+                    height: document.getElementById('subheaderHeight').value
+                },
+                page_title: {
+                    show: document.getElementById('showPageTitle').checked,
+                    text: document.getElementById('pageTitleText').value,
+                    size: document.getElementById('titleSize').value,
+                    show_description: document.getElementById('showPageDescription').checked,
+                    description: document.getElementById('pageDescriptionText').value
+                },
+                breadcrumb: {
+                    show: document.getElementById('showBreadcrumb').checked,
+                    style: document.getElementById('breadcrumbStyle').value,
+                    separator: document.getElementById('breadcrumbSeparator').value,
+                    show_icons: document.getElementById('showBreadcrumbIcons').checked,
+                    show_home_icon: document.getElementById('showHomeIcon').checked
+                },
+                cta_button: {
+                    show: document.getElementById('showCTAButton').checked,
+                    text: document.getElementById('ctaButtonText').value,
+                    style: document.getElementById('ctaButtonStyle').value
+                },
+                background: {
+                    type: document.getElementById('backgroundType').value,
+                    color: document.getElementById('backgroundColor').value,
+                    text_color: document.getElementById('textColor').value
+                },
+                responsive: {
+                    hide_mobile_breadcrumb: document.getElementById('hideMobileBreadcrumb').checked,
+                    hide_mobile_cta: document.getElementById('hideMobileCTA').checked,
+                    center_mobile_content: document.getElementById('centerMobileContent').checked
+                }
+            };
+            
+            console.log('Subheader Konfigürasyonu:', config);
+            alert('Subheader konfigürasyonu kaydedildi! Konsolu kontrol edin.');
+        }
+
+        function resetConfiguration() {
+            // Varsayılan değerlere dön
+            document.getElementById('showSubheader').checked = true;
+            document.getElementById('subheaderType').value = 'simple';
+            document.getElementById('subheaderHeight').value = 'medium';
+            document.getElementById('showPageTitle').checked = true;
+            document.getElementById('pageTitleText').value = 'Ürünlerimiz';
+            document.getElementById('titleSize').value = 'h2';
+            document.getElementById('showBreadcrumb').checked = true;
+            document.getElementById('breadcrumbStyle').value = 'default';
+            document.getElementById('breadcrumbSeparator').value = '/';
+            document.getElementById('showCTAButton').checked = false;
+            document.getElementById('ctaButtonText').value = 'İletişime Geç';
+            document.getElementById('backgroundColor').value = '#f8f9fa';
+            document.getElementById('textColor').value = '#333333';
+            
+            alert('Subheader konfigürasyonu varsayılan değerlere sıfırlandı!');
+        }
+
+        // Dynamic breadcrumb separator update
+        document.getElementById('breadcrumbSeparator').addEventListener('change', function() {
+            const separator = this.value;
+            document.documentElement.style.setProperty('--bs-breadcrumb-divider', `"${separator}"`);
+        });
+
+        // Page title text update
+        document.getElementById('pageTitleText').addEventListener('input', function() {
+            const newTitle = this.value;
+            document.querySelectorAll('.page-title').forEach(title => {
+                if (!title.textContent.includes('iPhone') && !title.textContent.includes('Web Tasarım') && !title.textContent.includes('Blog')) {
+                    title.textContent = newTitle;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -15,11 +15,11 @@ class AICreditPackageSeeder extends Seeder
     {
         $packages = [
             [
-                'name' => 'Başlangıç Paketi',
+                'name' => 'Başlangıç',
                 'description' => 'Küçük projeler ve bireysel kullanım için ideal',
-                'credits' => 10.00,
-                'price_usd' => 5.00,
-                'price_try' => 170.00,
+                'credit_amount' => 10,
+                'price' => 170.00,
+                'currency' => 'TRY',
                 'is_popular' => false,
                 'is_active' => true,
                 'sort_order' => 1,
@@ -28,15 +28,14 @@ class AICreditPackageSeeder extends Seeder
                     'Temel AI özellikleri',
                     'Email desteği',
                     '30 gün geçerlilik'
-                ],
-                'discount_percentage' => 0
+                ]
             ],
             [
-                'name' => 'Standart Paket',
+                'name' => 'Standart',
                 'description' => 'Küçük işletmeler ve orta ölçekli projeler için',
-                'credits' => 50.00,
-                'price_usd' => 20.00,
-                'price_try' => 680.00,
+                'credit_amount' => 50,
+                'price' => 680.00,
+                'currency' => 'TRY',
                 'is_popular' => true,
                 'is_active' => true,
                 'sort_order' => 2,
@@ -46,15 +45,14 @@ class AICreditPackageSeeder extends Seeder
                     'Öncelikli email desteği',
                     '60 gün geçerlilik',
                     '%15 bonus kredi'
-                ],
-                'discount_percentage' => 15
+                ]
             ],
             [
-                'name' => 'Premium Paket',
+                'name' => 'Premium',
                 'description' => 'Büyük işletmeler ve yoğun kullanım için',
-                'credits' => 150.00,
-                'price_usd' => 50.00,
-                'price_try' => 1700.00,
+                'credit_amount' => 150,
+                'price' => 1700.00,
+                'currency' => 'TRY',
                 'is_popular' => false,
                 'is_active' => true,
                 'sort_order' => 3,
@@ -65,15 +63,14 @@ class AICreditPackageSeeder extends Seeder
                     '90 gün geçerlilik',
                     '%25 bonus kredi',
                     'API erişimi'
-                ],
-                'discount_percentage' => 25
+                ]
             ],
             [
-                'name' => 'Kurumsal Paket',
+                'name' => 'Enterprise',
                 'description' => 'Büyük organizasyonlar ve sınırsız kullanım için',
-                'credits' => 500.00,
-                'price_usd' => 150.00,
-                'price_try' => 5100.00,
+                'credit_amount' => 500,
+                'price' => 5100.00,
+                'currency' => 'TRY',
                 'is_popular' => false,
                 'is_active' => true,
                 'sort_order' => 4,
@@ -85,8 +82,7 @@ class AICreditPackageSeeder extends Seeder
                     '%35 bonus kredi',
                     'Özel API erişimi',
                     'Özel entegrasyonlar'
-                ],
-                'discount_percentage' => 35
+                ]
             ]
         ];
 

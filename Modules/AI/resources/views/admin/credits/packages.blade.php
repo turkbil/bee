@@ -1,10 +1,11 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('page-title', 'Kredi Paket Yönetimi')
 @section('page-subtitle', 'AI kredi paketlerini oluşturun ve düzenleyin')
 
 @section('content')
-<div class="container-xl">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -28,8 +29,7 @@
                                     <tr>
                                         <th>Paket</th>
                                         <th>Kredi</th>
-                                        <th>Fiyat (USD)</th>
-                                        <th>Fiyat (TL)</th>
+                                        <th colspan="2">Fiyat</th>
                                         <th>İndirim</th>
                                         <th>Durum</th>
                                         <th>Sıra</th>
@@ -54,30 +54,21 @@
                                         </td>
                                         <td>
                                             <span class="fw-bold text-primary">
-                                                {{ number_format($package->credits, 0) }}
+                                                {{ format_credit($package->credit_amount, false) }}
                                             </span>
                                         </td>
-                                        <td>
+                                        <td colspan="2">
                                             @if($package->discount_percentage > 0)
                                                 <div class="text-decoration-line-through text-muted small">
-                                                    ${{ number_format($package->price_usd, 2) }}
+                                                    {{ $package->formatted_price }}
                                                 </div>
                                                 <div class="fw-bold text-success">
-                                                    ${{ number_format($package->discounted_price, 2) }}
+                                                    {{ $package->formatted_price }}
                                                 </div>
                                             @else
                                                 <span class="fw-bold">
-                                                    ${{ number_format($package->price_usd, 2) }}
+                                                    {{ $package->formatted_price }}
                                                 </span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($package->price_try)
-                                                <span class="fw-bold">
-                                                    ₺{{ number_format($package->price_try, 2) }}
-                                                </span>
-                                            @else
-                                                <span class="text-muted">Auto</span>
                                             @endif
                                         </td>
                                         <td>
@@ -148,7 +139,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Paket Modal -->
 <div class="modal fade" id="packageModal" tabindex="-1">
@@ -170,7 +160,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Kredi Miktarı</label>
-                                <input type="number" class="form-control" name="credits" step="0.01" required>
+                                <input type="number" class="form-control" name="credit_amount" step="0.01" required>
                             </div>
                         </div>
                     </div>
@@ -183,15 +173,18 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Fiyat (USD)</label>
-                                <input type="number" class="form-control" name="price_usd" step="0.01" required>
+                                <label class="form-label">Fiyat</label>
+                                <input type="number" class="form-control" name="price" step="0.01" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Fiyat (TL) <span class="text-muted">(Opsiyonel)</span></label>
-                                <input type="number" class="form-control" name="price_try" step="0.01">
-                                <div class="form-hint">Boş bırakılırsa otomatik hesaplanır</div>
+                                <label class="form-label">Para Birimi</label>
+                                <select class="form-control" name="currency" required>
+                                    <option value="TRY" selected>TRY (₺)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                </select>
                             </div>
                         </div>
                     </div>

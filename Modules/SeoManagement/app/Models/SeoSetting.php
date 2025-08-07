@@ -15,14 +15,15 @@ class SeoSetting extends Model
     protected $translatable = ['titles', 'descriptions', 'keywords', 'og_title', 'og_description', 'focus_keywords'];
     
     protected $fillable = [
+        'seoable_type', 'seoable_id', // Polymorphic relationship fields
         'meta_title', 'meta_description', 'meta_keywords',
-        'titles', 'descriptions', 'keywords',
+        'titles', 'descriptions', 'keywords', 'canonical_url',
         'og_title', 'og_description', 'og_image', 'og_type',
         'twitter_card', 'twitter_title', 'twitter_description', 'twitter_image',
-        'canonical_url', 'robots_meta', 'schema_markup', 'focus_keyword', 'focus_keywords',
+        'robots_meta', 'schema_markup', 'focus_keyword', 'focus_keywords',
         'additional_keywords', 'seo_score', 'seo_analysis', 'last_analyzed',
         'hreflang_urls', 'content_length', 'keyword_density', 'readability_score',
-        'page_speed_insights', 'last_crawled', 'ai_suggestions', 'auto_optimize',
+        'page_speed_images', 'last_crawled', 'ai_suggestions', 'auto_optimize',
         'status', 'priority', 'available_languages', 'default_language', 'language_fallbacks'
     ];
 
@@ -126,20 +127,6 @@ class SeoSetting extends Model
         return implode(', ', $directives);
     }
 
-    public function getCanonicalUrl(?string $locale = null): ?string
-    {
-        $locale = $locale ?? app()->getLocale();
-        
-        if (is_string($this->canonical_url)) {
-            return $this->canonical_url;
-        }
-        
-        if (is_array($this->canonical_url)) {
-            return $this->canonical_url[$locale] ?? null;
-        }
-        
-        return null;
-    }
 
     public function getOgTitle(?string $locale = null): ?string
     {

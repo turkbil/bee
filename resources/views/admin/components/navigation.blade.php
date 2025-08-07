@@ -17,7 +17,7 @@ $isCentral = false;
 if (function_exists('tenant_id')) {
 $tenantId = tenant_id();
 } elseif (app()->has('tenancy') && app('tenancy')->initialized) {
-$tenantId = tenant()->getTenantKey();
+$tenantId = (string) tenant()->getTenantKey();
 }
 
 if (function_exists('is_central')) {
@@ -477,6 +477,24 @@ app()->setLocale($originalLocale);
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <!-- 🎯 EN ÖNEMLİ BİLGİ: KALAN KREDİ -->
+                    @if(function_exists('ai_get_credit_balance'))
+                    <div class="dropdown-item-text">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="avatar bg-primary-lt">
+                                    💰
+                                </div>
+                            </div>
+                            <div>
+                                <div class="fw-bold text-primary">{{ format_credit(ai_get_credit_balance()) }}</div>
+                                <div class="text-muted small">Mevcut Bakiye</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    @endif
+                    
                     <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => $cachedUser->id]) }}"
                         class="dropdown-item">{{ __('admin.my_activities') }}</a>
                     <a href="{{ route('admin.usermanagement.manage', ['id' => $cachedUser->id]) }}"

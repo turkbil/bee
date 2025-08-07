@@ -64,10 +64,8 @@
             }
         })();
     </script>
-    <!-- Google Fontları -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Fontları - Local -->
+    <link rel="stylesheet" href="{{ asset('frontend-assets/css/google-fonts.css') }}">
     @livewireStyles
     <link rel="stylesheet" href="/admin-assets/css/tabler.min.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/theme-font-size.css?v={{ time() }}">
@@ -459,6 +457,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @if (request()->routeIs('admin.*.manage*') || request()->routeIs('admin.menumanagement.index'))
     <x-head.hugerte-config />
+    
+    {{-- Tenant default language for manage.js --}}
+    <script>
+        window.tenantDefaultLanguage = '{{ get_tenant_default_locale() }}';
+    </script>
     
     {{-- Load Manage.js for manage pages --}}
     <script src="/admin-assets/js/manage.js?v={{ time() }}"></script>

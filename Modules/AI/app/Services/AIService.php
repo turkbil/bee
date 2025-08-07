@@ -7,6 +7,7 @@ use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Services\PromptService;
 use Modules\AI\App\Services\AIPriorityEngine;
 use Modules\AI\App\Services\AIProviderManager;
+use Modules\AI\App\Services\Context\ContextEngine;
 use App\Helpers\TenantHelpers;
 use App\Services\AITokenService;
 use Illuminate\Support\Facades\Cache;
@@ -20,6 +21,7 @@ class AIService
     protected $providerManager;
     protected $currentProvider;
     protected $currentService;
+    protected $contextEngine;
 
     /**
      * Constructor
@@ -32,25 +34,37 @@ class AIService
         ?DeepSeekService $deepSeekService = null,
         ?ConversationService $conversationService = null,
         ?PromptService $promptService = null,
-        ?AITokenService $aiTokenService = null
+        ?AITokenService $aiTokenService = null,
+        ?ContextEngine $contextEngine = null
     ) {
         // Provider Manager'ı yükle
         $this->providerManager = new AIProviderManager();
         
-        // Varsayılan provider'ı al
+        // Varsayılan provider'ı al - FALLBACK KALDIRILDI
         try {
-            $providerData = $this->providerManager->getProviderServiceWithFailover();
+            $providerData = $this->providerManager->getProviderServiceWithoutFailover();
             $this->currentProvider = $providerData['provider'];
             $this->currentService = $providerData['service'];
+            
+            \Log::info('🔥 AI Provider loaded successfully', [
+                'provider' => $this->currentProvider->name,
+                'model' => $this->currentProvider->default_model
+            ]);
+            
         } catch (\Exception $e) {
-            \Log::warning('AI Provider yüklenemedi, DeepSeek fallback kullanılıyor: ' . $e->getMessage());
-            $this->deepSeekService = $deepSeekService ?? new DeepSeekService();
-            $this->currentService = $this->deepSeekService;
+            \Log::error('❌ AI Provider loading failed - NO FALLBACK', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // FALLBACK KALDIRILDI - Hata fırlat
+            throw new \Exception('AI Provider unavailable: ' . $e->getMessage());
         }
         
         // Diğer servisleri oluştur
         $this->promptService = $promptService ?? new PromptService();
         $this->aiTokenService = $aiTokenService ?? new AITokenService();
+        $this->contextEngine = $contextEngine ?? app(ContextEngine::class);
         
         // ConversationService en son oluşturulmalı çünkü diğer servislere bağımlı
         $this->conversationService = $conversationService ?? 
@@ -92,7 +106,8 @@ class AIService
             $customPrompt = $options['context'];
         }
 
-        // Build full system prompt with TENANT CONTEXT
+        // Build full system prompt with TENANT CONTEXT + USER INPUT
+        $options['user_input'] = $prompt; // Uzunluk algılama için
         $systemPrompt = $this->buildFullSystemPrompt($customPrompt, $options);
 
         // Mesajları formatla
@@ -167,8 +182,9 @@ class AIService
      */
     public function ask(string $prompt, array $options = [], bool $stream = false)
     {
-        // Modern token sistemi kontrolü
-        $tenant = tenant();
+        // Modern token sistemi kontrolü - TEST İÇİN GEÇİCİ OLARAK DEVRE DIŞI
+        $tenant = tenant(); // tenant değişkeni hala gerekli
+        /*
         if ($tenant) {
             $tokensNeeded = $this->aiTokenService->estimateTokenCost('chat_message', ['message' => $prompt]);
             
@@ -180,6 +196,7 @@ class AIService
             // limitService yerine basit bir kontrol yap
             \Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
         }
+        */
 
         // YENİ PRIORITY ENGINE SİSTEMİ - Tenant context ile
         $customPrompt = '';
@@ -194,7 +211,8 @@ class AIService
             $customPrompt = $options['context'];
         }
 
-        // Build full system prompt with TENANT CONTEXT
+        // Build full system prompt with TENANT CONTEXT + USER INPUT
+        $options['user_input'] = $prompt; // Uzunluk algılama için
         $systemPrompt = $this->buildFullSystemPrompt($customPrompt, $options);
 
         // Mesajları formatla
@@ -281,6 +299,7 @@ class AIService
 
         // Yeni template sistemi: Quick + Expert + Response Template
         if ($feature->hasQuickPrompt() || $feature->hasResponseTemplate()) {
+            $options['user_input'] = $userInput; // Uzunluk algılama için features
             $systemPrompt = $this->buildFeatureSystemPrompt($feature, $options);
             
             // Debug: Prompt analizi için hangi prompt'ların kullanıldığını kaydet
@@ -686,7 +705,7 @@ class AIService
     }
     
     /**
-     * Gizli promptları birleştirerek tam sistem promptunu oluşturur - YENİ PRIORITY ENGINE
+     * 🧠 YENİ CONTEXT ENGINE SİSTEMİ: Modern context management ile sistem promptu
      *
      * @param string $userPrompt Kullanıcının seçtiği prompt
      * @param array $options Context options
@@ -694,21 +713,317 @@ class AIService
      */
     public function buildFullSystemPrompt($userPrompt = '', array $options = [])
     {
-        // Custom user prompt varsa component olarak ekle
-        $customComponents = [];
+        $parts = [];
+        
+        // MODE TESPİTİ (İlk sırada - kurallar için gerekli)
+        $mode = $options['mode'] ?? $this->detectMode($options);
+        
+        // 1. MODE-AWARE UZUNLUK ve YAPI KURALLARI
+        if ($mode === 'chat') {
+            // CHAT MODU: Samimi, kısa, doğal yanıtlar
+            $parts[] = "🗣️ CHAT MODU: Samimi, dostça ve doğal konuş. Sohbet tarzında yanıt ver.";
+            $parts[] = "📝 HTML KULLANIMI: HTML tagları kullanabilirsin ama işlenmiş çıktı olarak ver.";
+            $parts[] = "⚠️ ÖNEMLİ: HTML kodlarını HAM METIN olarak verme! Örnek: '<p>metin</p>' değil, doğrudan 'metin' ver.";
+            $parts[] = "📏 UZUNLUK: Soruya göre esnek - kısa sorular için kısa yanıt, detay gereken konular için daha uzun.";
+            $parts[] = "🎯 ÖNEMLI: Blog yazısı değil, doğal sohbet yap. Samimi ve arkadaşça ol.";
+        } else {
+            // FEATURE/BLOG MODU: Profesyonel, detaylı içerik
+            if (isset($options['user_input'])) {
+                $length = $this->detectLengthRequirement($options['user_input']);
+                $parts[] = "⚠️ ZORUNLU UZUNLUK: Bu yanıt MİNİMUM {$length['min']} kelime, MAKSİMUM {$length['max']} kelime olmalıdır.";
+            }
+            $parts[] = "⚠️ ZORUNLU YAPI: İçerik EN AZ 4 paragraf olmalı. Her paragraf 3-6 cümle içermeli. Paragraflar arasında boş satır bırak.";
+            $parts[] = "📝 HTML KULLANIMI: HTML tagları kullanabilirsin ama işlenmiş çıktı olarak ver, ham kod değil.";
+        }
+        
+        // 2. GENEL KALİTE KURALLARI
+        $parts[] = "⚠️ YASAK: Asla 'Bu konuda yardımcı olamam', 'Daha fazla bilgi ver' gibi kaçamak cevaplar verme. Her zaman tahmin et ve yanıtla.";
+        
+        // 3. CHAT vs FEATURE MODU CONTEXT AYRIMI
+        if ($mode === 'chat') {
+            // CHAT MODU: SADECE KULLANICI BİLGİLERİ - Context Engine'i devre dışı bırak
+            if ($user = auth()->user()) {
+                $userInfo = "Sen {$user->name} ile sohbet ediyorsun";
+                if ($user->email) {
+                    $userInfo .= " (Email: {$user->email})";
+                }
+                
+                // Role/Yetki bilgilerini ekle
+                try {
+                    $userRoles = $user->getRoleNames()->toArray();
+                    if (!empty($userRoles)) {
+                        $roleText = implode(', ', $userRoles);
+                        $userInfo .= " (Rol: {$roleText})";
+                        
+                        // Admin/yönetici kontrolü
+                        if (in_array('admin', $userRoles) || in_array('administrator', $userRoles) || $user->hasRole('admin')) {
+                            $userInfo .= " - Bu kullanıcı SİSTEM YÖNETİCİSİ'dir";
+                        } elseif (in_array('editor', $userRoles) || $user->hasRole('editor')) {
+                            $userInfo .= " - Bu kullanıcı EDİTÖR yetkisine sahip";
+                        } elseif (in_array('moderator', $userRoles) || $user->hasRole('moderator')) {
+                            $userInfo .= " - Bu kullanıcı MODERATÖR yetkisine sahip";
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Role kontrolü başarısız olursa sessizce devam et
+                    \Log::warning('AI Chat: Role bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                }
+                
+                // Üyelik tarihi ve süresi bilgilerini ekle
+                try {
+                    if ($user->created_at) {
+                        $memberSince = $user->created_at;
+                        $daysSinceMember = $memberSince->diffInDays(now());
+                        $memberDate = $memberSince->format('d.m.Y');
+                        
+                        $userInfo .= " (Üyelik: {$memberDate} tarihinden beri - {$daysSinceMember} gündür üye)";
+                        
+                        // Üyelik süresine göre özel notlar
+                        if ($daysSinceMember < 7) {
+                            $userInfo .= " - YENİ ÜYE";
+                        } elseif ($daysSinceMember < 30) {
+                            $userInfo .= " - GENÇ ÜYE";
+                        } elseif ($daysSinceMember < 365) {
+                            $userInfo .= " - DENEYİMLİ ÜYE";
+                        } else {
+                            $userInfo .= " - ESKİ ÜYE (Veteran)";
+                        }
+                        
+                        // Özel tarihlerde kutlama
+                        if ($daysSinceMember > 0 && $daysSinceMember % 365 == 0) {
+                            $years = intval($daysSinceMember / 365);
+                            $userInfo .= " 🎉 {$years}. yıl kutlu olsun!";
+                        }
+                    }
+                    
+                    // Son aktivite bilgisi (eğer varsa)
+                    if (isset($user->last_login_at) && $user->last_login_at) {
+                        try {
+                            // String'i Carbon'a çevir (eğer string ise)
+                            $lastLogin = is_string($user->last_login_at) 
+                                ? \Carbon\Carbon::parse($user->last_login_at) 
+                                : $user->last_login_at;
+                                
+                            $hoursAgo = $lastLogin->diffInHours(now());
+                            
+                            if ($hoursAgo < 1) {
+                                $userInfo .= " (Son giriş: Bu saatte)";
+                            } elseif ($hoursAgo < 24) {
+                                $userInfo .= " (Son giriş: {$hoursAgo} saat önce)";
+                            } else {
+                                $daysAgo = intval($hoursAgo / 24);
+                                $userInfo .= " (Son giriş: {$daysAgo} gün önce)";
+                            }
+                        } catch (\Exception $loginErr) {
+                            // Son giriş tarihi parse edilemezse sessizce atla
+                            \Log::warning('AI Chat: Son giriş tarihi parse edilemedi', [
+                                'user_id' => $user->id, 
+                                'last_login_at' => $user->last_login_at,
+                                'error' => $loginErr->getMessage()
+                            ]);
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Tarih bilgisi hatası varsa sessizce devam et
+                    \Log::warning('AI Chat: Tarih bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                }
+                
+                if (isset($user->company) && $user->company) {
+                    $userInfo .= " (Şirket: {$user->company})";
+                }
+                $userInfo .= ". Kişisel, samimi ve dostça ol.";
+                $parts[] = "👤 CHAT KULLANICISI: " . $userInfo;
+                $parts[] = "🚫 KRİTİK DİNAMİK AYRIM SİSTEMİ:";
+                $parts[] = "🎯 KULLANICI ODAKLI sorular (ben, beni, benim, kendim, kim, hangi kişi) → SADECE giriş yapan kullanıcıyı tanıt: {$user->name}";
+                $parts[] = "🏢 ŞİRKET/MARKA ODAKLI sorular (biz, bizim, firmamız, şirketimiz, markamız, kuruluş) → Şirket/marka bilgilerini kullan";
+                $parts[] = "🤖 ZEKA KURALI: Sorudaki dil yapısından ve kelimelerden OTOMATIK tespit et - hardcode kontrol yapma!";
+                $parts[] = "📝 ÖNEMLİ: Soru belirsizse, context'e bakarak en mantıklı seçimi yap";
+                $parts[] = "🔑 YETKİ BİLGİSİ: Kullanıcının rol ve yetki durumunu da belirt (admin/editor/user vs.)";
+                
+                // Şirket bilgilerini her zaman hazır tut (dinamik kullanım için)
+                try {
+                    $brandContext = $this->getTenantBrandContext();
+                    if ($brandContext) {
+                        $parts[] = "🏢 ŞİRKET/MARKA BİLGİLERİ (şirket odaklı sorularda kullan):";
+                        $parts[] = $brandContext;
+                        $parts[] = "💡 KULLANIM: Soruyu analiz et ve uygun context'i seç - kullanıcı mı şirket mi soruyor?";
+                    }
+                } catch (\Exception $e) {
+                    // Şirket bilgisi alınamazsa sessizce devam et
+                    \Log::warning('AI Chat: Şirket bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                }
+            }
+        } else {
+            // FEATURE MODU: Context Engine kullan
+            try {
+                // ContextEngine'den mode'a uygun context oluştur
+                $contextPrompt = $this->contextEngine->buildContextForMode($mode, $options);
+                if (!empty($contextPrompt)) {
+                    $parts[] = $contextPrompt;
+                }
+            } catch (\Exception $e) {
+                \Log::warning('ContextEngine hatası, fallback sisteme geçiliyor', [
+                    'error' => $e->getMessage(),
+                    'mode' => $mode,
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                // FALLBACK: Eski sistem
+                $brandContext = $this->getTenantBrandContext();
+                if ($brandContext) {
+                    $parts[] = "🏢 FEATURE MODU: Aşağıdaki şirket için çalış.\n" . $brandContext;
+                }
+            }
+        }
+        
+        // 5. PRI͏ORITY ENGINE İLE ESKI SİSTEM ENTEGRASYONU
         if (!empty($userPrompt)) {
-            $customComponents[] = [
+            $customComponents = [[
                 'category' => 'feature_definition',
                 'priority' => 1,
                 'content' => $userPrompt,
                 'name' => 'User Custom Prompt'
-            ];
+            ]];
+            $options['custom_components'] = $customComponents;
+            
+            // Priority engine'den gelen prompt'u ekle
+            $priorityPrompt = AIPriorityEngine::buildCompletePrompt($options);
+            if ($priorityPrompt && trim($priorityPrompt) !== trim($userPrompt)) {
+                $parts[] = $priorityPrompt;
+            } else {
+                $parts[] = $userPrompt;
+            }
         }
         
-        $options['custom_components'] = $customComponents;
+        // 6. SON UYARI (Sadece feature modunda)
+        if ($mode !== 'chat') {
+            $parts[] = "📝 SON UYARI: UZUNLUK ve PARAGRAF kurallarına kesinlikle uy. 'Kısa yanıt' vermek yasak!";
+        }
         
-        // AIPriorityEngine ile complete prompt oluştur
-        return AIPriorityEngine::buildCompletePrompt($options);
+        return implode("\n\n", $parts);
+    }
+    
+    /**
+     * 🔍 UZUNLUK ALGıLAMA MOTORü
+     * Kullanıcı girdisinden istenen uzunluğu akıllıca tespit eder
+     */
+    private function detectLengthRequirement($prompt): array
+    {
+        $prompt_lower = mb_strtolower($prompt);
+        
+        // 1. Sayısal değer var mı? (en kesin)
+        if (preg_match('/(\d+)\s*(kelime|word)/i', $prompt, $matches)) {
+            $target = (int)$matches[1];
+            return ['min' => (int)($target * 0.8), 'max' => (int)($target * 1.2)];
+        }
+        
+        // 2. Anahtar kelime bazlı algılama
+        $keywords = [
+            // ÖZEL DURUMLAR (İlk kontrol edilir)
+            'çok uzun' => ['min' => 1500, 'max' => 2500],
+            'çok kısa' => ['min' => 100, 'max' => 200],
+            
+            // UZUNLUK KELİMELERİ
+            'uzun' => ['min' => 1000, 'max' => 1500],  // KRİTİK: "uzun" için 1000+ kelime
+            'kısa' => ['min' => 200, 'max' => 400],
+            'normal' => ['min' => 400, 'max' => 600],
+            'detaylı' => ['min' => 800, 'max' => 1200],
+            'kapsamlı' => ['min' => 1000, 'max' => 1500],
+            'geniş' => ['min' => 800, 'max' => 1200],
+            
+            // İÇERİK TİPLERİ
+            'makale' => ['min' => 800, 'max' => 1200],
+            'blog' => ['min' => 600, 'max' => 1000],
+            'özet' => ['min' => 200, 'max' => 400],
+            
+            // KISA İÇERİKLER (Son kontrol edilir)
+            'tweet' => ['min' => 20, 'max' => 50],
+            
+            // BAŞLIK KELİMESİ KALDIRILDI - Yanıltıcı!
+            // 'başlık' => ['min' => 5, 'max' => 15], // KALDIRILDI
+        ];
+        
+        // Kelime araması
+        foreach ($keywords as $keyword => $range) {
+            if (str_contains($prompt_lower, $keyword)) {
+                return $range;
+            }
+        }
+        
+        // 3. Context bazlı tahmin
+        if (str_contains($prompt_lower, 'yaz') || str_contains($prompt_lower, 'oluştur')) {
+            return ['min' => 600, 'max' => 800]; // Yazma talepleri için orta uzunluk
+        }
+        
+        // 4. Default (konservatif)
+        return ['min' => 400, 'max' => 600];
+    }
+    
+    /**
+     * 🎯 PARAGRAF YAPISINI ZORLAMA
+     * Yanıtın yapısını kontrol eder ve gerekirse düzenler
+     */
+    private function enforceStructure($content, $requirements = []): string
+    {
+        $paragraphs = explode("\n\n", $content);
+        
+        // Minimum paragraf sayısı kontrolü
+        if (count($paragraphs) < 4) {
+            // İçeriği yeniden yapılandır
+            $sentences = preg_split('/(?<=[.!?])\s+/', $content);
+            $paragraphs = array_chunk($sentences, 4);
+            $content = implode("\n\n", array_map(function($p) {
+                return implode(' ', $p);
+            }, $paragraphs));
+        }
+        
+        return $content;
+    }
+    
+    /**
+     * 🔄 CHAT vs FEATURE MODU TESPİTİ
+     * Context'ten modu otomatik tespit eder
+     */
+    private function detectMode(array $options = []): string
+    {
+        // Explicit mode varsa onu kullan
+        if (isset($options['mode'])) {
+            return $options['mode'];
+        }
+        
+        // Feature objesi varsa feature modu
+        if (isset($options['feature']) || isset($options['feature_name'])) {
+            return 'feature';
+        }
+        
+        // URL bazlı tespit
+        $currentUrl = request()->url();
+        if (str_contains($currentUrl, '/chat') || str_contains($currentUrl, 'chat-panel') || str_contains($currentUrl, '/ask')) {
+            return 'chat';
+        }
+        
+        // Route bazlı tespit (admin chat route'ları)
+        $routeName = request()->route() ? request()->route()->getName() : '';
+        if (str_contains($routeName, 'chat') || str_contains($routeName, 'ask')) {
+            return 'chat';
+        }
+        
+        // Request path kontrolü
+        $path = request()->path();
+        if (str_contains($path, 'chat') || str_contains($path, 'ask') || str_contains($path, 'send-message')) {
+            return 'chat';
+        }
+        
+        // DEBUG: Mode tespit (gerektiğinde aç)
+        // \Log::info('🔍 Mode Detection Debug', [
+        //     'url' => $currentUrl,
+        //     'route_name' => $routeName, 
+        //     'path' => $path,
+        //     'detected_mode' => 'feature'
+        // ]);
+        
+        // Default: feature modu (business odaklı)
+        return 'feature';
     }
     
     /**

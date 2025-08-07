@@ -1,5 +1,7 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('page-title', 'Kredi Kullanım Raporları')
 @section('page-subtitle', 'AI kredi kullanım analizi ve istatistikleri')
 

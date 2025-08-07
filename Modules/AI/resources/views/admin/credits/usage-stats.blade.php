@@ -242,7 +242,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-outline">{{ number_format($usage->credits_used, 4) }}</span>
+                                    <span class="badge badge-outline">{{ format_credit($usage->credits_used) }}</span>
                                 </td>
                                 <td>{{ $usage->provider_name }}</td>
                                 <td>{{ $usage->used_at ? $usage->used_at->format('d.m H:i') : '-' }}</td>
@@ -301,7 +301,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-outline">{{ number_format($usage->credits_used, 4) }}</span>
+                                    <span class="badge badge-outline">{{ format_credit($usage->credits_used) }}</span>
                                 </td>
                                 <td>{{ $usage->provider_name }}</td>
                                 <td>{{ ucfirst($usage->usage_type) }}</td>

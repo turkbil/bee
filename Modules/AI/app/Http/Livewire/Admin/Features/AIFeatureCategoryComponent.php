@@ -16,47 +16,29 @@ class AIFeatureCategoryComponent extends Component
     use WithPagination;
 
     public $title = '';
-    public $slug = '';
     public $description = '';
-    public $icon = '';
     public $is_active = true;
-    public $parentId = null;
-    public $categories = [];
-    public $editCategoryId = null;
-    public $editData = [
-        'title' => '',
-        'slug' => '',
-        'description' => '',
-        'icon' => '',
-        'parent_id' => null,
-        'is_active' => true
-    ];
+    public $categories;
+    public $editingCategoryId = null;
+    public $showForm = false;
     
     // Arama için
     public $search = '';
     
     // Sıralama için
-    public $sortField = 'order';
+    public $sortField = 'title';
     public $sortDirection = 'asc';
 
     protected $rules = [
-        'title' => 'required|min:3|max:255',
-        'slug' => 'nullable|regex:/^[a-z0-9\-_]+$/i|max:255',
-        'editData.title' => 'required|min:3|max:255',
-        'editData.slug' => 'nullable|regex:/^[a-z0-9\-_]+$/i|max:255',
-        'editData.description' => 'nullable|max:1000',
-        'editData.icon' => 'nullable|max:50',
-        'editData.is_active' => 'boolean',
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string|max:1000',
+        'is_active' => 'boolean',
     ];
 
     protected $messages = [
         'title.required' => 'Kategori başlığı zorunludur.',
-        'title.min' => 'Kategori başlığı en az 3 karakter olmalıdır.',
         'title.max' => 'Kategori başlığı en fazla 255 karakter olmalıdır.',
-        'editData.title.required' => 'Kategori başlığı zorunludur.',
-        'editData.title.min' => 'Kategori başlığı en az 3 karakter olmalıdır.',
-        'editData.title.max' => 'Kategori başlığı en fazla 255 karakter olmalıdır.',
-        'editData.slug.regex' => 'Slug sadece harfler, rakamlar, tire ve alt çizgi içerebilir.',
+        'description.max' => 'Açıklama en fazla 1000 karakter olmalıdır.',
     ];
 
     public function mount()
@@ -68,48 +50,29 @@ class AIFeatureCategoryComponent extends Component
     public function loadCategories()
     {
         try {
-            TenantHelpers::central(function() {
-                // Tüm kategorileri hiyerarşik yapıda yükle
-                $query = AIFeatureCategory::query();
-                
-                // Arama varsa uygula
-                if ($this->search) {
-                    $query->where('title', 'like', '%' . $this->search . '%');
-                }
-                
-                // Sıralama
-                $query->orderBy($this->sortField, $this->sortDirection);
-                
-                // Ana kategoriler ve alt kategorileri al
-                if (empty($this->search)) {
-                    $categories = $query->whereNull('parent_id')
-                        ->with(['children' => function ($q) {
-                            $q->orderBy('order');
-                        }])
-                        ->get();
-                        
-                    // Her kategori için AI feature sayılarını manuel olarak hesapla
-                    foreach ($categories as $category) {
-                        $category->ai_features_count = $category->aiFeatures()->count();
-                        
-                        if ($category->children) {
-                            foreach ($category->children as $child) {
-                                $child->ai_features_count = $child->aiFeatures()->count();
-                            }
-                        }
-                    }
-                } else {
-                    // Arama varsa tüm kategorileri getir, parent_id filtrelemesi yapma
-                    $categories = $query->get();
-                    
-                    foreach ($categories as $category) {
-                        $category->ai_features_count = $category->aiFeatures()->count();
-                    }
-                }
-                
-                $this->categories = $categories;
-            });
+            // AI kategoriler normal tenant bağlamında çalışıyor, central kullanmıyoruz
+            $query = AIFeatureCategory::query();
+            
+            // Arama varsa uygula
+            if ($this->search) {
+                $query->where('title', 'like', '%' . $this->search . '%');
+            }
+            
+            // Sıralama
+            $query->orderBy($this->sortField, $this->sortDirection);
+            
+            $this->categories = $query->get();
+            
+            // Her kategori için AI feature sayılarını manuel olarak hesapla
+            foreach ($this->categories as $category) {
+                $category->ai_features_count = $category->aiFeatures()->count();
+            }
+            
+            // Debug log
+            \Log::info('AI Categories loaded: ' . $this->categories->count());
+            
         } catch (\Exception $e) {
+            \Log::error('AI Categories load error: ' . $e->getMessage());
             session()->flash('error', 'Kategoriler yüklenirken hata oluştu: ' . $e->getMessage());
             $this->categories = collect();
         }
@@ -120,148 +83,100 @@ class AIFeatureCategoryComponent extends Component
         $this->loadCategories();
     }
 
-    public function quickAdd()
+    public function showAddForm()
+    {
+        $this->reset(['title', 'description', 'is_active', 'editingCategoryId']);
+        $this->is_active = true;
+        $this->showForm = true;
+    }
+
+    public function hideForm()
+    {
+        $this->reset(['title', 'description', 'is_active', 'editingCategoryId']);
+        $this->showForm = false;
+    }
+
+    public function addCategory()
     {
         $this->validate([
-            'title' => 'required|min:3|max:255',
-            'slug' => 'nullable|regex:/^[a-z0-9\-_]+$/i|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'is_active' => 'boolean',
+        ], [], [
+            'title' => __('ai::admin.category_name'),
+            'description' => __('ai::admin.description'),
         ]);
 
         try {
-            TenantHelpers::central(function() {
-                // Slug otomatik oluştur
-                if (empty($this->slug)) {
-                    $this->slug = Str::slug($this->title);
-                }
+            AIFeatureCategory::create([
+                'title' => $this->title,
+                'description' => $this->description ?? null,
+                'is_active' => $this->is_active ?? true,
+                'order' => AIFeatureCategory::max('order') + 1,
+            ]);
 
-                // Son sıra numarasını al
-                $lastOrder = AIFeatureCategory::max('order') ?? 0;
-
-                AIFeatureCategory::create([
-                    'title' => $this->title,
-                    'slug' => $this->slug,
-                    'description' => $this->description,
-                    'icon' => $this->icon ?: 'fas fa-folder',
-                    'is_active' => $this->is_active,
-                    'parent_id' => $this->parentId,
-                    'order' => $lastOrder + 1,
-                ]);
-            });
-
-            // Formu temizle
-            $this->reset(['title', 'slug', 'description', 'icon', 'parentId']);
-            $this->is_active = true;
-
+            $this->reset(['title', 'description', 'is_active']);
+            $this->showForm = false;
             $this->loadCategories();
-            session()->flash('success', 'Kategori başarıyla eklendi!');
+            session()->flash('success', __('ai::admin.category_added_successfully'));
         } catch (\Exception $e) {
             session()->flash('error', 'Kategori eklenirken hata oluştu: ' . $e->getMessage());
         }
     }
 
-    public function startEdit($categoryId)
+    public function editCategory($categoryId)
     {
         try {
-            TenantHelpers::central(function() use ($categoryId) {
-                $category = AIFeatureCategory::find($categoryId);
-                if ($category) {
-                    $this->editCategoryId = $categoryId;
-                    $this->editData = [
-                        'title' => $category->title,
-                        'slug' => $category->slug,
-                        'description' => $category->description,
-                        'icon' => $category->icon,
-                        'parent_id' => $category->parent_id,
-                        'is_active' => $category->is_active,
-                    ];
-                }
-            });
+            $category = AIFeatureCategory::findOrFail($categoryId);
+            $this->title = $category->title;
+            $this->description = $category->description;
+            $this->is_active = $category->is_active;
+            $this->editingCategoryId = $categoryId;
+            $this->showForm = true;
         } catch (\Exception $e) {
             session()->flash('error', 'Kategori düzenlenirken hata oluştu: ' . $e->getMessage());
         }
     }
 
-    public function saveEdit()
+    public function updateCategory()
     {
         $this->validate([
-            'editData.title' => 'required|min:3|max:255',
-            'editData.slug' => 'nullable|regex:/^[a-z0-9\-_]+$/i|max:255',
-            'editData.description' => 'nullable|max:1000',
-            'editData.icon' => 'nullable|max:50',
-            'editData.is_active' => 'boolean',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'is_active' => 'boolean',
+        ], [], [
+            'title' => __('ai::admin.category_name'),
+            'description' => __('ai::admin.description'),
         ]);
 
         try {
-            TenantHelpers::central(function() {
-                $category = AIFeatureCategory::find($this->editCategoryId);
-                if ($category) {
-                    // Slug otomatik oluştur
-                    if (empty($this->editData['slug'])) {
-                        $this->editData['slug'] = Str::slug($this->editData['title']);
-                    }
+            $category = AIFeatureCategory::findOrFail($this->editingCategoryId);
+            $category->update([
+                'title' => $this->title,
+                'description' => $this->description ?? null,
+                'is_active' => $this->is_active ?? true,
+            ]);
 
-                    $category->update($this->editData);
-                }
-            });
-
-            $this->cancelEdit();
+            $this->reset(['title', 'description', 'is_active', 'editingCategoryId']);
+            $this->showForm = false;
             $this->loadCategories();
-            session()->flash('success', 'Kategori başarıyla güncellendi!');
+            session()->flash('success', __('ai::admin.category_updated_successfully'));
         } catch (\Exception $e) {
             session()->flash('error', 'Kategori güncellenirken hata oluştu: ' . $e->getMessage());
         }
     }
 
-    public function cancelEdit()
-    {
-        $this->editCategoryId = null;
-        $this->editData = [
-            'title' => '',
-            'slug' => '',
-            'description' => '',
-            'icon' => '',
-            'parent_id' => null,
-            'is_active' => true
-        ];
-    }
-
-    public function toggleActive($categoryId)
+    public function deleteCategory($categoryId)
     {
         try {
-            TenantHelpers::central(function() use ($categoryId) {
-                $category = AIFeatureCategory::find($categoryId);
-                if ($category) {
-                    $category->is_active = !$category->is_active;
-                    $category->save();
-                }
-            });
+            $category = AIFeatureCategory::findOrFail($categoryId);
+            
+            // AI Feature'ları kontrol et
+            if ($category->aiFeatures()->count() > 0) {
+                throw new \Exception('Bu kategoride AI feature\'lar var. Önce onları başka kategoriye taşıyın.');
+            }
 
-            $this->loadCategories();
-            session()->flash('success', 'Kategori durumu güncellendi!');
-        } catch (\Exception $e) {
-            session()->flash('error', 'Durum güncellenirken hata oluştu: ' . $e->getMessage());
-        }
-    }
-
-    public function delete($categoryId)
-    {
-        try {
-            TenantHelpers::central(function() use ($categoryId) {
-                $category = AIFeatureCategory::find($categoryId);
-                if ($category) {
-                    // Alt kategorileri kontrol et
-                    if ($category->children()->count() > 0) {
-                        throw new \Exception('Bu kategorinin alt kategorileri var. Önce onları silin.');
-                    }
-
-                    // AI Feature'ları kontrol et
-                    if ($category->aiFeatures()->count() > 0) {
-                        throw new \Exception('Bu kategoride AI feature\'lar var. Önce onları başka kategoriye taşıyın.');
-                    }
-
-                    $category->delete();
-                }
-            });
+            $category->delete();
 
             $this->loadCategories();
             session()->flash('success', 'Kategori başarıyla silindi!');
@@ -270,34 +185,23 @@ class AIFeatureCategoryComponent extends Component
         }
     }
 
-    #[On('updateOrder')]
-    public function updateOrder($orderedIds)
+    public function toggleActive($categoryId)
     {
         try {
-            TenantHelpers::central(function() use ($orderedIds) {
-                foreach ($orderedIds as $index => $id) {
-                    AIFeatureCategory::where('ai_feature_category_id', $id)->update(['order' => $index + 1]);
-                }
-            });
+            $category = AIFeatureCategory::findOrFail($categoryId);
+            $category->is_active = !$category->is_active;
+            $category->save();
 
             $this->loadCategories();
+            session()->flash('success', 'Kategori durumu güncellendi!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Sıralama güncellenirken hata oluştu: ' . $e->getMessage());
+            session()->flash('error', 'Durum güncellenirken hata oluştu: ' . $e->getMessage());
         }
     }
 
-    public function getParentCategoriesProperty()
+    public function getName()
     {
-        try {
-            return TenantHelpers::central(function() {
-                return AIFeatureCategory::whereNull('parent_id')
-                    ->where('is_active', true)
-                    ->orderBy('title')
-                    ->get();
-            });
-        } catch (\Exception $e) {
-            return collect();
-        }
+        return 'modules.ai.app.http.livewire.admin.features.ai-feature-category-component';
     }
 
     public function render()

@@ -1,13 +1,9 @@
 @extends('themes.blank.layouts.app')
 
-@push('head')
-{{-- Schema.org için sayfa bilgileri --}}
-{!! \App\Services\SEOService::getPageSchema($item) !!}
-@endpush
 
 @section('module_content')
 @if(isset($is_homepage) && $is_homepage)
-<div class="relative" x-data="homepage()" x-init="init()">
+<div class="relative">
     <!-- Gradient Background -->
     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
     
@@ -47,19 +43,6 @@
     @endif
 </div>
 
-<script>
-function homepage() {
-    return {
-        loaded: false,
-        
-        init() {
-            this.$nextTick(() => {
-                this.loaded = true;
-            });
-        }
-    }
-}
-</script>
 @else
 <div class="relative" x-data="pageShow()" x-init="init()">
     <!-- Gradient Background -->

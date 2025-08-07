@@ -26,6 +26,7 @@ return new class extends Migration
             $table->json('titles')->nullable(); // {"tr": "Başlık", "en": "Title"}
             $table->json('descriptions')->nullable(); // {"tr": "Açıklama", "en": "Description"}  
             $table->json('keywords')->nullable(); // {"tr": ["anahtar"], "en": ["keyword"]}
+            $table->string('canonical_url')->nullable(); // Canonical URL
             
             // Open Graph - JSON support for multilingual
             $table->json('og_title')->nullable(); // {"tr": "OG Title", "en": "OG Title"}
@@ -40,7 +41,6 @@ return new class extends Migration
             $table->string('twitter_image')->nullable();
             
             // Advanced SEO
-            $table->string('canonical_url')->nullable();
             $table->json('robots_meta')->nullable(); // {"index": true, "follow": true, "archive": false}
             $table->json('schema_markup')->nullable(); // Structured data
             $table->string('focus_keyword')->nullable();

@@ -7,6 +7,7 @@ use Modules\Portfolio\App\Models\PortfolioCategory;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Schema;
 use App\Helpers\TenantHelpers;
+use App\Models\SeoSetting;
 
 class PortfolioSeeder extends Seeder
 {
@@ -248,7 +249,7 @@ class PortfolioSeeder extends Seeder
             $existingPortfolio = Portfolio::where('slug->tr', $portfolio['slug']['tr'])->first();
             
             if (!$existingPortfolio) {
-                Portfolio::create([
+                $created = Portfolio::create([
                     'portfolio_category_id' => $portfolio['category_id'],
                     'title' => $portfolio['title'],
                     'slug' => $portfolio['slug'],
@@ -259,10 +260,118 @@ class PortfolioSeeder extends Seeder
                     'url' => $portfolio['url'] ?? null,
                     'is_active' => true,
                 ]);
+                
+                // SEO ayarları oluştur
+                $this->createSeoSetting($created, $portfolio['title']['tr'], $portfolio['body']['tr']);
                 // if ($this->command) $this->command->info("Oluşturuldu: " . $portfolio['title']['tr']);
             } else {
                 if ($this->command) $this->command->info('Portfolio zaten var: ' . $portfolio['title']['tr']); 
             }
+        }
+        
+        // Menu'ye ekle
+        $this->addToMenu();
+    }
+    
+    private function createSeoSetting($portfolio, $title, $description): void
+    {
+        // Eğer bu portfolio için zaten SEO ayarı varsa oluşturma
+        if ($portfolio->seoSetting()->exists()) {
+            return;
+        }
+
+        // HTML taglarını temizle ve kısa açıklama oluştur - UTF-8 güvenli
+        $cleanDescription = html_entity_decode(strip_tags($description), ENT_QUOTES, 'UTF-8');
+        $cleanDescription = mb_convert_encoding($cleanDescription, 'UTF-8', 'UTF-8');
+        $shortDescription = mb_substr($cleanDescription, 0, 160, 'UTF-8');
+
+        $portfolio->seoSetting()->create([
+            "titles" => ["tr" => $title, "en" => $title, "ar" => $title],
+            "descriptions" => ["tr" => $shortDescription, "en" => $shortDescription, "ar" => $shortDescription],
+            "keywords" => ["tr" => [], "en" => [], "ar" => []],
+            "focus_keyword" => "",
+            "robots_meta" => ["index" => true, "follow" => true, "archive" => true],
+            "og_type" => "article",
+            "twitter_card" => "summary",
+            "seo_score" => rand(80, 95),
+        ]);
+    }
+
+    /**
+     * Add Portfolio module to menu system with dynamic categories
+     */
+    private function addToMenu(): void
+    {
+        // MenuManagement modeli varsa menu ekle
+        if (!class_exists('Modules\\MenuManagement\\App\\Models\\Menu')) {
+            return;
+        }
+
+        $menu = \Modules\MenuManagement\App\Models\Menu::firstOrCreate(
+            ['slug' => 'ana-menu', 'location' => 'header'],
+            [
+                'name' => ['tr' => 'Ana Menü', 'en' => 'Main Menu'],
+                'slug' => 'ana-menu',
+                'location' => 'header',
+                'is_active' => true,
+                'is_default' => true,
+            ]
+        );
+
+        // Portfolio ana menu item'ını ekle/güncelle
+        $portfolioMenuItem = \Modules\MenuManagement\App\Models\MenuItem::updateOrCreate(
+            [
+                'menu_id' => $menu->menu_id,
+                'url_type' => 'module',
+                'url_data->module' => 'portfolio'
+            ],
+            [
+                'title' => ['tr' => 'Portfolio', 'en' => 'Portfolio'],
+                'url_type' => 'module',
+                'url_data' => ['module' => 'portfolio', 'type' => 'index'],
+                'target' => '_self',
+                'sort_order' => 2,
+                'is_active' => true,
+                'depth_level' => 0,
+                'visibility' => 'public'
+            ]
+        );
+
+        // Portfolio kategorilerini alt menü olarak ekle
+        $categories = \Modules\Portfolio\App\Models\PortfolioCategory::where('is_active', true)
+            ->orderBy('order')
+            ->get();
+
+        $childOrder = 1;
+        foreach ($categories as $category) {
+            \Modules\MenuManagement\App\Models\MenuItem::updateOrCreate(
+                [
+                    'menu_id' => $menu->menu_id,
+                    'parent_id' => $portfolioMenuItem->item_id,
+                    'url_type' => 'module',
+                    'url_data->module' => 'portfolio',
+                    'url_data->type' => 'category',
+                    'url_data->id' => $category->portfolio_category_id
+                ],
+                [
+                    'title' => [
+                        'tr' => $category->getTranslated('title', 'tr'),
+                        'en' => $category->getTranslated('title', 'en')
+                    ],
+                    'url_type' => 'module',
+                    'url_data' => [
+                        'module' => 'portfolio',
+                        'type' => 'category',
+                        'id' => $category->portfolio_category_id,
+                        'slug' => $category->getTranslated('slug', 'tr')
+                    ],
+                    'target' => '_self',
+                    'sort_order' => $childOrder++,
+                    'is_active' => true,
+                    'depth_level' => 1,
+                    'visibility' => 'public'
+                ]
+            );
         }
     }
 }

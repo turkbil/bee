@@ -1,10 +1,11 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('page-title', 'Kredi İşlemleri')
 @section('page-subtitle', 'Kredi satın alma ve kullanım işlemleri')
 
 @section('content')
-<div class="container-xl">
     <!-- Filtreleme -->
     <div class="row mb-4">
         <div class="col-12">
@@ -182,7 +183,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Manuel İşlem Modal -->
 <div class="modal fade" id="addTransactionModal" tabindex="-1">

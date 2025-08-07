@@ -24,8 +24,7 @@
     $langSeoData = [
         'seo_title' => $seoDataCache[$lang]['seo_title'] ?? '',
         'seo_description' => $seoDataCache[$lang]['seo_description'] ?? '',
-        'seo_keywords' => $seoDataCache[$lang]['seo_keywords'] ?? '',
-        'canonical_url' => $seoDataCache[$lang]['canonical_url'] ?? ''
+        'seo_keywords' => $seoDataCache[$lang]['seo_keywords'] ?? ''
     ];
     
     // Var olan sayfa ise o dilin verilerini veritabanından al
@@ -43,14 +42,10 @@
             $keywordString = $keywordData;
         }
         
-        $canonicalUrls = $seoSettings->canonical_url ?? [];
-        $canonicalUrl = is_array($canonicalUrls) ? ($canonicalUrls[$lang] ?? '') : ($canonicalUrls ?? '');
-        
         $langSeoData = [
             'seo_title' => $titles[$lang] ?? '',
             'seo_description' => $descriptions[$lang] ?? '',
-            'seo_keywords' => $keywordString,
-            'canonical_url' => $canonicalUrl
+            'seo_keywords' => $keywordString
         ];
     }
     
@@ -59,7 +54,6 @@
         'seo_title' => 60,
         'seo_description' => 160,
         'seo_keywords_count' => 10,
-        'canonical_url' => 255
     ];
 @endphp
 
@@ -141,22 +135,6 @@
             </div>
         </div>
 
-        <!-- Canonical URL - Her dil için ayrı -->
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    <input type="url" 
-                           class="form-control"
-                           wire:model="seoDataCache.{{ $lang }}.canonical_url"
-                           placeholder="Canonical URL"
-                           {{ $disabled ? 'disabled' : '' }}>
-                    <label>{{ __('seomanagement::admin.canonical_url') }}</label>
-                    <div class="form-text">
-                        <small class="text-muted"><i class="fas fa-info-circle me-1"></i>{{ __('seomanagement::admin.canonical_url_help') }}</small>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 @endforeach
@@ -182,7 +160,6 @@
                         'seo_title' => '',
                         'seo_description' => '',
                         'seo_keywords' => '',
-                        'canonical_url' => ''
                     ];
                 }
             }

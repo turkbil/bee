@@ -168,8 +168,14 @@
           </div>
           <div class="flex-fill">
             <div class="small text-uppercase fw-bold">Ort. Prompt Kullanımı</div>
-            <div class="h2 mb-0 text-purple">{{ number_format($stats['avg_prompts_used'] ?? 0, 1) }}/12</div>
-            <div class="small">Prompt efficiency</div>
+            <div class="h2 mb-0 text-purple">
+              @if(($stats['avg_prompts_used'] ?? 0) > 0)
+                {{ number_format($stats['avg_prompts_used'], 1) }}
+              @else
+                --
+              @endif
+            </div>
+            <div class="small">Ortalama prompt kullanımı</div>
           </div>
         </div>
       </div>
@@ -187,7 +193,7 @@
             <div class="small text-uppercase fw-bold">Token Kullanımı</div>
             <div class="h2 mb-0 text-warning">{{ number_format($stats['total_tokens'] ?? 0) }}</div>
             <div class="small">
-              <span class="badge bg-success me-1">{{ number_format($stats['total_credits'] ?? 0, 4) }} credits</span>
+              <span class="badge bg-success me-1">{{ format_credit($stats['total_credits'] ?? 0) }}</span>
               <span class="text-muted">In: {{ number_format($stats['input_tokens'] ?? 0) }} | Out: {{ number_format($stats['output_tokens'] ?? 0) }}</span>
             </div>
           </div>
@@ -585,7 +591,7 @@
                     <span>{{ $log->feature_slug ?: 'chat' }}</span>
                   </td>
                   <td>
-                    <span class="badge badge-outline">{{ $log->ai_model ?: 'unknown' }}</span>
+                    <span class="badge badge-outline">{{ $log->model ?: 'unknown' }}</span>
                   </td>
                   <td>
                     <span>{{ $log->request_type }}</span>
@@ -645,10 +651,10 @@
                         {{-- FİLTRELENEN PROMPT'LAR --}}
                         <div class="dropdown-item-text">
                           <h6 class="text-warning mb-2">
-                            ❌ Filtrelenen Prompt'lar ({{ $log->filtered_prompts }})
+                            ❌ Filtrelenen Prompt'lar ({{ $log->filtered_prompts ?? ($log->total_available_prompts - $log->actually_used_prompts) }})
                           </h6>
                           
-                          @foreach(array_slice($filteredPrompts, 0, $log->filtered_prompts) as $index => $prompt)
+                          @foreach(array_slice($filteredPrompts, 0, $log->filtered_prompts ?? ($log->total_available_prompts - $log->actually_used_prompts)) as $index => $prompt)
                           <div class="d-flex justify-content-between align-items-center mb-1 p-1 bg-warning-lt rounded">
                             <div>
                               <span class="text-warning fw-bold me-2">❌</span>
@@ -738,7 +744,7 @@
                               {{ $log->input_preview ?? 'Veri bulunamadı' }}
                             </div>
                           </div>
-                          @if($log->response_preview)
+                          @if($log->response_preview ?? false)
                           <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                               <small class="text-muted fw-bold">AI Yanıtı:</small>
@@ -747,7 +753,7 @@
                               </small>
                             </div>
                             <div class="p-2 bg-success-lt rounded small" style="max-height: 120px; overflow-y: auto;">
-                              {{ \Str::limit($log->response_preview, 300) }}
+                              {{ \Str::limit($log->response_preview ?? 'Önizleme bulunamadı', 300) }}
                             </div>
                           </div>
                           @endif
@@ -758,7 +764,7 @@
                             </div>
                             <div class="col-6">
                               <small class="text-muted">Token:</small><br>
-                              <span class="text-warning">{{ number_format($log->token_usage ?? 0) }}</span>
+                              <span class="text-warning">{{ format_credit_short($log->token_usage ?? 0) }}</span>
                             </div>
                           </div>
                         </div>
@@ -992,14 +998,14 @@ function generateActivityDetailHTML(log) {
   var featureSlug = log.feature_slug || 'chat';
   var requestType = log.request_type || 'unknown';
   var inputPreview = log.input_preview || 'Veri bulunamadı';
-  var responsePreview = log.response_preview || '';
+  var responsePreview = log.response_preview || (log.total_available_prompts - log.actually_used_prompts) || '';
   var createdAt = log.created_at || new Date().toISOString();
   
   // Context efficiency calculation
   var contextEfficiency = totalAvailablePrompts > 0 ? Math.round((actuallyUsedPrompts / totalAvailablePrompts) * 100) : 0;
   
   // Build modal content using dropdown pattern
-  var filteredPrompts = log.filtered_prompts || 0;
+  var filteredPrompts = log.filtered_prompts || (log.total_available_prompts - log.actually_used_prompts) || 0;
   var thresholdUsed = log.threshold_used || 4000;
   var contextType = log.context_type || 'normal';
   var aiModel = log.ai_model || 'claude-3-sonnet';
@@ -1249,15 +1255,11 @@ $(document).ready(function() {
             {{ is_numeric($count) ? intval($count) : 0 }},
           @endforeach
         @else
-          12, 19, 3, 5, 2, 3, 8, 15, 22, 18, 25, 14, 16, 19, 8, 12, 15, 18, 22, 25, 19, 16, 12, 8
+          {{-- Veri yok - boş array --}}
         @endif
       ].filter(value => Number.isFinite(value) && value >= 0);
       
-      // Ensure we have 24 data points
-      while (hourlyData.length < 24) {
-        hourlyData.push(Math.floor(Math.random() * 20) + 5);
-      }
-      hourlyData.splice(24); // Limit to 24 hours
+      // Veri yoksa chart gösterme
       
       console.log('Hourly Usage Chart Data:', hourlyData);
 
@@ -1324,7 +1326,7 @@ $(document).ready(function() {
             {{ is_numeric($feature->usage_count) ? intval($feature->usage_count) : 0 }},
           @endforeach
         @else
-          35, 25, 20, 15, 5
+          {{-- Gerçek veri yok - boş array --}}
         @endif
       ].filter(value => Number.isFinite(value) && value >= 0);
 
@@ -1334,15 +1336,11 @@ $(document).ready(function() {
             '{!! addslashes($feature->feature_slug ?? "chat") !!}',
           @endforeach
         @else
-          'SEO Analiz', 'İçerik Oluştur', 'Çeviri', 'Metin Düzelt', 'Özet Çıkart'
+          {{-- Gerçek veri yok - boş array --}}
         @endif
       ];
       
-      // Fallback to demo data if no real data
-      if (featureSeries.length === 0 || featureSeries.every(val => val === 0)) {
-        featureSeries = [35, 25, 20, 15, 5];
-        featureLabels = ['SEO Analiz', 'İçerik Oluştur', 'Çeviri', 'Metin Düzelt', 'Özet Çıkart'];
-      }
+      // Gerçek veri yoksa chart gösterme
       
       console.log('Feature Usage Chart Data:', { series: featureSeries, labels: featureLabels });
 

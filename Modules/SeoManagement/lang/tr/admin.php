@@ -22,8 +22,6 @@ return [
     'seo_keywords_help' => 'İçeriğinizle ilgili anahtar kelimeler (virgül ile ayırın)',
     'keywords_placeholder' => 'anahtar kelime 1, anahtar kelime 2',
     'keywords_separator_note' => '(virgül ile ayırın)',
-    'canonical_url' => 'Canonical URL',
-    'canonical_url_help' => 'Bu sayfanın asıl URL adresi (isteğe bağlı)',
     
     // Karakterler ve limitler
     'characters' => 'karakter',

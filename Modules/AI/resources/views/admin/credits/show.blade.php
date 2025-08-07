@@ -1,36 +1,11 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('title', 'Kredi Detayları')
 
 @section('content')
-<div class="page-wrapper">
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row g-2 align-items-center">
-                <div class="col">
-                    <div class="page-pretitle">
-                        AI Yönetimi
-                    </div>
-                    <h2 class="page-title">
-                        <i class="fas fa-coins me-2"></i>
-                        Kredi Detayları
-                    </h2>
-                </div>
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <a href="{{ route('admin.ai.credits.index') }}" class="btn btn-ghost-dark">
-                            <i class="fas fa-arrow-left me-1"></i>
-                            Geri Dön
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="page-body">
-        <div class="container-xl">
-            <div class="row">
+        <div class="row">
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
@@ -40,36 +15,42 @@
                             </h3>
                         </div>
                         <div class="card-body">
+                            <!-- 🎯 EN ÖNEMLİ İSTATİSTİK: KALAN KREDİ -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="text-center p-4 bg-primary-lt rounded-3">
+                                        <div class="text-secondary mb-2 h5">💰 Mevcut Bakiye</div>
+                                        <div class="display-4 fw-bold text-primary mb-2">
+                                            {{ format_credit(ai_get_credit_balance(), false) }}
+                                        </div>
+                                        <div class="h4 text-primary">KREDİ</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Diğer İstatistikler (Daha Az Önemli) -->
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label class="form-label">Mevcut Bakiye</label>
-                                        <div class="h3 text-blue">
-                                            {{ number_format(ai_get_credit_balance(1), 4) }} Kredi
+                                        <label class="form-label text-muted">Toplam Kullanılan</label>
+                                        <div class="h4 text-red">
+                                            {{ format_credit(ai_get_total_credits_used()) }}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label class="form-label">Toplam Kullanılan</label>
-                                        <div class="h3 text-red">
-                                            {{ number_format(ai_get_total_credits_used(1), 4) }} Kredi
+                                        <label class="form-label text-muted">Bu Ay Kullanılan</label>
+                                        <div class="h4 text-orange">
+                                            {{ format_credit(ai_get_monthly_credits_used()) }}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label class="form-label">Bu Ay Kullanılan</label>
-                                        <div class="h3 text-orange">
-                                            {{ number_format(ai_get_monthly_credits_used(1), 4) }} Kredi
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Bugün Kullanılan</label>
-                                        <div class="h3 text-yellow">
-                                            {{ number_format(ai_get_daily_credits_used(1), 4) }} Kredi
+                                        <label class="form-label text-muted">Bugün Kullanılan</label>
+                                        <div class="h4 text-yellow">
+                                            {{ format_credit(ai_get_daily_credits_used()) }}
                                         </div>
                                     </div>
                                 </div>
@@ -81,8 +62,8 @@
                                 <div class="col-12">
                                     <label class="form-label">Kullanım Oranı</label>
                                     @php
-                                        $totalPurchased = ai_get_total_credits_purchased(1);
-                                        $totalUsed = ai_get_total_credits_used(1);
+                                        $totalPurchased = ai_get_total_credits_purchased();
+                                        $totalUsed = ai_get_total_credits_used();
                                         $usagePercentage = $totalPurchased > 0 ? ($totalUsed / $totalPurchased) * 100 : 0;
                                     @endphp
                                     <div class="progress progress-sm">
@@ -167,7 +148,4 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 @endsection

@@ -294,8 +294,11 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
             throw new \Exception('No slug found for model');
         }
 
-        // Module slug al - locale parametresi ile
-        $moduleSlug = $this->moduleSlugService->getSlug($moduleName, $action, $locale);
+        // Module slug al - locale'e göre
+        $moduleSlug = $this->moduleSlugService->getSlugForLocale($moduleName, $action, $locale);
+        if (!$moduleSlug) {
+            $moduleSlug = $this->moduleSlugService->getSlug($moduleName, $action);
+        }
         
         // URL oluştur
         $defaultLocale = get_tenant_default_locale();
@@ -382,8 +385,15 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
                 $action = $this->findActionBySlug($moduleName, $actionSlug);
                 if ($action) {
                     // Yeni dil için slug'ları al
-                    $newModuleSlug = $this->moduleSlugService->getSlug($moduleName, 'index', $locale);
-                    $newActionSlug = $this->moduleSlugService->getSlug($moduleName, $action, $locale);
+                    $newModuleSlug = $this->moduleSlugService->getSlugForLocale($moduleName, 'index', $locale);
+                    if (!$newModuleSlug) {
+                        $newModuleSlug = $this->moduleSlugService->getSlug($moduleName, 'index');
+                    }
+                    
+                    $newActionSlug = $this->moduleSlugService->getSlugForLocale($moduleName, $action, $locale);
+                    if (!$newActionSlug) {
+                        $newActionSlug = $this->moduleSlugService->getSlug($moduleName, $action);
+                    }
                     
                     // URL'i oluştur
                     return $this->buildUrlWithLocale(
@@ -392,19 +402,35 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
                     );
                 }
             }
-        } elseif (count($segments) >= 2) {
-            // 2 segment: module/slug pattern
+        } elseif (count($segments) == 2) {
+            // 2 segment: module/slug pattern (show action)
             $moduleSlug = $segments[0];
             $contentSlug = $segments[1];
             
             // Modül adını bul
             $moduleName = $this->findModuleNameBySlug($moduleSlug);
             if ($moduleName) {
-                $newModuleSlug = $this->moduleSlugService->getSlug($moduleName, 'show', $locale);
+                $newModuleSlug = $this->moduleSlugService->getSlugForLocale($moduleName, 'show', $locale);
+                if (!$newModuleSlug) {
+                    $newModuleSlug = $this->moduleSlugService->getSlug($moduleName, 'show');
+                }
                 return $this->buildUrlWithLocale(
                     $newModuleSlug . '/' . $contentSlug,
                     $locale
                 );
+            }
+        } elseif (count($segments) == 1) {
+            // 1 segment: module index pattern
+            $moduleSlug = $segments[0];
+            
+            // Modül adını bul
+            $moduleName = $this->findModuleNameBySlug($moduleSlug);
+            if ($moduleName) {
+                $newModuleSlug = $this->moduleSlugService->getSlugForLocale($moduleName, 'index', $locale);
+                if (!$newModuleSlug) {
+                    $newModuleSlug = $this->moduleSlugService->getSlug($moduleName, 'index');
+                }
+                return $this->buildUrlWithLocale($newModuleSlug, $locale);
             }
         }
         
@@ -415,19 +441,26 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
     private function getAvailableLocales(): array
     {
         return Cache::remember('available_locales', 3600, function () {
-            return array_column(available_tenant_languages(), 'code');
+            return \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
         });
     }
 
     private function getLocaleName(string $locale): string
     {
-        $names = config('app.available_locales', [
-            'tr' => 'Türkçe',
-            'en' => 'English',
-            'ar' => 'العربية'
-        ]);
-
-        return $names[$locale] ?? strtoupper($locale);
+        // TenantLanguageProvider'dan dil isimlerini al - DİNAMİK
+        try {
+            $names = \App\Services\TenantLanguageProvider::getLanguageNativeNames();
+            return $names[$locale] ?? strtoupper($locale);
+        } catch (\Exception $e) {
+            // Fallback: config'den al
+            $names = config('app.available_locales', [
+                'tr' => 'Türkçe',
+                'en' => 'English',
+                'ar' => 'العربية'
+            ]);
+            
+            return $names[$locale] ?? strtoupper($locale);
+        }
     }
 
     private function getFallbackUrl(string $locale): string
@@ -486,10 +519,16 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
             // Her dil için index slug'ını kontrol et
             $availableLocales = $this->getAvailableLocales();
             foreach ($availableLocales as $locale) {
-                $moduleSlug = $this->moduleSlugService->getSlug($module, 'index', $locale);
+                $moduleSlug = $this->moduleSlugService->getSlugForLocale($module, 'index', $locale);
                 if ($moduleSlug === $slug) {
                     return $module;
                 }
+            }
+            
+            // Default slug'ı da kontrol et
+            $defaultSlug = $this->moduleSlugService->getSlug($module, 'index');
+            if ($defaultSlug === $slug) {
+                return $module;
             }
         }
         
@@ -508,10 +547,16 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
             // Her dil için action slug'ını kontrol et
             $availableLocales = $this->getAvailableLocales();
             foreach ($availableLocales as $locale) {
-                $slug = $this->moduleSlugService->getSlug($moduleName, $action, $locale);
+                $slug = $this->moduleSlugService->getSlugForLocale($moduleName, $action, $locale);
                 if ($slug === $actionSlug) {
                     return $action;
                 }
+            }
+            
+            // Default slug'ı da kontrol et
+            $defaultSlug = $this->moduleSlugService->getSlug($moduleName, $action);
+            if ($defaultSlug === $actionSlug) {
+                return $action;
             }
         }
         
@@ -535,7 +580,11 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
         $modules = $this->moduleSlugService->getAllModules();
         
         foreach ($modules as $module) {
-            $indexSlug = $this->moduleSlugService->getSlug($module, 'index');
+            // Locale'e göre slug al
+            $indexSlug = $this->moduleSlugService->getSlugForLocale($module, 'index', $locale ?? app()->getLocale());
+            if (!$indexSlug) {
+                $indexSlug = $this->moduleSlugService->getSlug($module, 'index');
+            }
             
             if ($possibleModule === $indexSlug) {
                 return [

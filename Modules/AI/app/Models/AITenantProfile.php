@@ -30,6 +30,7 @@ class AITenantProfile extends Model
         'brand_story_created_at',
         'is_active',
         'is_completed',
+        'data', // Context data alanı
         
         // SMART PROFILE SYSTEM FIELDS
         'smart_field_scores',
@@ -62,6 +63,7 @@ class AITenantProfile extends Model
         'brand_story_created_at' => 'datetime',
         'is_active' => 'boolean',
         'is_completed' => 'boolean',
+        'data' => 'array', // Context data alanı
         
         // SMART PROFILE SYSTEM CASTS
         'smart_field_scores' => 'array',
@@ -302,7 +304,9 @@ class AITenantProfile extends Model
             foreach ($this->success_stories as $key => $story) {
                 if (!empty($story)) {
                     $keyFormatted = ucfirst(str_replace('_', ' ', $key));
-                    $successSection .= "**{$keyFormatted}:** {$story}\n";
+                    // Array to string conversion fix
+                    $storyText = is_array($story) ? implode(', ', $story) : $story;
+                    $successSection .= "**{$keyFormatted}:** {$storyText}\n";
                 }
             }
             
@@ -331,7 +335,7 @@ class AITenantProfile extends Model
             }
             
             // Marka kişiliği
-            if (isset($this->sector_details['brand_personality'])) {
+            if (isset($this->sector_details['brand_personality']) && is_array($this->sector_details['brand_personality'])) {
                 $personalities = [];
                 foreach ($this->sector_details['brand_personality'] as $key => $value) {
                     if ($value) $personalities[] = $key;
@@ -339,6 +343,8 @@ class AITenantProfile extends Model
                 if (!empty($personalities)) {
                     $sectorSection .= "**Marka Kişiliği:** " . implode(', ', $personalities) . "\n";
                 }
+            } elseif (isset($this->sector_details['brand_personality']) && is_string($this->sector_details['brand_personality'])) {
+                $sectorSection .= "**Marka Kişiliği:** {$this->sector_details['brand_personality']}\n";
             }
             
             $summary[] = $sectorSection;
@@ -387,7 +393,9 @@ class AITenantProfile extends Model
                 foreach ($this->founder_info as $key => $value) {
                     if (!empty($value)) {
                         $keyFormatted = ucfirst(str_replace('_', ' ', $key));
-                        $founderSection .= "**{$keyFormatted}:** {$value}\n";
+                        // Array to string conversion fix
+                        $valueText = is_array($value) ? implode(', ', $value) : $value;
+                        $founderSection .= "**{$keyFormatted}:** {$valueText}\n";
                     }
                 }
                 

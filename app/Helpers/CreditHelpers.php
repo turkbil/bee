@@ -199,28 +199,20 @@ if (!function_exists('ai_get_credit_balance')) {
                 return 0.0;
             }
             
-            // Credit balance alanı varsa kullan
-            if (isset($tenant->ai_credits_balance)) {
-                return (float) $tenant->ai_credits_balance;
-            }
-            
-            // Alternatif alan adları dene
-            if (isset($tenant->credit_balance)) {
-                return (float) $tenant->credit_balance;
-            }
-            
-            // Fallback: Token balance'ı credit'e çevir (legacy support)
-            if (isset($tenant->ai_tokens_balance)) {
-                $tokenBalance = (float) $tenant->ai_tokens_balance;
-                // Token → Credit conversion rate (örnek: 1000 token = 1 credit)
-                return round($tokenBalance / 1000, 4);
-            }
-            
-            // Son fallback: Satın alınan - kullanılan hesaplama
+            // DOĞRU HESAPLAMA: Satın alınan - kullanılan (gerçek zamanlı)
             $totalPurchased = ai_get_total_credits_purchased($tenantId);
             $totalUsed = ai_get_total_credits_used($tenantId);
+            $realBalance = max(0, $totalPurchased - $totalUsed);
             
-            return max(0, $totalPurchased - $totalUsed);
+            // Debug log
+            Log::debug('Credit balance calculation', [
+                'tenant_id' => $tenantId,
+                'total_purchased' => $totalPurchased,
+                'total_used' => $totalUsed,
+                'real_balance' => $realBalance
+            ]);
+            
+            return $realBalance;
             
         } catch (\Exception $e) {
             Log::error('ai_get_credit_balance error', [
@@ -249,13 +241,19 @@ if (!function_exists('ai_get_total_credits_used')) {
             if (!$tenantId) {
                 $tenantId = tenant('id');
                 if (!$tenantId) {
-                    Log::warning('ai_get_total_credits_used: No tenant context');
-                    return 0.0;
+                    Log::warning('Function called without tenant context');
+                    // İlk tenant'ı al (admin panel için) - diğer fonksiyonlarla aynı logic
+                    $firstTenant = Tenant::first();
+                    $tenantId = $firstTenant?->id;
+                    
+                    if (!$tenantId) {
+                        return 0.0;
+                    }
                 }
             }
             
             $totalUsed = AICreditUsage::where('tenant_id', $tenantId)
-                ->sum('credit_cost');
+                ->sum('credits_used');
             
             return (float) $totalUsed;
             
@@ -283,7 +281,13 @@ if (!function_exists('ai_get_total_credits_purchased')) {
                 $tenantId = tenant('id');
                 if (!$tenantId) {
                     Log::warning('Function called without tenant context');
-                    return 100.0; // Default for central admin
+                    // İlk tenant'ı al (admin panel için)
+                    $firstTenant = Tenant::first();
+                    $tenantId = $firstTenant?->id;
+                    
+                    if (!$tenantId) {
+                        return 0.0;
+                    }
                 }
             }
             
@@ -293,7 +297,7 @@ if (!function_exists('ai_get_total_credits_purchased')) {
                     ->where('status', 'completed')
                     ->sum('credit_amount');
                 
-                return (float) $totalPurchased;
+                // Eğer satın alma varsa onu döndür, yoksa default değere düş\n                if ($totalPurchased > 0) {\n                    return (float) $totalPurchased;\n                }
             }
             
             // Fallback: Token purchase'lardan hesapla
@@ -333,14 +337,20 @@ if (!function_exists('ai_get_monthly_credits_used')) {
                 $tenantId = tenant('id');
                 if (!$tenantId) {
                     Log::warning('Function called without tenant context');
-                    return 100.0; // Default for central admin
+                    // İlk tenant'ı al (admin panel için)
+                    $firstTenant = Tenant::first();
+                    $tenantId = $firstTenant?->id;
+                    
+                    if (!$tenantId) {
+                        return 0.0;
+                    }
                 }
             }
             
             $monthlyUsed = AICreditUsage::where('tenant_id', $tenantId)
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
-                ->sum('credit_cost');
+                ->sum('credits_used');
             
             return (float) $monthlyUsed;
             
@@ -368,13 +378,19 @@ if (!function_exists('ai_get_daily_credits_used')) {
                 $tenantId = tenant('id');
                 if (!$tenantId) {
                     Log::warning('Function called without tenant context');
-                    return 100.0; // Default for central admin
+                    // İlk tenant'ı al (admin panel için)
+                    $firstTenant = Tenant::first();
+                    $tenantId = $firstTenant?->id;
+                    
+                    if (!$tenantId) {
+                        return 0.0;
+                    }
                 }
             }
             
             $dailyUsed = AICreditUsage::where('tenant_id', $tenantId)
                 ->whereDate('created_at', now()->toDateString())
-                ->sum('credit_cost');
+                ->sum('credits_used');
             
             return (float) $dailyUsed;
             
@@ -716,32 +732,139 @@ if (!function_exists('ai_use_calculated_credits')) {
 }
 
 // ============================================================================
+// KREDİ FORMATLAMA SİSTEMİ - MERKEZİ KONTROL
+// ============================================================================
+
+if (!function_exists('format_credit')) {
+    /**
+     * Merkezi kredi formatlaması - TEK NOKTADAN KONTROL
+     * 
+     * Bu fonksiyon tüm sistemdeki kredi gösterimlerini kontrol eder.
+     * Sadece buradaki ayarları değiştirerek tüm kredi gösterimlerini 
+     * anında güncelleyebilirsiniz.
+     * 
+     * @param float|int $amount Kredi miktarı
+     * @param bool $withUnit "Kredi" kelimesi eklensin mi?
+     * @param string|null $customUnit Özel birim adı
+     * @return string Formatlanmış kredi miktarı
+     */
+    function format_credit($amount, bool $withUnit = true, ?string $customUnit = null): string
+    {
+        try {
+            // =====================================
+            // 🎛️ FORMAT AYARLARI - TEK NOKTA KONTROL
+            // =====================================
+            
+            // Ondalık basamak sayısı (buradan tüm sistemi kontrol edebilirsiniz)
+            $decimalPlaces = 2; // 2 = "100.00", 0 = "100", 4 = "100.0000"
+            
+            // Binlik ayırıcı
+            $thousandsSeparator = '.'; // Türkiye: "." (örn: 1.000.00)
+            
+            // Ondalık ayırıcı  
+            $decimalSeparator = ','; // Türkiye: "," (örn: 100,50)
+            
+            // Birim adı
+            $defaultUnit = $customUnit ?? 'Kredi';
+            
+            // =====================================
+            // FORMATLAMA İŞLEMİ
+            // =====================================
+            
+            // Sayıyı float'a çevir
+            $numericAmount = is_numeric($amount) ? (float) $amount : 0.0;
+            
+            // Number format uygula
+            $formattedAmount = number_format(
+                $numericAmount, 
+                $decimalPlaces, 
+                $decimalSeparator, 
+                $thousandsSeparator
+            );
+            
+            // Birim ekleme
+            if ($withUnit) {
+                return $formattedAmount . ' ' . $defaultUnit;
+            }
+            
+            return $formattedAmount;
+            
+        } catch (\Exception $e) {
+            Log::error('format_credit error', [
+                'amount' => $amount,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Fallback format
+            return $withUnit ? '0,00 Kredi' : '0,00';
+        }
+    }
+}
+
+if (!function_exists('format_credit_short')) {
+    /**
+     * Kısa kredi formatlaması (sadece sayı, birim yok)
+     * 
+     * @param float|int $amount Kredi miktarı
+     * @return string Formatlanmış kredi miktarı (birim olmadan)
+     */
+    function format_credit_short($amount): string
+    {
+        return format_credit($amount, false);
+    }
+}
+
+if (!function_exists('format_credit_detailed')) {
+    /**
+     * Detaylı kredi formatlaması (daha fazla ondalık basamakla)
+     * 
+     * @param float|int $amount Kredi miktarı  
+     * @param bool $withUnit Birim eklensin mi?
+     * @return string Formatlanmış kredi miktarı
+     */
+    function format_credit_detailed($amount, bool $withUnit = true): string
+    {
+        try {
+            $numericAmount = is_numeric($amount) ? (float) $amount : 0.0;
+            
+            // Detaylı format (4 ondalık basamak)
+            $formattedAmount = number_format($numericAmount, 4, ',', '.');
+            
+            return $withUnit ? $formattedAmount . ' Kredi' : $formattedAmount;
+            
+        } catch (\Exception $e) {
+            return format_credit($amount, $withUnit);
+        }
+    }
+}
+
+if (!function_exists('format_credit_currency')) {
+    /**
+     * Para birimi tarzında kredi formatlaması
+     * 
+     * @param float|int $amount Kredi miktarı
+     * @param string $currency Para birimi simgesi
+     * @return string Formatlanmış kredi miktarı
+     */
+    function format_credit_currency($amount, string $currency = '₺'): string
+    {
+        try {
+            $numericAmount = is_numeric($amount) ? (float) $amount : 0.0;
+            $formattedAmount = number_format($numericAmount, 2, ',', '.');
+            
+            return $currency . $formattedAmount;
+            
+        } catch (\Exception $e) {
+            return $currency . '0,00';
+        }
+    }
+}
+
+// ============================================================================
 // LEGACY SUPPORT - ESKİ TOKEN FONKSİYONLARI
 // ============================================================================
 
-if (!function_exists('ai_use_tokens')) {
-    /**
-     * Legacy token kullanımı - credit sistemine yönlendir
-     * 
-     * @deprecated Use ai_use_credits() instead
-     */
-    function ai_use_tokens(int $tokenAmount, ?string $tenantId = null, array $metadata = []): bool
-    {
-        // Token → Credit dönüşümü (1000 token = 1 credit)
-        $creditAmount = round($tokenAmount / 1000, 4);
-        
-        Log::warning('Legacy ai_use_tokens() called, converting to credits', [
-            'tokens' => $tokenAmount,
-            'credits' => $creditAmount,
-            'tenant_id' => $tenantId
-        ]);
-        
-        return ai_use_credits($creditAmount, $tenantId, array_merge($metadata, [
-            'legacy_tokens' => $tokenAmount,
-            'conversion_rate' => 1000
-        ]));
-    }
-}
+// REMOVED: ai_use_tokens() - Moved to AITokenHelper.php with correct signature
 
 if (!function_exists('ai_can_use_tokens')) {
     /**

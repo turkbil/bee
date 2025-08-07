@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
 use App\Models\Tenant;
-use Modules\AI\App\Models\AITokenPackage;
-use Modules\AI\App\Models\AITokenPurchase;
-use Modules\AI\App\Models\AITokenUsage;
+use Modules\AI\App\Models\AICreditPackage;
+use Modules\AI\App\Models\AICreditPurchase;
+use Modules\AI\App\Models\AICreditUsage;
 use App\Services\AITokenService;
 
 /**
@@ -32,20 +32,20 @@ if (!function_exists('ai_get_token_balance')) {
      */
     function ai_get_token_balance(?string $tenantId = null): int
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
         // Cache'den kontrol et
         $cacheKey = "ai_token_balance_{$tenantId}";
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId) {
-            // Toplam satın alınan token miktarı (Eloquent model kullan)
-            $totalPurchased = AITokenPurchase::where('tenant_id', $tenantId)
+            // Toplam satın alınan kredi miktarı (Eloquent model kullan)
+            $totalPurchased = AICreditPurchase::where('tenant_id', $tenantId)
                 ->where('status', 'completed')
-                ->sum('token_amount');
+                ->sum('credit_amount');
             
-            // Harcanan token miktarı (Eloquent model kullan)
-            $totalUsed = AITokenUsage::where('tenant_id', $tenantId)
-                ->sum('tokens_used');
+            // Harcanan kredi miktarı (Eloquent model kullan)
+            $totalUsed = AICreditUsage::where('tenant_id', $tenantId)
+                ->sum('credits_used');
             
             return max(0, $totalPurchased - $totalUsed);
         });
@@ -61,14 +61,14 @@ if (!function_exists('ai_get_total_purchased')) {
      */
     function ai_get_total_purchased(?string $tenantId = null): int
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
         $cacheKey = "ai_total_purchased_{$tenantId}";
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId) {
-            return AITokenPurchase::where('tenant_id', $tenantId)
+            return AICreditPurchase::where('tenant_id', $tenantId)
                 ->where('status', 'completed')
-                ->sum('token_amount');
+                ->sum('credit_amount');
         });
     }
 }
@@ -82,13 +82,13 @@ if (!function_exists('ai_get_total_used')) {
      */
     function ai_get_total_used(?string $tenantId = null): int
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
         $cacheKey = "ai_total_used_{$tenantId}";
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId) {
             return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
-                ->sum('input_tokens');
+                ->sum('credits_used');
         });
     }
 }
@@ -102,7 +102,7 @@ if (!function_exists('ai_get_token_stats')) {
      */
     function ai_get_token_stats(?string $tenantId = null): array
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
         $cacheKey = "ai_token_stats_{$tenantId}";
         
@@ -114,13 +114,13 @@ if (!function_exists('ai_get_token_stats')) {
             // Daily usage (bugünkü kullanım)
             $dailyUsage = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
                 ->whereDate('created_at', today())
-                ->sum('input_tokens');
+                ->sum('credits_used');
             
             // Monthly usage (bu ayki kullanım)
             $monthlyUsage = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
                 ->whereYear('created_at', now()->year)
                 ->whereMonth('created_at', now()->month)
-                ->sum('input_tokens');
+                ->sum('credits_used');
             
             $usagePercentage = $totalPurchased > 0 ? round(($totalUsed / $totalPurchased) * 100, 2) : 0;
             $remainingPercentage = $totalPurchased > 0 ? round(($remaining / $totalPurchased) * 100, 2) : 0;
@@ -149,7 +149,7 @@ if (!function_exists('ai_widget_token_data')) {
      */
     function ai_widget_token_data(?string $tenantId = null): array
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
         $cacheKey = "ai_widget_stats_{$tenantId}";
         
@@ -236,7 +236,7 @@ if (!function_exists('ai_clear_token_cache')) {
      */
     function ai_clear_token_cache(?string $tenantId = null): void
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
         Cache::forget("ai_token_balance_{$tenantId}");
         Cache::forget("ai_total_purchased_{$tenantId}");
@@ -349,11 +349,11 @@ if (!function_exists('ai_last_used')) {
 
 if (!function_exists('ai_token_packages')) {
     /**
-     * Aktif AI token paketlerini döndür
+     * Aktif AI credit paketlerini döndür
      */
     function ai_token_packages(): \Illuminate\Database\Eloquent\Collection
     {
-        return AITokenPackage::active()->ordered()->get();
+        return AICreditPackage::where('is_active', true)->orderBy('sort_order', 'asc')->get();
     }
 }
 
@@ -363,7 +363,7 @@ if (!function_exists('format_token_amount')) {
      */
     function format_token_amount(int $amount): string
     {
-        return number_format($amount) . ' Token';
+        return format_credit($amount);
     }
 }
 
@@ -441,7 +441,7 @@ if (!function_exists('ai_can_use_tokens')) {
      */
     function ai_can_use_tokens(int $tokensNeeded, ?string $tenantId = null): bool
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         $remaining = ai_get_token_balance($tenantId);
         
         return $remaining >= $tokensNeeded;
@@ -450,59 +450,85 @@ if (!function_exists('ai_can_use_tokens')) {
 
 if (!function_exists('ai_use_tokens')) {
     /**
-     * Token kullanımını kaydet
+     * GLOBAL AI MONITORING - Her AI kullanımında otomatik kredi düşme
      * 
-     * @param int $tokensUsed
-     * @param string $module
-     * @param string $action
-     * @param string|null $tenantId
-     * @param array $metadata
-     * @return bool
+     * @param int $tokensUsed Input tokens
+     * @param string $module Feature slug (örn: chat, seo-analysis)
+     * @param string $action İşlem türü
+     * @param string|null $tenantId Tenant ID
+     * @param array $metadata Ek veriler
+     * @param int $outputTokens Output tokens
+     * @param string $userInput Kullanıcı girdisi
+     * @param string $aiResponse AI yanıtı
+     * @return array Detaylı kullanım sonucu
      */
-    function ai_use_tokens(int $tokensUsed, string $module, string $action, ?string $tenantId = null, array $metadata = []): bool
-    {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
-        
-        // Token kontrolü
-        if (!ai_can_use_tokens($tokensUsed, $tenantId)) {
-            return false;
-        }
-        
-        // Current AI provider ve model bilgisini al
-        $currentModel = 'unknown';
+    function ai_use_tokens(
+        int $tokensUsed, 
+        string $module, 
+        string $action, 
+        ?string $tenantId = null, 
+        array $metadata = [],
+        int $outputTokens = 0,
+        string $userInput = '',
+        string $aiResponse = ''
+    ): array {
         try {
-            if (class_exists('Modules\AI\App\Services\AIService')) {
-                $aiService = app('Modules\AI\App\Services\AIService');
-                if (method_exists($aiService, 'getCurrentProviderModel')) {
-                    $currentModel = $aiService->getCurrentProviderModel();
-                }
+            // Global monitoring service'i al
+            $monitoringService = app(\Modules\AI\App\Services\GlobalAIMonitoringService::class);
+            
+            // Kredi hesapla (basit formula - geliştirilecek)
+            $creditsUsed = ($tokensUsed + $outputTokens) / 1000;
+            $creditCost = $creditsUsed * 0.00001;
+            
+            // Kullanım verileri
+            $usageData = [
+                'tenant_id' => $tenantId ?: tenant('id') ?: '1',
+                'user_id' => auth()->id() ?: 1,
+                'feature_slug' => $module,
+                'input_tokens' => $tokensUsed,
+                'output_tokens' => $outputTokens,
+                'credits_used' => $creditsUsed,
+                'credit_cost' => $creditCost,
+                'user_input' => $userInput,
+                'ai_response' => $aiResponse,
+                'request_type' => $action,
+                ...$metadata
+            ];
+            
+            // Global monitoring service ile kaydet
+            $result = $monitoringService->recordAIUsage($usageData);
+            
+            // Başarılı ise eski format için true döndür
+            if ($result['success']) {
+                return [
+                    'success' => true,
+                    'usage_id' => $result['usage_id'],
+                    'credits_used' => $result['credits_used'],
+                    'remaining_balance' => $result['remaining_balance'],
+                    'debug' => $result['debug']
+                ];
             }
+            
+            return [
+                'success' => false,
+                'error' => $result['message'],
+                'error_code' => $result['error_code']
+            ];
+            
         } catch (\Exception $e) {
-            // Model alınamadıysa default kullan
-            $currentModel = 'deepseek-chat';
+            \Log::error('AI Token Usage Failed', [
+                'error' => $e->getMessage(),
+                'module' => $module,
+                'tokens' => $tokensUsed,
+                'tenant_id' => $tenantId
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => 'System error: ' . $e->getMessage(),
+                'error_code' => 'system_error'
+            ];
         }
-
-        // Kullanım kaydı oluştur (Credit sistemi kullan)
-        $usage = \Modules\AI\App\Models\AICreditUsage::create([
-            'tenant_id' => $tenantId,
-            'user_id' => auth()->id() ?: 1,
-            'feature_slug' => $module,
-            'input_tokens' => $tokensUsed,
-            'output_tokens' => 0,
-            'credits_used' => $tokensUsed / 1000, // Token'ları credit'e çevir (basit conversion)
-            'credit_cost' => $tokensUsed * 0.00001, // Basit maliyet hesaplaması
-            'provider_name' => $currentModel,
-            'metadata' => json_encode($metadata),
-            'used_at' => now()
-        ]);
-        
-        if ($usage && $usage->id) {
-            // Cache'i temizle
-            ai_clear_token_cache($tenantId);
-            return true;
-        }
-        
-        return false;
     }
 }
 
@@ -516,9 +542,9 @@ if (!function_exists('ai_get_usage_history')) {
      */
     function ai_get_usage_history(?string $tenantId = null, int $limit = 50): array
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
-        $usage = AITokenUsage::where('tenant_id', $tenantId)
+        $usage = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get()
@@ -538,9 +564,9 @@ if (!function_exists('ai_get_purchase_history')) {
      */
     function ai_get_purchase_history(?string $tenantId = null, int $limit = 10): array
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
-        $purchases = AITokenPurchase::with('package')
+        $purchases = AICreditPurchase::with('package')
             ->where('tenant_id', $tenantId)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
@@ -560,7 +586,7 @@ if (!function_exists('ai_refresh_token_stats')) {
      */
     function ai_refresh_token_stats(?string $tenantId = null): void
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         ai_clear_token_cache($tenantId);
     }
 }
@@ -608,12 +634,12 @@ if (!function_exists('ai_get_monthly_usage')) {
      */
     function ai_get_monthly_usage(?string $tenantId = null): int
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
-        return AITokenUsage::where('tenant_id', $tenantId)
+        return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
             ->whereYear('created_at', now()->year)
             ->whereMonth('created_at', now()->month)
-            ->sum('tokens_used');
+            ->sum('credits_used');
     }
 }
 
@@ -626,10 +652,225 @@ if (!function_exists('ai_get_daily_usage')) {
      */
     function ai_get_daily_usage(?string $tenantId = null): int
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
         
         return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
             ->whereDate('created_at', now()->toDateString())
-            ->sum('input_tokens');
+            ->sum('credits_used');
+    }
+}
+
+// GLOBAL AI MONITORING FONKSİYONLARI
+
+if (!function_exists('ai_record_conversation_usage')) {
+    /**
+     * Konuşma tabanlı AI kullanımını global monitoring ile kaydet
+     */
+    function ai_record_conversation_usage(
+        int $conversationId,
+        string $userMessage,
+        string $aiResponse,
+        array $tokenData,
+        string $featureSlug = 'chat'
+    ): array {
+        try {
+            $monitoringService = app(\Modules\AI\App\Services\GlobalAIMonitoringService::class);
+            return $monitoringService->recordConversationUsage(
+                $conversationId,
+                $userMessage,
+                $aiResponse,
+                $tokenData,
+                $featureSlug
+            );
+        } catch (\Exception $e) {
+            \Log::error('Conversation usage recording failed', [
+                'error' => $e->getMessage(),
+                'conversation_id' => $conversationId
+            ]);
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+}
+
+if (!function_exists('ai_record_feature_usage')) {
+    /**
+     * Feature tabanlı AI kullanımını global monitoring ile kaydet
+     */
+    function ai_record_feature_usage(
+        string $featureSlug,
+        string $userInput,
+        string $aiResponse,
+        array $tokenData
+    ): array {
+        try {
+            $monitoringService = app(\Modules\AI\App\Services\GlobalAIMonitoringService::class);
+            return $monitoringService->recordFeatureUsage(
+                $featureSlug,
+                $userInput,
+                $aiResponse,
+                $tokenData
+            );
+        } catch (\Exception $e) {
+            \Log::error('Feature usage recording failed', [
+                'error' => $e->getMessage(),
+                'feature_slug' => $featureSlug
+            ]);
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+}
+
+if (!function_exists('ai_get_comprehensive_analytics')) {
+    /**
+     * Kapsamlı AI analytics verilerini al
+     */
+    function ai_get_comprehensive_analytics(?string $tenantId = null, array $filters = []): array
+    {
+        try {
+            $monitoringService = app(\Modules\AI\App\Services\GlobalAIMonitoringService::class);
+            return $monitoringService->getComprehensiveAnalytics($tenantId, $filters);
+        } catch (\Exception $e) {
+            \Log::error('Analytics retrieval failed', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+}
+
+if (!function_exists('ai_get_realtime_metrics')) {
+    /**
+     * Real-time AI monitoring metrikleri
+     */
+    function ai_get_realtime_metrics(?string $tenantId = null): array
+    {
+        try {
+            $monitoringService = app(\Modules\AI\App\Services\GlobalAIMonitoringService::class);
+            return $monitoringService->getRealTimeMetrics($tenantId);
+        } catch (\Exception $e) {
+            \Log::error('Real-time metrics retrieval failed', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+}
+
+if (!function_exists('ai_get_debug_data')) {
+    /**
+     * AI debug dashboard verileri
+     */
+    function ai_get_debug_data(?string $tenantId = null, int $limit = 100): array
+    {
+        try {
+            $monitoringService = app(\Modules\AI\App\Services\GlobalAIMonitoringService::class);
+            return $monitoringService->getDebugData($tenantId, $limit);
+        } catch (\Exception $e) {
+            \Log::error('Debug data retrieval failed', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+}
+
+if (!function_exists('ai_get_credit_balance')) {
+    /**
+     * Kalan kredi bakiyesini getir (yeni credit sistemi)
+     */
+    function ai_get_credit_balance(?string $tenantId = null): float
+    {
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
+        
+        try {
+            $creditService = app(\Modules\AI\App\Services\AICreditService::class);
+            $balance = $creditService->getTenantCreditBalance((int) $tenantId);
+            return $balance['remaining_balance'] ?? 0;
+        } catch (\Exception $e) {
+            \Log::error('Credit balance retrieval failed', [
+                'error' => $e->getMessage(),
+                'tenant_id' => $tenantId
+            ]);
+            // Fallback to direct calculation
+            $totalPurchased = \Modules\AI\App\Models\AICreditPurchase::where('tenant_id', $tenantId)
+                ->where('status', 'completed')
+                ->sum('credit_amount');
+            $totalUsed = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
+                ->sum('credits_used');
+            return max(0, $totalPurchased - $totalUsed);
+        }
+    }
+}
+
+if (!function_exists('ai_get_total_credits_used')) {
+    /**
+     * Toplam harcanan kredi miktarını getir
+     */
+    function ai_get_total_credits_used(?string $tenantId = null): float
+    {
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
+        
+        if (!$tenantId) {
+            \Log::warning('ai_get_total_credits_used: No tenant context');
+            return 0;
+        }
+        
+        return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
+            ->sum('credits_used');
+    }
+}
+
+if (!function_exists('ai_get_total_credits_purchased')) {
+    /**
+     * Toplam satın alınan kredi miktarını getir
+     */
+    function ai_get_total_credits_purchased(?string $tenantId = null): float
+    {
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
+        
+        return \Modules\AI\App\Models\AICreditPurchase::where('tenant_id', $tenantId)
+            ->where('status', 'completed')
+            ->sum('credit_amount');
+    }
+}
+
+if (!function_exists('ai_get_monthly_credits_used')) {
+    /**
+     * Bu ay harcanan kredi miktarını getir
+     */
+    function ai_get_monthly_credits_used(?string $tenantId = null): float
+    {
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
+        
+        return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
+            ->whereYear('used_at', now()->year)
+            ->whereMonth('used_at', now()->month)
+            ->sum('credits_used');
+    }
+}
+
+if (!function_exists('ai_get_daily_credits_used')) {
+    /**
+     * Bugün harcanan kredi miktarını getir
+     */
+    function ai_get_daily_credits_used(?string $tenantId = null): float
+    {
+        $tenantId = $tenantId ?: tenant('id') ?: '1';
+        
+        return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenantId)
+            ->whereDate('used_at', today())
+            ->sum('credits_used');
+    }
+}
+
+if (!function_exists('ai_get_active_provider_name')) {
+    /**
+     * Aktif AI provider adını getir
+     */
+    function ai_get_active_provider_name(): ?string
+    {
+        try {
+            $provider = \Modules\AI\App\Models\AIProvider::where('is_active', true)
+                ->where('is_default', true)
+                ->first();
+                
+            return $provider ? $provider->name : null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

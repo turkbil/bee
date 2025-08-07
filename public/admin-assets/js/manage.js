@@ -3,7 +3,7 @@
 
 // Global variables
 window.currentPageId = null;
-window.currentLanguage = 'tr';
+window.currentLanguage = window.tenantDefaultLanguage || 'tr';
 window.allLanguagesSeoData = {};
 
 // ===== SYSTEM INITIALIZATION =====
@@ -36,7 +36,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== LANGUAGE SWITCHING SYSTEM =====
 function setupLanguageSwitching() {
-    $('.language-switch-btn').on('click', function() {
+    console.log('🔧 Language switching sistemi kuruluyor...');
+    
+    const langButtons = $('.language-switch-btn');
+    console.log('🔍 Bulunan language button sayısı:', langButtons.length);
+    
+    langButtons.each(function(index) {
+        console.log(`  ${index}: ${$(this).data('language')} - class: ${this.className}`);
+    });
+    
+    // 🚨 KRİTİK FİX: Event delegation kullan - DOM yenilense bile çalışır
+    $(document).off('click', '.language-switch-btn').on('click', '.language-switch-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('🚨🚨 LANGUAGE BUTTON CLICKED! Event captured!');
+        console.log('🚨 Event target:', e.target);
+        console.log('🚨 Current target:', e.currentTarget);
         const language = $(this).data('language');
         const nativeName = $(this).data('native-name');
         
@@ -45,6 +61,15 @@ function setupLanguageSwitching() {
         console.log('🔍 Tıklanan element:', this);
         console.log('📍 Element data-language:', $(this).data('language'));
         console.log('📍 Element data-native-name:', $(this).data('native-name'));
+        
+        // 🚨 Acil kontrol: Element gerçekten language switch button mı?
+        if (!$(this).hasClass('language-switch-btn')) {
+            console.log('❌ HATA: Bu element language-switch-btn değil!');
+            console.log('🔍 Element class:', this.className);
+            return false;
+        }
+        
+        console.log('✅ Element doğrulama başarılı - language-switch-btn');
         
         // *** ELEMENT TİPİ TESPİTİ ***
         console.log('🔍 Element tag name:', this.tagName);
@@ -87,16 +112,10 @@ function setupLanguageSwitching() {
             }
         }
         
-        // Check active tab - Code tab is preserved
+        // Aktif tab'ı logla
         const activeTabElement = $('.nav-tabs .nav-link.active');
         const activeTab = activeTabElement.attr('href');
-        
-        if (activeTab && activeTab === '#2') {
-            console.log('🎯 Code tab aktif - dil değişikliği engellendi');
-            return; // Don't proceed with language switching
-        } else {
-            console.log('🎯 Normal dil değişikliği yapılıyor');
-        }
+        console.log('📑 Aktif tab:', activeTab);
         
         // *** LANGUAGE CONTENT ELEMANLARI TESPİTİ ***
         console.log('🔍 Language content elementleri aranıyor...');
@@ -172,20 +191,48 @@ function setupLanguageSwitching() {
             console.log(`  📦 Element ${index} (${$(this).data('language')}): ${beforeHide} → ${afterHide}`);
         });
         
+        // KRİTİK FİX: Aktif tab kontrolü
+        const currentActiveTab = $('.nav-tabs .nav-link.active').attr('href');
+        const isSeoTabActive = currentActiveTab === '#1';
+        console.log('🔍 Aktif tab kontrol - SEO tab aktif mi?', isSeoTabActive, 'activeTab:', currentActiveTab);
+        
         // Hedef dili göster ve durumunu logla
         console.log('👁️ Hedef dil content elementleri gösteriliyor...');
         targetLanguageContent.each(function(index) {
             const beforeShow = $(this).is(':visible');
+            const isBasicContent = $(this).hasClass('language-content');
+            const isSeoContent = $(this).hasClass('seo-language-content');
             
-            // KRİTİK FİX: TÜM elementler için CSS display force et
-            $(this).css('display', 'block').removeClass('d-none').show();
+            // KRİTİK KARAR: Tab durumuna göre gösterme mantığı
+            let shouldShow = false;
             
-            if (!isMenuManagement && $(this).hasClass('seo-language-content')) {
-                console.log(`  🔧 SEO element için display:block force edildi`);
+            if (isSeoTabActive) {
+                // SEO tab aktifse: Hem basic hem SEO content'leri göster
+                shouldShow = true;
+                console.log(`  🎯 SEO Tab Aktif - Her tür content gösterilecek: ${isBasicContent ? 'Basic' : 'SEO'}`);
+            } else {
+                // Diğer tab'lar aktifse: Sadece o tab'ın content'leri
+                shouldShow = isBasicContent; // Sadece basic content'leri göster
+                console.log(`  🎯 Normal Tab - Sadece basic content: ${shouldShow}`);
+            }
+            
+            if (shouldShow) {
+                // KRİTİK FİX: TÜM elementler için CSS display force et
+                $(this).css('display', 'block').removeClass('d-none').show();
+                
+                // AĞIR FİX: jQuery .show() çalışmıyorsa manuel force et
+                if (!$(this).is(':visible')) {
+                    $(this)[0].style.setProperty('display', 'block', 'important');
+                    console.log(`  🔨 AĞIR FİX: Manuel display:block!important - ${isBasicContent ? 'Basic' : 'SEO'}`);
+                }
+                
+                if (!isMenuManagement && isSeoContent) {
+                    console.log(`  🔧 SEO element için display:block force edildi`);
+                }
             }
             
             const afterShow = $(this).is(':visible');
-            console.log(`  🎯 Hedef element ${index} (${$(this).data('language')}): ${beforeShow} → ${afterShow}`);
+            console.log(`  🎯 Hedef element ${index} (${$(this).data('language')}): ${beforeShow} → ${afterShow} [${isBasicContent ? 'Basic' : 'SEO'}]`);
         });
         
         // Final durum kontrolü
@@ -229,37 +276,194 @@ function setupSaveAndContinueSystem() {
         if (saveButton) {
             console.log('💾 Save button tıklandı');
             
-            // Get active language
+            // Get active language - DETAYLI DEBUG
             const activeLanguageBtn = document.querySelector('.language-switch-btn.text-primary');
             const currentLang = activeLanguageBtn ? activeLanguageBtn.dataset.language : window.currentLanguage;
+            
+            console.log('🔍🔍 AKTİF DİL TESPİTİ:');
+            console.log('  - .text-primary button:', activeLanguageBtn);
+            console.log('  - Bulunan dil:', currentLang);
+            console.log('  - window.currentLanguage:', window.currentLanguage);
+            
+            // TÜM language button'ları kontrol et
+            const allLangButtons = document.querySelectorAll('.language-switch-btn');
+            console.log('🔍 Tüm dil button\'ları:');
+            allLangButtons.forEach((btn, index) => {
+                const lang = btn.dataset.language;
+                const isActive = btn.classList.contains('text-primary');
+                const isDisabled = btn.disabled;
+                console.log(`  ${index}: ${lang} - aktif:${isActive}, disabled:${isDisabled}`);
+            });
             
             // Detect "Save and Continue" button
             const wireClick = saveButton.getAttribute('wire:click');
             const isContinueButton = wireClick && wireClick.includes('save(false, false)');
             
-            if (isContinueButton && currentLang) {
-                localStorage.setItem('page_active_language', currentLang);
-                console.log('🎯 Kaydet ve Devam Et - dil korunacak:', currentLang);
+            // Get active tab with extensive debugging
+            const activeTabElement = document.querySelector('.nav-tabs .nav-link.active');
+            const activeTab = activeTabElement ? activeTabElement.getAttribute('href') : null;
+            
+            if (activeTabElement) {
+                const tabText = activeTabElement.textContent.trim();
+                console.log('🔍🔍 Aktif tab detayları:');
+                console.log('  - Tab ID:', activeTab);
+                console.log('  - Tab metni:', tabText);
+                console.log('  - SEO tab mı?:', tabText.includes('SEO'));
+                console.log('  - Element:', activeTabElement);
+            }
+            
+            if (isContinueButton) {
+                // 🎯 NURULLAH'IN YENİ KURALI: Geçici state koruma - sadece sayfa yenilenmediği sürece
+                console.log('🎯 Kaydet ve Devam Et - GEÇİCİ state korunacak');
+                console.log('  - Aktif dil:', currentLang);
+                console.log('  - Aktif tab:', activeTab);
+                
+                // sessionStorage yerine window object kullan (sadece aynı pencerede geçerli)
+                window.tempSavedLanguage = currentLang;
+                window.tempSavedTab = activeTab;
+                
+                console.log('✅ Geçici state window object\'e kaydedildi');
+                console.log('📋 KURAL: Sayfa tamamen yenilenirse bu veriler kaybolacak');
             } else {
-                localStorage.removeItem('page_active_language');
-                console.log('📤 Normal Kaydet - dil state temizlendi');
+                // Normal Kaydet - geçici state'leri temizle
+                if (window.tempSavedLanguage) {
+                    delete window.tempSavedLanguage;
+                    console.log('🧹 Geçici dil state temizlendi');
+                }
+                if (window.tempSavedTab) {
+                    delete window.tempSavedTab;
+                    console.log('🧹 Geçici tab state temizlendi');
+                }
+                console.log('📤 Normal Kaydet - geçici state\'ler temizlendi');
             }
         }
     });
     
-    // Restore language on page load
+    // 🎯 NURULLAH'IN YENİ KURALI: İlk açılışta DAIMA varsayılan state (TR + Temel Bilgiler)
+    console.log('🔎 RESTORE KONTROL - sayfa başladı');
+    console.log('📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab');
+    
+    // İlk açılışta localStorage'daki eski state'leri temizle
     const savedLanguage = localStorage.getItem('page_active_language');
-    if (savedLanguage) {
-        console.log('🔄 Kaydedilen dil restore ediliyor:', savedLanguage);
+    const savedTab = localStorage.getItem('page_active_tab_persist');
+    
+    if (savedLanguage || savedTab) {
+        console.log('🧹 SAYFA AÇILIŞI - Eski state\'ler temizleniyor...');
+        console.log('🧹 Temizlenen dil:', savedLanguage || 'yok');
+        console.log('🧹 Temizlenen tab:', savedTab || 'yok');
+        
+        localStorage.removeItem('page_active_language');
+        localStorage.removeItem('page_active_tab_persist');
+        console.log('✅ State storage temizlendi - varsayılan açılış hazır');
+    }
+    
+    // Sayfa her açıldığında varsayılan state: TR dili + ilk tab aktif
+    console.log('🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab');
+    
+    // Artık restore işlemi yok - her zaman temiz açılış
+    if (false) {
+        console.log('🔄 Kaydedilen state\'ler restore ediliyor...');
+        console.log('🌍 Dil:', savedLanguage || 'yok');
+        console.log('📑 Tab:', savedTab || 'yok');
         
         setTimeout(function() {
-            const targetLangBtn = $(`.language-switch-btn[data-language="${savedLanguage}"]`);
-            if (targetLangBtn.length) {
-                targetLangBtn.click();
-                console.log('✅ Dil restore tamamlandı:', savedLanguage);
+            // Restore language first
+            if (savedLanguage) {
+                const targetLangBtn = $(`.language-switch-btn[data-language="${savedLanguage}"]`);
+                if (targetLangBtn.length) {
+                    targetLangBtn.click();
+                    console.log('✅ Dil restore tamamlandı:', savedLanguage);
+                }
             }
+            
+            // Then restore tab
+            if (savedTab) {
+                console.log('🔍 Tab restore deneniyor:', savedTab);
+                
+                // İLKİ: Mevcut tab'ları listele
+                const allTabs = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+                console.log('🔍 Mevcut tüm tab\'lar:');
+                allTabs.forEach((tab, index) => {
+                    const href = tab.getAttribute('href');
+                    const text = tab.textContent.trim();
+                    console.log(`  Tab ${index}: href="${href}", text="${text}"`);
+                });
+                
+                const targetTabElement = document.querySelector(`[href="${savedTab}"]`);
+                console.log('🔍 Bulunan tab element:', targetTabElement);
+                
+                if (targetTabElement) {
+                    const tabText = targetTabElement.textContent.trim();
+                    console.log('🔍 Restore edilecek tab metni:', tabText);
+                    console.log('🔍 Bootstrap var mı?', typeof bootstrap !== 'undefined');
+                    
+                    // KRİTİK FİX: Tab pane'lerini de manuel aktif et
+                    const tabId = savedTab.replace('#', '');
+                    const targetPane = document.getElementById(tabId);
+                    
+                    console.log('🔧 Tab pane kontrolü:', {
+                        tabId: tabId,
+                        targetPane: targetPane,
+                        savedTab: savedTab
+                    });
+                    
+                    if (typeof bootstrap !== 'undefined') {
+                        const tab = new bootstrap.Tab(targetTabElement);
+                        tab.show();
+                        console.log('✅ Tab restore tamamlandı (Bootstrap):', savedTab, '-', tabText);
+                    } else {
+                        // Manuel tab aktivasyon
+                        console.log('🔧 Manuel tab aktivasyon başlıyor...');
+                        
+                        // 1. Tüm tab link'leri deaktif et
+                        document.querySelectorAll('.nav-link').forEach(tab => {
+                            tab.classList.remove('active');
+                            tab.setAttribute('aria-selected', 'false');
+                        });
+                        
+                        // 2. Tüm tab pane'leri deaktif et
+                        document.querySelectorAll('.tab-pane').forEach(pane => {
+                            pane.classList.remove('show', 'active');
+                        });
+                        
+                        // 3. Hedef tab'ı aktif et
+                        targetTabElement.classList.add('active');
+                        targetTabElement.setAttribute('aria-selected', 'true');
+                        
+                        // 4. Hedef pane'i aktif et
+                        if (targetPane) {
+                            targetPane.classList.add('show', 'active');
+                            console.log('✅ Tab pane aktif edildi:', tabId);
+                        } else {
+                            console.log('❌ Tab pane bulunamadı:', tabId);
+                        }
+                        
+                        console.log('✅ Tab restore tamamlandı (Manuel):', savedTab, '-', tabText);
+                    }
+                } else {
+                    console.log('❌ Tab element bulunamadı:', savedTab);
+                    // Alternative selectors try
+                    const altTab1 = document.querySelector(`a[href="${savedTab}"]`);
+                    const altTab2 = document.querySelector(`.nav-link[href="${savedTab}"]`);
+                    console.log('🔍 Alternatif tab selectors:');
+                    console.log('  - a[href]:', altTab1);
+                    console.log('  - .nav-link[href]:', altTab2);
+                    
+                    if (altTab1) {
+                        altTab1.click();
+                        console.log('✅ Tab restore (alt1):', savedTab);
+                    } else if (altTab2) {
+                        altTab2.click();
+                        console.log('✅ Tab restore (alt2):', savedTab);
+                    }
+                }
+            }
+            
+            // Clean up storage
             localStorage.removeItem('page_active_language');
-        }, 300);
+            localStorage.removeItem('page_active_tab_persist');
+            console.log('🧹 State storage temizlendi');
+        }, 500); // Tab restore için biraz daha bekle
     }
 }
 
@@ -528,9 +732,144 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== LIVEWIRE UPDATE HANDLERS =====
 document.addEventListener('livewire:updated', function() {
     if (window.location.pathname.includes('/manage')) {
+        // 🚨 KRITIK: Mevcut tab ve dil durumunu kaydet
+        const currentActiveTab = $('.nav-tabs .nav-link.active').attr('href');
+        const currentActiveLanguage = $('.language-switch-btn.text-primary').data('language');
+        
+        console.log('💾 Livewire update öncesi durum:', {
+            tab: currentActiveTab,
+            language: currentActiveLanguage
+        });
+        
         setTimeout(function() {
             setupSeoCharacterCounters();
             MultiLangFormSwitcher.init();
+            
+            // 🔄 Language switching sistemini yeniden kur
+            setupLanguageSwitching();
+            
+            // 🎯 NURULLAH'IN YENİ KURALI: Livewire update sonrası geçici state restore
+            if (window.tempSavedLanguage || window.tempSavedTab) {
+                console.log('🔄 Livewire güncellemesi sonrası GEÇİCİ state restore ediliyor...');
+                console.log('  - Kaydedilen dil:', window.tempSavedLanguage || 'yok');
+                console.log('  - Kaydedilen tab:', window.tempSavedTab || 'yok');
+                
+                // Önce dil restore et (eğer varsa)
+                if (window.tempSavedLanguage) {
+                    console.log('🔍 DİL RESTORE BAŞLIYOR:', window.tempSavedLanguage);
+                    
+                    const targetLangBtn = $(`.language-switch-btn[data-language="${window.tempSavedLanguage}"]`);
+                    console.log('🔍 Hedef dil button bulundu mu?', targetLangBtn.length > 0);
+                    console.log('🔍 Hedef button element:', targetLangBtn[0]);
+                    
+                    if (targetLangBtn.length) {
+                        console.log('🚨 DİL BUTTON CLICK TETİKLENİYOR:', window.tempSavedLanguage);
+                        targetLangBtn.click();
+                        console.log('✅ Geçici dil restore edildi:', window.tempSavedLanguage);
+                        
+                        // Click sonrası kontrol
+                        setTimeout(function() {
+                            const currentActiveLang = $('.language-switch-btn.text-primary').data('language');
+                            console.log('🔍 Click sonrası aktif dil:', currentActiveLang);
+                            console.log('🔍 Beklenen dil:', window.tempSavedLanguage);
+                            console.log('🔍 Restore başarılı mı?', currentActiveLang === window.tempSavedLanguage ? '✅' : '❌');
+                        }, 50);
+                    } else {
+                        console.log('❌ Hedef dil button bulunamadı:', window.tempSavedLanguage);
+                        // Tüm mevcut button'ları listele
+                        const allLangButtons = $('.language-switch-btn');
+                        console.log('🔍 Mevcut tüm dil button\'ları:');
+                        allLangButtons.each(function(index) {
+                            console.log(`  ${index}: ${$(this).data('language')} - class: ${this.className}`);
+                        });
+                    }
+                }
+                
+                // Sonra tab restore et (eğer varsa)
+                if (window.tempSavedTab) {
+                    console.log('🔍 TAB RESTORE BAŞLIYOR:', window.tempSavedTab);
+                    
+                    setTimeout(function() {
+                        const targetTabElement = document.querySelector(`[href="${window.tempSavedTab}"]`);
+                        console.log('🔍 Hedef tab element bulundu mu?', !!targetTabElement);
+                        console.log('🔍 Hedef tab element:', targetTabElement);
+                        
+                        if (targetTabElement) {
+                            const tabText = targetTabElement.textContent.trim();
+                            console.log('🔍 Tab metni:', tabText);
+                            
+                            // Mevcut durum kontrolü
+                            const currentActiveTab = document.querySelector('.nav-tabs .nav-link.active');
+                            console.log('🔍 Şu anki aktif tab:', currentActiveTab);
+                            console.log('🔍 Şu anki aktif tab href:', currentActiveTab?.getAttribute('href'));
+                            
+                            console.log('🚨 TAB MANUEL AKTİVASYON BAŞLIYOR');
+                            
+                            // Manuel tab aktivasyon
+                            document.querySelectorAll('.nav-link').forEach(tab => {
+                                tab.classList.remove('active');
+                                tab.setAttribute('aria-selected', 'false');
+                                console.log('🔧 Tab deaktif edildi:', tab.getAttribute('href'));
+                            });
+                            
+                            document.querySelectorAll('.tab-pane').forEach(pane => {
+                                pane.classList.remove('show', 'active');
+                                console.log('🔧 Pane deaktif edildi:', pane.id);
+                            });
+                            
+                            targetTabElement.classList.add('active');
+                            targetTabElement.setAttribute('aria-selected', 'true');
+                            console.log('🔧 Hedef tab aktif edildi:', window.tempSavedTab);
+                            
+                            const tabId = window.tempSavedTab.replace('#', '');
+                            const targetPane = document.getElementById(tabId);
+                            console.log('🔍 Hedef pane bulundu mu?', !!targetPane);
+                            console.log('🔍 Hedef pane ID:', tabId);
+                            
+                            if (targetPane) {
+                                targetPane.classList.add('show', 'active');
+                                console.log('🔧 Hedef pane aktif edildi:', tabId);
+                            } else {
+                                console.log('❌ Hedef pane bulunamadı:', tabId);
+                                // Tüm mevcut pane'leri listele
+                                const allPanes = document.querySelectorAll('.tab-pane');
+                                console.log('🔍 Mevcut tüm pane\'ler:');
+                                allPanes.forEach((pane, index) => {
+                                    console.log(`  ${index}: ID="${pane.id}" - class="${pane.className}"`);
+                                });
+                            }
+                            
+                            // Son kontrol
+                            setTimeout(function() {
+                                const finalActiveTab = document.querySelector('.nav-tabs .nav-link.active');
+                                const finalActivePane = document.querySelector('.tab-pane.active');
+                                console.log('🔍 Final aktif tab:', finalActiveTab?.getAttribute('href'));
+                                console.log('🔍 Final aktif pane:', finalActivePane?.id);
+                                console.log('🔍 Tab restore başarılı mı?', 
+                                    finalActiveTab?.getAttribute('href') === window.tempSavedTab ? '✅' : '❌');
+                            }, 50);
+                            
+                            console.log('✅ Geçici tab restore edildi:', window.tempSavedTab, '-', tabText);
+                        } else {
+                            console.log('❌ Hedef tab element bulunamadı:', window.tempSavedTab);
+                            // Tüm mevcut tab'ları listele
+                            const allTabs = document.querySelectorAll('.nav-link');
+                            console.log('🔍 Mevcut tüm tab\'lar:');
+                            allTabs.forEach((tab, index) => {
+                                console.log(`  ${index}: href="${tab.getAttribute('href')}" - text="${tab.textContent.trim()}"`);
+                            });
+                        }
+                    }, 200); // Tab için ek bekle
+                }
+                
+                console.log('🎯 GEÇİCİ state restore tamamlandı - veriler korunacak');
+                
+                // 🚨 IMPORTANT: window.tempSavedLanguage ve window.tempSavedTab'ı SİLME
+                // Kaydet ve Devam Et ile çalışmaya devam ediyoruz
+            } else {
+                // State yoksa sadece dil button'ları için event'leri yeniden bağla
+                console.log('📌 State yoksa mevcut durum korunacak');
+            }
         }, 100);
     }
 });

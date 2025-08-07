@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use App\Services\ModuleSlugService;
 use App\Traits\HasModuleAccessControl;
+use App\Models\ModuleTenantSetting;
 
 class PortfolioController extends Controller
 {
@@ -31,16 +32,19 @@ class PortfolioController extends Controller
             ->orderBy('created_at', 'desc')
             ->simplePaginate(10);
 
+        // Modül title'ını al
+        $moduleTitle = $this->getModuleTitle('Portfolio');
+
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('index', 'portfolio');
-            return view($viewPath, compact('items'));
+            return view($viewPath, compact('items', 'moduleTitle'));
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
-            return view('portfolio::front.index', compact('items'));
+            return view('portfolio::front.index', compact('items', 'moduleTitle'));
         }
     }
 
@@ -56,11 +60,32 @@ class PortfolioController extends Controller
                 ->where('is_active', true)
                 ->first();
         } else {
-            // Sadece aktif dilde slug ara
+            // Önce aktif dilde slug ara
             $item = Portfolio::with('category')
                 ->where('is_active', true)
                 ->whereJsonContains("slug->{$currentLocale}", $slug)
                 ->first();
+                
+            // Bulunamazsa tüm dillerde ara (fallback)
+            if (!$item) {
+                $availableLanguages = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+                
+                foreach ($availableLanguages as $langCode) {
+                    $item = Portfolio::with('category')
+                        ->where('is_active', true)
+                        ->whereJsonContains("slug->{$langCode}", $slug)
+                        ->first();
+                        
+                    if ($item) {
+                        Log::info("Portfolio found with fallback language", [
+                            'slug' => $slug,
+                            'requested_locale' => $currentLocale,
+                            'found_locale' => $langCode
+                        ]);
+                        break;
+                    }
+                }
+            }
         }
         
         if (!$item) {
@@ -108,15 +133,36 @@ class PortfolioController extends Controller
                 ->where('is_active', true)
                 ->firstOrFail();
         } else {
-            // Sadece aktif dilde slug ara
+            // Önce aktif dilde slug ara
             $category = PortfolioCategory::where('is_active', true)
                 ->whereJsonContains("slug->{$currentLocale}", $slug)
                 ->first();
                 
+            // Bulunamazsa tüm dillerde ara (fallback)
             if (!$category) {
-                Log::warning("Category not found", [
+                $availableLanguages = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+                
+                foreach ($availableLanguages as $langCode) {
+                    $category = PortfolioCategory::where('is_active', true)
+                        ->whereJsonContains("slug->{$langCode}", $slug)
+                        ->first();
+                        
+                    if ($category) {
+                        Log::info("Category found with fallback language", [
+                            'slug' => $slug,
+                            'requested_locale' => $currentLocale,
+                            'found_locale' => $langCode
+                        ]);
+                        break;
+                    }
+                }
+            }
+                
+            if (!$category) {
+                Log::warning("Category not found in any language", [
                     'slug' => $slug,
-                    'locale' => $currentLocale
+                    'requested_locale' => $currentLocale,
+                    'checked_languages' => \App\Services\TenantLanguageProvider::getActiveLanguageCodes()
                 ]);
                 abort(404, "Category not found");
             }
@@ -162,5 +208,23 @@ class PortfolioController extends Controller
         
         // Diğer diller için prefix ekle
         return url("/{$locale}/{$moduleSlug}/{$slug}");
+    }
+
+    /**
+     * Modül title'ını al - settings tablosundan varsa onu, yoksa fallback
+     */
+    private function getModuleTitle(string $moduleName): string
+    {
+        $currentLocale = app()->getLocale();
+        
+        // ModuleTenantSetting'den title al
+        $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
+        
+        if ($setting && $setting->title && isset($setting->title[$currentLocale])) {
+            return $setting->title[$currentLocale];
+        }
+        
+        // Fallback - ModuleSlugService'den default display name
+        return ModuleSlugService::getDefaultModuleName($moduleName, $currentLocale);
     }
 }

@@ -193,9 +193,9 @@ class AnnouncementManageComponent extends Component
            $this->currentLanguage = session('js_current_language');
            \Log::info('🔄 Normal kaydet - JS dili korundu:', ['language' => $this->currentLanguage]);
        } else {
-           // İlk yükleme - DAIMA TR default
-           $defaultLanguage = session('site_default_language', 'tr');
-           $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : 'tr';
+           // İlk yükleme - dinamik default dil
+           $defaultLanguage = session('site_default_language', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
+           $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
        }
    }
 

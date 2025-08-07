@@ -20,7 +20,7 @@ class PortfolioCategoryManageComponent extends Component
     use HasSlugManagement;
 
     public int|null $categoryId = null;
-    public string $currentLanguage = 'tr';
+    public string $currentLanguage;
     public array $availableLanguages = [];
     
     // Çoklu dil inputs
@@ -157,13 +157,13 @@ class PortfolioCategoryManageComponent extends Component
     #[Computed]
     public function adminLocale(): string
     {
-        return session('admin_locale', 'tr');
+        return session('admin_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
 
     #[Computed]
     public function siteLocale(): string
     {
-        return session('site_default_language', 'tr');
+        return session('site_default_language', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
     
     /**

@@ -183,226 +183,11 @@ class PageSeeder extends Seeder
         
         $this->createSeoSetting($page, 'Turkbil CMS - Modern İçerik Yönetim Sistemi', 'Laravel tabanlı güçlü CMS çözümü.');
 
-        $page = Page::create([
-            'title' => ['tr' => 'Hakkımızda', 'en' => 'About Us', 'ar' => 'من نحن'],
-            'slug' => ['tr' => 'hakkimizda', 'en' => 'about-us', 'ar' => 'من-نحن'],
-            'body' => [
-                'tr' => '<div class="container mx-auto px-4 py-16">
-                    <h1 class="text-4xl font-bold mb-8">Hakkımızda</h1>
-                    <div class="prose max-w-none">
-                        <p class="text-lg mb-6">Turkbil CMS, modern web geliştirme ihtiyaçları için tasarlanmış güçlü bir içerik yönetim sistemidir.</p>
-                        <p>Laravel framework üzerine inşa edilen sistemimiz, yüksek performans ve güvenlik standartları sunar.</p>
-                    </div>
-                </div>',
-                'en' => '<div class="container mx-auto px-4 py-16">
-                    <h1 class="text-4xl font-bold mb-8">About Us</h1>
-                    <div class="prose max-w-none">
-                        <p class="text-lg mb-6">Turkbil CMS is a powerful content management system designed for modern web development needs.</p>
-                        <p>Our system built on Laravel framework offers high performance and security standards.</p>
-                    </div>
-                </div>',
-                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
-                    <h1 class="text-4xl font-bold mb-8">من نحن</h1>
-                    <div class="prose max-w-none">
-                        <p class="text-lg mb-6">تركبيل سي إم إس هو نظام إدارة محتوى قوي مصمم لاحتياجات تطوير الويب الحديثة.</p>
-                        <p>نظامنا المبني على إطار لارافيل يوفر معايير عالية الأداء والأمان.</p>
-                    </div>
-                </div>'
-            ],
-            'is_active' => true,
-            'is_homepage' => false,
-        ]);
-
-        $this->createSeoSetting($page, 'Hakkımızda - Turkbil CMS', 'Turkbil CMS hakkında bilgi edinin.');
-
-        // İletişim sayfası
-        $page = Page::create([
-            'title' => ['tr' => 'İletişim', 'en' => 'Contact', 'ar' => 'اتصل بنا'],
-            'slug' => ['tr' => 'iletisim', 'en' => 'contact', 'ar' => 'اتصل-بنا'],
-            'body' => [
-                'tr' => '<div class="container mx-auto px-4 py-16">
-                    <div class="max-w-4xl mx-auto">
-                        <div class="text-center mb-12">
-                            <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">İletişim</h1>
-                            <p class="text-xl text-gray-600 dark:text-gray-400">Bizimle iletişime geçin. Size yardımcı olmak için buradayız.</p>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-12">
-                            <div class="space-y-8">
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📍</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Adres</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">Teknokent Mahallesi<br>İstanbul Üniversitesi Teknoparkı<br>34469 Sarıyer/İstanbul</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📧</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">E-posta</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">info@turkbilcms.com<br>destek@turkbilcms.com</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📱</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Telefon</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">+90 212 555 0123<br>+90 532 555 0123</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Mesaj Gönderin</h3>
-                                <form class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ad Soyad</label>
-                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-posta</label>
-                                        <input type="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mesaj</label>
-                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"></textarea>
-                                    </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
-                                        Mesaj Gönder
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>',
-                'en' => '<div class="container mx-auto px-4 py-16">
-                    <div class="max-w-4xl mx-auto">
-                        <div class="text-center mb-12">
-                            <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">Contact</h1>
-                            <p class="text-xl text-gray-600 dark:text-gray-400">Get in touch with us. We are here to help you.</p>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-12">
-                            <div class="space-y-8">
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📍</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Address</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">Teknokent District<br>Istanbul University Technopark<br>34469 Sarıyer/Istanbul</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📧</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Email</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">info@turkbilcms.com<br>support@turkbilcms.com</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📱</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Phone</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">+90 212 555 0123<br>+90 532 555 0123</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Send Message</h3>
-                                <form class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
-                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                                        <input type="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
-                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"></textarea>
-                                    </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
-                                        Send Message
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>',
-                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
-                    <div class="max-w-4xl mx-auto">
-                        <div class="text-center mb-12">
-                            <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">اتصل بنا</h1>
-                            <p class="text-xl text-gray-600 dark:text-gray-400">تواصل معنا. نحن هنا لمساعدتك.</p>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-12">
-                            <div class="space-y-8">
-                                <div class="flex items-start space-x-4 space-x-reverse">
-                                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📍</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">العنوان</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">حي تكنوكنت<br>حديقة جامعة اسطنبول التقنية<br>34469 ساريير/اسطنبول</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4 space-x-reverse">
-                                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📧</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">البريد الإلكتروني</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">info@turkbilcms.com<br>support@turkbilcms.com</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4 space-x-reverse">
-                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                                        <span class="text-2xl">📱</span>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">الهاتف</h3>
-                                        <p class="text-gray-600 dark:text-gray-400">+90 212 555 0123<br>+90 532 555 0123</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-                                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">إرسال رسالة</h3>
-                                <form class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الاسم الكامل</label>
-                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">البريد الإلكتروني</label>
-                                        <input type="email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الرسالة</label>
-                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"></textarea>
-                                    </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
-                                        إرسال الرسالة
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>'
-            ],
-            'is_active' => true,
-            'is_homepage' => false,
-        ]);
-
-        $this->createSeoSetting($page, 'İletişim - Turkbil CMS', 'Bizimle iletişime geçin. Size yardımcı olmak için buradayız.');
+        // Hakkımızda ve İletişim sayfaları da ekle
+        $this->addCommonPages();
+        
+        // Menu'ye ekle
+        $this->addToMenu();
     }
     
     private function createDigitalAgencyPages(): void
@@ -566,6 +351,9 @@ class PageSeeder extends Seeder
 
         // Hakkımızda ve İletişim sayfaları da ekle
         $this->addCommonPages();
+        
+        // Menu'ye ekle
+        $this->addToMenu();
     }
     
     private function createEcommercePages(): void
@@ -706,8 +494,14 @@ class PageSeeder extends Seeder
         // Hakkımızda ve İletişim sayfaları da ekle
         $this->addCommonPages();
         
+        // Menu'ye ekle
+        $this->addToMenu();
+        
         // Hakkımızda ve İletişim sayfaları da ekle
         $this->addCommonPages();
+        
+        // Menu'ye ekle
+        $this->addToMenu();
     }
     
     private function createTechCompanyPages(): void
@@ -850,6 +644,9 @@ class PageSeeder extends Seeder
         
         // Hakkımızda ve İletişim sayfaları da ekle
         $this->addCommonPages();
+        
+        // Menu'ye ekle
+        $this->addToMenu();
     }
     
     private function createDefaultPages(): void
@@ -887,6 +684,9 @@ class PageSeeder extends Seeder
         
         // Hakkımızda ve İletişim sayfaları da ekle
         $this->addCommonPages();
+        
+        // Menu'ye ekle
+        $this->addToMenu();
     }
     
     private function getDomainFromTenantId($tenantId): string
@@ -912,12 +712,20 @@ class PageSeeder extends Seeder
 
     private function createSeoSetting($page, $title, $description): void
     {
+        // Eğer bu sayfa için zaten SEO ayarı varsa oluşturma
+        if ($page->seoSetting()->exists()) {
+            return;
+        }
+        // Eğer bu sayfa için zaten SEO ayarı varsa oluşturma
+        if ($page->seoSetting()->exists()) {
+            return;
+        }
+
         $page->seoSetting()->create([
             'titles' => ['tr' => $title, 'en' => $title, 'ar' => $title],
             'descriptions' => ['tr' => $description, 'en' => $description, 'ar' => $description],
             'keywords' => ['tr' => [], 'en' => [], 'ar' => []],
             'focus_keyword' => '',
-            'canonical_url' => '',
             'robots_meta' => ['index' => true, 'follow' => true, 'archive' => true],
             'og_type' => 'website',
             'twitter_card' => 'summary',
@@ -927,6 +735,11 @@ class PageSeeder extends Seeder
     
     private function addCommonPages(): void
     {
+        // Eğer Hakkımızda sayfası zaten varsa, tekrar oluşturma
+        if (Page::where('slug->tr', 'hakkimizda')->exists()) {
+            return;
+        }
+        
         // Hakkımızda sayfası
         $page = Page::create([
             'title' => ['tr' => 'Hakkımızda', 'en' => 'About Us', 'ar' => 'من نحن'],
@@ -1433,5 +1246,46 @@ class PageSeeder extends Seeder
         ]);
 
         $this->createSeoSetting($page, 'İletişim', 'Bizimle iletişime geçin.');
+    }
+
+    /**
+     * Add Page module to menu system
+     */
+    private function addToMenu(): void
+    {
+        // MenuManagement modeli varsa menu ekle
+        if (!class_exists('Modules\\MenuManagement\\App\\Models\\Menu')) {
+            return;
+        }
+
+        $menu = \Modules\MenuManagement\App\Models\Menu::firstOrCreate(
+            ['slug' => 'ana-menu', 'location' => 'header'],
+            [
+                'name' => ['tr' => 'Ana Menü', 'en' => 'Main Menu'],
+                'slug' => 'ana-menu',
+                'location' => 'header',
+                'is_active' => true,
+                'is_default' => true,
+            ]
+        );
+
+        // Pages menu item'ını ekle/güncelle
+        \Modules\MenuManagement\App\Models\MenuItem::updateOrCreate(
+            [
+                'menu_id' => $menu->menu_id,
+                'url_type' => 'module',
+                'url_data->module' => 'page'
+            ],
+            [
+                'title' => ['tr' => 'Sayfalar', 'en' => 'Pages'],
+                'url_type' => 'module',
+                'url_data' => ['module' => 'page', 'type' => 'index'],
+                'target' => '_self',
+                'sort_order' => 1,
+                'is_active' => true,
+                'depth_level' => 0,
+                'visibility' => 'public'
+            ]
+        );
     }
 }

@@ -9,9 +9,11 @@ class ModuleTenantSetting extends Model
     protected $fillable = [
         'module_name',
         'settings',
+        'title',
     ];
 
     protected $casts = [
         'settings' => 'array',
+        'title' => 'array',
     ];
 }

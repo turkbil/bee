@@ -192,5 +192,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register Progress Circle Component
         Blade::component('progress-circle', \App\View\Components\ProgressCircle::class);
+        
+        // Register SEO Meta Component
+        Blade::component('seo-meta', \App\View\Components\SeoMeta::class);
     }
 }

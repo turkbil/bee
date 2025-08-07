@@ -6,6 +6,7 @@ use Modules\Portfolio\App\Models\PortfolioCategory;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Schema;
 use App\Helpers\TenantHelpers;
+use App\Models\SeoSetting;
 
 class PortfolioCategorySeeder extends Seeder
 {
@@ -146,7 +147,7 @@ class PortfolioCategorySeeder extends Seeder
             $existingCategory = PortfolioCategory::where('slug->tr', $category['slug']['tr'])->first();
             
             if (!$existingCategory) {
-                PortfolioCategory::create([
+                $created = PortfolioCategory::create([
                     'title' => $category['title'],
                     'slug' => $category['slug'],
                     'body' => $category['body'],
@@ -164,5 +165,29 @@ class PortfolioCategorySeeder extends Seeder
         } else {
             // $this->command->info("Oluşturuldu").');
         }
+    }
+    
+    private function createSeoSetting($category, $title, $description): void
+    {
+        // Eğer bu kategori için zaten SEO ayarı varsa oluşturma
+        if ($category->seoSetting()->exists()) {
+            return;
+        }
+
+        // HTML taglarını temizle ve kısa açıklama oluştur - UTF-8 güvenli
+        $cleanDescription = html_entity_decode(strip_tags($description), ENT_QUOTES, 'UTF-8');
+        $cleanDescription = mb_convert_encoding($cleanDescription, 'UTF-8', 'UTF-8');
+        $shortDescription = mb_substr($cleanDescription, 0, 160, 'UTF-8');
+
+        $category->seoSetting()->create([
+            "titles" => ["tr" => $title, "en" => $title, "ar" => $title],
+            "descriptions" => ["tr" => $shortDescription, "en" => $shortDescription, "ar" => $shortDescription],
+            "keywords" => ["tr" => [], "en" => [], "ar" => []],
+            "focus_keyword" => "",
+            "robots_meta" => ["index" => true, "follow" => true, "archive" => true],
+            "og_type" => "website",
+            "twitter_card" => "summary",
+            "seo_score" => rand(80, 95),
+        ]);
     }
 }

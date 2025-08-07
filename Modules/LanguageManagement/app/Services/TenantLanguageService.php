@@ -53,6 +53,30 @@ class TenantLanguageService
     }
     
     /**
+     * is_default kolonunu tenants.tenant_default_locale ile senkronize et
+     */
+    public function syncDefaultLanguageColumn(): void
+    {
+        try {
+            // Önce tüm is_default'ları false yap
+            TenantLanguage::query()->update(['is_default' => false]);
+            
+            // Tenant default locale'i bul
+            $defaultCode = $this->getTenantDefaultLocale();
+            
+            if ($defaultCode) {
+                // Varsayılan dili true yap
+                TenantLanguage::where('code', $defaultCode)
+                    ->update(['is_default' => true]);
+            }
+        } catch (\Exception $e) {
+            \Log::warning('TenantLanguageService: is_default sync failed', [
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+    
+    /**
      * Kullanıcının tenant locale'ini al
      */
     public function getUserTenantLocale(): ?string

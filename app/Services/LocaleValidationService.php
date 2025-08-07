@@ -167,11 +167,13 @@ class LocaleValidationService
 
         $this->validLocales = Cache::remember(self::CACHE_KEY, now()->addSeconds(self::CACHE_TTL), function () {
             // Önce tenant locale'lerini kontrol et
-            if (function_exists('available_tenant_languages')) {
-                $tenantLanguages = available_tenant_languages();
-                if (!empty($tenantLanguages)) {
-                    return array_column($tenantLanguages, 'code');
+            try {
+                $languageCodes = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+                if (!empty($languageCodes)) {
+                    return $languageCodes;
                 }
+            } catch (\Exception $e) {
+                // TenantLanguageProvider başarısız ise fallback kullan
             }
 
             // Fallback: config'den al
@@ -187,12 +189,11 @@ class LocaleValidationService
     private function getTenantLocales(): array
     {
         return Cache::remember(self::CACHE_KEY . '_tenant', now()->addSeconds(self::CACHE_TTL), function () {
-            if (function_exists('available_tenant_languages')) {
-                $languages = available_tenant_languages();
-                return array_column($languages, 'code');
+            try {
+                return \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+            } catch (\Exception $e) {
+                return $this->getValidLocales();
             }
-
-            return $this->getValidLocales();
         });
     }
 
@@ -262,11 +263,18 @@ class LocaleValidationService
     }
 
     /**
-     * Text direction getir
+     * Text direction getir - DİNAMİK
      */
     private function getDirection(string $locale): string
     {
-        $rtlLocales = ['ar', 'he', 'fa', 'ur'];
-        return in_array($locale, $rtlLocales) ? 'rtl' : 'ltr';
+        // TenantLanguageProvider'dan RTL dillerini al
+        try {
+            $rtlLocales = \App\Services\TenantLanguageProvider::getRtlLanguages();
+            return in_array($locale, $rtlLocales) ? 'rtl' : 'ltr';
+        } catch (\Exception $e) {
+            // Fallback: bilinen RTL diller
+            $rtlLocales = ['ar', 'he', 'fa', 'ur'];
+            return in_array($locale, $rtlLocales) ? 'rtl' : 'ltr';
+        }
     }
 }

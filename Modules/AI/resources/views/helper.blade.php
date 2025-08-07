@@ -21,120 +21,152 @@
                     data-bs-toggle="dropdown">
                     {{ __('ai::admin.ai_management') }}
                 </button>
-                <div class="dropdown-menu">
-                    {{-- Ana AI İşlemleri --}}
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">{{ __('ai::admin.main_operations') }}</span>
-                    </h6>
-                    
-                    @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.prowess') }}">
-                        <i class="icon-menu fas fa-star"></i>{{ __('ai::admin.ai_prowess') }}
-                    </a>
-                    @endhasmoduleaccess
+                <div class="dropdown-menu" style="max-width: 600px; width: 600px; right: 0; left: auto;">
+                    <div class="row g-0">
+                        {{-- Sol Kolon --}}
+                        <div class="col-6">
+                            {{-- Ana AI İşlemleri --}}
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">{{ __('ai::admin.main_operations') }}</span>
+                            </h6>
+                            
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.prowess') }}">
+                                {{ __('ai::admin.ai_prowess') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    {{-- AI Yönetimi --}}
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">{{ __('ai::admin.ai_management') }}</span>
-                    </h6>
-                    
-                    @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.features.index') }}">
-                        <i class="icon-menu fas fa-cogs"></i>{{ __('ai::admin.ai_features') }}
-                    </a>
-                    @endhasmoduleaccess
+                            {{-- AI Yönetimi --}}
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">{{ __('ai::admin.ai_management') }}</span>
+                            </h6>
+                            
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.features.index') }}">
+                                {{ __('ai::admin.ai_features') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.features.categories') }}">
-                        <i class="icon-menu fas fa-folder"></i>{{ __('ai::admin.ai_feature_categories') }}
-                    </a>
-                    @endhasmoduleaccess
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.features.categories') }}">
+                                {{ __('ai::admin.ai_feature_categories') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.features.dashboard') }}">
-                        <i class="icon-menu fas fa-chart-line"></i>{{ __('ai::admin.dashboard') }}
-                    </a>
-                    @endhasmoduleaccess
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.features.dashboard') }}">
+                                {{ __('ai::admin.dashboard') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    @hasmoduleaccess('ai', 'create')
-                    <a class="dropdown-item" href="{{ route('admin.ai.features.manage') }}">
-                        <i class="icon-menu fas fa-plus"></i>{{ __('ai::admin.new_feature') }}
-                    </a>
-                    @endhasmoduleaccess
+                            @hasmoduleaccess('ai', 'create')
+                            <a class="dropdown-item" href="{{ route('admin.ai.features.manage') }}">
+                                {{ __('ai::admin.new_feature') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    {{-- Profil ve Ayarlar --}}
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">{{ __('ai::admin.profile_settings') }}</span>
-                    </h6>
-                    
-                    @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.profile.show') }}">
-                        <i class="icon-menu fas fa-user-cog"></i>{{ __('ai::admin.ai_profile') }}
-                    </a>
-                    @endhasmoduleaccess
+                            {{-- Profil ve Ayarlar --}}
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">{{ __('ai::admin.profile_settings') }}</span>
+                            </h6>
+                            
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.profile.show') }}">
+                                {{ __('ai::admin.ai_profile') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.conversations.index') }}">
-                        <i class="icon-menu fas fa-comments"></i>{{ __('ai::admin.conversations') }}
-                    </a>
-                    @endhasmoduleaccess
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.conversations.index') }}">
+                                {{ __('ai::admin.conversations') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    @hasmoduleaccess('ai', 'update')
-                    <a class="dropdown-item" href="{{ route('admin.ai.settings') }}">
-                        <i class="icon-menu fas fa-cog"></i>{{ __('ai::admin.settings') }}
-                    </a>
-                    @endhasmoduleaccess
+                            @hasmoduleaccess('ai', 'update')
+                            <a class="dropdown-item" href="{{ route('admin.ai.settings') }}">
+                                {{ __('ai::admin.settings') }}
+                            </a>
+                            @endhasmoduleaccess
 
-                    {{-- Token Yönetimi --}}
-                    @role('root')
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">{{ __('ai::admin.token_management') }}</span>
-                    </h6>
-                    
-                    <a class="dropdown-item" href="{{ route('admin.ai.credits.index') }}">
-                        <i class="icon-menu fas fa-coins"></i>{{ __('ai::admin.token_management') }}
-                    </a>
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.providers') }}">
+                                AI Providers
+                            </a>
+                            @endhasmoduleaccess
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.credits.packages') }}">
-                        <i class="icon-menu fas fa-box"></i>{{ __('ai::admin.token_packages') }}
-                    </a>
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.seo.prowess') }}">
+                                SEO AI Center
+                            </a>
+                            @endhasmoduleaccess
+                        </div>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.credits.purchases') }}">
-                        <i class="icon-menu fas fa-shopping-cart"></i>{{ __('ai::admin.token_purchases') }}
-                    </a>
+                        {{-- Sağ Kolon --}}
+                        <div class="col-6">
+                            {{-- Token Yönetimi --}}
+                            @role('root')
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">{{ __('ai::admin.token_management') }}</span>
+                            </h6>
+                            
+                            <a class="dropdown-item" href="{{ route('admin.ai.credits.index') }}">
+                                {{ __('ai::admin.token_management') }}
+                            </a>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.credits.usage-stats') }}">
-                        <i class="icon-menu fas fa-chart-bar"></i>{{ __('ai::admin.usage_statistics') }}
-                    </a>
-                    @endrole
+                            <a class="dropdown-item" href="{{ route('admin.ai.credits.packages') }}">
+                                {{ __('ai::admin.token_packages') }}
+                            </a>
 
-                    {{-- Debug & Analytics --}}
-                    @role('root')
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">🔍 Debug & Analytics</span>
-                    </h6>
-                    
-                    <a class="dropdown-item" href="{{ route('admin.ai.debug.dashboard') }}">
-                        <i class="icon-menu fas fa-bug"></i>🎯 Priority Debug Dashboard
-                    </a>
+                            <a class="dropdown-item" href="{{ route('admin.ai.credits.purchases') }}">
+                                {{ __('ai::admin.token_purchases') }}
+                            </a>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.debug.performance') }}">
-                        <i class="icon-menu fas fa-tachometer-alt"></i>📊 Performance Analytics
-                    </a>
+                            <a class="dropdown-item" href="{{ route('admin.ai.credits.usage-stats') }}">
+                                {{ __('ai::admin.usage_statistics') }}
+                            </a>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.debug.heatmap') }}">
-                        <i class="icon-menu fas fa-fire"></i>🔥 Prompt Usage Heatmap
-                    </a>
+                            <a class="dropdown-item" href="{{ route('admin.ai.credits.transactions') }}">
+                                Credit Transactions
+                            </a>
 
-                    <a class="dropdown-item" href="{{ route('admin.ai.debug.errors') }}">
-                        <i class="icon-menu fas fa-exclamation-triangle"></i>⚠️ Error Analysis
-                    </a>
-                    @endrole
+                            <a class="dropdown-item" href="{{ route('admin.ai.credits.show') }}">
+                                Credit Details
+                            </a>
+                            @endrole
+
+                            {{-- Debug & Analytics --}}
+                            @role('root')
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">Debug & Analytics</span>
+                            </h6>
+                            
+                            <a class="dropdown-item" href="{{ route('admin.ai.debug.dashboard') }}">
+                                Priority Debug Dashboard
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.debug.performance') }}">
+                                Performance Analytics
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.debug.heatmap') }}">
+                                Prompt Usage Heatmap
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.debug.errors') }}">
+                                Error Analysis
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.monitoring.index') }}">
+                                AI Monitoring
+                            </a>
+                            @endrole
+                        </div>
+                    </div>
                 </div>
             </div>
             @hasmoduleaccess('ai', 'view')
             <a href="{{ route('admin.ai.index') }}" class="dropdown-module-item btn btn-primary">
-                <i class="icon-menu fas fa-robot"></i>{{ __('ai::admin.ai_assistant') }}
+                {{ __('ai::admin.ai_assistant') }}
             </a>
             @endhasmoduleaccess
         </div>
@@ -148,7 +180,6 @@
 <div class="btn-list">
     @hasmoduleaccess('ai', 'view')
     <a href="{{ route('admin.ai.index') }}" class="btn btn-outline-primary">
-        <i class="icon-menu fas fa-robot"></i>
         {{ __('ai::admin.ai_assistant') }}
     </a>
     @endhasmoduleaccess

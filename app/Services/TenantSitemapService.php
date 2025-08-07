@@ -45,7 +45,7 @@ class TenantSitemapService
     private static function getActiveLanguages(): array
     {
         try {
-            return available_tenant_languages();
+            return \App\Services\TenantLanguageProvider::getActiveLanguages();
         } catch (\Exception $e) {
             return [
                 ['code' => 'tr', 'name' => 'Türkçe'],

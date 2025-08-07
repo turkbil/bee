@@ -12,6 +12,11 @@ use App\Services\DynamicRouteService;
 // Admin routes
 require __DIR__.'/admin/web.php';
 
+// Test SEO component
+Route::get('/test-seo', function() {
+    return view('test-seo');
+});
+
 // Ana sayfa route'ları - Çoklu dil desteği ile
 Route::middleware(['site', 'page.tracker'])->group(function () {
     // Varsayılan dil için ana sayfa (prefix yok)
@@ -20,7 +25,7 @@ Route::middleware(['site', 'page.tracker'])->group(function () {
     // Diğer diller için ana sayfa (prefix'li)
     Route::get('/{locale}', function($locale) {
         // Geçerli dil kontrolü
-        $validLocales = array_column(available_tenant_languages(), 'code');
+        $validLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
         $defaultLocale = get_tenant_default_locale();
         
         // Geçerli bir dil ise
@@ -37,7 +42,7 @@ Route::middleware(['site', 'page.tracker'])->group(function () {
         
         // Geçersiz locale ise 404
         abort(404);
-    })->where('locale', '[a-z]{2}')->name('home.locale');
+    })->where('locale', getSupportedLanguageRegex())->name('home.locale');
 });
 
 // Cache temizleme route'u
@@ -86,7 +91,7 @@ require __DIR__.'/debug.php';
 // Site dil değiştirme route'u - Laravel Native Localization
 Route::middleware(['site'])->withoutMiddleware(\Spatie\ResponseCache\Middlewares\CacheResponse::class)->get('/language/{locale}', function($locale) {
     // Geçerli dil kontrolü - dinamik olarak
-    $validLocales = array_column(available_tenant_languages(), 'code');
+    $validLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
     
     if (in_array($locale, $validLocales)) {
         // Session ve locale güncelle

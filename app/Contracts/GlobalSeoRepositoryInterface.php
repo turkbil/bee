@@ -55,4 +55,14 @@ interface GlobalSeoRepositoryInterface
      * Model için SEO ayarlarını oluştur/güncelle
      */
     public function createOrUpdateSeoSetting(Model $model, array $data): mixed;
+    
+    /**
+     * Modül-based SEO ayarlarını getir (Page/Module index SEO'su için)
+     */
+    public function getSeoSettings(string $moduleName, string $pageType = 'index'): array;
+    
+    /**
+     * Modül-based SEO ayarlarını kaydet (Page/Module index SEO'su için)
+     */
+    public function saveSeoSettings(string $moduleName, string $pageType, array $seoData): bool;
 }

@@ -112,7 +112,7 @@ class DashboardWidget extends Component
             $this->totalTokens = function_exists('ai_get_total_credits_purchased') ? ai_get_total_credits_purchased($tenantId) : 0;
             
             // Formatlanmış kredi sayısı  
-            $this->remainingTokensFormatted = number_format($this->remainingTokens, 4) . ' kredi';
+            $this->remainingTokensFormatted = format_credit($this->remainingTokens);
             
             // Kullanım yüzdesi
             $this->usagePercentage = $this->totalTokens > 0 ? round(($this->usedTokens / $this->totalTokens) * 100, 1) : 0;

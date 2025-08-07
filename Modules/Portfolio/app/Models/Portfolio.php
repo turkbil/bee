@@ -61,6 +61,33 @@ class Portfolio extends BaseModel implements HasMedia
     {
         return $this->morphOne(SeoSetting::class, 'seoable');
     }
+    
+    /**
+     * SEO için title fallback - JSON title alanından string döndür
+     */
+    protected function getSeoFallbackTitle(): ?string
+    {
+        if (isset($this->title) && is_array($this->title)) {
+            $locale = app()->getLocale() ?? 'tr';
+            return $this->title[$locale] ?? $this->title['tr'] ?? reset($this->title);
+        }
+        
+        return $this->title ?? null;
+    }
+    
+    /**
+     * SEO için description fallback - JSON body alanından string döndür
+     */
+    protected function getSeoFallbackDescription(): ?string
+    {
+        if (isset($this->body) && is_array($this->body)) {
+            $locale = app()->getLocale() ?? 'tr';
+            $body = $this->body[$locale] ?? $this->body['tr'] ?? reset($this->body);
+            return $body ? strip_tags($body) : null;
+        }
+        
+        return isset($this->body) ? strip_tags($this->body) : null;
+    }
 
     /**
      * Update SEO for specific language

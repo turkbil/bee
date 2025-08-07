@@ -70,7 +70,7 @@ class AnnouncementComponent extends Component
     #[Computed]
     public function adminLocale(): string
     {
-        return session('admin_locale', 'tr');
+        return session('admin_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
 
     #[Computed]
@@ -101,7 +101,7 @@ class AnnouncementComponent extends Component
         }
         
         // 2. Session fallback
-        return session('tenant_locale', 'tr');
+        return session('tenant_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
 
     public function updatedPerPage()

@@ -1,35 +1,10 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('title', 'Kredi Satın Alımları')
 
 @section('content')
-<div class="page-wrapper">
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row g-2 align-items-center">
-                <div class="col">
-                    <div class="page-pretitle">
-                        AI Yönetimi
-                    </div>
-                    <h2 class="page-title">
-                        <i class="ti ti-shopping-cart me-2"></i>
-                        Kredi Satın Alımları
-                    </h2>
-                </div>
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <a href="{{ route('admin.ai.credits.index') }}" class="btn btn-ghost-dark">
-                            <i class="ti ti-arrow-left me-1"></i>
-                            Geri Dön
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="page-body">
-        <div class="container-xl">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -121,7 +96,7 @@
                                             </td>
                                             <td>
                                                 <span class="badge bg-blue-lt">
-                                                    {{ number_format($purchase['credits']) }} Kredi
+                                                    {{ format_credit($purchase['credits']) }}
                                                 </span>
                                             </td>
                                             <td>
@@ -302,9 +277,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
 <script>
 function viewDetails(purchaseId) {

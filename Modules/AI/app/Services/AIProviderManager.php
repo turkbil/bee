@@ -196,4 +196,31 @@ class AIProviderManager
 
         throw new \Exception("No available AI providers found for tenant: " . ($tenantId ?: 'none'));
     }
+
+    /**
+     * Provider service without failover - STRICT MODE
+     * Sadece varsayılan provider'ı dener, başarısız olursa exception fırlatır
+     */
+    public function getProviderServiceWithoutFailover()
+    {
+        $provider = $this->getDefaultProvider();
+        
+        if (!$provider) {
+            throw new \Exception("No default AI provider configured");
+        }
+
+        if (!$provider->isAvailable()) {
+            throw new \Exception("Default AI provider is not available: " . $provider->name);
+        }
+
+        $service = $provider->getServiceInstance();
+        
+        Log::info("🔥 Strict provider selected (no failover)", [
+            'provider' => $provider->name,
+            'model' => $provider->default_model,
+            'priority' => $provider->priority
+        ]);
+        
+        return ['provider' => $provider, 'service' => $service];
+    }
 }

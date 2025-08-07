@@ -234,6 +234,105 @@ class GlobalSeoRepository implements GlobalSeoRepositoryInterface
     }
 
     /**
+     * Modül-based SEO ayarlarını getir (Page/Module index SEO'su için)
+     */
+    public function getSeoSettings(string $moduleName, string $pageType = 'index'): array
+    {
+        try {
+            // SEO settings tablosundan modül bazlı veri al (seoable_type ve seoable_id kullan)
+            $seoSetting = \Modules\SeoManagement\app\Models\SeoSetting::where('seoable_type', $moduleName)
+                ->where('seoable_id', 0) // Module index için 0 kullanıyoruz
+                ->first();
+            
+            if (!$seoSetting) {
+                // Boş template döndür
+                return [
+                    'titles' => [],
+                    'descriptions' => [],
+                    'keywords' => [],
+                    'canonical_url' => ''
+                ];
+            }
+            
+            return [
+                'titles' => $seoSetting->titles ?? [],
+                'descriptions' => $seoSetting->descriptions ?? [],
+                'keywords' => $seoSetting->keywords ?? [],
+                'canonical_url' => $seoSetting->canonical_url ?? ''
+            ];
+            
+        } catch (\Exception $e) {
+            \Log::error('Module SEO settings retrieval failed', [
+                'module' => $moduleName,
+                'page_type' => $pageType,
+                'error' => $e->getMessage()
+            ]);
+            
+            return [
+                'titles' => [],
+                'descriptions' => [],
+                'keywords' => [],
+                'canonical_url' => ''
+            ];
+        }
+    }
+    
+    /**
+     * Modül-based SEO ayarlarını kaydet (Page/Module index SEO'su için)
+     */
+    public function saveSeoSettings(string $moduleName, string $pageType, array $seoData): bool
+    {
+        try {
+            // SEO settings tablosuna modül bazlı veri kaydet
+            $seoSetting = \Modules\SeoManagement\app\Models\SeoSetting::updateOrCreate(
+                [
+                    'seoable_type' => $moduleName,
+                    'seoable_id' => 0  // Module index için 0 kullanıyoruz
+                ],
+                [
+                    'titles' => $seoData['titles'] ?? [],
+                    'descriptions' => $seoData['descriptions'] ?? [],
+                    'keywords' => $seoData['keywords'] ?? [],
+                    'canonical_url' => $seoData['canonical_url'] ?? ''
+                ]
+            );
+            
+            // Cache temizle
+            $this->clearModuleSeoCache($moduleName, $pageType);
+            
+            return true;
+            
+        } catch (\Exception $e) {
+            \Log::error('Module SEO settings save failed', [
+                'module' => $moduleName,
+                'page_type' => $pageType,
+                'data' => $seoData,
+                'error' => $e->getMessage()
+            ]);
+            
+            return false;
+        }
+    }
+    
+    /**
+     * Modül SEO cache'ini temizle
+     */
+    private function clearModuleSeoCache(string $moduleName, string $pageType): void
+    {
+        try {
+            $tenantId = tenant() ? tenant()->id : 'landlord'; 
+            $cacheKey = "{$this->cachePrefix}.module.{$tenantId}.{$moduleName}.{$pageType}";
+            Cache::forget($cacheKey);
+        } catch (\Exception $e) {
+            \Log::warning('Module SEO cache clear failed', [
+                'module' => $moduleName,
+                'page_type' => $pageType,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * Cache key oluştur
      */
     private function getCacheKey(Model $model, string $key): string

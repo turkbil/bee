@@ -97,14 +97,14 @@
                 @endphp
                 {{ sprintf('%02d:00', $peakHour) }}
               @else
-                14:00
+                --:--
               @endif
             </div>
             <div class="small ">
               @if(!empty($heatmapData['hourly_usage']) && is_array($heatmapData['hourly_usage']))
                 {{ $maxRequests ?? 0 }} istek
               @else
-                245 istek
+                -- istek
               @endif
             </div>
           </div>
@@ -340,48 +340,17 @@ function initializeHeatmapChart() {
   const heatmapElement = document.querySelector("#heatmapChart");
   if (heatmapElement && window.ApexCharts) {
     try {
-      // Generate sample heatmap data (Day x Hour matrix)
+      // Generate heatmap data (Day x Hour matrix)
       const heatmapData = [
         @if(!empty($heatmapData['hourly_usage']) && is_array($heatmapData['hourly_usage']))
-          @foreach(['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'] as $day)
+          @foreach($heatmapData['hourly_usage'] as $dayData)
             {
-              name: '{{ $day }}',
-              data: [
-                @for($hour = 0; $hour < 24; $hour++)
-                  {{ rand(5, 45) }},
-                @endfor
-              ]
+              name: '{{ $dayData["day"] ?? "Bilinmiyor" }}',
+              data: {!! json_encode($dayData["hours"] ?? array_fill(0, 24, 0)) !!}
             },
           @endforeach
         @else
-          {
-            name: 'Pazartesi',
-            data: [12, 15, 8, 22, 35, 28, 45, 52, 38, 42, 35, 48, 44, 39, 41, 35, 42, 38, 33, 28, 22, 18, 15, 12]
-          },
-          {
-            name: 'Salı', 
-            data: [8, 12, 6, 18, 32, 25, 41, 48, 35, 39, 32, 44, 41, 36, 38, 32, 39, 35, 30, 25, 19, 15, 12, 8]
-          },
-          {
-            name: 'Çarşamba',
-            data: [10, 14, 7, 20, 33, 26, 43, 50, 37, 41, 34, 46, 43, 38, 40, 34, 41, 37, 32, 27, 21, 17, 14, 10]
-          },
-          {
-            name: 'Perşembe',
-            data: [9, 13, 7, 19, 34, 27, 42, 49, 36, 40, 33, 45, 42, 37, 39, 33, 40, 36, 31, 26, 20, 16, 13, 9]
-          },
-          {
-            name: 'Cuma',
-            data: [11, 16, 9, 24, 37, 30, 47, 54, 40, 44, 37, 50, 47, 42, 44, 37, 44, 40, 35, 30, 24, 20, 17, 11]
-          },
-          {
-            name: 'Cumartesi',
-            data: [6, 9, 5, 14, 25, 18, 35, 42, 28, 32, 25, 38, 35, 30, 32, 25, 32, 28, 23, 18, 14, 10, 7, 6]
-          },
-          {
-            name: 'Pazar',
-            data: [5, 8, 4, 12, 22, 15, 32, 39, 25, 29, 22, 35, 32, 27, 29, 22, 29, 25, 20, 15, 12, 8, 5, 5]
-          }
+          {{-- Gerçek veri yoksa heatmap gösterme --}}
         @endif
       ];
 

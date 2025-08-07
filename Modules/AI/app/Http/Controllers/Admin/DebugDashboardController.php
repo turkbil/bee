@@ -359,23 +359,8 @@ class DebugDashboardController extends Controller
             }
         }
 
-        // Mock tenant/brand context
-        $components[] = [
-            'name' => 'Tenant Profile Context',
-            'category' => 'tenant_identity',
-            'priority' => 3,
-            'content' => 'Mock tenant profile information...',
-            'position' => 0
-        ];
-
-        // Mock conditional info
-        $components[] = [
-            'name' => 'Şehir Bilgisi',
-            'category' => 'conditional_info',
-            'priority' => 4,
-            'content' => 'City context information...',
-            'position' => 0
-        ];
+        // Tenant/brand context (gerçek data yoksa component ekleme)
+        // Conditional info (gerçek data yoksa component ekleme)
 
         return $components;
     }
@@ -426,18 +411,7 @@ class DebugDashboardController extends Controller
         $days = (int) $dateRange;
         $startDate = Carbon::now()->subDays($days);
 
-        $query = DB::table('ai_tenant_debug_logs')
-            ->where('created_at', '>=', $startDate);
-
-        if ($tenantId) {
-            $query->where('tenant_id', $tenantId);
-        }
-
-        if ($feature) {
-            $query->where('feature_slug', $feature);
-        }
-
-        // YENİ KREDİ SİSTEMİ - Gerçek token/credit kullanımını al
+        // YENİ SİSTEM: Öncelikle ai_credit_usage tablosundan gerçek verileri al
         $creditQuery = DB::table('ai_credit_usage')
             ->where('used_at', '>=', $startDate);
             
@@ -459,16 +433,39 @@ class DebugDashboardController extends Controller
         
         // Credits kullanımını da göster
         $totalCredits = $creditQuery->sum('credits_used') ?? 0;
+        $totalRequests = $creditQuery->count();
+
+        // Processing time hesaplama (metadata'dan)
+        $avgProcessingTime = $creditQuery
+            ->selectRaw('COALESCE(AVG(JSON_EXTRACT(metadata, "$.processing_time")), 0) as avg_time')
+            ->first()->avg_time ?? 0;
+
+        // Fallback: Eğer credit usage'da veri yoksa eski tablodan al
+        if ($totalRequests == 0) {
+            $legacyQuery = DB::table('ai_tenant_debug_logs')
+                ->where('created_at', '>=', $startDate);
+
+            if ($tenantId) {
+                $legacyQuery->where('tenant_id', $tenantId);
+            }
+
+            if ($feature) {
+                $legacyQuery->where('feature_slug', $feature);
+            }
+
+            $totalRequests = $legacyQuery->count();
+            $avgProcessingTime = $legacyQuery->avg('execution_time_ms') ?? 0;
+        }
 
         return [
-            'total_requests' => $query->count(),
-            'avg_execution_time' => $query->avg('execution_time_ms'),
-            'avg_prompts_used' => $query->avg('actually_used_prompts'),
+            'total_requests' => $totalRequests, // GERÇEK REQUEST SAYISI
+            'avg_execution_time' => round($avgProcessingTime, 2), // GERÇEK PROCESSING TIME
+            'avg_prompts_used' => 0, // Gerçek veri yoksa 0
             'total_tokens' => $totalTokens, // GERÇEK TOKEN KULLANIMI
             'total_credits' => $totalCredits, // KREDİ KULLANIMI
             'input_tokens' => $totalInputTokens,
             'output_tokens' => $totalOutputTokens,
-            'error_rate' => $query->where('has_error', true)->count() / max($query->count(), 1) * 100,
+            'error_rate' => 0, // TODO: Metadata'dan success field'ını kontrol et
             'provider_stats' => $providerStats
         ];
     }
@@ -551,21 +548,69 @@ class DebugDashboardController extends Controller
 
     private function getRecentLogs(?string $tenantId, ?string $feature = null, int $limit = 20): \Illuminate\Support\Collection
     {
-        $query = DB::table('ai_tenant_debug_logs')
-            ->leftJoin('tenants', 'ai_tenant_debug_logs.tenant_id', '=', 'tenants.id')
-            ->select('ai_tenant_debug_logs.*', 'tenants.title as tenant_name')
-            ->orderBy('ai_tenant_debug_logs.created_at', 'desc')
+        // YENİ SİSTEM: Gerçek AI kullanım verilerini ai_credit_usage tablosundan al
+        // Bu tablo chat paneli de dahil tüm AI kullanımlarını içerir
+        
+        $query = DB::table('ai_credit_usage')
+            ->leftJoin('tenants', 'ai_credit_usage.tenant_id', '=', 'tenants.id')
+            ->leftJoin('users', 'ai_credit_usage.user_id', '=', 'users.id')
+            ->select([
+                'ai_credit_usage.id',
+                'ai_credit_usage.used_at as created_at',
+                'ai_credit_usage.tenant_id',
+                'ai_credit_usage.feature_slug',
+                'ai_credit_usage.provider_name',
+                DB::raw('COALESCE(ai_credit_usage.model, ai_credit_usage.provider_name, "unknown") as model'),
+                'ai_credit_usage.input_tokens',
+                'ai_credit_usage.output_tokens',
+                DB::raw('ai_credit_usage.input_tokens + ai_credit_usage.output_tokens as total_tokens'),
+                'ai_credit_usage.credits_used',
+                'ai_credit_usage.credit_cost',
+                'ai_credit_usage.conversation_id',
+                'ai_credit_usage.metadata',
+                DB::raw('COALESCE(JSON_UNQUOTE(JSON_EXTRACT(ai_credit_usage.metadata, "$.request_type")), "chat") as request_type'),
+                'tenants.title as tenant_name',
+                'users.name as user_name',
+                // Legacy format için uyumluluk alanları ekle
+                DB::raw('COALESCE(JSON_EXTRACT(ai_credit_usage.metadata, "$.prompts_used"), 1) as actually_used_prompts'),
+                DB::raw('COALESCE(JSON_EXTRACT(ai_credit_usage.metadata, "$.total_prompts"), 5) as total_available_prompts'),
+                DB::raw('COALESCE(JSON_EXTRACT(ai_credit_usage.metadata, "$.processing_time"), 0) as execution_time_ms'),
+                DB::raw('CASE WHEN JSON_EXTRACT(ai_credit_usage.metadata, "$.success") = false THEN 1 ELSE 0 END as has_error'),
+                DB::raw('COALESCE(LEFT(JSON_UNQUOTE(JSON_EXTRACT(ai_credit_usage.metadata, "$.user_input")), 100), "Chat message") as input_preview')
+            ])
+            ->orderBy('ai_credit_usage.used_at', 'desc')
             ->limit($limit);
 
         if ($tenantId) {
-            $query->where('ai_tenant_debug_logs.tenant_id', $tenantId);
+            $query->where('ai_credit_usage.tenant_id', $tenantId);
         }
 
         if ($feature) {
-            $query->where('ai_tenant_debug_logs.feature_slug', $feature);
+            $query->where('ai_credit_usage.feature_slug', $feature);
         }
 
-        return $query->get();
+        $results = $query->get();
+        
+        // Eğer hiç veri yoksa, fallback olarak eski tablo ile deneme yap
+        if ($results->isEmpty()) {
+            $query = DB::table('ai_tenant_debug_logs')
+                ->leftJoin('tenants', 'ai_tenant_debug_logs.tenant_id', '=', 'tenants.id')
+                ->select('ai_tenant_debug_logs.*', 'tenants.title as tenant_name')
+                ->orderBy('ai_tenant_debug_logs.created_at', 'desc')
+                ->limit($limit);
+
+            if ($tenantId) {
+                $query->where('ai_tenant_debug_logs.tenant_id', $tenantId);
+            }
+
+            if ($feature) {
+                $query->where('ai_tenant_debug_logs.feature_slug', $feature);
+            }
+
+            $results = $query->get();
+        }
+
+        return $results;
     }
 
     private function getTopFeatures(?string $tenantId, string $dateRange): \Illuminate\Support\Collection
@@ -573,9 +618,16 @@ class DebugDashboardController extends Controller
         $days = (int) $dateRange;
         $startDate = Carbon::now()->subDays($days);
 
-        $query = DB::table('ai_tenant_debug_logs')
-            ->select('feature_slug', DB::raw('COUNT(*) as usage_count'), DB::raw('AVG(execution_time_ms) as avg_time'))
-            ->where('created_at', '>=', $startDate)
+        // YENİ SİSTEM: Gerçek AI kullanım verilerinden feature istatistikleri
+        $query = DB::table('ai_credit_usage')
+            ->select([
+                'feature_slug', 
+                DB::raw('COUNT(*) as usage_count'), 
+                DB::raw('COALESCE(AVG(JSON_EXTRACT(metadata, "$.processing_time")), 0) as avg_time')
+            ])
+            ->where('used_at', '>=', $startDate)
+            ->whereNotNull('feature_slug')
+            ->where('feature_slug', '!=', '')
             ->groupBy('feature_slug')
             ->orderBy('usage_count', 'desc')
             ->limit(10);
@@ -586,15 +638,25 @@ class DebugDashboardController extends Controller
 
         $results = $query->get();
         
-        // Eğer hiç veri yoksa demo data döndür
+        // Eğer ai_credit_usage'da veri yoksa, fallback olarak eski tabloyu dene
         if ($results->isEmpty()) {
-            return collect([
-                (object) ['feature_slug' => 'seo-analiz', 'usage_count' => 45, 'avg_time' => 1245.5],
-                (object) ['feature_slug' => 'icerik-olustur', 'usage_count' => 38, 'avg_time' => 2341.2],
-                (object) ['feature_slug' => 'ceviri', 'usage_count' => 29, 'avg_time' => 890.1],
-                (object) ['feature_slug' => 'metin-duzelt', 'usage_count' => 22, 'avg_time' => 1567.8],
-                (object) ['feature_slug' => 'ozet-cikart', 'usage_count' => 18, 'avg_time' => 1123.4]
-            ]);
+            $query = DB::table('ai_tenant_debug_logs')
+                ->select('feature_slug', DB::raw('COUNT(*) as usage_count'), DB::raw('AVG(execution_time_ms) as avg_time'))
+                ->where('created_at', '>=', $startDate)
+                ->groupBy('feature_slug')
+                ->orderBy('usage_count', 'desc')
+                ->limit(10);
+
+            if ($tenantId) {
+                $query->where('tenant_id', $tenantId);
+            }
+
+            $results = $query->get();
+        }
+        
+        // Veri yoksa boş collection döndür
+        if ($results->isEmpty()) {
+            return collect([]);
         }
         
         return $results;
@@ -663,12 +725,21 @@ class DebugDashboardController extends Controller
 
     private function getPromptUsageStatistics(string $promptName): array
     {
-        // Mock implementation - expand with real JSON queries
+        // Gerçek prompt usage statistics (veri yoksa 0 döndür)
+        $recentUsage = DB::table('ai_credit_usage')
+            ->where('conversation_id', 'like', '%' . $promptName . '%')
+            ->count();
+            
         return [
-            'total_usage' => 856,
-            'last_7_days' => 123,
-            'success_rate' => 98.5,
-            'avg_execution_time' => 2.3
+            'total_usage' => $recentUsage,
+            'last_7_days' => DB::table('ai_credit_usage')
+                ->where('conversation_id', 'like', '%' . $promptName . '%')
+                ->where('used_at', '>=', Carbon::now()->subDays(7))
+                ->count(),
+            'success_rate' => 100.0, // Başarı oranı metadata'dan hesaplanabilir
+            'avg_execution_time' => DB::table('ai_credit_usage')
+                ->whereRaw('JSON_EXTRACT(metadata, "$.processing_time") IS NOT NULL')
+                ->avg(DB::raw('JSON_EXTRACT(metadata, "$.processing_time")')) ?? 0
         ];
     }
 
@@ -1092,14 +1163,40 @@ class DebugDashboardController extends Controller
             $query->where('tenant_id', $tenantId);
         }
 
-        return $query->select(
+        // Gerçek veri varsa gün×saat matrisi döndür, yoksa boş array
+        $data = $query->select(
+            DB::raw('DAYNAME(created_at) as day'),
             DB::raw('HOUR(created_at) as hour'),
             DB::raw('COUNT(*) as requests')
         )
-        ->groupBy('hour')
-        ->orderBy('requests', 'desc')
-        ->get()
-        ->toArray();
+        ->groupBy('day', 'hour')
+        ->get();
+
+        if ($data->isEmpty()) {
+            return []; // Veri yoksa boş array döndür
+        }
+
+        // Günleri organize et
+        $weekdays = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+        $result = [];
+        
+        foreach ($weekdays as $day) {
+            $hours = array_fill(0, 24, 0);
+            
+            // Bu güne ait verileri doldur
+            foreach ($data as $row) {
+                if ($row->day === $day) {
+                    $hours[$row->hour] = (int)$row->requests;
+                }
+            }
+            
+            $result[] = [
+                'day' => $day,
+                'hours' => $hours
+            ];
+        }
+
+        return $result;
     }
 
     private function getFeatureHeatmap(?string $tenantId, string $dateRange): array
@@ -1174,11 +1271,30 @@ class DebugDashboardController extends Controller
 
     private function getTokenUsageTrends(?string $tenantId, string $dateRange): array
     {
-        // Mock data - implement with actual token usage table
+        // Token kullanım trendlerini gerçek veri ile hesapla
+        $days = (int) $dateRange;
+        $startDate = Carbon::now()->subDays($days);
+
+        $tokenQuery = DB::table('ai_credit_usage')
+            ->where('used_at', '>=', $startDate);
+            
+        if ($tenantId) {
+            $tokenQuery->where('tenant_id', $tenantId);
+        }
+
         return [
-            'daily_usage' => [],
-            'peak_hours' => [],
-            'cost_trends' => []
+            'daily_usage' => $tokenQuery->selectRaw('DATE(used_at) as date, SUM(input_tokens + output_tokens) as tokens')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get()->toArray(),
+            'peak_hours' => $tokenQuery->selectRaw('HOUR(used_at) as hour, SUM(input_tokens + output_tokens) as tokens')
+                ->groupBy('hour')
+                ->orderBy('tokens', 'desc')
+                ->get()->toArray(),
+            'cost_trends' => $tokenQuery->selectRaw('DATE(used_at) as date, SUM(credits_used) as cost')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get()->toArray()
         ];
     }
 
@@ -1247,10 +1363,8 @@ class DebugDashboardController extends Controller
             $hourlyData[$result->hour] = $result->count;
         }
         
-        // Eğer hiç veri yoksa demo data kullan
-        if (array_sum($hourlyData) === 0) {
-            $hourlyData = [2, 1, 0, 0, 1, 3, 8, 15, 22, 28, 25, 19, 16, 18, 22, 25, 30, 28, 24, 18, 12, 8, 5, 3];
-        }
+        // Veri yoksa boş array döndür (gerçek data yok demek)
+        // Sadece gerçek kullanım verilerini döndür - sahte veri yok
         
         return $hourlyData;
     }
@@ -1394,10 +1508,25 @@ class DebugDashboardController extends Controller
 
     private function getRecoveryRates(?string $tenantId, string $dateRange): array
     {
-        // Mock data - implement retry logic analysis
+        // Gerçek recovery rate analizi (metadata'dan success/failure)
+        $days = (int) $dateRange;
+        $startDate = Carbon::now()->subDays($days);
+
+        $query = DB::table('ai_credit_usage')
+            ->where('used_at', '>=', $startDate);
+            
+        if ($tenantId) {
+            $query->where('tenant_id', $tenantId);
+        }
+
+        $totalRequests = $query->count();
+        $successfulRequests = $query->whereRaw('JSON_EXTRACT(metadata, "$.success") = true')->count();
+        
+        $successRate = $totalRequests > 0 ? ($successfulRequests / $totalRequests) * 100 : 100;
+        
         return [
-            'auto_recovery_rate' => 85.5,
-            'manual_intervention_required' => 14.5
+            'auto_recovery_rate' => $successRate,
+            'manual_intervention_required' => 100 - $successRate
         ];
     }
 

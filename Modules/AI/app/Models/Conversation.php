@@ -91,7 +91,7 @@ class Conversation extends Model
         
         // Mesajlarda yoksa token usage kayıtlarından al
         try {
-            $tokenUsage = \Modules\AI\App\Models\AITokenUsage::where('tenant_id', $this->tenant_id)
+            $tokenUsage = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $this->tenant_id)
                 ->where('description', 'like', 'AI Chat:%')
                 ->whereNotNull('model')
                 ->where('model', '!=', '')

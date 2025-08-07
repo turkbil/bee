@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\AI\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use App\Models\Tenant;
 use App\Models\User;
+use Modules\AI\App\Services\AICreditService;
 
 class AICreditUsage extends Model
 {
@@ -28,9 +31,10 @@ class AICreditUsage extends Model
         'ai_provider_id',
         'provider_name',
         'credits_used',
-        'input_tokens',
-        'output_tokens',
-        'credit_cost',
+        'credit_used', // alias for credits_used for consistency
+        'purchase_id', // to track which purchase these credits came from
+        'prompt_credits',
+        'completion_credits',
         'usage_type',
         'feature_slug',
         'model',
@@ -45,14 +49,15 @@ class AICreditUsage extends Model
 
     protected $casts = [
         'ai_provider_id' => 'integer',
-        'credits_used' => 'decimal:4',
-        'input_tokens' => 'integer',
-        'output_tokens' => 'integer',
-        'credit_cost' => 'decimal:4',
+        'credits_used' => 'float',
+        'credit_used' => 'float', // alias
+        'prompt_credits' => 'float',
+        'completion_credits' => 'float',
         'cost_multiplier' => 'decimal:4',
         'response_metadata' => 'array',
         'metadata' => 'array',
-        'used_at' => 'datetime'
+        'used_at' => 'datetime',
+        'purchase_id' => 'integer'
     ];
 
     /**
@@ -144,12 +149,9 @@ class AICreditUsage extends Model
     {
         return match($this->usage_type) {
             'chat' => 'Sohbet',
-            'feature_test' => 'Feature Test',
-            'prowess_test' => 'Prowess Test',
-            'conversation' => 'Konuşma',
-            'helper_function' => 'Helper Fonksiyon',
-            'bulk_test' => 'Toplu Test',
-            'generic' => 'Genel',
+            'image' => 'Görsel',
+            'text' => 'Metin',
+            'translation' => 'Çeviri',
             default => ucfirst($this->usage_type)
         };
     }
@@ -159,31 +161,15 @@ class AICreditUsage extends Model
      */
     public function getFormattedCreditsUsedAttribute(): string
     {
-        return number_format($this->credits_used, 4) . ' Kredi';
+        return format_credit($this->credits_used);
     }
 
     /**
-     * Get formatted cost
+     * Calculate cost for this usage
      */
-    public function getFormattedCostAttribute(): string
+    public function getCalculatedCostAttribute(): float
     {
-        return 'USD ' . number_format($this->credit_cost, 4);
-    }
-
-    /**
-     * Calculate total tokens
-     */
-    public function getTotalTokensAttribute(): int
-    {
-        return $this->input_tokens + $this->output_tokens;
-    }
-
-    /**
-     * Get cost per credit
-     */
-    public function getCostPerCreditAttribute(): float
-    {
-        return $this->credits_used > 0 ? $this->credit_cost / $this->credits_used : 0;
+        return $this->credits_used * ($this->cost_multiplier ?? 1.0);
     }
 
     /**
@@ -203,21 +189,159 @@ class AICreditUsage extends Model
     }
 
     /**
+     * Get the credit purchase this usage came from
+     */
+    public function purchase(): BelongsTo
+    {
+        return $this->belongsTo(AICreditPurchase::class, 'purchase_id');
+    }
+
+    /**
+     * Accessor for credit_used (alias for credits_used)
+     */
+    public function getCreditUsedAttribute(): float
+    {
+        return (float) ($this->attributes['credit_used'] ?? $this->attributes['credits_used'] ?? 0);
+    }
+
+    /**
+     * Mutator for credit_used (alias for credits_used)
+     */
+    public function setCreditUsedAttribute($value): void
+    {
+        $this->attributes['credit_used'] = $value;
+        $this->attributes['credits_used'] = $value; // Keep both in sync
+    }
+
+    /**
+     * Calculate efficiency ratio for this usage
+     */
+    public function getEfficiencyRatioAttribute(): float
+    {
+        if (!$this->purchase || $this->purchase->cost_per_credit <= 0) {
+            return 1.0;
+        }
+        
+        $marketAverage = app(AICreditService::class)
+            ->calculateMarketAverageCostPerCredit();
+            
+        if ($marketAverage <= 0) {
+            return 1.0;
+        }
+        
+        return $this->purchase->cost_per_credit / $marketAverage;
+    }
+
+    /**
+     * Get actual cost for this specific usage
+     */
+    public function getActualCostAttribute(): float
+    {
+        if (!$this->purchase) {
+            return $this->credit_used * 0.01; // Fallback cost
+        }
+        
+        return $this->credit_used * $this->purchase->cost_per_credit;
+    }
+
+    /**
+     * Get time elapsed since usage
+     */
+    public function getTimeElapsedAttribute(): string
+    {
+        if (!$this->used_at) {
+            return 'Unknown';
+        }
+        
+        return $this->used_at->diffForHumans();
+    }
+
+    /**
+     * Get usage performance score (0-100)
+     */
+    public function getPerformanceScoreAttribute(): float
+    {
+        $baseScore = 50; // Neutral score
+        
+        // Factor in efficiency (lower cost per credit = higher score)
+        $efficiencyScore = max(0, min(50, (2 - $this->efficiency_ratio) * 25));
+        
+        // Factor in response time/size ratio if available
+        $responseScore = 0;
+        if (isset($this->response_metadata['response_time']) && isset($this->response_metadata['token_count'])) {
+            $tokensPerSecond = $this->response_metadata['token_count'] / max(1, $this->response_metadata['response_time']);
+            $responseScore = min(50, $tokensPerSecond / 10); // Scale tokens per second
+        }
+        
+        return min(100, $baseScore + $efficiencyScore + $responseScore);
+    }
+
+    /**
+     * Scope for high-cost usages
+     */
+    public function scopeHighCost($query, float $threshold = 10.0)
+    {
+        return $query->where('credit_used', '>', $threshold);
+    }
+
+    /**
+     * Scope for recent usages (last N days)
+     */
+    public function scopeRecent($query, int $days = 7)
+    {
+        return $query->where('used_at', '>=', now()->subDays($days));
+    }
+
+    /**
+     * Scope for specific model
+     */
+    public function scopeForModel($query, string $model)
+    {
+        return $query->where('model', $model);
+    }
+
+    /**
+     * Get detailed usage analytics
+     */
+    public function getDetailedAnalytics(): array
+    {
+        return [
+            'basic_info' => [
+                'id' => $this->id,
+                'credits_used' => $this->credit_used,
+                'actual_cost' => $this->actual_cost,
+                'used_at' => $this->used_at?->toISOString(),
+                'time_elapsed' => $this->time_elapsed,
+            ],
+            'efficiency_metrics' => [
+                'efficiency_ratio' => $this->efficiency_ratio,
+                'performance_score' => $this->performance_score,
+                'cost_per_credit' => $this->purchase?->cost_per_credit ?? 0,
+            ],
+            'technical_details' => [
+                'provider' => $this->provider_name,
+                'model' => $this->model,
+                'feature' => $this->feature_slug,
+                'usage_type' => $this->usage_type,
+                'cost_multiplier' => $this->cost_multiplier,
+            ],
+            'response_data' => $this->response_metadata ?? [],
+        ];
+    }
+
+    /**
      * Get usage statistics by provider
      */
-    public static function getProviderStats($tenantId = null, $dateRange = null)
+    public static function getProviderStats($tenantId = null, $dateRange = null): \Illuminate\Support\Collection
     {
-        $query = self::with('aiProvider')
+        $query = self::with(['aiProvider', 'purchase'])
             ->selectRaw('
                 ai_provider_id,
                 provider_name,
                 COUNT(*) as total_requests,
-                SUM(credits_used) as total_credits,
-                SUM(input_tokens) as total_input_tokens,
-                SUM(output_tokens) as total_output_tokens,
-                SUM(credit_cost) as total_cost,
-                AVG(credits_used) as avg_credits_per_request,
-                AVG(credit_cost) as avg_cost_per_request
+                SUM(COALESCE(credit_used, credits_used)) as total_credits,
+                AVG(COALESCE(credit_used, credits_used)) as avg_credits_per_request,
+                SUM(COALESCE(credit_used, credits_used) * COALESCE(cost_multiplier, 1)) as total_cost
             ')
             ->groupBy('ai_provider_id', 'provider_name');
 
@@ -225,7 +349,7 @@ class AICreditUsage extends Model
             $query->where('tenant_id', $tenantId);
         }
 
-        if ($dateRange) {
+        if ($dateRange && is_array($dateRange) && count($dateRange) === 2) {
             $query->whereBetween('used_at', $dateRange);
         }
 
@@ -233,68 +357,55 @@ class AICreditUsage extends Model
     }
 
     /**
-     * Get usage statistics by feature
+     * Get usage trend analysis
      */
-    public static function getFeatureStats($tenantId = null, $dateRange = null)
-    {
-        $query = self::selectRaw('
-                feature_slug,
-                usage_type,
-                COUNT(*) as total_requests,
-                SUM(credits_used) as total_credits,
-                SUM(credit_cost) as total_cost,
-                AVG(credits_used) as avg_credits_per_request
-            ')
-            ->groupBy('feature_slug', 'usage_type');
-
+    public static function getTrendAnalysis(
+        ?int $tenantId = null,
+        int $days = 30
+    ): array {
+        $startDate = now()->subDays($days);
+        $endDate = now();
+        
+        $query = self::whereBetween('used_at', [$startDate, $endDate]);
+        
         if ($tenantId) {
             $query->where('tenant_id', $tenantId);
         }
-
-        if ($dateRange) {
-            $query->whereBetween('used_at', $dateRange);
-        }
-
-        return $query->get();
-    }
-
-    /**
-     * Get daily usage trend
-     */
-    public static function getDailyTrend($days = 30, $tenantId = null)
-    {
-        $query = self::selectRaw('
+        
+        $dailyUsage = $query->selectRaw('
                 DATE(used_at) as date,
-                COUNT(*) as total_requests,
-                SUM(credits_used) as total_credits,
-                SUM(credit_cost) as total_cost
+                SUM(COALESCE(credit_used, credits_used)) as daily_credits,
+                COUNT(*) as daily_requests,
+                AVG(COALESCE(credit_used, credits_used)) as avg_credits_per_request
             ')
-            ->where('used_at', '>=', Carbon::now()->subDays($days))
             ->groupBy('date')
-            ->orderBy('date');
-
-        if ($tenantId) {
-            $query->where('tenant_id', $tenantId);
-        }
-
-        return $query->get();
-    }
-
-    /**
-     * Create a new credit usage record
-     */
-    public static function createUsage(array $data): self
-    {
-        $usage = new self();
-        $usage->fill($data);
+            ->orderBy('date')
+            ->get();
+            
+        $totalCredits = $dailyUsage->sum('daily_credits');
+        $totalRequests = $dailyUsage->sum('daily_requests');
+        $avgDaily = $totalCredits / max(1, $days);
         
-        // Otomatik hesaplamalar
-        if (!isset($data['used_at'])) {
-            $usage->used_at = now();
-        }
-        
-        $usage->save();
-        
-        return $usage;
+        return [
+            'period' => [
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $endDate->toDateString(),
+                'days' => $days,
+            ],
+            'totals' => [
+                'total_credits' => $totalCredits,
+                'total_requests' => $totalRequests,
+                'avg_daily_credits' => $avgDaily,
+                'avg_credits_per_request' => $totalCredits / max(1, $totalRequests),
+            ],
+            'daily_breakdown' => $dailyUsage->toArray(),
+            'trend_indicators' => [
+                'is_increasing' => $dailyUsage->count() > 1 && 
+                    $dailyUsage->last()->daily_credits > $dailyUsage->first()->daily_credits,
+                'growth_rate' => $dailyUsage->count() > 1 ? 
+                    (($dailyUsage->last()->daily_credits - $dailyUsage->first()->daily_credits) / 
+                     max(1, $dailyUsage->first()->daily_credits)) * 100 : 0,
+            ],
+        ];
     }
 }

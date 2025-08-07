@@ -5,11 +5,10 @@ namespace Modules\MenuManagement\App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasTranslations;
-use App\Traits\HasSeo;
 
 class Menu extends Model
 {
-    use HasTranslations, HasSeo, SoftDeletes;
+    use HasTranslations, SoftDeletes;
 
     protected $primaryKey = 'menu_id';
 
@@ -132,41 +131,4 @@ class Menu extends Model
         return $branch;
     }
 
-    /**
-     * HasSeo trait fallback implementations
-     */
-    
-    protected function getSeoFallbackTitle(): ?string
-    {
-        return $this->getTranslated('name', app()->getLocale());
-    }
-
-    protected function getSeoFallbackDescription(): ?string
-    {
-        return 'Navigation menu: ' . $this->getSeoFallbackTitle();
-    }
-
-    protected function getSeoFallbackKeywords(): array
-    {
-        return ['menu', 'navigation', 'site'];
-    }
-
-    protected function getSeoFallbackCanonicalUrl(): ?string
-    {
-        return null; // Menus don't have direct URLs
-    }
-
-    protected function getSeoFallbackImage(): ?string
-    {
-        return null;
-    }
-
-    protected function getSeoFallbackSchemaMarkup(): ?array
-    {
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'SiteNavigationElement',
-            'name' => $this->getSeoFallbackTitle(),
-        ];
-    }
 }

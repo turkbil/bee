@@ -231,22 +231,13 @@ if (!function_exists('locale_name')) {
      */
     function locale_name(string $locale): string
     {
-        $names = [
-            'tr' => 'Türkçe',
-            'en' => 'English',
-            'de' => 'Deutsch',
-            'fr' => 'Français',
-            'es' => 'Español',
-            'it' => 'Italiano',
-            'pt' => 'Português',
-            'ru' => 'Русский',
-            'zh' => '中文',
-            'ja' => '日本語',
-            'ko' => '한국어',
-            'ar' => 'العربية'
-        ];
-        
-        return $names[$locale] ?? ucfirst($locale);
+        // Dinamik dil isimlerini TenantLanguageProvider'dan al
+        try {
+            return \App\Services\TenantLanguageProvider::getLanguageNativeName($locale);
+        } catch (\Exception $e) {
+            // Fallback: Dil kodu bulunamazsa capitalize edilmiş hali döndür
+            return ucfirst($locale);
+        }
     }
 }
 
@@ -258,8 +249,13 @@ if (!function_exists('is_rtl_locale')) {
     {
         $locale = $locale ?? app()->getLocale();
         
-        $rtlLocales = ['ar', 'he', 'fa', 'ur', 'ku'];
-        
-        return in_array($locale, $rtlLocales);
+        // Dinamik RTL dil kontrolü TenantLanguageProvider'dan
+        try {
+            return \App\Services\TenantLanguageProvider::isRtlLanguage($locale);
+        } catch (\Exception $e) {
+            // Fallback: En yaygın RTL dilleri
+            $defaultRtlLocales = ['ar', 'he', 'fa', 'ur'];
+            return in_array($locale, $defaultRtlLocales);
+        }
     }
 }

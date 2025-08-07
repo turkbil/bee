@@ -223,9 +223,10 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     // SEO kategorisindeki feature'ları getir
                     $seoFeatures = \Modules\AI\App\Models\AIFeature::with(['category'])
                         ->whereHas('category', function($query) {
-                            $query->where('title', 'SEO & Marketing');
+                            $query->where('ai_feature_categories.title', 'SEO & Marketing')
+                                  ->where('ai_feature_categories.is_active', true);
                         })
-                        ->where('is_active', true)
+                        ->where('ai_features.status', 'active')
                         ->orderBy('complexity_level')
                         ->get()
                         ->groupBy(function($feature) {
@@ -238,7 +239,7 @@ Route::middleware(['admin', 'admin.tenant.select'])
 
                     // Token durumunu al
                     $tokenStatus = [
-                        'remaining' => ai_get_tenant_balance() ?? 1000,
+                        'remaining' => ai_get_credit_balance() ?? 1000,
                         'provider' => ai_get_active_provider_name() ?? 'DeepSeek',
                         'provider_active' => true
                     ];
@@ -291,13 +292,13 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     // Formatlanmış değerlerle birlikte döndür
                     $creditStats = [
                         'remaining_credits' => $remainingCredits,
-                        'remaining_credits_formatted' => number_format($remainingCredits, 4) . ' kredi',
+                        'remaining_credits_formatted' => format_credit($remainingCredits),
                         'used_credits' => $totalUsed,
                         'total_credits' => $totalPurchased,
                         'monthly_usage' => $monthlyUsage,
-                        'monthly_usage_formatted' => number_format($monthlyUsage, 4) . ' kredi',
+                        'monthly_usage_formatted' => format_credit($monthlyUsage),
                         'daily_usage' => $dailyUsage,
-                        'daily_usage_formatted' => number_format($dailyUsage, 4) . ' kredi',
+                        'daily_usage_formatted' => format_credit($dailyUsage),
                         'monthly_limit' => 0, // TODO: Limit sistemi eklenecek
                         'monthly_limit_formatted' => '0',
                         'usage_percentage' => 0
@@ -336,10 +337,10 @@ Route::middleware(['admin', 'admin.tenant.select'])
                         // API: İstatistikler
                         Route::get('/api/statistics', function() {
                             $stats = [
-                                'total_credits_used' => number_format(\Modules\AI\App\Models\AICreditUsage::sum('credits_used'), 2),
-                                'monthly_credits_used' => number_format(\Modules\AI\App\Models\AICreditUsage::whereMonth('used_at', now()->month)->sum('credits_used'), 2),
-                                'daily_credits_used' => number_format(\Modules\AI\App\Models\AICreditUsage::whereDate('used_at', today())->sum('credits_used'), 2),
-                                'avg_daily_usage' => number_format(\Modules\AI\App\Models\AICreditUsage::where('used_at', '>=', now()->subDays(30))->sum('credits_used') / 30, 2)
+                                'total_credits_used' => format_credit_short(\Modules\AI\App\Models\AICreditUsage::sum('credits_used')),
+                                'monthly_credits_used' => format_credit_short(\Modules\AI\App\Models\AICreditUsage::whereMonth('used_at', now()->month)->sum('credits_used')),
+                                'daily_credits_used' => format_credit_short(\Modules\AI\App\Models\AICreditUsage::whereDate('used_at', today())->sum('credits_used')),
+                                'avg_daily_usage' => format_credit_short(\Modules\AI\App\Models\AICreditUsage::where('used_at', '>=', now()->subDays(30))->sum('credits_used') / 30)
                             ];
                             return response()->json($stats);
                         })->name('api.statistics');
@@ -370,8 +371,8 @@ Route::middleware(['admin', 'admin.tenant.select'])
                                         'feature' => $usage->feature_slug ?? 'N/A',
                                         'input_tokens' => number_format($usage->input_tokens),
                                         'output_tokens' => number_format($usage->output_tokens),
-                                        'total_credits' => number_format($usage->credits_used, 4),
-                                        'cost' => number_format($usage->credit_cost, 4)
+                                        'total_credits' => format_credit($usage->credits_used, false),
+                                        'cost' => format_credit_detailed($usage->credit_cost)
                                     ];
                                 });
                             
@@ -426,8 +427,8 @@ Route::middleware(['admin', 'admin.tenant.select'])
                                         'feature' => $usage->feature_slug ?? 'N/A',
                                         'input_tokens' => number_format($usage->input_tokens),
                                         'output_tokens' => number_format($usage->output_tokens),
-                                        'total_credits' => number_format($usage->credits_used, 4),
-                                        'cost' => number_format($usage->credit_cost, 4)
+                                        'total_credits' => format_credit($usage->credits_used, false),
+                                        'cost' => format_credit_detailed($usage->credit_cost)
                                     ];
                                 });
                             
@@ -580,6 +581,63 @@ Route::middleware(['admin', 'admin.tenant.select'])
                         // Error Analysis
                         Route::get('/errors', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'errorAnalysis'])
                             ->name('errors');
+                    });
+                
+                // GLOBAL AI MONITORING DASHBOARD (YENİLENMİŞ SİSTEM)
+                Route::prefix('monitoring')
+                    ->name('monitoring.')
+                    ->middleware('module.permission:ai,view')
+                    ->group(function () {
+                        
+                        // Ana monitoring dashboard sayfası
+                        Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'index'])
+                            ->name('index');
+                        
+                        // API Endpoints - Real-time veriler
+                        Route::get('/api/realtime-metrics', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'globalRealTimeMetrics'])
+                            ->name('api.realtime-metrics');
+                            
+                        Route::get('/api/analytics', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'globalAnalytics'])
+                            ->name('api.analytics');
+                            
+                        Route::get('/api/debug-data', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'globalDebugData'])
+                            ->name('api.debug-data');
+                            
+                        Route::get('/api/live-stream', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'liveStream'])
+                            ->name('api.live-stream');
+                            
+                        Route::get('/api/credit-status', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'creditStatus'])
+                            ->name('api.credit-status');
+                        
+                        // Legacy API endpoints (eski sistem uyumluluğu)
+                        Route::get('/api/dashboard-data', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getDashboardData'])
+                            ->name('api.dashboard-data');
+                            
+                        Route::get('/api/system-health', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getSystemHealth'])
+                            ->name('api.system-health');
+                            
+                        Route::get('/api/performance-metrics', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getPerformanceMetrics'])
+                            ->name('api.performance-metrics');
+                            
+                        Route::get('/api/usage-analytics', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getUsageAnalytics'])
+                            ->name('api.usage-analytics');
+                            
+                        Route::get('/api/provider-health', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getProviderHealth'])
+                            ->name('api.provider-health');
+                            
+                        Route::get('/api/real-time-stats', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getRealTimeStats'])
+                            ->name('api.real-time-stats');
+                            
+                        Route::get('/api/alerts', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getAlerts'])
+                            ->name('api.alerts');
+                            
+                        Route::get('/api/cost-report', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'getCostReport'])
+                            ->name('api.cost-report');
+                        
+                        // Export functionality
+                        Route::get('/export/{format}', [\Modules\AI\App\Http\Controllers\Admin\MonitoringController::class, 'exportData'])
+                            ->where('format', 'json|csv')
+                            ->name('export');
                     });
             });
     });

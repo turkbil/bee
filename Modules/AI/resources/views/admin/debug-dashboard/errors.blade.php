@@ -657,7 +657,7 @@ function generateFeatureErrorHTML(feature, errorRate) {
           </div>
           <div class="card-body">
             <div class="text-center">
-              <div class="text-muted small">Mock trend data - gerçek trend buraya gelecek</div>
+              <div class="text-muted small">Trend verisi gerçek kullanımda görünecek</div>
               <div class="d-flex justify-content-between align-items-center mt-2">
                 <small class="text-muted">00:00</small>
                 <div class="progress flex-fill mx-2" style="height: 4px;">
@@ -677,18 +677,18 @@ function generateFeatureErrorHTML(feature, errorRate) {
           </div>
           <div class="card-body">
             <div class="text-center">
-              <div class="text-muted small">Error kategorileri - gerçek data buraya gelecek</div>
+              <div class="text-muted small">Hata kategorileri gerçek kullanımda görünecek</div>
               <div class="row mt-2">
                 <div class="col-4">
-                  <div class="text-danger">${Math.round(errorRate * 0.6)}</div>
+                  <div class="text-muted">--</div>
                   <div class="small text-muted">API Errors</div>
                 </div>
                 <div class="col-4">
-                  <div class="text-warning">${Math.round(errorRate * 0.3)}</div>
+                  <div class="text-muted">--</div>
                   <div class="small text-muted">Validation</div>
                 </div>
                 <div class="col-4">
-                  <div class="text-info">${Math.round(errorRate * 0.1)}</div>
+                  <div class="text-muted">--</div>
                   <div class="small text-muted">Timeout</div>
                 </div>
               </div>
@@ -764,7 +764,7 @@ function initializeErrorTrendChart() {
         {{ intval($errorCount) }},
       @endforeach
     @else
-      12, 19, 3, 5, 2, 8, 15, 22, 18, 25, 14, 16, 8, 12, 5, 9, 18, 22, 15, 19, 16, 12, 8, 6
+      {{-- Gerçek veri yoksa chart gösterme --}}
     @endif
   ].filter(value => Number.isFinite(value));
   
@@ -809,9 +809,7 @@ function initializeErrorTrendChart() {
             '{!! $date !!}',
           @endforeach
         @else
-          '01.07', '02.07', '03.07', '04.07', '05.07', '06.07', '07.07', '08.07',
-          '09.07', '10.07', '11.07', '12.07', '13.07', '14.07', '15.07', '16.07',
-          '17.07', '18.07', '19.07', '20.07', '21.07', '22.07', '23.07', '24.07'
+          {{-- Gerçek veri yoksa label gösterme --}}
         @endif
       ],
       labels: { style: { fontSize: '12px' } }

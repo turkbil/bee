@@ -4,6 +4,7 @@ namespace Modules\AI\App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Modules\AI\App\Services\ResponseTemplateEngine;
 
 /**
  * AI PRIORITY ENGINE - Merkezi Prompt Sıralama Sistemi
@@ -57,6 +58,78 @@ class AIPriorityEngine
     ];
 
     /**
+     * 🔥 V2 FEATURE: Feature-specific priority mapping
+     * Her feature türü için özelleştirilmiş category weight'leri
+     */
+    public const FEATURE_SPECIFIC_WEIGHTS = [
+        // SEO odaklı feature'lar - Brand context düşük, teknik bilgi yüksek
+        'seo' => [
+            'expert_knowledge'   => 8500,  // SEO teknik bilgileri kritik
+            'brand_context'      => 3000,  // Marka detayları daha az önemli
+            'response_format'    => 5000,  // Yapılandırılmış sonuç önemli
+        ],
+        
+        // Blog/Content odaklı feature'lar - Brand context yüksek, yaratıcılık önemli
+        'blog' => [
+            'brand_context'      => 6500,  // Marka sesi çok önemli
+            'expert_knowledge'   => 6000,  // Yazım teknikleri önemli
+            'secret_knowledge'   => 5500,  // Yaratıcı içgörüler değerli
+        ],
+        
+        // Çeviri feature'ları - Formatı koru, basit context
+        'translation' => [
+            'response_format'    => 7000,  // Orijinal format korunmalı
+            'brand_context'      => 2000,  // Marka sesi az önemli
+            'expert_knowledge'   => 6500,  // Dil teknikleri önemli
+        ],
+        
+        // Analiz feature'ları - Teknik detay odaklı
+        'analysis' => [
+            'expert_knowledge'   => 8000,  // Analiz teknikleri kritik
+            'response_format'    => 6000,  // Yapılandırılmış rapor önemli
+            'brand_context'      => 3500,  // Az marka etkisi
+        ],
+    ];
+
+    /**
+     * 🔥 V2 FEATURE: Provider-specific cost multipliers
+     * Her provider için farklı kredi maliyeti hesabı
+     */
+    public const PROVIDER_MULTIPLIERS = [
+        'openai-gpt-4' => [
+            'cost_multiplier' => 2.5,    // Pahalı ama kaliteli
+            'quality_score' => 95,       // En yüksek kalite
+            'speed_score' => 85,         // Orta hız
+        ],
+        'openai-gpt-3.5' => [
+            'cost_multiplier' => 1.0,    // Standart fiyat
+            'quality_score' => 80,       // İyi kalite
+            'speed_score' => 95,         // Çok hızlı
+        ],
+        'claude-3' => [
+            'cost_multiplier' => 2.0,    // Orta-yüksek fiyat
+            'quality_score' => 90,       // Çok iyi kalite
+            'speed_score' => 80,         // İyi hız
+        ],
+        'gemini-pro' => [
+            'cost_multiplier' => 1.5,    // Orta fiyat
+            'quality_score' => 75,       // Kabul edilebilir kalite
+            'speed_score' => 90,         // Çok hızlı
+        ],
+    ];
+
+    /**
+     * 🔥 V2 FEATURE: Brand context intelligent usage patterns
+     * Feature türüne göre brand context kullanım stratejisi
+     */
+    public const BRAND_USAGE_PATTERNS = [
+        'high_brand' => ['blog', 'content', 'marketing', 'social', 'creative'],
+        'medium_brand' => ['analysis', 'translation', 'summary', 'rewrite'],
+        'low_brand' => ['seo', 'technical', 'code', 'data', 'calculation'],
+        'no_brand' => ['math', 'conversion', 'format', 'validation'],
+    ];
+
+    /**
      * 🎯 MAIN METHOD: Build complete AI system prompt
      * 
      * @param array $components - Prompt components with priorities
@@ -72,8 +145,8 @@ class AIPriorityEngine
         // Feature-based threshold adjustment
         $threshold = self::adjustThresholdByFeature($threshold, $options);
         
-        // Component'leri score'la ve sırala
-        $scoredComponents = self::scoreComponents($components);
+        // V2 Feature: Component'leri score'la ve sırala - options ile
+        $scoredComponents = self::scoreComponents($components, $options);
         
         // Threshold'a göre filtrele
         $filteredComponents = array_filter($scoredComponents, function($component) use ($threshold) {
@@ -100,11 +173,15 @@ class AIPriorityEngine
     }
 
     /**
-     * Component'leri score'la
+     * 🔥 V2 ENHANCED: Component'leri score'la - Feature-specific weights ile
      */
-    private static function scoreComponents(array $components): array
+    private static function scoreComponents(array $components, array $options = []): array
     {
         $scoredComponents = [];
+        
+        // V2 Feature: Feature türünü detect et
+        $featureName = $options['feature_name'] ?? '';
+        $featureType = self::detectFeatureType($featureName);
         
         foreach ($components as $component) {
             $category = $component['category'] ?? 'conditional_info';
@@ -112,8 +189,8 @@ class AIPriorityEngine
             $content = $component['content'] ?? '';
             $position = $component['position'] ?? 0;
             
-            // Base weight al
-            $baseWeight = self::BASE_WEIGHTS[$category] ?? 1000;
+            // V2 Feature: Feature-specific weight uygula
+            $baseWeight = self::getFeatureAwareWeight($category, $featureType);
             
             // Priority multiplier uygula
             $multiplier = self::PRIORITY_MULTIPLIERS[$priority] ?? 1.0;
@@ -124,8 +201,14 @@ class AIPriorityEngine
                 $positionBonus = 100 - ($position * 5); // 1=95, 2=90, 3=85...
             }
             
+            // V2 Feature: Brand context intelligent usage
+            $brandBonus = 0;
+            if ($category === 'brand_context') {
+                $brandBonus = self::calculateBrandBonus($featureType);
+            }
+            
             // Final score hesapla
-            $finalScore = intval($baseWeight * $multiplier) + $positionBonus;
+            $finalScore = intval($baseWeight * $multiplier) + $positionBonus + $brandBonus;
             
             $scoredComponents[] = [
                 'category' => $category,
@@ -135,12 +218,92 @@ class AIPriorityEngine
                 'base_weight' => $baseWeight,
                 'multiplier' => $multiplier,
                 'position_bonus' => $positionBonus,
+                'brand_bonus' => $brandBonus,
                 'final_score' => $finalScore,
                 'name' => $component['name'] ?? $category,
+                'feature_type' => $featureType, // V2 Debug bilgisi
             ];
         }
         
         return $scoredComponents;
+    }
+
+    /**
+     * 🔥 V2 FEATURE: Feature türünü otomatik detect et
+     */
+    private static function detectFeatureType(string $featureName): string
+    {
+        $featureName = strtolower($featureName);
+        
+        // SEO keywords
+        if (str_contains($featureName, 'seo') || 
+            str_contains($featureName, 'meta') || 
+            str_contains($featureName, 'anahtar') ||
+            str_contains($featureName, 'optimizasyon')) {
+            return 'seo';
+        }
+        
+        // Blog/Content keywords  
+        if (str_contains($featureName, 'blog') || 
+            str_contains($featureName, 'makale') || 
+            str_contains($featureName, 'icerik') ||
+            str_contains($featureName, 'yazi') ||
+            str_contains($featureName, 'content')) {
+            return 'blog';
+        }
+        
+        // Translation keywords
+        if (str_contains($featureName, 'cevir') || 
+            str_contains($featureName, 'translate') || 
+            str_contains($featureName, 'dil')) {
+            return 'translation';
+        }
+        
+        // Analysis keywords
+        if (str_contains($featureName, 'analiz') || 
+            str_contains($featureName, 'rapor') || 
+            str_contains($featureName, 'degerlend') ||
+            str_contains($featureName, 'analysis')) {
+            return 'analysis';
+        }
+        
+        // Default
+        return 'general';
+    }
+
+    /**
+     * 🔥 V2 FEATURE: Feature türüne göre weight hesapla
+     */
+    private static function getFeatureAwareWeight(string $category, string $featureType): int
+    {
+        // Feature-specific weight varsa onu kullan
+        if (isset(self::FEATURE_SPECIFIC_WEIGHTS[$featureType][$category])) {
+            return self::FEATURE_SPECIFIC_WEIGHTS[$featureType][$category];
+        }
+        
+        // Yoksa base weight kullan
+        return self::BASE_WEIGHTS[$category] ?? 1000;
+    }
+
+    /**
+     * 🔥 V2 FEATURE: Brand context için intelligent bonus hesapla
+     */
+    private static function calculateBrandBonus(string $featureType): int
+    {
+        // Feature türüne göre brand importance level belirle
+        foreach (self::BRAND_USAGE_PATTERNS as $level => $patterns) {
+            if (in_array($featureType, $patterns)) {
+                return match($level) {
+                    'high_brand' => 1000,    // Blog, content için yüksek bonus
+                    'medium_brand' => 500,   // Analysis için orta bonus
+                    'low_brand' => -500,     // SEO için penalty
+                    'no_brand' => -1000,     // Technical için büyük penalty
+                    default => 0
+                };
+            }
+        }
+        
+        return 0; // Default: bonus yok
     }
 
     /**
@@ -283,16 +446,27 @@ class AIPriorityEngine
     {
         $components = [];
         
-        // 1. Ortak özellikler (System Common)
+        // 1. Ortak özellikler (System Common) + Basit Yanıt Formatı
         $commonPrompt = \Modules\AI\App\Models\Prompt::getCommon();
-        if ($commonPrompt) {
-            $components[] = [
-                'category' => 'system_common',
-                'priority' => 1,
-                'content' => $commonPrompt->content,
-                'name' => 'Ortak Özellikler'
-            ];
-        }
+        $commonContent = $commonPrompt ? $commonPrompt->content : '';
+        
+        // Basit yanıt formatı kuralları ekle
+        $simpleResponseRules = "🚨 YANIT FORMATI - KRİTİK KURALLAR:\n" .
+            "- Sadece direkten yanıt yaz, başlık ekleme\n" . 
+            "- Hiç markdown başlık kullanma (# ## ### yasak)\n" . 
+            "- 'İşte yanıtınız:', 'Bu sorunun yanıtı:', 'Aşağıdaki gibi yapabilirsiniz:' gibi giriş cümleleri YASAK\n" .
+            "- Uzun yanıtlarda MUTLAKA paragraf ayırımı yap (çift satır sonu ile)\n" .
+            "- Her ana fikri ayrı paragrafa yaz - okunurluğu artır\n" .
+            "- Direk konuya gir, konuyu açıkla, bitir\n" .
+            "- Örnek: 'Bu makaleyi SEO için optimize etmek için...\n\nAnahtar kelimeler önemlidir çünkü...\n\nSonuç olarak...' (DOĞRU)\n" .
+            "- Örnek: '# SEO Optimizasyonu\n\nİşte makalenizi optimize etme yolları...' (YANLIŞ)\n\n";
+            
+        $components[] = [
+            'category' => 'system_common',
+            'priority' => 1,
+            'content' => $simpleResponseRules . ($commonContent ? "---\n\n" . $commonContent : ''),
+            'name' => 'Ortak Özellikler + Basit Format'
+        ];
         
         // 2. Gizli sistem (System Hidden)
         $hiddenSystemPrompt = \Modules\AI\App\Models\Prompt::getHiddenSystem();
@@ -474,13 +648,42 @@ class AIPriorityEngine
             ];
         }
         
-        // Response Template
+        // 🎨 V2 ENHANCED: Response Template with ResponseTemplateEngine
         if ($feature->hasResponseTemplate()) {
+            // Geleneksel template format
+            $traditionalTemplate = "=== YANIT FORMATI ===\n" . $feature->getFormattedTemplate();
+            
+            // V2 ResponseTemplateEngine entegrasyonu
+            try {
+                $templateEngine = new ResponseTemplateEngine();
+                $enhancedTemplate = $templateEngine->buildTemplateAwarePrompt($feature, $options ?? []);
+                
+                // Enhanced template varsa onu kullan, yoksa traditional'ı kullan
+                $finalTemplate = !empty($enhancedTemplate) ? $enhancedTemplate : $traditionalTemplate;
+                
+            } catch (\Exception $e) {
+                Log::warning('ResponseTemplateEngine integration failed, fallback to traditional', [
+                    'feature_slug' => $feature->slug,
+                    'error' => $e->getMessage()
+                ]);
+                $finalTemplate = $traditionalTemplate;
+            }
+            
             $components[] = [
                 'category' => 'response_format',
                 'priority' => 2,
-                'content' => "=== YANIT FORMATI ===\n" . $feature->getFormattedTemplate(),
-                'name' => 'Response Template'
+                'content' => $finalTemplate,
+                'name' => 'Response Template (V2 Enhanced)'
+            ];
+        } else {
+            // Feature'da response template yoksa, basic anti-monotony rules ekle
+            $basicAntiMonotony = ResponseTemplateEngine::getQuickAntiMonotonyPrompt($feature->slug);
+            
+            $components[] = [
+                'category' => 'response_format',
+                'priority' => 3, // Biraz daha düşük priority
+                'content' => $basicAntiMonotony,
+                'name' => 'Anti-Monotony Rules (V2)'
             ];
         }
         

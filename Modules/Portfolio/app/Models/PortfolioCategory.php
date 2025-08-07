@@ -51,4 +51,32 @@ class PortfolioCategory extends BaseModel
     {
         return $this->hasMany(Portfolio::class, 'portfolio_category_id', 'portfolio_category_id');
     }
+    
+    /**
+     * SEO için title fallback - JSON title alanından string döndür
+     */
+    protected function getSeoFallbackTitle(): ?string
+    {
+        if (isset($this->title) && is_array($this->title)) {
+            // Önce mevcut dil, sonra Türkçe, sonra ilk değeri döndür
+            $locale = app()->getLocale() ?? 'tr';
+            return $this->title[$locale] ?? $this->title['tr'] ?? reset($this->title);
+        }
+        
+        return $this->title ?? null;
+    }
+    
+    /**
+     * SEO için description fallback - JSON body alanından string döndür
+     */
+    protected function getSeoFallbackDescription(): ?string
+    {
+        if (isset($this->body) && is_array($this->body)) {
+            $locale = app()->getLocale() ?? 'tr';
+            $body = $this->body[$locale] ?? $this->body['tr'] ?? reset($this->body);
+            return $body ? strip_tags($body) : null;
+        }
+        
+        return isset($this->body) ? strip_tags($this->body) : null;
+    }
 }

@@ -1,36 +1,26 @@
 <!DOCTYPE html>
-<html lang="tr" x-data="{ darkMode: localStorage.getItem('darkMode') || 'light' }"
-    x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode === 'dark' }">
+<html lang="tr" 
+      x-data="{ darkMode: localStorage.getItem('darkMode') || 'light' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" 
+      :class="{ 'dark': darkMode === 'dark' }">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    @php
-        $pageTitle = 'Sayfa Başlığı';
-        if (isset($title)) {
-            if (is_array($title)) {
-                $locale = app()->getLocale();
-                $pageTitle = $title[$locale] ?? $title[array_key_first($title)] ?? 'Sayfa Başlığı';
-            } else {
-                $pageTitle = $title;
-            }
-        }
-    @endphp
-    <title>{{ $pageTitle }} - {{ config('app.name') }}</title>
+    {{-- Global SEO Meta Tags - Tek Satır --}}
+    <x-seo-meta />
     
     {{-- Favicon --}}
-    @php
-        $favicon = setting('site_favicon');
-    @endphp
+    @php $favicon = setting('site_favicon'); @endphp
     @if($favicon && $favicon !== 'Favicon yok')
-        <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
-        <link rel="shortcut icon" type="image/x-icon" href="{{ cdn($favicon) }}">
+    <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
     @else
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @endif
 
+    {{-- Tailwind CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -55,109 +45,72 @@
             }
         }
     </script>
+    
     {{-- Livewire Styles --}}
     @livewireStyles
 
+    {{-- System Cache Clear Function --}}
     <script>
-    function clearSystemCache(button) {
-        const spinner = button.querySelector('.loading-spinner');
-        const text = button.querySelector('.button-text');
-        const icon = button.querySelector('svg:first-child');
-        
-        // Loading state
-        button.disabled = true;
-        spinner.classList.remove('hidden');
-        icon.classList.add('hidden');
-        text.textContent = 'Temizleniyor...';
-        
-        fetch('/clear-cache', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                text.textContent = 'Başarılı!';
+        function clearSystemCache(button) {
+            const spinner = button.querySelector('.loading-spinner');
+            const text = button.querySelector('.button-text');
+            const icon = button.querySelector('svg:first-child');
+            
+            // Loading state
+            button.disabled = true;
+            spinner.classList.remove('hidden');
+            icon.classList.add('hidden');
+            text.textContent = 'Temizleniyor...';
+            
+            fetch('/clear-cache', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    text.textContent = 'Başarılı!';
+                    button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    button.classList.add('bg-green-600');
+                    
+                    setTimeout(() => {
+                        // Otomatik sayfa yenileme - hard refresh ile
+                        window.location.reload(true);
+                    }, 1000);
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                text.textContent = 'Hata!';
                 button.classList.remove('bg-red-600', 'hover:bg-red-700');
-                button.classList.add('bg-green-600');
+                button.classList.add('bg-red-700');
                 
                 setTimeout(() => {
-                    // Otomatik sayfa yenileme - hard refresh ile
-                    window.location.reload(true);
-                }, 1000);
-            } else {
-                throw new Error(data.message);
-            }
-        })
-        .catch(error => {
-            text.textContent = 'Hata!';
-            button.classList.remove('bg-red-600', 'hover:bg-red-700');
-            button.classList.add('bg-red-700');
-            
-            setTimeout(() => {
-                // Reset button
-                button.disabled = false;
-                spinner.classList.add('hidden');
-                icon.classList.remove('hidden');
-                text.textContent = 'Cache';
-                button.classList.remove('bg-red-700');
-                button.classList.add('bg-red-600', 'hover:bg-red-700');
-            }, 2000);
-        });
-    }
+                    // Reset button
+                    button.disabled = false;
+                    spinner.classList.add('hidden');
+                    icon.classList.remove('hidden');
+                    text.textContent = 'Cache';
+                    button.classList.remove('bg-red-700');
+                    button.classList.add('bg-red-600', 'hover:bg-red-700');
+                }, 2000);
+            });
+        }
     </script>
 
-    {{-- Alternate Language Links for SEO --}}
-    @php
-        use App\Helpers\CanonicalHelper;
-        
-        // Model'i al (varsa) - Page, Portfolio, Announcement vb.
-        $currentModel = isset($item) ? $item : null;
-        $moduleAction = 'show'; // Default action
-        
-        // Liste sayfalarında items varsa, index action
-        if (isset($items) && !isset($item)) {
-            $moduleAction = 'index';
-        }
-        
-        // Kategori sayfası kontrolü
-        if (isset($category)) {
-            $currentModel = $category;
-            $moduleAction = 'category';
-        }
-        
-        // Alternate link'leri oluştur
-        $alternateLinks = CanonicalHelper::generateAlternateLinks($currentModel, $moduleAction);
-        
-        // HTML tag'lerini oluştur ve yazdır
-        echo CanonicalHelper::generateAlternateMetaTags($alternateLinks);
-    @endphp
-
-    {{-- Genel Organization Schema.org - Tüm tenant'larda otomatik --}}
-    <script type="application/ld+json">
-        {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "{{ config('app.name') }}",
-        "url": "{{ url('/') }}",
-        "sameAs": []
-    }
-    </script>
-    
-    <!-- CORE SYSTEM STYLES - DO NOT REMOVE OR MODIFY -->
-    <!-- Bu CSS tüm temalarda zorunludur / This CSS is mandatory in all themes -->
+    {{-- Core System Styles - Mandatory for all themes --}}
     <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.0">
 
-    {{-- SEO ve Schema.org için alan --}}
+    {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')
 </head>
 
-<body
-    class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">
+<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">
 
 
     <header class="bg-white shadow dark:bg-gray-800 transition-colors duration-300">
@@ -256,12 +209,6 @@
                                 <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm6 14a6 6 0 100-12 6 6 0 000 12z"></path>
                             </svg>
                         </button>
-                        <span class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-md">
-                            <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path>
-                            </svg>
-                            Tema: blank
-                        </span>
                         @auth
                         @if(Auth::user()->roles->count() > 0)
                         <a href="/admin/dashboard"
@@ -295,8 +242,14 @@
 
                     {{-- Site Dil Değiştirici - DİREKT ALTERNATE LINKS KULLANAN --}}
                     @php
+                        use App\Helpers\CanonicalHelper;
+                        $currentModel = isset($item) ? $item : null;
+                        $moduleAction = 'show';
+                        if (isset($items) && !isset($item)) $moduleAction = 'index';
+                        if (isset($category)) { $currentModel = $category; $moduleAction = 'category'; }
+                        
                         $currentLang = app()->getLocale();
-                        $languageSwitcherLinks = CanonicalHelper::getLanguageSwitcherLinks($currentModel ?? null, $moduleAction ?? 'show');
+                        $languageSwitcherLinks = CanonicalHelper::getLanguageSwitcherLinks($currentModel ?? null, $moduleAction);
                     @endphp
                     
                     {{-- Tek dil varsa language switcher'ı gizle --}}

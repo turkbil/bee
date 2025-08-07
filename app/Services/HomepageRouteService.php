@@ -70,7 +70,7 @@ readonly class HomepageRouteService
         return Cache::remember(self::CACHE_KEY . '_alternate', now()->addMinutes(self::CACHE_TTL), function () {
             $links = [];
             $currentLocale = app()->getLocale();
-            $availableLocales = array_column(available_tenant_languages(), 'code');
+            $availableLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
 
             foreach ($availableLocales as $locale) {
                 $links[$locale] = [

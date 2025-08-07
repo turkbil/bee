@@ -4,6 +4,7 @@ namespace Modules\Announcement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Announcement\App\Models\Announcement;
+use App\Models\SeoSetting;
 use Faker\Factory as Faker;
 use App\Helpers\TenantHelpers;
 
@@ -191,12 +192,83 @@ class AnnouncementSeeder extends Seeder
         ];
 
         foreach ($announcements as $announcement) {
-            Announcement::create([
+            $created = Announcement::create([
                 'title' => $announcement['title'],
                 'slug' => $announcement['slug'],
                 'body' => $announcement['body'],
                 'is_active' => true,
             ]);
+            
+            // SEO ayarları oluştur
+            $this->createSeoSetting($created, $announcement['title']['tr'], $announcement['body']['tr']);
         }
+        
+        // Menu'ye ekle
+        $this->addToMenu();
+    }
+
+    private function createSeoSetting($announcement, $title, $description): void
+    {
+        // Eğer bu duyuru için zaten SEO ayarı varsa oluşturma
+        if ($announcement->seoSetting()->exists()) {
+            return;
+        }
+
+        // HTML taglarını temizle ve kısa açıklama oluştur - UTF-8 güvenli
+        $cleanDescription = html_entity_decode(strip_tags($description), ENT_QUOTES, 'UTF-8');
+        $cleanDescription = mb_convert_encoding($cleanDescription, 'UTF-8', 'UTF-8');
+        $shortDescription = mb_substr($cleanDescription, 0, 160, 'UTF-8');
+
+        $announcement->seoSetting()->create([
+            'titles' => ['tr' => $title, 'en' => $title, 'ar' => $title],
+            'descriptions' => ['tr' => $shortDescription, 'en' => $shortDescription, 'ar' => $shortDescription],
+            'keywords' => ['tr' => [], 'en' => [], 'ar' => []],
+            'focus_keyword' => '',
+            'robots_meta' => ['index' => true, 'follow' => true, 'archive' => true],
+            'og_type' => 'article',
+            'twitter_card' => 'summary',
+            'seo_score' => rand(80, 95),
+        ]);
+    }
+
+    /**
+     * Add Announcement module to menu system
+     */
+    private function addToMenu(): void
+    {
+        // MenuManagement modeli varsa menu ekle
+        if (!class_exists('Modules\\MenuManagement\\App\\Models\\Menu')) {
+            return;
+        }
+
+        $menu = \Modules\MenuManagement\App\Models\Menu::firstOrCreate(
+            ['slug' => 'ana-menu', 'location' => 'header'],
+            [
+                'name' => ['tr' => 'Ana Menü', 'en' => 'Main Menu'],
+                'slug' => 'ana-menu',
+                'location' => 'header',
+                'is_active' => true,
+                'is_default' => true,
+            ]
+        );
+
+        // Announcements menu item'ını ekle/güncelle
+        \Modules\MenuManagement\App\Models\MenuItem::updateOrCreate(
+            [
+                'menu_id' => $menu->menu_id,
+                'url_type' => 'module',
+                'url_data->module' => 'announcement'
+            ],
+            [
+                'title' => ['tr' => 'Duyurular', 'en' => 'Announcements'],
+                'url_type' => 'module',
+                'url_data' => ['module' => 'announcement', 'type' => 'index'],
+                'target' => '_self',
+                'sort_order' => 3,
+                'is_active' => true,
+                'depth_level' => 0,
+                'visibility' => 'public'
+            ]
+        );
     }
 }

@@ -75,7 +75,7 @@ if (!function_exists('current_url_for_locale')) {
             $firstPart = $pathParts[0] ?? '';
             
             // İlk kısım bir dil kodu mu kontrol et
-            $validLocales = array_column(available_tenant_languages(), 'code');
+            $validLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
             if (in_array($firstPart, $validLocales)) {
                 // Dil prefix'ini kaldır
                 array_shift($pathParts);

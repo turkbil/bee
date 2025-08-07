@@ -33,12 +33,12 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Toplam Dağıtılan Kredi</div>
                 </div>
-                <div class="h1 mb-3">${{ number_format($systemStats['total_credits_distributed'] ?? 0, 2) }}</div>
+                <div class="h1 mb-3">${{ format_credit($systemStats['total_credits_distributed'] ?? 0, false) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Kredi</div>
                     <div class="ms-auto">
                         <span class="badge badge-outline text-blue">
-                            ${{ number_format($systemStats['total_credits_used'] ?? 0, 2) }} Kullanıldı
+                            ${{ format_credit($systemStats['total_credits_used'] ?? 0, false) }} Kullanıldı
                         </span>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Aktif Kredi Bakiyesi</div>
                 </div>
-                <div class="h1 mb-3">{{ number_format($systemStats['total_tokens_distributed'] - $systemStats['total_tokens_used'], 0) }}</div>
+                <div class="h1 mb-3">{{ format_credit_short($systemStats['total_tokens_distributed'] - $systemStats['total_tokens_used']) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Kullanılabilir Kredi</div>
                 </div>
@@ -158,18 +158,18 @@
                                 </td>
                                 <td>
                                     <span class="badge badge-outline text-blue">
-                                        {{ number_format($tenant->ai_tokens_balance, 0) }}
+                                        {{ format_credit_short($tenant->ai_tokens_balance) }}
                                     </span>
                                 </td>
                                 <td>
                                     <span class="badge badge-outline text-orange">
-                                        {{ number_format($tenant->ai_tokens_used_this_month, 0) }}
+                                        {{ format_credit_short($tenant->ai_tokens_used_this_month) }}
                                     </span>
                                 </td>
                                 <td>
                                     @if($tenant->ai_monthly_token_limit > 0)
                                         <span class="badge badge-outline text-purple">
-                                            {{ number_format($tenant->ai_monthly_token_limit, 0) }}
+                                            {{ format_credit_short($tenant->ai_monthly_token_limit) }}
                                         </span>
                                     @else
                                         <span class="text-muted">Sınırsız</span>

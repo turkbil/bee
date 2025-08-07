@@ -15,13 +15,16 @@ class TenantLanguage extends Model
         'direction',
         'flag_icon',
         'is_active',
-        // is_default kaldırıldı - artık tenants.tenant_default_locale'de
+        'is_default', // Dinamik olarak senkronize edilecek
+        'is_rtl',
+        'flag_emoji', 
         'sort_order',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        // is_default kaldırıldı
+        'is_default' => 'boolean',
+        'is_rtl' => 'boolean',
         'sort_order' => 'integer',
     ];
 
@@ -33,7 +36,13 @@ class TenantLanguage extends Model
         return $query->where('is_active', true);
     }
 
-    // Varsayılan dil artık tenants tablosunda tutulduğu için bu scope kaldırıldı
+    /**
+     * Varsayılan dil scope
+     */
+    public function scopeIsDefault($query)
+    {
+        return $query->where('is_default', true);
+    }
 
     /**
      * Sıralama

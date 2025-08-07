@@ -44,14 +44,20 @@ class ModuleSlugService
             $cacheKey = "module_name_{$moduleName}_{$locale}";
             
             $name = Cache::remember($cacheKey, 60, function() use ($moduleName, $locale) {
-                // ModuleTenantSetting'den multiLangNames'i al
+                // ModuleTenantSetting'den title kolonunu al
                 $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
                 
+                // Önce title kolonuna bak (yeni sistem)
+                if ($setting && $setting->title && isset($setting->title[$locale]) && !empty(trim($setting->title[$locale]))) {
+                    return $setting->title[$locale];
+                }
+                
+                // Backward compatibility: settings['multiLangNames'] 
                 if ($setting && isset($setting->settings['multiLangNames'][$locale])) {
                     return $setting->settings['multiLangNames'][$locale];
                 }
                 
-                // Default modül adı
+                // Default modül adı - central'dan
                 return self::getDefaultModuleName($moduleName, $locale);
             });
             
@@ -70,29 +76,45 @@ class ModuleSlugService
     }
     
     /**
-     * Default modül adını getir
+     * Default modül adını getir - modules tablosundan display_name kolonunu kullanır
      */
     public static function getDefaultModuleName(string $moduleName, string $locale): string
     {
-        $defaultNames = [
-            'Page' => [
-                'tr' => 'Sayfalar',
-                'en' => 'Pages',
-                'ar' => 'الصفحات'
-            ],
-            'Portfolio' => [
-                'tr' => 'Portfolyo',
-                'en' => 'Portfolio',
-                'ar' => 'المحفظة'
-            ],
-            'Announcement' => [
-                'tr' => 'Duyurular',
-                'en' => 'Announcements',
-                'ar' => 'الإعلانات'
-            ]
-        ];
+        \Log::debug("ModuleSlugService::getDefaultModuleName called", ['module' => $moduleName, 'locale' => $locale]);
+        try {
+            // Önce modules tablosundan display_name'i al
+            if (\Schema::hasTable('modules')) {
+                $module = \DB::table('modules')
+                    ->where('name', strtolower($moduleName))
+                    ->first();
+                
+                if ($module && $module->display_name) {
+                    // display_name JSON ise locale'e göre al
+                    if (is_string($module->display_name) && str_starts_with($module->display_name, '{')) {
+                        $displayNames = json_decode($module->display_name, true);
+                        if (is_array($displayNames) && isset($displayNames[$locale])) {
+                            return $displayNames[$locale];
+                        }
+                    }
+                    
+                    // display_name string ise direkt döndür
+                    if (is_string($module->display_name)) {
+                        return $module->display_name;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('ModuleSlugService: Could not fetch from modules table', [
+                'module' => $moduleName,
+                'locale' => $locale,
+                'error' => $e->getMessage()
+            ]);
+        }
         
-        return $defaultNames[$moduleName][$locale] ?? $moduleName;
+        // RECURSIVE CALL ÖNLEME: DynamicModuleManager artık bize geri çağırıyor!
+        // Bu fallback kaldırıldı çünkü infinite loop oluşturuyordu.
+        
+        return $moduleName;
     }
     
     /**
@@ -262,16 +284,44 @@ class ModuleSlugService
     }
     
     /**
-     * MultiLang slug çakışma kontrolü
+     * MultiLang slug çakışma kontrolü - NURULLAH'IN DOĞRU MANTIĞI
+     * 
+     * Çakışma kuralları:
+     * 1. Slug, central domain'deki modules tablosundaki herhangi bir modül ismi ile aynı olamaz
+     * 2. Slug, aynı tenant'taki başka bir modülün herhangi bir key'inde kullanılamaz
+     * 3. Aynı modülün farklı key'leri aynı slug'ı kullanabilir (OK)
+     * 4. Farklı dillerde aynı slug kullanılabilir (prefix var)
      */
     public static function isMultiLangSlugConflict(string $newSlug, string $currentModule, string $currentKey, string $locale): bool
     {
         try {
+            // 1. MODÜL İSMİ ÇAKIŞMASI KONTROLÜ (Central Domain)
+            // NOT: Bu kontrol sadece central domain için yapılır, modules tablosu tenant'larda yok
+            if (config('tenancy.database.prefix') === null || config('tenancy.database.prefix') === '') {
+                // Central domain'de modules tablosu var mı kontrol et
+                if (\Schema::hasTable('modules')) {
+                    $moduleNameExists = \DB::table('modules')
+                        ->where('name', $newSlug)
+                        ->exists();
+                        
+                    if ($moduleNameExists) {
+                        Log::info("Module name conflict", [
+                            'slug' => $newSlug,
+                            'conflict_type' => 'module_name',
+                            'message' => "Slug '{$newSlug}' matches an existing module name in central database"
+                        ]);
+                        
+                        return true; // Çakışma var: Slug bir modül ismi ile aynı
+                    }
+                }
+            }
+            
+            // 2. AYNI TENANT'TAKİ BAŞKA MODÜL KONTROLÜ  
             $modules = ['Page', 'Portfolio', 'Announcement'];
             
             foreach ($modules as $moduleName) {
-                // Aynı modülün aynı key'i ise skip et
-                if ($moduleName === $currentModule) {
+                // Aynı modül ise skip et (aynı modülde çakışma olmaz) - Case insensitive kontrol
+                if (strtolower($moduleName) === strtolower($currentModule)) {
                     continue;
                 }
                 
@@ -280,9 +330,22 @@ class ModuleSlugService
                 if ($setting && isset($setting->settings['multiLangSlugs'][$locale])) {
                     $slugs = $setting->settings['multiLangSlugs'][$locale];
                     
+                    // Bu modülün herhangi bir key'inde aynı slug var mı?
                     foreach ($slugs as $key => $slug) {
                         if ($slug === $newSlug) {
-                            return true; // Çakışma var
+                            Log::info("Tenant slug conflict", [
+                                'conflicting_module' => $moduleName,
+                                'conflicting_key' => $key,
+                                'conflicting_slug' => $slug,
+                                'new_module' => $currentModule,
+                                'new_key' => $currentKey,
+                                'new_slug' => $newSlug,
+                                'locale' => $locale,
+                                'conflict_type' => 'tenant_slug',
+                                'message' => "Slug '{$newSlug}' is already used by {$moduleName}.{$key} in {$locale}"
+                            ]);
+                            
+                            return true; // Çakışma var: Başka modül bu slug'ı kullanıyor
                         }
                     }
                 }
@@ -330,9 +393,9 @@ class ModuleSlugService
         Cache::forget('module_config_Portfolio');
         Cache::forget('module_config_Announcement');
         
-        // MultiLang cache'lerini temizle
-        $modules = ['Page', 'Portfolio', 'Announcement'];
-        $locales = ['tr', 'en', 'ar'];
+        // MultiLang cache'lerini temizle - DİNAMİK
+        $modules = \App\Services\DynamicModuleManager::getAvailableModules()->toArray();
+        $locales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
         $keys = ['index', 'show', 'category'];
         
         foreach ($modules as $module) {
@@ -404,7 +467,14 @@ class ModuleSlugService
             }
         }
         
-        // Hardcode fallback
-        return ['Page', 'Portfolio', 'Announcement', 'UserManagement', 'ModuleManagement'];
+        // DynamicModuleManager'dan al
+        try {
+            return \App\Services\DynamicModuleManager::getAvailableModules()->toArray();
+        } catch (\Exception $e) {
+            Log::warning('DynamicModuleManager kullanılamadı: ' . $e->getMessage());
+        }
+        
+        // Son fallback - boş array
+        return [];
     }
 }

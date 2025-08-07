@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Tenant;
-use Modules\AI\App\Models\AITokenUsage;
-use Modules\AI\App\Models\AITokenPurchase;
+use Modules\AI\App\Models\AICreditUsage;
+use Modules\AI\App\Models\AICreditPurchase;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -119,9 +119,9 @@ class TokenService
         // Gerçek aylık kullanımı hesapla (öncelikli)
         try {
             $firstOfMonth = now()->startOfMonth();
-            $realMonthly = \Modules\AI\App\Models\AITokenUsage::where('tenant_id', $tenant->id)
+            $realMonthly = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenant->id)
                 ->where('used_at', '>=', $firstOfMonth)
-                ->sum('tokens_used') ?? 0;
+                ->sum('credits_used') ?? 0;
             
             return $realMonthly;
         } catch (\Exception $e) {
@@ -180,9 +180,9 @@ class TokenService
         
         return Cache::remember($cacheKey, 300, function() use ($tenant) {
             try {
-                return \Modules\AI\App\Models\AITokenUsage::where('tenant_id', $tenant->id)
+                return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenant->id)
                     ->whereDate('used_at', Carbon::today())
-                    ->sum('tokens_used') ?? 0;
+                    ->sum('credits_used') ?? 0;
             } catch (\Exception $e) {
                 \Log::error('TokenService: Could not get today usage', ['error' => $e->getMessage()]);
                 return 0;
@@ -217,9 +217,9 @@ class TokenService
             try {
                 $thirtyDaysAgo = Carbon::now()->subDays(30);
                 
-                $totalUsage = \Modules\AI\App\Models\AITokenUsage::where('tenant_id', $tenant->id)
+                $totalUsage = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenant->id)
                     ->where('used_at', '>=', $thirtyDaysAgo)
-                    ->sum('tokens_used') ?? 0;
+                    ->sum('credits_used') ?? 0;
                 
                 return (int)($totalUsage / 30);
             } catch (\Exception $e) {
@@ -254,9 +254,9 @@ class TokenService
         
         return Cache::remember($cacheKey, 1800, function() use ($tenant) {
             try {
-                $purchasedFromRecords = \Modules\AI\App\Models\AITokenPurchase::where('tenant_id', $tenant->id)
+                $purchasedFromRecords = \Modules\AI\App\Models\AICreditPurchase::where('tenant_id', $tenant->id)
                     ->where('status', 'completed')
-                    ->sum('token_amount') ?? 0;
+                    ->sum('credit_amount') ?? 0;
                 
                 // Eğer satın alım kaydı yoksa ama tenant'da balance varsa,
                 // 500K başlangıç değeri olarak kabul et (sistem geneli)
@@ -298,8 +298,8 @@ class TokenService
         
         return Cache::remember($cacheKey, 1800, function() use ($tenant) {
             try {
-                return \Modules\AI\App\Models\AITokenUsage::where('tenant_id', $tenant->id)
-                    ->sum('tokens_used') ?? 0;
+                return \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $tenant->id)
+                    ->sum('credits_used') ?? 0;
             } catch (\Exception $e) {
                 \Log::error('TokenService: Could not get used tokens', ['error' => $e->getMessage()]);
                 return 0;

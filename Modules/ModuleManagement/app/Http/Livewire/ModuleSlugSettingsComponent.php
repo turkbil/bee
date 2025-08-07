@@ -9,6 +9,8 @@ use App\Models\ModuleTenantSetting;
 use App\Services\ModuleSlugService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Facades\Log;
+use App\Services\GlobalSeoService;
+use App\Contracts\GlobalSeoRepositoryInterface;
 
 #[Layout('admin.layout')]
 class ModuleSlugSettingsComponent extends Component
@@ -28,44 +30,97 @@ class ModuleSlugSettingsComponent extends Component
     public $tabConfig = [];
     public $tabCompletionStatus = [];
     
+    // SEO Alanları - Page pattern'ından birebir kopyalanan sistem
+    public $seoDataCache = [];
+    public $allLanguagesSeoData = [];
+    
+    // SOLID Dependencies
+    protected $seoRepository;
+    
     public function mount($module)
     {
         $this->moduleName = $module;
+        $this->boot(); // SEO dependencies
         $this->loadAvailableLanguages();
         $this->loadModuleData();
         $this->loadCurrentSlugs();
+        $this->loadSeoData(); // SEO data yükle
         $this->loadTabConfiguration();
     }
     
     /**
-     * Tab konfigürasyonunu yükle
+     * Dependency Injection Boot - Page pattern'ından kopyalanan
+     */
+    public function boot()
+    {
+        $this->seoRepository = app(GlobalSeoRepositoryInterface::class);
+    }
+    
+    /**
+     * Tab konfigürasyonunu yükle - Page pattern'ından uyarlanan
      */
     protected function loadTabConfiguration()
     {
         $this->tabConfig = [
-            ['key' => 'basic', 'name' => 'URL Ayarları', 'icon' => 'fas fa-link']
+            ['key' => 'basic', 'name' => 'URL Ayarları', 'icon' => 'fas fa-link'],
+            ['key' => 'seo', 'name' => 'SEO', 'icon' => 'fas fa-search']
         ];
         
         $this->updateTabCompletionStatus();
     }
     
     /**
-     * Tab completion durumunu güncelle
+     * SEO data yükleme - Page pattern'ından uyarlanan
+     */
+    protected function loadSeoData()
+    {
+        // Module index SEO ayarları için seo_settings tablosundan veri al
+        $seoSettings = $this->seoRepository->getSeoSettings($this->moduleName, 'index');
+        
+        // Tüm diller için SEO cache oluştur
+        foreach ($this->availableLanguages as $lang) {
+            $this->seoDataCache[$lang] = [
+                'seo_title' => $seoSettings['titles'][$lang] ?? '',
+                'seo_description' => $seoSettings['descriptions'][$lang] ?? '', 
+                'seo_keywords' => is_array($seoSettings['keywords'][$lang] ?? '') 
+                    ? implode(', ', $seoSettings['keywords'][$lang]) 
+                    : ($seoSettings['keywords'][$lang] ?? ''),
+                'canonical_url' => $seoSettings['canonical_url'] ?? ''
+            ];
+        }
+        
+        // JavaScript için de aynı veriyi hazırla
+        $this->allLanguagesSeoData = $this->seoDataCache;
+    }
+
+    /**
+     * Tab completion durumunu güncelle - SEO tab dahil
      */
     protected function updateTabCompletionStatus()
     {
-        // Her dil için en az bir slug dolu mu kontrol et
-        $isCompleted = false;
+        // Basic tab: Her dil için en az bir slug dolu mu kontrol et
+        $basicCompleted = false;
         foreach ($this->availableLanguages as $lang) {
             $langSlugs = $this->multiLangSlugs[$lang] ?? [];
             if (!empty($langSlugs)) {
-                $isCompleted = true;
+                $basicCompleted = true;
+                break;
+            }
+        }
+        
+        // SEO tab: En az bir dil için SEO title veya description dolu mu
+        $seoCompleted = false;
+        foreach ($this->availableLanguages as $lang) {
+            $seoData = $this->seoDataCache[$lang] ?? [];
+            if (!empty($seoData['seo_title']) || !empty($seoData['seo_description'])) {
+                $seoCompleted = true;
                 break;
             }
         }
         
         $this->tabCompletionStatus = [
-            'basic' => $isCompleted
+            'basic' => $basicCompleted,
+            'seo' => $seoCompleted
         ];
     }
     
@@ -84,9 +139,9 @@ class ModuleSlugSettingsComponent extends Component
             $this->availableLanguages = ['tr'];
         }
         
-        // İlk dil default olsun
-        $defaultLanguage = session('site_default_language', 'tr');
-        $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : 'tr';
+        // İlk dil default olsun - dinamik
+        $defaultLanguage = session('site_default_language', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
+        $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
     }
     
     #[Computed]
@@ -101,13 +156,13 @@ class ModuleSlugSettingsComponent extends Component
     #[Computed]
     public function adminLocale(): string
     {
-        return session('admin_locale', 'tr');
+        return session('admin_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
     
     #[Computed] 
     public function siteLocale(): string
     {
-        return session('site_locale', 'tr');
+        return session('site_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
     
     protected function loadModuleData()
@@ -118,6 +173,9 @@ class ModuleSlugSettingsComponent extends Component
             $config = include $configPath;
             $this->moduleDisplayName = $config['name'] ?? $this->moduleName;
             $this->defaultSlugs = $config['slugs'] ?? [];
+        } else {
+            // Config dosyası yoksa fallback display name
+            $this->moduleDisplayName = ModuleSlugService::getDefaultModuleName($this->moduleName, app()->getLocale());
         }
         
         // Initialize slugs with defaults
@@ -137,13 +195,15 @@ class ModuleSlugSettingsComponent extends Component
             }
         }
         
-        // Multi-language names
-        if ($setting && isset($setting->settings['multiLangNames'])) {
-            $this->multiLangNames = $setting->settings['multiLangNames'];
-        } else {
-            // Initialize with default names
-            foreach ($this->availableLanguages as $language) {
-                $this->multiLangNames[$language] = ModuleSlugService::getDefaultModuleName($this->moduleName, $language);
+        // Multi-language names - title kolonundan al
+        foreach ($this->availableLanguages as $language) {
+            if ($setting && $setting->title && isset($setting->title[$language]) && !empty(trim($setting->title[$language]))) {
+                // Veritabanından custom title varsa onu kullan
+                $this->multiLangNames[$language] = $setting->title[$language];
+            } else {
+                // Yoksa default display name kullan
+                $defaultName = ModuleSlugService::getDefaultModuleName($this->moduleName, $language);
+                $this->multiLangNames[$language] = $defaultName;
             }
         }
         
@@ -164,28 +224,8 @@ class ModuleSlugSettingsComponent extends Component
     {
         $language = $language ?? $this->currentLanguage;
         
-        // Boş değer kontrolü
-        if (empty(trim($value))) {
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'URL boş olamaz.',
-                'type' => 'error',
-            ]);
-            return;
-        }
-        
         // URL temizleme
         $cleanValue = $this->cleanSlug($value);
-        
-        // Çakışma kontrolü (dil bazında)
-        if (ModuleSlugService::isSlugConflict($cleanValue, $this->moduleName, $key, $language)) {
-            $this->dispatch('toast', [
-                'title' => 'URL Çakışması!',
-                'message' => "'{$cleanValue}' URL'i {$language} dilinde zaten başka bir modül tarafından kullanılıyor.",
-                'type' => 'error',
-            ]);
-            return;
-        }
         
         // Multi-language slug'ı güncelle
         if (!isset($this->multiLangSlugs[$language])) {
@@ -198,19 +238,8 @@ class ModuleSlugSettingsComponent extends Component
             $this->slugs[$key] = $cleanValue;
         }
         
-        $this->saveSettings();
-        
-        // Cache'i temizle ki değişiklik anında görünsün
-        ModuleSlugService::clearCache();
-        
         // Tab completion güncelle
         $this->updateTabCompletionStatus();
-        
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => ucfirst($key) . ' URL\'i ' . strtoupper($language) . ' dilinde güncellendi.',
-            'type' => 'success',
-        ]);
     }
     
     /**
@@ -220,33 +249,12 @@ class ModuleSlugSettingsComponent extends Component
     {
         $language = $language ?? $this->currentLanguage;
         
-        // Boş değer kontrolü
-        if (empty(trim($value))) {
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Modül adı boş olamaz.',
-                'type' => 'error',
-            ]);
-            return;
-        }
-        
         // Modül adını güncelle
         $this->multiLangNames[$language] = trim($value);
-        
-        $this->saveSettings();
-        
-        // Cache'i temizle
-        ModuleSlugService::clearCache();
-        
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Modül adı ' . strtoupper($language) . ' dilinde güncellendi.',
-            'type' => 'success',
-        ]);
     }
     
     /**
-     * Dil değiştirme fonksiyonu
+     * Dil değiştirme fonksiyonu - SEO ile entegre
      */
     public function switchLanguage($language)
     {
@@ -255,6 +263,9 @@ class ModuleSlugSettingsComponent extends Component
             
             // Current language için slugs'ı güncelle
             $this->slugs = $this->multiLangSlugs[$language] ?? $this->defaultSlugs;
+            
+            // SEO data cache'i güncelle (her dil için ayrı veri)
+            $this->allLanguagesSeoData = $this->seoDataCache;
             
             // Session'a kaydet
             session(['module_slug_settings_language' => $language]);
@@ -289,24 +300,16 @@ class ModuleSlugSettingsComponent extends Component
         // Belirtilen dil için tüm slug'ları sıfırla
         $this->multiLangSlugs[$language] = $this->defaultSlugs;
         
+        // Belirtilen dil için modül başlığını da sıfırla (default adı kullan)
+        $this->multiLangNames[$language] = ModuleSlugService::getDefaultModuleName($this->moduleName, $language);
+        
         // Current language ise backward compatibility için slugs'ı da güncelle
         if ($language === $this->currentLanguage) {
             $this->slugs = $this->defaultSlugs;
         }
         
-        $this->saveSettings();
-        
-        // Cache'i temizle
-        ModuleSlugService::clearCache();
-        
         // Tab completion güncelle
         $this->updateTabCompletionStatus();
-        
-        $this->dispatch('toast', [
-            'title' => 'Tümü Sıfırlandı!',
-            'message' => strtoupper($language) . ' dilindeki tüm URL\'ler varsayılana döndürüldü.',
-            'type' => 'info',
-        ]);
     }
     
     protected function saveSettings()
@@ -315,26 +318,141 @@ class ModuleSlugSettingsComponent extends Component
             ['module_name' => $this->moduleName],
             [
                 'settings' => [
-                    'multiLangSlugs' => $this->multiLangSlugs,
-                    'multiLangNames' => $this->multiLangNames
-                ]
+                    'multiLangSlugs' => $this->multiLangSlugs
+                ],
+                'title' => $this->multiLangNames
             ]
         );
         
-        // Settings saved
+        // SEO ayarlarını kaydet - modül index sayfası için
+        $this->saveSeoSettings();
     }
     
     /**
-     * Fake save method for form compatibility
+     * SEO ayarlarını kaydet - Page pattern'ından uyarlanan
+     */
+    protected function saveSeoSettings()
+    {
+        if (empty($this->seoDataCache)) {
+            return;
+        }
+        
+        // SEO verilerini prepare et
+        $seoData = [
+            'titles' => [],
+            'descriptions' => [],
+            'keywords' => [],
+            'canonical_url' => ''
+        ];
+        
+        foreach ($this->availableLanguages as $lang) {
+            $langSeoData = $this->seoDataCache[$lang] ?? [];
+            
+            $seoData['titles'][$lang] = $langSeoData['seo_title'] ?? '';
+            $seoData['descriptions'][$lang] = $langSeoData['seo_description'] ?? '';
+            
+            // Keywords string'i array'e çevir
+            $keywordsString = $langSeoData['seo_keywords'] ?? '';
+            $seoData['keywords'][$lang] = !empty($keywordsString) 
+                ? array_map('trim', explode(',', $keywordsString))
+                : [];
+                
+            if (!empty($langSeoData['canonical_url'])) {
+                $seoData['canonical_url'] = $langSeoData['canonical_url'];
+            }
+        }
+        
+        // Global SEO service ile kaydet
+        $this->seoRepository->saveSeoSettings($this->moduleName, 'index', $seoData);
+    }
+    
+    /**
+     * Manuel kaydetme - footer butonundan çağrılır
      */
     public function save()
     {
-        // Bu component otomatik kaydettiği için burada bir şey yapmıyoruz
-        $this->dispatch('toast', [
-            'title' => 'Bilgi',
-            'message' => 'URL ayarları otomatik olarak kaydedilir.',
-            'type' => 'info',
-        ]);
+        try {
+            // Cache'i validation öncesi temizle (stale data önlemi)
+            ModuleSlugService::clearCache();
+            
+            // Her dil ve her slug için validation yap
+            foreach ($this->availableLanguages as $language) {
+                $langSlugs = $this->multiLangSlugs[$language] ?? [];
+                
+                foreach ($langSlugs as $key => $value) {
+                    // Boş değer kontrolü
+                    if (empty(trim($value))) {
+                        $this->dispatch('toast', [
+                            'title' => 'Hata!',
+                            'message' => ucfirst($key) . " URL'i " . strtoupper($language) . " dilinde boş olamaz.",
+                            'type' => 'error',
+                        ]);
+                        return;
+                    }
+                    
+                    // Çakışma kontrolü (dil bazında) - DEBUG
+                    $conflictResult = ModuleSlugService::isSlugConflict($value, $this->moduleName, $key, $language);
+                    
+                    // DEBUG: Log conflict check details
+                    Log::info("Slug Conflict Check Debug", [
+                        'slug' => $value,
+                        'module' => $this->moduleName,
+                        'key' => $key,
+                        'language' => $language,
+                        'conflict_result' => $conflictResult
+                    ]);
+                    
+                    if ($conflictResult) {
+                        $this->dispatch('toast', [
+                            'title' => 'URL Çakışması! (DEBUG)',
+                            'message' => "'{$value}' URL'i {$language} dilinde zaten başka bir modül tarafından kullanılıyor. (Module: {$this->moduleName}, Key: {$key})",
+                            'type' => 'error',
+                        ]);
+                        return;
+                    }
+                }
+                
+                // Modül adı kontrolü
+                $moduleName = $this->multiLangNames[$language] ?? '';
+                if (empty(trim($moduleName))) {
+                    $this->dispatch('toast', [
+                        'title' => 'Hata!',
+                        'message' => 'Modül adı ' . strtoupper($language) . ' dilinde boş olamaz.',
+                        'type' => 'error',
+                    ]);
+                    return;
+                }
+            }
+            
+            $this->saveSettings();
+            
+            // Cache'i temizle
+            ModuleSlugService::clearCache();
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'URL ayarları kaydedildi.',
+                'type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Kaydetme sırasında bir hata oluştu.',
+                'type' => 'error',
+            ]);
+        }
+    }
+    
+    /**
+     * Kaydet ve geri dön
+     */
+    public function saveAndReturn()
+    {
+        // Önce normal save işlemini yap
+        $this->save();
+        
+        // Eğer save başarılıysa redirect yap
+        return redirect()->route('admin.modulemanagement.index');
     }
     
     public function render()

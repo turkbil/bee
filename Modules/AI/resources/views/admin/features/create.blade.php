@@ -6,7 +6,6 @@
 
 @section('content')
 <div class="page-header d-print-none">
-    <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
                 <nav aria-label="breadcrumb">
@@ -31,8 +30,7 @@
 </div>
 
 <div class="page-body">
-    <div class="container-xl">
-        @if(session('error'))
+    @if(session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle me-2"></i>
                 {{ session('error') }}

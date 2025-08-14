@@ -17,6 +17,7 @@ return [
 'status' => 'Durum',
 'activate' => 'Aktifleştir',
 'deactivate' => 'Pasifleştir',
+'ai_bulk_translate' => 'Yapay Zeka ile Toplu Çeviri',
 'search_placeholder' => 'Ara...',
 'enter_new_title' => 'Yeni başlık giriniz',
 'items_selected' => 'öğe seçildi',

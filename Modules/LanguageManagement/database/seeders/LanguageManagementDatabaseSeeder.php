@@ -18,6 +18,10 @@ class LanguageManagementDatabaseSeeder extends Seeder
         if (TenantHelpers::isCentral()) {
             $this->command->info('Central context: Admin languages oluşturuluyor...');
             $this->seedAdminLanguages();
+            
+            // Dünya dillerini yükle
+            $this->command->info('Central context: World languages oluşturuluyor...');
+            $this->call(WorldLanguagesSeeder::class);
         } else {
             $this->command->info('Tenant context: Tenant languages oluşturuluyor...');
             $this->seedTenantLanguages();

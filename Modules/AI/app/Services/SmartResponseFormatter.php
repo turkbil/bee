@@ -176,12 +176,17 @@ class SmartResponseFormatter
         
         // Giriş paragrafı çıkar
         $intro = $this->extractIntro($output);
+        $remainingContent = $output;
+        
         if ($intro) {
             $segments[] = "<div class='blog-intro mb-4'>{$intro}</div>";
+            // Intro'yu içerikten çıkar ki tekrar etmesin
+            $remainingContent = str_replace($intro, '', $remainingContent);
+            $remainingContent = trim($remainingContent);
         }
         
-        // Ana içerik başlıklara böl
-        $content = $this->createHeadingSections($output);
+        // Ana içerik başlıklara böl (intro çıkarılmış hali)
+        $content = $this->createHeadingSections($remainingContent ?: $output);
         if ($content) {
             $segments[] = "<div class='blog-content'>{$content}</div>";
         }

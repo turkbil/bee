@@ -1,6 +1,7 @@
-@include('page::admin.helper')
-<div class="card">
-    <div class="card-body">
+<div wire:id="{{ $this->getId() }}" class="page-component-wrapper">
+    <div class="card">
+        @include('page::admin.helper')
+        <div class="card-body">
                         <!-- Header Bölümü -->
                         <div class="row mb-3">
                             <!-- Arama Kutusu -->
@@ -149,43 +150,44 @@
                             @endif
                         </td>
                         <td class="text-center align-middle">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col">
-                                        <a href="{{ route('admin.page.manage', $page->page_id) }}"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.edit') }}">
-                                            <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
+                            <div class="d-flex align-items-center gap-3 justify-content-center">
+                                <a href="{{ route('admin.page.manage', $page->page_id) }}"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.edit') }}"
+                                   style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                    <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
+                                </a>
+                                <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $page->page_id]) }}" target="_blank"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('page::admin.studio.editor') }}"
+                                   style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                    <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
+                                </a>
+                                <a href="javascript:void(0);" onclick="openTranslationModal('page', {{ $page->page_id }})"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.ai_translate') }}"
+                                   style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                    <i class="fas fa-language link-secondary fa-lg"></i>
+                                </a>
+                                @if(!$page->is_homepage)
+                                    @hasmoduleaccess('page', 'delete')
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false" 
+                                            style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                            <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
                                         </a>
-                                    </div>
-                                    <div class="col">
-                                        <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $page->page_id]) }}" target="_blank"
-                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('page::admin.studio.editor') }}">
-                                            <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
-                                        </a>
-                                    </div>
-                                    <div class="col lh-1">
-                                        @if(!$page->is_homepage)
-                                        @hasmoduleaccess('page', 'delete')
-                                        <div class="dropdown mt-1">
-                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
-                                                aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a href="javascript:void(0);" wire:click="$dispatch('showDeleteModal', {
+                                                module: 'page',
+                                                id: {{ $page->page_id }},
+                                                title: '{{ addslashes($page->getTranslated('title', app()->getLocale()) ?? $page->getTranslated('title', 'tr')) }}'
+                                            })" class="dropdown-item link-danger">
+                                                {{ __('admin.delete') }}
                                             </a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a href="javascript:void(0);" wire:click="$dispatch('showDeleteModal', {
-                                                    module: 'page',
-                                                    id: {{ $page->page_id }},
-                                                    title: '{{ addslashes($page->getTranslated('title', app()->getLocale()) ?? $page->getTranslated('title', 'tr')) }}'
-                                                })" class="dropdown-item link-danger">
-                                                    {{ __('admin.delete') }}
-                                                </a>
-                                            </div>
                                         </div>
-                                        @endhasmoduleaccess
-                                    @endif
-
                                     </div>
-                                </div>
+                                    @endhasmoduleaccess
+                                @else
+                                    <div style="min-width: 24px;"></div>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -204,13 +206,29 @@
                 </tbody>
             </table>
         </div>
-                    </div>
-                    <!-- Pagination -->
-                    {{ $pages->links() }}
-                    <!-- Bulk Actions -->
-                    @include('page::admin.partials.bulk-actions', ['moduleType' => 'page'])
+        </div>
+        
+        <!-- Pagination -->
+        <div class="card-footer">
+            {{ $pages->links() }}
+        </div>
+        
+        <!-- Bulk Actions -->
+        @include('page::admin.partials.bulk-actions', ['moduleType' => 'page'])
 
         <livewire:modals.bulk-delete-modal />
         <livewire:modals.delete-modal />
+        
+        <!-- AI Translation Modal -->
+        @include('admin.partials.global-ai-translation-modal')
+        
     </div>
 </div>
+
+@push('styles')
+    <link href="{{ asset('assets/js/simple-translation-modal.js') }}" rel="preload" as="script">
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('assets/js/simple-translation-modal.js') }}?v={{ time() }}"></script>
+@endpush

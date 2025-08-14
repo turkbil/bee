@@ -15,9 +15,9 @@ return new class extends Migration
      *    - Feature'ın NE yapacağını kısa ve net söyler
      *    - Örnek: "Sen bir çeviri uzmanısın. Verilen metni hedef dile çevir."
      * 
-     * 2. EXPERT PROMPT (expert_prompt_id referans):
+     * 2. EXPERT PROMPT (ai_feature_prompt_relations tablosundan):
      *    - Feature'ın NASIL yapacağının detaylı teknik bilgileri
-     *    - ai_prompts tablosundaki prompt_type='feature' kayıtlarına referans
+     *    - ai_feature_prompts tablosundaki expert prompt'larına relations ile bağlanır
      *    - Örnek: "İçerik Üretim Uzmanı" (SEO, E-E-A-T, teknik detaylar)
      * 
      * 3. RESPONSE TEMPLATE (response_template JSON):
@@ -40,8 +40,7 @@ return new class extends Migration
             $table->string('emoji', 10)->nullable(); // 📝, 💻, ✍️
             $table->string('icon', 50)->nullable(); // FontAwesome class: "fas fa-edit"
             
-            // Kategoriler ve Sınıflandırma - STRING OLARAK DEĞİŞTİRİLDİ (enum değil)
-            $table->string('category', 50)->default('other');
+            // Kategori artık sadece ai_feature_categories tablosundan alınacak
             
             // Helper function name ve detayları
             $table->string('helper_function')->nullable();
@@ -56,7 +55,7 @@ return new class extends Migration
             // YENİ PROMPT SİSTEMİ - İki Katmanlı Prompt Yapısı
             $table->text('quick_prompt')->nullable(); // Feature'ın kısa, hızlı prompt'u (NE yapacağını söyler)
             $table->json('response_template')->nullable(); // Sabit yanıt formatı/şablonu
-            // NOT: Expert prompt ilişkisi ai_feature_prompts pivot table'da yönetiliyor
+            // NOT: Expert prompt ilişkisi ai_feature_prompt_relations table'da yönetiliyor
             
             // Legacy - Geriye uyumluluk için korunuyor
             $table->text('custom_prompt')->nullable(); // Eski sistem uyumluluğu
@@ -105,11 +104,10 @@ return new class extends Migration
             // İndexler - Performans için
             $table->index(['ai_feature_category_id']);
             $table->index(['status', 'show_in_examples', 'sort_order']);
-            $table->index(['category', 'status']);
             $table->index(['is_featured', 'status']);
             $table->index('slug');
             $table->index('usage_count');
-            // NOT: Expert prompt foreign key'i ai_feature_prompts pivot table'da
+            // NOT: Expert prompt foreign key'i ai_feature_prompt_relations table'da
         });
     }
 

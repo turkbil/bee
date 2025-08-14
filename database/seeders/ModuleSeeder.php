@@ -75,6 +75,17 @@ class ModuleSeeder extends Seeder
                 }
             }
             
+            // LanguageManagement özel durumu - Database seeder'ını çalıştır
+            if ($moduleBaseName === 'LanguageManagement') {
+                $langDbSeederClass = "Modules\\LanguageManagement\\Database\\Seeders\\LanguageManagementDatabaseSeeder";
+                if (class_exists($langDbSeederClass) && !in_array($langDbSeederClass . '_central', $this->executedSeeders)) {
+                    $this->command->info("Seeding LanguageManagement Database Seeder: {$langDbSeederClass}");
+                    $this->call($langDbSeederClass);
+                    $this->executedSeeders[] = $langDbSeederClass . '_central';
+                }
+                continue; // Diğer individual seeder'ları atlat
+            }
+            
             // Diğer bireysel seeder'ları çalıştır (ana modül seeder'ı içinde çağrılmamışsa)
             foreach ($files as $file) {
                 if ($file->getExtension() === 'php') {
@@ -167,7 +178,19 @@ class ModuleSeeder extends Seeder
                             'AIFeatureSeeder_Part1_Updated',
                             'AIFeatureSeeder_Part2',
                             'AIFeatureSeeder_Part3',
-                            'AISEOFeaturesSeeder'  // Tenant'larda da duplicate slug önlemesi
+                            'AISEOFeaturesSeeder',  // Tenant'larda da duplicate slug önlemesi
+                            // V3 Universal Input System seeder'ları - sadece central'da çalışır
+                            'AIContextRulesSeeder',
+                            'AIPromptTemplatesSeeder',
+                            'UniversalInputSystemSeeder',
+                            // System prompts - sadece central'da çalışır
+                            'AISystemPromptsSeeder',
+                            'TranslationFeatureSeeder',
+                            // Universal Input System V3 seeder'ları 
+                            'BlogWriterUniversalInputSeeder',
+                            'TranslationUniversalInputSeeder',
+                            'UniversalContentLengthPromptsSeeder',
+                            'ModernBlogContentSeeder'
                         ])) {
                             continue;
                         }

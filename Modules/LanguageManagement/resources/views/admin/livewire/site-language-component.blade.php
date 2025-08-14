@@ -6,19 +6,19 @@
         <!-- Header Bölümü -->
         <div class="row mb-3">
             <!-- Arama Kutusu -->
-            <div class="col">
+            <div class="col-12">
                 <div class="input-icon">
                     <span class="input-icon-addon">
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ __('admin.search_tenant_language') }}...">
+                        placeholder="Dil adı, kod veya yerel adla arayın... (örn: İngilizce, en, English)">
                 </div>
             </div>
             <!-- Loading -->
-            <div class="col position-relative">
+            <div class="col-12 position-relative">
                 <div wire:loading
-                    wire:target="render, search, delete, toggleActive, setAsDefault, updateOrder"
+                    wire:target="render, search, delete, toggleActive, setAsDefault, updateOrder, toggleVisibility"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
                     <div class="small text-muted mb-2">{{ __('admin.updating') }}...</div>
@@ -44,129 +44,127 @@
             </div>
         @endif
 
-        <!-- Dil Kartları -->
-        @if($languages->count() > 0)
-            <div class="row" id="sortable-list">
-                @foreach($languages as $language)
-                    <div class="col-md-6 col-lg-4 mb-3" data-id="{{ $language->id }}">
-                        <div class="card h-100 {{ !$language->is_active ? 'opacity-50' : '' }} {{ $language->is_default ? 'border-primary' : '' }}" style="cursor: move;">
-                            @if($language->is_default)
-                                <div class="card-header bg-primary text-white py-2">
-                                    <small><i class="fas fa-star me-1"></i> {{ __('admin.default_tenant_language') }}</small>
-                                </div>
-                            @endif
-                            <div class="card-body d-flex flex-column">
-                                <!-- Başlık -->
-                                <div class="d-flex align-items-center mb-2">
-                                    <span class="me-2" style="font-size: 1.5rem;">{{ $language->flag_icon ?? '🌐' }}</span>
-                                    <div>
-                                        <h5 class="card-title mb-0">{{ $language->native_name }}</h5>
-                                        <small class="text-muted">{{ $language->name }}</small>
-                                    </div>
-                                </div>
-
-                                <!-- Bilgiler -->
-                                <div class="mb-3 flex-grow-1">
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <small class="text-muted">{{ __('admin.code') }}:</small>
-                                            <div><code>{{ $language->code }}</code></div>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">{{ __('admin.direction') }}:</small>
-                                            <div>{{ $language->direction === 'rtl' ? __('admin.rtl') : __('admin.ltr') }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Durum Badge'leri -->
-                                <div class="mb-3">
-                                    @if($language->is_active)
-                                        <span class="badge bg-success">{{ __('admin.active') }}</span>
-                                    @else
-                                        <span class="badge bg-secondary">{{ __('admin.inactive') }}</span>
-                                    @endif
-                                    
-                                    @if($language->is_default)
-                                        <span class="badge bg-primary ms-1">{{ __('admin.default') }}</span>
-                                    @endif
-                                </div>
-
-                                <!-- Butonlar -->
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.languagemanagement.site.manage', $language->id) }}" 
-                                           class="btn btn-outline-primary btn-sm flex-fill">
-                                            <i class="fas fa-edit me-1"></i> {{ __('admin.edit') }}
-                                        </a>
-                                        
-                                        <button wire:click="toggleActive({{ $language->id }})" 
-                                                wire:confirm="{{ __('admin.confirm_status_change') }}?"
-                                                class="btn btn-outline-{{ $language->is_active ? 'warning' : 'success' }} btn-sm">
-                                            <i class="fas fa-{{ $language->is_active ? 'pause' : 'play' }} me-1"></i>
-                                            {{ $language->is_active ? __('admin.deactivate') : __('admin.activate') }}
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="d-flex gap-2">
-                                        @if(!$language->is_default)
-                                            <button wire:click="setAsDefault({{ $language->id }})" 
-                                                    wire:confirm="{{ __('admin.confirm_set_default') }}?"
-                                                    class="btn btn-outline-info btn-sm flex-fill">
-                                                <i class="fas fa-star me-1"></i> {{ __('admin.set_default') }}
-                                            </button>
-                                        @endif
-                                        
-                                        <button wire:click="delete({{ $language->id }})" 
-                                                wire:confirm="{{ __('admin.confirm_delete_tenant_language') }}?"
-                                                class="btn btn-outline-danger btn-sm {{ $language->is_default ? 'flex-fill' : '' }}">
-                                            <i class="fas fa-trash me-1"></i>
-                                            {{ $language->is_default ? __('admin.delete') : '' }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+        <!-- 3 Seviyeli Dil Kategorileri -->
+        
+        <!-- 1. AKTİF DİLLER (Sitede gözüken) -->
+        @if($activeLanguages->count() > 0)
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0 text-success">
+                        <i class="fas fa-check-circle me-2"></i>Aktif Diller
+                    </h5>
+                    <span class="badge bg-success ms-2">{{ $activeLanguages->count() }}</span>
+                    <small class="text-muted ms-3">Sitede gözüken diller • <i class="fas fa-arrows-alt"></i> Sürükle-bırak ile sıralayabilirsiniz</small>
+                </div>
+                <div class="row" id="active-sortable-list">
+                    @foreach($activeLanguages as $language)
+                        @include('languagemanagement::admin.partials.language-card', ['language' => $language, 'category' => 'active'])
+                    @endforeach
+                </div>
             </div>
-        @else
+        @endif
+
+        <!-- 2. PASİF DİLLER (Admin panelde hazırlık için) -->
+        @if($inactiveLanguages->count() > 0)
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0 text-warning">
+                        <i class="fas fa-cog me-2"></i>Pasif Diller (Hazırlık)
+                    </h5>
+                    <span class="badge bg-warning ms-2">{{ $inactiveLanguages->count() }}</span>
+                    <small class="text-muted ms-3">Admin panelde hazırlık için gözüken, sitede gözükmeyen diller</small>
+                </div>
+                <div class="row" id="inactive-sortable-list">
+                    @foreach($inactiveLanguages as $language)
+                        @include('languagemanagement::admin.partials.language-card', ['language' => $language, 'category' => 'inactive'])
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <!-- 3. DİĞER DİLLER (Dünya dilleri - Seçilebilir) -->
+        @if($hiddenLanguages->count() > 0)
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0 text-info">
+                        <i class="fas fa-globe me-2"></i>Diğer Diller
+                    </h5>
+                    <span class="badge bg-info ms-2">{{ $hiddenLanguages->count() }}</span>
+                    <small class="text-muted ms-3">Kullanılabilir dünya dilleri - pasif veya aktif yapılabilir</small>
+                </div>
+                <div class="row" id="hidden-sortable-list">
+                    @foreach($hiddenLanguages as $language)
+                        @include('languagemanagement::admin.partials.language-card', ['language' => $language, 'category' => 'hidden'])
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <!-- Arama Sonucu Bulunamadı -->
+        @if($search && $activeLanguages->count() === 0 && $inactiveLanguages->count() === 0 && $hiddenLanguages->count() === 0)
+            <div class="alert alert-info">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h5 class="alert-heading mb-1">
+                            <i class="fas fa-search me-2"></i>Aradığınız dil bulunamadı
+                        </h5>
+                        <p class="mb-0">
+                            "<strong>{{ $search }}</strong>" araması için sonuç bulunamadı. 
+                            Bu dili sisteme eklemek ister misiniz?
+                        </p>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ route('admin.languagemanagement.site.manage') }}?suggested={{ urlencode($search) }}" 
+                           class="btn btn-info">
+                            <i class="fas fa-plus me-1"></i> "{{ $search }}" Dilini Ekle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Boş Durum (Hiç Dil Yok) -->
+        @if(!$search && $activeLanguages->count() === 0 && $inactiveLanguages->count() === 0 && $hiddenLanguages->count() === 0)
             <div class="text-center py-5">
                 <i class="fas fa-globe fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">{{ __('admin.no_tenant_languages_found') }}</h5>
+                <h5 class="text-muted">Henüz site dili eklenmemiş</h5>
                 <p class="text-muted">
-                    @if($search)
-                        {{ __('admin.no_search_results', ['search' => $search]) }}
-                    @else
-                        {{ __('admin.no_tenant_languages_yet') }}
-                    @endif
+                    Site dilinizi ekleyerek çoklu dil desteğini başlatabilirsiniz.
                 </p>
                 <a href="{{ route('admin.languagemanagement.site.manage') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> {{ __('admin.add_first_tenant_language') }}
+                    <i class="fas fa-plus me-1"></i> İlk Dili Ekle
                 </a>
             </div>
         @endif
     </div>
 </div>
 
+<!-- Language Action Modal -->
+@include('languagemanagement::admin.partials.language-action-modal')
+
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const sortableList = document.getElementById('sortable-list');
-    if (sortableList) {
-        new Sortable(sortableList, {
+    // Sadece aktif diller için sortable aktif et
+    const activeSortableList = document.getElementById('active-sortable-list');
+    if (activeSortableList) {
+        new Sortable(activeSortableList, {
             animation: 150,
             ghostClass: 'opacity-25',
             chosenClass: 'shadow',
+            handle: '.card', // Kartın tamamını sürüklenebilir yap
             onEnd: function(evt) {
-                const itemIds = Array.from(sortableList.children).map(item => 
+                const itemIds = Array.from(activeSortableList.children).map(item => 
                     item.getAttribute('data-id')
                 );
                 @this.call('updateOrder', itemIds);
             }
         });
     }
+    
+    // Pasif ve Diğer diller alfabetik kalır (sortable yok)
+    console.log('🎯 Sortable sadece aktif dillerde aktif edildi');
 });
 </script>
 @endpush

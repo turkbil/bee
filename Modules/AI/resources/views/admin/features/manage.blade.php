@@ -204,9 +204,17 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-blue-lt">
-                                {{ $categories[$feature->category] ?? 'Bilinmeyen' }}
-                            </span>
+                            @if($feature->aiFeatureCategory)
+                                <span class="badge bg-blue-lt">
+                                    <i class="{{ $feature->aiFeatureCategory->icon ?? 'fas fa-folder' }} me-1"></i>
+                                    {{ $feature->aiFeatureCategory->title }}
+                                </span>
+                            @else
+                                <span class="badge bg-secondary-lt">
+                                    <i class="fas fa-question-circle me-1"></i>
+                                    Kategorisiz
+                                </span>
+                            @endif
                         </td>
                         <td class="text-center">
                             <button class="btn btn-sm status-toggle {{ $feature->status === 'active' ? 'text-success' : 'text-danger' }}" 

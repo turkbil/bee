@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services;
+namespace Modules\AI\App\Services;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Modules\AI\app\Exceptions\DatabaseLearningException;
+use Modules\AI\App\Exceptions\DatabaseLearningException;
 
 /**
  * Database Learning Service V2

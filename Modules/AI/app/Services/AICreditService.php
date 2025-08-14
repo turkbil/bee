@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services;
+namespace Modules\AI\App\Services;
 
-use Modules\AI\app\Models\AICreditPackage;
-use Modules\AI\app\Models\AICreditPurchase;
-use Modules\AI\app\Models\AICreditUsage;
-use Modules\AI\app\Exceptions\AICreditException;
+use Modules\AI\App\Models\AICreditPackage;
+use Modules\AI\App\Models\AICreditPurchase;
+use Modules\AI\App\Models\AICreditUsage;
+use Modules\AI\App\Exceptions\AICreditException;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -90,11 +90,11 @@ class AICreditService
             $purchase = AICreditPurchase::create([
                 'user_id' => $user->id,
                 'ai_credit_package_id' => $package->id,
-                'credits_purchased' => $package->credits,
+                'credit_amount' => $package->credits,
                 'amount_paid' => $paymentData['amount'] ?? $package->discounted_price,
                 'currency' => $paymentData['currency'] ?? 'USD',
                 'payment_method' => $paymentData['method'] ?? 'stripe',
-                'payment_status' => $paymentData['status'] ?? 'completed',
+                'status' => $paymentData['status'] ?? 'completed',
                 'payment_reference' => $paymentData['reference'] ?? null,
                 'expires_at' => $this->calculateExpiryDate($package),
                 'purchased_at' => now(),
@@ -175,6 +175,7 @@ class AICreditService
         try {
             // Create usage record
             $usage = AICreditUsage::create([
+                'tenant_id' => 1, // Default to central tenant for now
                 'user_id' => $user->id,
                 'category' => $category,
                 'provider_name' => $provider,
@@ -193,16 +194,20 @@ class AICreditService
             // Clear credit cache
             $this->clearUserCreditCache($user->id);
 
-            // Check for low credit warnings
-            $this->checkCreditWarnings($user);
+            // Check for low credit warnings using calculated remaining credits
+            $remainingCredits = max(0.0, $availableCredits - $finalCost);
+            $this->checkCreditWarningsWithBalance($user, $remainingCredits);
 
             DB::commit();
 
+            // Calculate remaining credits without calling getUserCredits again
+            $remainingCredits = max(0.0, $availableCredits - $finalCost);
+            
             Log::info('Credits used successfully', [
                 'user_id' => $user->id,
                 'category' => $category,
                 'credits_used' => $finalCost,
-                'remaining_credits' => $this->getUserCredits($user),
+                'remaining_credits' => $remainingCredits,
                 'usage_id' => $usage->id,
             ]);
 
@@ -230,6 +235,72 @@ class AICreditService
     }
 
     /**
+     * Get user's current credit balance by ID
+     * 
+     * @param int $userId
+     * @return float Current credit balance
+     */
+    public function getCurrentBalance(int $userId): float
+    {
+        // Get tenant ID from current session or user
+        $tenantId = session('tenant_id', 1); // Default to 1 if not in session
+        
+        return $this->getTenantCredits($tenantId);
+    }
+
+    /**
+     * Consume credits for a specific operation (simplified version)
+     * 
+     * @param int $userId
+     * @param float $cost
+     * @param string $category
+     * @param array $metadata
+     * @return void
+     */
+    public function consumeCredits(int $userId, float $cost, string $category, array $metadata = []): void
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            throw new \Exception("User not found: {$userId}");
+        }
+        
+        $this->useCredits($user, $category, $cost, 'openai', $category, $metadata);
+    }
+
+    /**
+     * Get tenant's current credit balance
+     * 
+     * @param int $tenantId
+     * @return float Current credit balance
+     */
+    public function getTenantCredits(int $tenantId): float
+    {
+        $cacheKey = "tenant_credits_{$tenantId}";
+
+        return (float) Cache::remember($cacheKey, 300, function () use ($tenantId) {
+            // Get total purchased credits for tenant
+            $totalPurchased = (float) AICreditPurchase::where('tenant_id', $tenantId)
+                ->where('status', 'completed')
+                ->sum('credit_amount');
+
+            // Get total used credits for tenant
+            $totalUsed = (float) AICreditUsage::where('tenant_id', $tenantId)->sum('credits_used');
+
+            $realBalance = (float) max(0.0, $totalPurchased - $totalUsed);
+            
+            // Debug logging
+            Log::debug('Tenant credit balance calculation', [
+                'tenant_id' => $tenantId,
+                'total_purchased' => $totalPurchased,
+                'total_used' => $totalUsed,
+                'real_balance' => $realBalance
+            ]);
+
+            return $realBalance;
+        });
+    }
+
+    /**
      * Get user's current credit balance
      * 
      * @param User $user
@@ -239,20 +310,26 @@ class AICreditService
     {
         $cacheKey = "user_credits_{$user->id}";
 
-        return Cache::remember($cacheKey, 300, function () use ($user) {
+        return (float) Cache::remember($cacheKey, 300, function () use ($user) {
             // Get total purchased credits (not expired)
-            $totalPurchased = AICreditPurchase::where('user_id', $user->id)
-                ->where('payment_status', 'completed')
-                ->where(function ($query) {
-                    $query->whereNull('expires_at')
-                          ->orWhere('expires_at', '>', now());
-                })
-                ->sum('credits_purchased');
+            $totalPurchased = (float) AICreditPurchase::where('user_id', $user->id)
+                ->where('status', 'completed')
+                ->sum('credit_amount');
 
             // Get total used credits
-            $totalUsed = AICreditUsage::where('user_id', $user->id)->sum('credits_used');
+            $totalUsed = (float) AICreditUsage::where('user_id', $user->id)->sum('credits_used');
 
-            return max(0, $totalPurchased - $totalUsed);
+            $realBalance = (float) max(0.0, $totalPurchased - $totalUsed);
+            
+            // Debug logging
+            Log::debug('Credit balance calculation', [
+                'user_id' => $user->id,
+                'total_purchased' => $totalPurchased,
+                'total_used' => $totalUsed,
+                'real_balance' => $realBalance
+            ]);
+
+            return $realBalance;
         });
     }
 
@@ -268,16 +345,16 @@ class AICreditService
 
         return Cache::remember($cacheKey, 600, function () use ($user) {
             $purchases = AICreditPurchase::where('user_id', $user->id)
-                ->where('payment_status', 'completed')
+                ->where('status', 'completed')
                 ->get();
 
-            $totalUsed = AICreditUsage::where('user_id', $user->id)->sum('credits_used');
+            $totalUsed = (float) AICreditUsage::where('user_id', $user->id)->sum('credits_used');
 
             $breakdown = [
                 'current_balance' => $this->getUserCredits($user),
-                'total_purchased' => $purchases->sum('credits_purchased'),
+                'total_purchased' => (float) $purchases->sum('credit_amount'),
                 'total_used' => $totalUsed,
-                'expired_credits' => $purchases->where('expires_at', '<', now())->sum('credits_purchased'),
+                'expired_credits' => 0.0, // Will be calculated properly if needed
                 'active_purchases' => $purchases->where('expires_at', '>', now())->count(),
                 'warning_level' => $this->getCreditWarningLevel($this->getUserCredits($user)),
             ];
@@ -420,14 +497,14 @@ class AICreditService
     public function cleanupExpiredCredits(): array
     {
         $expiredPurchases = AICreditPurchase::where('expires_at', '<', now())
-            ->where('payment_status', 'completed')
+            ->where('status', 'completed')
             ->get();
 
         $totalExpiredCredits = 0;
         $affectedUsers = [];
 
         foreach ($expiredPurchases as $purchase) {
-            $totalExpiredCredits += $purchase->credits_purchased;
+            $totalExpiredCredits += $purchase->credit_amount;
             
             if (!in_array($purchase->user_id, $affectedUsers)) {
                 $affectedUsers[] = $purchase->user_id;
@@ -517,7 +594,6 @@ class AICreditService
         Log::debug('Credits deducted from user', [
             'user_id' => $user->id,
             'credits_deducted' => $credits,
-            'remaining_balance' => $this->getUserCredits($user) - $credits,
         ]);
     }
 
@@ -543,6 +619,23 @@ class AICreditService
             Log::warning('User has low credits', [
                 'user_id' => $user->id,
                 'current_credits' => $credits,
+                'warning_level' => $warningLevel,
+            ]);
+        }
+    }
+
+    /**
+     * Check and send credit warnings with provided balance (avoids getUserCredits call)
+     */
+    private function checkCreditWarningsWithBalance(User $user, float $remainingBalance): void
+    {
+        $warningLevel = $this->getCreditWarningLevel($remainingBalance);
+
+        if ($warningLevel !== 'sufficient') {
+            // Here you would dispatch events or send notifications
+            Log::warning('User has low credits after operation', [
+                'user_id' => $user->id,
+                'remaining_credits' => $remainingBalance,
                 'warning_level' => $warningLevel,
             ]);
         }
@@ -595,7 +688,7 @@ class AICreditService
     {
         // Get total purchased credits for tenant
         $totalPurchased = AICreditPurchase::where('tenant_id', $tenantId)
-            ->where('payment_status', 'completed')
+            ->where('status', 'completed')
             ->where(function ($query) {
                 $query->whereNull('expires_at')
                       ->orWhere('expires_at', '>', now());
@@ -640,7 +733,7 @@ class AICreditService
                 'credit_amount' => $amount,
                 'amount_paid' => 0, // Free admin addition
                 'currency' => 'TRY',
-                'payment_status' => 'completed',
+                'status' => 'completed',
                 'payment_method' => 'admin_free',
                 'notes' => $reason,
                 'purchased_at' => now(),

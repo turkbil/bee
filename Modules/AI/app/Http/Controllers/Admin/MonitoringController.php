@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Http\Controllers\Admin;
+namespace Modules\AI\App\Http\Controllers\Admin;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Modules\AI\app\Services\MonitoringService;
+use Modules\AI\App\Services\MonitoringService;
 use Modules\AI\App\Services\GlobalAIMonitoringService;
 use Modules\AI\App\Services\AICreditService;
 use App\Http\Controllers\Controller;

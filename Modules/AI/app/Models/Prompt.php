@@ -247,8 +247,8 @@ class Prompt extends Model
      */
     public function features()
     {
-        return $this->belongsToMany(AIFeature::class, 'ai_feature_prompts', 'ai_prompt_id', 'ai_feature_id')
-            ->withPivot(['prompt_role', 'priority', 'is_required', 'is_active', 'conditions', 'parameters', 'notes'])
+        return $this->belongsToMany(AIFeature::class, 'ai_feature_prompt_relations', 'prompt_id', 'feature_id')
+            ->withPivot(['role', 'priority', 'is_active', 'conditions', 'notes'])
             ->withTimestamps();
     }
 

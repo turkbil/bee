@@ -4,6 +4,7 @@ namespace Modules\LanguageManagement\app\Http\Livewire\Admin;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Illuminate\Support\Facades\Log;
 use Modules\LanguageManagement\app\Services\TenantLanguageService;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
 
@@ -17,6 +18,7 @@ class TenantLanguageManageComponent extends Component
     public $direction = 'ltr';
     public $flag_icon = '';
     public $is_active = true;
+    public $is_visible = true;
     public $is_default = false;
 
     public $isEditing = false;
@@ -28,6 +30,7 @@ class TenantLanguageManageComponent extends Component
         'direction' => 'required|in:ltr,rtl',
         'flag_icon' => 'nullable|string|max:10',
         'is_active' => 'boolean',
+        'is_visible' => 'boolean',
         'is_default' => 'boolean',
     ];
 
@@ -46,6 +49,15 @@ class TenantLanguageManageComponent extends Component
         if ($id) {
             $this->languageId = $id;
             $this->loadLanguage();
+        } else {
+            // URL'den suggested parametresini al
+            $suggested = request()->get('suggested');
+            if ($suggested) {
+                $this->name = $suggested;
+                $this->native_name = $suggested;
+                // Basit kod tahmini
+                $this->code = strtolower(substr($suggested, 0, 2));
+            }
         }
     }
 
@@ -65,6 +77,7 @@ class TenantLanguageManageComponent extends Component
         $this->direction = $language->direction;
         $this->flag_icon = $language->flag_icon;
         $this->is_active = $language->is_active;
+        $this->is_visible = $language->is_visible ?? true;
         $this->is_default = $language->is_default;
     }
 
@@ -113,6 +126,7 @@ class TenantLanguageManageComponent extends Component
                 'direction' => $this->direction,
                 'flag_icon' => $this->flag_icon ?: null,
                 'is_active' => $this->is_active,
+                'is_visible' => $this->is_visible,
                 'is_default' => $this->is_default,
                 'sort_order' => $this->isEditing ? 
                     TenantLanguage::find($this->languageId)->sort_order : 
@@ -124,10 +138,29 @@ class TenantLanguageManageComponent extends Component
                 $language->update($data);
                 $message = 'Site dili başarıyla güncellendi.';
                 $logMessage = 'güncellendi';
+                
+                // Log kaydı - güncelleme
+                Log::info('Language updated', [
+                    'language_id' => $language->id,
+                    'language_name' => $language->name,
+                    'language_code' => $language->code,
+                    'changes' => array_diff_assoc($data, $language->getOriginal()),
+                    'user_id' => auth()->id(),
+                    'tenant_id' => tenant('id')
+                ]);
             } else {
                 $language = $siteLanguageService->createOrUpdateTenantLanguage($data);
                 $message = 'Site dili başarıyla oluşturuldu.';
-                $logMessage = 'oluşturuldu';
+                $logMessage = 'eklendi';
+                
+                // Log kaydı - ekleme
+                Log::info('Language created', [
+                    'language_id' => $language->id,
+                    'language_name' => $language->name,
+                    'language_code' => $language->code,
+                    'user_id' => auth()->id(),
+                    'tenant_id' => tenant('id')
+                ]);
             }
 
             if (function_exists('log_activity')) {

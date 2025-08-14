@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services\Context;
+namespace Modules\AI\App\Services\Context;
 
 use Illuminate\Support\Facades\Log;
-use Modules\AI\app\Models\AITenantProfile;
+use Modules\AI\App\Models\AITenantProfile;
 
 /**
  * Tenant Context Collector  
@@ -66,6 +66,8 @@ class TenantContextCollector extends ContextCollector
                 'city' => $profile->company_info['city'] ?? null,
                 'main_service' => $profile->company_info['main_service'] ?? null,
                 'founding_year' => $profile->company_info['founding_year'] ?? null,
+                'founder' => $profile->company_info['founder'] ?? null,
+                'ceo' => $profile->company_info['ceo'] ?? null,
             ];
         }
 
@@ -127,12 +129,22 @@ class TenantContextCollector extends ContextCollector
         
         // Şirket kimliği
         if (isset($context['company']['name'])) {
-            $parts[] = "🏢 COMPANY CONTEXT: {$context['company']['name']} şirketi için AI assistant.";
+            $parts[] = "🤖 AI IDENTITY: Sen {$context['company']['name']} şirketinin yapay zeka modelisin.";
         }
 
         // Ana hizmet
         if (isset($context['company']['main_service'])) {
             $parts[] = "🎯 MAIN SERVICE: {$context['company']['main_service']}";
+        }
+
+        // Şirket kurucusu 
+        if (isset($context['company']['founder'])) {
+            $parts[] = "👨‍💼 COMPANY FOUNDER: {$context['company']['founder']}";
+        }
+
+        // Şirket CEO'su
+        if (isset($context['company']['ceo'])) {
+            $parts[] = "🏢 COMPANY CEO: {$context['company']['ceo']}";
         }
 
         // Marka kişiliği
@@ -160,7 +172,7 @@ class TenantContextCollector extends ContextCollector
         }
 
         // Özel talimatlar
-        $parts[] = "🎯 FEATURE INSTRUCTION: Şirket bağlamında profesyonel ve markayla uyumlu yanıtlar ver.";
+        $parts[] = "🎯 CONTEXT GUIDELINE: Bu şirket bağlamında profesyonel ve markayla uyumlu yaklaşım benimse.";
         
         // Kaçınılacak konular
         if (isset($context['behavior']['avoid_topics']) && is_array($context['behavior']['avoid_topics'])) {

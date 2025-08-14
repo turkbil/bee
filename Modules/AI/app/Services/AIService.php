@@ -22,7 +22,6 @@ class AIService
     protected $currentProvider;
     protected $currentService;
     protected $contextEngine;
-
     /**
      * Constructor
      *
@@ -243,6 +242,11 @@ class AIService
         // API response'u parse et (string veya array olabilir)
         $response = is_array($apiResponse) ? ($apiResponse['response'] ?? $apiResponse) : $apiResponse;
         
+        // YENİ: POST-PROCESSING - Yanıtı düzelt
+        if ($response && !$stream) {
+            $response = $this->enforceStructure($response, $options);
+        }
+        
         if ($response && !$stream) {
             // YENİ MERKEZİ KREDİ DÜŞME SİSTEMİ
             if ($tenant) {
@@ -393,6 +397,41 @@ class AIService
         }
 
         return $response;
+    }
+
+    /**
+     * Process AI Feature - Helper function support
+     * 
+     * @param \Modules\AI\App\Models\AIFeature $feature
+     * @param string $input
+     * @param array $options
+     * @return array
+     */
+    public function processFeature($feature, string $input, array $options = []): array
+    {
+        try {
+            // Use askFeature method which already handles everything
+            $response = $this->askFeature($feature, $input, $options);
+            
+            return [
+                'success' => true,
+                'response' => $response,
+                'feature_id' => $feature->id,
+                'feature_name' => $feature->name
+            ];
+        } catch (\Exception $e) {
+            \Log::error('ProcessFeature Error', [
+                'feature_id' => $feature->id,
+                'feature_slug' => $feature->slug,
+                'error' => $e->getMessage()
+            ]);
+            
+            return [
+                'success' => false,
+                'response' => 'AI işlemi başarısız: ' . $e->getMessage(),
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     /**
@@ -732,18 +771,51 @@ class AIService
                 $length = $this->detectLengthRequirement($options['user_input']);
                 $parts[] = "⚠️ ZORUNLU UZUNLUK: Bu yanıt MİNİMUM {$length['min']} kelime, MAKSİMUM {$length['max']} kelime olmalıdır.";
             }
-            $parts[] = "⚠️ ZORUNLU YAPI: İçerik EN AZ 4 paragraf olmalı. Her paragraf 3-6 cümle içermeli. Paragraflar arasında boş satır bırak.";
-            $parts[] = "📝 HTML KULLANIMI: HTML tagları kullanabilirsin ama işlenmiş çıktı olarak ver, ham kod değil.";
+            $parts[] = "🚨 ZORUNLU PARAGRAF KURALI: İçerik MİNİMUM 4 paragraf olmalı! Tek paragraf yazma! Her paragraf 3-6 cümle. Paragraflar arasında boş satır bırak.";
+            $parts[] = "⚠️ HTML YASAK: Hiçbir HTML kodu kullanma! Sadece düz metin olarak yaz. Örnek: '<p>metin</p>' değil, sadece 'metin' yaz.";
         }
         
-        // 2. GENEL KALİTE KURALLARI
-        $parts[] = "⚠️ YASAK: Asla 'Bu konuda yardımcı olamam', 'Daha fazla bilgi ver' gibi kaçamak cevaplar verme. Her zaman tahmin et ve yanıtla.";
+        // 2. DİNAMİK DİL KURALI - Tenant'ın varsayılan dilini kullan
+        $defaultLanguage = $this->getTenantDefaultLanguage();
+        $parts[] = "🌐 DİL KURALI: Yanıtı '{$defaultLanguage['name']}' ({$defaultLanguage['code']}) dilinde ver. Çeviri istenmediği sürece bu dili kullan.";
+        
+        // 3. VERİTABANI PROMPT KURALLARI - Hidden System + Common
+        $databasePrompts = $this->getSystemPrompts($mode);
+        if (!empty($databasePrompts)) {
+            $parts[] = "📋 SİSTEM KURALLARI:";
+            foreach ($databasePrompts as $prompt) {
+                $parts[] = "• " . $prompt['name'] . ": " . $prompt['content'];
+            }
+        } else {
+            // SİSTEM KURALLARI YÜKLENEMEZ İSE AI ÇALIŞMAZ
+            throw new \Exception('AI sistem kuralları yüklenemedi. Lütfen sistem yöneticisine başvurun.');
+        }
         
         // 3. CHAT vs FEATURE MODU CONTEXT AYRIMI
         if ($mode === 'chat') {
-            // CHAT MODU: SADECE KULLANICI BİLGİLERİ - Context Engine'i devre dışı bırak
+            // CHAT MODU: KULLANICI BİLGİSİ ve AI KİMLİK AYIRIMI  
             if ($user = auth()->user()) {
-                $userInfo = "Sen {$user->name} ile sohbet ediyorsun";
+                // ÖNCELİK: AI kimlik tanımı (Tenant'tan alınacak)
+                if ($tenant = tenant()) {
+                    $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $tenant->id)->first();
+                    if ($profile && $profile->company_info && isset($profile->company_info['brand_name'])) {
+                        $parts[] = "🤖 SEN KİMSİN: Sen {$profile->company_info['brand_name']} şirketinin yapay zeka modelisin.";
+                        
+                        // Kurucu bilgisi varsa ekle (ama sen o değilsin!)
+                        if (isset($profile->company_info['founder'])) {
+                            $parts[] = "👨‍💼 ŞİRKET KURUCUSU: {$profile->company_info['founder']} (ama sen o değilsin, sen AI modelisin!)";
+                        }
+                        
+                        // Debug log
+                        \Log::info('🤖 AI Identity Context Created', [
+                            'brand_name' => $profile->company_info['brand_name'],
+                            'founder_exists' => isset($profile->company_info['founder']),
+                            'founder' => $profile->company_info['founder'] ?? 'YOK'
+                        ]);
+                    }
+                }
+                
+                $userInfo = "Konuştuğun kişi: {$user->name}";
                 if ($user->email) {
                     $userInfo .= " (Email: {$user->email})";
                 }
@@ -833,11 +905,11 @@ class AIService
                 }
                 $userInfo .= ". Kişisel, samimi ve dostça ol.";
                 $parts[] = "👤 CHAT KULLANICISI: " . $userInfo;
-                $parts[] = "🚫 KRİTİK DİNAMİK AYRIM SİSTEMİ:";
-                $parts[] = "🎯 KULLANICI ODAKLI sorular (ben, beni, benim, kendim, kim, hangi kişi) → SADECE giriş yapan kullanıcıyı tanıt: {$user->name}";
-                $parts[] = "🏢 ŞİRKET/MARKA ODAKLI sorular (biz, bizim, firmamız, şirketimiz, markamız, kuruluş) → Şirket/marka bilgilerini kullan";
-                $parts[] = "🤖 ZEKA KURALI: Sorudaki dil yapısından ve kelimelerden OTOMATIK tespit et - hardcode kontrol yapma!";
-                $parts[] = "📝 ÖNEMLİ: Soru belirsizse, context'e bakarak en mantıklı seçimi yap";
+                $parts[] = "🚫 KRİTİK SORU ANALİZ SİSTEMİ:";
+                $parts[] = "🙋 'BEN KİMİM?' sorusu → Kullanıcı hakkında bilgi ver: {$user->name}";
+                $parts[] = "🤖 'SEN KİMSİN?' sorusu → KENDİN HAKKINDA: Sen yapay zeka modelisin, kullanıcı değil!";
+                $parts[] = "🏢 'BİZ KİMİZ?' sorusu → Şirket/marka bilgilerini kullan";
+                $parts[] = "⚠️ KRİTİK: 'Sen kimsin' = AI kimliği, 'Ben kimim' = Kullanıcı kimliği!";
                 $parts[] = "🔑 YETKİ BİLGİSİ: Kullanıcının rol ve yetki durumunu da belirt (admin/editor/user vs.)";
                 
                 // Şirket bilgilerini her zaman hazır tut (dinamik kullanım için)
@@ -898,9 +970,68 @@ class AIService
         // 6. SON UYARI (Sadece feature modunda)
         if ($mode !== 'chat') {
             $parts[] = "📝 SON UYARI: UZUNLUK ve PARAGRAF kurallarına kesinlikle uy. 'Kısa yanıt' vermek yasak!";
+            $parts[] = "🔥 ÖRNEK PARAGRAF YAPISI:";
+            $parts[] = "Paragraf 1: Konuya giriş (3-6 cümle)";
+            $parts[] = "";
+            $parts[] = "Paragraf 2: Detaylar (3-6 cümle)"; 
+            $parts[] = "";
+            $parts[] = "Paragraf 3: Örnekler (3-6 cümle)";
+            $parts[] = "";
+            $parts[] = "Paragraf 4: Sonuç (3-6 cümle)";
+            $parts[] = "🚨 UNUTMA: Her paragraf arasında BOŞ SATIR bırak!";
         }
         
         return implode("\n\n", $parts);
+    }
+    
+    /**
+     * Veritabanından sistem prompt'larını getir
+     * 
+     * @param string $mode
+     * @return array
+     */
+    private function getSystemPrompts(string $mode = 'chat'): array
+    {
+        try {
+            // Veritabanından prompt'ları çek - language ve tenant_id kolonu yok, basit sorgu
+            $prompts = \DB::table('ai_prompts')
+                ->where('is_active', true)
+                ->whereIn('prompt_type', ['hidden_system', 'common'])
+                ->orderBy('priority', 'asc')
+                ->orderBy('ai_weight', 'desc')
+                ->get();
+            
+            // Array'e dönüştür
+            $result = [];
+            foreach ($prompts as $prompt) {
+                $result[] = [
+                    'name' => $prompt->name,
+                    'content' => $prompt->content,
+                    'type' => $prompt->prompt_type,
+                    'category' => $prompt->prompt_category,
+                    'priority' => $prompt->priority,
+                    'weight' => $prompt->ai_weight
+                ];
+            }
+            
+            \Log::info('🔥 Database prompts loaded successfully', [
+                'mode' => $mode,
+                'prompts_count' => count($result),
+                'prompt_names' => array_column($result, 'name')
+            ]);
+            
+            return $result;
+            
+        } catch (\Exception $e) {
+            \Log::error('❌ Database prompts loading failed', [
+                'error' => $e->getMessage(),
+                'mode' => $mode,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // FALLBACK YOK - Exception fırlat
+            throw new \Exception('AI sistem kuralları veritabanından yüklenemedi: ' . $e->getMessage());
+        }
     }
     
     /**
@@ -960,24 +1091,130 @@ class AIService
     }
     
     /**
-     * 🎯 PARAGRAF YAPISINI ZORLAMA
-     * Yanıtın yapısını kontrol eder ve gerekirse düzenler
+     * 🎯 RESPONSE QUALITY KONTROL VE YAPIYI ZORLAMA
+     * AI provider yanıtını kalite kontrolünden geçirir ve düzenler
      */
     private function enforceStructure($content, $requirements = []): string
     {
-        $paragraphs = explode("\n\n", $content);
-        
-        // Minimum paragraf sayısı kontrolü
-        if (count($paragraphs) < 4) {
-            // İçeriği yeniden yapılandır
-            $sentences = preg_split('/(?<=[.!?])\s+/', $content);
-            $paragraphs = array_chunk($sentences, 4);
-            $content = implode("\n\n", array_map(function($p) {
-                return implode(' ', $p);
-            }, $paragraphs));
+        // 🔍 1. İLK KALİTE KONTROL
+        if (empty($content) || !is_string($content)) {
+            \Log::warning('🚨 AI Response Quality Issue: Empty or invalid content', [
+                'content_type' => gettype($content),
+                'content_length' => is_string($content) ? strlen($content) : 0
+            ]);
+            return 'AI yanıtı alınamadı. Lütfen tekrar deneyiniz.';
         }
         
-        return $content;
+        // 🧹 2. HTML TAG TEMİZLEME
+        $originalContent = $content;
+        $content = $this->cleanHtmlTags($content);
+        
+        if ($originalContent !== $content) {
+            \Log::info('🧹 HTML Tags cleaned from AI response', [
+                'original_length' => strlen($originalContent),
+                'cleaned_length' => strlen($content)
+            ]);
+        }
+        
+        // 🚫 3. YASAK KELİME KONTROL
+        $content = $this->removeProhibitedPhrases($content);
+        
+        // 🔍 4. Mode tespiti
+        $mode = $requirements['mode'] ?? $this->detectMode($requirements);
+        $isChatMode = ($mode === 'chat');
+        
+        // Chat modunda sadece çok uzun tek paragrafları böl
+        if ($isChatMode) {
+            $content = trim($content);
+            
+            // Zaten paragrafları varsa dokunma - düz metin olarak döndür
+            $existingParagraphs = preg_split('/\n\s*\n/', $content);
+            if (count($existingParagraphs) >= 2) {
+                // Zaten paragraflanmış - düz metin olarak döndür
+                return $content;
+            }
+            
+            // Tek paragraf ve çok uzunsa böl (500+ karakter)
+            if (strlen($content) > 500) {
+                $sentences = preg_split('/(?<=[.!?])\s+/', $content);
+                $sentences = array_filter(array_map('trim', $sentences));
+                
+                if (count($sentences) >= 3) {
+                    // Cümleleri 2-3 paragrafa böl
+                    $perParagraph = ceil(count($sentences) / 2);
+                    $paragraphs = [];
+                    
+                    for ($i = 0; $i < 2; $i++) {
+                        $start = $i * $perParagraph;
+                        $chunk = array_slice($sentences, $start, $perParagraph);
+                        if (!empty($chunk)) {
+                            $paragraphs[] = implode(' ', $chunk);
+                        }
+                    }
+                    
+                    // Düz metin formatında döndür
+                    return implode("\n\n", $paragraphs);
+                }
+            }
+            
+            // Kısa metinler için düz metin olarak döndür
+            return $content;
+        }
+        
+        // İçeriği temizle
+        $content = trim($content);
+        
+        // Paragrafları ayır
+        $paragraphs = preg_split('/\n\s*\n/', $content);
+        $paragraphs = array_filter(array_map('trim', $paragraphs));
+        
+        // Eğer tek paragraf ise, cümlelere böl ve 4 parça yap
+        if (count($paragraphs) < 4) {
+            // Cümleleri ayır
+            $sentences = preg_split('/(?<=[.!?])\s+/', $content);
+            $sentences = array_filter(array_map('trim', $sentences));
+            
+            if (count($sentences) >= 4) {
+                // Cümleleri 4 paragrafa böl
+                $perParagraph = ceil(count($sentences) / 4);
+                $newParagraphs = [];
+                
+                for ($i = 0; $i < 4; $i++) {
+                    $start = $i * $perParagraph;
+                    $chunk = array_slice($sentences, $start, $perParagraph);
+                    if (!empty($chunk)) {
+                        $newParagraphs[] = implode(' ', $chunk);
+                    }
+                }
+                
+                $paragraphs = $newParagraphs;
+            }
+        }
+        
+        // Başlık ekle (user input'tan çıkar)
+        $title = '';
+        if (isset($requirements['user_input'])) {
+            $userInput = $requirements['user_input'];
+            // "hakkında", "için", "ile ilgili" gibi ifadeleri temizle
+            $cleanTitle = preg_replace('/(hakkında|için|ile ilgili|konusunda)\s+(uzun\s*)?(yazı|makale|blog|içerik)\s*(yaz|oluştur|hazırla)/i', '', $userInput);
+            $cleanTitle = preg_replace('/\s+(uzun\s*)?(yazı|makale|blog|içerik)\s*(yaz|oluştur|hazırla)/i', '', $cleanTitle);
+            $title = trim(ucfirst($cleanTitle));
+            
+            if (empty($title)) {
+                $title = 'Konu Başlığı';
+            }
+        }
+        
+        // Sonucu düz metin formatında birleştir (Frontend HTML'e çevirecek)
+        $result = '';
+        if ($title) {
+            $result .= "{$title}\n\n";
+        }
+        
+        // Paragrafları newline'lar ile birleştir 
+        $result .= implode("\n\n", $paragraphs);
+        
+        return trim($result);
     }
     
     /**
@@ -994,6 +1231,37 @@ class AIService
         // Feature objesi varsa feature modu
         if (isset($options['feature']) || isset($options['feature_name'])) {
             return 'feature';
+        }
+        
+        // 🎯 YENİ: USER INPUT'A GÖRE FEATURE MODU TESPİTİ
+        // Eğer kullanıcı uzun içerik istiyorsa, chat panelinde bile feature modu çalışsın
+        if (isset($options['user_input'])) {
+            $userInput = mb_strtolower($options['user_input']);
+            
+            // İçerik üretim anahtar kelimeleri
+            $featureKeywords = [
+                'uzun', 'makale', 'blog', 'yazı', 'içerik', 'text', 'content',
+                'detaylı', 'kapsamlı', 'geniş', 'profesyonel',
+                'yaz', 'oluştur', 'hazırla', 'üret', 'generate',
+                'başlık', 'paragraf', 'liste', 'madde',
+                'seo', 'optimizasyon', 'anahtar kelime',
+                'rapor', 'analiz', 'özet', 'sunum'
+            ];
+            
+            // Kelime kontrolü
+            foreach ($featureKeywords as $keyword) {
+                if (str_contains($userInput, $keyword)) {
+                    // DEBUG: Feature mode override
+                    \Log::info('🎯 Mode Override: Chat→Feature', [
+                        'user_input' => substr($options['user_input'], 0, 100),
+                        'trigger_keyword' => $keyword,
+                        'original_mode' => 'chat',
+                        'new_mode' => 'feature'
+                    ]);
+                    
+                    return 'feature';
+                }
+            }
         }
         
         // URL bazlı tespit
@@ -1159,6 +1427,134 @@ class AIService
     }
 
     /**
+     * 🧹 HTML TAG TEMİZLEME
+     * AI response'undan HTML tag'leri temizler
+     */
+    private function cleanHtmlTags(string $content): string
+    {
+        // Yaygın HTML tag'leri kaldır
+        $htmlTags = [
+            '/<p[^>]*>/i', '</p>',
+            '/<br[^>]*>/i', 
+            '/<div[^>]*>/i', '</div>',
+            '/<span[^>]*>/i', '</span>',
+            '/<strong[^>]*>/i', '</strong>',
+            '/<b[^>]*>/i', '</b>',
+            '/<em[^>]*>/i', '</em>',
+            '/<i[^>]*>/i', '</i>',
+            '/<h[1-6][^>]*>/i', '/<\/h[1-6]>/i',
+            '/<ul[^>]*>/i', '</ul>',
+            '/<ol[^>]*>/i', '</ol>',
+            '/<li[^>]*>/i', '</li>',
+            '/<a[^>]*>/i', '</a>',
+        ];
+        
+        // Tag'leri kaldır
+        $cleaned = preg_replace($htmlTags, '', $content);
+        
+        // HTML entity'leri decode et
+        $cleaned = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+        
+        // Fazla boşlukları temizle
+        $cleaned = preg_replace('/\s+/', ' ', $cleaned);
+        
+        return trim($cleaned);
+    }
+    
+    /**
+     * 🚫 YASAK KELİME TEMİZLEME
+     * AI response'undan yasak ifadeleri kaldırır
+     */
+    private function removeProhibitedPhrases(string $content): string
+    {
+        $prohibitedPhrases = [
+            // Yardım reddi ifadeleri
+            '/Bu konuda yardımcı olamam/i',
+            '/Bu konuda yardım edemem/i', 
+            '/Size yardımcı olamam/i',
+            '/Yardımcı olmakta zorlanıyorum/i',
+            '/Bu alanda uzman değilim/i',
+            '/Kesin bir bilgi veremem/i',
+            
+            // Bilgi eksikliği ifadeleri
+            '/Daha fazla bilgi vermeniz gerekiyor/i',
+            '/Hangi konuda/i',
+            '/Ne hakkında/i',
+            '/Lütfen daha spesifik olun/i',
+            '/Daha detaylı açıklar mısınız/i',
+            
+            // Özür ifadeleri (başta)
+            '/^Üzgünüm[,.]?\s*/i',
+            '/^Maalesef[,.]?\s*/i',
+            '/^Kusura bakmayın[,.]?\s*/i',
+        ];
+        
+        foreach ($prohibitedPhrases as $pattern) {
+            $content = preg_replace($pattern, '', $content);
+        }
+        
+        // Fazla boşlukları temizle
+        $content = preg_replace('/\s+/', ' ', $content);
+        
+        return trim($content);
+    }
+    
+    /**
+     * 📊 RESPONSE KALİTE RAPORU
+     * İşlenmiş response'un kalite metriklerini döndürür
+     */
+    private function generateQualityReport(string $content, array $requirements = []): array
+    {
+        $report = [
+            'word_count' => str_word_count($content),
+            'paragraph_count' => count(preg_split('/\n\s*\n/', trim($content))),
+            'sentence_count' => preg_match_all('/[.!?]+/', $content),
+            'has_html_tags' => preg_match('/<[^>]+>/', $content) > 0,
+            'has_prohibited_phrases' => false,
+            'quality_score' => 0
+        ];
+        
+        // Yasak ifade kontrolü
+        $prohibitedPhrases = [
+            'yardımcı olamam', 'yardım edemem', 'hangi konuda',
+            'daha fazla bilgi', 'üzgünüm', 'maalesef'
+        ];
+        
+        foreach ($prohibitedPhrases as $phrase) {
+            if (stripos($content, $phrase) !== false) {
+                $report['has_prohibited_phrases'] = true;
+                break;
+            }
+        }
+        
+        // Kalite skoru hesaplama (0-100)
+        $score = 100;
+        
+        // HTML var ise -20
+        if ($report['has_html_tags']) $score -= 20;
+        
+        // Yasak ifade var ise -30
+        if ($report['has_prohibited_phrases']) $score -= 30;
+        
+        // Paragraf sayısı kontrolü (feature modunda)
+        if (isset($requirements['mode']) && $requirements['mode'] !== 'chat') {
+            if ($report['paragraph_count'] < 4) $score -= 25;
+        }
+        
+        // Uzunluk kontrolü
+        if (isset($requirements['user_input'])) {
+            $lengthReq = $this->detectLengthRequirement($requirements['user_input']);
+            if ($report['word_count'] < $lengthReq['min']) {
+                $score -= 15;
+            }
+        }
+        
+        $report['quality_score'] = max(0, $score);
+        
+        return $report;
+    }
+
+    /**
      * Get current AI provider and model name
      * 
      * @return string
@@ -1201,4 +1597,360 @@ class AIService
             return 'deepseek/deepseek-chat'; // fallback
         }
     }
-}
+
+    /**
+     * Tenant'ın varsayılan dilini dinamik olarak al
+     * 
+     * @return array
+     */
+    private function getTenantDefaultLanguage(): array
+    {
+        try {
+            $tenant = tenant();
+            if (!$tenant) {
+                // Tenant yoksa Türkçe default
+                return ['code' => 'tr', 'name' => 'Türkçe'];
+            }
+
+            // 1. Tenants tablosundan varsayılan dil kodunu al
+            $defaultCode = $tenant->tenant_default_locale ?? 'tr';
+            
+            // 2. TenantLanguage tablosundan bu dil koduna ait bilgileri al
+            $language = \Modules\LanguageManagement\app\Models\TenantLanguage::where('code', $defaultCode)
+                ->where('is_active', true)
+                ->first();
+            
+            if ($language) {
+                return [
+                    'code' => $language->code,
+                    'name' => $language->name,
+                    'native_name' => $language->native_name ?? $language->name
+                ];
+            }
+            
+            // 3. Eğer tenant_languages'ta bulunamadıysa, fallback sistem
+            $fallbacks = [
+                'tr' => ['code' => 'tr', 'name' => 'Türkçe'],
+                'en' => ['code' => 'en', 'name' => 'English'],
+                'de' => ['code' => 'de', 'name' => 'Deutsch'],
+                'fr' => ['code' => 'fr', 'name' => 'Français'],
+                'es' => ['code' => 'es', 'name' => 'Español']
+            ];
+            
+            return $fallbacks[$defaultCode] ?? $fallbacks['tr'];
+            
+        } catch (\Exception $e) {
+            \Log::warning('getTenantDefaultLanguage error', [
+                'error' => $e->getMessage(),
+                'tenant_id' => tenant('id') ?? 'none'
+            ]);
+            
+            // Hata durumunda Türkçe default
+            return ['code' => 'tr', 'name' => 'Türkçe'];
+        }
+    }
+
+    /**
+     * Universal Input System ile AI request processing
+     * Phase 9 Integration - Added for Universal Input System support
+     */
+    public function processRequest(
+        string $prompt,
+        ?int $maxTokens = null,
+        ?float $temperature = null,
+        ?string $model = null,
+        ?string $systemPrompt = null,
+        array $metadata = []
+    ): array {
+        try {
+            // Default değerler
+            $maxTokens = $maxTokens ?? 2000;
+            $temperature = $temperature ?? 0.7;
+            
+            // Provider kontrolü
+            if (!$this->currentService) {
+                throw new \Exception('AI Provider service not available');
+            }
+            
+            // System prompt varsa ekle
+            if ($systemPrompt) {
+                $prompt = $systemPrompt . "\n\n" . $prompt;
+            }
+            
+            // Token kontrolü
+            $tenant = tenant();
+            if ($tenant) {
+                $tokensNeeded = $this->aiTokenService->estimateTokenCost('chat_message', ['message' => $prompt]);
+                
+                if (!$this->aiTokenService->canUseTokens($tenant, $tokensNeeded)) {
+                    return [
+                        'success' => false,
+                        'error' => 'insufficient_tokens',
+                        'message' => 'Yetersiz AI token bakiyesi'
+                    ];
+                }
+            }
+            
+            // AI service çağrısı
+            $startTime = microtime(true);
+            
+            // Provider'a göre service çağrısı
+            if (method_exists($this->currentService, 'generateCompletion')) {
+                $response = $this->currentService->generateCompletion($prompt, [
+                    'max_tokens' => $maxTokens,
+                    'temperature' => $temperature,
+                    'model' => $model ?? $this->currentProvider->default_model
+                ]);
+            } else {
+                // Fallback method
+                $response = $this->currentService->ask($prompt, [
+                    'max_tokens' => $maxTokens,
+                    'temperature' => $temperature
+                ]);
+            }
+            
+            $processingTime = microtime(true) - $startTime;
+            
+            // Debug: Response yapısını logla
+            \Log::info('🔍 AI Service Response Structure', [
+                'has_choices' => isset($response['choices']),
+                'has_response' => isset($response['response']),
+                'has_content' => isset($response['content']),
+                'response_keys' => array_keys($response),
+                'provider' => $this->currentProvider->name,
+                'model' => $model ?? $this->currentProvider->default_model
+            ]);
+            
+            // Token kullanımını kaydet
+            if ($tenant && isset($response['usage']['total_tokens'])) {
+                $this->aiTokenService->recordTokenUsage([
+                    'tenant_id' => $tenant->id,
+                    'tokens_used' => $response['usage']['total_tokens'],
+                    'feature_type' => $metadata['source'] ?? 'universal_input_system',
+                    'feature_id' => $metadata['feature_id'] ?? null,
+                    'ai_provider_id' => $this->currentProvider->id
+                ]);
+            }
+            
+            // Response içeriğini al - daha güvenli parsing
+            $content = '';
+            if (isset($response['choices'][0]['message']['content'])) {
+                $content = $response['choices'][0]['message']['content'];
+                \Log::info('✅ Content from choices[0].message.content');
+            } elseif (isset($response['response'])) {
+                $content = $response['response'];
+                \Log::info('✅ Content from response key');
+            } elseif (isset($response['content'])) {
+                $content = $response['content'];
+                \Log::info('✅ Content from content key');
+            } elseif (is_string($response)) {
+                $content = $response;
+                \Log::info('✅ Response is string directly');
+            } else {
+                \Log::error('❌ Could not parse AI response', [
+                    'response_structure' => $response
+                ]);
+            }
+            
+            return [
+                'success' => true,
+                'data' => [
+                    'content' => $content,
+                    'raw_response' => $response
+                ],
+                'tokens_used' => $response['usage']['total_tokens'] ?? 0,
+                'model' => $model ?? $this->currentProvider->default_model,
+                'processing_time' => $processingTime,
+                'request_id' => $metadata['request_id'] ?? uniqid('ai_', true),
+                'metadata' => $metadata
+            ];
+            
+        } catch (\Exception $e) {
+            \Log::error('AIService processRequest error', [
+                'error' => $e->getMessage(),
+                'prompt_length' => strlen($prompt),
+                'metadata' => $metadata,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => 'processing_error',
+                'message' => 'AI processing failed: ' . $e->getMessage(),
+                'error_details' => config('app.debug') ? $e->getMessage() : null
+            ];
+        }
+    }
+
+    /**
+     * Text translation using AI
+     */
+    public function translateText(string $text, string $fromLang, string $toLang, array $options = []): string
+    {
+        \Log::info('🌐 translateText BAŞLADI', [
+            'from' => $fromLang,
+            'to' => $toLang,
+            'text_length' => strlen($text),
+            'text_preview' => substr($text, 0, 100),
+            'options' => $options
+        ]);
+
+        if (empty(trim($text))) {
+            \Log::warning('⚠️ Boş text, çeviri yapılmadı');
+            return '';
+        }
+
+        if ($fromLang === $toLang) {
+            \Log::info('⚠️ Aynı dil, çeviri yapılmadı');
+            return $text;
+        }
+
+        $context = $options['context'] ?? 'general';
+        $maxLength = $options['max_length'] ?? null;
+        $preserveHtml = $options['preserve_html'] ?? false;
+
+        // Build translation prompt
+        $prompt = $this->buildTranslationPrompt($text, $fromLang, $toLang, $context, $preserveHtml);
+        
+        \Log::info('📝 Translation prompt hazırlandı', [
+            'prompt_length' => strlen($prompt),
+            'from_lang' => $fromLang,
+            'to_lang' => $toLang,
+            'context' => $context
+        ]);
+
+        try {
+            $response = $this->processRequest(
+                $prompt, 
+                2000, // maxTokens
+                0.3,  // temperature - Lower for more consistent translations
+                null, // model - use default
+                null, // systemPrompt
+                [     // metadata
+                    'source' => 'translation_system',
+                    'from_language' => $fromLang,
+                    'to_language' => $toLang,
+                    'context' => $context
+                ]
+            );
+
+            \Log::info('🔍 Translation response received', [
+                'success' => $response['success'],
+                'has_content' => isset($response['data']['content']),
+                'content_length' => isset($response['data']['content']) ? strlen($response['data']['content']) : 0,
+                'content_preview' => isset($response['data']['content']) ? substr($response['data']['content'], 0, 100) : 'NO CONTENT'
+            ]);
+
+            if ($response['success']) {
+                $translatedText = $response['data']['content'];
+                
+                if (empty(trim($translatedText))) {
+                    \Log::error('❌ Çeviri boş geldi!', [
+                        'response' => $response,
+                        'original_text' => substr($text, 0, 200)
+                    ]);
+                    return $text; // Fallback to original
+                }
+                
+                // Apply max length if specified
+                if ($maxLength && mb_strlen($translatedText) > $maxLength) {
+                    $translatedText = mb_substr($translatedText, 0, $maxLength - 3) . '...';
+                }
+
+                \Log::info('✅ Çeviri BAŞARILI', [
+                    'from' => $fromLang,
+                    'to' => $toLang,
+                    'original_length' => strlen($text),
+                    'translated_length' => strlen($translatedText),
+                    'translated_preview' => substr($translatedText, 0, 100)
+                ]);
+
+                return $translatedText;
+            } else {
+                \Log::error('❌ Translation response not successful', [
+                    'response' => $response
+                ]);
+                throw new \Exception($response['message']);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Translation failed', [
+                'from' => $fromLang,
+                'to' => $toLang,
+                'text_length' => strlen($text),
+                'error' => $e->getMessage()
+            ]);
+
+            // Fallback: return original text
+            return $text;
+        }
+    }
+
+    /**
+     * Build translation prompt
+     */
+    /**
+     * Build translation prompt
+     */
+    private function buildTranslationPrompt(string $text, string $fromLang, string $toLang, string $context, bool $preserveHtml): string
+    {
+        $languageNames = [
+            'tr' => 'Türkçe',
+            'en' => 'English', 
+            'de' => 'Deutsch',
+            'fr' => 'Français',
+            'es' => 'Español',
+            'it' => 'Italiano',
+            'ar' => 'العربية',
+            'da' => 'Dansk',
+            'bn' => 'বাংলা',
+            'sq' => 'Shqip',          // Arnavutça
+            'zh' => '中文',           // Çince
+            'ja' => '日本語',         // Japonca
+            'ko' => '한국어',         // Korece
+            'ru' => 'Русский',       // Rusça
+            'pt' => 'Português',     // Portekizce
+            'nl' => 'Nederlands',    // Hollandaca
+            'sv' => 'Svenska',       // İsveççe
+            'no' => 'Norsk',         // Norveççe
+            'fi' => 'Suomi',         // Fince
+            'pl' => 'Polski',        // Lehçe
+            'cs' => 'Čeština',       // Çekçe
+            'hu' => 'Magyar',        // Macarca
+            'ro' => 'Română',        // Rumence
+            'he' => 'עברית',         // İbranice
+            'hi' => 'हिन्दी',         // Hintçe
+            'th' => 'ไทย',           // Tayca
+            'vi' => 'Tiếng Việt',    // Vietnamca
+            'id' => 'Bahasa Indonesia', // Endonezce
+            'fa' => 'فارسی',         // Farsça
+            'ur' => 'اردو'           // Urduca
+        ];
+
+        $fromLanguageName = $languageNames[$fromLang] ?? $fromLang;
+        $toLanguageName = $languageNames[$toLang] ?? $toLang;
+
+        $contextInstructions = match($context) {
+            'title' => 'Bu bir başlık metnidir. Kısa, net ve SEO dostu olmalıdır.',
+            'seo_title' => 'Bu bir SEO başlığıdır. 60 karakter sınırında, anahtar kelime içermeli ve tıklanabilir olmalıdır.',
+            'seo_description' => 'Bu bir SEO açıklamasıdır. 160 karakter sınırında, çekici ve bilgilendirici olmalıdır.',
+            'seo_keywords' => 'Bunlar SEO anahtar kelimeleridir. Virgülle ayrılmış şekilde çevir.',
+            'html_content' => 'Bu HTML içeriğidir. HTML etiketlerini koruyarak sadece metin kısmını çevir.',
+            default => 'Bu genel bir metindir. Doğal ve akıcı bir şekilde çevir.'
+        };
+
+        $htmlInstructions = $preserveHtml ? "\n- HTML etiketlerini aynen koru, sadece metin içeriğini çevir" : "";
+
+        return "Sen profesyonel bir çevirmensin. Aşağıdaki metni {$fromLanguageName} dilinden {$toLanguageName} diline çevir.
+
+CONTEXT: {$contextInstructions}
+
+ÇEVİRİ KURALLARI:
+- Doğal ve akıcı bir çeviri yap
+- Kültürel bağlamı koru
+- Teknik terimleri doğru çevir{$htmlInstructions}
+- Sadece çeviriyi döndür, başka açıklama ekleme
+
+ÇEVİRİLECEK METİN:
+{$text}";
+    }}

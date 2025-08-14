@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services\Context;
+namespace Modules\AI\App\Services\Context;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;

@@ -143,9 +143,12 @@
     }
 
     .message-content p {
-        margin: 0;
+        margin: 0 0 0.75rem 0;
         line-height: 1.5;
-        word-wrap: break-word;
+    }
+    
+    .message-content p:last-child {
+        margin-bottom: 0;
     }
 
     .message-actions {
@@ -205,6 +208,13 @@
         }
     }
 
+    /* Error message styling */
+    .error-message {
+        background-color: rgba(220, 53, 69, 0.1);
+        border-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+
     /* Mobile responsive */
     @media (max-width: 768px) {
         .message {
@@ -236,7 +246,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 🚀 SIMPLE AI CHAT SYSTEM - NO CONFLICTS
+    // 🤖 SIMPLE AI CHAT SYSTEM - CLASSIC AJAX
     
     const chatContainer = document.getElementById('chat-container');
     const chatMessages = document.getElementById('chat-messages');
@@ -317,111 +327,75 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function sendToAI(message) {
+        console.log('🚀 Sending AI request...');
+        
         // Add typing indicator
         const typingElement = addTypingIndicator();
         
         // CSRF token
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
-        // Prepare request data
-        const requestData = {
-            message: message,
-            conversation_id: currentConversationId,
-            prompt_id: promptSelector.value,
-            _token: csrfToken
-        };
-        
-        // Create AbortController for timeout control
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => {
-            controller.abort();
-            console.warn('🚨 AI Request timeout - aborting');
-        }, 45000); // 45 saniye timeout
-        
-        // Send AJAX request with timeout control
-        console.log('🚀 SENDING AI REQUEST:', requestData);
-        
+        // Traditional AJAX request
         fetch('/admin/ai/send-message', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
+                'Accept': 'application/json'
             },
-            body: JSON.stringify(requestData),
-            signal: controller.signal // Timeout control
+            body: JSON.stringify({
+                message: message,
+                conversation_id: currentConversationId,
+                prompt_id: promptSelector.value || null
+            })
         })
         .then(response => {
-            console.log('📥 RESPONSE RECEIVED:', response.status, response.statusText);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             return response.json();
         })
         .then(data => {
+            console.log('✅ AI response received:', data);
+            
             // Remove typing indicator
             if (typingElement) {
                 typingElement.remove();
             }
             
             if (data.success) {
-                // Add AI response
-                addMessage(data.response, 'ai');
-                
-                // Update conversation ID if provided (use numeric ID from backend)
+                // Update conversation ID if provided
                 if (data.conversation_id) {
-                    currentConversationId = data.conversation_id; // This will be numeric ID from backend
+                    currentConversationId = data.conversation_id;
                 }
                 
-                showToast('Başarılı', 'Mesaj gönderildi', 'success');
+                // Add AI message with response
+                addMessage(data.response, 'ai');
+                
+                showToast('Tamamlandı', 'AI yanıtı alındı', 'success');
             } else {
-                addMessage('Üzgünüm, bir hata oluştu: ' + (data.message || 'Bilinmeyen hata'), 'ai', true);
-                showToast('Hata', data.message || 'Mesaj gönderilemedi', 'error');
+                // Show error message
+                addMessage(data.message || 'Bir hata oluştu', 'ai', true);
+                showToast('Hata', data.message || 'AI yanıt veremedi', 'error');
             }
         })
         .catch(error => {
-            console.error('🚨 AI Request Error:', error);
-            
-            // Clear timeout
-            clearTimeout(timeoutId);
+            console.error('🚨 AI request error:', error);
             
             // Remove typing indicator
             if (typingElement) {
                 typingElement.remove();
             }
             
-            // Specific error handling
-            let errorMessage = 'Bağlantı hatası oluştu. Lütfen tekrar deneyin.';
-            let toastMessage = 'Sunucuya ulaşılamıyor';
-            
-            if (error.name === 'AbortError') {
-                errorMessage = 'İstek zaman aşımına uğradı. Lütfen tekrar deneyin.';
-                toastMessage = 'Zaman aşımı (45 saniye)';
-                console.warn('🚨 Request aborted due to timeout');
-            } else if (error.message.includes('Failed to fetch')) {
-                errorMessage = 'Ağ bağlantısı sorunu. İnternet bağlantınızı kontrol edin.';
-                toastMessage = 'Ağ bağlantısı hatası';
-            } else if (error.message.includes('HTTP 413')) {
-                errorMessage = 'Mesaj çok uzun. Lütfen kısa mesajlar gönderin.';
-                toastMessage = 'Payload çok büyük';
-            } else if (error.message.includes('HTTP 5')) {
-                errorMessage = 'Sunucu hatası. Lütfen bir kaç saniye sonra tekrar deneyin.';
-                toastMessage = 'Sunucu hatası';
-            }
-            
-            addMessage(errorMessage, 'ai', true);
-            showToast('Bağlantı Hatası', toastMessage, 'error');
+            // Show error message
+            addMessage('Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.', 'ai', true);
+            showToast('Bağlantı Hatası', 'AI servisine ulaşılamıyor', 'error');
         })
         .finally(() => {
-            // Clear timeout in all cases
-            clearTimeout(timeoutId);
-            
+            // Reset processing state
             isProcessing = false;
             showLoading(false);
             userMessage.focus();
-            
-            console.log('🔄 AI request cycle completed');
         });
     }
     
@@ -437,18 +411,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
         
-        const paragraph = document.createElement('p');
-        
-        // AI yanıtları HTML render et, user mesajları plain text
+        // AI yanıtları paragraf işleme yap, user mesajları plain text
         if (role === 'ai') {
-            // HTML content'i render et
-            paragraph.innerHTML = content;
+            // AI yanıtındaki paragrafları işle
+            const paragraphs = content.split('\n\n').filter(p => p.trim());
+            
+            if (paragraphs.length > 1) {
+                // Çoklu paragraf varsa herbiri için p elementi oluştur
+                paragraphs.forEach(paragraphText => {
+                    if (paragraphText.trim()) {
+                        const paragraph = document.createElement('p');
+                        paragraph.textContent = paragraphText.trim();
+                        contentDiv.appendChild(paragraph);
+                    }
+                });
+            } else {
+                // Tek paragraf - uzun metinler için satır sonlarını işle
+                const singleParagraph = document.createElement('p');
+                singleParagraph.textContent = content.trim();
+                contentDiv.appendChild(singleParagraph);
+            }
         } else {
             // User mesajları plain text olarak göster (güvenlik için)
+            const paragraph = document.createElement('p');
             paragraph.textContent = content;
+            contentDiv.appendChild(paragraph);
         }
         
-        contentDiv.appendChild(paragraph);
         messageDiv.appendChild(contentDiv);
         
         // Add copy button for AI messages
@@ -477,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
         typingDiv.innerHTML = `
             <div class="message-content">
                 <div class="typing-indicator">
-                    <span>AI yazıyor</span>
+                    <span>AI düşünüyor</span>
                     <div class="typing-dots">
                         <div class="typing-dot"></div>
                         <div class="typing-dot"></div>

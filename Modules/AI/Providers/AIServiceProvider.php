@@ -62,6 +62,9 @@ class AIServiceProvider extends ServiceProvider
         Livewire::component('ai::admin.ai-profile-management', \Modules\AI\App\Http\Livewire\Admin\Profile\AIProfileManagement::class);
         Livewire::component('ai::admin.ai-profile-wizard-step', \Modules\AI\App\Http\Livewire\Admin\Profile\AIProfileWizardStep::class);
         
+        // Universal Input System V3 - Livewire Component
+        Livewire::component('ai::admin.features.universal-input-component', \Modules\AI\App\Http\Livewire\Admin\Features\UniversalInputComponent::class);
+        
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);

@@ -171,8 +171,8 @@
                             </button>
                         </th>
                         <th style="width: 160px">
-                            <button class="table-sort {{ $sortField === 'category' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('category')">
+                            <button class="table-sort {{ $sortField === 'ai_feature_category_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    wire:click="sortBy('ai_feature_category_id')">
                                 Kategori
                             </button>
                         </th>
@@ -215,12 +215,12 @@
                             </div>
                         </td>
                         <td>
-                            @if($feature->category && is_object($feature->category))
+                            @if($feature->aiFeatureCategory)
                                 <a href="javascript:void(0);"
-                                    wire:click="$set('category', '{{ $feature->category->ai_feature_category_id }}')" 
-                                    class="text-muted {{ $category == $feature->category->ai_feature_category_id ? 'text-primary' : '' }}">
-                                    <i class="{{ $feature->category->icon ?? 'fas fa-folder' }} me-1"></i>
-                                    {{ $feature->category->title }}
+                                    wire:click="$set('category', '{{ $feature->aiFeatureCategory->ai_feature_category_id }}')" 
+                                    class="text-muted {{ $category == $feature->aiFeatureCategory->ai_feature_category_id ? 'text-primary' : '' }}">
+                                    <i class="{{ $feature->aiFeatureCategory->icon ?? 'fas fa-folder' }} me-1"></i>
+                                    {{ $feature->aiFeatureCategory->title }}
                                 </a>
                             @else
                                 <span class="text-muted">

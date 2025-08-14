@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Middleware\InitializeTenancy;
+use Modules\LanguageManagement\app\Models\TenantLanguage;
 
 // Cache temizleme endpoint'i
 Route::middleware(['admin', 'tenant'])->post('/admin/cache/clear', function () {
@@ -30,6 +31,20 @@ Route::middleware(['admin', 'tenant'])->post('/admin/cache/clear', function () {
         ], 500);
     }
 })->name('cache.clear');
+
+// Debug Route'ları - Translation Debug System  
+Route::middleware(['admin', 'tenant'])->prefix('admin/debug')->name('admin.debug.')->group(function () {
+    Route::get('/translation', [\App\Http\Controllers\Admin\TranslationDebugController::class, 'index'])->name('translation');
+    Route::post('/translation/test', [\App\Http\Controllers\Admin\TranslationDebugController::class, 'testTranslation'])->name('translation.test');
+    Route::post('/translation/clear-logs', [\App\Http\Controllers\Admin\TranslationDebugController::class, 'clearLogs'])->name('translation.clear-logs');
+    Route::post('/translation/clear-cache', [\App\Http\Controllers\Admin\TranslationDebugController::class, 'clearCache'])->name('translation.clear-cache');
+    Route::get('/translation/stream-logs', [\App\Http\Controllers\Admin\TranslationDebugController::class, 'streamLogs'])->name('translation.stream-logs');
+    
+    // Advanced Debug Routes
+    Route::post('/translation/test-page', [\App\Http\Controllers\Admin\TranslationDebugAdvancedController::class, 'testPageTranslation'])->name('translation.test-page');
+    Route::post('/translation/analyze-page', [\App\Http\Controllers\Admin\TranslationDebugAdvancedController::class, 'analyzePageData'])->name('translation.analyze-page');
+    Route::get('/translation/full-debug', [\App\Http\Controllers\Admin\TranslationDebugAdvancedController::class, 'fullSystemDebug'])->name('translation.full-debug');
+});
 
 // Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için  
 Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
@@ -125,6 +140,37 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
     Route::group(['prefix' => 'ai', 'as' => 'ai.'], function () {
         Route::post('/execute-feature', [\Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController::class, 'executeWidgetFeature'])->name('execute-feature');
         Route::post('/send-message', [\Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController::class, 'sendMessage'])->name('send-message');
+    });
+    
+    // API endpoints for AI Translation Modal
+    Route::group(['prefix' => 'api'], function () {
+        Route::get('/tenant-languages', function () {
+            try {
+                $languages = TenantLanguage::where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->select('code', 'name', 'native_name')
+                    ->get()
+                    ->map(function ($lang) {
+                        return [
+                            'code' => $lang->code,
+                            'name' => $lang->name,
+                            'native_name' => $lang->native_name,
+                            'flag' => null // Flag henüz eklenmedi
+                        ];
+                    });
+                
+                return response()->json($languages);
+            } catch (\Exception $e) {
+                \Log::error('Tenant languages API error: ' . $e->getMessage());
+                
+                // Fallback with basic languages
+                return response()->json([
+                    ['code' => 'tr', 'name' => 'Turkish', 'native_name' => 'Türkçe', 'flag' => null],
+                    ['code' => 'en', 'name' => 'English', 'native_name' => 'English', 'flag' => null],
+                    ['code' => 'ar', 'name' => 'Arabic', 'native_name' => 'العربية', 'flag' => null],
+                ]);
+            }
+        })->name('api.tenant-languages');
     });
     
     // SEO Management Routes - Artık SeoManagement modülünde
@@ -357,6 +403,15 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
 
 
     // AI Token Management routes kaldırıldı - AI modülündeki routes/admin.php kullanılıyor
+});
+
+// Simple Debug Routes - NEW (Basit ve etkili debug sistemi)
+Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin/debug/simple')->name('admin.debug.simple.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\SimpleDebugController::class, 'index'])->name('index');
+    Route::get('/status', [\App\Http\Controllers\Admin\SimpleDebugController::class, 'systemStatus'])->name('status');
+    Route::get('/stream-logs', [\App\Http\Controllers\Admin\SimpleDebugController::class, 'streamLogs'])->name('stream-logs');
+    Route::post('/clear-logs', [\App\Http\Controllers\Admin\SimpleDebugController::class, 'clearLogs'])->name('clear-logs');
+    Route::post('/test-translation', [\App\Http\Controllers\Admin\SimpleDebugController::class, 'testTranslation'])->name('test-translation');
 });
 
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz

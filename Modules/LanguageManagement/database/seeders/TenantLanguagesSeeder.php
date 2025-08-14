@@ -30,6 +30,9 @@ class TenantLanguagesSeeder extends Seeder
             TenantLanguage::create($language);
         }
         
+        // WorldLanguagesSeeder'ı çağır
+        $this->call(WorldLanguagesSeeder::class);
+        
         // is_default kolonunu tenant'ın varsayılan locale'ine göre ayarla
         $this->syncDefaultLanguageColumn();
     }

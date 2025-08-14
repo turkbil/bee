@@ -173,6 +173,35 @@ use Illuminate\Support\Str;
     html {
         scroll-behavior: smooth;
     }
+    
+    /* Hide unwanted elements */
+    .hidden-field {
+        display: none !important;
+    }
+    
+    /* Accordion hover effects - dark/light uyumlu */
+    .accordion-button:hover {
+        background-color: var(--tblr-hover-bg, rgba(0, 0, 0, 0.075));
+        color: var(--tblr-primary);
+    }
+    
+    [data-bs-theme="dark"] .accordion-button:hover {
+        background-color: var(--tblr-hover-bg, rgba(255, 255, 255, 0.05));
+        color: var(--tblr-primary);
+    }
+    
+    /* Choices.js styling fixes */
+    .choices__inner {
+        text-align: left !important;
+    }
+
+    .choices__list--single .choices__item {
+        text-align: left !important;
+    }
+
+    .choices__list--dropdown .choices__item {
+        text-align: left !important;
+    }
 </style>
 @endpush
 
@@ -286,17 +315,15 @@ use Illuminate\Support\Str;
                     <div class="card-body text-center">
                         <!-- Skill Icon & Title -->
                         <div class="skill-icon">{{ $feature->emoji ?? '🤖' }}</div>
-                        <h3 class="card-title fw-bold mb-3 fs-2">{{ $feature->name }}</h3>
+                        <h3 class="card-title fw-bold mb-3 fs-2">
+                            <a href="{{ route('admin.ai.features.show', $feature->id) }}" class="text-decoration-none text-reset">
+                                {{ $feature->name }}
+                            </a>
+                        </h3>
 
                         <!-- Description -->
                         <p class="text-muted mb-4 fs-5">{{ $feature->description }}</p>
 
-                        <!-- Skill Level -->
-                        <div class="mb-4">
-                            <span class="badge bg-gradient text-white px-3 py-2">
-                                {{ $feature->getComplexityName() }} {{ __('ai::admin.prowess.level') }}
-                            </span>
-                        </div>
 
                         <!-- Example Inputs -->
                         @if($feature->example_inputs)
@@ -322,13 +349,19 @@ use Illuminate\Support\Str;
                         </div>
                         @endif
 
-                        <!-- Test Input -->
+                        <!-- Universal Input System Integration via Livewire -->
+                        @if($feature->slug === 'blog-yazisi-olusturucu' || strpos($feature->slug, 'blog') !== false)
+                            @livewire('ai::admin.features.universal-input-component', ['featureId' => $feature->id])
+                        @else
+                        <!-- Standard Input for other features -->
                         <div class="mb-4">
                             <textarea id="input-{{ $feature->id }}" class="form-control form-control-lg" rows="3"
                                 placeholder="{{ $feature->input_placeholder ?? __('ai::admin.prowess.enter_challenge') }}"></textarea>
                         </div>
+                        @endif
 
-                        <!-- Test Button -->
+                        <!-- Test Button for non-blog features -->
+                        @if($feature->slug !== 'blog-yazisi-olusturucu' && strpos($feature->slug, 'blog') === false)
                         <button class="test-btn w-100 mb-3" onclick="console.log('Test button clicked for feature:', {{ $feature->id }}); testSkill({{ $feature->id }})"
                             id="btn-{{ $feature->id }}">
                             <span class="btn-text">
@@ -338,7 +371,7 @@ use Illuminate\Support\Str;
                                 style="display: none;"></span>
                         </button>
 
-                        <!-- Result Showcase -->
+                        <!-- Result Showcase for non-blog features -->
                         <div class="result-showcase" id="result-{{ $feature->id }}" style="display: none;">
                             <div class="result-header">
                                 <div class="d-flex align-items-center">
@@ -358,6 +391,7 @@ use Illuminate\Support\Str;
                             </div>
                             <div class="result-content" id="result-content-{{ $feature->id }}"></div>
                         </div>
+                        @endif
                     </div>
 
                     <!-- Card Footer Stats -->
@@ -401,6 +435,9 @@ use Illuminate\Support\Str;
 
     document.addEventListener('DOMContentLoaded', function() {
         initializeSearchAndNavigation();
+        initializeAIProfiles();
+        initializeChoicesJS();
+        initializeContentLengthSliders();
     });
 
     function initializeSearchAndNavigation() {
@@ -421,6 +458,25 @@ use Illuminate\Support\Str;
         
         // Update search count
         updateSearchCount(allSkillCards.length, allSkillCards.length);
+    }
+
+    function initializeAIProfiles() {
+        // Blog feature'larını bulup AI Profiles kontrolü yap
+        const blogFeatures = document.querySelectorAll('[id*="blog-topic-"]');
+        
+        blogFeatures.forEach(element => {
+            // Feature ID'sini al
+            const featureId = element.id.replace('blog-topic-', '');
+            
+            // AI Profiles kontrolünü başlat
+            console.log('Initializing AI Profiles for feature:', featureId);
+            checkAIProfiles(featureId);
+        });
+        
+        console.log(`AI Profiles initialization completed for ${blogFeatures.length} blog features`);
+        
+        // Initialize target audience select change handlers
+        initializeTargetAudienceHandlers();
     }
 
     function setupSearchFunctionality() {
@@ -628,10 +684,44 @@ use Illuminate\Support\Str;
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    // Initialize Choices.js for all select elements with data-choices attribute
+    function initializeChoicesJS() {
+        const choicesElements = document.querySelectorAll('[data-choices]');
+        
+        choicesElements.forEach(element => {
+            try {
+                // Skip if already initialized
+                if (element.classList.contains('choices__input')) {
+                    return;
+                }
+                
+                // Configuration based on element attributes
+                const config = {
+                    searchEnabled: false,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    removeItemButton: element.hasAttribute('multiple')
+                };
+                
+                // Initialize Choices.js
+                new Choices(element, config);
+                
+                console.log('Choices.js initialized for:', element.id);
+                
+            } catch (error) {
+                console.error('Failed to initialize Choices.js for element:', element.id, error);
+            }
+        });
+        
+        console.log(`Choices.js initialization completed for ${choicesElements.length} elements`);
+    }
 
 // Test skill function
 async function testSkill(featureId) {
     console.log('testSkill called for feature:', featureId);
+    
+    // Universal Input System için özel kontrol
+    const blogTopicElement = document.getElementById(`blog-topic-${featureId}`);
     const inputElement = document.getElementById(`input-${featureId}`);
     const btnElement = document.getElementById(`btn-${featureId}`);
     const resultElement = document.getElementById(`result-${featureId}`);
@@ -639,22 +729,100 @@ async function testSkill(featureId) {
     const btnText = btnElement.querySelector('.btn-text');
     const loadingSpinner = btnElement.querySelector('.loading-spinner');
     
+    let inputText = '';
+    let universalInputData = {};
+    
+    // Blog writer için Universal Input System kullan
+    if (blogTopicElement) {
+        console.log('Using Universal Input System for blog writer');
+        
+        // Universal Input System verilerini topla (doğru fonksiyon)
+        universalInputData = collectUniversalInputData(featureId);
+        
+        // Main input kontrolü
+        if (!universalInputData.main_input) {
+            alert('Lütfen blog konusunu girin!');
+            blogTopicElement.focus();
+            return;
+        }
+        
+        // Get audience select element and selected values
+        const audienceSelect = document.getElementById(`targetAudience-${featureId}`);
+        const customAudienceText = document.getElementById(`customAudience-${featureId}`);
+        
+        let audience = '';
+        if (audienceSelect && audienceSelect.selectedOptions.length > 0) {
+            const selectedValues = Array.from(audienceSelect.selectedOptions).map(option => option.value);
+            const selectedLabels = Array.from(audienceSelect.selectedOptions).map(option => option.text);
+            
+            // Check if "Diğer" is selected
+            if (selectedValues.includes('diğer') && customAudienceText && customAudienceText.value.trim()) {
+                // Replace "Diğer" with custom text
+                const customText = customAudienceText.value.trim();
+                const filteredLabels = selectedLabels.filter(label => label !== 'Diğer');
+                filteredLabels.push(customText);
+                audience = filteredLabels.join(', ');
+            } else {
+                audience = selectedLabels.join(', ');
+            }
+        }
+        
+        // Extract values from universalInputData
+        const blogTopic = universalInputData.main_input;
+        const useProfile = universalInputData.use_company_profile;
+        
+        if (!blogTopic) {
+            alert('Lütfen blog konusunu girin!');
+            blogTopicElement.focus();
+            return;
+        }
+        
+        // Ana input text'i oluştur
+        const contentLengthLabels = {
+            1: 'Çok Kısa',
+            2: 'Kısa', 
+            3: 'Normal',
+            4: 'Uzun',
+            5: 'Çok Detaylı'
+        };
+        
+        const writingToneLabels = {
+            90021: 'Profesyonel',
+            90022: 'Samimi',
+            90023: 'Eğitici', 
+            90024: 'Eğlenceli',
+            90025: 'Uzman'
+        };
+        
+        const contentLengthLabel = contentLengthLabels[universalInputData.content_length] || 'Normal';
+        const writingToneLabel = writingToneLabels[universalInputData.writing_tone] || 'Profesyonel';
+        
+        inputText = `Blog Konusu: ${blogTopic}
+Yazım Tonu: ${writingToneLabel}
+İçerik Uzunluğu: ${contentLengthLabel}${audience ? `
+Hedef Kitle: ${audience}` : ''}${useProfile ? `
+Şirket bilgilerini kullan: Evet` : ''}`;
+        
+    } else {
+        // Standart input kullan
+        inputText = inputElement ? inputElement.value.trim() : '';
+        
+        if (inputElement && !inputText) {
+            alert('{{ addslashes(__('ai::admin.prowess.enter_challenge_alert')) }}');
+            inputElement.focus();
+            return;
+        }
+    }
+    
     console.log('Elements found:', {
         inputElement: !!inputElement,
+        blogTopicElement: !!blogTopicElement,
         btnElement: !!btnElement,
         resultElement: !!resultElement,
         resultContentElement: !!resultContentElement,
         btnText: !!btnText,
         loadingSpinner: !!loadingSpinner
     });
-
-    const inputText = inputElement ? inputElement.value.trim() : '';
-    
-    if (inputElement && !inputText) {
-        alert('{{ addslashes(__('ai::admin.prowess.enter_challenge_alert')) }}');
-        inputElement.focus();
-        return;
-    }
 
     // UI state - loading
     btnElement.disabled = true;
@@ -663,6 +831,18 @@ async function testSkill(featureId) {
     resultElement.style.display = 'none';
 
     try {
+        // API request body'sini hazırla
+        const requestBody = {
+            feature_id: featureId,
+            input_text: inputText
+        };
+        
+        // Universal Input System verilerini ekle
+        if (Object.keys(universalInputData).length > 0) {
+            requestBody.universal_inputs = universalInputData;
+            console.log('Sending universal inputs:', universalInputData);
+        }
+        
         const response = await fetch('{{ route("admin.ai.test-feature") }}', {
             method: 'POST',
             headers: {
@@ -670,10 +850,7 @@ async function testSkill(featureId) {
                 'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({
-                feature_id: featureId,
-                input_text: inputText
-            })
+            body: JSON.stringify(requestBody)
         });
 
         const data = await response.json();
@@ -787,6 +964,117 @@ function setExamplePrompt(featureId, prompt) {
     }
 }
 
+// AI Profiles global storage
+window.aiProfilesData = {};
+
+// Check AI Profiles availability for a feature
+async function checkAIProfiles(featureId) {
+    const statusElement = document.getElementById(`profile-status-${featureId}`);
+    const checkboxElement = document.getElementById(`use-profile-${featureId}`);
+    
+    if (!statusElement || !checkboxElement) {
+        console.warn('AI Profiles elements not found for feature:', featureId);
+        return;
+    }
+    
+    try {
+        statusElement.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Şirket profili kontrol ediliyor...';
+        
+        const response = await fetch('/admin/ai/api/profiles/company-info', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.available) {
+            // Şirket profili mevcut
+            statusElement.innerHTML = '<i class="fas fa-check-circle text-success me-1"></i>Şirket profili hazır';
+            statusElement.classList.add('text-success');
+            statusElement.classList.remove('text-muted');
+            checkboxElement.disabled = false;
+            
+            // Store profile data for later use
+            window.aiProfilesData[featureId] = data.profile_data;
+            
+            console.log('AI Profiles available for feature:', featureId, data);
+        } else {
+            // Şirket profili yok
+            statusElement.innerHTML = `<i class="fas fa-exclamation-triangle text-warning me-1"></i>${data.message || 'Şirket profili bulunamadı'}`;
+            statusElement.classList.add('text-warning');
+            statusElement.classList.remove('text-muted');
+            checkboxElement.disabled = true;
+            
+            // Add setup link if available
+            if (data.setup_url) {
+                statusElement.innerHTML += ` <a href="${data.setup_url}" class="text-warning text-decoration-underline">Kurulum</a>`;
+            }
+            
+            console.log('AI Profiles not available for feature:', featureId, data);
+        }
+        
+    } catch (error) {
+        console.error('AI Profiles check failed:', error);
+        statusElement.innerHTML = '<i class="fas fa-exclamation-circle text-danger me-1"></i>Bağlantı hatası';
+        statusElement.classList.add('text-danger');
+        statusElement.classList.remove('text-muted');
+        checkboxElement.disabled = true;
+    }
+}
+
+// Collect Universal Input System data for blog features
+function collectUniversalInputData(featureId) {
+    const universalData = {};
+    
+    console.log('🔍 Collecting universal inputs for feature:', featureId);
+    
+    // Blog topic (main input)
+    const topicElement = document.getElementById(`blog-topic-${featureId}`);
+    if (topicElement && topicElement.value.trim()) {
+        universalData.main_input = topicElement.value.trim();
+        console.log('✓ Blog topic found:', universalData.main_input);
+    }
+    
+    // Writing tone (CORRECT ID: writingTone-{featureId})
+    const writingToneElement = document.getElementById(`writingTone-${featureId}`);
+    if (writingToneElement && writingToneElement.value) {
+        universalData.writing_tone = writingToneElement.value;
+        console.log('✓ Writing tone found:', universalData.writing_tone);
+    }
+    
+    // Content length (CORRECT ID: contentLength-{featureId})
+    const contentLengthElement = document.getElementById(`contentLength-${featureId}`);
+    if (contentLengthElement && contentLengthElement.value) {
+        universalData.content_length = parseInt(contentLengthElement.value);
+        console.log('✓ Content length found:', universalData.content_length);
+    }
+    
+    // Target audience (CORRECT ID: targetAudience-{featureId})
+    const targetAudienceElement = document.getElementById(`targetAudience-${featureId}`);
+    if (targetAudienceElement && targetAudienceElement.value.trim()) {
+        universalData.target_audience = targetAudienceElement.value.trim();
+        console.log('✓ Target audience found:', universalData.target_audience);
+    }
+    
+    // Company profile usage (CORRECT ID: useCompanyProfile-{featureId})
+    const companyProfileCheckbox = document.getElementById(`useCompanyProfile-${featureId}`);
+    if (companyProfileCheckbox && companyProfileCheckbox.checked) {
+        universalData.use_company_profile = true;
+        console.log('✓ Company profile enabled');
+    }
+    
+    console.log('📦 Final universal data collected:', universalData);
+    return universalData;
+}
+
 // Format AI response for elegant display
 function formatAIResponse(aiResult) {
     if (!aiResult) return '{{ __('ai::admin.prowess.no_result_available', ['default' => 'No result available']) }}';
@@ -854,6 +1142,99 @@ function formatAIResponse(aiResult) {
     }
     
     return formatted;
+}
+
+// Initialize target audience select change handlers
+function initializeTargetAudienceHandlers() {
+    // Find all blog features and add event listeners
+    const blogFeatures = document.querySelectorAll('[id*="blog-topic-"]');
+    
+    blogFeatures.forEach(element => {
+        const featureId = element.id.replace('blog-topic-', '');
+        const audienceSelect = document.getElementById(`targetAudience-${featureId}`);
+        const customAudienceContainer = document.getElementById(`customAudienceContainer-${featureId}`);
+        
+        if (audienceSelect && customAudienceContainer) {
+            audienceSelect.addEventListener('change', function() {
+                handleTargetAudienceChange(featureId);
+            });
+            
+            console.log(`Target audience handler initialized for feature: ${featureId}`);
+        }
+    });
+}
+
+// Handle target audience select change
+function handleTargetAudienceChange(featureId) {
+    const audienceSelect = document.getElementById(`targetAudience-${featureId}`);
+    const customAudienceContainer = document.getElementById(`customAudienceContainer-${featureId}`);
+    
+    if (!audienceSelect || !customAudienceContainer) {
+        return;
+    }
+    
+    // Show/hide custom input based on "custom" selection
+    if (audienceSelect.value === 'custom') {
+        customAudienceContainer.style.display = 'block';
+        // Focus on custom input after a short delay
+        setTimeout(() => {
+            const customInput = document.getElementById(`customAudience-${featureId}`);
+            if (customInput) {
+                customInput.focus();
+            }
+        }, 100);
+    } else {
+        customAudienceContainer.style.display = 'none';
+        // Clear custom input value
+        const customInput = document.getElementById(`customAudience-${featureId}`);
+        if (customInput) {
+            customInput.value = '';
+        }
+    }
+}
+
+// Initialize content length sliders
+function initializeContentLengthSliders() {
+    // Find all content length sliders
+    const sliders = document.querySelectorAll('[id*="contentLength-"]');
+    
+    sliders.forEach(slider => {
+        // Extract feature ID from slider ID
+        const featureId = slider.id.replace('contentLength-', '');
+        const badge = document.getElementById(`contentLengthDisplay-${featureId}`);
+        const labels = Array.from(document.querySelectorAll('.range-label')).map(label => label.textContent.trim());
+        
+        if (!badge || labels.length === 0) return;
+        
+        // Set initial badge text
+        const initialValue = parseInt(slider.value);
+        if (labels[initialValue - 1]) {
+            badge.textContent = labels[initialValue - 1];
+        }
+        
+        // Add event listener for slider changes
+        slider.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const labelIndex = value - 1;
+            
+            if (labels[labelIndex]) {
+                badge.textContent = labels[labelIndex];
+            }
+            
+            // Update active range label styling
+            document.querySelectorAll('.range-label').forEach((label, index) => {
+                if (index === labelIndex) {
+                    label.style.fontWeight = 'bold';
+                    label.style.color = 'var(--tblr-primary)';
+                } else {
+                    label.style.fontWeight = 'normal';
+                    label.style.color = '';
+                }
+            });
+        });
+        
+        console.log(`Content length slider initialized for feature: ${featureId}`);
+    });
 }
 </script>
 @endpush

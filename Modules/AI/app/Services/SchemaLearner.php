@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services;
+namespace Modules\AI\App\Services;
 
 use Exception;
 use Illuminate\Support\Collection;

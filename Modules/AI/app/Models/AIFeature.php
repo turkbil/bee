@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -30,7 +31,6 @@ class AIFeature extends Model
         'description',
         'emoji',
         'icon',
-        'category',
         'ai_feature_category_id',
         'helper_function',
         'helper_examples',
@@ -100,7 +100,7 @@ class AIFeature extends Model
      */
     public function prompts(): BelongsToMany
     {
-        return $this->belongsToMany(Prompt::class, 'ai_feature_prompts', 'feature_id', 'prompt_id')
+        return $this->belongsToMany(Prompt::class, 'ai_feature_prompt_relations', 'feature_id', 'prompt_id')
             ->withPivot(['role', 'priority', 'is_active', 'conditions', 'notes'])
             ->withTimestamps()
             ->orderBy('priority');
@@ -111,7 +111,7 @@ class AIFeature extends Model
      */
     public function featurePrompts(): HasMany
     {
-        return $this->hasMany(AIFeaturePrompt::class, 'feature_id');
+        return $this->hasMany(\Modules\AI\App\Models\AIFeaturePromptRelation::class, 'feature_id');
     }
 
     /**
@@ -193,11 +193,11 @@ class AIFeature extends Model
     }
 
     /**
-     * Kategoriye göre
+     * Kategoriye göre (ai_feature_category_id ile)
      */
-    public function scopeByCategory(Builder $query, string $category): Builder
+    public function scopeByCategory(Builder $query, int $categoryId): Builder
     {
-        return $query->where('category', $category);
+        return $query->where('ai_feature_category_id', $categoryId);
     }
 
     /**
@@ -235,24 +235,11 @@ class AIFeature extends Model
     }
 
     /**
-     * Kategori ismini Türkçe al
+     * Kategori ismini relationship üzerinden al
      */
     public function getCategoryName(): string
     {
-        $categories = [
-            'content-creation' => 'İçerik Oluşturma',
-            'seo-tools' => 'SEO Araçları',
-            'translation' => 'Çeviri',
-            'web-editor' => 'Web Editörü',
-            'content-analysis' => 'İçerik Analizi',
-            'marketing' => 'Pazarlama',
-            'creative' => 'Yaratıcı',
-            'business' => 'İş Dünyası',
-            'technical' => 'Teknik',
-            'other' => 'Diğer'
-        ];
-
-        return $categories[$this->category] ?? 'Bilinmeyen';
+        return $this->category?->title ?? 'Kategorisiz';
     }
 
     /**
@@ -349,20 +336,12 @@ class AIFeature extends Model
             ];
         }
 
-        // Özel kategori badge'ları
-        if ($this->category === 'seo-tools') {
+        // Kategori badge'ları relationship üzerinden
+        if ($this->category) {
             $badges[] = [
-                'text' => 'SEO',
-                'class' => 'badge bg-gradient-primary',
-                'icon' => 'fas fa-search'
-            ];
-        }
-
-        if ($this->category === 'content-creation') {
-            $badges[] = [
-                'text' => 'İÇERİK',
-                'class' => 'badge bg-gradient-success',
-                'icon' => 'fas fa-edit'
+                'text' => strtoupper($this->category->title),
+                'class' => 'badge bg-gradient-secondary',
+                'icon' => $this->category->icon ?? 'fas fa-tag'
             ];
         }
 
@@ -839,5 +818,153 @@ class AIFeature extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(AIFeatureCategory::class, 'ai_feature_category_id', 'ai_feature_category_id');
+    }
+
+    // ==================== UNIVERSAL INPUT SYSTEM ====================
+
+    /**
+     * Feature'a ait input'ları al
+     */
+    public function inputs(): HasMany
+    {
+        return $this->hasMany(AIFeatureInput::class, 'feature_id')->orderBy('sort_order');
+    }
+
+    /**
+     * Ana input'u al (accordion dışında gösterilen)
+     */
+    public function primaryInput(): HasOne
+    {
+        return $this->hasOne(AIFeatureInput::class, 'feature_id')->where('is_primary', true);
+    }
+
+    /**
+     * Gruplandırılmış input'ları al (accordion içindekiler)
+     */
+    public function groupedInputs(): HasMany
+    {
+        return $this->hasMany(AIFeatureInput::class, 'feature_id')->whereNotNull('group_id')->with('group');
+    }
+
+    /**
+     * Gerekli input'ları al
+     */
+    public function requiredInputs(): HasMany
+    {
+        return $this->hasMany(AIFeatureInput::class, 'feature_id')->where('is_required', true);
+    }
+
+    /**
+     * Feature'ın form yapısını al (Universal Input System)
+     */
+    public function getFormStructure(): array
+    {
+        $primaryInput = $this->primaryInput()->with('options', 'dynamicSource')->first();
+        $groupedInputs = $this->groupedInputs()->with(['options', 'dynamicSource', 'group'])->get();
+        
+        // Input'ları gruplara göre organize et
+        $groups = [];
+        foreach ($groupedInputs as $input) {
+            $groupKey = $input->group_key;
+            if (!isset($groups[$groupKey])) {
+                $groups[$groupKey] = [
+                    'group' => $input->group,
+                    'inputs' => []
+                ];
+            }
+            $groups[$groupKey]['inputs'][] = $input;
+        }
+
+        return [
+            'feature' => [
+                'id' => $this->id,
+                'name' => $this->name,
+                'description' => $this->description,
+                'quick_prompt' => $this->quick_prompt
+            ],
+            'primary_input' => $primaryInput ? [
+                'id' => $primaryInput->id,
+                'input_key' => $primaryInput->input_key,
+                'input_type' => $primaryInput->input_type,
+                'label' => $primaryInput->label,
+                'placeholder' => $primaryInput->placeholder,
+                'help_text' => $primaryInput->help_text,
+                'is_required' => $primaryInput->is_required,
+                'validation_rules' => $primaryInput->validation_rules,
+                'default_value' => $primaryInput->default_value,
+                'options' => $primaryInput->options,
+                'dynamic_source' => $primaryInput->dynamicSource
+            ] : null,
+            'groups' => collect($groups)->map(function($group, $key) {
+                return [
+                    'key' => $key,
+                    'name' => $group['group']->group_name ?? $key,
+                    'description' => $group['group']->description ?? null,
+                    'icon' => $group['group']->getIconClass() ?? 'ti ti-folder',
+                    'is_collapsible' => $group['group']->is_collapsible ?? true,
+                    'is_collapsed_by_default' => $group['group']->is_collapsed_by_default ?? false,
+                    'inputs' => collect($group['inputs'])->map(function($input) {
+                        return [
+                            'id' => $input->id,
+                            'input_key' => $input->input_key,
+                            'input_type' => $input->input_type,
+                            'label' => $input->label,
+                            'placeholder' => $input->placeholder,
+                            'help_text' => $input->help_text,
+                            'is_required' => $input->is_required,
+                            'validation_rules' => $input->validation_rules,
+                            'default_value' => $input->default_value,
+                            'depends_on' => $input->depends_on,
+                            'display_order' => $input->display_order,
+                            'options' => $input->options,
+                            'dynamic_source' => $input->dynamicSource
+                        ];
+                    })->sortBy('display_order')->values()->toArray()
+                ];
+            })->sortBy('group.display_order')->values()->toArray(),
+            'validation_rules' => $this->collectValidationRules()
+        ];
+    }
+
+    /**
+     * Tüm validation kurallarını topla
+     */
+    private function collectValidationRules(): array
+    {
+        $rules = [];
+        
+        foreach ($this->inputs as $input) {
+            if ($input->validation_rules) {
+                $rules[$input->input_key] = $input->validation_rules;
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Feature'ın form yapısında değişiklik oldu mu kontrol et
+     */
+    public function hasFormStructureChanged(): bool
+    {
+        return $this->inputs()->exists() && $this->updated_at > $this->inputs()->max('updated_at');
+    }
+
+    /**
+     * Universal Input System için cache key oluştur
+     */
+    public function getFormCacheKey(): string
+    {
+        return "ai_form_structure_{$this->id}";
+    }
+
+    /**
+     * Form cache'ini temizle
+     */
+    public function clearFormCache(): void
+    {
+        \Illuminate\Support\Facades\Cache::forget($this->getFormCacheKey());
+        \Illuminate\Support\Facades\Cache::forget("ai_prompt_mappings_{$this->id}");
+        \Illuminate\Support\Facades\Cache::forget("ai_validation_rules_{$this->id}");
     }
 }

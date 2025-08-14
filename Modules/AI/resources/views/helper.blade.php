@@ -65,6 +65,7 @@
                             </a>
                             @endhasmoduleaccess
 
+
                             {{-- Profil ve Ayarlar --}}
                             <h6 class="dropdown-menu-header card-header-light">
                                 <span class="dropdown-header">{{ __('ai::admin.profile_settings') }}</span>
@@ -79,6 +80,12 @@
                             @hasmoduleaccess('ai', 'view')
                             <a class="dropdown-item" href="{{ route('admin.ai.conversations.index') }}">
                                 {{ __('ai::admin.conversations') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.conversations.archived') }}">
+                                {{ __('ai::admin.archived_conversations') }}
                             </a>
                             @endhasmoduleaccess
 
@@ -99,6 +106,36 @@
                                 SEO AI Center
                             </a>
                             @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.test-panel') }}">
+                                {{ __('ai::admin.test_panel') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            {{-- Universal Input System V3 - Phase 3'te eklenecek
+                            <h6 class=\"dropdown-menu-header card-header-light\">
+                                <span class=\"dropdown-header\">Universal Input System</span>
+                            </h6>
+                            
+                            @hasmoduleaccess('ai', 'view')
+                            <a class=\"dropdown-item\" href=\"{{ route('admin.ai.universal.index') }}\">
+                                {{ __('ai::admin.universal_input_system') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
+                            <a class=\"dropdown-item\" href=\"{{ route('admin.ai.integration.modules') }}\">
+                                {{ __('ai::admin.module_integrations') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
+                            <a class=\"dropdown-item\" href=\"{{ route('admin.ai.templates.index') }}\">
+                                {{ __('ai::admin.prompt_templates') }}
+                            </a>
+                            @endhasmoduleaccess
+                            --}}
                         </div>
 
                         {{-- Sağ Kolon --}}
@@ -125,6 +162,10 @@
                                 {{ __('ai::admin.usage_statistics') }}
                             </a>
 
+                            <a class="dropdown-item" href="{{ route('admin.ai.credits.usage') }}">
+                                {{ __('ai::admin.usage_examples') }}
+                            </a>
+
                             <a class="dropdown-item" href="{{ route('admin.ai.credits.transactions') }}">
                                 Credit Transactions
                             </a>
@@ -132,6 +173,30 @@
                             <a class="dropdown-item" href="{{ route('admin.ai.credits.show') }}">
                                 Credit Details
                             </a>
+
+                            {{-- Bulk Operations - Phase 3'te eklenecek
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">{{ __('ai::admin.bulk_operations') }}</span>
+                            </h6>
+                            
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.bulk.operations') }}">
+                                {{ __('ai::admin.bulk_operations') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.analytics.usage') }}">
+                                {{ __('ai::admin.usage_analytics') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.analytics.performance') }}">
+                                {{ __('ai::admin.performance_analytics') }}
+                            </a>
+                            @endhasmoduleaccess
+                            --}}
                             @endrole
 
                             {{-- Debug & Analytics --}}

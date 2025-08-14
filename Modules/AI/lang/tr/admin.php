@@ -2,6 +2,21 @@
 
 return [
 'title' => 'Yapay Zeka',
+'icon' => 'İkon',
+'loading' => 'Yükleniyor...',
+'status_tooltip' => 'Durum',
+'status' => 'Durum', 
+'description' => 'Açıklama',
+'features' => 'Özellikler',
+'no_categories_found' => 'Kategori bulunamadı',
+'no_categories_found_subtitle' => 'Henüz hiç kategori eklenmemiş.',
+'drag_to_reorder' => 'Sıralamak için sürükleyin',
+// Categories
+'categories_order_updated' => 'Kategoriler sıralaması güncellendi',
+'category_not_found' => 'Kategori bulunamadı',
+'category_status_updated' => 'Kategori durumu güncellendi',
+'search_categories' => 'Kategorilerde ara...',
+'show_inactive' => 'Pasif kategorileri göster',
 'search_placeholder' => 'Ara...',
 'actions' => 'İşlemler',
 'edit' => 'Düzenle',

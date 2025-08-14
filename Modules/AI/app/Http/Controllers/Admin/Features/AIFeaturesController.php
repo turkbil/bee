@@ -43,7 +43,7 @@ class AIFeaturesController extends Controller
             $query->where('is_featured', true);
         }
         if ($request->filled('category')) {
-            $query->where('category', $request->category);
+            $query->where('ai_feature_category_id', $request->category);
         }
 
         $features = $query->orderBy('sort_order')
@@ -116,7 +116,7 @@ class AIFeaturesController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:ai_features,slug',
             'description' => 'required|string',
-            'category' => 'required|string',
+            'ai_feature_category_id' => 'required|integer|exists:ai_feature_categories,ai_feature_category_id',
             'complexity_level' => 'required|string',
             'status' => 'required|string|in:active,inactive,beta,planned',
             'sort_order' => 'nullable|integer|min:1',
@@ -140,7 +140,7 @@ class AIFeaturesController extends Controller
                 'description' => $request->description,
                 'emoji' => $request->emoji ?: '🤖',
                 'icon' => $request->icon ?: 'fas fa-robot',
-                'category' => $request->category,
+                'ai_feature_category_id' => $request->ai_feature_category_id,
                 'complexity_level' => $request->complexity_level,
                 'status' => $request->status,
                 'sort_order' => $request->sort_order ?: 999,
@@ -227,7 +227,7 @@ class AIFeaturesController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:ai_features,slug,' . $id,
             'description' => 'required|string',
-            'category' => 'required|string',
+            'ai_feature_category_id' => 'required|integer|exists:ai_feature_categories,ai_feature_category_id',
             'complexity_level' => 'required|string',
             'status' => 'required|string|in:active,inactive,beta,planned',
             'sort_order' => 'nullable|integer|min:1',
@@ -251,7 +251,7 @@ class AIFeaturesController extends Controller
                 'description' => $request->description,
                 'emoji' => $request->emoji ?: '🤖',
                 'icon' => $request->icon ?: 'fas fa-robot',
-                'category' => $request->category,
+                'ai_feature_category_id' => $request->ai_feature_category_id,
                 'complexity_level' => $request->complexity_level,
                 'status' => $request->status,
                 'sort_order' => $request->sort_order ?: 999,
@@ -455,16 +455,52 @@ class AIFeaturesController extends Controller
     }
 
     /**
+     * Feature tek başına görüntüleme sayfası (slug veya ID ile)
+     */
+    public function show($feature)
+    {
+        // ID veya slug ile feature bul
+        $featureModel = is_numeric($feature) 
+            ? \Modules\AI\App\Models\AIFeature::findOrFail($feature)
+            : \Modules\AI\App\Models\AIFeature::where('slug', $feature)->firstOrFail();
+
+        // Content length prompts'ları veritabanından çek
+        $contentLengthOptions = \Modules\AI\App\Models\Prompt::where('prompt_type', 'content_length')
+            ->where('is_active', true)
+            ->orderBy('priority', 'desc')
+            ->orderBy('name')
+            ->get()
+            ->map(function($prompt) {
+                // Extract numeric value from content for ordering
+                preg_match('/(\d+)/', $prompt->content, $matches);
+                $numericValue = isset($matches[1]) ? (int)$matches[1] : 0;
+                
+                return [
+                    'value' => $numericValue ?: $prompt->prompt_id,
+                    'label' => $prompt->name,
+                    'description' => $prompt->content
+                ];
+            });
+
+        return view('ai::admin.features.show', compact('featureModel', 'contentLengthOptions'));
+    }
+
+    /**
      * AI Prowess sayfası - Müşteri görünümü
      */
     public function prowess()
     {
         $features = \Modules\AI\App\Models\AIFeature::where('status', 'active')
             ->where('show_in_examples', true)
+            ->with('category')
             ->orderBy('sort_order')
             ->orderBy('created_at', 'desc')
             ->get()
-            ->groupBy('category');
+            ->groupBy(function($feature) {
+                return $feature->category && is_object($feature->category) && isset($feature->category->slug) 
+                    ? $feature->category->slug 
+                    : 'uncategorized';
+            });
 
         $categoryNames = [
             'content-creation' => 'İçerik Oluşturma',
@@ -488,11 +524,54 @@ class AIFeaturesController extends Controller
             'other' => 'Diğer'
         ];
 
+        // Content length prompts'ları veritabanından çek
+        // Content length prompts: Range 1-5 = Çok Kısa'dan Çok Detaylı'ya doğru
+        $contentLengthPrompts = \Modules\AI\App\Models\Prompt::where('prompt_type', 'content_length')
+            ->where('is_active', true)
+            ->orderBy('priority', 'desc') // DESC: priority 5,4,3,2,1 = Çok Kısa → Çok Detaylı
+            ->orderBy('name')
+            ->get();
+        
+        $contentLengthOptions = $contentLengthPrompts->map(function($prompt, $index) {
+            return [
+                'value' => $index + 1, // Range değeri: 1,2,3,4,5
+                'label' => $prompt->name,
+                'description' => $prompt->content,
+                'prompt_id' => $prompt->prompt_id, // Backend mapping için
+                'priority' => $prompt->priority // Debug için
+            ];
+        });
+            
+        // Content length slider ayarları
+        $contentLengthConfig = [
+            'min' => 1,
+            'max' => max(5, $contentLengthOptions->count()), // Minimum 5, maksimum seçenek sayısı
+            'default' => ceil($contentLengthOptions->count() / 2) ?: 3 // Ortadaki değer veya 3
+        ];
+
         // AI Widget Helper kullanarak token bilgilerini al
         $tenantId = tenant('id') ?: '1';
         $tokenStatus = ai_widget_token_data($tenantId);
 
-        return view('ai::admin.features.prowess.showcase', compact('features', 'categoryNames', 'tokenStatus'));
+        // Şirket Profili kontrolleri
+        $hasCompanyProfile = $this->checkCompanyProfileAvailability();
+        
+        // Yazım tonu seçeneklerini çek
+        $writingToneOptions = \Modules\AI\App\Models\Prompt::where('prompt_type', 'writing_tone')
+            ->where('is_active', true)
+            ->orderBy('priority', 'desc')
+            ->orderBy('name')
+            ->get();
+
+        return view('ai::admin.features.prowess.showcase', compact(
+            'features', 
+            'categoryNames', 
+            'tokenStatus', 
+            'contentLengthOptions', 
+            'contentLengthConfig',
+            'hasCompanyProfile',
+            'writingToneOptions'
+        ));
     }
 
 
@@ -848,7 +927,8 @@ ABSOLUTELY FORBIDDEN: Never use these symbols in your response:
 - Think like writing for a business presentation, not technical documentation
 - Output should be clean HTML-ready text, no markdown artifacts";
         
-        switch ($feature->category) {
+        $categorySlug = $feature->aiFeatureCategory ? $feature->aiFeatureCategory->slug : 'other';
+        switch ($categorySlug) {
             case 'content-creation':
                 return $basePrompt . " Create high-quality, engaging content that provides real value to readers. Write in Turkish language." . $formatRules;
             case 'web-editor':
@@ -903,7 +983,7 @@ ABSOLUTELY FORBIDDEN: Never use these symbols in your response:
                     'feature_id' => $feature->id,
                     'feature_slug' => $feature->slug,
                     'complexity_level' => $feature->complexity_level,
-                    'category' => $feature->category
+                    'category' => $feature->aiFeatureCategory ? $feature->aiFeatureCategory->slug : 'other'
                 ]
             ]);
             
@@ -1005,6 +1085,42 @@ ABSOLUTELY FORBIDDEN: Never use these symbols in your response:
             
         } catch (\Exception $e) {
             return null;
+        }
+    }
+
+    /**
+     * Şirket Profili kullanılabilirlik kontrolü
+     * Tenant'ın profil bilgileri var mı kontrol eder
+     */
+    private function checkCompanyProfileAvailability(): bool
+    {
+        try {
+            // AI Tenant Profile tablosundan gerçek profil verilerini kontrol et
+            $aiProfile = \Modules\AI\app\Models\AITenantProfile::currentOrCreate();
+            
+            // Minimum profil tamamlanma kontrolü - temel bilgiler ve sektör yeterli
+            $hasBasicCompanyInfo = $aiProfile->company_info && 
+                                  !empty($aiProfile->company_info['brand_name']);
+                                  
+            $hasSectorSelection = $aiProfile->sector_details && 
+                                !empty($aiProfile->sector_details['sector_selection']);
+            
+            // Bu minimum bilgiler varsa profil kullanılabilir
+            $isBasicallyComplete = $hasBasicCompanyInfo && $hasSectorSelection;
+            
+            \Log::info('Company Profile Availability Check', [
+                'tenant_id' => tenant('id'),
+                'has_brand_name' => !empty($aiProfile->company_info['brand_name'] ?? ''),
+                'has_sector' => !empty($aiProfile->sector_details['sector_selection'] ?? ''),
+                'is_available' => $isBasicallyComplete,
+                'company_info_count' => count($aiProfile->company_info ?? []),
+                'sector_info_count' => count($aiProfile->sector_details ?? [])
+            ]);
+            
+            return $isBasicallyComplete;
+        } catch (\Exception $e) {
+            \Log::warning('AI Profile kontrolü başarısız: ' . $e->getMessage());
+            return false; // Güvenli fallback - hata varsa profil yok sayılsın
         }
     }
 

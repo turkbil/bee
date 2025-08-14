@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services\Chat;
+namespace Modules\AI\App\Services\Chat;
 
 use Exception;
 use Illuminate\Support\Facades\{Cache, View, Log};
 use Illuminate\Contracts\View\View as ViewContract;
-use Modules\AI\app\Exceptions\Chat\WidgetRenderException;
+use Modules\AI\App\Exceptions\Chat\WidgetRenderException;
 
 /**
  * Advanced Multi-Theme Widget Rendering Service

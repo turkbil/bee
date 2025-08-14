@@ -391,13 +391,15 @@ class AIChatController extends Controller
                 $hasMarkdown = $this->markdownService->hasMarkdown($fullResponse);
                 $htmlContent = $hasMarkdown ? $this->markdownService->convertToHtml($fullResponse) : null;
                 
-                echo "event: complete\n";
+                echo "event: end\n";
                 echo "data: " . json_encode([
                     'conversation_id' => $conversation->id,
                     'has_markdown' => $hasMarkdown,
                     'html_content' => $htmlContent,
                     'prompt_id' => $promptId,
                 ]) . "\n\n";
+                ob_flush();
+                flush();
             } catch (\Exception $e) {
                 Log::error('AI stream hatası: ' . $e->getMessage(), [
                     'exception' => $e,

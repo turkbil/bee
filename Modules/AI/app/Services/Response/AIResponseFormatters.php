@@ -415,7 +415,12 @@ class AIResponseFormatters
         }
 
         try {
-            return json_decode($feature->response_template, true);
+            // response_template zaten array ise decode etme
+            if (is_array($feature->response_template)) {
+                return $feature->response_template;
+            } else {
+                return json_decode($feature->response_template, true);
+            }
         } catch (\Exception $e) {
             Log::warning("Feature response template parse hatası: {$feature->slug}", ['error' => $e->getMessage()]);
             return null;

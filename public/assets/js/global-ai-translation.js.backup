@@ -1,0 +1,709 @@
+/**
+ * Global AI Translation System - JavaScript Module
+ * Handles AI-powered translations for all modules with partial translation support
+ */
+
+window.AITranslation = (function() {
+    'use strict';
+
+    // Private variables
+    let currentModule = null;
+    let selectedItems = [];
+    let availableLanguages = [];
+    let translationMode = null; // 'single' or 'bulk'
+    let isTranslating = false;
+    let currentOperationId = null;
+
+    // Initialize translation modal
+    function init(config = {}) {
+        currentModule = config.module || detectModule();
+        translationMode = config.mode || 'single';
+        selectedItems = config.items || [];
+        
+        console.log('🚀 AI Translation initialized', {
+            module: currentModule,
+            mode: translationMode,
+            items: selectedItems
+        });
+
+        // Load available languages
+        loadAvailableLanguages();
+
+        // Setup event listeners
+        setupEventListeners();
+    }
+
+    // Detect current module from URL or data attributes
+    function detectModule() {
+        const urlPath = window.location.pathname;
+        const pathParts = urlPath.split('/');
+        
+        for (let part of pathParts) {
+            if (['page', 'portfolio', 'announcement', 'widget'].includes(part.toLowerCase())) {
+                return part.toLowerCase();
+            }
+        }
+        
+        return 'page'; // Default
+    }
+
+    // Load available languages from server
+    function loadAvailableLanguages() {
+        $.ajax({
+            url: '/admin/ai/translation/languages',
+            method: 'GET',
+            success: function(response) {
+                if (response.success && response.data.languages) {
+                    availableLanguages = response.data.languages;
+                    renderLanguageOptions();
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load languages:', xhr);
+                toastr.error('Diller yüklenemedi');
+            }
+        });
+    }
+
+    // Render language options in modal
+    function renderLanguageOptions() {
+        const sourceSelect = $('#sourceLanguage');
+        const targetContainer = $('#targetLanguages');
+        
+        // Clear existing options
+        sourceSelect.empty().append('<option value="">Kaynak dil seçiniz...</option>');
+        targetContainer.empty();
+        
+        // Add languages
+        availableLanguages.forEach(lang => {
+            // Source language dropdown
+            sourceSelect.append(`<option value="${lang.code}">${lang.name}</option>`);
+            
+            // Target language checkboxes
+            targetContainer.append(`
+                <div class="col-6 col-md-4">
+                    <div class="form-check">
+                        <input class="form-check-input target-lang-checkbox" 
+                               type="checkbox" 
+                               value="${lang.code}" 
+                               id="targetLang_${lang.code}">
+                        <label class="form-check-label" for="targetLang_${lang.code}">
+                            ${lang.name}
+                        </label>
+                    </div>
+                </div>
+            `);
+        });
+
+        // Enable start button when languages are loaded
+        checkReadyToTranslate();
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Source language change
+        $('#sourceLanguage').on('change', function() {
+            const selectedSource = $(this).val();
+            
+            // Disable same language in target options
+            $('.target-lang-checkbox').each(function() {
+                const checkbox = $(this);
+                const label = $(`label[for="${checkbox.attr('id')}"]`);
+                
+                if (checkbox.val() === selectedSource) {
+                    checkbox.prop('disabled', true).prop('checked', false);
+                    label.addClass('text-muted');
+                } else {
+                    checkbox.prop('disabled', false);
+                    label.removeClass('text-muted');
+                }
+            });
+            
+            checkReadyToTranslate();
+        });
+
+        // Target language checkbox changes
+        $(document).on('change', '.target-lang-checkbox', function() {
+            checkReadyToTranslate();
+            updatePartialTranslationButtons();
+        });
+
+        // Start translation button
+        $('#startTranslationBtn').on('click', function() {
+            const targetLangs = getSelectedTargetLanguages();
+            
+            if (targetLangs.length > 3) {
+                // Çok fazla dil seçildi, parçalı çeviri öner
+                showPartialTranslationOption(targetLangs);
+            } else {
+                // Normal çeviri başlat
+                startTranslation();
+            }
+        });
+
+        // Modal show event
+        $('#aiTranslationModal').on('show.bs.modal', function() {
+            resetModal();
+        });
+
+        // Modal hide event  
+        $('#aiTranslationModal').on('hide.bs.modal', function() {
+            if (isTranslating) {
+                if (!confirm('Çeviri devam ediyor. İptal etmek istediğinize emin misiniz?')) {
+                    return false;
+                }
+            }
+        });
+    }
+
+    // Show partial translation option for many languages
+    function showPartialTranslationOption(targetLanguages) {
+        const modal = $('#aiTranslationModal');
+        const footer = modal.find('.modal-footer');
+        
+        // Ana butonu gizle
+        $('#startTranslationBtn').hide();
+        
+        // Parçalı çeviri butonlarını göster
+        const partialButtons = $('#partialTranslationButtons');
+        partialButtons.empty().show();
+        
+        // Tüm diller için tek buton
+        partialButtons.append(`
+            <button type="button" class="btn btn-warning me-2" id="translateAllSequentially">
+                <i class="fas fa-layer-group me-2"></i>Sırayla Çevir (${targetLanguages.length} dil)
+            </button>
+        `);
+        
+        // Her dil için ayrı buton
+        targetLanguages.forEach(langCode => {
+            const lang = availableLanguages.find(l => l.code === langCode);
+            if (lang) {
+                partialButtons.append(`
+                    <button type="button" class="btn btn-outline-primary btn-sm me-1 mb-1 partial-translate-btn" 
+                            data-language="${langCode}">
+                        <i class="fas fa-language me-1"></i>${lang.name}
+                    </button>
+                `);
+            }
+        });
+        
+        // İptal butonu
+        partialButtons.append(`
+            <button type="button" class="btn btn-secondary ms-2" id="cancelPartialTranslation">
+                <i class="fas fa-times me-2"></i>İptal
+            </button>
+        `);
+        
+        // Event listeners for partial buttons
+        setupPartialTranslationEvents();
+    }
+
+    // Setup partial translation button events
+    function setupPartialTranslationEvents() {
+        // Tek dil çeviri butonu
+        $(document).on('click', '.partial-translate-btn', function() {
+            const langCode = $(this).data('language');
+            startSingleLanguageTranslation(langCode);
+        });
+        
+        // Sırayla çevir butonu
+        $('#translateAllSequentially').on('click', function() {
+            startSequentialTranslation();
+        });
+        
+        // İptal butonu
+        $('#cancelPartialTranslation').on('click', function() {
+            $('#partialTranslationButtons').hide();
+            $('#startTranslationBtn').show();
+        });
+    }
+
+    // Start single language translation
+    function startSingleLanguageTranslation(langCode) {
+        const lang = availableLanguages.find(l => l.code === langCode);
+        if (!lang) return;
+        
+        const sourceLanguage = $('#sourceLanguage').val();
+        const quality = $('#translationQuality').val();
+        const includeSeo = $('#translateSEO').is(':checked');
+        
+        // Disable button
+        $(`.partial-translate-btn[data-language="${langCode}"]`)
+            .prop('disabled', true)
+            .html(`<i class="fas fa-spinner fa-spin me-1"></i>${lang.name}`);
+        
+        // Show loading overlay with specific language
+        showTranslationOverlay(`${lang.name} diline çevriliyor...`);
+        
+        // Make API request
+        $.ajax({
+            url: '/admin/ai/translation/start',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Module': currentModule
+            },
+            data: {
+                items: selectedItems,
+                source_language: sourceLanguage,
+                target_languages: [langCode], // Tek dil
+                single_language: langCode, // Backend'e tek dil olduğunu bildir
+                quality: quality,
+                include_seo: includeSeo,
+                module: currentModule
+            },
+            success: function(response) {
+                if (response.success) {
+                    currentOperationId = response.operation_id;
+                    
+                    // İLK KONTROL DE KALDIRILDI - Polling yok!
+                    console.log('Translation started - NO INITIAL POLLING!');
+                } else {
+                    hideTranslationOverlay();
+                    toastr.error(response.message || 'Çeviri başlatılamadı');
+                    resetPartialButton(langCode);
+                }
+            },
+            error: function(xhr) {
+                hideTranslationOverlay();
+                handleTranslationError(xhr);
+                resetPartialButton(langCode);
+            }
+        });
+    }
+
+    // Start sequential translation (one by one)
+    function startSequentialTranslation() {
+        const targetLangs = getSelectedTargetLanguages();
+        let currentIndex = 0;
+        
+        function translateNext() {
+            if (currentIndex >= targetLangs.length) {
+                // Tamamlandı
+                hideTranslationOverlay();
+                toastr.success('Tüm çeviriler tamamlandı!');
+                
+                // Reload page to show translations
+                setTimeout(() => location.reload(), 1500);
+                return;
+            }
+            
+            const langCode = targetLangs[currentIndex];
+            const lang = availableLanguages.find(l => l.code === langCode);
+            
+            // Update progress message
+            showTranslationOverlay(
+                `${lang.name} diline çevriliyor... (${currentIndex + 1}/${targetLangs.length})`
+            );
+            
+            // Start single language translation
+            const sourceLanguage = $('#sourceLanguage').val();
+            const quality = $('#translationQuality').val();
+            const includeSeo = $('#translateSEO').is(':checked');
+            
+            $.ajax({
+                url: '/admin/ai/translation/start',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-Module': currentModule
+                },
+                data: {
+                    items: selectedItems,
+                    source_language: sourceLanguage,
+                    target_languages: [langCode],
+                    single_language: langCode,
+                    quality: quality,
+                    include_seo: includeSeo,
+                    module: currentModule
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Mark button as completed
+                        $(`.partial-translate-btn[data-language="${langCode}"]`)
+                            .removeClass('btn-outline-primary')
+                            .addClass('btn-success')
+                            .html(`<i class="fas fa-check me-1"></i>${lang.name}`);
+                        
+                        // Continue with next language
+                        currentIndex++;
+                        setTimeout(translateNext, 1000);
+                    } else {
+                        hideTranslationOverlay();
+                        toastr.error(`${lang.name} çevirisi başarısız: ${response.message}`);
+                    }
+                },
+                error: function(xhr) {
+                    hideTranslationOverlay();
+                    toastr.error(`${lang.name} çevirisi sırasında hata oluştu`);
+                    console.error('Translation error:', xhr);
+                }
+            });
+        }
+        
+        // Start with first language
+        translateNext();
+    }
+
+    // Reset partial translation button
+    function resetPartialButton(langCode) {
+        const lang = availableLanguages.find(l => l.code === langCode);
+        $(`.partial-translate-btn[data-language="${langCode}"]`)
+            .prop('disabled', false)
+            .removeClass('btn-success')
+            .addClass('btn-outline-primary')
+            .html(`<i class="fas fa-language me-1"></i>${lang.name}`);
+    }
+
+    // Check translation progress
+    function checkTranslationProgress(langCode = null) {
+        if (!currentOperationId) return;
+        
+        $.ajax({
+            url: `/admin/ai/translation/progress/${currentOperationId}`,
+            method: 'GET',
+            cache: false,
+            success: function(response) {
+                // Update progress message based on status
+                if (response.status === 'queued') {
+                    $('#aiProgressTitle').text('🕐 Çeviri sıraya alındı');
+                    $('#aiProgressSubtitle').text('İşleminiz sırada bekliyor...');
+                } else if (response.status === 'processing') {
+                    // Show language-specific progress
+                    if (response.completed_languages && response.completed_languages.length > 0) {
+                        const completedCount = response.completed_languages.length;
+                        const totalCount = response.total_languages || 1;
+                        const currentLang = response.current_language || '';
+                        
+                        $('#aiProgressTitle').text('🧠 Yapay Zeka Çeviri Yapıyor');
+                        
+                        // Update main subtitle
+                        if (response.message) {
+                            $('#aiProgressSubtitle').text(response.message);
+                        } else {
+                            $('#aiProgressSubtitle').text(`${completedCount}/${totalCount} dil işleniyor...`);
+                        }
+                        
+                        // Update progress bar
+                        const progressPercent = Math.round((completedCount / totalCount) * 100);
+                        $('.translation-progress-bar')
+                            .css('width', progressPercent + '%')
+                            .attr('aria-valuenow', progressPercent)
+                            .text(progressPercent + '%');
+                        
+                        // Update language status list
+                        let languageListHTML = '<div class="text-white">';
+                        response.completed_languages.forEach((lang) => {
+                            const langName = lang.name || lang.code || lang;
+                            languageListHTML += `
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>${langName} - Tamamlandı</span>
+                                </div>
+                            `;
+                        });
+                        
+                        if (currentLang) {
+                            languageListHTML += `
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="spinner-border spinner-border-sm text-warning me-2"></div>
+                                    <span>${currentLang} - Çevriliyor...</span>
+                                </div>
+                            `;
+                        }
+                        languageListHTML += '</div>';
+                        
+                        $('#languageStatusList').html(languageListHTML);
+                        
+                        // Show/update info badge
+                        if (response.details && response.details.completed_count !== undefined) {
+                            const infoText = `${response.details.completed_count} dil tamamlandı, ${response.details.remaining_count} dil kaldı`;
+                            $('#translationInfoBadge').show().find('.badge').text(infoText);
+                        }
+                    } else {
+                        // Initial processing state
+                        $('#aiProgressTitle').text('🧠 Yapay Zeka Çeviri Yapıyor');
+                        $('#aiProgressSubtitle').text(response.message || 'Çeviri işlemi devam ediyor...');
+                        
+                        // Initialize progress bar
+                        const progress = response.progress || 10;
+                        $('.translation-progress-bar')
+                            .css('width', progress + '%')
+                            .attr('aria-valuenow', progress)
+                            .text(progress + '%');
+                    }
+                }
+                
+                if (response.status === 'completed') {
+                    hideTranslationOverlay();
+                    
+                    // Show summary if available
+                    if (response.results && response.results.summary) {
+                        const summary = response.results.summary;
+                        const message = `Çeviri tamamlandı! ${summary.total_languages} dil, ${summary.total_items} içerik başarıyla çevrildi.`;
+                        toastr.success(message);
+                    } else if (langCode) {
+                        // Single language completed
+                        const lang = availableLanguages.find(l => l.code === langCode);
+                        toastr.success(`${lang.name} çevirisi tamamlandı!`);
+                        
+                        // Mark button as completed
+                        $(`.partial-translate-btn[data-language="${langCode}"]`)
+                            .prop('disabled', false)
+                            .removeClass('btn-outline-primary')
+                            .addClass('btn-success')
+                            .html(`<i class="fas fa-check me-1"></i>${lang.name}`);
+                    } else {
+                        toastr.success('Çeviri tamamlandı!');
+                    }
+                    
+                    // Reload page after a short delay
+                    setTimeout(() => location.reload(), 2000);
+                    
+                } else if (response.status === 'failed') {
+                    hideTranslationOverlay();
+                    toastr.error(response.message || 'Çeviri başarısız oldu');
+                    
+                    if (langCode) {
+                        resetPartialButton(langCode);
+                    }
+                } else {
+                    // POLLING KALDIRILDI - Artık tekrar kontrol etme!
+                    console.log('Translation still in progress - NO MORE POLLING!');
+                }
+            },
+            error: function(xhr) {
+                console.error('Progress check error:', xhr);
+                // POLLING KALDIRILDI - Error durumunda da tekrar kontrol etme!
+                console.log('Translation error - NO MORE POLLING!');
+            }
+        });
+    }
+
+    // Update partial translation buttons visibility
+    function updatePartialTranslationButtons() {
+        const targetLangs = getSelectedTargetLanguages();
+        
+        if (targetLangs.length > 3) {
+            $('#startTranslationBtn').html(
+                `<i class="fas fa-exclamation-triangle me-2"></i>Çeviri Seçenekleri (${targetLangs.length} dil)`
+            );
+        } else if (targetLangs.length > 0) {
+            $('#startTranslationBtn').html(
+                `<i class="fas fa-magic me-2"></i>Çeviriyi Başlat (${targetLangs.length} dil)`
+            );
+        } else {
+            $('#startTranslationBtn').html(
+                `<i class="fas fa-magic me-2"></i>Çeviriyi Başlat`
+            );
+        }
+    }
+
+    // Get selected target languages
+    function getSelectedTargetLanguages() {
+        const selected = [];
+        $('.target-lang-checkbox:checked').each(function() {
+            selected.push($(this).val());
+        });
+        return selected;
+    }
+
+    // Check if ready to translate
+    function checkReadyToTranslate() {
+        const sourceLanguage = $('#sourceLanguage').val();
+        const targetLanguages = getSelectedTargetLanguages();
+        const hasItems = selectedItems.length > 0;
+        
+        const isReady = sourceLanguage && targetLanguages.length > 0 && hasItems;
+        
+        $('#startTranslationBtn').prop('disabled', !isReady);
+        
+        if (isReady) {
+            updatePartialTranslationButtons();
+        }
+    }
+
+    // Start translation (all languages at once)
+    function startTranslation() {
+        const sourceLanguage = $('#sourceLanguage').val();
+        const targetLanguages = getSelectedTargetLanguages();
+        const quality = $('#translationQuality').val();
+        const includeSeo = $('#translateSEO').is(':checked');
+        
+        if (!sourceLanguage || targetLanguages.length === 0) {
+            toastr.warning('Lütfen kaynak ve hedef dilleri seçin');
+            return;
+        }
+        
+        isTranslating = true;
+        showTranslationOverlay();
+        
+        // Estimate tokens first
+        $.ajax({
+            url: '/admin/ai/translation/estimate',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Module': currentModule
+            },
+            data: {
+                items: selectedItems,
+                source_language: sourceLanguage,
+                target_languages: targetLanguages,
+                include_seo: includeSeo,
+                module: currentModule
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Check if user has enough credits
+                    if (!response.sufficient_credit) {
+                        hideTranslationOverlay();
+                        toastr.error('Yetersiz kredi. Lütfen kredi satın alın.');
+                        isTranslating = false;
+                        return;
+                    }
+                    
+                    // Start actual translation
+                    performTranslation({
+                        sourceLanguage,
+                        targetLanguages,
+                        quality,
+                        includeSeo
+                    });
+                } else {
+                    hideTranslationOverlay();
+                    toastr.error('Token tahmini yapılamadı');
+                    isTranslating = false;
+                }
+            },
+            error: function(xhr) {
+                hideTranslationOverlay();
+                handleTranslationError(xhr);
+                isTranslating = false;
+            }
+        });
+    }
+
+    // Perform actual translation
+    function performTranslation(config) {
+        $.ajax({
+            url: '/admin/ai/translation/start',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-Module': currentModule
+            },
+            data: {
+                items: selectedItems,
+                source_language: config.sourceLanguage,
+                target_languages: config.targetLanguages,
+                quality: config.quality,
+                include_seo: config.includeSeo,
+                module: currentModule
+            },
+            success: function(response) {
+                if (response.success) {
+                    currentOperationId = response.operation_id;
+                    
+                    // POLLING TAMAMEN KALDIRILDI!
+                    console.log('Translation started successfully - NO POLLING!');
+                } else {
+                    hideTranslationOverlay();
+                    toastr.error(response.message || 'Çeviri başlatılamadı');
+                    isTranslating = false;
+                }
+            },
+            error: function(xhr) {
+                hideTranslationOverlay();
+                handleTranslationError(xhr);
+                isTranslating = false;
+            }
+        });
+    }
+
+    // Show translation overlay
+    function showTranslationOverlay(customMessage = null) {
+        const overlay = $('#translationLoadingOverlay');
+        
+        if (customMessage) {
+            $('#aiProgressTitle').text('🧠 ' + customMessage);
+        } else {
+            $('#aiProgressTitle').text('🧠 Yapay Zeka Çevirilerinizi Hazırlıyor');
+        }
+        
+        overlay.fadeIn(300);
+    }
+
+    // Hide translation overlay
+    function hideTranslationOverlay() {
+        $('#translationLoadingOverlay').fadeOut(300);
+    }
+
+    // Handle translation errors
+    function handleTranslationError(xhr) {
+        console.error('Translation error:', xhr);
+        
+        let errorMessage = 'Çeviri sırasında bir hata oluştu';
+        
+        if (xhr.status === 504) {
+            errorMessage = 'İstek zaman aşımına uğradı. Lütfen daha az içerik seçerek tekrar deneyin.';
+        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+            errorMessage = xhr.responseJSON.message;
+        }
+        
+        toastr.error(errorMessage);
+    }
+
+    // Reset modal to initial state
+    function resetModal() {
+        $('#sourceLanguage').val('').trigger('change');
+        $('.target-lang-checkbox').prop('checked', false).prop('disabled', false);
+        $('#translateSEO').prop('checked', true);
+        $('#overwriteExisting').prop('checked', true);
+        $('#translationQuality').val('premium');
+        $('#startTranslationBtn').prop('disabled', true);
+        $('#partialTranslationButtons').empty().hide();
+        $('#startTranslationBtn').show();
+        isTranslating = false;
+        currentOperationId = null;
+        
+        // Show bulk options if in bulk mode
+        if (translationMode === 'bulk' && selectedItems.length > 0) {
+            $('#bulkOptionsCard').show();
+            $('#selectedItemsDetails').html(`
+                <span class="badge bg-primary">${selectedItems.length} içerik seçildi</span>
+            `);
+        } else {
+            $('#bulkOptionsCard').hide();
+        }
+    }
+
+    // Public API
+    return {
+        init: init,
+        open: function(config) {
+            init(config);
+            $('#aiTranslationModal').modal('show');
+        },
+        close: function() {
+            $('#aiTranslationModal').modal('hide');
+        },
+        setItems: function(items) {
+            selectedItems = items;
+            checkReadyToTranslate();
+        },
+        setModule: function(module) {
+            currentModule = module;
+        }
+    };
+})();
+
+// Auto-initialize on document ready
+$(document).ready(function() {
+    // Check if translation modal exists
+    if ($('#aiTranslationModal').length > 0) {
+        // Basic initialization
+        AITranslation.init();
+    }
+});

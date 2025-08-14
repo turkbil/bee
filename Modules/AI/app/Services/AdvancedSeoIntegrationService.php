@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services;
+namespace Modules\AI\App\Services;
 
-use Modules\AI\app\Exceptions\AdvancedSeoIntegrationException;
-use Modules\AI\app\Models\AIFeature;
-use Modules\AI\app\Models\AICreditUsage;
+use Modules\AI\App\Exceptions\AdvancedSeoIntegrationException;
+use Modules\AI\App\Models\AIFeature;
+use Modules\AI\App\Models\AICreditUsage;
 use Modules\SeoManagement\app\Models\SeoSetting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services\Context;
+namespace Modules\AI\App\Services\Context;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
-use Modules\AI\App\Services\Template\TemplateEngine;
-use Modules\AI\App\Services\FeatureType\FeatureTypeManager;
+use Modules\AI\App\Services\Templates\SmartTemplateEngine as TemplateEngine;
+use Modules\AI\App\Services\Templates\ConfigBasedTemplateRepository;
 
 /**
  * Context Engine - Ana Context Yöneticisi
@@ -20,17 +20,13 @@ readonly class ContextEngine
     private TenantContextCollector $tenantCollector;
     private PageContextCollector $pageCollector;
     private TemplateEngine $templateEngine;
-    private FeatureTypeManager $featureTypeManager;
-
     public function __construct(
-        ?TemplateEngine $templateEngine = null,
-        ?FeatureTypeManager $featureTypeManager = null
+        ?TemplateEngine $templateEngine = null
     ) {
         $this->userCollector = new UserContextCollector();
         $this->tenantCollector = new TenantContextCollector();
         $this->pageCollector = new PageContextCollector();
-        $this->templateEngine = $templateEngine ?? new TemplateEngine();
-        $this->featureTypeManager = $featureTypeManager ?? new FeatureTypeManager();
+        $this->templateEngine = $templateEngine ?? new TemplateEngine(new ConfigBasedTemplateRepository());
     }
 
     /**
@@ -136,16 +132,21 @@ readonly class ContextEngine
     {
         $contexts = [];
         
-        // User context (en önemli)
+        // ÖNCE AI IDENTITY - En kritik!
+        $tenantContext = $this->tenantCollector->collect($options);
+        if ($tenantContext['type'] === 'complete_profile' && isset($tenantContext['company']['name'])) {
+            // AI kimlik tanımı - İLK SIRADA
+            $contexts[] = "🤖 AI IDENTITY: Sen " . $tenantContext['company']['name'] . " şirketinin yapay zeka modelisin.";
+            
+            // Şirket kurucusu bilgisi
+            if (isset($tenantContext['company']['founder'])) {
+                $contexts[] = "👨‍💼 COMPANY FOUNDER: " . $tenantContext['company']['founder'];
+            }
+        }
+        
+        // SONRA User context (kime hitap ettiği bilgisi)
         $userContext = $this->userCollector->collect($options);
         $contexts[] = $userContext['context_text'];
-        
-        // Tenant context (background bilgi olarak)
-        $tenantContext = $this->tenantCollector->collect($options);
-        if ($tenantContext['type'] === 'complete_profile') {
-            // Sadece temel şirket bilgisi
-            $contexts[] = "🏢 BACKGROUND: " . ($tenantContext['company']['name'] ?? 'Bu şirket') . " bünyesinde çalışıyorsun.";
-        }
         
         return implode("\n\n", $contexts);
     }
@@ -157,37 +158,10 @@ readonly class ContextEngine
     {
         $contexts = [];
         
-        // 1. Feature Type Manager ile feature type'ını belirle ve optimize et
-        if (isset($options['feature']) && $options['feature']) {
-            $feature = $options['feature'];
-            $featureType = $this->featureTypeManager->determineFeatureType($feature);
-            
-            // Feature type'a uygun context header'ı
-            $typeConfig = $this->featureTypeManager->getTypeConfig($featureType);
-            $contexts[] = "🎯 {$typeConfig['name']}: {$typeConfig['description']}";
-            
-            // Template Engine ile feature template oluştur
-            $templateContext = $this->buildTemplateContext($options);
-            $featureTemplate = $this->templateEngine->buildTemplate($feature, $templateContext);
-            if ($featureTemplate) {
-                $contexts[] = $featureTemplate;
-            }
-            
-            // 2. Tenant context'i al ve feature type'a göre optimize et
-            $tenantContext = $this->tenantCollector->collectWithMode('normal');
-            if (!empty($tenantContext['context_text'])) {
-                $optimizedTenantContext = $this->featureTypeManager->optimizeContextForType(
-                    $featureType, 
-                    $tenantContext['context_text']
-                );
-                $contexts[] = $optimizedTenantContext;
-            }
-        } else {
-            // Fallback: Eski sistem
-            $tenantContext = $this->tenantCollector->collectWithMode('normal');
-            if (!empty($tenantContext['context_text'])) {
-                $contexts[] = $tenantContext['context_text'];
-            }
+        // Fallback: Basit sistem (FeatureTypeManager kaldırıldı)
+        $tenantContext = $this->tenantCollector->collectWithMode('normal');
+        if (!empty($tenantContext['context_text'])) {
+            $contexts[] = $tenantContext['context_text'];
         }
         
         // 3. User context (arka plan)
@@ -370,9 +344,8 @@ readonly class ContextEngine
         $this->tenantCollector->clearCache();
         $this->pageCollector->clearCache();
         
-        // Template ve Feature Type cache'lerini de temizle
+        // Template cache'lerini de temizle
         $this->templateEngine->clearTemplateCache();
-        $this->featureTypeManager->clearTypeCache();
         
         // Global context cache'leri de temizle
         $tenantId = tenant('id') ?? 'default';
@@ -507,7 +480,7 @@ readonly class ContextEngine
                     'page' => get_class($this->pageCollector)
                 ],
                 'template_stats' => $this->templateEngine->getTemplateStats(),
-                'feature_type_stats' => $this->featureTypeManager->getTypeStatistics(),
+                // 'feature_type_stats' kaldırıldı
                 'generated_at' => now()
             ];
         } catch (\Exception $e) {

@@ -189,14 +189,19 @@ class ResponseTemplateEngine
         }
         
         try {
-            $template = json_decode($feature->response_template, true);
-            
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                Log::warning('Invalid template JSON', [
-                    'feature_slug' => $feature->slug,
-                    'json_error' => json_last_error_msg()
-                ]);
-                return [];
+            // response_template zaten array ise decode etme
+            if (is_array($feature->response_template)) {
+                $template = $feature->response_template;
+            } else {
+                $template = json_decode($feature->response_template, true);
+                
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Log::warning('Invalid template JSON', [
+                        'feature_slug' => $feature->slug,
+                        'json_error' => json_last_error_msg()
+                    ]);
+                    return [];
+                }
             }
             
             return $this->validateTemplate($template);

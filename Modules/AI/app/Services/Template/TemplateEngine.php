@@ -82,34 +82,33 @@ readonly class TemplateEngine
     }
     
     /**
-     * Expert prompts'ları priority sırasına göre al
+     * Expert prompts'ları priority sırasına göre al (YENİ SİSTEM)
      */
     private function getExpertPrompts(AIFeature $feature): array
     {
-        if (!$feature->expert_prompt_id) {
-            return [];
-        }
+        // Yeni relation sistemi ile feature prompt'larını al
+        $featurePromptRelations = \DB::table('ai_feature_prompt_relations')
+            ->join('ai_prompts', 'ai_feature_prompt_relations.prompt_id', '=', 'ai_prompts.prompt_id')
+            ->where('ai_feature_prompt_relations.feature_id', $feature->id)
+            ->where('ai_feature_prompt_relations.is_active', true)
+            ->select([
+                'ai_prompts.name',
+                'ai_prompts.content',
+                'ai_feature_prompt_relations.priority',
+                'ai_feature_prompt_relations.role'
+            ])
+            ->orderBy('ai_feature_prompt_relations.priority')
+            ->get();
         
         $expertPrompts = [];
-        
-        // Ana expert prompt
-        $mainExpertPrompt = Prompt::find($feature->expert_prompt_id);
-        if ($mainExpertPrompt) {
+        foreach ($featurePromptRelations as $relation) {
             $expertPrompts[] = [
-                'content' => $mainExpertPrompt->content,
-                'priority' => $mainExpertPrompt->priority ?? 2,
-                'name' => $mainExpertPrompt->name
+                'content' => $relation->content,
+                'priority' => $relation->priority,
+                'name' => $relation->name,
+                'role' => $relation->role
             ];
         }
-        
-        // Parent prompts (inheritance)
-        if ($mainExpertPrompt && $mainExpertPrompt->parent_id) {
-            $parentPrompts = $this->getParentPrompts($mainExpertPrompt->parent_id);
-            $expertPrompts = array_merge($expertPrompts, $parentPrompts);
-        }
-        
-        // Priority'ye göre sırala (yüksek priority önce)
-        usort($expertPrompts, fn($a, $b) => $a['priority'] <=> $b['priority']);
         
         return $expertPrompts;
     }

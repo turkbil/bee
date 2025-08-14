@@ -8,6 +8,7 @@ use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationCheckerComponent;
+use Modules\LanguageManagement\app\Http\Controllers\Api\LanguageController;
 
 // Admin rotaları
 Route::middleware(['admin', 'tenant'])
@@ -59,5 +60,11 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/translation-checker', TranslationCheckerComponent::class)
                     ->middleware('module.permission:languagemanagement,view')
                     ->name('translation-checker');
+                
+                // API endpoints
+                Route::prefix('api')->name('api.')->group(function () {
+                    Route::get('/languages/visible', [LanguageController::class, 'visibleLanguages'])
+                        ->name('languages.visible');
+                });
             });
     });

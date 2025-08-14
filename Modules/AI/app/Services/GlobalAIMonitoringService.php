@@ -152,7 +152,7 @@ readonly class GlobalAIMonitoringService
             'user_input' => $userInput,
             'ai_response' => $aiResponse,
             'request_type' => 'feature',
-            'feature_category' => $feature->category->title ?? null
+            'feature_category' => $feature->aiFeatureCategory->title ?? null
         ]);
     }
     

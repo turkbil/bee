@@ -48,6 +48,21 @@ Route::middleware(['admin', 'admin.tenant.select'])
                 Route::get('/settings/prompts', [SettingsController::class, 'prompts'])
                     ->middleware('module.permission:ai,update')
                     ->name('settings.prompts');
+                
+                // AI Translation Routes - Global Translation System
+                Route::prefix('translation')->name('translation.')->group(function () {
+                    // Token estimation
+                    Route::post('/estimate-tokens', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'estimateTokens'])
+                        ->name('estimate-tokens');
+                    
+                    // Start translation
+                    Route::post('/start', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'startTranslation'])
+                        ->name('start');
+                    
+                    // Get progress
+                    Route::get('/progress/{operationId}', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'getProgress'])
+                        ->name('progress');
+                });
                     
                 Route::get('/settings/prompts/manage/{id?}', [SettingsController::class, 'managePrompt'])
                     ->middleware('module.permission:ai,update')
@@ -173,27 +188,48 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->name('features.dashboard');
                     
                 // AI Feature Categories Management
-                Route::get('/features/categories', \Modules\AI\App\Http\Livewire\Admin\Features\AIFeatureCategoryComponent::class)
+                Route::get('/features/categories', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureCategoriesController::class, 'index'])
                     ->middleware('module.permission:ai,view')
                     ->name('features.categories');
+                    
+                // Categories Order Update
+                Route::post('/features/categories/update-order', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureCategoriesController::class, 'updateOrder'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('features.categories.update-order');
+                    
+                // Categories Status Toggle
+                Route::post('/features/categories/{id}/toggle-status', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureCategoriesController::class, 'toggleStatus'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('features.categories.toggle-status');
+                    
+                // Input Management Routes - Universal Input System
+                Route::prefix('features/{feature}/inputs')
+                    ->middleware('module.permission:ai,view')
+                    ->name('features.inputs.')
+                    ->group(function() {
+                        Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureInputController::class, 'manage'])
+                            ->name('manage');
+                        Route::post('/', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureInputController::class, 'store'])
+                            ->middleware('module.permission:ai,create')
+                            ->name('store');
+                        Route::put('/{input}', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureInputController::class, 'update'])
+                            ->middleware('module.permission:ai,update')
+                            ->name('update');
+                        Route::delete('/{input}', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureInputController::class, 'destroy'])
+                            ->middleware('module.permission:ai,delete')
+                            ->name('destroy');
+                    });
                     
                 // Feature Manage Route'ları (Page pattern - create ve edit kaldırıldı)
                 Route::get('/features/manage/{id?}', \Modules\AI\App\Http\Livewire\Admin\Features\AIFeatureManageComponent::class)
                     ->middleware('module.permission:ai,view')
                     ->name('features.manage');
-                
-                // Sıralama güncelleme (AJAX)
-                Route::post('/features/update-sort', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'updateSort'])
-                    ->middleware('module.permission:ai,update')
-                    ->name('features.update-sort');
                     
-                // Durum değiştirme (AJAX)
-                Route::post('/features/{id}/toggle-status', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'toggleStatus'])
-                    ->middleware('module.permission:ai,update')
-                    ->name('features.toggle-status');
+                // Feature tek başına görüntüleme sayfası (slug veya ID ile)
+                Route::get('/features/{feature}', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'show'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('features.show');
                     
-                
-                // AI Features ek route'lar (eski sistem uyumluluğu)
                 Route::post('/features/bulk-status', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'bulkStatusUpdate'])
                     ->middleware('module.permission:ai,update')
                     ->name('features.bulk-status');
@@ -210,6 +246,13 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->middleware('module.permission:ai,view')
                     ->name('prowess');
                 
+                // AI Test Panel
+                Route::get('/test-panel', function() {
+                    return view('ai::admin.features.ai-test-panel');
+                })
+                    ->middleware('module.permission:ai,view')
+                    ->name('test-panel');
+
                 // AI Providers Management
                 Route::get('/providers', function() {
                     $providers = \Modules\AI\App\Models\AIProvider::orderBy('priority', 'asc')->get();
@@ -639,5 +682,192 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->where('format', 'json|csv')
                             ->name('export');
                     });
+                    
+                // Universal Input System Demo Route
+                Route::get('/demo/blog-writer', function() {
+                    return view('ai::demo.blog-writer-form');
+                })->name('demo.blog-writer');
+                
+                // Universal Input System API Routes
+                Route::prefix('api/features')
+                    ->middleware('module.permission:ai,view')
+                    ->name('api.features.')
+                    ->group(function() {
+                        Route::get('/{feature}/form-structure', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureInputController::class, 'getFormStructure'])
+                            ->name('form-structure');
+                        Route::post('/{feature}/validate-inputs', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureInputController::class, 'validateInputs'])
+                            ->name('validate-inputs');
+                        Route::post('/{feature}/process-form', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeatureInputController::class, 'processForm'])
+                            ->name('process-form');
+                    });
+                    
+                // AI Profiles API Routes  
+                Route::prefix('api/profiles')
+                    ->middleware('module.permission:ai,view')
+                    ->name('api.profiles.')
+                    ->group(function() {
+                        Route::get('/company-info', function() {
+                            $tenantId = tenant('id') ?: '1';
+                            
+                            $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $tenantId)
+                                ->where('is_active', true)
+                                ->first();
+                            
+                            if (!$profile) {
+                                return response()->json([
+                                    'available' => false,
+                                    'message' => 'Şirket profili bulunamadı. Lütfen AI Profiles bölümünden şirket bilgilerinizi tamamlayın.',
+                                    'setup_url' => route('admin.ai.profile.show')
+                                ]);
+                            }
+                            
+                            // Company info'yu organize et
+                            $companyInfo = [];
+                            
+                            if ($profile->company_info) {
+                                $companyData = is_string($profile->company_info) ? json_decode($profile->company_info, true) : $profile->company_info;
+                                if ($companyData) {
+                                    $companyInfo['company_name'] = $companyData['company_name'] ?? '';
+                                    $companyInfo['industry'] = $companyData['industry'] ?? '';
+                                    $companyInfo['business_model'] = $companyData['business_model'] ?? '';
+                                    $companyInfo['target_audience'] = $companyData['target_audience'] ?? '';
+                                }
+                            }
+                            
+                            if ($profile->sector_details) {
+                                $sectorData = is_string($profile->sector_details) ? json_decode($profile->sector_details, true) : $profile->sector_details;
+                                if ($sectorData) {
+                                    $companyInfo['products_services'] = $sectorData['products_services'] ?? '';
+                                    $companyInfo['competitive_advantage'] = $sectorData['competitive_advantage'] ?? '';
+                                }
+                            }
+                            
+                            if ($profile->ai_behavior_rules) {
+                                $behaviorData = is_string($profile->ai_behavior_rules) ? json_decode($profile->ai_behavior_rules, true) : $profile->ai_behavior_rules;
+                                if ($behaviorData) {
+                                    $companyInfo['brand_voice'] = $behaviorData['brand_voice'] ?? '';
+                                    $companyInfo['communication_style'] = $behaviorData['communication_style'] ?? '';
+                                }
+                            }
+                            
+                            return response()->json([
+                                'available' => true,
+                                'profile_data' => $companyInfo,
+                                'company_info' => $companyInfo, // Backward compatibility
+                                'profile_completeness' => $profile->profile_completeness_score ?? 0,
+                                'last_updated' => $profile->updated_at->diffForHumans()
+                            ]);
+                        })->name('company-info');
+                    });
+
+                // Universal Input System V3 Routes
+                Route::prefix('universal')->name('universal.')->group(function() {
+                    // Admin Panel Pages
+                    Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'index'])->name('index');
+                    Route::get('/input-management', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'inputManagement'])->name('input-management');
+                    
+                    Route::get('/context-dashboard', function() {
+                        return view('ai::admin.universal.context-dashboard');
+                    })->middleware('module.permission:ai,view')->name('universal.context-dashboard');
+                    
+                    Route::get('/bulk-operations', function() {
+                        return view('ai::admin.universal.bulk-operations');
+                    })->middleware('module.permission:ai,view')->name('universal.bulk-operations');
+                    
+                    Route::get('/analytics-dashboard', function() {
+                        return view('ai::admin.universal.analytics-dashboard');
+                    })->middleware('module.permission:ai,view')->name('universal.analytics-dashboard');
+                    
+                    Route::get('/integration-settings', function() {
+                        return view('ai::admin.universal.integration-settings');
+                    })->middleware('module.permission:ai,view')->name('universal.integration-settings');
+                    
+                    // API Routes
+                    Route::get('/form-structure/{featureId}', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'getFormStructure']);
+                    Route::post('/submit/{featureId}', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'submitForm']);
+                    Route::get('/defaults/{featureId}', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'getSmartDefaults']);
+                    Route::post('/preferences', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'savePreferences']);
+                    Route::post('/validate', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'validateInputs']);
+                    Route::post('/suggestions', [\Modules\AI\App\Http\Controllers\Admin\Universal\UniversalInputController::class, 'getFieldSuggestions']);
+                });
+                // Bulk Operations Routes
+                Route::prefix('bulk')->group(function() {
+                    Route::post('/create', [\Modules\AI\App\Http\Controllers\Admin\Bulk\BulkOperationController::class, 'createBulkOperation']);
+                    Route::get('/status/{operationId}', [\Modules\AI\App\Http\Controllers\Admin\Bulk\BulkOperationController::class, 'getOperationStatus']);
+                    Route::post('/cancel/{operationId}', [\Modules\AI\App\Http\Controllers\Admin\Bulk\BulkOperationController::class, 'cancelOperation']);
+                    Route::get('/history', [\Modules\AI\App\Http\Controllers\Admin\Bulk\BulkOperationController::class, 'getOperationHistory']);
+                    Route::post('/retry/{operationId}', [\Modules\AI\App\Http\Controllers\Admin\Bulk\BulkOperationController::class, 'retryFailedItems']);
+                });
+
+                // Module Integration Routes
+                Route::prefix('integration')->group(function() {
+                    Route::get('/module/{moduleName}', [\Modules\AI\App\Http\Controllers\Admin\Integration\ModuleIntegrationController::class, 'getModuleConfig']);
+                    Route::put('/module/{moduleName}', [\Modules\AI\App\Http\Controllers\Admin\Integration\ModuleIntegrationController::class, 'updateModuleConfig']);
+                    Route::get('/actions/{moduleName}/{fieldName}', [\Modules\AI\App\Http\Controllers\Admin\Integration\ModuleIntegrationController::class, 'getAvailableActions']);
+                    Route::post('/execute', [\Modules\AI\App\Http\Controllers\Admin\Integration\ModuleIntegrationController::class, 'executeAction']);
+                    Route::post('/suggestions', [\Modules\AI\App\Http\Controllers\Admin\Integration\ModuleIntegrationController::class, 'getFieldSuggestions']);
+                    Route::get('/health/{moduleName}', [\Modules\AI\App\Http\Controllers\Admin\Integration\ModuleIntegrationController::class, 'getModuleHealth']);
+                });
+
+                // Template Routes
+                Route::prefix('templates')->group(function() {
+                    Route::get('/list', [\Modules\AI\App\Http\Controllers\Admin\Template\TemplateController::class, 'listTemplates']);
+                    Route::get('/preview/{templateId}', [\Modules\AI\App\Http\Controllers\Admin\Template\TemplateController::class, 'previewTemplate']);
+                    Route::post('/generate/{templateId}', [\Modules\AI\App\Http\Controllers\Admin\Template\TemplateController::class, 'generateFromTemplate']);
+                    Route::post('/create', [\Modules\AI\App\Http\Controllers\Admin\Template\TemplateController::class, 'createCustomTemplate']);
+                    Route::put('/{templateId}', [\Modules\AI\App\Http\Controllers\Admin\Template\TemplateController::class, 'updateTemplate']);
+                    Route::delete('/{templateId}', [\Modules\AI\App\Http\Controllers\Admin\Template\TemplateController::class, 'deleteTemplate']);
+                });
+
+                // Translation Routes  
+                Route::prefix('translation')->group(function() {
+                    Route::post('/translate', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'translateContent']);
+                    Route::post('/bulk-translate', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'bulkTranslate']);
+                    Route::get('/languages', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'getAvailableLanguages']);
+                    Route::get('/fields/{module}', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'getTranslatableFields']);
+                    Route::get('/mappings/{module}', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'getFieldMappings']);
+                    
+                    // Global translation routes (used by JavaScript)
+                    Route::post('/estimate', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'estimateTokens']);
+                    Route::post('/estimate-tokens', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'estimateTokens']);
+                    Route::post('/start', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'startTranslation']);
+                    Route::get('/progress/{operationId}', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'getProgress']);
+                });
+
+                // Analytics Routes
+                Route::prefix('analytics')->group(function() {
+                    Route::get('/usage/{featureId}', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'getUsageStats']);
+                    Route::get('/performance', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'getPerformanceMetrics']);
+                    Route::get('/popular-features', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'getPopularFeatures']);
+                    Route::get('/user-preferences/{userId}', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'getUserPreferences']);
+                    Route::get('/system-health', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'getSystemHealth']);
+                });
+
+                // Context & Rules Routes
+                Route::prefix('context')->group(function() {
+                    Route::get('/dashboard', [\Modules\AI\App\Http\Controllers\Admin\Context\ContextController::class, 'index'])->name('context.dashboard');
+                    Route::get('/rules', [\Modules\AI\App\Http\Controllers\Admin\Context\ContextController::class, 'listRules']);
+                    Route::post('/rules', [\Modules\AI\App\Http\Controllers\Admin\Context\ContextController::class, 'createRule']);
+                    Route::put('/rules/{ruleId}', [\Modules\AI\App\Http\Controllers\Admin\Context\ContextController::class, 'updateRule']);
+                    Route::delete('/rules/{ruleId}', [\Modules\AI\App\Http\Controllers\Admin\Context\ContextController::class, 'deleteRule']);
+                    Route::post('/detect', [\Modules\AI\App\Http\Controllers\Admin\Context\ContextController::class, 'detectContext']);
+                });
+
+                // ÇAKIŞAN ROUTE GRUBU SİLİNDİ - ÜSTTEKİ GRUP AKTİF
+
+                // Bulk Operations Admin Pages
+                Route::prefix('bulk')->name('bulk.')->group(function() {
+                    Route::get('/operations', [\Modules\AI\App\Http\Controllers\Admin\Bulk\BulkOperationController::class, 'index'])->name('operations');
+                });
+
+                // Module Integration Admin Pages  
+                Route::prefix('integration')->name('integration.')->group(function() {
+                    Route::get('/settings', [\Modules\AI\App\Http\Controllers\Admin\Integration\ModuleIntegrationController::class, 'index'])->name('settings');
+                });
+
+                // Analytics Admin Pages
+                Route::prefix('analytics')->name('analytics.')->group(function() {
+                    Route::get('/dashboard', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'index'])->name('dashboard');
+                });
             });
     });

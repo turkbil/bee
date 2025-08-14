@@ -1,12 +1,16 @@
 @php
     use Modules\LanguageManagement\app\Models\TenantLanguage;
-    $tenantLanguages = TenantLanguage::where('is_active', true)->get();
+    // İsteğe göre: Sadece aktif VE visible dilleri göster (önce aktif+visible, sonra sıralama)
+    $tenantLanguages = TenantLanguage::where('is_active', true)
+        ->where('is_visible', true)
+        ->orderBy('sort_order')
+        ->get();
     $currentLangName = $tenantLanguages->where('code', $currentLanguage)->first()?->native_name ?? strtoupper($currentLanguage);
 @endphp
 
 <li class="nav-item {{ $position ?? 'ms-auto' }}">
     <div class="language-animation-container">
-        <!-- TR EN AR Butonları (Normal durumda gizli) -->
+        <!-- Dil Butonları (Sadece aktif VE visible olanlar) -->
         <div class="language-buttons" id="languageButtons">
             @foreach ($tenantLanguages as $lang)
                 <button class="btn btn-link p-2 language-switch-btn {{ $currentLanguage === $lang->code ? 'text-primary' : 'text-muted' }}"

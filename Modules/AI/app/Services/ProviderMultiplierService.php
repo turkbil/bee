@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services;
+namespace Modules\AI\App\Services;
 
 use Exception;
 use Illuminate\Support\Facades\{Cache, Log};
 use Illuminate\Support\Collection;
-use Modules\AI\app\Models\{AIProvider, AICreditUsage};
-use Modules\AI\app\Exceptions\ProviderMultiplierException;
+use Modules\AI\App\Models\{AIProvider, AICreditUsage};
+use Modules\AI\App\Exceptions\ProviderMultiplierException;
 
 /**
  * Provider Multiplier Service - Advanced Cost Optimization System

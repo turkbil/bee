@@ -614,7 +614,7 @@ class AIPriorityEngine
     /**
      * 🔧 HELPER: Feature-specific components oluştur
      */
-    public static function getFeatureComponents($feature): array
+    public static function getFeatureComponents($feature, array $options = []): array
     {
         $components = [];
         
@@ -624,29 +624,77 @@ class AIPriorityEngine
                 'category' => 'feature_definition',
                 'priority' => 1,
                 'content' => "=== GÖREV TANIMI ===\n" . $feature->quick_prompt,
-                'name' => 'Quick Prompt'
+                'name' => 'Quick Prompt',
+                'type' => 'quick_prompt'
             ];
         }
         
-        // Expert Prompts (priority sırasına göre)
-        $expertPrompts = $feature->prompts()
-            ->wherePivot('is_active', true)
-            ->where('prompt_type', 'feature')
-            ->orderBy('ai_feature_prompts.priority', 'asc')
-            ->get();
-            
-        foreach ($expertPrompts as $index => $prompt) {
-            $role = $prompt->pivot->role ?? 'primary';
-            $expertPriority = $prompt->pivot->priority ?? ($index + 1);
-            
-            $components[] = [
-                'category' => 'expert_knowledge',
-                'priority' => min($expertPriority, 4), // Max 4 priority
-                'position' => $expertPriority,
-                'content' => "=== UZMAN BİLGİSİ ({$role}) ===\n" . $prompt->content,
-                'name' => "Expert Prompt #{$expertPriority}"
-            ];
+        // Expert Prompts (yeni ai_feature_prompt_relations tablosundan) - FIXED: Dual foreign key sistem
+        try {
+            // İki tip prompt var: ai_prompts (universal) ve ai_feature_prompts (expert)
+            $expertPromptRelations = \DB::table('ai_feature_prompt_relations as rel')
+                // AI_FEATURE_PROMPTS tablosundan expert prompt'ları çek
+                ->leftJoin('ai_feature_prompts as afp', 'rel.feature_prompt_id', '=', 'afp.id')
+                // AI_PROMPTS tablosundan universal prompt'ları da çek (yazım tonu, uzunluk vs.)
+                ->leftJoin('ai_prompts as p', 'rel.prompt_id', '=', 'p.prompt_id')
+                ->where('rel.feature_id', $feature->id)
+                ->where('rel.is_active', true)
+                ->where(function($query) {
+                    // Expert prompt VEYA universal prompt aktif olmalı
+                    $query->where(function($q1) {
+                        $q1->whereNotNull('afp.id')->where('afp.is_active', true);
+                    })->orWhere(function($q2) {
+                        $q2->whereNotNull('p.prompt_id')->where('p.is_active', true);
+                    });
+                })
+                ->orderBy('rel.priority', 'asc')
+                ->select(
+                    \DB::raw('COALESCE(afp.expert_prompt, p.content) as content'),
+                    \DB::raw('COALESCE(afp.name, p.name) as name'),
+                    'rel.priority', 
+                    'rel.role',
+                    \DB::raw('CASE WHEN afp.id IS NOT NULL THEN "expert" ELSE "universal" END as prompt_source')
+                )
+                ->get();
+                
+            foreach ($expertPromptRelations as $index => $promptRel) {
+                $role = $promptRel->role ?? 'primary';
+                $expertPriority = $promptRel->priority ?? ($index + 1);
+                $promptSource = $promptRel->prompt_source ?? 'expert';
+                
+                // Source'a göre farklı category ve formatting
+                if ($promptSource === 'universal') {
+                    // Universal prompt (yazım tonu, uzunluk vs.)
+                    $components[] = [
+                        'category' => 'system_common', // Universal prompt'lar system_common kategorisinde
+                        'priority' => min($expertPriority, 3), 
+                        'position' => $expertPriority,
+                        'content' => "=== UNIVERSAL RULE ({$promptRel->name}) ===\n" . $promptRel->content,
+                        'name' => "Universal: {$promptRel->name}",
+                        'type' => 'universal_prompt'
+                    ];
+                } else {
+                    // Expert prompt
+                    $components[] = [
+                        'category' => 'expert_knowledge',
+                        'priority' => min($expertPriority, 4), // Max 4 priority
+                        'position' => $expertPriority,
+                        'content' => "=== UZMAN BİLGİSİ ({$role}) ===\n" . $promptRel->content,
+                        'name' => "Expert Prompt #{$expertPriority} ({$promptRel->name})",
+                        'type' => 'expert_prompt'
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Expert prompts loading failed', [
+                'feature_id' => $feature->id,
+                'error' => $e->getMessage()
+            ]);
         }
+        
+        // 🔥 NEW: OPTIONS-BASED UNIVERSAL PROMPTS
+        // Kullanıcı seçimlerine göre dinamik universal prompt'ları ekle
+        self::addOptionsBasedUniversalPrompts($components, $options ?? []);
         
         // 🎨 V2 ENHANCED: Response Template with ResponseTemplateEngine
         if ($feature->hasResponseTemplate()) {
@@ -673,7 +721,8 @@ class AIPriorityEngine
                 'category' => 'response_format',
                 'priority' => 2,
                 'content' => $finalTemplate,
-                'name' => 'Response Template (V2 Enhanced)'
+                'name' => 'Response Template (V2 Enhanced)',
+                'type' => 'response_template'
             ];
         } else {
             // Feature'da response template yoksa, basic anti-monotony rules ekle
@@ -791,7 +840,7 @@ class AIPriorityEngine
         
         // Feature varsa feature components ekle
         if (isset($options['feature'])) {
-            $components = array_merge($components, self::getFeatureComponents($options['feature']));
+            $components = array_merge($components, self::getFeatureComponents($options['feature'], $options));
         }
         
         
@@ -801,6 +850,74 @@ class AIPriorityEngine
         }
         
         return self::buildSystemPrompt($components, $options);
+    }
+
+    /**
+     * 🔥 NEW: OPTIONS-BASED UNIVERSAL PROMPTS
+     * Kullanıcı seçimlerine göre dinamik universal prompt'ları ekle
+     */
+    private static function addOptionsBasedUniversalPrompts(array &$components, array $options): void
+    {
+        try {
+            // Yazım tonu seçimi varsa ekle
+            if (isset($options['writing_tone']) && !empty($options['writing_tone'])) {
+                $writingTonePrompt = \DB::table('ai_prompts')
+                    ->where('prompt_type', 'writing_tone')
+                    ->where('slug', $options['writing_tone'])
+                    ->where('is_active', true)
+                    ->first();
+                    
+                if ($writingTonePrompt) {
+                    $components[] = [
+                        'category' => 'system_common',
+                        'priority' => 1, // Yüksek priority - çok önemli
+                        'content' => "=== YAZIM TONU ===\n" . $writingTonePrompt->content,
+                        'name' => "Yazım Tonu: {$writingTonePrompt->name}",
+                        'type' => 'writing_tone_selection'
+                    ];
+                    
+                    \Log::info('🎯 Writing tone prompt added', [
+                        'tone' => $options['writing_tone'],
+                        'prompt_name' => $writingTonePrompt->name
+                    ]);
+                }
+            }
+            
+            // İçerik uzunluğu seçimi varsa ekle
+            if (isset($options['content_length']) && !empty($options['content_length'])) {
+                $contentLengthPrompt = \DB::table('ai_prompts')
+                    ->where('prompt_type', 'content_length')
+                    ->where('slug', $options['content_length'])
+                    ->where('is_active', true)
+                    ->first();
+                    
+                if ($contentLengthPrompt) {
+                    $components[] = [
+                        'category' => 'system_common',
+                        'priority' => 1, // Yüksek priority - çok önemli
+                        'content' => "=== İÇERİK UZUNLUĞU ===\n" . $contentLengthPrompt->content,
+                        'name' => "İçerik Uzunluğu: {$contentLengthPrompt->name}",
+                        'type' => 'content_length_selection'
+                    ];
+                    
+                    \Log::info('🎯 Content length prompt added', [
+                        'length' => $options['content_length'],
+                        'prompt_name' => $contentLengthPrompt->name
+                    ]);
+                }
+            }
+            
+            // Gelecekte başka universal prompt türleri için genişletilebilir:
+            // - format_type (json, markdown, html vs.)
+            // - complexity_level (basic, intermediate, advanced)
+            // - audience_type (beginner, expert, general)
+            
+        } catch (\Exception $e) {
+            \Log::warning('Options-based universal prompts loading failed', [
+                'error' => $e->getMessage(),
+                'options' => array_keys($options)
+            ]);
+        }
     }
 
     /**

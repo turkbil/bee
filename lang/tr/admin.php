@@ -181,6 +181,8 @@ return [
     'save_and_new' => 'Kaydet ve Yeni Ekle',
     'cancel' => 'İptal',
     'delete' => 'Sil',
+    'ai_translate' => 'Yapay Zeka ile Çeviri',
+    'no_options_available' => 'Seçenek bulunamadı',
     'edit' => 'Düzenle',
     'create' => 'Oluştur',
     'update' => 'Güncelle',
@@ -208,6 +210,7 @@ return [
     // Durumlar
     'active' => 'Aktif',
     'inactive' => 'Pasif',
+    'hidden' => 'Gizli',
     'enabled' => 'Etkin',
     'disabled' => 'Devre Dışı',
     'published' => 'Yayında',
@@ -480,6 +483,8 @@ return [
     'api_key_invalid' => 'Geçersiz API anahtarı',
     'api_unavailable' => 'API kullanılamıyor',
     'rate_limit_exceeded' => 'Oran limiti aşıldı',
+    'use_company_profile' => 'Şirket Profilimi Kullan',
+    'dont_use_company_profile' => 'Şirket Profilimi Kullanma',
     
     // =============================================
     // TINYMCE EDİTÖR ÇEVİRİLERİ
@@ -609,4 +614,18 @@ return [
     'seo_tab_preview_description' => 'Aşağıda içerik düzenleme sayfalarındaki SEO sekmesinin nasıl göründüğünü görebilirsiniz:',
     'preview_title' => 'Önizleme: İçerik Düzenleme - SEO Sekmesi',
     'preview_note' => 'Bu önizlemedir. Gerçek SEO ayarlarını yapmak için herhangi bir içeriği düzenleyip SEO sekmesini kullanın.',
+    
+    // =============================================
+    // YAPAY ZEKA ÇEVİRİ SİSTEMİ PROGRESS MESAJLARI
+    // =============================================
+    
+    // Progress Title Mesajları
+    'ai_translation_wizard_working' => 'Yapay Zeka Çeviri Sihirbazı İş Başında',
+    'ai_translation_almost_done' => 'Çeviriler Neredeyse Tamam',
+    'ai_translation_language_analysis' => 'Dil Analizi Devam Ediyor',
+    'ai_translation_preparing' => 'Yapay Zeka Çevirilerinizi Hazırlıyor',
+    
+    // Progress Subtitle Mesajları
+    'ai_translation_global_reach' => 'İfadeleriniz dünyanın her yerinde karşılık bulacak',
+    'ai_translation_processing' => 'Çoklu dil çevirileri profesyonel kalitede işleniyor...',
 ];

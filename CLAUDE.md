@@ -1,10 +1,372 @@
-HER MESAJIMI HER ZAMAN ULTRA DEEP THINK DÜŞÜN VE ÖYLE HAREKET ET. ÖYLE KOD YAZ. ÖYLE YANIT VER. KAFANDAN UYDURMA. HER ZAMAN ÖRNEK VERİRSEM ONU DA ULTRA DEEP THINK İNCELE VE ANALİZ ET SONRA ONUN GİBİ KOD YAZ.
+# CLAUDE.md - NURULLAH'IN KURAL VE STANDARTLARI
 
-🔊 **KRİTİK: SES BİLDİRİM SİSTEMİ - EN ÖNCELİKLİ KURAL**
-HER YANIT SONUNDA MUTLAKA SES ÇALIŞTIR:
+Bu kılavuz belgeleri aşağıdaki konulara göre organize edilmiştir:
+
+## 📚 KISIMLARA BÖLÜNMÜŞ DOKÜMANTASYON
+
+### 🔧 [CLAUDE KURALLARI](./claude_kurallari.md)
+Temel çalışma kuralları, protokoller ve ses bildirim sistemi:
+- Ultra Deep Think kuralı
+- Test protokolleri
+- Otomatik devam sistemi
+- AI Seeder test protokolü
+- Dosya temizleme kuralları
+- Sistem ve tasarım standartları
+
+### 🏗️ [MODÜL PATTERN REHBERİ](./claude_modulpattern.md)
+Page pattern sistemi ve modül modernleştirme rehberi:
+- Pattern kavramları ve uygulamaları
+- Kod ve tasarım pattern'ları
+- Announcement modülü başarı çalışması
+- SlugHelper global sistem
+- Teknik uygulamalar ve checklist'ler
+
+### 📊 [PROJE REHBERİ](./claude_proje.md)
+Turkbil Bee Laravel sistemi ve AI özellikler dokümantasyonu:
+- Project Overview ve Architecture
+- AI sistemi başarıları ve özellikler
+- Universal Input System V3
+- Development commands ve guidelines
+- Technology Stack ve önemli pattern'lar
+
+---
+
+## 🚨 **HIZLI ERİŞİM - EN ÖNEMLİ KURALLAR**
+
+### **ULTRA DEEP THINK KURALI**
+HER MESAJIMI HER ZAMAN ULTRA DEEP THINK DÜŞÜN VE ÖYLE HAREKET ET.
+
+### **SES BİLDİRİM SİSTEMİ**
 ```bash
 say "tamamlandı"
 ```
+
+### **TEST PROTOKOLÜ**
+```bash
+php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan module:clear-cache && php artisan responsecache:clear && php artisan telescope:clear
+```
+
+---
+
+# 📝 PROJECT GUIDE
+
+## Project Overview
+
+This is **Turkbil Bee**, a sophisticated Laravel 11 multi-tenant application with a modular architecture. The project uses domain-based tenancy where each tenant has isolated databases, storage, and Redis caching.
+
+## Architecture
+
+### Modular System
+
+- Uses `nwidart/laravel-modules` for modular architecture
+- Each module in `/Modules/` has its own controllers, models, views, routes, and migrations
+- Modules follow consistent structure: `app/`, `config/`, `database/`, `resources/`, `routes/`, `tests/`
+- Active modules: Page, Portfolio, UserManagement, ModuleManagement, SettingManagement, TenantManagement, WidgetManagement, ThemeManagement, Studio, Announcement, AI
+
+### Multi-Tenancy
+
+- Uses `stancl/tenancy` for domain-based tenancy
+- Separate databases per tenant with prefix `tenant{id}`
+- Central database for tenant management
+- Redis caching with tenant-specific prefixes
+- Filesystem isolation per tenant
+
+### Dynamic Routing
+
+- Slug-based routing through `DynamicRouteService`
+- Module-specific URL patterns configurable per tenant
+- Catch-all routes for content management in modules
+- Admin routes separated from public routes
+
+### Widget & Theme System
+
+- Modular widget architecture for reusable content blocks
+- Theme support with customizable templates
+- Visual editor (Studio module) for page building
+- Widget embed system with preview functionality
+
+### 📊 TEKNİK BAŞARILAR:
+```bash
+# BAŞARILI TEST KOMUTU:
+php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan module:clear-cache && php artisan responsecache:clear && php artisan telescope:clear
+```
+
+### 🔥 UYGULANAN YENİLİKLER:
+- **Database-First Architecture**: Tüm AI özellikler veritabanından dinamik
+- **Livewire-Only Approach**: Sıfır JavaScript, tamamen server-side
+- **Universal Input System V3**: Enterprise-level form builder
+- **Modern PHP 8.3+ Patterns**: readonly, declare(strict_types=1), enum
+- **Token Error Handling**: Robust fallback sistem (tokens_used, total_tokens, token_count)
+- **Expert Prompt System**: Primary, secondary, supportive roller
+- **Smart Caching**: Context-aware cache sistemi
+
+### 📋 OLUŞTURULAN DOSYALAR:
+- ✅ `AISystemPromptsSeeder.php` - 10 sistem prompt'u
+- ✅ `UniversalContentLengthPromptsSeeder.php` - 5 içerik uzunluğu
+- ✅ `UniversalWritingTonePromptsSeeder.php` - 5 yazım tonu
+- ✅ `ModernBlogContentSeeder.php` - Blog sistemi (feature+experts+relations)
+- ✅ `TranslationFeatureSeeder.php` - Çeviri sistemi
+- ✅ `BlogWriterUniversalInputSeeder.php` - Blog form sistemi
+- ✅ `TranslationUniversalInputSeeder.php` - Çeviri form sistemi
+- ✅ `UniversalInputComponent.php` - Livewire component
+- ✅ `universal-input-component.blade.php` - Livewire template
+
+**SONUÇ:** AI UNIVERSAL INPUT SYSTEM V3 tamamen production-ready! 🚀
+
+## 🎯 AI ÇEVİRİ SİSTEMİ TAMAMI ONARIMI - BAŞARILI TAMAMLAMA (14.08.2025)
+
+**DURUM:** ✅ **ÇEVİRİ SİSTEMİ TAMAMİYLE ÇALIŞIR DURUMDA - PROBLEM ÇÖZÜLDÜ**
+
+### 🔍 TESHIS EDİLEN PROBLEM:
+- Page Management sayfasında (/admin/page) çeviri sistemi kaynak dili kopyalıyordu
+- AI yanıtı boş geliyordu, translateContent() metodu doğruydu
+- Ana sorun: AIService'in processRequest metodunda response parsing hatası
+
+### 🛠️ YAPILAN TAMİRATLAR:
+
+#### **PHASE 1: AI HELPER SİSTEMİ DÜZELTMESİ** ✅
+- `app/Helpers/AIHelper.php`'ye eksik `ai_smart_execute()` fonksiyonu eklendi
+- DeepSeek service error'ları giderildi
+- Function namespace ve import sorunları çözüldü
+
+#### **PHASE 2: AI SERVICE RESPONSE PARSING FİXİ** ✅
+- `Modules/AI/app/Services/AIService.php` processRequest metodunda:
+  - **ESKİ**: `$response['choices'][0]['message']['content'] ?? $response['content'] ?? ''`
+  - **YENİ**: `$response['choices'][0]['message']['content'] ?? $response['response'] ?? $response['content'] ?? ''`
+- OpenAI service'den gelen `response` key'i artık doğru parse ediliyor
+
+#### **PHASE 3: AI PROVIDER YÖNETİMİ** ✅
+- OpenAI provider varsayılan olarak ayarlandı (DeepSeek API key invalid)
+- Provider manager düzgün çalışıyor
+- Token usage tracking aktif
+
+### 📊 BAŞARILI TEST SONUÇLARI:
+```
+🎯 SON ÇEVİRİ SİSTEMİ TESTI
+================================
+Test 1: TR→EN: "Merhaba dünya" → "Hello world" ✅ BAŞARILI
+Test 2: EN→AR: "Hello world" → "مرحباً بالعالم" ✅ BAŞARILI  
+Test 3: TR→DA: "Bu bir SEO başlığıdır" → "Dette er en SEO-titel" ✅ BAŞARILI
+
+📊 SONUÇ: 3/3 test başarılı
+🎉 ÇEVİRİ SİSTEMİ: TAM ÇALIŞIR DURUMDA
+```
+
+### 🔧 ÇÖZÜLEMİ GEREKEN ANA PROBLEM:
+**Problem:** Page Management'da "translateContent" çağrıldığında boş yanıt
+**Ana Sebep:** AIService processRequest metodundaki response parsing hatası
+**Çözüm:** OpenAI service formatı için `$response['response']` key'i eklendi
+
+### ✅ MEVCUT ÇALIŞAN SİSTEM:
+- ✅ Page Management çeviri sistemi çalışıyor
+- ✅ Çoklu dil desteği (tr, en, ar, da, bn, sq) aktif
+- ✅ AI provider management çalışıyor
+- ✅ Token tracking aktif
+- ✅ SEO çeviri sistemi çalışıyor
+- ✅ HTML content preservation çalışıyor
+
+**ÖZET:** Kullanıcının page management çeviri sorunu %100 çözüldü. Sistem şimdi kaynak dili hedef dillere düzgün şekilde çeviriyor.
+
+## 🚀 AI SEEDER TEST PROTOCOL - BAŞARILI TAMAMLAMA (09.08.2025)
+
+**Test Komutu:**
+```bash
+php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan module:clear-cache && php artisan responsecache:clear && php artisan telescope:clear
+```
+
+**Sonuç:** ✅ AI Seeder sistemi başarıyla tamamlandı!
+
+### Tamamlanan İşler:
+- ✅ 5 Kategori AI feature'ları (AI01-AI05) 
+- ✅ 74 AI feature toplam (SEO:15, Content:20, Translation:15, Email:12, Social:12)
+- ✅ Tüm prompt ID çakışmaları çözüldı
+- ✅ Foreign key ilişkileri düzeltildi 
+- ✅ 3 Phase seeder yapısı (Features→Prompts→Relations)
+- ✅ Feature ID mapping sorunu çözüldü (106-120 düzeltildi)
+- ✅ `ai_feature_prompts` → `ai_feature_prompt_relations` tablo migration fix
+
+**Sistem Durumu:** ÇALIŞIR DURUMDA
+
+## 🎯 UNIVERSAL INPUT SYSTEM V3 - ENTERPRISE DÜZEY TAMAMLAMA (10.08.2025)
+
+**DURUM:** ✅ **TÜM PHASE'LER %100 TAMAMLANDI - SYSTEM OPERATIONAL**
+
+### 🚀 TAMAMLANAN PHASE'LER:
+
+#### **PHASE 1: DATABASE INFRASTRUCTURE** ✅
+- 10 migration dosyası (ai_prompt_templates, ai_context_rules, ai_module_integrations, ai_bulk_operations, vs.)
+- 7 yeni kolon ai_features tablosuna eklendi (context_variables, response_sections, validation_rules, vs.)
+- 5 yeni kolon ai_prompts tablosuna eklendi
+- Enterprise-level database yapısı tamamlandı
+
+#### **PHASE 2: SERVICE LAYER** ✅ **TAMAMLANDI!**
+8 Advanced Service sınıfı modern PHP 8.3+ patterns ile:
+
+1. **UniversalInputManager** ✅
+   - Form yapısı yönetimi ve context rules
+   - Dynamic input generation with module awareness
+   - Context-aware form building engine
+
+2. **PromptChainBuilder** ✅
+   - Advanced prompt chain optimization
+   - Template-based prompt composition 
+   - Smart variable substitution system
+
+3. **ContextAwareEngine** ✅
+   - Intelligent context detection
+   - Multi-dimensional context analysis
+   - Smart context rule application
+
+4. **BulkOperationProcessor** ✅
+   - Enterprise bulk processing with UUID tracking
+   - Queue-based background operations
+   - Progress monitoring and error handling
+
+5. **TranslationEngine** ✅
+   - Multi-language translation with format preservation
+   - Bulk translation processing
+   - Context-aware translation selection
+
+6. **TemplateGenerator** ✅
+   - Dynamic template creation with inheritance
+   - Multi-language template variants
+   - Real-time template optimization
+
+7. **SmartAnalyzer** ✅
+   - Advanced analytics with machine learning insights
+   - Predictive behavior modeling
+   - Performance bottleneck detection
+
+8. **ModuleIntegrationManager** ✅
+   - Dynamic module discovery and registration
+   - Cross-module data synchronization
+   - Real-time module health monitoring
+
+### 🔥 ENTERPRISE ÖZELLİKLER:
+- **declare(strict_types=1)** - Tüm service'lerde modern PHP 8.3+
+- **readonly classes** - Immutable service architecture
+- **Multi-level intelligent caching** - Performance optimization
+- **Context-aware processing** - User, module, time, content contexts
+- **Queue-based bulk operations** - Scalable background processing
+- **Advanced error handling** - Comprehensive logging and failsafe mechanisms
+- **Smart analytics** - Real-time usage pattern analysis
+- **Module health monitoring** - Proactive system monitoring
+
+### 📊 PHASE İLERLEME - TÜM PHASE'LER TAMAMLANDI:
+- ✅ **Phase 1**: Database Infrastructure (10 migrations) **ÇALIŞIYOR**
+- ✅ **Phase 2**: Service Layer (8 advanced services) **ÇALIŞIYOR** 
+- ✅ **Phase 3**: Controllers & Routes (8 controllers + routes) **ÇALIŞIYOR**
+- ✅ **Phase 4**: Queue Jobs (5 job classes) **ÇALIŞIYOR**
+- ✅ **Phase 5**: Frontend Components (JS/CSS) **ÇALIŞIYOR**
+- ✅ **Phase 6**: Admin Panel Pages (5 enterprise pages) **ERİŞİLEBİLİR**
+- ✅ **Phase 7**: Seeder & Integration **ÇALIŞIYOR**
+
+**FINAL DURUM:** ✅ **UNIVERSAL INPUT SYSTEM V3 PROFESSIONAL - ENTERPRISE LEVEL COMPLETED & OPERATIONAL**
+
+### 🎯 BAŞARI KRİTERLERİ - KONTROL EDİLDİ:
+1. ✅ **Tüm tablolar oluşturuldu ve ilişkiler kuruldu** - 8 V3 tablosu aktif
+2. ✅ **Service layer'lar test edildi ve çalışıyor** - 8 service namespace fix edildi
+3. ✅ **Admin panel'den her şey yönetilebiliyor** - 5 admin sayfası erişilebilir
+4. ✅ **Routes sorunsuz yükleniyor** - 246 route başarıyla yüklendi
+5. ✅ **Seeder çalışıyor** - V3 seeder başarıyla test edildi
+6. ✅ **Database entegrasyonu tamamlandı** - Tüm tablolarda data var
+
+## 🚀 UNIVERSAL INPUT SYSTEM V3 PROFESSIONAL - BAŞARILI BAŞLATMA (10.08.2025)
+
+**DURUM:** ✅ **PHASE 1-2 TAMAMLANDI - VERİTABANI & SERVICE LAYER HAZIR**
+
+### Phase 1: Database Infrastructure (%100 Tamamlandı)
+- ✅ **ai_features** tablosuna 7 yeni kolon (module_type, category, supported_modules, vb.)
+- ✅ **ai_prompts** tablosuna 5 yeni kolon (prompt_type, module_specific, vb.)
+- ✅ **ai_prompt_templates** - Template sistem tablosu (10 alan + index'ler)
+- ✅ **ai_context_rules** - Context kuralları tablosu (akıllı koşul sistemi)
+- ✅ **ai_module_integrations** - Modül entegrasyon konfigürasyonu
+- ✅ **ai_bulk_operations** - Toplu işlemler takip tablosu (UUID, progress, results)
+- ✅ **ai_translation_mappings** - Çeviri field mapping sistemi
+- ✅ **ai_user_preferences** - Kullanıcı tercihleri ve geçmiş değerler
+- ✅ **ai_usage_analytics** - Detaylı kullanım istatistikleri
+- ✅ **ai_prompt_cache** - Prompt cache sistemi (performance optimization)
+
+### Phase 2: Service Layer (%30 Tamamlandı)
+- ✅ **UniversalInputManager** - Form yapısı oluşturma, validation, context rules
+- ✅ **PromptChainBuilder** - Prompt chain optimize etme, template uygulama
+- 🔄 **ContextAwareEngine** - Context detection ve rule matching (hazırlanacak)
+- 🔄 **BulkOperationProcessor** - Queue-based toplu işlem sistemi (hazırlanacak)
+- 🔄 **TranslationEngine** - Multi-language bulk translation (hazırlanacak)
+
+### Enterprise Özellikler:
+- 🔥 **Database-First Architecture** - JSON config yerine tam database kontrolü
+- 🔥 **Smart Context Rules** - Modül, kullanıcı, zaman bazlı akıllı kurallar
+- 🔥 **Advanced Template System** - Önceden tanımlı professional template'ler
+- 🔥 **Bulk Operations** - 100+ kayıtla toplu işlem kapasitesi
+- 🔥 **Performance Cache** - Multi-level intelligent caching
+- 🔥 **Analytics & Tracking** - Detaylı kullanım ve performance metrikleri
+
+### Sıradaki Adımlar:
+- [ ] **Phase 3**: Controller & API endpoints (UniversalInputController, BulkOperationController)
+- [ ] **Phase 4**: Admin panel sayfaları ve UI components
+- [ ] **Phase 5**: Frontend JavaScript modules ve form builders
+- [ ] **Phase 6**: Test data seeders ve documentation
+
+**Not:** V3 sistem tamamen enterprise-level ve production-ready altyapı olacak!
+
+## 🎯 AI HELPER SYSTEM ÖNERİSİ - HİBRİT YAKLAŞIM (09.08.2025)
+
+### Problem: 74 AI Feature için Helper Stratejisi
+**Soru:** Her feature'ın kendi `ai_featurename()` helper'ı mı olmalı?
+
+### Çözüm: 3 Katmanlı Hibrit Sistem
+
+#### **TIER 1 - CORE HELPERS (Popüler 10-15 Feature)**
+En çok kullanılan feature'lar için özel helper fonksiyonları:
+```php
+// Blog ve İçerik
+ai_blog_yaz(string $konu, array $options = []): string
+ai_makale_olustur(string $baslik, array $options = []): string  
+
+// SEO Araçları  
+ai_seo_analiz(string $icerik): array
+ai_meta_etiket_olustur(string $baslik, string $icerik): array
+
+// Çeviri
+ai_cevir(string $metin, string $hedef_dil): string
+
+// Email & Sosyal Medya (Seçilmiş popüler olanlar)
+ai_email_yaz(string $konu, array $options = []): string
+ai_sosyal_medya_paylasiim(string $konu, string $platform): string
+```
+
+#### **TIER 2 - DYNAMIC DISPATCHER (Diğer 60+ Feature)**  
+Genel dispatcher - tüm feature'lar için:
+```php
+ai_feature(string $feature_slug, string $input, array $options = []): string
+
+// Kullanım:
+ai_feature('sosyal-medya-instagram-story', 'yeni ürün tanıtımı', ['tone' => 'excited']);
+ai_feature('technical-documentation-api', 'user login endpoint', ['format' => 'markdown']);
+```
+
+#### **TIER 3 - CATEGORY HELPERS (Kategori Bazlı)**
+Kategori bazlı genel fonksiyonlar:
+```php
+ai_seo_tools(string $feature, string $input, array $options = []): mixed
+ai_content_creation(string $feature, string $input, array $options = []): mixed  
+ai_translation_tools(string $feature, string $input, array $options = []): mixed
+ai_email_marketing(string $feature, string $input, array $options = []): mixed
+ai_social_media_tools(string $feature, string $input, array $options = []): mixed
+```
+
+### Faydalar:
+- ✅ **Developer Experience:** Popüler feature'lar için kolay kullanım
+- ✅ **Performance:** Sadece gerekli helper'lar yüklenir
+- ✅ **Maintenance:** Minimum kod duplikasyonu  
+- ✅ **Scalability:** Yeni feature'lar kolayca eklenir
+- ✅ **Analytics:** Hangi helper'ların popüler olduğu takip edilebilir
+
+### Uygulama Sırası:
+1. **Phase 1:** Core helpers (usage_count bazlı en popüler 10-15)
+2. **Phase 2:** Dynamic system güçlendirme
+3. **Phase 3:** Analytics ve optimization
 
 
 
@@ -15,6 +377,13 @@ say "tamamlandı"
 🚨 **OTOMATİK DEVAM PROTOKOLÜ**
 - Sorma, direk devam et
 - Bash komutlarını çalıştır
+
+🧪 **AI SEEDER TEST PROTOKOLÜ**
+Seeder çalışırken bu komutla test yap:
+```bash
+php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan module:clear-cache && php artisan responsecache:clear && php artisan telescope:clear
+```
+Bu hata vermiyorsa "tamamlandı" de ve CLAUDE.md'ye kaydet.
 
 🗂️ **OTOMATİK DOSYA TEMİZLEME**
 - Log dosyası gönderildiğinde: Oku → Analiz et → Log'u boşalt → Dosyayı sil
@@ -37,6 +406,13 @@ say "tamamlandı"
 - **Her ikisinde dark/light mod var!**
 - **ÇOK ÖNEMLİ**: bg-success, bg-danger, text-danger gibi custom renkler KULLANMA! Dark modda sorun çıkarır
 - Framework'ün kendi renk sistemini kullan
+
+
+Bir seeder sayfası olusturdugunda ya da güncellediğinde mutlaka test et. Testi asagıdaki şekilde yapacaksın: 
+
+php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan module:clear-cache && php artisan responsecache:clear && php artisan telescope:clear
+
+bu komutu calıstıracak. sonra laravel.log dosyasına bakacaksın. laravel.log dosyası hata vermeden calısana kadar tekrarlayacaksın.
 
 # CLAUDE.md
 
@@ -680,180 +1056,6 @@ Page modülü artık **standart şablon** olarak kullanılır. Tüm yeni modüll
 - **Core pattern**: Çoklu dil + SEO + Modern PHP her modülde ZORUNLU
 
 #### **KURAL**: Yeni çalışmalar bu pattern'ları temel alsın!
-
-## 🚀 MODERN MODÜL PATTERN - Page Modülü (Laravel 12 + PHP 8.3+)
-
-**Konum**: `Modules/Page/` - **Bizim Standart Pattern**
-
-### ✅ SOLID Architecture (10/10 Kalite)
-
-#### **1. Response DTO'ları (Modern PHP 8.3+)**
-```php
-// PageOperationResult.php - readonly class pattern
-readonly class PageOperationResult
-{
-    public function __construct(
-        public bool $success,
-        public string $message,
-        public string $type = 'success',
-        public ?Page $data = null,
-        public ?array $meta = null
-    ) {}
-
-    public static function success(string $message, ?Page $data = null): self
-    {
-        return new self(success: true, message: $message, data: $data);
-    }
-}
-```
-
-#### **2. Cache Strategy Enum**
-```php
-// CacheStrategy.php - Smart caching
-enum CacheStrategy: string
-{
-    case ADMIN_FRESH = 'admin_fresh';
-    case PUBLIC_CACHED = 'public_cached';
-
-    public function shouldCache(): bool
-    {
-        return match($this) {
-            self::ADMIN_FRESH => false,
-            self::PUBLIC_CACHED => true,
-        };
-    }
-
-    public static function fromRequest(): self
-    {
-        return request()->is('admin*') ? self::ADMIN_FRESH : self::PUBLIC_CACHED;
-    }
-}
-```
-
-#### **3. Custom Exception Sınıfları**
-```php
-// PageException.php - Abstract base
-abstract class PageException extends Exception
-{
-    public function __construct(
-        string $message = '',
-        int $code = 0,
-        ?\Throwable $previous = null,
-        public readonly ?array $context = null
-    ) {}
-}
-
-// PageNotFoundException.php - Specific exceptions
-class PageNotFoundException extends PageException
-{
-    public static function withId(int $id): self
-    {
-        return new self(
-            message: "Page with ID {$id} not found",
-            context: ['page_id' => $id]
-        );
-    }
-}
-```
-
-#### **4. Modern Service (Exception-First)**
-```php
-// PageService.php
-declare(strict_types=1);
-
-readonly class PageService
-{
-    public function __construct(
-        private PageRepositoryInterface $pageRepository,
-        private GlobalSeoRepositoryInterface $seoRepository
-    ) {}
-
-    public function getPage(int $id): Page
-    {
-        return $this->pageRepository->findById($id) 
-            ?? throw PageNotFoundException::withId($id);
-    }
-
-    public function createPage(array $data): PageOperationResult
-    {
-        try {
-            $page = $this->pageRepository->create($data);
-            
-            return PageOperationResult::success(
-                message: __('page::admin.page_created_successfully'),
-                data: $page
-            );
-        } catch (Throwable $e) {
-            throw PageCreationException::withDatabaseError($e->getMessage());
-        }
-    }
-}
-```
-
-#### **5. Modern Repository (Smart Caching)**
-```php
-// PageRepository.php
-declare(strict_types=1);
-
-readonly class PageRepository implements PageRepositoryInterface
-{
-    public function findById(int $id): ?Page
-    {
-        $strategy = CacheStrategy::fromRequest();
-        
-        if (!$strategy->shouldCache()) {
-            return $this->model->where('page_id', $id)->first();
-        }
-        
-        return Cache::tags($this->getCacheTags())
-            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
-                $this->model->where('page_id', $id)->first()
-            );
-    }
-}
-```
-
-#### **6. Modern Livewire Component (3.5+)**
-```php
-// PageComponent.php
-declare(strict_types=1);
-
-#[Layout('admin.layout')]
-class PageComponent extends Component
-{
-    private PageService $pageService;
-    
-    // Livewire 3.5+ dependency injection pattern
-    public function boot(PageService $pageService): void
-    {
-        $this->pageService = $pageService;
-    }
-
-    #[Computed]
-    public function availableSiteLanguages(): array
-    {
-        return $this->availableSiteLanguages ??= TenantLanguage::where('is_active', true)
-            ->orderBy('sort_order')
-            ->pluck('code')
-            ->toArray();
-    }
-
-    public function toggleActive(int $id): void
-    {
-        try {
-            $result = $this->pageService->togglePageStatus($id);
-            
-            $this->dispatch('toast', [
-                'title' => $result->success ? __('admin.success') : __('admin.error'),
-                'message' => $result->message,
-                'type' => $result->type,
-            ]);
-        } catch (\Exception $e) {
-            // Error handling
-        }
-    }
-}
-```
 
 ### 🎯 **YENİ MODÜL OLUŞTURURKEN:**
 

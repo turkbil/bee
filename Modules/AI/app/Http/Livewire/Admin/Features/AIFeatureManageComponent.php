@@ -168,7 +168,7 @@ class AIFeatureManageComponent extends Component
 
     protected function loadFeature($id)
     {
-        $feature = AIFeature::with(['prompts', 'featurePrompts.aiPrompt'])->findOrFail($id);
+        $feature = AIFeature::with(['prompts', 'featurePrompts'])->findOrFail($id);
         
         // Temel bilgileri doldur
         $this->inputs = $feature->only([

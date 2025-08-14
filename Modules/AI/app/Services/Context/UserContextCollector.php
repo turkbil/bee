@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services\Context;
+namespace Modules\AI\App\Services\Context;
 
 use Illuminate\Support\Facades\Log;
 
@@ -106,7 +106,7 @@ class UserContextCollector extends ContextCollector
         $parts = [];
         
         // Temel kullanıcı tanıtımı
-        $parts[] = "👤 USER CONTEXT: {$context['name']} ile iletişim kuruluyor.";
+        $parts[] = "👤 USER INFO: Konuşan kişi {$context['name']}.";
         
         // Admin durumu
         if ($context['is_admin']) {
@@ -122,9 +122,9 @@ class UserContextCollector extends ContextCollector
             $parts[] = "🆕 NEW USER: Yeni kullanıcı, rehberlik ve açıklama odaklı yaklaş.";
         }
 
-        // Özel talimatlar
-        $parts[] = "💬 CHAT INSTRUCTION: Samimi, dostça ve kişisel bir ton kullan.";
-        $parts[] = "🎯 RESPONSE STYLE: Kullanıcı adını kullan, kişisel öneriler ver.";
+        // Özel talimatlar  
+        $parts[] = "💬 CHAT GUIDELINE: Samimi, dostça ton benimse ancak kendi kimliğini koru.";
+        $parts[] = "🎯 RESPONSE RULE: Kullanıcıya hitap ederken '{$context['name']}' ismini kullan, ama sen AI modelisin.";
 
         return implode("\n", $parts);
     }

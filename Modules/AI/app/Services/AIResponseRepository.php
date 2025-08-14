@@ -173,6 +173,7 @@ class AIResponseRepository
     {
         $featureId = $params['feature_id'] ?? null;
         $inputText = $params['input_text'] ?? '';
+        $universalInputs = $params['universal_inputs'] ?? [];
 
         if (!$featureId) {
             return [
@@ -189,12 +190,55 @@ class AIResponseRepository
             ];
         }
 
-        // Prowess için özel context
-        $response = $this->aiService->askFeature($feature, $inputText, [
+        Log::info('Prowess Test Universal Inputs', [
+            'feature_id' => $featureId,
+            'feature_name' => $feature->name,
+            'universal_inputs' => $universalInputs,
+            'input_text_length' => strlen($inputText)
+        ]);
+
+        // Universal Input System verilerini işle
+        $askOptions = [
             'context_type' => 'prowess_showcase',
             'source' => 'prowess_page',
-            'enhanced_quality' => true // Prowess için kalite artırılsın
-        ]);
+            'enhanced_quality' => true
+        ];
+
+        // Universal inputs'ları options'a ekle
+        if (!empty($universalInputs)) {
+            $askOptions['universal_inputs'] = $universalInputs;
+            
+            // Content length mapping (1-5 slider → prompt değeri)
+            if (isset($universalInputs['content_length'])) {
+                $lengthMapping = [
+                    1 => 90011, // Çok Kısa İçerik
+                    2 => 90012, // Kısa İçerik  
+                    3 => 90013, // Normal İçerik
+                    4 => 90014, // Uzun İçerik
+                    5 => 90015  // Çok Detaylı İçerik
+                ];
+                $askOptions['content_length_prompt_id'] = $lengthMapping[$universalInputs['content_length']] ?? 90013;
+            }
+
+            // Writing tone prompt ID
+            if (isset($universalInputs['writing_tone'])) {
+                $askOptions['writing_tone_prompt_id'] = $universalInputs['writing_tone'];
+            }
+
+            // Target audience
+            if (isset($universalInputs['target_audience'])) {
+                $askOptions['target_audience'] = $universalInputs['target_audience'];
+            }
+
+            // Company profile usage
+            if (isset($universalInputs['use_company_profile']) && $universalInputs['use_company_profile']) {
+                $askOptions['use_company_profile'] = true;
+                Log::info('Company profile enabled for prowess test', ['feature_id' => $featureId]);
+            }
+        }
+
+        // Prowess için özel context
+        $response = $this->aiService->askFeature($feature, $inputText, $askOptions);
 
         $formattedResponse = $this->formatProwessResponse($response, $feature);
         
@@ -218,6 +262,8 @@ class AIResponseRepository
             'feature' => $feature->toArray(),
             'type' => 'prowess_test',
             'token_used' => true,
+            'tokens_used' => $formattedResponse['tokens_used'] ?? 0,
+            'total_tokens' => $formattedResponse['total_tokens'] ?? 0,
             'formatted_response' => $responseText,
             'word_buffer_config' => $formattedResponse['word_buffer_config'] ?? null
         ];
@@ -527,7 +573,22 @@ class AIResponseRepository
         $responseTemplate = null;
         if ($feature->response_template) {
             try {
-                $responseTemplate = json_decode($feature->response_template, true);
+                // response_template zaten array ise decode etme
+                if (is_array($feature->response_template)) {
+                    $responseTemplate = $feature->response_template;
+                } else {
+                    // response_template zaten array ise decode etme
+                if (is_array($feature->response_template)) {
+                    $responseTemplate = $feature->response_template;
+                } else {
+                    // response_template zaten array ise decode etme
+                if (is_array($feature->response_template)) {
+                    $responseTemplate = $feature->response_template;
+                } else {
+                    $responseTemplate = json_decode($feature->response_template, true);
+                }
+                }
+                }
             } catch (\Exception $e) {
                 Log::warning("Feature response template parse hatası: {$feature->slug}", ['error' => $e->getMessage()]);
             }
@@ -1095,7 +1156,17 @@ class AIResponseRepository
         $responseTemplate = null;
         if ($feature->response_template) {
             try {
-                $responseTemplate = json_decode($feature->response_template, true);
+                // response_template zaten array ise decode etme
+                if (is_array($feature->response_template)) {
+                    $responseTemplate = $feature->response_template;
+                } else {
+                    // response_template zaten array ise decode etme
+                if (is_array($feature->response_template)) {
+                    $responseTemplate = $feature->response_template;
+                } else {
+                    $responseTemplate = json_decode($feature->response_template, true);
+                }
+                }
                 
                 if (json_last_error() === JSON_ERROR_NONE && is_array($responseTemplate)) {
                     // Template varsa onu kullan

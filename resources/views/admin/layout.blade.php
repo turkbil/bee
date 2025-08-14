@@ -285,6 +285,11 @@
 
 {{-- 🤖 AI Widget System artık readme/ai-assistant klasöründe --}}
 
+{{-- 🌍 Global AI Translation Modal - Available in all modules --}}
+@if($aiModuleActive ?? false)
+    @include('admin.partials.global-ai-translation-modal')
+@endif
+
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>
 <script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
@@ -423,6 +428,8 @@ document.addEventListener('DOMContentLoaded', function() {
 {{-- Global AI Widget System JS - Auto-load if AI module is active --}}
 @if($aiModuleActive ?? false)
 <script src="{{ asset('admin-assets/js/ai-widget.js') }}?v={{ time() }}"></script>
+{{-- Global AI Translation System JS --}}
+<script src="{{ asset('assets/js/ai-translation-system-v2.js') }}?v={{ time() }}"></script>
 @endif
 
 <!-- CORE SYSTEM SCRIPTS - DO NOT REMOVE OR MODIFY -->

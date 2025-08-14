@@ -40,7 +40,7 @@ trait WithBulkActions
                         ->orWhere('slug', 'like', '%' . $this->search . '%');
                 })
                 ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perAnnouncement)
+                ->paginate($this->perPage)
                 ->pluck($primaryKey)
                 ->map(fn($id) => (string) $id)
                 ->toArray();

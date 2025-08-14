@@ -14,9 +14,68 @@ class OpenAIService
 
     public function __construct()
     {
-        $this->apiKey = 'sk-Rd0uAFfpiAcfdxillkFM1mV0NWxihzz2L4ARj6k2tjT3BlbkFJ6V0IbyeIq53gOxZa31u1xOq94W69xoacMELOL7CIEA';
-        $this->baseUrl = 'https://api.openai.com/v1';
-        $this->model = 'gpt-4o-mini'; // Try different model
+        $this->loadProviderConfig();
+    }
+
+    /**
+     * Load AI provider configuration dynamically
+     */
+    protected function loadProviderConfig()
+    {
+        // First check tenant's AI provider
+        $tenantId = session('tenant_id', 1);
+        $tenant = \App\Models\Tenant::find($tenantId);
+        
+        $provider = null;
+        
+        // Check if tenant has specific AI provider
+        if ($tenant && $tenant->ai_enabled && $tenant->default_ai_provider_id) {
+            $provider = \Modules\AI\App\Models\AIProvider::where('id', $tenant->default_ai_provider_id)
+                ->where('is_active', true)
+                ->first();
+        }
+        
+        // If no tenant provider, get default provider
+        if (!$provider) {
+            $provider = \Modules\AI\App\Models\AIProvider::where('is_default', true)
+                ->where('is_active', true)
+                ->first();
+        }
+        
+        // If still no provider, get provider with highest priority (fallback)
+        if (!$provider) {
+            $provider = \Modules\AI\App\Models\AIProvider::where('is_active', true)
+                ->orderBy('priority', 'asc')
+                ->first();
+        }
+        
+        // If no active provider found, throw exception
+        if (!$provider) {
+            throw new \Exception('No active AI provider found');
+        }
+        
+        // Set provider configuration
+        $this->apiKey = $provider->api_key;
+        $this->baseUrl = rtrim($provider->base_url, '/');
+        $this->model = $provider->default_model;
+        
+        // Adjust URL for different providers
+        if ($provider->name === 'deepseek') {
+            // DeepSeek uses same OpenAI-compatible endpoint
+            $this->baseUrl = $this->baseUrl . '/v1';
+        } elseif ($provider->name === 'openai') {
+            // OpenAI URL is already correct
+            if (!str_contains($this->baseUrl, '/v1')) {
+                $this->baseUrl = $this->baseUrl . '/v1';
+            }
+        }
+        
+        Log::info('AI Provider configured', [
+            'provider' => $provider->name,
+            'tenant_id' => $tenantId,
+            'model' => $this->model,
+            'base_url' => $this->baseUrl
+        ]);
     }
 
     /**
@@ -32,6 +91,18 @@ class OpenAIService
         ]);
 
         try {
+            // Defensive: messages parametresi string gelirse array'e çevir
+            if (is_string($messages)) {
+                $messages = [
+                    ['role' => 'user', 'content' => $messages]
+                ];
+            }
+            
+            // Messages array olmalı
+            if (!is_array($messages)) {
+                throw new \InvalidArgumentException('Messages must be an array');
+            }
+            
             // DEBUG: Messages'ı log'la
             Log::info('🔍 OpenAI Messages Debug', [
                 'messages_count' => count($messages),
@@ -65,7 +136,7 @@ class OpenAIService
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->timeout(120)->post($this->baseUrl . '/chat/completions', $payload);
+            ])->timeout(600)->post($this->baseUrl . '/chat/completions', $payload);
 
             if ($response->successful()) {
                 // SSE formatını parse et

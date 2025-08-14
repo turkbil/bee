@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
-use Modules\AI\Database\Seeders\ComprehensiveSectorSeeder;
 use Modules\AI\Database\Seeders\CleanAIProfileQuestionsSeeder;
 use Modules\AI\Database\Seeders\CleanAITenantProfileSeeder;
 
@@ -22,31 +21,39 @@ class AIDatabaseSeeder extends Seeder
             // ÖNEMLİ: Seeder başlamadan önce tüm AI cache'leri temizle
             $this->clearAllAICache();
             
-            // AI Provider'ları önce oluştur (diğer seeder'lar bunlara ihtiyaç duyabilir)
+            // Sadece temel provider'ları koru
             $this->call(AIProviderSeeder::class);
-            
-            // Prompts artık ayrı seeder'da (AIPromptsSeeder.php)
-            $this->call(AIPromptsSeeder::class);
             
             // AI ayarları bilgilendirme
             $this->createSettings();
             
-            // Gizli özellikler seeder'ını çalıştır
-            $this->call(AIHiddenFeaturesSeeder::class);
+            // AI Feature Kategorilerini ekle (18 kategori)
+            $this->call(AIFeatureCategoriesSeeder::class);
             
-            // AI Features seeder'ını çalıştır (kategoriler otomatik kontrol edilir)
-            $this->call(AIFeatureSeeder::class);
+            // 🎯 SADELEŞEN AI FEATURE SİSTEMİ V3 - TEK BLOG FEATURE (10.08.2025)
+            // Universal Input System V3 uyumlu sadeleştirilmiş seeder sistemi
             
-            // YENİ KREDİ SİSTEMİ - Token sistemi kaldırıldı, Credit sistemi kullanılıyor
-            // AITokenPackageSeeder kaldırıldı - AICreditPackage sistemi kullanılıyor
+            // 🎯 SYSTEM PROMPTS (Ortak Özellikler, Gizli Özellikler, Şartlı Yanıtlar)
+            $this->call(\Modules\AI\Database\Seeders\AISystemPromptsSeeder::class);
             
-            // AI Profil sistemi seeder'larını çalıştır - Kapsamlı 118+ sektör
+            // 🎯 UNIVERSAL SYSTEM PROMPTS (Tüm AI feature'larda kullanılabilir)
+            $this->call(\Modules\AI\Database\Seeders\UniversalContentLengthPromptsSeeder::class);
+            $this->call(\Modules\AI\Database\Seeders\UniversalWritingTonePromptsSeeder::class);
+            
+            // Modern Blog Content Seeder (All phases in one) - ÖNCELİKLE FEATURE'LARI OLUŞTUR
+            $this->call(\Modules\AI\Database\Seeders\ModernBlogContentSeeder::class);
+            
+            // Translation Feature Seeder (Page modülü toplu çeviri)
+            $this->call(\Modules\AI\Database\Seeders\TranslationFeatureSeeder::class);
+            
+            // 🎯 UNIVERSAL INPUT SYSTEM V3 - SEEDER'LAR (Feature'lar oluşturulduktan SONRA)
+            $this->call(\Modules\AI\Database\Seeders\BlogWriterUniversalInputSeeder::class);
+            $this->call(\Modules\AI\Database\Seeders\TranslationUniversalInputSeeder::class);
+            
+            // Sadece temel AI profil seeder'larını çalıştır
             $this->call([
-                // Tek comprehensive seeder (tüm sektörler hizmetleriyle beraber)
-                ComprehensiveSectorSeeder::class,  // 118+ sektör (turizm, tarım, sanayi dahil)
-                
                 CleanAIProfileQuestionsSeeder::class,
-                SectorCommonQuestionsSeeder::class,      // Ortak sorular (ID 5000-5999)
+                SectorCommonQuestionsSeeder::class,
                 CleanAITenantProfileSeeder::class,
             ]);
             

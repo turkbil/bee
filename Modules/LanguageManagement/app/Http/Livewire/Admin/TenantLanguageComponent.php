@@ -5,6 +5,7 @@ namespace Modules\LanguageManagement\app\Http\Livewire\Admin;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Illuminate\Support\Facades\Log;
 use Modules\LanguageManagement\app\Services\TenantLanguageService;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
 
@@ -50,6 +51,15 @@ class TenantLanguageComponent extends Component
         $siteLanguageService = app(TenantLanguageService::class);
         
         if ($siteLanguageService->deleteTenantLanguage($id)) {
+            // Log kaydı
+            Log::info('Language deleted', [
+                'language_id' => $language->id,
+                'language_name' => $language->name,
+                'language_code' => $language->code,
+                'user_id' => auth()->id(),
+                'tenant_id' => tenant('id')
+            ]);
+            
             if (function_exists('log_activity')) {
                 log_activity($language, 'silindi');
             }
@@ -94,11 +104,23 @@ class TenantLanguageComponent extends Component
             $siteLanguageService = app(TenantLanguageService::class);
             $siteLanguageService->clearTenantLanguageCache();
             
+            $status = $language->is_active ? 'aktif' : 'pasif';
+            
+            // Log kaydı
+            Log::info('Language status changed', [
+                'language_id' => $language->id,
+                'language_name' => $language->name,
+                'language_code' => $language->code,
+                'old_status' => !$language->is_active ? 'aktif' : 'pasif',
+                'new_status' => $status,
+                'user_id' => auth()->id(),
+                'tenant_id' => tenant('id')
+            ]);
+            
             if (function_exists('log_activity')) {
-                log_activity($language, 'güncellendi');
+                log_activity($language, $status . ' edildi');
             }
             
-            $status = $language->is_active ? 'aktif' : 'pasif';
             session()->flash('message', "Site dili {$status} yapıldı.");
         } else {
             session()->flash('error', 'Durum güncellenirken hata oluştu.');
@@ -144,6 +166,51 @@ class TenantLanguageComponent extends Component
         session()->flash('message', 'Sıralama başarıyla güncellendi.');
     }
 
+    public function toggleVisibility($id)
+    {
+        $language = TenantLanguage::find($id);
+        
+        if (!$language) {
+            session()->flash('error', 'Site dili bulunamadı.');
+            return;
+        }
+        
+        // Aktif dil gizlenemez
+        if ($language->is_active && $language->is_visible) {
+            session()->flash('error', 'Aktif site dili gizlenemez. Önce pasif yapın.');
+            return;
+        }
+
+        $language->is_visible = !$language->is_visible;
+        
+        if ($language->save()) {
+            $siteLanguageService = app(TenantLanguageService::class);
+            $siteLanguageService->clearTenantLanguageCache();
+            
+            $status = $language->is_visible ? 'görünür' : 'gizli';
+            $action = $language->is_visible ? 'görünür yapıldı' : 'silindi';
+            
+            // Log kaydı
+            Log::info('Language visibility changed', [
+                'language_id' => $language->id,
+                'language_name' => $language->name,
+                'language_code' => $language->code,
+                'old_status' => !$language->is_visible ? 'görünür' : 'gizli',
+                'new_status' => $status,
+                'user_id' => auth()->id(),
+                'tenant_id' => tenant('id')
+            ]);
+            
+            if (function_exists('log_activity')) {
+                log_activity($language, $action);
+            }
+            
+            session()->flash('message', "Site dili {$status} yapıldı.");
+        } else {
+            session()->flash('error', 'Görünürlük güncellenirken hata oluştu.');
+        }
+    }
+
     public function render()
     {
         // Tenant varsayılan dilini al
@@ -161,7 +228,7 @@ class TenantLanguageComponent extends Component
         
         $defaultLanguageCode = $currentTenant ? $currentTenant->tenant_default_locale : 'tr';
         
-        $languages = TenantLanguage::query()
+        $allLanguages = TenantLanguage::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
@@ -171,13 +238,21 @@ class TenantLanguageComponent extends Component
             })
             ->orderBy('sort_order')
             ->orderBy('name')
-            ->get(); // paginate yerine get kullan çünkü sortable
+            ->get();
+
+        // 3 seviyeli kategorize
+        $activeLanguages = $allLanguages->where('is_active', true)->where('is_visible', true);
+        $inactiveLanguages = $allLanguages->where('is_active', false)->where('is_visible', true)->sortBy('name');
+        $hiddenLanguages = $allLanguages->where('is_visible', false)->sortBy('name');
 
         // is_default kolonunu senkronize et
         app(TenantLanguageService::class)->syncDefaultLanguageColumn();
 
         return view('languagemanagement::admin.livewire.site-language-component', [
-            'languages' => $languages
+            'activeLanguages' => $activeLanguages,
+            'inactiveLanguages' => $inactiveLanguages, 
+            'hiddenLanguages' => $hiddenLanguages,
+            'languages' => $allLanguages // geriye uyumluluk için
         ]);
     }
 }

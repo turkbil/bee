@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('ai_prompts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('prompt_id')->unique()->nullable()->comment('Static ID for seeder management (10001-10900 range)');
             $table->string('name');
             $table->text('content');
             $table->enum('prompt_type', [
@@ -18,6 +19,8 @@ return new class extends Migration
                 'hidden_system',   // Gizli sistem promptu
                 'secret_knowledge', // Gizli bilgi tabanı
                 'conditional',     // Şartlı yanıtlar
+                'writing_tone',    // Yazım tonu (tüm feature'larda kullanılabilir)
+                'content_length',  // İçerik uzunluğu (tüm feature'larda kullanılabilir)
                 'feature'          // Feature-specific prompt
             ])->default('standard');
             

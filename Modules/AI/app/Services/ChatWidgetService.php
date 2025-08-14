@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\AI\app\Services;
+namespace Modules\AI\App\Services;
 
 use Exception;
 use Illuminate\Support\Collection;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
-use Modules\AI\app\Exceptions\ChatWidgetException;
+use Modules\AI\App\Exceptions\ChatWidgetException;
 
 /**
  * Chat Widget Service V2

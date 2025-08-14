@@ -230,6 +230,132 @@
                             </div>
                         </div>
                     </div>
+
+                    @if($feature->id == 201)
+                    <!-- Blog Yazısı Oluşturucu - Özel Ayarlar -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Blog Yazısı Ayarları</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="accordion" id="blogSettingsAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#blogAdvancedSettings" aria-expanded="false" 
+                                                aria-controls="blogAdvancedSettings">
+                                            <i class="fas fa-cogs text-primary me-2"></i>📋 İleri Düzey Blog Ayarları
+                                        </button>
+                                    </h2>
+                                    <div id="blogAdvancedSettings" class="accordion-collapse collapse" 
+                                         data-bs-parent="#blogSettingsAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="writingTone" class="form-label fw-bold text-start d-block">Yazım Tonu</label>
+                                                        <select class="form-select" id="writingTone" data-choices>
+                                                            <option value="professional" selected>Profesyonel</option>
+                                                            <option value="friendly">Samimi</option>
+                                                            <option value="academic">Akademik</option>
+                                                            <option value="casual">Günlük</option>
+                                                            <option value="creative">Yaratıcı</option>
+                                                            <option value="technical">Teknik</option>
+                                                            <option value="persuasive">İkna edici</option>
+                                                            <option value="informative">Bilgilendirici</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="targetAudience" class="form-label fw-bold text-start d-block">Hedef Kitle</label>
+                                                        <select class="form-select" id="targetAudience" data-choices>
+                                                            <option value="general">Genel Kitle</option>
+                                                            <option value="experts">Uzmanlar</option>
+                                                            <option value="beginners">Yeni Başlayanlar</option>
+                                                            <option value="students">Öğrenciler</option>
+                                                            <option value="professionals">Profesyoneller</option>
+                                                            <option value="entrepreneurs">Girişimciler</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="wordCount" class="form-label fw-bold text-start d-block">Kelime Sayısı</label>
+                                                        <select class="form-select" id="wordCount">
+                                                            <option value="short">Kısa (300-500 kelime)</option>
+                                                            <option value="medium" selected>Orta (500-800 kelime)</option>
+                                                            <option value="long">Uzun (800-1200 kelime)</option>
+                                                            <option value="detailed">Detaylı (1200+ kelime)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="contentStructure" class="form-label fw-bold text-start d-block">İçerik Yapısı</label>
+                                                        <select class="form-select" id="contentStructure">
+                                                            <option value="introduction_body_conclusion" selected>Giriş-Gelişme-Sonuç</option>
+                                                            <option value="problem_solution">Problem-Çözüm</option>
+                                                            <option value="how_to_guide">Nasıl Yapılır Rehberi</option>
+                                                            <option value="list_format">Liste Formatı</option>
+                                                            <option value="comparison">Karşılaştırmalı</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="mb-3">
+                                                        <label for="companyProfile" class="form-label fw-bold text-start d-block">Şirket Profili</label>
+                                                        <textarea class="form-control" id="companyProfile" rows="3" 
+                                                                  placeholder="Şirketiniz hakkında bilgi verin (sektör, hizmetler, değerler vb.)"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="includeSEO">
+                                                            <label class="form-check-label fw-bold text-start" for="includeSEO">
+                                                                SEO Optimizasyonu Dahil Et
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="includeKeywords">
+                                                            <label class="form-check-label fw-bold text-start" for="includeKeywords">
+                                                                Anahtar Kelime Önerileri
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Önizleme/Test Butonu -->
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-primary">
+                                    <i class="fas fa-eye me-2"></i>Blog Ayarlarını Önizle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
 
                 <!-- Sağ Kolon: Ayarlar -->
@@ -241,11 +367,11 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label required">Kategori</label>
-                                <select name="category" class="form-select" required>
+                                <select name="ai_feature_category_id" class="form-select" required>
                                     <option value="">Kategori Seçin</option>
-                                    @foreach($categories as $key => $label)
-                                        <option value="{{ $key }}" {{ old('category', $feature->category) == $key ? 'selected' : '' }}>
-                                            {{ $label }}
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->ai_feature_category_id }}" {{ old('ai_feature_category_id', $feature->ai_feature_category_id) == $category->ai_feature_category_id ? 'selected' : '' }}>
+                                            {{ $category->title }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -457,6 +583,31 @@ $(document).ready(function() {
     $('#enable-advanced').change(function() {
         $('#advanced-area').toggle($(this).is(':checked'));
     });
+
+    // Initialize Choices.js for blog settings (if blog feature is being edited)
+    @if($feature->id == 201)
+    if (typeof Choices !== 'undefined') {
+        // Initialize Choices.js for writing tone
+        const writingToneSelect = document.getElementById('writingTone');
+        if (writingToneSelect) {
+            new Choices(writingToneSelect, {
+                searchEnabled: true,
+                placeholder: true,
+                placeholderValue: 'Yazım tonu seçin...'
+            });
+        }
+
+        // Initialize Choices.js for target audience
+        const targetAudienceSelect = document.getElementById('targetAudience');
+        if (targetAudienceSelect) {
+            new Choices(targetAudienceSelect, {
+                searchEnabled: true,
+                placeholder: true,
+                placeholderValue: 'Hedef kitle seçin...'
+            });
+        }
+    }
+    @endif
 
     // Form validation
     $('#feature-form').submit(function(e) {

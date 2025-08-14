@@ -59,6 +59,7 @@ class PageManageComponent extends Component
    // SOLID Dependencies
    protected $pageService;
    protected $seoRepository;
+   protected $aiService;
    
    /**
     * Get current page model for universal SEO component
@@ -86,7 +87,8 @@ class PageManageComponent extends Component
        'handleJavaScriptLanguageSync' => 'handleJavaScriptLanguageSync',
        'debug-test' => 'handleDebugTest',
        'set-js-language' => 'setJavaScriptLanguage',
-       'set-continue-mode' => 'setContinueMode'
+       'set-continue-mode' => 'setContinueMode',
+       'translate-content' => 'translateContent'
    ];
    
    /**
@@ -120,6 +122,11 @@ class PageManageComponent extends Component
    {
        $this->pageService = app(\Modules\Page\App\Services\PageService::class);
        $this->seoRepository = app(\App\Contracts\GlobalSeoRepositoryInterface::class);
+       $this->aiService = app(\Modules\AI\App\Services\AIService::class);
+       
+       // Layout sections
+       view()->share('pretitle', __('page::admin.page_management'));
+       view()->share('title', __('page::admin.pages'));
    }
    
    public function updated($propertyName)
@@ -190,7 +197,9 @@ class PageManageComponent extends Component
     */
    protected function loadAvailableLanguages()
    {
+       // İsteğe göre: Önce aktif+visible, sonra aktif+invisible - sadece is_visible=true olanlar
        $this->availableLanguages = TenantLanguage::where('is_active', true)
+           ->where('is_visible', true)
            ->orderBy('sort_order')
            ->pluck('code')
            ->toArray();
@@ -1181,6 +1190,299 @@ class PageManageComponent extends Component
    }
 
    /**
+    * AI İÇERİK ÇEVİRİ SİSTEMİ - KAYNAK DİLİ HEDEF DİLLERE ÇEVIR
+    * ULTRA DEEP THINK: Çeviri sistemi tamamen yeniden yazıldı
+    */
+   public function translateContent($data)
+   {
+       $sourceLanguage = $data['sourceLanguage'] ?? $this->currentLanguage;
+       $targetLanguages = $data['targetLanguages'] ?? [];
+       $fields = $data['fields'] ?? ['title', 'body'];
+       $overwriteExisting = $data['overwriteExisting'] ?? false;
+
+       \Log::info('🚀 AI Translation System başlatıldı', [
+           'source_language' => $sourceLanguage,
+           'target_languages' => $targetLanguages,
+           'fields' => $fields,
+           'overwrite_existing' => $overwriteExisting,
+           'available_languages' => $this->availableLanguages
+       ]);
+
+       // Validasyon kontrolleri
+       if (empty($targetLanguages)) {
+           $this->dispatch('toast', [
+               'title' => 'Uyarı',
+               'message' => 'Hedef dil seçiniz',
+               'type' => 'warning'
+           ]);
+           return;
+       }
+
+       // Kaynak dili kontrol et - sadece aktif diller kabul edilir
+       if (!in_array($sourceLanguage, $this->availableLanguages)) {
+           $this->dispatch('toast', [
+               'title' => 'Hata',
+               'message' => "Kaynak dil ({$sourceLanguage}) aktif değil",
+               'type' => 'error'
+           ]);
+           return;
+       }
+
+       // Hedef dilleri kontrol et - sadece aktif diller kabul edilir
+       $validTargetLanguages = array_intersect($targetLanguages, $this->availableLanguages);
+       if (empty($validTargetLanguages)) {
+           $this->dispatch('toast', [
+               'title' => 'Hata',
+               'message' => 'Geçerli hedef dil bulunamadı',
+               'type' => 'error'
+           ]);
+           return;
+       }
+
+       // Kaynak dil verilerinin var olduğunu kontrol et
+       $sourceData = $this->multiLangInputs[$sourceLanguage] ?? [];
+       if (empty(array_filter($sourceData))) {
+           $this->dispatch('toast', [
+               'title' => 'Uyarı', 
+               'message' => "Kaynak dil ({$sourceLanguage}) verileri bulunamadı",
+               'type' => 'warning'
+           ]);
+           return;
+       }
+
+       try {
+           $translatedCount = 0;
+           $skippedCount = 0;
+           $errorCount = 0;
+           $results = [];
+
+           foreach ($validTargetLanguages as $targetLang) {
+               if ($targetLang === $sourceLanguage) {
+                   \Log::info("⏭️ Kaynak dil atlandı: {$targetLang}");
+                   continue;
+               }
+
+               // Hedef dil inputlarını hazırla
+               if (!isset($this->multiLangInputs[$targetLang])) {
+                   $this->multiLangInputs[$targetLang] = [
+                       'title' => '',
+                       'body' => '',
+                       'slug' => '',
+                   ];
+               }
+
+               foreach ($fields as $field) {
+                   $sourceText = $sourceData[$field] ?? '';
+                   if (empty(trim($sourceText))) {
+                       \Log::info("⏭️ Boş kaynak alan atlandı: {$targetLang}.{$field}");
+                       continue;
+                   }
+
+                   // Mevcut veri kontrolü - üzerine yazma kontrolü
+                   $existingText = $this->multiLangInputs[$targetLang][$field] ?? '';
+                   if (!empty(trim($existingText)) && !$overwriteExisting) {
+                       \Log::info("⏭️ Mevcut veri korundu: {$targetLang}.{$field}");
+                       $skippedCount++;
+                       continue;
+                   }
+
+                   try {
+                       \Log::info("🔄 Çeviri başlatılıyor: {$sourceLanguage} -> {$targetLang} [{$field}]");
+                       
+                       $translatedText = $this->aiService->translateText(
+                           $sourceText,
+                           $sourceLanguage,
+                           $targetLang,
+                           [
+                               'context' => $field === 'body' ? 'html_content' : 'title',
+                               'max_length' => $field === 'title' ? 255 : null,
+                               'preserve_html' => $field === 'body'
+                           ]
+                       );
+
+                       if (!empty(trim($translatedText))) {
+                           $this->multiLangInputs[$targetLang][$field] = $translatedText;
+                           
+                           // Slug otomatik oluştur (sadece title çevirildiyse)
+                           if ($field === 'title') {
+                               $this->multiLangInputs[$targetLang]['slug'] = SlugHelper::generateFromTitle(
+                                   Page::class,
+                                   $translatedText,
+                                   $targetLang,
+                                   'slug',
+                                   'page_id',
+                                   $this->pageId
+                               );
+                           }
+
+                           $translatedCount++;
+                           $results[] = [
+                               'language' => $targetLang,
+                               'field' => $field,
+                               'success' => true,
+                               'original' => substr($sourceText, 0, 100) . (strlen($sourceText) > 100 ? '...' : ''),
+                               'translated' => substr($translatedText, 0, 100) . (strlen($translatedText) > 100 ? '...' : '')
+                           ];
+
+                           \Log::info("✅ Çeviri başarılı: {$targetLang}.{$field}", [
+                               'source_length' => strlen($sourceText),
+                               'translated_length' => strlen($translatedText)
+                           ]);
+                       } else {
+                           throw new \Exception('Boş çeviri sonucu');
+                       }
+
+                   } catch (\Exception $e) {
+                       $errorCount++;
+                       $results[] = [
+                           'language' => $targetLang,
+                           'field' => $field,
+                           'success' => false,
+                           'error' => $e->getMessage()
+                       ];
+
+                       \Log::error("❌ Çeviri hatası: {$targetLang}.{$field}", [
+                           'error' => $e->getMessage(),
+                           'source_text_length' => strlen($sourceText)
+                       ]);
+                   }
+               }
+           }
+
+           // SEO verilerini de çevir
+           if (isset($this->seoDataCache[$sourceLanguage])) {
+               \Log::info('🔍 SEO verileri çevriliyor...');
+               
+               foreach ($validTargetLanguages as $targetLang) {
+                   if ($targetLang === $sourceLanguage) continue;
+
+                   try {
+                       $sourceSeo = $this->seoDataCache[$sourceLanguage];
+                       
+                       if (!isset($this->seoDataCache[$targetLang])) {
+                           $this->seoDataCache[$targetLang] = [
+                               'seo_title' => '',
+                               'seo_description' => '',
+                               'seo_keywords' => '',
+                               'canonical_url' => ''
+                           ];
+                       }
+
+                       // SEO Title çevir
+                       if (!empty(trim($sourceSeo['seo_title']))) {
+                           $existingSeoTitle = $this->seoDataCache[$targetLang]['seo_title'] ?? '';
+                           if (empty(trim($existingSeoTitle)) || $overwriteExisting) {
+                               $translatedSeoTitle = $this->aiService->translateText(
+                                   $sourceSeo['seo_title'],
+                                   $sourceLanguage,
+                                   $targetLang,
+                                   ['context' => 'seo_title', 'max_length' => 60]
+                               );
+                               $this->seoDataCache[$targetLang]['seo_title'] = $translatedSeoTitle;
+                               \Log::info("✅ SEO Title çevrildi: {$targetLang}");
+                           }
+                       }
+
+                       // SEO Description çevir
+                       if (!empty(trim($sourceSeo['seo_description']))) {
+                           $existingSeoDesc = $this->seoDataCache[$targetLang]['seo_description'] ?? '';
+                           if (empty(trim($existingSeoDesc)) || $overwriteExisting) {
+                               $translatedSeoDesc = $this->aiService->translateText(
+                                   $sourceSeo['seo_description'],
+                                   $sourceLanguage,
+                                   $targetLang,
+                                   ['context' => 'seo_description', 'max_length' => 160]
+                               );
+                               $this->seoDataCache[$targetLang]['seo_description'] = $translatedSeoDesc;
+                               \Log::info("✅ SEO Description çevrildi: {$targetLang}");
+                           }
+                       }
+
+                       // SEO Keywords çevir
+                       if (!empty(trim($sourceSeo['seo_keywords']))) {
+                           $existingSeoKeywords = $this->seoDataCache[$targetLang]['seo_keywords'] ?? '';
+                           if (empty(trim($existingSeoKeywords)) || $overwriteExisting) {
+                               $translatedSeoKeywords = $this->aiService->translateText(
+                                   $sourceSeo['seo_keywords'],
+                                   $sourceLanguage,
+                                   $targetLang,
+                                   ['context' => 'seo_keywords']
+                               );
+                               $this->seoDataCache[$targetLang]['seo_keywords'] = $translatedSeoKeywords;
+                               \Log::info("✅ SEO Keywords çevrildi: {$targetLang}");
+                           }
+                       }
+
+                       // Canonical URL aynı kalır
+                       $this->seoDataCache[$targetLang]['canonical_url'] = $sourceSeo['canonical_url'] ?? '';
+
+                   } catch (\Exception $e) {
+                       \Log::error("❌ SEO çeviri hatası: {$targetLang}", [
+                           'error' => $e->getMessage()
+                       ]);
+                   }
+               }
+           }
+
+           // Tab completion durumunu güncelle
+           $this->updateTabCompletionStatus();
+
+           // Sonuç mesajları
+           $messages = [];
+           if ($translatedCount > 0) {
+               $messages[] = "{$translatedCount} alan çevrildi";
+           }
+           if ($skippedCount > 0) {
+               $messages[] = "{$skippedCount} alan atlandı";
+           }
+           if ($errorCount > 0) {
+               $messages[] = "{$errorCount} hata";
+           }
+
+           if ($translatedCount > 0) {
+               // ÇEVİRİLERİ VERİTABANINA KAYDET
+               $this->save();
+               
+               $this->dispatch('toast', [
+                   'title' => 'Çeviri Tamamlandı',
+                   'message' => implode(', ', $messages) . ' ve kaydedildi',
+                   'type' => 'success'
+               ]);
+           } else {
+               $this->dispatch('toast', [
+                   'title' => $skippedCount > 0 ? 'Çeviri Atlandı' : 'Çeviri Başarısız',
+                   'message' => $skippedCount > 0 ? 'Tüm alanlar zaten dolu (üzerine yazma kapalı)' : 'Hiçbir alan çevrilemedi',
+                   'type' => $skippedCount > 0 ? 'info' : 'error'
+               ]);
+           }
+
+           \Log::info('🏁 AI Content Translation tamamlandı', [
+               'source_language' => $sourceLanguage,
+               'target_languages' => $validTargetLanguages,
+               'translated_fields' => $translatedCount,
+               'skipped_fields' => $skippedCount,
+               'errors' => $errorCount,
+               'results_count' => count($results)
+           ]);
+
+       } catch (\Exception $e) {
+           $this->dispatch('toast', [
+               'title' => 'Çeviri Sistemi Hatası',
+               'message' => 'Çeviri işlemi başarısız: ' . $e->getMessage(),
+               'type' => 'error'
+           ]);
+
+           \Log::error('🚨 AI Translation System Error', [
+               'error' => $e->getMessage(),
+               'file' => $e->getFile(),
+               'line' => $e->getLine(),
+               'source_language' => $sourceLanguage,
+               'target_languages' => $targetLanguages
+           ]);
+       }
+   }
+
+   /**
     * Computed Properties
     */
    public function getCurrentSeoDataProperty()
@@ -1262,6 +1564,12 @@ class PageManageComponent extends Component
 
    public function render()
    {
-       return view('page::admin.livewire.page-manage-component');
+       // JavaScript değişkenlerini view'a gönder
+       return view('page::admin.livewire.page-manage-component', [
+           'jsVariables' => [
+               'currentPageId' => $this->pageId ?? null,
+               'currentLanguage' => $this->currentLanguage ?? 'tr'
+           ]
+       ]);
    }
 }

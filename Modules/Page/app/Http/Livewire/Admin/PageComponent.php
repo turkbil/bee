@@ -11,6 +11,8 @@ use Modules\Page\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActions};
 use Modules\Page\App\Services\PageService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Page\App\DataTransferObjects\PageOperationResult;
+use Modules\AI\App\Services\AIService;
+use Modules\Page\App\Models\Page;
 
 #[Layout('admin.layout')]
 class PageComponent extends Component
@@ -36,10 +38,12 @@ class PageComponent extends Component
     protected $listeners = ['refreshPageData' => 'refreshPageData'];
     
     private PageService $pageService;
+    private AIService $aiService;
     
-    public function boot(PageService $pageService): void
+    public function boot(PageService $pageService, AIService $aiService): void
     {
         $this->pageService = $pageService;
+        $this->aiService = $aiService;
     }
     
     public function refreshPageData()
@@ -146,6 +150,130 @@ class PageComponent extends Component
                 'title' => __('admin.error'),
                 'message' => __('admin.operation_failed'),
                 'type' => 'error',
+            ]);
+        }
+    }
+
+    /**
+     * AI Translation for modal calls - JavaScript'den çağrılabilir
+     * Modal'dan gelen çağrıları işler
+     */
+    public function translateFromModal(int $pageId, string $sourceLanguage, array $targetLanguages): void
+    {
+        $this->translateContent($pageId, $sourceLanguage, $targetLanguages);
+        
+        // Modal'ı kapat ve sayfayı yenile
+        $this->dispatch('closeTranslationModal');
+        $this->dispatch('refreshComponent');
+    }
+
+    /**
+     * AI Translation for single page
+     * Adapted from PageManageComponent with simplifications
+     */
+    public function translateContent(int $pageId, string $sourceLanguage, array $targetLanguages): void
+    {
+        // Execution time'ı artır (çeviri işlemi uzun sürebilir)
+        set_time_limit(0); // No time limit
+        ini_set('max_execution_time', 0);
+        
+        try {
+            \Log::info("🔄 PAGE LISTING ÇEVİRİ BAŞLADI", [
+                'page_id' => $pageId,
+                'source' => $sourceLanguage, 
+                'targets' => $targetLanguages
+            ]);
+
+            // Sayfayı bul
+            $page = Page::findOrFail($pageId);
+
+            $translatedCount = 0;
+            $messages = [];
+
+            foreach ($targetLanguages as $targetLanguage) {
+                if ($sourceLanguage === $targetLanguage) {
+                    continue;
+                }
+
+                try {
+                    // Tüm alanları çevir
+                    $fieldsToTranslate = ['title', 'body'];
+                    
+                    foreach ($fieldsToTranslate as $field) {
+                        $sourceText = $page->getTranslated($field, $sourceLanguage);
+                        
+                        if (empty($sourceText)) {
+                            continue;
+                        }
+
+                        // AI çeviri yap
+                        $translatedText = $this->aiService->translateText($sourceText, $sourceLanguage, $targetLanguage);
+                        
+                        if (!empty($translatedText) && $translatedText !== $sourceText) {
+                            // Mevcut veriyi al
+                            $currentData = $page->{$field};
+                            if (is_string($currentData)) {
+                                $currentData = json_decode($currentData, true) ?: [];
+                            }
+                            
+                            // Çeviriyi ekle
+                            $currentData[$targetLanguage] = $translatedText;
+                            
+                            // Güncelle
+                            $page->update([$field => $currentData]);
+                            
+                            \Log::info("✅ Çeviri başarılı", [
+                                'field' => $field,
+                                'target' => $targetLanguage,
+                                'original' => substr($sourceText, 0, 100),
+                                'translated' => substr($translatedText, 0, 100)
+                            ]);
+                        }
+                    }
+
+                    $translatedCount++;
+                    $messages[] = strtoupper($targetLanguage) . ' çevirisi';
+
+                } catch (\Exception $e) {
+                    \Log::error("❌ Çeviri hatası", [
+                        'page_id' => $pageId,
+                        'target_language' => $targetLanguage,
+                        'error' => $e->getMessage()
+                    ]);
+                    
+                    $this->dispatch('toast', [
+                        'title' => 'Çeviri Hatası',
+                        'message' => strtoupper($targetLanguage) . ' çevirisi başarısız: ' . $e->getMessage(),
+                        'type' => 'error'
+                    ]);
+                }
+            }
+
+            if ($translatedCount > 0) {
+                $this->dispatch('toast', [
+                    'title' => 'Çeviri Tamamlandı',
+                    'message' => implode(', ', $messages) . ' başarıyla kaydedildi',
+                    'type' => 'success'
+                ]);
+
+                \Log::info("🎉 PAGE LISTING ÇEVİRİ TAMAMLANDI", [
+                    'page_id' => $pageId,
+                    'translated_count' => $translatedCount,
+                    'messages' => $messages
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error("💥 PAGE LISTING ÇEVİRİ GENEL HATA", [
+                'page_id' => $pageId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            $this->dispatch('toast', [
+                'title' => 'Çeviri Sistemi Hatası',
+                'message' => 'Çeviri işlemi başarısız oldu: ' . $e->getMessage(),
+                'type' => 'error'
             ]);
         }
     }

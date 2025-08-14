@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Page\App\Http\Livewire\Admin\PageComponent;
 use Modules\Page\App\Http\Livewire\Admin\PageManageComponent;
+use Modules\Page\App\Http\Controllers\Admin\PageTranslationController;
 
 // Admin rotaları
 Route::middleware(['admin', 'tenant'])
@@ -24,6 +25,12 @@ Route::middleware(['admin', 'tenant'])
                 
                 // Universal SEO Management System kullanılıyor
                 // Eski seo-data route'u kaldırıldı
+                
+                // AI Translation endpoints - Yeni controller
+                Route::prefix('ai/translation')->name('ai.translation.')->group(function () {
+                    Route::post('/translate-multi', [PageTranslationController::class, 'translateMulti'])->name('translate-multi');
+                    Route::post('/check-progress', [PageTranslationController::class, 'checkProgress'])->name('check-progress');
+                });
                 
             });
     });

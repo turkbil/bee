@@ -252,7 +252,7 @@ class PublicAIController extends Controller
             $features = Cache::remember($cacheKey, now()->addHours(6), function () {
                 return AIFeature::where('is_public', true)
                     ->where('is_active', true)
-                    ->select(['slug', 'name', 'description', 'icon', 'category'])
+                    ->select(['slug', 'name', 'description', 'icon', 'ai_feature_category_id'])
                     ->get()
                     ->map(function ($feature) {
                         return [
@@ -260,7 +260,7 @@ class PublicAIController extends Controller
                             'name' => $feature->getTranslated('name'),
                             'description' => $feature->getTranslated('description'),
                             'icon' => $feature->icon,
-                            'category' => $feature->category,
+                            'category' => $feature->getCategoryName(),
                         ];
                     });
             });

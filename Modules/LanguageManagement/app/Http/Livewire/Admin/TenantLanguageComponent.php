@@ -8,6 +8,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 use Modules\LanguageManagement\app\Services\TenantLanguageService;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
+use App\Services\LanguageCleanupService;
 
 #[Layout('admin.layout')]
 class TenantLanguageComponent extends Component
@@ -49,22 +50,42 @@ class TenantLanguageComponent extends Component
         }
 
         $siteLanguageService = app(TenantLanguageService::class);
+        $languageCode = $language->code; // Silmeden önce kod'u sakla
         
         if ($siteLanguageService->deleteTenantLanguage($id)) {
-            // Log kaydı
-            Log::info('Language deleted', [
-                'language_id' => $language->id,
-                'language_name' => $language->name,
-                'language_code' => $language->code,
-                'user_id' => auth()->id(),
-                'tenant_id' => tenant('id')
-            ]);
+            // JSON temizleme işlemini başlat
+            try {
+                $cleanupService = app(LanguageCleanupService::class);
+                $cleanupResult = $cleanupService->cleanupLanguagesFromAllModules([$languageCode]);
+                
+                Log::info('Language deleted with JSON cleanup', [
+                    'language_id' => $language->id,
+                    'language_name' => $language->name,
+                    'language_code' => $languageCode,
+                    'cleanup_result' => $cleanupResult,
+                    'user_id' => auth()->id(),
+                    'tenant_id' => tenant('id')
+                ]);
+                
+                session()->flash('message', 
+                    "Site dili başarıyla silindi. {$cleanupResult['total_updated_rows']} kayıt güncellendi, " .
+                    count($cleanupResult['processed_tables']) . " tablo temizlendi."
+                );
+                
+            } catch (\Exception $e) {
+                Log::error('JSON cleanup failed after language deletion', [
+                    'language_code' => $languageCode,
+                    'error' => $e->getMessage(),
+                    'tenant_id' => tenant('id')
+                ]);
+                
+                session()->flash('message', 'Site dili silindi ancak JSON temizlemede sorun yaşandı.');
+            }
             
             if (function_exists('log_activity')) {
                 log_activity($language, 'silindi');
             }
             
-            session()->flash('message', 'Site dili başarıyla silindi.');
         } else {
             session()->flash('error', 'Site dili silinirken hata oluştu.');
         }
@@ -98,6 +119,7 @@ class TenantLanguageComponent extends Component
             return;
         }
 
+        $oldStatus = $language->is_active;
         $language->is_active = !$language->is_active;
         
         if ($language->save()) {
@@ -106,12 +128,45 @@ class TenantLanguageComponent extends Component
             
             $status = $language->is_active ? 'aktif' : 'pasif';
             
+            // Eğer pasif yapıldıysa JSON temizleme işlemi başlat
+            if ($oldStatus && !$language->is_active) {
+                try {
+                    $cleanupService = app(LanguageCleanupService::class);
+                    $cleanupResult = $cleanupService->cleanupLanguagesFromAllModules([$language->code]);
+                    
+                    Log::info('Language deactivated with JSON cleanup', [
+                        'language_id' => $language->id,
+                        'language_name' => $language->name,
+                        'language_code' => $language->code,
+                        'cleanup_result' => $cleanupResult,
+                        'user_id' => auth()->id(),
+                        'tenant_id' => tenant('id')
+                    ]);
+                    
+                    session()->flash('message', 
+                        "Site dili {$status} yapıldı. {$cleanupResult['total_updated_rows']} kayıt güncellendi, " .
+                        count($cleanupResult['processed_tables']) . " tablo temizlendi."
+                    );
+                    
+                } catch (\Exception $e) {
+                    Log::error('JSON cleanup failed after language deactivation', [
+                        'language_code' => $language->code,
+                        'error' => $e->getMessage(),
+                        'tenant_id' => tenant('id')
+                    ]);
+                    
+                    session()->flash('message', "Site dili {$status} yapıldı ancak JSON temizlemede sorun yaşandı.");
+                }
+            } else {
+                session()->flash('message', "Site dili {$status} yapıldı.");
+            }
+            
             // Log kaydı
             Log::info('Language status changed', [
                 'language_id' => $language->id,
                 'language_name' => $language->name,
                 'language_code' => $language->code,
-                'old_status' => !$language->is_active ? 'aktif' : 'pasif',
+                'old_status' => $oldStatus ? 'aktif' : 'pasif',
                 'new_status' => $status,
                 'user_id' => auth()->id(),
                 'tenant_id' => tenant('id')
@@ -121,7 +176,6 @@ class TenantLanguageComponent extends Component
                 log_activity($language, $status . ' edildi');
             }
             
-            session()->flash('message', "Site dili {$status} yapıldı.");
         } else {
             session()->flash('error', 'Durum güncellenirken hata oluştu.');
         }

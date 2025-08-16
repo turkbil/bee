@@ -1,3 +1,6 @@
+Login durumlarında "nurullah@nurullah.net" kullanıcı adı ve "test" şifresiyle giriş yap.
+www.laravel.test/login sayfası.
+
 # CLAUDE.md - NURULLAH'IN KURAL VE STANDARTLARI
 
 Bu kılavuz belgeleri aşağıdaki konulara göre organize edilmiştir:
@@ -28,6 +31,9 @@ Turkbil Bee Laravel sistemi ve AI özellikler dokümantasyonu:
 - Universal Input System V3
 - Development commands ve guidelines
 - Technology Stack ve önemli pattern'lar
+
+
+### 📊 [AI REHBERi](./claude_ai.md)
 
 ---
 
@@ -112,6 +118,47 @@ php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan mod
 - ✅ `universal-input-component.blade.php` - Livewire template
 
 **SONUÇ:** AI UNIVERSAL INPUT SYSTEM V3 tamamen production-ready! 🚀
+
+## 🧹 JSON DİL TEMİZLEME OTOMATİK SİSTEMİ - BAŞARILI TAMAMLAMA (16.08.2025)
+
+**DURUM:** ✅ **JSON DİL TEMİZLEME SİSTEMİ %100 ÇALIŞIR DURUMDA - TAMAMEN OTOMATİK**
+
+### 🎯 SİSTEM ÖZELLİKLERİ:
+- **Otomatik Tespit**: HasTranslations trait kullanan tüm modelleri otomatik bulur
+- **Smart Primary Key**: Her model için doğru primary key tespit eder (page_id, id, vs.)
+- **Multi-Module Support**: Mevcut ve gelecek tüm modüller otomatik desteklenir
+- **Event-Driven**: Dil silme/pasif yapma işlemlerinde otomatik çalışır
+- **Safe Processing**: JSON validation ve comprehensive error handling
+
+### 🔧 OLUŞTURULAN DOSYALAR:
+1. **`app/Services/LanguageCleanupService.php`** - Ana temizleme servisi
+2. **`app/Console/Commands/CleanupLanguageJsonCommand.php`** - Admin komut aracı
+3. **TenantLanguageComponent güncellemeleri** - Event-driven entegrasyon
+
+### 📊 TEST SONUÇLARI:
+```
+✅ Pages: 9 kayıt güncellendi
+✅ Portfolios: 9 kayıt güncellendi  
+✅ Portfolio Categories: 9 kayıt güncellendi
+✅ Announcements: 9 kayıt güncellendi
+✅ SEO Settings: 36 kayıt güncellendi
+✅ Menus: 1 kayıt güncellendi
+✅ Menu Items: 6 kayıt güncellendi
+TOPLAM: 43 kayıt başarıyla temizlendi
+```
+
+### 🎯 KULLANIM:
+```bash
+# Orphaned keys tespit et
+php artisan language:cleanup-json --detect
+
+# Belirli dilleri temizle
+php artisan language:cleanup-json en ar --force
+```
+
+**SONUÇ:** Tenant'tan dil silinince/pasif yapılınca sistem otomatik olarak tüm modüllerdeki JSON verilerini temizliyor!
+
+---
 
 ## 🎯 AI ÇEVİRİ SİSTEMİ TAMAMI ONARIMI - BAŞARILI TAMAMLAMA (14.08.2025)
 

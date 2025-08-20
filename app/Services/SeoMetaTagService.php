@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Modules\SeoManagement\app\Models\SeoSetting;
 use App\Services\TenantLanguageProvider;
+use App\Helpers\TenantSeoHelper;
 
 /**
  * Global SEO Meta Tag Service
@@ -544,7 +545,12 @@ readonly class SeoMetaTagService
             
             // 1. TITLE
             if ($seoSetting && $seoSetting->hasDirectTitle($locale) && $seoTitle = $seoSetting->getTitle($locale)) {
-                $data['title'] = $seoTitle . ' - ' . $siteName;
+                // SEO title zaten site name içeriyorsa ekleme
+                if (str_contains($seoTitle, $siteName)) {
+                    $data['title'] = $seoTitle;
+                } else {
+                    $data['title'] = $seoTitle . ' - ' . $siteName;
+                }
             } elseif (method_exists($model, 'getTranslated') && $modelTitle = $model->getTranslated('title', $locale)) {
                 
                 // DEBUG: Title translation'ı logla
@@ -595,18 +601,13 @@ readonly class SeoMetaTagService
                 $data['keywords'] = is_array($keywords) ? implode(', ', $keywords) : $keywords;
             }
             
-            // 3.1. BASIC META FIELDS
-            if ($seoSetting && $seoSetting->author) {
-                $data['author'] = $seoSetting->author;
-            }
+            // 3.1. BASIC META FIELDS - Tenant bazlı sistem
+            $data['author'] = ($seoSetting && $seoSetting->author) ? $seoSetting->author : TenantSeoHelper::getAuthor();
+            $data['publisher'] = ($seoSetting && $seoSetting->publisher) ? $seoSetting->publisher : setting('site_title', $siteName);
             
-            if ($seoSetting && $seoSetting->publisher) {
-                $data['publisher'] = $seoSetting->publisher;
-            }
-            
-            if ($seoSetting && $seoSetting->copyright) {
-                $data['copyright'] = $seoSetting->copyright;
-            }
+            // Copyright - otomatik çok dilli oluşturma
+            $copyright = self::generateAutomaticCopyright($siteName, $locale);
+            $data['copyright'] = ($seoSetting && $seoSetting->copyright) ? $seoSetting->copyright : $copyright;
             
             // 3.5. CANONICAL URL
             if ($seoSetting && isset($seoSetting->canonical_url) && !empty($seoSetting->canonical_url)) {
@@ -659,20 +660,15 @@ readonly class SeoMetaTagService
                 default => 'website'
             };
             
-            // og:locale
-            if ($seoSetting && $seoSetting->og_locale) {
-                $data['og_locale'] = $seoSetting->og_locale;
-            } else {
-                // Varsayılan: mevcut locale
-                $data['og_locale'] = str_replace('-', '_', $locale);
-            }
+            // og:locale - Setting sistemi entegrasyonu
+            $data['og_locale'] = ($seoSetting && $seoSetting->og_locale) 
+                ? $seoSetting->og_locale 
+                : str_replace('-', '_', $locale);
             
-            // og:site_name
-            if ($seoSetting && $seoSetting->og_site_name) {
-                $data['og_site_name'] = $seoSetting->og_site_name;
-            } else {
-                $data['og_site_name'] = $siteName;
-            }
+            // og:site_name - Site title'dan al
+            $data['og_site_name'] = ($seoSetting && $seoSetting->og_site_name) 
+                ? $seoSetting->og_site_name 
+                : setting('site_title', $siteName);
             
             // 5. TWITTER CARDS
             $data['twitter_card'] = $data['og_image'] ? 'summary_large_image' : 'summary';
@@ -691,20 +687,22 @@ readonly class SeoMetaTagService
             
             $data['twitter_image'] = $data['og_image'];
             
-            // Twitter additional fields
-            if ($seoSetting && $seoSetting->twitter_site) {
-                $data['twitter_site'] = $seoSetting->twitter_site;
-            }
+            // Twitter additional fields - Tenant bazlı sistem
+            $data['twitter_site'] = ($seoSetting && $seoSetting->twitter_site) 
+                ? $seoSetting->twitter_site 
+                : TenantSeoHelper::getTwitterSite();
+                
+            $data['twitter_creator'] = ($seoSetting && $seoSetting->twitter_creator) 
+                ? $seoSetting->twitter_creator 
+                : TenantSeoHelper::getTwitterCreator();
             
-            if ($seoSetting && $seoSetting->twitter_creator) {
-                $data['twitter_creator'] = $seoSetting->twitter_creator;
-            }
-            
-            // 6. ROBOTS
+            // 6. ROBOTS - 2025 Standards
             if ($seoSetting && $seoSetting->robots) {
                 $data['robots'] = $seoSetting->robots;
             } elseif (isset($model->is_active) && !$model->is_active) {
-                $data['robots'] = 'noindex, nofollow';
+                $data['robots'] = 'noindex, nofollow, max-snippet:0, max-image-preview:none, max-video-preview:0';
+            } else {
+                $data['robots'] = 'index, follow';
             }
             
             // 7. SCHEMA.ORG
@@ -797,6 +795,28 @@ readonly class SeoMetaTagService
             
             return [];
         }
+    }
+    
+    /**
+     * Otomatik çok dilli copyright oluştur - Public static metod
+     */
+    public static function generateAutomaticCopyright(string $siteName, string $locale): string
+    {
+        $currentYear = date('Y');
+        
+        // Çok dilli copyright metinleri
+        $copyrightTexts = [
+            'tr' => $currentYear . ' ' . $siteName . '. Tüm hakları saklıdır.',
+            'en' => '© ' . $currentYear . ' ' . $siteName . '. All rights reserved.',
+            'de' => '© ' . $currentYear . ' ' . $siteName . '. Alle Rechte vorbehalten.',
+            'fr' => '© ' . $currentYear . ' ' . $siteName . '. Tous droits réservés.',
+            'es' => '© ' . $currentYear . ' ' . $siteName . '. Todos los derechos reservados.',
+            'it' => '© ' . $currentYear . ' ' . $siteName . '. Tutti i diritti riservati.',
+            'ar' => '© ' . $currentYear . ' ' . $siteName . '. جميع الحقوق محفوظة.',
+            'ru' => '© ' . $currentYear . ' ' . $siteName . '. Все права защищены.'
+        ];
+        
+        return $copyrightTexts[$locale] ?? $copyrightTexts['tr'];
     }
     
     /**

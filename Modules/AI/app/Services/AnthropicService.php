@@ -14,7 +14,8 @@ class AnthropicService
 
     public function __construct()
     {
-        $this->apiKey = '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';
+        // API key setApiKey() ile ayarlanacak, boş başla
+        $this->apiKey = null;
         $this->baseUrl = 'https://api.anthropic.com';
         $this->model = 'claude-3-haiku-20240307';
     }
@@ -32,6 +33,11 @@ class AnthropicService
         ]);
 
         try {
+            // Messages array kontrolü
+            if (!is_array($messages)) {
+                throw new \Exception('Messages must be an array, ' . gettype($messages) . ' given');
+            }
+            
             // Claude API formatına uygun system ve user message ayrımı
             $systemMessage = '';
             $userMessages = [];

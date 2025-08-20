@@ -239,7 +239,12 @@ class AIFeature extends Model
      */
     public function getCategoryName(): string
     {
-        return $this->category?->title ?? 'Kategorisiz';
+        // Manuel kategori ilişkisi - relationship çalışmıyor
+        if ($this->ai_feature_category_id) {
+            $category = \Modules\AI\App\Models\AIFeatureCategory::where('ai_feature_category_id', $this->ai_feature_category_id)->first();
+            return $category ? $category->title : 'Kategorisiz';
+        }
+        return 'Kategorisiz';
     }
 
     /**

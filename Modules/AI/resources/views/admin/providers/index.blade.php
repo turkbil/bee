@@ -14,7 +14,7 @@
                                     {{ __('ai::admin.providers.active_providers') }}
                                 </h3>
                                 <div class="card-actions">
-                                    <span class="badge bg-primary">{{ $providers->count() }} Provider</span>
+                                    <span class="badge badge-primary">{{ $providers->count() }} Provider</span>
                                 </div>
                             </div>
                             <div class="card-body">

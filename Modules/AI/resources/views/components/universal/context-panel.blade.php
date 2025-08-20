@@ -52,7 +52,7 @@ $hasContext = !empty($context) && is_array($context);
             <h6 class="context-title mb-0 d-flex align-items-center">
                 <i class="fas fa-brain me-2 text-primary"></i>
                 {{ __('ai::admin.intelligent_context') }}
-                <span class="badge bg-primary ms-2" x-text="contextCount + ' ' + '{{ __('ai::admin.detected') }}'"></span>
+                <span class="badge badge-primary ms-2" x-text="contextCount + ' ' + '{{ __('ai::admin.detected') }}'"></span>
             </h6>
             <button 
                 class="btn btn-sm btn-outline-secondary" 

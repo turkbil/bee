@@ -49,10 +49,10 @@ if (!function_exists('ai_use_credits')) {
                     }
                 }
                 
-                // Son çare
+                // Son çare - default tenant ID=1 kullan (development/test için)
                 if (!$tenantId) {
-                    Log::error('ai_use_credits: No tenant context found');
-                    return false;
+                    $tenantId = 1; // Default tenant
+                    Log::warning('ai_use_credits: No tenant context found, using default tenant ID=1');
                 }
             }
             
@@ -76,7 +76,7 @@ if (!function_exists('ai_use_credits')) {
             // Credit kullanımını kaydet
             AICreditUsage::create([
                 'tenant_id' => $tenant->id,
-                'user_id' => auth()->id(),
+                'user_id' => auth()->id() ?: 1, // Default user ID 1 for system usage
                 'credits_used' => $creditAmount,
                 'input_tokens' => $metadata['input_tokens'] ?? 0,
                 'output_tokens' => $metadata['output_tokens'] ?? 0,
@@ -297,7 +297,10 @@ if (!function_exists('ai_get_total_credits_purchased')) {
                     ->where('status', 'completed')
                     ->sum('credit_amount');
                 
-                // Eğer satın alma varsa onu döndür, yoksa default değere düş\n                if ($totalPurchased > 0) {\n                    return (float) $totalPurchased;\n                }
+                // Eğer satın alma varsa onu döndür, yoksa default değere düş
+                if ($totalPurchased > 0) {
+                    return (float) $totalPurchased;
+                }
             }
             
             // Fallback: Token purchase'lardan hesapla
@@ -856,6 +859,212 @@ if (!function_exists('format_credit_currency')) {
             
         } catch (\Exception $e) {
             return $currency . '0,00';
+        }
+    }
+}
+
+// ============================================================================
+// YENI MODEL BAZLI KREDİ FONKSİYONLARI - V2 SİSTEM
+// ============================================================================
+
+if (!function_exists('ai_calculate_model_credits')) {
+    /**
+     * Model bazlı kredi hesaplama - YENI SİSTEM
+     * 
+     * @param int $inputTokens Input token sayısı
+     * @param int $outputTokens Output token sayısı  
+     * @param string $provider Provider adı
+     * @param string $model Model adı
+     * @return float Hesaplanan kredi miktarı
+     */
+    function ai_calculate_model_credits(int $inputTokens, int $outputTokens, string $provider, string $model): float
+    {
+        try {
+            $calculator = app(\Modules\AI\App\Services\CreditCalculatorService::class);
+            return $calculator->calculateCreditsForModel($provider, $model, $inputTokens, $outputTokens);
+        } catch (\Exception $e) {
+            Log::error('ai_calculate_model_credits error', [
+                'provider' => $provider,
+                'model' => $model,
+                'error' => $e->getMessage()
+            ]);
+            return ($inputTokens + $outputTokens) / 1000 * 1.0; // Fallback
+        }
+    }
+}
+
+if (!function_exists('ai_get_model_rate')) {
+    /**
+     * Model rate detaylarını getir - YENI SİSTEM
+     * 
+     * @param string $provider Provider adı
+     * @param string $model Model adı
+     * @return float|null Model kredi oranı (1K token için)
+     */
+    function ai_get_model_rate(string $provider, string $model): ?float
+    {
+        try {
+            $calculator = app(\Modules\AI\App\Services\CreditCalculatorService::class);
+            $details = $calculator->getModelRateDetails($provider, $model);
+            
+            return $details['found'] ? $details['input_rate'] : null;
+        } catch (\Exception $e) {
+            Log::error('ai_get_model_rate error', [
+                'provider' => $provider,
+                'model' => $model,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+}
+
+if (!function_exists('ai_estimate_cost_by_model')) {
+    /**
+     * Model bazlı maliyet tahmini - YENI SİSTEM
+     * 
+     * @param string $input Input text
+     * @param string $provider Provider adı
+     * @param string $model Model adı
+     * @return array Maliyet tahmini detayları
+     */
+    function ai_estimate_cost_by_model(string $input, string $provider, string $model): array
+    {
+        try {
+            $calculator = app(\Modules\AI\App\Services\CreditCalculatorService::class);
+            return $calculator->estimateCreditCost($input, $provider, $model);
+        } catch (\Exception $e) {
+            Log::error('ai_estimate_cost_by_model error', [
+                'provider' => $provider,
+                'model' => $model,
+                'error' => $e->getMessage()
+            ]);
+            return [
+                'estimated_input_tokens' => 0,
+                'estimated_output_tokens' => 0,
+                'estimated_total_tokens' => 0,
+                'estimated_credits' => 0.001,
+                'provider' => $provider,
+                'model' => $model
+            ];
+        }
+    }
+}
+
+if (!function_exists('ai_get_base_token_rate')) {
+    /**
+     * Base token rate getir - YENI SİSTEM
+     * 
+     * @return float Base token rate (varsayılan 1.0)
+     */
+    function ai_get_base_token_rate(): float
+    {
+        try {
+            $calculator = app(\Modules\AI\App\Services\CreditCalculatorService::class);
+            return $calculator->getBaseTokenRate();
+        } catch (\Exception $e) {
+            Log::error('ai_get_base_token_rate error', ['error' => $e->getMessage()]);
+            return 1.0;
+        }
+    }
+}
+
+if (!function_exists('ai_set_base_token_rate')) {
+    /**
+     * Base token rate ayarla - YENI SİSTEM
+     * 
+     * @param float $rate Yeni rate değeri
+     * @return bool Başarılı mı?
+     */
+    function ai_set_base_token_rate(float $rate): bool
+    {
+        try {
+            $calculator = app(\Modules\AI\App\Services\CreditCalculatorService::class);
+            return $calculator->setBaseTokenRate($rate);
+        } catch (\Exception $e) {
+            Log::error('ai_set_base_token_rate error', [
+                'rate' => $rate,
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+}
+
+if (!function_exists('ai_use_credits_with_model')) {
+    /**
+     * Model bilgisi ile kredi kullanım kaydı - YENI SİSTEM
+     * 
+     * @param int $inputTokens Input token sayısı
+     * @param int $outputTokens Output token sayısı
+     * @param string $provider Provider adı
+     * @param string $model Model adı
+     * @param array $metadata Ek metadata
+     * @return float Kullanılan kredi miktarı (0.0 = başarısız)
+     */
+    function ai_use_credits_with_model(
+        int $inputTokens, 
+        int $outputTokens, 
+        string $provider, 
+        string $model, 
+        array $metadata = []
+    ): float {
+        try {
+            // Model bazlı kredi hesapla
+            $credits = ai_calculate_model_credits($inputTokens, $outputTokens, $provider, $model);
+            
+            // Metadata'yı güçlendir
+            $enrichedMetadata = array_merge($metadata, [
+                'provider_name' => $provider,
+                'model_name' => $model,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
+                'total_tokens' => $inputTokens + $outputTokens,
+                'credit_calculation_method' => 'model_based',
+                'calculated_credits' => $credits
+            ]);
+            
+            // Kredi kullan
+            $success = ai_use_credits($credits, null, $enrichedMetadata);
+            return $success ? $credits : 0.0;
+            
+        } catch (\Exception $e) {
+            Log::error('ai_use_credits_with_model error', [
+                'provider' => $provider,
+                'model' => $model,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
+                'error' => $e->getMessage()
+            ]);
+            return 0.0;
+        }
+    }
+}
+
+if (!function_exists('ai_compare_model_costs')) {
+    /**
+     * Model maliyet karşılaştırması - YENI SİSTEM
+     * 
+     * @param int $estimatedTokens Tahmini token sayısı
+     * @return array Tüm provider/model'ların maliyet karşılaştırması
+     */
+    function ai_compare_model_costs(int $estimatedTokens): array
+    {
+        try {
+            $calculator = app(\Modules\AI\App\Services\CreditCalculatorService::class);
+            return $calculator->compareModelsAcrossProviders($estimatedTokens);
+        } catch (\Exception $e) {
+            Log::error('ai_compare_model_costs error', [
+                'estimated_tokens' => $estimatedTokens,
+                'error' => $e->getMessage()
+            ]);
+            return [
+                'comparison' => [],
+                'cheapest' => null,
+                'most_expensive' => null,
+                'average_cost' => 0,
+                'generated_at' => now()->toISOString()
+            ];
         }
     }
 }

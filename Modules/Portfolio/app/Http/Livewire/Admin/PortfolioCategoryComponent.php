@@ -189,4 +189,151 @@ class PortfolioCategoryComponent extends Component
     {
         return view('portfolio::admin.livewire.portfolio-category-component');
     }
+
+    public function queueTranslation($categoryId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
+    {
+        try {
+            \Log::info("🚀 PORTFOLIO CATEGORY QUEUE Translation başlatıldı", [
+                'category_id' => $categoryId,
+                'source' => $sourceLanguage,
+                'targets' => $targetLanguages
+            ]);
+
+            // Job'ı kuyruğa ekle
+            \Modules\AI\app\Jobs\TranslateEntityJob::dispatch(
+                'portfolio_category',
+                $categoryId,
+                $sourceLanguage,
+                $targetLanguages,
+                $overwriteExisting
+            );
+
+            $this->dispatch('translationQueued', 'Portfolio Category çeviri işlemi başlatıldı!');
+            
+        } catch (\Exception $e) {
+            \Log::error('❌ Portfolio Category queue translation hatası', [
+                'category_id' => $categoryId,
+                'error' => $e->getMessage()
+            ]);
+            
+            $this->dispatch('translationError', 'Portfolio Category çeviri kuyruğu hatası: ' . $e->getMessage());
+        }
+    }
+
+    public function translateFromModal(int $categoryId, string $sourceLanguage, array $targetLanguages): void
+    {
+        try {
+            \Log::info('🌍 Portfolio Category Translation modal çeviri başlatıldı', [
+                'category_id' => $categoryId,
+                'source_language' => $sourceLanguage,
+                'target_languages' => $targetLanguages,
+                'user_id' => auth()->id()
+            ]);
+
+            // Category'yi bul
+            $category = PortfolioCategory::find($categoryId);
+            if (!$category) {
+                $this->dispatch('translationError', 'Portfolio Category bulunamadı');
+                return;
+            }
+
+            // Her hedef dil için çeviri yap
+            $translatedCount = 0;
+            $errors = [];
+
+            foreach ($targetLanguages as $targetLanguage) {
+                try {
+                    // Kaynak dil verilerini al
+                    $sourceTitle = $category->getTranslated('title', $sourceLanguage);
+
+                    if (empty($sourceTitle)) {
+                        $errors[] = "Kaynak dil ({$sourceLanguage}) verileri bulunamadı";
+                        continue;
+                    }
+
+                    $translatedData = [];
+
+                    // Title çevir
+                    if (!empty($sourceTitle)) {
+                        $translatedTitle = app(\Modules\AI\App\Services\AIService::class)->translateText(
+                            $sourceTitle,
+                            $sourceLanguage,
+                            $targetLanguage,
+                            ['context' => 'portfolio_category_title', 'source' => 'translation_modal']
+                        );
+                        $translatedData['title'] = $translatedTitle;
+                    }
+
+                    // Slug oluştur
+                    if (!empty($translatedData['title'])) {
+                        $translatedData['slug'] = \App\Helpers\SlugHelper::generateFromTitle(
+                            PortfolioCategory::class,
+                            $translatedData['title'],
+                            $targetLanguage,
+                            'slug',
+                            'portfolio_category_id',
+                            $categoryId
+                        );
+                    }
+
+                    // Çevrilmiş verileri kaydet
+                    if (!empty($translatedData)) {
+                        foreach ($translatedData as $field => $value) {
+                            $currentData = $category->{$field} ?? [];
+                            $currentData[$targetLanguage] = $value;
+                            $category->{$field} = $currentData;
+                        }
+                        $category->save();
+                        $translatedCount++;
+
+                        \Log::info('✅ Portfolio Category çevirisi tamamlandı', [
+                            'category_id' => $categoryId,
+                            'target_language' => $targetLanguage,
+                            'fields' => array_keys($translatedData)
+                        ]);
+                    }
+
+                } catch (\Exception $e) {
+                    $errors[] = "Çeviri hatası ({$targetLanguage}): " . $e->getMessage();
+                    \Log::error('❌ Portfolio Category çeviri hatası', [
+                        'category_id' => $categoryId,
+                        'target_language' => $targetLanguage,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Session ID oluştur ve döndür
+            $sessionId = 'translation_' . uniqid();
+            
+            // Başarı mesajı
+            if ($translatedCount > 0) {
+                $message = "{$translatedCount} dil için Portfolio Category çeviri tamamlandı";
+                if (!empty($errors)) {
+                    $message .= ". " . count($errors) . " hata oluştu";
+                }
+                
+                $this->dispatch('translationQueued', [
+                    'sessionId' => $sessionId,
+                    'success' => true,
+                    'message' => $message,
+                    'translatedCount' => $translatedCount,
+                    'errors' => $errors
+                ]);
+                
+                // Kategorileri yeniden yükle
+                $this->loadCategories();
+            } else {
+                $this->dispatch('translationError', 'Hiçbir Portfolio Category çeviri yapılamadı: ' . implode(', ', $errors));
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('❌ Portfolio Category Translation modal genel hatası', [
+                'category_id' => $categoryId,
+                'error' => $e->getMessage()
+            ]);
+            
+            $this->dispatch('translationError', 'Portfolio Category çeviri işlemi başarısız: ' . $e->getMessage());
+        }
+    }
 }

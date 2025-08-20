@@ -1,7 +1,5 @@
 @extends('admin.layout')
 
-@include('ai::helper')
-
 @section('pretitle', 'AI Ayarları')
 @section('title', 'API Yapılandırması')
 
@@ -35,7 +33,7 @@
                                         <div class="card-body text-center position-relative">
                                             <!-- Priority Badge -->
                                             <div class="position-absolute top-0 end-0 m-2">
-                                                <span class="badge bg-azure text-azure-fg">{{ is_array($provider->priority) ? json_encode($provider->priority) : ($provider->priority ?? 'N/A') }}</span>
+                                                <span class="badge badge-secondary">{{ is_array($provider->priority) ? json_encode($provider->priority) : ($provider->priority ?? 'N/A') }}</span>
                                             </div>
                                             
                                             <div class="mb-2 mt-3">
@@ -55,7 +53,7 @@
                                             <!-- Performance Badge -->
                                             @if($provider->average_response_time)
                                                 <div class="mt-2">
-                                                    <span class="badge bg-{{ $provider->average_response_time < 5000 ? 'green' : ($provider->average_response_time < 15000 ? 'yellow' : 'red') }}">
+                                                    <span class="badge {{ $provider->average_response_time < 5000 ? 'badge-success' : ($provider->average_response_time < 15000 ? 'badge-warning' : 'badge-danger') }}">
                                                         {{ number_format($provider->average_response_time / 1000, 1) }}s
                                                     </span>
                                                 </div>
@@ -63,7 +61,7 @@
                                             
                                             <div class="mt-2">
                                                 @if($activeProvider && $activeProvider->id === $provider->id)
-                                                    <span class="badge bg-primary">Aktif Provider</span>
+                                                    <span class="badge badge-primary">Aktif Provider</span>
                                                 @else
                                                     <button type="button" class="btn btn-sm btn-outline-primary" 
                                                             onclick="setActiveProvider({{ $provider->id }})">
@@ -172,7 +170,7 @@
                                     @endphp
                                     <label for="temperature" class="form-label">
                                         Temperature
-                                        <span class="badge bg-primary text-white ms-2" id="temperature-value">{{ $temperature }}</span>
+                                        <span class="badge badge-primary ms-2" id="temperature-value">{{ $temperature }}</span>
                                     </label>
                                     <div class="row align-items-center">
                                         <div class="col-2">
@@ -278,8 +276,8 @@
                                     <tr>
                                         <th class="w-20">Provider</th>
                                         <th class="w-25">Model</th>
-                                        <th class="w-12 text-center">Input<br><small class="text-muted">1M token</small></th>
-                                        <th class="w-12 text-center">Output<br><small class="text-muted">1M token</small></th>
+                                        <th class="w-12 text-center">Input<br><small class="text-muted">1M token (kredi)</small></th>
+                                        <th class="w-12 text-center">Output<br><small class="text-muted">1M token (kredi)</small></th>
                                         <th class="w-10 text-center">Süre</th>
                                         <th class="w-11 text-center">Fiyat/Performans<br><small class="text-muted">1-10 skor</small></th>
                                         <th class="w-10 text-center">Durum</th>
@@ -287,15 +285,44 @@
                                 </thead>
                                 <tbody>
                                     @foreach($providers as $provider)
-                                        @if($provider->available_models && count($provider->available_models) > 0)
-                                            @php 
-                                                $modelCount = count($provider->available_models); 
-                                                $isActiveProvider = $activeProvider && $activeProvider->id === $provider->id;
-                                            @endphp
-                                            @foreach($provider->available_models as $model)
+                                        @php 
+                                            // Tüm modelleri göster: available_models + credit_rates'deki diğer modeller
+                                            $availableModels = $provider->available_models ?? [];
+                                            $creditRateModels = $provider->modelCreditRates()->where('is_active', true)->get();
+                                            
+                                            $allModels = [];
+                                            
+                                            // Available models'ı ekle
+                                            foreach($availableModels as $modelKey => $modelData) {
+                                                $modelName = is_array($modelData) ? $modelKey : $modelData;
+                                                $allModels[$modelName] = [
+                                                    'name' => $modelName,
+                                                    'display_name' => is_array($modelData) && isset($modelData['name']) ? $modelData['name'] : $modelName,
+                                                    'is_available' => true,
+                                                    'is_default' => $provider->default_model === $modelName
+                                                ];
+                                            }
+                                            
+                                            // Credit rates'deki diğer modelleri ekle
+                                            foreach($creditRateModels as $rate) {
+                                                if(!isset($allModels[$rate->model_name])) {
+                                                    $allModels[$rate->model_name] = [
+                                                        'name' => $rate->model_name,
+                                                        'display_name' => $rate->model_name,
+                                                        'is_available' => false,
+                                                        'is_default' => false
+                                                    ];
+                                                }
+                                            }
+                                            
+                                            $modelCount = count($allModels);
+                                            $isActiveProvider = $activeProvider && $activeProvider->id === $provider->id;
+                                        @endphp
+                                        @if($modelCount > 0)
+                                            @foreach($allModels as $modelData)
                                                 @php
-                                                    $modelValue = is_array($model) ? (isset($model['name']) ? $model['name'] : json_encode($model)) : $model;
-                                                    $modelDisplay = is_array($model) ? (isset($model['display_name']) ? $model['display_name'] : $modelValue) : $model;
+                                                    $modelValue = $modelData['name'];
+                                                    $modelDisplay = $modelData['display_name'];
                                                 @endphp
                                                 <tr class="{{ $isActiveProvider ? 'table-active' : '' }}">
                                                     @if($loop->first)
@@ -316,7 +343,7 @@
                                                                         <small>{{ $provider->description }}</small>
                                                                     </div>
                                                                     @if($isActiveProvider)
-                                                                        <span class="badge bg-primary mt-1">Aktif Provider</span>
+                                                                        <span class="badge badge-primary mt-1">Aktif Provider</span>
                                                                     @endif
                                                                 </div>
                                                             </div>
@@ -327,46 +354,59 @@
                                                         <div class="d-flex align-items-center">
                                                             <div>
                                                                 <div class="font-weight-medium">{{ $modelDisplay }}</div>
-                                                                @if($provider->default_model === $modelValue)
-                                                                    <span class="badge bg-blue-lt text-blue mt-1">Varsayılan</span>
-                                                                @endif
+                                                                <div class="mt-1">
+                                                                    @if($modelData['is_default'])
+                                                                        <span class="badge badge-info">Varsayılan</span>
+                                                                    @endif
+                                                                    @if($modelData['is_available'])
+                                                                        <span class="badge badge-success">Mevcut</span>
+                                                                    @else
+                                                                        <span class="badge badge-warning">Sadece Kredi Tablosu</span>
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     
-                                                    <!-- Sabit fiyat bilgileri (gerçek API entegrasyonu için güncellenebilir) -->
+                                                    <!-- Dynamic pricing from credit rates database -->
                                                     @php
-                                                        // Gerçek 2025 fiyatları (1M token başına USD)
-                                                        $modelPricing = [
-                                                            'gpt-4o-mini' => ['input' => 0.15, 'output' => 0.60],
-                                                            'gpt-4o' => ['input' => 5.0, 'output' => 15.0],
-                                                            'gpt-3.5-turbo' => ['input' => 0.50, 'output' => 1.50],
-                                                            'deepseek-chat' => ['input' => 0.27, 'output' => 1.10], // Cache miss pricing
-                                                            'claude-3-haiku-20240307' => ['input' => 0.25, 'output' => 1.25],
-                                                            'claude-3-sonnet-20240229' => ['input' => 3.0, 'output' => 15.0],
-                                                        ];
+                                                        // Credit rates database'den fiyat bilgilerini al
+                                                        $creditRate = $provider->modelCreditRates()
+                                                            ->where('model_name', $modelValue)
+                                                            ->where('is_active', true)
+                                                            ->first();
                                                         
-                                                        $pricing = $modelPricing[$modelValue] ?? ['input' => 0, 'output' => 0];
-                                                        $inputCost = $pricing['input'];
-                                                        $outputCost = $pricing['output'];
+                                                        if ($creditRate) {
+                                                            // Database'den gerçek fiyatlar (1K token başına kredi cinsinden)
+                                                            $inputCostPer1K = $creditRate->credit_per_1k_input_tokens;
+                                                            $outputCostPer1K = $creditRate->credit_per_1k_output_tokens;
+                                                            
+                                                            // 1M token için hesapla (1K * 1000)
+                                                            $inputCost = $inputCostPer1K * 1000;
+                                                            $outputCost = $outputCostPer1K * 1000;
+                                                        } else {
+                                                            // Fallback default values if no credit rate found
+                                                            $inputCost = 1.0; // Default: 1 credit per 1M token
+                                                            $outputCost = 2.0; // Default: 2 credit per 1M token
+                                                        }
                                                         
-                                                        // Fiyat/Performans skoru hesaplama
+                                                        // Fiyat/Performans skoru hesaplama (credit bazlı)
                                                         $responseTime = $provider->average_response_time ?? 20000;
                                                         $avgCost = ($inputCost * 0.3) + ($outputCost * 0.7);
-                                                        $costScore = max(1, min(10, 10 - (($avgCost - 0.15) / 3) * 9));
+                                                        $costScore = max(1, min(10, 10 - (($avgCost - 1.0) / 5) * 9));
                                                         $speedScore = max(1, min(10, 11 - (($responseTime - 1500) / 2500)));
                                                         $score = round(($costScore * 0.6) + ($speedScore * 0.4), 1);
                                                         $scoreColor = $score >= 8 ? 'green' : ($score >= 6 ? 'yellow' : ($score >= 4 ? 'orange' : 'red'));
                                                     @endphp
                                                     
                                                     <td class="text-center">
-                                                        <span class="text-{{ $inputCost <= 0.5 ? 'green' : ($inputCost <= 2 ? 'yellow' : 'red') }} font-weight-medium">
-                                                            ${{ number_format($inputCost, 2) }}
+                                                        <span class="text-{{ $inputCost <= 500 ? 'green' : ($inputCost <= 2000 ? 'yellow' : 'red') }} font-weight-medium">
+                                                            {{ number_format($inputCost, 0) }} kredi
                                                         </span>
                                                     </td>
                                                     <td class="text-center">
-                                                        <span class="text-{{ $outputCost <= 2 ? 'green' : ($outputCost <= 10 ? 'yellow' : 'red') }} font-weight-medium">
-                                                            ${{ number_format($outputCost, 2) }}
+                                                        <span class="text-{{ $outputCost <= 1000 ? 'green' : ($outputCost <= 5000 ? 'yellow' : 'red') }} font-weight-medium">
+                                                            {{ number_format($outputCost, 0) }} kredi
                                                         </span>
                                                     </td>
                                                     <td class="text-center">
@@ -457,13 +497,13 @@
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="alert alert-info">
-                                    <h6><i class="fas fa-lightbulb me-2"></i>Öneriler:</h6>
+                                    <h6><i class="fas fa-lightbulb me-2"></i>Model Karşılaştırması:</h6>
                                     <ul class="mb-0">
-                                        <li><strong>Varsayılan:</strong> OpenAI GPT-4o Mini ($0.15 input, $0.60 output) - Hızlı ve güvenilir</li>
-                                        <li><strong>En Ucuz:</strong> DeepSeek Chat ($0.27 input, $1.10 output) - Fallback seçeneği</li>
-                                        <li><strong>En Güçlü:</strong> Claude 3 Sonnet ($3.0 input, $15.0 output) - Reasoning</li>
-                                        <li><strong>En Pahalı:</strong> OpenAI GPT-4o ($5.0 input, $15.0 output) - En gelişmiş</li>
-                                        <li><small class="text-muted">💡 Fiyatlar 2025 resmi API dokumentasyonlarından alınmıştır (1M token başına USD)</small></li>
+                                        <li><strong>Hızlı & Ekonomik:</strong> Düşük kredi maliyetli modeller günlük işlemler için ideal</li>
+                                        <li><strong>Dengelenmiş:</strong> Orta maliyet, iyi performans dengesi çoğu iş için uygun</li>
+                                        <li><strong>Premium:</strong> Yüksek maliyetli modeller karmaşık görüntü ve analiz işleri için</li>
+                                        <li><strong>Fallback:</strong> Ana provider çalışmazsa otomatik yedek provider devreye girer</li>
+                                        <li><small class="text-muted">💡 Kredi maliyetleri veritabanından dinamik olarak güncellenir. <a href="{{ route('admin.ai.credit-rates.index') }}">Fiyat yönetimi</a>nden düzenleyebilirsiniz.</small></li>
                                     </ul>
                                 </div>
                             </div>
@@ -570,3 +610,5 @@ function testProvider(providerId) {
 }
 </script>
 @endpush
+
+@include('ai::helper')

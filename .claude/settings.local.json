@@ -174,5 +174,8 @@
     "deny": [],
     "defaultMode": "acceptEdits"
   },
-  "enableAllProjectMcpServers": true
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "claude-code-server"
+  ]
 }

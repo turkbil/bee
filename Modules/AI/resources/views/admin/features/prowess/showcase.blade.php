@@ -239,14 +239,6 @@ use Illuminate\Support\Str;
     <!-- Performance Dashboard -->
     <div class="row mb-5">
         <div class="col-6">
-            <div class="card stats-showcase text-center">
-                <div class="card-body">
-                    <div class="display-6 fw-bold" id="token-display">{{ ai_format_token_count($tokenStatus['remaining']) }}</div>
-                    <p class="text-white-50 mb-0">{{ __('ai::admin.prowess.available_tokens') }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
             <div class="card text-center">
                 <div class="card-body">
                     <div class="display-6 fw-bold text-success">{{ count($features->flatten()) }}</div>
@@ -259,14 +251,6 @@ use Illuminate\Support\Str;
                 <div class="card-body">
                     <div class="display-6 fw-bold text-info">{{ count($features) }}</div>
                     <p class="text-muted mb-0">{{ __('ai::admin.prowess.categories') }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="display-6 fw-bold text-primary">{{ $tokenStatus['provider_active'] ? '●' : '○' }}</div>
-                    <p class="text-muted mb-0">{{ $tokenStatus['provider'] }}</p>
                 </div>
             </div>
         </div>

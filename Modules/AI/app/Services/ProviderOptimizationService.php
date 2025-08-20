@@ -103,8 +103,8 @@ readonly class ProviderOptimizationService
                 'feature_type' => $featureType,
             ]);
             
-            // Fallback to default provider
-            return $this->getFallbackProvider($featureType);
+            // Use default provider (no fallback)
+            return $this->getDefaultProvider($featureType);
         }
     }
 
@@ -529,26 +529,24 @@ readonly class ProviderOptimizationService
         return 'very_low';
     }
 
-    private function getFallbackProvider(string $featureType): array
+    private function getDefaultProvider(string $featureType): array
     {
         $defaultProvider = AIProvider::where('is_active', true)
             ->where('is_default', true)
             ->first();
         
         if (!$defaultProvider) {
-            $defaultProvider = AIProvider::where('is_active', true)
-                ->orderBy('priority', 'desc')
-                ->first();
+            throw new \Exception("No default AI provider configured");
         }
         
         return [
             'provider' => $defaultProvider,
             'score' => 0.5,
-            'reasoning' => 'Fallback provider selected due to optimization failure',
+            'reasoning' => 'Default provider selected (no optimization fallback)',
             'alternatives' => [],
             'performance_metrics' => [],
             'cost_estimate' => 1.0,
-            'confidence_level' => 'low',
+            'confidence_level' => 'medium',
         ];
     }
 

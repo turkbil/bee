@@ -11,6 +11,44 @@ use Illuminate\Support\Facades\Cache;
 
 readonly class SeoService implements SeoServiceInterface
 {
+    /**
+     * GLOBAL SEO CONTENT TEMİZLEME SİSTEMİ
+     * HTML, Enter ve gereksiz boşlukları temizler
+     */
+    private function cleanSeoContent(string $content): string
+    {
+        if (empty($content)) {
+            return '';
+        }
+        
+        // 1. HTML etiketlerini tamamen kaldır
+        $text = strip_tags($content);
+        
+        // 2. HTML entity'leri decode et
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        
+        // 3. Enter'ları kaldır (\r\n, \r, \n)
+        $text = preg_replace('/\r\n|\r|\n/', ' ', $text);
+        
+        // 4. Çoklu boşlukları tek boşluğa çevir
+        $text = preg_replace('/\s+/', ' ', $text);
+        
+        // 5. Başlangıç ve bitiş boşluklarını temizle
+        $text = trim($text);
+        
+        return $text;
+    }
+    
+    /**
+     * Keywords array temizleme
+     */
+    private function cleanKeywordsArray(array $keywords): array
+    {
+        return array_map(function($keyword) {
+            return $this->cleanSeoContent($keyword);
+        }, array_filter($keywords));
+    }
+    
     public function getOrCreateSeoSettings(Model $model): SeoSetting
     {
         $seoSettings = $this->getSeoSettings($model);
@@ -31,12 +69,44 @@ readonly class SeoService implements SeoServiceInterface
     {
         $seoSettings = $this->getOrCreateSeoSettings($model);
         
-        $seoSettings->fill($seoData);
+        // SEO verilerini temizle
+        $cleanedData = $this->cleanSeoData($seoData);
+        
+        
+        $seoSettings->fill($cleanedData);
         $seoSettings->save();
 
         $this->clearCache($model);
 
         return $seoSettings;
+    }
+    
+    /**
+     * Tüm SEO verilerini temizle
+     */
+    private function cleanSeoData(array $seoData): array
+    {
+        $cleanedData = $seoData;
+        
+        // Tekil string alanları temizle
+        $stringFields = [
+            'meta_title', 'meta_description', 'meta_keywords', 'canonical_url',
+            'og_image', 'og_type', 'twitter_card', 'twitter_title', 
+            'twitter_description', 'twitter_image', 'focus_keyword'
+        ];
+        
+        foreach ($stringFields as $field) {
+            if (isset($cleanedData[$field])) {
+                $cleanedData[$field] = $this->cleanSeoContent($cleanedData[$field]);
+            }
+        }
+        
+        // Array alanları temizle
+        if (isset($cleanedData['additional_keywords']) && is_array($cleanedData['additional_keywords'])) {
+            $cleanedData['additional_keywords'] = $this->cleanKeywordsArray($cleanedData['additional_keywords']);
+        }
+        
+        return $cleanedData;
     }
 
     public function deleteSeoSettings(Model $model): bool
@@ -75,32 +145,40 @@ readonly class SeoService implements SeoServiceInterface
         foreach ($languageData as $lang => $data) {
             if (isset($data['title'])) {
                 $titles = $seoSettings->titles ?? [];
-                $titles[$lang] = $data['title'];
+                $titles[$lang] = $this->cleanSeoContent($data['title']);
                 $seoSettings->titles = $titles;
             }
             
             if (isset($data['description'])) {
                 $descriptions = $seoSettings->descriptions ?? [];
-                $descriptions[$lang] = $data['description'];
+                $descriptions[$lang] = $this->cleanSeoContent($data['description']);
                 $seoSettings->descriptions = $descriptions;
             }
             
             if (isset($data['keywords'])) {
                 $keywords = $seoSettings->keywords ?? [];
-                $keywords[$lang] = is_array($data['keywords']) ? $data['keywords'] : explode(',', $data['keywords']);
+                $keywordArray = is_array($data['keywords']) ? $data['keywords'] : explode(',', $data['keywords']);
+                $keywords[$lang] = $this->cleanKeywordsArray($keywordArray);
                 $seoSettings->keywords = $keywords;
             }
 
             if (isset($data['og_title'])) {
-                $ogTitles = $seoSettings->og_title ?? [];
-                $ogTitles[$lang] = $data['og_title'];
-                $seoSettings->og_title = $ogTitles;
+                $ogTitles = $seoSettings->og_titles ?? [];
+                $ogTitles[$lang] = $this->cleanSeoContent($data['og_title']);
+                $seoSettings->og_titles = $ogTitles;
             }
 
             if (isset($data['og_description'])) {
-                $ogDescriptions = $seoSettings->og_description ?? [];
-                $ogDescriptions[$lang] = $data['og_description'];
-                $seoSettings->og_description = $ogDescriptions;
+                $ogDescriptions = $seoSettings->og_descriptions ?? [];
+                $ogDescriptions[$lang] = $this->cleanSeoContent($data['og_description']);
+                $seoSettings->og_descriptions = $ogDescriptions;
+            }
+            
+            if (isset($data['focus_keywords'])) {
+                $focusKeywords = $seoSettings->focus_keywords ?? [];
+                $focusKeywordArray = is_array($data['focus_keywords']) ? $data['focus_keywords'] : explode(',', $data['focus_keywords']);
+                $focusKeywords[$lang] = $this->cleanKeywordsArray($focusKeywordArray);
+                $seoSettings->focus_keywords = $focusKeywords;
             }
         }
 

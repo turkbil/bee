@@ -18,7 +18,7 @@
         <h2 class="mb-0 position-relative">
             <i class="fas fa-magic me-3"></i>
             {{ $featureModel->name }}
-            <span class="badge skill-badge ms-3">Tek Feature</span>
+            <span class="badge badge-secondary ms-3">Tek Feature</span>
         </h2>
         <p class="mb-0 mt-2 opacity-75">{{ $featureModel->description }}</p>
         <div class="mt-3">
@@ -97,7 +97,7 @@
                                                         <div class="mb-3">
                                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                                 <label for="contentLength" class="form-label fw-bold text-start mb-0">İçerik Uzunluğu</label>
-                                                                <span class="badge bg-primary" id="contentLengthDisplay">Normal</span>
+                                                                <span class="badge badge-primary" id="contentLengthDisplay">Normal</span>
                                                             </div>
                                                             <div class="range-container">
                                                                 <input type="range" class="form-range" id="contentLength" name="content_length" 
@@ -130,7 +130,7 @@
                                                                 <input type="checkbox" id="useCompanyProfile" name="use_company_profile" checked>
                                                                 <div class="state p-success">
                                                                     <label class="text-start">
-                                                                        <i class="ti ti-building-store me-2"></i> Şirket Profilimi Kullan
+                                                                        <i class="fa-solid fa-building me-2"></i> Şirket Profilimi Kullan
                                                                     </label>
                                                                 </div>
                                                             </div>

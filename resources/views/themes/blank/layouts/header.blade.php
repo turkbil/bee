@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="tr" 
+@php
+    $currentLocale = app()->getLocale();
+    $isRtl = in_array($currentLocale, ['ar', 'he', 'fa', 'ur']) ? 'rtl' : 'ltr';
+@endphp
+<html lang="{{ $currentLocale }}" 
+      dir="{{ $isRtl }}"
       x-data="{ darkMode: localStorage.getItem('darkMode') || 'light' }"
       x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" 
       :class="{ 'dark': darkMode === 'dark' }">
@@ -42,9 +47,53 @@
                         }
                     }
                 }
+            },
+            corePlugins: {
+                // RTL Support
+                direction: false,
             }
         }
     </script>
+    
+    {{-- RTL/LTR Direction Support --}}
+    <style>
+        [dir="rtl"] {
+            direction: rtl;
+        }
+        [dir="rtl"] .rtl\\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-x-reverse: 1;
+        }
+        [dir="rtl"] .rtl\\:ml-auto {
+            margin-left: auto;
+        }
+        [dir="rtl"] .rtl\\:mr-auto {
+            margin-right: auto;
+        }
+        [dir="rtl"] .rtl\\:text-right {
+            text-align: right;
+        }
+        [dir="rtl"] .rtl\\:text-left {
+            text-align: left;
+        }
+        /* RTL Dropdown Fix - RTL'de sağdan sola açılır, LTR'de soldan sağa açılır */
+        [dir="rtl"] .dropdown-menu .dropdown-content,
+        [dir="rtl"] .language-switcher-header .dropdown-content {
+            left: 0 !important;
+            right: auto !important;
+        }
+        [dir="ltr"] .dropdown-menu .dropdown-content,
+        [dir="ltr"] .language-switcher-header .dropdown-content {
+            right: 0 !important;
+            left: auto !important;
+        }
+        /* Mobile Menu Responsive Fix */
+        @media (max-width: 1023px) {
+            .mobile-nav-container {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+        }
+    </style>
     
     {{-- Livewire Styles --}}
     @livewireStyles
@@ -110,12 +159,12 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">
+<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 flex flex-col">
 
 
-    <header class="bg-white shadow dark:bg-gray-800 transition-colors duration-300">
+    <header class="bg-white shadow dark:bg-gray-800 transition-colors duration-300" x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
+            <div class="flex justify-between items-center h-14 sm:h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         @php
@@ -125,15 +174,26 @@
                             $siteLogo = setting('site_logo');
                             $siteTitle = setting('site_title', config('app.name'));
                         @endphp
-                        <a href="{{ $homeUrl }}" class="inline-flex items-center text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300" title="{{ $siteTitle }}" alt="{{ $siteTitle }}">
+                        <a href="{{ $homeUrl }}" class="inline-flex items-center text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300" title="{{ $siteTitle }}" alt="{{ $siteTitle }}">
                             @if($siteLogo && $siteLogo !== 'Logo yok')
-                                <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" title="{{ $siteTitle }}" class="h-8 w-auto">
+                                <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" title="{{ $siteTitle }}" class="h-6 sm:h-8 w-auto">
                             @else
                                 {{ $siteTitle }}
                             @endif
                         </a>
                     </div>
-                    <nav class="ml-6 flex space-x-4">
+                    
+                    {{-- Mobile Menu Button --}}
+                    <button class="lg:hidden ml-4 p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300" 
+                            @click="mobileMenuOpen = !mobileMenuOpen">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" :class="{ 'rotate-90': mobileMenuOpen }">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'"></path>
+                        </svg>
+                    </button>
+                    
+                    {{-- Desktop Navigation --}}
+                    <nav class="hidden lg:flex lg:ml-6 lg:space-x-4">
                         @php
                             $currentLocale = app()->getLocale();
                             $headerMenu = getDefaultMenu($currentLocale);
@@ -164,7 +224,7 @@
                                              x-transition:leave="transition ease-in duration-75"
                                              x-transition:leave-start="opacity-100 scale-100"
                                              x-transition:leave-end="opacity-0 scale-95"
-                                             class="absolute left-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                                             class="dropdown-content absolute top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
                                             
                                             @foreach($menuItem['children'] as $child)
                                                 <a href="{{ $child['url'] }}" 
@@ -221,9 +281,9 @@
                 <div class="flex items-center space-x-1">
                     {{-- Dark/Light Mode Toggle --}}
                     <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
-                        class="flex items-center justify-center w-10 h-10 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                         <template x-if="darkMode === 'dark'">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
@@ -231,7 +291,7 @@
                             </svg>
                         </template>
                         <template x-if="darkMode === 'light'">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
@@ -282,7 +342,7 @@
                         @endphp
                         
                         <button @click="open = !open" 
-                                class="flex items-center justify-center w-10 h-10 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                                class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                             {{ $currentLangData['flag'] }}
                         </button>
                         
@@ -294,7 +354,7 @@
                              x-transition:leave="transition ease-in duration-75"
                              x-transition:leave-start="opacity-100 scale-100"
                              x-transition:leave-end="opacity-0 scale-95"
-                             class="absolute right-0 top-full mt-2 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                             class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
                             
                             @if(count($languageSwitcherLinks) > 0)
                                 @php
@@ -341,5 +401,87 @@
                     @livewire('auth.header-menu')
                 </div>
             </div>
+            
+            {{-- Mobile Navigation Menu --}}
+            <div x-show="mobileMenuOpen" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="lg:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mobile-nav-container">
+                <div class="px-2 sm:px-4 py-3 space-y-1 max-w-full overflow-x-hidden">
+                    @php
+                        $currentLocale = app()->getLocale();
+                        $headerMenu = getDefaultMenu($currentLocale);
+                    @endphp
+                    
+                    @if($headerMenu && !empty($headerMenu['items']))
+                        @foreach($headerMenu['items'] as $menuItem)
+                            @if(!empty($menuItem['children']))
+                                {{-- Mobile Dropdown --}}
+                                <div x-data="{ submenuOpen: false }">
+                                    <button @click="submenuOpen = !submenuOpen" 
+                                            class="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 {{ $menuItem['has_active_child'] ? 'text-blue-700 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/30' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' }}">
+                                        <span class="flex items-center">
+                                            @if($menuItem['icon'])
+                                                <i class="{{ $menuItem['icon'] }} mr-2"></i>
+                                            @endif
+                                            {{ $menuItem['title'] }}
+                                        </span>
+                                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': submenuOpen }" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                    <div x-show="submenuOpen" x-transition class="pl-4 space-y-1">
+                                        @foreach($menuItem['children'] as $child)
+                                            <a href="{{ $child['url'] }}" 
+                                               {{ $child['target'] === '_blank' ? 'target="_blank"' : '' }}
+                                               @click="mobileMenuOpen = false"
+                                               class="block px-3 py-2 text-sm rounded-md transition-colors duration-200 {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white' }}">
+                                                @if($child['icon'])
+                                                    <i class="{{ $child['icon'] }} mr-2"></i>
+                                                @endif
+                                                {{ $child['title'] }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @else
+                                {{-- Mobile Normal Menu Item --}}
+                                <a href="{{ $menuItem['url'] }}" 
+                                   {{ $menuItem['target'] === '_blank' ? 'target="_blank"' : '' }}
+                                   @click="mobileMenuOpen = false"
+                                   class="block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 {{ $menuItem['is_active'] ? 'text-blue-700 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/30' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' }}">
+                                    @if($menuItem['icon'])
+                                        <i class="{{ $menuItem['icon'] }} mr-2"></i>
+                                    @endif
+                                    {{ $menuItem['title'] }}
+                                </a>
+                            @endif
+                        @endforeach
+                    @else
+                        {{-- Mobile Fallback Menu --}}
+                        <a href="{{ href('Page', 'index') }}" @click="mobileMenuOpen = false"
+                            class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Sayfalar</a>
+                        <a href="{{ href('Announcement', 'index') }}" @click="mobileMenuOpen = false"
+                            class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Duyurular</a>
+                        <a href="{{ href('Portfolio', 'index') }}" @click="mobileMenuOpen = false"
+                            class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Portfolyo</a>
+                    @endif
+                    
+                    {{-- Mobile Admin Panel Link --}}
+                    @auth
+                    @if(Auth::user()->roles->count() > 0)
+                    <a href="/admin/dashboard" @click="mobileMenuOpen = false"
+                        class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Admin Paneli</a>
+                    @endif
+                    @endauth
+                </div>
+            </div>
         </div>
     </header>
+
+    {{-- Dynamic Content Areas --}}
+    @stack('header-content')

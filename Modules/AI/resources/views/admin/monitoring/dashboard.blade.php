@@ -847,12 +847,12 @@ class AIMonitoringDashboard {
         document.getElementById('loading-state').innerHTML = `
             <div class="text-center py-5">
                 <div class="text-danger mb-3">
-                    <i class="ti ti-alert-triangle" style="font-size: 3rem;"></i>
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem;"></i>
                 </div>
                 <h3>Hata</h3>
                 <p class="text-muted">${message}</p>
                 <button type="button" class="btn btn-primary" onclick="location.reload()">
-                    <i class="ti ti-refresh me-1"></i>
+                    <i class="fa-solid fa-rotate-right me-1"></i>
                     Sayfayı Yenile
                 </button>
             </div>

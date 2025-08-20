@@ -7,10 +7,14 @@ use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Services\PromptService;
 use Modules\AI\App\Services\AIPriorityEngine;
 use Modules\AI\App\Services\AIProviderManager;
+use Modules\AI\App\Services\ModelBasedCreditService;
+use Modules\AI\App\Services\SilentFallbackService;
 use Modules\AI\App\Services\Context\ContextEngine;
+use Modules\AI\App\Services\ConversationTracker;
 use App\Helpers\TenantHelpers;
 use App\Services\AITokenService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class AIService
 {
@@ -19,6 +23,7 @@ class AIService
     protected $promptService;
     protected $aiTokenService;
     protected $providerManager;
+    protected $silentFallbackService;
     protected $currentProvider;
     protected $currentService;
     protected $contextEngine;
@@ -39,25 +44,49 @@ class AIService
         // Provider Manager'ı yükle
         $this->providerManager = new AIProviderManager();
         
-        // Varsayılan provider'ı al - FALLBACK KALDIRILDI
+        // Silent Fallback Service'i yükle
+        $this->silentFallbackService = new SilentFallbackService(
+            app(ModelBasedCreditService::class),
+            $this->providerManager
+        );
+        
+        // Varsayılan provider'ı al - Silent Fallback aktif
         try {
             $providerData = $this->providerManager->getProviderServiceWithoutFailover();
             $this->currentProvider = $providerData['provider'];
             $this->currentService = $providerData['service'];
             
-            \Log::info('🔥 AI Provider loaded successfully', [
+            Log::info('🔥 AI Provider loaded successfully', [
                 'provider' => $this->currentProvider->name,
                 'model' => $this->currentProvider->default_model
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('❌ AI Provider loading failed - NO FALLBACK', [
+            Log::error('❌ AI Provider loading failed - Attempting Silent Fallback', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             
-            // FALLBACK KALDIRILDI - Hata fırlat
-            throw new \Exception('AI Provider unavailable: ' . $e->getMessage());
+            // Silent Fallback dene
+            $fallbackResult = $this->silentFallbackService->attemptSilentFallback(
+                'unknown', // Original provider bilinmiyor
+                'unknown', // Original model bilinmiyor
+                'Initial provider selection failed',
+                [],
+                $e->getMessage()
+            );
+            
+            if ($fallbackResult) {
+                $this->currentProvider = $fallbackResult['provider'];
+                $this->currentService = $fallbackResult['service'];
+                
+                Log::info('✅ Silent Fallback activated during initialization', [
+                    'fallback_provider' => $this->currentProvider->name,
+                    'fallback_model' => $fallbackResult['model']
+                ]);
+            } else {
+                throw new \Exception('All AI providers unavailable: ' . $e->getMessage());
+            }
         }
         
         // Diğer servisleri oluştur
@@ -89,7 +118,7 @@ class AIService
                 return "Üzgünüm, yetersiz AI token bakiyeniz var veya aylık limitinize ulaştınız.";
             }
         } else {
-            \Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
+            Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
         }
 
         // YENİ PRIORITY ENGINE SİSTEMİ - Tenant context ile
@@ -133,7 +162,7 @@ class AIService
         
         // DEBUG: Prompt tipini kontrol et
         if (!is_string($prompt)) {
-            \Log::error('🚨 Prompt is not string!', [
+            Log::error('🚨 Prompt is not string!', [
                 'prompt_type' => gettype($prompt),
                 'prompt_content' => $prompt,
                 'is_array' => is_array($prompt),
@@ -163,9 +192,20 @@ class AIService
             $this->providerManager->updateProviderPerformance($this->currentProvider->name, $responseTime);
         }
 
-        // Token kullanımını kaydet
-        if ($tenant && isset($response['tokens_used'])) {
-            $this->aiTokenService->useTokens($tenant, $response['tokens_used'], 'chat_message');
+        // Model bazlı kredi düşümü (YENİ SISTEM)
+        if ($tenant && isset($response['usage'])) {
+            $currentModel = $effectiveTenant?->default_ai_model ?? $this->currentProvider->default_model;
+            $inputTokens = $response['usage']['prompt_tokens'] ?? $response['usage']['input_tokens'] ?? 0;
+            $outputTokens = $response['usage']['completion_tokens'] ?? $response['usage']['output_tokens'] ?? 0;
+            
+            $usedCredits = ai_use_credits_with_model(
+                $effectiveTenant?->id ?? 1,
+                $this->currentProvider->id,
+                $currentModel,
+                $inputTokens,
+                $outputTokens,
+                'chat_message'
+            );
         }
 
         return $response['response'] ?? null;
@@ -193,7 +233,7 @@ class AIService
         } else {
             // Central admin için basit kontrol (tenant yoksa)
             // limitService yerine basit bir kontrol yap
-            \Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
+            Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
         }
         */
 
@@ -259,13 +299,13 @@ class AIService
                 // Merkezi kredi düşme sistemi
                 ai_use_calculated_credits($tokenData, $providerName, [
                     'usage_type' => 'chat',
-                    'tenant_id' => $tenant->id,
+                    'tenant_id' => $effectiveTenant?->id ?? 1,
                     'description' => 'AI Chat: ' . substr($prompt, 0, 50) . '...',
                     'source' => 'ai_service_ask'
                 ]);
             } else {
                 // Legacy limit sistemi kaldırıldı - sadece log
-                \Log::info('AI yanıt başarılı (legacy mode)', [
+                Log::info('AI yanıt başarılı (legacy mode)', [
                     'response_length' => strlen($response),
                     'tenant' => 'none'
                 ]);
@@ -288,16 +328,37 @@ class AIService
         $startTime = microtime(true);
         $tenantId = tenant('id') ?? 'default';
         
-        // Modern token sistemi kontrolü
+        // Feature string ise model olarak yükle
+        if (is_string($feature)) {
+            $featureSlug = $feature;
+            $feature = \Modules\AI\App\Models\AIFeature::where('slug', $featureSlug)->first();
+            if (!$feature) {
+                return "Feature bulunamadı: {$featureSlug}";
+            }
+        }
+        
+        
+        // Model bazlı kredi kontrolü (YENİ SISTEM)
         $tenant = tenant();
         if ($tenant) {
-            $tokensNeeded = $this->aiTokenService->estimateTokenCost('feature_test', [
-                'feature' => $feature->name,
-                'input' => $userInput
-            ]);
+            // Model seçimi
+            $currentModel = $effectiveTenant?->default_ai_model ?? $this->currentProvider->default_model;
             
-            if (!$this->aiTokenService->canUseTokens($tenant, $tokensNeeded)) {
-                return "Üzgünüm, yetersiz AI token bakiyeniz var veya aylık limitinize ulaştınız.";
+            // Token tahmini
+            $estimatedInputTokens = strlen($userInput) / 4;
+            $estimatedOutputTokens = 1000; // Feature'lar için ortalama output
+            
+            // Model bazlı kredi hesaplama
+            $requiredCredits = ai_calculate_model_credits(
+                $this->currentProvider->id,
+                $currentModel,
+                $estimatedInputTokens,
+                $estimatedOutputTokens
+            );
+            
+            // Kredi kontrolü
+            if ($requiredCredits && $tenant->credits < $requiredCredits) {
+                return "Üzgünüm, yetersiz krediniz var. Gerekli: {$requiredCredits}, Mevcut: {$tenant->credits}";
             }
         }
 
@@ -350,22 +411,71 @@ class AIService
             // Feature kullanım istatistiklerini güncelle
             $feature->incrementUsage();
             
-            // YENİ MERKEZİ KREDİ DÜŞME SİSTEMİ - FEATURE
-            if ($tenant) {
+            // YENİ MERKEZİ KREDİ DÜŞME SİSTEMİ - FEATURE (TENANT OLMADAN DA ÇALIŞIR)
+            // Tenant yoksa da kredi düşümü yapalım (admin mode için)
+            $effectiveTenant = $tenant;
+            if (!$effectiveTenant && auth()->check()) {
+                // Auth user'ın tenant'ını kullan
+                $user = auth()->user();
+                if ($user && $user->tenant_id) {
+                    $effectiveTenant = \App\Models\Tenant::find($user->tenant_id);
+                }
+            }
+            
+            if ($effectiveTenant || !tenant('id')) { // Tenant var VEYA central admin mode
+                Log::info('🔧 Kredi düşürme bloku çalışıyor', [
+                    'effective_tenant' => $effectiveTenant ? $effectiveTenant->id : null,
+                    'original_tenant' => $tenant ? $effectiveTenant?->id ?? 1 : null,
+                    'tenant_function' => tenant('id'),
+                    'auth_check' => auth()->check()
+                ]);
+                Log::info('🔧 Kredi düşürme bloku çalışıyor', [
+                    'effective_tenant' => $effectiveTenant ? $effectiveTenant->id : null,
+                    'original_tenant' => $tenant ? $effectiveTenant?->id ?? 1 : null,
+                    'tenant_function' => tenant('id'),
+                    'auth_check' => auth()->check()
+                ]);
                 // API response'undan token bilgilerini al
                 $tokenData = is_array($apiResponse) ? $apiResponse : [];
                 
-                // Provider adını belirle
+                // Provider ve model bilgileri
                 $providerName = $this->currentProvider ? $this->currentProvider->name : 'unknown';
+                $providerID = $this->currentProvider ? $this->currentProvider->id : 1;
+                $currentModel = $effectiveTenant?->default_ai_model ?? $this->currentProvider->default_model ?? 'unknown';
                 
-                // Merkezi kredi düşme sistemi
-                ai_use_calculated_credits($tokenData, $providerName, [
-                    'usage_type' => 'feature_test',
-                    'tenant_id' => $tenant->id,
+                // Token bilgilerini parse et
+                $inputTokens = $tokenData['input_tokens'] ?? $tokenData['usage']['prompt_tokens'] ?? 0;
+                $outputTokens = $tokenData['output_tokens'] ?? $tokenData['usage']['completion_tokens'] ?? 0;
+                $totalTokens = $tokenData['total_tokens'] ?? $tokenData['usage']['total_tokens'] ?? ($inputTokens + $outputTokens);
+                
+                // Eğer token bilgisi yoksa tahmini hesapla
+                if ($totalTokens == 0) {
+                    $inputTokens = (int) ceil(strlen($userInput) / 4);
+                    $outputTokens = (int) ceil(strlen($response) / 4);
+                    $totalTokens = $inputTokens + $outputTokens;
+                }
+                
+                // Model bazlı kredi kullanım sistemi
+                $creditService = app(ModelBasedCreditService::class);
+                $usedCredits = $creditService->deductCredits(
+                    $effectiveTenant ?: (object)["id" => 1, "ai_credits" => 999999],
+                    $providerID,
+                    $currentModel,
+                    $inputTokens,
+                    $outputTokens,
+                    'ai_feature',
+                    $feature->id
+                );
+                
+                Log::info('🎯 AI Feature kredi düşümü', [
+                    'tenant_id' => $effectiveTenant?->id ?? 1,
                     'feature_slug' => $feature->slug,
-                    'feature_id' => $feature->id,
-                    'feature_name' => $feature->name,
-                    'description' => 'AI Feature: ' . $feature->name,
+                    'provider' => $providerName,
+                    'model' => $currentModel,
+                    'input_tokens' => $inputTokens,
+                    'output_tokens' => $outputTokens,
+                    'total_tokens' => $totalTokens,
+                    'credits_used' => $usedCredits,
                     'source' => 'ai_service_ask_feature'
                 ]);
             }
@@ -420,7 +530,7 @@ class AIService
                 'feature_name' => $feature->name
             ];
         } catch (\Exception $e) {
-            \Log::error('ProcessFeature Error', [
+            Log::error('ProcessFeature Error', [
                 'feature_id' => $feature->id,
                 'feature_slug' => $feature->slug,
                 'error' => $e->getMessage()
@@ -551,7 +661,7 @@ class AIService
             \DB::table('ai_tenant_debug_logs')->insert($insertData);
         } catch (\Exception $e) {
             // Debug logging hatası varsa log'a yaz ama işlemi durdurmma
-            \Log::warning('Debug logging failed', [
+            Log::warning('Debug logging failed', [
                 'error' => $e->getMessage(),
                 'data' => $data
             ]);
@@ -610,7 +720,7 @@ class AIService
 
             // Conversation oluştur
             $conversation = \Modules\AI\App\Models\Conversation::create([
-                'tenant_id' => $tenant->id,
+                'tenant_id' => $effectiveTenant?->id ?? 1,
                 'user_id' => auth()->id(),
                 'title' => 'AI ' . ucfirst($type) . ': ' . substr($userMessage, 0, 50) . '...',
                 'type' => $type,
@@ -635,7 +745,7 @@ class AIService
             ]);
 
         } catch (\Exception $e) {
-            \Log::warning('Conversation kaydı oluşturulamadı: ' . $e->getMessage());
+            Log::warning('Conversation kaydı oluşturulamadı: ' . $e->getMessage());
         }
     }
 
@@ -797,7 +907,7 @@ class AIService
             if ($user = auth()->user()) {
                 // ÖNCELİK: AI kimlik tanımı (Tenant'tan alınacak)
                 if ($tenant = tenant()) {
-                    $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $tenant->id)->first();
+                    $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $effectiveTenant?->id ?? 1)->first();
                     if ($profile && $profile->company_info && isset($profile->company_info['brand_name'])) {
                         $parts[] = "🤖 SEN KİMSİN: Sen {$profile->company_info['brand_name']} şirketinin yapay zeka modelisin.";
                         
@@ -807,7 +917,7 @@ class AIService
                         }
                         
                         // Debug log
-                        \Log::info('🤖 AI Identity Context Created', [
+                        Log::info('🤖 AI Identity Context Created', [
                             'brand_name' => $profile->company_info['brand_name'],
                             'founder_exists' => isset($profile->company_info['founder']),
                             'founder' => $profile->company_info['founder'] ?? 'YOK'
@@ -838,7 +948,7 @@ class AIService
                     }
                 } catch (\Exception $e) {
                     // Role kontrolü başarısız olursa sessizce devam et
-                    \Log::warning('AI Chat: Role bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                    Log::warning('AI Chat: Role bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
                 }
                 
                 // Üyelik tarihi ve süresi bilgilerini ekle
@@ -888,7 +998,7 @@ class AIService
                             }
                         } catch (\Exception $loginErr) {
                             // Son giriş tarihi parse edilemezse sessizce atla
-                            \Log::warning('AI Chat: Son giriş tarihi parse edilemedi', [
+                            Log::warning('AI Chat: Son giriş tarihi parse edilemedi', [
                                 'user_id' => $user->id, 
                                 'last_login_at' => $user->last_login_at,
                                 'error' => $loginErr->getMessage()
@@ -897,7 +1007,7 @@ class AIService
                     }
                 } catch (\Exception $e) {
                     // Tarih bilgisi hatası varsa sessizce devam et
-                    \Log::warning('AI Chat: Tarih bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                    Log::warning('AI Chat: Tarih bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
                 }
                 
                 if (isset($user->company) && $user->company) {
@@ -922,7 +1032,7 @@ class AIService
                     }
                 } catch (\Exception $e) {
                     // Şirket bilgisi alınamazsa sessizce devam et
-                    \Log::warning('AI Chat: Şirket bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                    Log::warning('AI Chat: Şirket bilgisi alınamadı', ['user_id' => $user->id, 'error' => $e->getMessage()]);
                 }
             }
         } else {
@@ -934,7 +1044,7 @@ class AIService
                     $parts[] = $contextPrompt;
                 }
             } catch (\Exception $e) {
-                \Log::warning('ContextEngine hatası, fallback sisteme geçiliyor', [
+                Log::warning('ContextEngine hatası, fallback sisteme geçiliyor', [
                     'error' => $e->getMessage(),
                     'mode' => $mode,
                     'trace' => $e->getTraceAsString()
@@ -1014,7 +1124,7 @@ class AIService
                 ];
             }
             
-            \Log::info('🔥 Database prompts loaded successfully', [
+            Log::info('🔥 Database prompts loaded successfully', [
                 'mode' => $mode,
                 'prompts_count' => count($result),
                 'prompt_names' => array_column($result, 'name')
@@ -1023,7 +1133,7 @@ class AIService
             return $result;
             
         } catch (\Exception $e) {
-            \Log::error('❌ Database prompts loading failed', [
+            Log::error('❌ Database prompts loading failed', [
                 'error' => $e->getMessage(),
                 'mode' => $mode,
                 'trace' => $e->getTraceAsString()
@@ -1098,7 +1208,7 @@ class AIService
     {
         // 🔍 1. İLK KALİTE KONTROL
         if (empty($content) || !is_string($content)) {
-            \Log::warning('🚨 AI Response Quality Issue: Empty or invalid content', [
+            Log::warning('🚨 AI Response Quality Issue: Empty or invalid content', [
                 'content_type' => gettype($content),
                 'content_length' => is_string($content) ? strlen($content) : 0
             ]);
@@ -1110,7 +1220,7 @@ class AIService
         $content = $this->cleanHtmlTags($content);
         
         if ($originalContent !== $content) {
-            \Log::info('🧹 HTML Tags cleaned from AI response', [
+            Log::info('🧹 HTML Tags cleaned from AI response', [
                 'original_length' => strlen($originalContent),
                 'cleaned_length' => strlen($content)
             ]);
@@ -1252,7 +1362,7 @@ class AIService
             foreach ($featureKeywords as $keyword) {
                 if (str_contains($userInput, $keyword)) {
                     // DEBUG: Feature mode override
-                    \Log::info('🎯 Mode Override: Chat→Feature', [
+                    Log::info('🎯 Mode Override: Chat→Feature', [
                         'user_input' => substr($options['user_input'], 0, 100),
                         'trigger_keyword' => $keyword,
                         'original_mode' => 'chat',
@@ -1283,7 +1393,7 @@ class AIService
         }
         
         // DEBUG: Mode tespit (gerektiğinde aç)
-        // \Log::info('🔍 Mode Detection Debug', [
+        // Log::info('🔍 Mode Detection Debug', [
         //     'url' => $currentUrl,
         //     'route_name' => $routeName, 
         //     'path' => $path,
@@ -1304,7 +1414,7 @@ class AIService
             return null;
         }
 
-        $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $tenant->id)->first();
+        $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $effectiveTenant?->id ?? 1)->first();
         if (!$profile || !$profile->data) {
             return null;
         }
@@ -1375,7 +1485,7 @@ class AIService
             return $profile->getOptimizedAIContext($maxPriority);
             
         } catch (\Exception $e) {
-            \Log::error('Optimize tenant context error', [
+            Log::error('Optimize tenant context error', [
                 'error' => $e->getMessage(),
                 'options' => $options
             ]);
@@ -1417,7 +1527,7 @@ class AIService
             return $context;
             
         } catch (\Exception $e) {
-            \Log::error('getTenantBrandContext error', [
+            Log::error('getTenantBrandContext error', [
                 'error' => $e->getMessage(),
                 'tenant_id' => $tenantId ?? null
             ]);
@@ -1562,35 +1672,16 @@ class AIService
     public function getCurrentProviderModel(): string
     {
         try {
-            // Get current provider settings
-            // Config tabanlı ayarlar
-            $settings = (object) [
-                'enabled' => config('ai.enabled', true),
-                'debug' => config('ai.debug', false),
-                'cache_duration' => config('ai.cache_duration', 60),
-                'default_language' => config('ai.integrations.page.supported_languages.0', 'tr'),
-                'response_format' => 'markdown',
-                'rate_limiting' => config('ai.security.enable_rate_limiting', true),
-                'content_filtering' => config('ai.security.enable_content_filter', true),
-            ];
-            if (!$settings || !$settings->providers) {
-                return 'deepseek/deepseek-chat'; // fallback
+            // Database'den default provider'ı al
+            $defaultProvider = \Modules\AI\App\Models\AIProvider::getDefault();
+            if ($defaultProvider) {
+                return $defaultProvider->name . '/' . $defaultProvider->default_model;
             }
-
-            $activeProvider = $settings->active_provider ?? 'deepseek';
-            $providers = $settings->providers;
-
-            if (!isset($providers[$activeProvider])) {
-                return 'deepseek/deepseek-chat'; // fallback
-            }
-
-            $provider = $providers[$activeProvider];
-            $model = $provider['model'] ?? 'unknown';
-
-            return $activeProvider . '/' . $model;
+            
+            return 'openai/gpt-4o';
             
         } catch (\Exception $e) {
-            \Log::error('getCurrentProviderModel error', [
+            Log::error('getCurrentProviderModel error', [
                 'error' => $e->getMessage()
             ]);
             
@@ -1640,7 +1731,7 @@ class AIService
             return $fallbacks[$defaultCode] ?? $fallbacks['tr'];
             
         } catch (\Exception $e) {
-            \Log::warning('getTenantDefaultLanguage error', [
+            Log::warning('getTenantDefaultLanguage error', [
                 'error' => $e->getMessage(),
                 'tenant_id' => tenant('id') ?? 'none'
             ]);
@@ -1672,21 +1763,32 @@ class AIService
                 throw new \Exception('AI Provider service not available');
             }
             
-            // System prompt varsa ekle
-            if ($systemPrompt) {
-                $prompt = $systemPrompt . "\n\n" . $prompt;
-            }
-            
-            // Token kontrolü
+            // Model kontrolü - tenant'dan al ya da provider default'u kullan
             $tenant = tenant();
+            $finalModel = $model ?? ($tenant ? $effectiveTenant?->default_ai_model : null) ?? $this->currentProvider->default_model;
+            
+            // Model bazlı kredi kontrolü (YENİ)
             if ($tenant) {
-                $tokensNeeded = $this->aiTokenService->estimateTokenCost('chat_message', ['message' => $prompt]);
+                // Estimate input tokens
+                $estimatedInputTokens = strlen($prompt) / 4; // Rough estimation: 4 chars per token
+                $estimatedOutputTokens = $maxTokens * 0.5; // Conservative estimation
                 
-                if (!$this->aiTokenService->canUseTokens($tenant, $tokensNeeded)) {
+                // Model bazlı kredi hesaplama
+                $requiredCredits = ai_calculate_model_credits(
+                    $this->currentProvider->id,
+                    $finalModel,
+                    $estimatedInputTokens,
+                    $estimatedOutputTokens
+                );
+                
+                // Kredi kontrolü
+                if ($requiredCredits && $tenant->credits < $requiredCredits) {
                     return [
                         'success' => false,
-                        'error' => 'insufficient_tokens',
-                        'message' => 'Yetersiz AI token bakiyesi'
+                        'error' => 'insufficient_credits',
+                        'message' => "Yetersiz kredi. Gerekli: {$requiredCredits}, Mevcut: {$tenant->credits}",
+                        'required_credits' => $requiredCredits,
+                        'available_credits' => $tenant->credits
                     ];
                 }
             }
@@ -1702,52 +1804,129 @@ class AIService
                     'model' => $model ?? $this->currentProvider->default_model
                 ]);
             } else {
-                // Fallback method
-                $response = $this->currentService->ask($prompt, [
-                    'max_tokens' => $maxTokens,
-                    'temperature' => $temperature
-                ]);
+                // Claude ve diğer provider'lar için messages formatı
+                $messages = [];
+                
+                // System prompt varsa ayrı olarak ekle
+                if ($systemPrompt) {
+                    $messages[] = [
+                        'role' => 'system',
+                        'content' => $systemPrompt
+                    ];
+                    $userPrompt = $prompt;
+                } else {
+                    $userPrompt = $prompt;
+                }
+                
+                // User message ekle
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => $userPrompt
+                ];
+                
+                // ask metodu messages array bekliyor
+                $response = $this->currentService->ask($messages, false);
             }
             
             $processingTime = microtime(true) - $startTime;
             
             // Debug: Response yapısını logla
-            \Log::info('🔍 AI Service Response Structure', [
+            Log::info('🔍 AI Service Response Structure', [
+                'response_type' => gettype($response),
                 'has_choices' => isset($response['choices']),
                 'has_response' => isset($response['response']),
                 'has_content' => isset($response['content']),
-                'response_keys' => array_keys($response),
+                'response_keys' => is_array($response) ? array_keys($response) : 'NOT_ARRAY',
                 'provider' => $this->currentProvider->name,
                 'model' => $model ?? $this->currentProvider->default_model
             ]);
             
-            // Token kullanımını kaydet
-            if ($tenant && isset($response['usage']['total_tokens'])) {
-                $this->aiTokenService->recordTokenUsage([
-                    'tenant_id' => $tenant->id,
-                    'tokens_used' => $response['usage']['total_tokens'],
-                    'feature_type' => $metadata['source'] ?? 'universal_input_system',
-                    'feature_id' => $metadata['feature_id'] ?? null,
-                    'ai_provider_id' => $this->currentProvider->id
+            // Model bazlı kredi düşümü (YENİ SISTEM)
+            if ($tenant && isset($response['usage'])) {
+                $inputTokens = $response['usage']['prompt_tokens'] ?? $response['usage']['input_tokens'] ?? 0;
+                $outputTokens = $response['usage']['completion_tokens'] ?? $response['usage']['output_tokens'] ?? 0;
+                
+                // Model bazlı kredi hesapla ve düş
+                $usedCredits = ai_use_credits_with_model(
+                    $inputTokens,
+                    $outputTokens,
+                    $this->currentProvider->name,
+                    $finalModel,
+                    [
+                        'tenant_id' => $effectiveTenant?->id ?? 1,
+                        'provider_id' => $this->currentProvider->id,
+                        'source' => $metadata['source'] ?? 'ai_feature',
+                        'feature_id' => $metadata['feature_id'] ?? null,
+                        'user_id' => auth()->id() ?? 1
+                    ]
+                );
+                
+                Log::info('🔥 Model-based credit deduction', [
+                    'tenant_id' => $effectiveTenant?->id ?? 1,
+                    'provider' => $this->currentProvider->name,
+                    'model' => $finalModel,
+                    'input_tokens' => $inputTokens,
+                    'output_tokens' => $outputTokens,
+                    'credits_used' => $usedCredits,
+                    'remaining_credits' => $tenant->fresh()->credits
                 ]);
+                
+                // 📊 CONVERSATION TRACKER - claude_ai.md TAM UYUM
+                try {
+                    $responseContent = '';
+                    if (isset($response['choices'][0]['message']['content'])) {
+                        $responseContent = $response['choices'][0]['message']['content'];
+                    } elseif (isset($response['response'])) {
+                        $responseContent = $response['response'];
+                    } elseif (isset($response['content'])) {
+                        $responseContent = $response['content'];
+                    }
+                    
+                    ConversationTracker::saveConversation(
+                        $prompt,
+                        $responseContent,
+                        $metadata['source'] ?? 'ai_feature',
+                        [
+                            'provider' => $this->currentProvider->name,
+                            'model' => $finalModel,
+                            'input_tokens' => $inputTokens,
+                            'output_tokens' => $outputTokens,
+                            'total_tokens' => $inputTokens + $outputTokens,
+                            'credits_used' => $usedCredits,
+                            'system_prompt' => $systemPrompt,
+                            'metadata' => $metadata
+                        ]
+                    );
+                    
+                    Log::info('📊 Conversation kaydedildi', [
+                        'feature' => $metadata['source'] ?? 'ai_feature',
+                        'tokens' => $inputTokens + $outputTokens,
+                        'credits' => $usedCredits
+                    ]);
+                    
+                } catch (\Exception $e) {
+                    Log::error('❌ Conversation kayıt hatası', [
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
             
             // Response içeriğini al - daha güvenli parsing
             $content = '';
             if (isset($response['choices'][0]['message']['content'])) {
                 $content = $response['choices'][0]['message']['content'];
-                \Log::info('✅ Content from choices[0].message.content');
+                Log::info('✅ Content from choices[0].message.content');
             } elseif (isset($response['response'])) {
                 $content = $response['response'];
-                \Log::info('✅ Content from response key');
+                Log::info('✅ Content from response key');
             } elseif (isset($response['content'])) {
                 $content = $response['content'];
-                \Log::info('✅ Content from content key');
+                Log::info('✅ Content from content key');
             } elseif (is_string($response)) {
                 $content = $response;
-                \Log::info('✅ Response is string directly');
+                Log::info('✅ Response is string directly');
             } else {
-                \Log::error('❌ Could not parse AI response', [
+                Log::error('❌ Could not parse AI response', [
                     'response_structure' => $response
                 ]);
             }
@@ -1766,12 +1945,86 @@ class AIService
             ];
             
         } catch (\Exception $e) {
-            \Log::error('AIService processRequest error', [
+            Log::error('AIService processRequest error', [
                 'error' => $e->getMessage(),
                 'prompt_length' => strlen($prompt),
                 'metadata' => $metadata,
                 'trace' => $e->getTraceAsString()
             ]);
+            
+            // Silent Fallback dene
+            Log::info('🔇 Attempting Silent Fallback after processRequest error');
+            
+            $fallbackResult = $this->silentFallbackService->attemptSilentFallback(
+                $this->currentProvider ? $this->currentProvider->name : 'unknown',
+                $model ?? ($this->currentProvider ? $this->currentProvider->default_model : 'unknown'),
+                $prompt,
+                [
+                    'max_tokens' => $maxTokens,
+                    'temperature' => $temperature,
+                    'system_prompt' => $systemPrompt,
+                    'metadata' => $metadata
+                ],
+                $e->getMessage()
+            );
+            
+            if ($fallbackResult) {
+                Log::info('✅ Silent Fallback SUCCESS in processRequest', [
+                    'fallback_provider' => $fallbackResult['provider']->name,
+                    'fallback_model' => $fallbackResult['model']
+                ]);
+                
+                // Fallback provider ile tekrar dene
+                try {
+                    $this->currentProvider = $fallbackResult['provider'];
+                    $this->currentService = $fallbackResult['service'];
+                    
+                    // Fallback ile recursive çağrı YAP - tek sefer
+                    return $this->processRequest($prompt, $maxTokens, $temperature, $fallbackResult['model'], $systemPrompt, $metadata);
+                    
+                } catch (\Exception $fallbackException) {
+                    Log::error('🔇 Silent Fallback also failed', [
+                        'fallback_error' => $fallbackException->getMessage()
+                    ]);
+                }
+            }
+            
+            // Silent Fallback dene
+            Log::info('🔇 Attempting Silent Fallback after processRequest error');
+            
+            $fallbackResult = $this->silentFallbackService->attemptSilentFallback(
+                $this->currentProvider ? $this->currentProvider->name : 'unknown',
+                $model ?? ($this->currentProvider ? $this->currentProvider->default_model : 'unknown'),
+                $prompt,
+                [
+                    'max_tokens' => $maxTokens,
+                    'temperature' => $temperature,
+                    'system_prompt' => $systemPrompt,
+                    'metadata' => $metadata
+                ],
+                $e->getMessage()
+            );
+            
+            if ($fallbackResult) {
+                Log::info('✅ Silent Fallback SUCCESS in processRequest', [
+                    'fallback_provider' => $fallbackResult['provider']->name,
+                    'fallback_model' => $fallbackResult['model']
+                ]);
+                
+                // Fallback provider ile tekrar dene
+                try {
+                    $this->currentProvider = $fallbackResult['provider'];
+                    $this->currentService = $fallbackResult['service'];
+                    
+                    // Fallback ile recursive çağrı YAP - tek sefer
+                    return $this->processRequest($prompt, $maxTokens, $temperature, $fallbackResult['model'], $systemPrompt, $metadata);
+                    
+                } catch (\Exception $fallbackException) {
+                    Log::error('🔇 Silent Fallback also failed', [
+                        'fallback_error' => $fallbackException->getMessage()
+                    ]);
+                }
+            }
             
             return [
                 'success' => false,
@@ -1787,7 +2040,7 @@ class AIService
      */
     public function translateText(string $text, string $fromLang, string $toLang, array $options = []): string
     {
-        \Log::info('🌐 translateText BAŞLADI', [
+        Log::info('🌐 translateText BAŞLADI', [
             'from' => $fromLang,
             'to' => $toLang,
             'text_length' => strlen($text),
@@ -1796,12 +2049,12 @@ class AIService
         ]);
 
         if (empty(trim($text))) {
-            \Log::warning('⚠️ Boş text, çeviri yapılmadı');
+            Log::warning('⚠️ Boş text, çeviri yapılmadı');
             return '';
         }
 
         if ($fromLang === $toLang) {
-            \Log::info('⚠️ Aynı dil, çeviri yapılmadı');
+            Log::info('⚠️ Aynı dil, çeviri yapılmadı');
             return $text;
         }
 
@@ -1809,10 +2062,22 @@ class AIService
         $maxLength = $options['max_length'] ?? null;
         $preserveHtml = $options['preserve_html'] ?? false;
 
+        // 🔥 HTML İÇERİK CHUNK ÇEVİRİ SİSTEMİ - HER ZAMAN AKTIF
+        if ($preserveHtml && strlen($text) > 500) {
+            Log::info('🚨 Uzun HTML içerik tespit edildi, chunk çeviri yapılacak', [
+                'text_length' => strlen($text),
+                'from_lang' => $fromLang,
+                'to_lang' => $toLang
+            ]);
+            // 🚀 SÜPER HIZLI BULK TRANSLATION SİSTEMİ
+            $fastTranslator = new \Modules\AI\App\Services\FastHtmlTranslationService($this);
+            return $fastTranslator->translateHtmlContentFast($text, $fromLang, $toLang, $context);
+        }
+
         // Build translation prompt
         $prompt = $this->buildTranslationPrompt($text, $fromLang, $toLang, $context, $preserveHtml);
         
-        \Log::info('📝 Translation prompt hazırlandı', [
+        Log::info('📝 Translation prompt hazırlandı', [
             'prompt_length' => strlen($prompt),
             'from_lang' => $fromLang,
             'to_lang' => $toLang,
@@ -1820,21 +2085,33 @@ class AIService
         ]);
 
         try {
+            // 📊 CONVERSATION BAŞLAT - claude_ai.md sistemi
+            $conversationData = [
+                'tenant_id' => TenantHelpers::getTenantId(),
+                'user_id' => auth()->id(),
+                'session_id' => 'translation_' . uniqid(),
+                'title' => "Translation: {$fromLang} → {$toLang}",
+                'type' => 'translation',
+                'feature_name' => 'ai_translate',
+                'is_demo' => false,
+                'prompt_id' => 1,
+                'metadata' => [
+                    'source' => 'translation_system',
+                    'text_length' => strlen($text),
+                    'estimated_tokens' => ceil(strlen($text) / 4) // Rough estimate
+                ]
+            ];
+
             $response = $this->processRequest(
                 $prompt, 
-                2000, // maxTokens
+                4000, // maxTokens - ARTTIRILDI: 2000 → 4000
                 0.3,  // temperature - Lower for more consistent translations
                 null, // model - use default
                 null, // systemPrompt
-                [     // metadata
-                    'source' => 'translation_system',
-                    'from_language' => $fromLang,
-                    'to_language' => $toLang,
-                    'context' => $context
-                ]
+                $conversationData // claude_ai.md uyumlu metadata
             );
 
-            \Log::info('🔍 Translation response received', [
+            Log::info('🔍 Translation response received', [
                 'success' => $response['success'],
                 'has_content' => isset($response['data']['content']),
                 'content_length' => isset($response['data']['content']) ? strlen($response['data']['content']) : 0,
@@ -1845,19 +2122,43 @@ class AIService
                 $translatedText = $response['data']['content'];
                 
                 if (empty(trim($translatedText))) {
-                    \Log::error('❌ Çeviri boş geldi!', [
+                    Log::error('❌ Çeviri boş geldi!', [
                         'response' => $response,
                         'original_text' => substr($text, 0, 200)
                     ]);
                     return $text; // Fallback to original
                 }
                 
+                // ❌ HTML TIRKANA İŞARETLERİNİ TEMİZLE - NURULLAH'IN TALEBİ
+                // AI HTML içeriği farklı formatlarla sarıyor, hepsini temizle
+                $originalText = $translatedText;
+                
+                // Pattern 1: ```html\n content \n```
+                $translatedText = preg_replace('/^```html\s*\n?/', '', $translatedText);
+                $translatedText = preg_replace('/\n?\s*```$/', '', $translatedText);
+                
+                // Pattern 2: ```\n content \n```  
+                $translatedText = preg_replace('/^```\s*\n?/', '', $translatedText);
+                $translatedText = preg_replace('/\n?\s*```$/', '', $translatedText);
+                
+                // Pattern 3: ``` content ```
+                $translatedText = preg_replace('/^```\s*/', '', $translatedText);
+                $translatedText = preg_replace('/\s*```$/', '', $translatedText);
+                
+                $translatedText = trim($translatedText);
+                
+                Log::info('🧹 HTML tırnak temizliği yapıldı', [
+                    'before_length' => strlen($response['data']['content']),
+                    'after_length' => strlen($translatedText),
+                    'cleaned' => $response['data']['content'] !== $translatedText
+                ]);
+                
                 // Apply max length if specified
                 if ($maxLength && mb_strlen($translatedText) > $maxLength) {
                     $translatedText = mb_substr($translatedText, 0, $maxLength - 3) . '...';
                 }
 
-                \Log::info('✅ Çeviri BAŞARILI', [
+                Log::info('✅ Çeviri BAŞARILI', [
                     'from' => $fromLang,
                     'to' => $toLang,
                     'original_length' => strlen($text),
@@ -1865,16 +2166,62 @@ class AIService
                     'translated_preview' => substr($translatedText, 0, 100)
                 ]);
 
+                // 📊 CONVERSATION KAYIT SİSTEMİ - claude_ai.md uyumlu
+                try {
+                    \DB::table('ai_conversations')->insert([
+                        'tenant_id' => TenantHelpers::getTenantId(),
+                        'user_id' => auth()->id(),
+                        'session_id' => 'translation_' . uniqid(),
+                        'title' => "Translation: {$fromLang} → {$toLang}",
+                        'type' => 'translation',
+                        'feature_name' => 'ai_translate',
+                        'is_demo' => false,
+                        'prompt_id' => 1,
+                        'total_tokens_used' => $response['tokens_used'] ?? 0,
+                        'metadata' => json_encode([
+                            'input_data' => [
+                                'text' => substr($text, 0, 500), // İlk 500 karakter
+                                'from_language' => $fromLang,
+                                'to_language' => $toLang,
+                                'context' => $context,
+                                'preserve_html' => $preserveHtml
+                            ],
+                            'output_data' => [
+                                'translated_text' => substr($translatedText, 0, 500),
+                                'original_length' => strlen($text),
+                                'translated_length' => strlen($translatedText)
+                            ],
+                            'provider_used' => $this->currentProvider->name ?? 'unknown',
+                            'model_used' => $response['model'] ?? 'unknown',
+                            'processing_time' => $response['processing_time'] ?? 0
+                        ]),
+                        'status' => 'completed',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                    
+                    Log::info('📊 Conversation kaydedildi - claude_ai.md sistemi', [
+                        'type' => 'translation',
+                        'tenant_id' => TenantHelpers::getTenantId(),
+                        'tokens' => $response['tokens_used'] ?? 0
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('❌ Conversation kayıt hatası', [
+                        'error' => $e->getMessage()
+                    ]);
+                    // Hata olsa bile çeviri çalışmaya devam etsin
+                }
+
                 return $translatedText;
             } else {
-                \Log::error('❌ Translation response not successful', [
+                Log::error('❌ Translation response not successful', [
                     'response' => $response
                 ]);
                 throw new \Exception($response['message']);
             }
 
         } catch (\Exception $e) {
-            \Log::error('Translation failed', [
+            Log::error('Translation failed', [
                 'from' => $fromLang,
                 'to' => $toLang,
                 'text_length' => strlen($text),
@@ -1894,41 +2241,53 @@ class AIService
      */
     private function buildTranslationPrompt(string $text, string $fromLang, string $toLang, string $context, bool $preserveHtml): string
     {
+        // Geliştirilmiş dil isimleri - native yazımları dahil
         $languageNames = [
-            'tr' => 'Türkçe',
+            'tr' => 'Türkçe (Turkish)',
             'en' => 'English', 
-            'de' => 'Deutsch',
-            'fr' => 'Français',
-            'es' => 'Español',
-            'it' => 'Italiano',
-            'ar' => 'العربية',
-            'da' => 'Dansk',
-            'bn' => 'বাংলা',
-            'sq' => 'Shqip',          // Arnavutça
-            'zh' => '中文',           // Çince
-            'ja' => '日本語',         // Japonca
-            'ko' => '한국어',         // Korece
-            'ru' => 'Русский',       // Rusça
-            'pt' => 'Português',     // Portekizce
-            'nl' => 'Nederlands',    // Hollandaca
-            'sv' => 'Svenska',       // İsveççe
-            'no' => 'Norsk',         // Norveççe
-            'fi' => 'Suomi',         // Fince
-            'pl' => 'Polski',        // Lehçe
-            'cs' => 'Čeština',       // Çekçe
-            'hu' => 'Magyar',        // Macarca
-            'ro' => 'Română',        // Rumence
-            'he' => 'עברית',         // İbranice
-            'hi' => 'हिन्दी',         // Hintçe
-            'th' => 'ไทย',           // Tayca
-            'vi' => 'Tiếng Việt',    // Vietnamca
-            'id' => 'Bahasa Indonesia', // Endonezce
-            'fa' => 'فارسی',         // Farsça
-            'ur' => 'اردو'           // Urduca
+            'de' => 'Deutsch (German)',
+            'fr' => 'Français (French)',
+            'es' => 'Español (Spanish)',
+            'it' => 'Italiano (Italian)',
+            'ar' => 'العربية (Arabic)',
+            'da' => 'Dansk (Danish)',
+            'bn' => 'বাংলা (Bengali)',
+            'sq' => 'Shqip (Albanian)',
+            'zh' => '中文 (Chinese)',
+            'ja' => '日本語 (Japanese)',
+            'ko' => '한국어 (Korean)',
+            'ru' => 'Русский (Russian)',
+            'pt' => 'Português (Portuguese)',
+            'nl' => 'Nederlands (Dutch)',
+            'sv' => 'Svenska (Swedish)',
+            'no' => 'Norsk (Norwegian)',
+            'fi' => 'Suomi (Finnish)',
+            'pl' => 'Polski (Polish)',
+            'cs' => 'Čeština (Czech)',
+            'hu' => 'Magyar (Hungarian)',
+            'ro' => 'Română (Romanian)',
+            'he' => 'עברית (Hebrew)',
+            'hi' => 'हिन्दी (Hindi)',
+            'th' => 'ไทย (Thai)',
+            'vi' => 'Tiếng Việt (Vietnamese)',
+            'id' => 'Bahasa Indonesia (Indonesian)',
+            'fa' => 'فارسی (Persian)',
+            'ur' => 'اردو (Urdu)',
+            'el' => 'Ελληνικά (Greek)',
+            'bg' => 'Български (Bulgarian)',
+            'hr' => 'Hrvatski (Croatian)',
+            'sr' => 'Српски (Serbian)',
+            'sl' => 'Slovenščina (Slovenian)',
+            'sk' => 'Slovenčina (Slovak)',
+            'uk' => 'Українська (Ukrainian)',
+            'et' => 'Eesti (Estonian)',
+            'lv' => 'Latviešu (Latvian)',
+            'lt' => 'Lietuvių (Lithuanian)',
+            'ms' => 'Bahasa Melayu (Malay)',
         ];
 
-        $fromLanguageName = $languageNames[$fromLang] ?? $fromLang;
-        $toLanguageName = $languageNames[$toLang] ?? $toLang;
+        $fromLanguageName = $languageNames[$fromLang] ?? strtoupper($fromLang) . ' Language';
+        $toLanguageName = $languageNames[$toLang] ?? strtoupper($toLang) . ' Language';
 
         $contextInstructions = match($context) {
             'title' => 'Bu bir başlık metnidir. Kısa, net ve SEO dostu olmalıdır.',
@@ -1941,6 +2300,17 @@ class AIService
 
         $htmlInstructions = $preserveHtml ? "\n- HTML etiketlerini aynen koru, sadece metin içeriğini çevir" : "";
 
+        // 🚀 DİNAMİK DİL KISITLAMA SİSTEMİ - Hedef dile göre ayarlanır
+        $restrictedLanguages = collect(['en', 'es', 'fr', 'de', 'bg', 'tr'])
+            ->reject(fn($lang) => $lang === $toLang)
+            ->map(fn($lang) => $languageNames[$lang] ?? strtoupper($lang))
+            ->join(', ');
+
+        $languageRestriction = "
+- FORBIDDEN LANGUAGES: {$restrictedLanguages}
+- REQUIRED OUTPUT: Pure {$toLanguageName} ({$toLang}) ONLY
+- PENALTY: If you output in forbidden languages, the translation FAILS";
+
         return "Sen profesyonel bir çevirmensin. Aşağıdaki metni {$fromLanguageName} dilinden {$toLanguageName} diline çevir.
 
 CONTEXT: {$contextInstructions}
@@ -1949,8 +2319,96 @@ CONTEXT: {$contextInstructions}
 - Doğal ve akıcı bir çeviri yap
 - Kültürel bağlamı koru
 - Teknik terimleri doğru çevir{$htmlInstructions}
-- Sadece çeviriyi döndür, başka açıklama ekleme
+- Sadece çeviriyi döndür, başka açıklama ekleme{$languageRestriction}
 
 ÇEVİRİLECEK METİN:
 {$text}";
-    }}
+    }
+
+    /**
+     * 🔥 UZUN HTML İÇERİK ÇEVİRİ SİSTEMİ - TOKEN LİMİT AŞIMI ENGELLEYİCİ
+     * Uzun HTML içeriği parçalara böler ve sadece text kısımlarını çevirir
+     */
+    private function translateLongHtmlContent(string $html, string $fromLang, string $toLang, string $context): string
+    {
+        Log::info('🔧 Uzun HTML chunk çeviri başlıyor', [
+            'html_length' => strlen($html),
+            'from_lang' => $fromLang,
+            'to_lang' => $toLang
+        ]);
+
+        try {
+            // HTML'deki tüm text nodeları bul ve çevir
+            $dom = new \DOMDocument('1.0', 'UTF-8');
+            
+            // HTML parse hatalarını bastır
+            $originalErrorSetting = libxml_use_internal_errors(true);
+            
+            // UTF-8 desteği için meta tag ekle
+            $htmlWithMeta = '<meta charset="UTF-8">' . $html;
+            $dom->loadHTML($htmlWithMeta, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            
+            $xpath = new \DOMXPath($dom);
+            
+            // Sadece text nodeları bul (element içinde olmayan)
+            $textNodes = $xpath->query('//text()[normalize-space()]');
+            
+            $translatedTexts = [];
+            $originalTexts = [];
+            
+            foreach ($textNodes as $textNode) {
+                $originalText = trim($textNode->nodeValue);
+                
+                // Boş veya çok kısa metinleri atla
+                if (strlen($originalText) < 3) {
+                    continue;
+                }
+                
+                // Sadece sayı veya sembol olan metinleri atla
+                if (preg_match('/^[\d\s\-\.\,\+\*\/\=\(\)]+$/', $originalText)) {
+                    continue;
+                }
+                
+                $originalTexts[] = $originalText;
+                
+                // Her text node'u ayrı ayrı çevir
+                $translatedText = $this->translateText(
+                    $originalText,
+                    $fromLang,
+                    $toLang,
+                    [
+                        'context' => 'html_text_node',
+                        'preserve_html' => false
+                    ]
+                );
+                
+                $translatedTexts[] = $translatedText;
+                $textNode->nodeValue = $translatedText;
+            }
+            
+            // HTML'i geri çıkar (meta tag'ı çıkar)
+            $translatedHtml = $dom->saveHTML();
+            $translatedHtml = preg_replace('/<meta charset="UTF-8">/', '', $translatedHtml);
+            
+            // libxml hata ayarını geri yükle
+            libxml_use_internal_errors($originalErrorSetting);
+            
+            Log::info('✅ HTML chunk çeviri tamamlandı', [
+                'original_length' => strlen($html),
+                'translated_length' => strlen($translatedHtml),
+                'text_nodes_translated' => count($translatedTexts)
+            ]);
+            
+            return trim($translatedHtml);
+            
+        } catch (\Exception $e) {
+            Log::error('❌ HTML chunk çeviri hatası', [
+                'error' => $e->getMessage(),
+                'html_length' => strlen($html)
+            ]);
+            
+            // Fallback: Normal çeviri yap (kesilse bile)
+            return $this->translateText($html, $fromLang, $toLang, ['context' => $context, 'preserve_html' => true]);
+        }
+    }
+}

@@ -270,4 +270,18 @@ class TenantHelpers
         // Tenant ID 1 veya yoksa central
         return (!$tenantId || $tenantId == 1) ? 'central' : 'tenant';
     }
+
+    /**
+     * Mevcut tenant ID'yi al
+     * claude_ai.md sistemi için
+     */
+    public static function getTenantId(): int
+    {
+        try {
+            $tenant = tenant();
+            return $tenant ? $tenant->id : 1; // Varsayılan olarak 1 (central)
+        } catch (\Exception $e) {
+            return 1; // Hata durumunda central
+        }
+    }
 }

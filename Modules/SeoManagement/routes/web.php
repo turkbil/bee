@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth:web']], function () {
-    Route::get('/seomanagement', 'Admin\SeoManagementController@index')->name('admin.seomanagement.index');
+Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'tenant']], function () {
+    Route::get('/seomanagement', [Modules\SeoManagement\App\Http\Controllers\Admin\SeoManagementController::class, 'index'])
+        ->name('admin.seomanagement.index');
 });

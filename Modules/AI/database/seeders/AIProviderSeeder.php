@@ -44,7 +44,7 @@ class AIProviderSeeder extends Seeder
                     'max_tokens' => 4000,
                     'top_p' => 0.9
                 ],
-                'api_key' => 'sk-035528bc068943e0918fbe37646077c1',
+                'api_key' => 'sk-d46868413352475abdbea441ac29ff55', // GÜNCEL API KEY
                 'base_url' => 'https://api.deepseek.com',
                 'is_active' => true,
                 'is_default' => false,
@@ -63,7 +63,7 @@ class AIProviderSeeder extends Seeder
                 'name' => 'openai',
                 'display_name' => 'OpenAI GPT',
                 'service_class' => 'OpenAIService',
-                'default_model' => 'gpt-4o-mini',
+                'default_model' => 'gpt-4o',
                 'available_models' => [
                     'gpt-4o-mini' => [
                         'name' => 'GPT-4o Mini',
@@ -86,7 +86,7 @@ class AIProviderSeeder extends Seeder
                     'max_tokens' => 4000,
                     'top_p' => 0.9
                 ],
-                'api_key' => 'sk-Rd0uAFfpiAcfdxillkFM1mV0NWxihzz2L4ARj6k2tjT3BlbkFJ6V0IbyeIq53gOxZa31u1xOq94W69xoacMELOL7CIEA',
+                'api_key' => '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', // GÜNCEL API KEY
                 'base_url' => 'https://api.openai.com/v1',
                 'is_active' => true, // API key eklendiği için aktif
                 'is_default' => true,
@@ -123,7 +123,7 @@ class AIProviderSeeder extends Seeder
                     'temperature' => 0.7,
                     'max_tokens' => 4000
                 ],
-                'api_key' => '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',
+                'api_key' => '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', // GÜNCEL API KEY
                 'base_url' => 'https://api.anthropic.com',
                 'is_active' => true, // API key eklendiği için aktif
                 'is_default' => false,

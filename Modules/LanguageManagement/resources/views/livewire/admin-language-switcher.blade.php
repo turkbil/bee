@@ -4,7 +4,7 @@
     <a href="#" class="nav-link d-flex align-items-center justify-content-center" 
        data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false" 
        data-bs-toggle="tooltip" data-bs-placement="bottom" 
-       title="Admin Dili Değiştir" 
+       title="{{ $currentAdminLocale === $currentSiteLocale ? 'Dil Değiştir' : 'Üst: Admin | Alt: Veri' }}" 
        style="width: 40px; height: 40px; border-radius: 0.375rem;">
        
         <div class="position-relative lang-icon-container">
@@ -15,10 +15,47 @@
             
             <!-- Normal state: Flag gösterimi -->
             <div wire:loading.remove wire:target="switchLanguage,switchSiteLanguage">
-                @if($currentLanguageObject && $currentLanguageObject->flag_icon)
-                    <span style="font-size: 20px;">{{ $currentLanguageObject->flag_icon }}</span>
+                @php
+                    $adminFlag = $currentAdminLanguage->flag_icon ?? '🌐';
+                    $siteFlag = $currentSiteLanguage ? ($currentSiteLanguage->flag_icon ?? '🌐') : '🌐';
+                    $isSameLanguage = $currentAdminLocale === $currentSiteLocale;
+                    
+                    // Fallback: Site languages listesinden flag'i bul
+                    if (!$currentSiteLanguage && $currentSiteLocale) {
+                        foreach($siteLanguages as $lang) {
+                            if ($lang->code === $currentSiteLocale) {
+                                $siteFlag = $lang->flag_icon ?? '🌐';
+                                break;
+                            }
+                        }
+                    }
+                @endphp
+                
+                @if($isSameLanguage)
+                    <!-- Aynı dil: Tek bayrak göster -->
+                    <span style="font-size: 20px; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;">{{ $adminFlag }}</span>
                 @else
-                    <i class="fa-solid fa-language" style="font-size: 18px;"></i>
+                    <!-- Farklı diller: Alt alta iki bayrak göster -->
+                    <div style="font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; line-height: 1.1;">
+                        <div style="font-size: 14px; text-align: center;">{{ $adminFlag }}</div>
+                        <div style="font-size: 14px; text-align: center; font-weight: bold; color: #666;">
+                            @php
+                                // Debug: Site language flag'i bul
+                                $debugSiteFlag = '🌐';
+                                $debugText = strtoupper($currentSiteLocale);
+                                
+                                foreach($siteLanguages as $lang) {
+                                    if ($lang->code === $currentSiteLocale) {
+                                        $debugSiteFlag = $lang->flag_icon ?? '🌐';
+                                        break;
+                                    }
+                                }
+                                
+                                // Eğer flag bulunursa emoji göster, bulunamazsa text göster
+                                echo ($debugSiteFlag !== '🌐') ? $debugSiteFlag : $debugText;
+                            @endphp
+                        </div>
+                    </div>
                 @endif
             </div>
         </div>

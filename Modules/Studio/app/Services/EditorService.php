@@ -67,9 +67,10 @@ class EditorService
      *
      * @param string $module
      * @param int $id
+     * @param string|null $locale
      * @return array
      */
-    public function loadContent(string $module, int $id): array
+    public function loadContent(string $module, int $id, string $locale = null): array
     {
         $result = [
             'content' => '',
@@ -78,46 +79,78 @@ class EditorService
             'title' => 'Editör',
         ];
         
-        if ($module === 'page') {
-            try {
-                $page = Page::findOrFail($id);
-                $result['content'] = $this->safeTranslatableGet($page->body);
-                $result['css'] = $this->safeTranslatableGet($page->css);
-                $result['js'] = $this->safeTranslatableGet($page->js);
-                $result['title'] = $this->safeTranslatableGet($page->title, 'Sayfa Düzenleyici');
-            } catch (\Exception $e) {
-                Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
+        // Dinamik modül yükleme sistemi
+        try {
+            $model = $this->getModuleModel($module, $id);
+            if ($model) {
+                $result['content'] = $this->safeTranslatableGet($model->body ?? '', '', $locale);
+                $result['css'] = $this->safeTranslatableGet($model->css ?? '', '', $locale);
+                $result['js'] = $this->safeTranslatableGet($model->js ?? '', '', $locale);
+                $result['title'] = $this->safeTranslatableGet($model->title ?? '', ucfirst($module) . ' Düzenleyici', $locale);
             }
-        } elseif ($module === 'portfolio') {
-            try {
-                $portfolio = Portfolio::findOrFail($id);
-                $result['content'] = $this->safeTranslatableGet($portfolio->body);
-                $result['css'] = $this->safeTranslatableGet($portfolio->css);
-                $result['js'] = $this->safeTranslatableGet($portfolio->js);
-                $result['title'] = $this->safeTranslatableGet($portfolio->title, 'Portfolio Düzenleyici');
-            } catch (\Exception $e) {
-                Log::error('Portfolio yüklenirken hata: ' . $e->getMessage());
-            }
+        } catch (\Exception $e) {
+            Log::error($module . ' yüklenirken hata: ' . $e->getMessage());
         }
         
         return $result;
     }
     
     /**
+     * Dinamik modül modeli yükle
+     *
+     * @param string $module
+     * @param int $id
+     * @return mixed|null
+     */
+    protected function getModuleModel(string $module, int $id)
+    {
+        // Modül adına göre model class'ını belirle
+        $modelClass = "Modules\\" . ucfirst($module) . "\\App\\Models\\" . ucfirst($module);
+        
+        // Model class'ı var mı kontrol et
+        if (class_exists($modelClass)) {
+            return $modelClass::find($id);
+        }
+        
+        // Alternatif isimlendirme denemeleri
+        $alternativeNames = [
+            "Modules\\" . ucfirst($module) . "\\App\\Models\\" . ucfirst($module),
+            "Modules\\" . ucfirst($module) . "\\Models\\" . ucfirst($module),
+            "App\\Models\\" . ucfirst($module),
+        ];
+        
+        foreach ($alternativeNames as $className) {
+            if (class_exists($className)) {
+                return $className::find($id);
+            }
+        }
+        
+        return null;
+    }
+
+    /**
      * Translatable array field'ını safe string'e dönüştür
      *
      * @param mixed $value
      * @param string $default
+     * @param string|null $locale
      * @return string
      */
-    protected function safeTranslatableGet($value, string $default = ''): string
+    protected function safeTranslatableGet($value, string $default = '', string $locale = null): string
     {
         if (is_array($value)) {
-            // Mevcut locale'yi al
-            $locale = app()->getLocale();
+            // Locale belirleme: parametre > app locale > tr fallback
+            $targetLocale = $locale ?: app()->getLocale();
             
-            // Locale bazlı değer al, yoksa fallback'leri dene
-            return $value[$locale] ?? $value['tr'] ?? $value['en'] ?? (string) reset($value) ?: $default;
+            // İstenen locale'de içerik var mı kontrol et
+            $content = $value[$targetLocale] ?? null;
+            
+            // Eğer istenen locale boş ise, TR'den fallback al
+            if (empty($content)) {
+                $content = $value['tr'] ?? $value['en'] ?? (string) reset($value) ?: $default;
+            }
+            
+            return $content;
         }
         
         return (string) ($value ?? $default);
@@ -135,67 +168,43 @@ class EditorService
      */
     public function saveContent(string $module, int $id, string $content, string $css = '', string $js = ''): bool
     {
-        if ($module === 'page') {
-            try {
-                $page = Page::findOrFail($id);
-                $page->body = $content;
-                $page->css = $css;
-                $page->js = $js;
-                $result = $page->save();
-                
-                // ContentSaved eventini tetikle
-                event(new \Modules\Studio\App\Events\ContentSaved($module, $id, $content));
-                
-                // Activity log ekle
-                if (function_exists('log_activity')) {
-                    log_activity($page, 'düzenlendi');
-                }
-                
-                // Log mesajı ekle
-                Log::info('Log: ' . ($page->title ?? 'Sayfa') . ' - studio ile düzenlendi');
-                
-                return $result;
-            } catch (\Exception $e) {
-                Log::error('İçerik kaydedilirken hata: ' . $e->getMessage(), [
-                    'exception' => get_class($e),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
-                ]);
+        // Dinamik modül kaydetme sistemi
+        try {
+            $model = $this->getModuleModel($module, $id);
+            if (!$model) {
+                Log::error($module . ' modeli bulunamadı: ' . $id);
                 return false;
             }
-        } elseif ($module === 'portfolio') {
-            try {
-                $portfolio = Portfolio::findOrFail($id);
-                $portfolio->body = $content;
-                $portfolio->css = $css;
-                $portfolio->js = $js;
-                $result = $portfolio->save();
-                
-                // ContentSaved eventini tetikle
+            
+            // İçeriği kaydet
+            $model->body = $content;
+            $model->css = $css;
+            $model->js = $js;
+            $result = $model->save();
+            
+            // ContentSaved eventini tetikle
+            if (class_exists('\Modules\Studio\App\Events\ContentSaved')) {
                 event(new \Modules\Studio\App\Events\ContentSaved($module, $id, $content));
-                
-                // Activity log ekle
-                if (function_exists('log_activity')) {
-                    log_activity($portfolio, 'düzenlendi');
-                }
-                
-                // Log mesajı ekle
-                Log::info('Log: ' . ($portfolio->title ?? 'Portfolio') . ' - studio ile düzenlendi');
-                
-                return $result;
-            } catch (\Exception $e) {
-                Log::error('Portfolio içerik kaydedilirken hata: ' . $e->getMessage(), [
-                    'exception' => get_class($e),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                return false;
             }
+            
+            // Activity log ekle
+            if (function_exists('log_activity')) {
+                log_activity($model, 'düzenlendi');
+            }
+            
+            // Log mesajı ekle
+            Log::info('Log: ' . $this->safeTranslatableGet($model->title ?? $module, ucfirst($module)) . ' - studio ile düzenlendi');
+            
+            return $result;
+        } catch (\Exception $e) {
+            Log::error($module . ' kaydedilirken hata: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return false;
         }
-        
-        return false;
     }
     
     /**

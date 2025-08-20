@@ -17,71 +17,75 @@ class AICreditPackageSeeder extends Seeder
             [
                 'name' => 'Başlangıç',
                 'description' => 'Küçük projeler ve bireysel kullanım için ideal',
-                'credit_amount' => 10,
-                'price' => 170.00,
+                'credit_amount' => 100,
+                'price' => 49.00,
                 'currency' => 'TRY',
                 'is_popular' => false,
                 'is_active' => true,
                 'sort_order' => 1,
                 'features' => [
-                    '10 kredi',
+                    '100 kredi',
                     'Temel AI özellikleri',
                     'Email desteği',
-                    '30 gün geçerlilik'
+                    '30 gün geçerlilik',
+                    '~20-30 makale yazabilir'
                 ]
             ],
             [
                 'name' => 'Standart',
                 'description' => 'Küçük işletmeler ve orta ölçekli projeler için',
-                'credit_amount' => 50,
-                'price' => 680.00,
+                'credit_amount' => 500,
+                'price' => 199.00,
                 'currency' => 'TRY',
                 'is_popular' => true,
                 'is_active' => true,
                 'sort_order' => 2,
                 'features' => [
-                    '50 kredi',
+                    '500 kredi',
                     'Tüm AI özellikleri',
                     'Öncelikli email desteği',
                     '60 gün geçerlilik',
-                    '%15 bonus kredi'
+                    '%25 bonus kredi',
+                    '~100-150 makale yazabilir'
                 ]
             ],
             [
                 'name' => 'Premium',
                 'description' => 'Büyük işletmeler ve yoğun kullanım için',
-                'credit_amount' => 150,
-                'price' => 1700.00,
+                'credit_amount' => 1500,
+                'price' => 499.00,
                 'currency' => 'TRY',
                 'is_popular' => false,
                 'is_active' => true,
                 'sort_order' => 3,
                 'features' => [
-                    '150 kredi',
+                    '1500 kredi',
                     'Tüm AI özellikleri',
                     'Canlı destek',
                     '90 gün geçerlilik',
-                    '%25 bonus kredi',
-                    'API erişimi'
+                    '%50 bonus kredi',
+                    'API erişimi',
+                    '~300-450 makale yazabilir'
                 ]
             ],
             [
                 'name' => 'Enterprise',
                 'description' => 'Büyük organizasyonlar ve sınırsız kullanım için',
-                'credit_amount' => 500,
-                'price' => 5100.00,
+                'credit_amount' => 5000,
+                'price' => 1299.00,
                 'currency' => 'TRY',
                 'is_popular' => false,
                 'is_active' => true,
                 'sort_order' => 4,
                 'features' => [
-                    '500 kredi',
+                    '5000 kredi',
                     'Tüm AI özellikleri',
                     'Özel destek temsilcisi',
                     '120 gün geçerlilik',
-                    '%35 bonus kredi',
+                    '%100 bonus kredi',
                     'Özel API erişimi',
-                    'Özel entegrasyonlar'
+                    'Özel entegrasyonlar',
+                    '~1000+ makale yazabilir'
                 ]
             ]
         ];

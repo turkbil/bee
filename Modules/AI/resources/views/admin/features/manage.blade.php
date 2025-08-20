@@ -179,7 +179,7 @@
                         <td>
                             <div class="sort-handle" style="cursor: move;">
                                 <i class="fas fa-grip-vertical text-muted"></i>
-                                <span class="badge bg-secondary ms-1">{{ $feature->sort_order ?? $loop->iteration }}</span>
+                                <span class="badge badge-secondary ms-1">{{ $feature->sort_order ?? $loop->iteration }}</span>
                             </div>
                         </td>
                         <td>
@@ -191,12 +191,12 @@
                                     <div class="font-weight-medium">{{ $feature->name }}</div>
                                     <div class="text-muted small">{{ Str::limit($feature->description ?? '', 60) }}</div>
                                     @if($feature->is_featured)
-                                        <span class="badge bg-warning me-1 mt-1">
+                                        <span class="badge badge-warning me-1 mt-1">
                                             <i class="fas fa-star me-1"></i>Öne Çıkan
                                         </span>
                                     @endif
                                     @if($feature->is_new)
-                                        <span class="badge bg-success me-1 mt-1">
+                                        <span class="badge badge-success me-1 mt-1">
                                             <i class="fas fa-star me-1"></i>Yeni
                                         </span>
                                     @endif
@@ -205,12 +205,12 @@
                         </td>
                         <td>
                             @if($feature->aiFeatureCategory)
-                                <span class="badge bg-blue-lt">
+                                <span class="badge badge-info">
                                     <i class="{{ $feature->aiFeatureCategory->icon ?? 'fas fa-folder' }} me-1"></i>
                                     {{ $feature->aiFeatureCategory->title }}
                                 </span>
                             @else
-                                <span class="badge bg-secondary-lt">
+                                <span class="badge badge-secondary">
                                     <i class="fas fa-question-circle me-1"></i>
                                     Kategorisiz
                                 </span>
@@ -230,7 +230,7 @@
                         </td>
                         <td>
                             @if($feature->helper_function)
-                                <span class="badge bg-info-lt">
+                                <span class="badge badge-info">
                                     <i class="fas fa-code me-1"></i>
                                     {{ Str::limit($feature->helper_function, 20) }}
                                 </span>

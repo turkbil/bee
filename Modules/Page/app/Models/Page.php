@@ -35,6 +35,14 @@ class Page extends BaseModel
     protected $translatable = ['title', 'slug', 'body'];
 
     /**
+     * ID accessor - page_id'yi id olarak döndür
+     */
+    public function getIdAttribute()
+    {
+        return $this->page_id;
+    }
+
+    /**
      * Sluggable Ayarları - JSON çoklu dil desteği için devre dışı
      * Artık HasTranslations trait'inde generateSlugForLocale() kullanılacak
      */
@@ -170,8 +178,8 @@ class Page extends BaseModel
                 'descriptions' => [],
                 'keywords' => [],
                 'focus_keywords' => [],
-                'og_title' => [],
-                'og_description' => [],
+                'og_titles' => [],
+                'og_descriptions' => [],
                 'robots_meta' => [
                     'index' => true,
                     'follow' => true,

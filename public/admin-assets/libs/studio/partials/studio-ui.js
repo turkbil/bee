@@ -141,7 +141,6 @@ window.StudioUI = (function() {
             timeout = setTimeout(later, wait);
         };
     }
-    }
     
     /**
      * Katmanlar panelini standartlaştır

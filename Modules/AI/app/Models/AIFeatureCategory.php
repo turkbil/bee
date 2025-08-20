@@ -14,6 +14,8 @@ class AIFeatureCategory extends Model
 
     protected $table = 'ai_feature_categories';
     protected $primaryKey = 'ai_feature_category_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'title',

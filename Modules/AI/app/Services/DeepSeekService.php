@@ -14,28 +14,44 @@ class DeepSeekService
     protected $model;
     protected $lastFullResponse = '';
     protected $safeMode = false;
+    protected $provider;
+    protected $providerId;
 
-    public function __construct($safeMode = false)
+    public function __construct($config = null)
     {
-        $this->safeMode = $safeMode;
-        
-        if (!$this->safeMode) {
-            $this->loadApiSettings();
+        if ($config && is_array($config)) {
+            // YENİ GLOBAL STANDART - Constructor'dan config al
+            $this->providerId = $config['provider_id'] ?? null;
+            $this->apiKey = $config['api_key'] ?? null;
+            $this->baseUrl = $config['base_url'] ?? 'https://api.deepseek.com/v1';
+            $this->model = $config['model'] ?? 'deepseek-chat';
+            $this->safeMode = false;
         } else {
-            // Safe Mode - varsayılan değerler
-            $this->apiKey = '';
-            $this->model = 'deepseek-chat';
+            // ESKİ FALLBACK - Compatibility için
+            $this->safeMode = $config === true; // Eski kullanım: new DeepSeekService(true)
+            
+            if (!$this->safeMode) {
+                $this->loadApiSettings();
+            } else {
+                // Safe Mode - varsayılan değerler
+                $this->apiKey = '';
+                $this->model = 'deepseek-chat';
+            }
+            
+            $this->baseUrl = 'https://api.deepseek.com/v1';
         }
-        
-        $this->baseUrl = 'https://api.deepseek.com/v1';
     }
 
     protected function loadApiSettings()
     {
         try {
-            // Merkezi AI helper'ı kullan
-            $this->apiKey = ai_get_api_key();
-            $this->model = ai_get_model();
+            // Global provider system kullan
+            $provider = \Modules\AI\App\Models\AIProvider::getGlobalProvider();
+            
+            $this->provider = $provider;
+            $this->providerId = $provider->id;
+            $this->apiKey = $provider->api_key; // Otomatik decrypt
+            $this->model = $provider->default_model;
             
             if (empty($this->apiKey)) {
                 Log::warning('API anahtarı bulunamadı. Lütfen admin panelden AI ayarlarını yapılandırın.');
@@ -48,10 +64,23 @@ class DeepSeekService
         }
     }
 
+    /**
+     * GLOBAL STANDART - Provider bilgilerini al
+     */
+    public function getProviderInfo()
+    {
+        return [
+            'provider_id' => $this->providerId,
+            'api_key_set' => !empty($this->apiKey),
+            'base_url' => $this->baseUrl,
+            'model' => $this->model
+        ];
+    }
+    
     protected function getGlobalSettings()
     {
-        // Merkezi AI helper'ı kullan
-        return ai_get_settings();
+        // Legacy - provider'dan al
+        return $this->provider ? $this->provider->default_settings : [];
     }
 
     public static function forTenant(?int $tenantId = null): self

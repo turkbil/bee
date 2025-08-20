@@ -52,8 +52,8 @@ class GlobalSeoRepository implements GlobalSeoRepositoryInterface
             'seo_keywords' => $seoSettings->getKeywords($language) ?? '',
             'canonical_url' => $seoSettings->getCanonicalUrl($language) ?? '',
             'robots' => $seoSettings->getRobots($language) ?? 'index,follow',
-            'og_title' => $seoSettings->getOgTitle($language) ?? '',
-            'og_description' => $seoSettings->getOgDescription($language) ?? '',
+            'og_titles' => $seoSettings->getOgTitle($language) ?? '',
+            'og_descriptions' => $seoSettings->getOgDescription($language) ?? '',
             'og_image' => $seoSettings->getOgImage($language) ?? '',
         ];
     }
@@ -110,8 +110,8 @@ class GlobalSeoRepository implements GlobalSeoRepositoryInterface
                 'seo_keywords' => 'setKeywords',
                 'canonical_url' => 'setCanonicalUrl',
                 'robots' => 'setRobots',
-                'og_title' => 'setOgTitle',
-                'og_description' => 'setOgDescription',
+                'og_titles' => 'setOgTitle',
+                'og_descriptions' => 'setOgDescription',
                 'og_image' => 'setOgImage'
             ];
 
@@ -227,8 +227,8 @@ class GlobalSeoRepository implements GlobalSeoRepositoryInterface
             'seo_keywords' => '',
             'canonical_url' => '',
             'robots' => 'index,follow',
-            'og_title' => '',
-            'og_description' => '',
+            'og_titles' => '',
+            'og_descriptions' => '',
             'og_image' => '',
         ];
     }

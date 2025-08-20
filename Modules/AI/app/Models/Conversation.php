@@ -183,6 +183,15 @@ class Conversation extends Model
     }
 
     /**
+     * Bu konuşmaya ait toplam credit kullanımı
+     */
+    public function getTotalCreditsUsed()
+    {
+        return \Modules\AI\App\Models\AICreditUsage::where('conversation_id', $this->id)
+            ->sum('credits_used') ?? 0;
+    }
+
+    /**
      * İstatistikler için özet bilgi
      */
     public function getSummaryAttribute()
@@ -195,6 +204,7 @@ class Conversation extends Model
             'last_content' => $lastMessage ? \Str::limit($lastMessage->content, 100) : null,
             'feature_name' => $this->feature_name,
             'is_demo' => $this->is_demo,
+            'total_credits_used' => $this->getTotalCreditsUsed(),
         ];
     }
 }

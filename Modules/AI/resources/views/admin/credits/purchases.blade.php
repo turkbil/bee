@@ -10,14 +10,14 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-history me-2"></i>
+                                <i class="fa-solid fa-history me-2"></i>
                                 Satın Alma Geçmişi
                             </h3>
                             <div class="card-actions">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Ara..." id="searchInput">
                                     <button type="button" class="btn btn-outline-primary">
-                                        <i class="ti ti-search"></i>
+                                        <i class="fa-solid fa-search"></i>
                                     </button>
                                 </div>
                             </div>
@@ -129,22 +129,22 @@
                                                     </button>
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item" href="#" onclick="viewDetails({{ $purchase['id'] }})">
-                                                            <i class="ti ti-eye me-2"></i>
+                                                            <i class="fa-solid fa-eye me-2"></i>
                                                             Detayları Görüntüle
                                                         </a>
                                                         @if($purchase['status'] === 'pending')
                                                         <a class="dropdown-item text-success" href="#" onclick="approvePurchase({{ $purchase['id'] }})">
-                                                            <i class="ti ti-check me-2"></i>
+                                                            <i class="fa-solid fa-check me-2"></i>
                                                             Onayla
                                                         </a>
                                                         <a class="dropdown-item text-danger" href="#" onclick="rejectPurchase({{ $purchase['id'] }})">
-                                                            <i class="ti ti-x me-2"></i>
+                                                            <i class="fa-solid fa-xmark me-2"></i>
                                                             Reddet
                                                         </a>
                                                         @endif
                                                         <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item text-danger" href="#" onclick="deletePurchase({{ $purchase['id'] }})">
-                                                            <i class="ti ti-trash me-2"></i>
+                                                            <i class="fa-solid fa-trash me-2"></i>
                                                             Sil
                                                         </a>
                                                     </div>
@@ -156,7 +156,7 @@
                                             <td colspan="9" class="text-center py-5">
                                                 <div class="empty">
                                                     <div class="empty-img">
-                                                        <i class="ti ti-shopping-cart" style="font-size: 4rem; color: #6c757d;"></i>
+                                                        <i class="fa-solid fa-shopping-cart" style="font-size: 4rem; color: #6c757d;"></i>
                                                     </div>
                                                     <p class="empty-title">Henüz satın alma bulunamadı</p>
                                                     <p class="empty-subtitle text-secondary">
@@ -218,7 +218,7 @@
                                 <div class="ms-auto">
                                     <span class="text-green d-inline-flex align-items-center lh-1">
                                         12%
-                                        <i class="ti ti-trending-up ms-1"></i>
+                                        <i class="fa-solid fa-arrow-trend-up ms-1"></i>
                                     </span>
                                 </div>
                             </div>
@@ -235,7 +235,7 @@
                                 <div class="ms-auto">
                                     <span class="text-green d-inline-flex align-items-center lh-1">
                                         8%
-                                        <i class="ti ti-trending-up ms-1"></i>
+                                        <i class="fa-solid fa-arrow-trend-up ms-1"></i>
                                     </span>
                                 </div>
                             </div>
@@ -252,7 +252,7 @@
                                 <div class="ms-auto">
                                     <span class="text-yellow d-inline-flex align-items-center lh-1">
                                         Beklemede
-                                        <i class="ti ti-clock ms-1"></i>
+                                        <i class="fa-solid fa-clock ms-1"></i>
                                     </span>
                                 </div>
                             </div>
@@ -269,7 +269,7 @@
                                 <div class="ms-auto">
                                     <span class="text-blue d-inline-flex align-items-center lh-1">
                                         Stabil
-                                        <i class="ti ti-minus ms-1"></i>
+                                        <i class="fa-solid fa-minus ms-1"></i>
                                     </span>
                                 </div>
                             </div>

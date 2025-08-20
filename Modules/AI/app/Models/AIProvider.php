@@ -4,6 +4,7 @@ namespace Modules\AI\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Crypt;
 
 class AIProvider extends Model
 {
@@ -44,6 +45,27 @@ class AIProvider extends Model
     ];
 
     /**
+     * API key accessor - Şifre çöz
+     */
+    public function getApiKeyAttribute($value)
+    {
+        try {
+            return $value ? Crypt::decryptString($value) : null;
+        } catch (\Exception $e) {
+            \Log::warning('API key decryption failed for provider: ' . $this->name);
+            return $value; // Eski format için fallback
+        }
+    }
+
+    /**
+     * API key mutator - Şifre ile sakla
+     */
+    public function setApiKeyAttribute($value)
+    {
+        $this->attributes['api_key'] = $value ? Crypt::encryptString($value) : null;
+    }
+
+    /**
      * Varsayılan provider'ı getir
      */
     public static function getDefault()
@@ -65,7 +87,7 @@ class AIProvider extends Model
     }
 
     /**
-     * Provider'ın servis sınıfını örnekle
+     * Provider'ın servis sınıfını örnekle - GÜNCEL GLOBAL STANDART
      */
     public function getServiceInstance()
     {
@@ -75,21 +97,14 @@ class AIProvider extends Model
             throw new \Exception("Service class not found: {$serviceClass}");
         }
 
-        $service = new $serviceClass();
-
-        // API key ve base URL'yi ayarla
-        if ($this->api_key && method_exists($service, 'setApiKey')) {
-            $service->setApiKey($this->api_key);
-        }
-
-        if ($this->base_url && method_exists($service, 'setBaseUrl')) {
-            $service->setBaseUrl($this->base_url);
-        }
-
-        // Model'i ayarla
-        if ($this->default_model && method_exists($service, 'setModel')) {
-            $service->setModel($this->default_model);
-        }
+        // Constructor'a provider bilgilerini gönder - GLOBAL STANDART
+        $service = new $serviceClass([
+            'provider_id' => $this->id,
+            'api_key' => $this->api_key, // Otomatik decrypt edilecek
+            'base_url' => $this->base_url,
+            'model' => $this->default_model,
+            'settings' => $this->default_settings
+        ]);
 
         return $service;
     }
@@ -108,31 +123,6 @@ class AIProvider extends Model
 
         $this->save();
     }
-
-    /**
-     * API anahtarını şifreli olarak kaydet - geçici olarak kapatıldı
-     */
-    // public function setApiKeyAttribute($value)
-    // {
-    //     if ($value) {
-    //         $this->attributes['api_key'] = encrypt($value);
-    //     }
-    // }
-
-    /**
-     * API anahtarını şifreli olarak al - geçici olarak kapatıldı
-     */
-    // public function getApiKeyAttribute($value)
-    // {
-    //     if ($value) {
-    //         try {
-    //             return decrypt($value);
-    //         } catch (\Exception $e) {
-    //             return $value; // Eğer decrypt edilemezse raw değeri döndür
-    //         }
-    //     }
-    //     return $value;
-    // }
 
     /**
      * Provider'ın kullanılabilir olup olmadığını kontrol et
@@ -167,6 +157,59 @@ class AIProvider extends Model
     }
 
     /**
+     * Model credit rates relationship - YENI SİSTEM
+     */
+    public function modelCreditRates()
+    {
+        return $this->hasMany(AIModelCreditRate::class, 'provider_id');
+    }
+
+    /**
+     * Specific model için rate getir - YENI SİSTEM
+     */
+    public function getModelRate(string $modelName): ?AIModelCreditRate
+    {
+        return $this->modelCreditRates()
+            ->where('model_name', $modelName)
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
+     * Model için kredi hesapla - YENI SİSTEM
+     */
+    public function calculateModelCredits(string $modelName, int $inputTokens, int $outputTokens = 0): float
+    {
+        $rate = $this->getModelRate($modelName);
+        
+        if (!$rate) {
+            // Default rate kullan
+            return ($inputTokens + $outputTokens) / 1000 * 1.0;
+        }
+        
+        return $rate->calculateCreditCost($inputTokens, $outputTokens);
+    }
+
+    /**
+     * Mevcut modeller ve rate'leri - YENI SİSTEM
+     */
+    public function getAvailableModelsWithRates()
+    {
+        return $this->modelCreditRates()
+            ->where('is_active', true)
+            ->orderBy('model_name')
+            ->get()
+            ->map(function($rate) {
+                return [
+                    'model_name' => $rate->model_name,
+                    'input_rate' => $rate->credit_per_1k_input_tokens,
+                    'output_rate' => $rate->credit_per_1k_output_tokens,
+                    'cost_estimate' => $rate->estimateCost(1000, 1000)
+                ];
+            });
+    }
+
+    /**
      * Günlük kullanım istatistikleri
      */
     public function getDailyUsageStats()
@@ -196,8 +239,41 @@ class AIProvider extends Model
                     'label' => $provider->display_name . ' (Cost: x' . $provider->token_cost_multiplier . ')',
                     'priority' => $provider->priority,
                     'cost_multiplier' => $provider->token_cost_multiplier,
+                    'has_api_key' => !empty($provider->api_key),
                 ];
             })
             ->toArray();
+    }
+
+    /**
+     * Global AI provider instance getter - MERKEZİ STANDART
+     */
+    public static function getGlobalProvider()
+    {
+        // Varsayılan provider'ı al
+        $provider = self::where('is_default', true)
+            ->where('is_active', true)
+            ->first();
+            
+        // Eğer yoksa en yüksek öncelikli
+        if (!$provider) {
+            $provider = self::where('is_active', true)
+                ->orderBy('priority', 'desc')
+                ->first();
+        }
+        
+        if (!$provider) {
+            throw new \Exception('No active AI provider found');
+        }
+        
+        return $provider;
+    }
+
+    /**
+     * AIProvider modelleri relationship
+     */
+    public function models()
+    {
+        return $this->hasMany(AIModelCreditRate::class, 'provider_id');
     }
 }

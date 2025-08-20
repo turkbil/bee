@@ -22,17 +22,25 @@ class SimpleMenuSeeder extends Seeder
         
         // Ana Menü oluştur
         $menu = Menu::create([
-            'name' => ['tr' => 'Ana Menü', 'en' => 'Main Menu'],
+            'name' => [
+                'tr' => 'Ana Menü', 
+                'en' => 'Main Menu', 
+                'ar' => 'القائمة الرئيسية'
+            ],
             'slug' => 'ana-menu',
             'location' => 'header',
             'is_active' => true,
             'is_default' => true,
         ]);
 
-        // 1. Sayfalar
+        // 1. Pages (Basit Link)
         MenuItem::create([
             'menu_id' => $menu->menu_id,
-            'title' => ['tr' => 'Sayfalar', 'en' => 'Pages'],
+            'title' => [
+                'tr' => 'Sayfalar', 
+                'en' => 'Pages', 
+                'ar' => 'الصفحات'
+            ],
             'url_type' => 'module',
             'url_data' => ['module' => 'page', 'type' => 'index'],
             'target' => '_self',
@@ -112,6 +120,6 @@ class SimpleMenuSeeder extends Seeder
         ]);
 
         echo "✅ Basit menu oluşturuldu - Ana Menü (ID: {$menu->menu_id})\n";
-        echo "📋 3 ana item + 4 alt kategori = 7 toplam item\n";
+        echo "📋 Pages + Portfolio + Announcement menu items oluşturuldu\n";
     }
 }

@@ -61,7 +61,7 @@
                                 <button wire:click="bulkToggleActive(false)" class="btn btn-warning btn-sm">
                                     <i class="fas fa-times me-2"></i>Seçilenleri Pasif Yap
                                 </button>
-                                <span class="badge bg-primary align-self-center">{{ count($selectedItems) }} seçili</span>
+                                <span class="badge badge-primary align-self-center">{{ count($selectedItems) }} seçili</span>
                             </div>
                             @endif
                         </div>
@@ -129,7 +129,7 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <i class="fas fa-grip-vertical text-muted me-2"></i>
-                                            <span class="badge bg-primary">{{ $package->sort_order }}</span>
+                                            <span class="badge badge-primary">{{ $package->sort_order }}</span>
                                         </div>
                                     </td>
                                     <td>

@@ -13,9 +13,9 @@ window.StudioConfig = (function() {
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
             ],
             scripts: [
-                "/admin/libs/handlebars/handlebars.min.js",
-                "/admin/libs/studio/partials/studio-widget-manager.js",
-                "/admin/libs/studio/partials/studio-widget-loader.js"
+                "/admin-assets/libs/handlebars/handlebars.min.js",
+                "/admin-assets/libs/studio/partials/studio-widget-manager.js",
+                "/admin-assets/libs/studio/partials/studio-widget-loader.js"
             ]
         },
         

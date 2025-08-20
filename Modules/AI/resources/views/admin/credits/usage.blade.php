@@ -332,7 +332,7 @@ function updateUsageTable(data) {
         row.innerHTML = `
             <td>${item.date}</td>
             <td>${item.tenant}</td>
-            <td><span class="badge bg-primary">${item.provider}</span></td>
+            <td><span class="badge badge-primary">${item.provider}</span></td>
             <td>${item.feature}</td>
             <td>${item.input_tokens}</td>
             <td>${item.output_tokens}</td>

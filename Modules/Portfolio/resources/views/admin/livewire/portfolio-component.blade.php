@@ -181,11 +181,11 @@
                                         </a>
                                     </div>
                                     <div class="col">
-                                        <button type="button" class="btn p-0 border-0 bg-transparent"
-                                                onclick="openTranslationModal('portfolio', {{ $portfolio->portfolio_id }})"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.ai_translate') }}">
-                                            <i class="fas fa-language link-secondary fa-lg"></i>
-                                        </button>
+                                        <x-ai-translation 
+                                            entity-type="portfolio" 
+                                            :entity-id="$portfolio->portfolio_id" 
+                                            button-class="btn p-0 border-0 bg-transparent"
+                                            tooltip="Yapay Zeka ile Çeviri" />
                                     </div>
                                     <div class="col lh-1">
                                         @hasmoduleaccess('portfolio', 'delete')

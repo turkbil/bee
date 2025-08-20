@@ -109,6 +109,15 @@ readonly class TenantLanguageProvider
     }
 
     /**
+     * Get language native name by code
+     */
+    public static function getLanguageName(string $languageCode): string
+    {
+        $names = self::getLanguageNativeNames();
+        return $names[$languageCode] ?? $languageCode;
+    }
+
+    /**
      * Clear all language caches for current tenant
      */
     public static function clearCache(): void

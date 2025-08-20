@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="ti ti-database"></i> Toplu İşlem
+                    <i class="fa-solid fa-database"></i> Toplu İşlem
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -32,7 +32,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                 <button type="button" class="btn btn-primary" id="startBulkOperation">
-                    <i class="ti ti-play"></i> İşlemi Başlat
+                    <i class="fa-solid fa-play"></i> İşlemi Başlat
                 </button>
             </div>
         </div>

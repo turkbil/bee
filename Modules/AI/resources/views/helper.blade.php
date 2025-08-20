@@ -102,15 +102,9 @@
                             @endhasmoduleaccess
 
                             @hasmoduleaccess('ai', 'view')
-                            <a class="dropdown-item" href="{{ route('admin.ai.seo.prowess') }}">
-                                SEO AI Center
-                            </a>
                             @endhasmoduleaccess
 
                             @hasmoduleaccess('ai', 'view')
-                            <a class="dropdown-item" href="{{ route('admin.ai.test-panel') }}">
-                                {{ __('ai::admin.test_panel') }}
-                            </a>
                             @endhasmoduleaccess
 
                             {{-- Universal Input System V3 - Phase 3'te eklenecek
@@ -140,12 +134,37 @@
 
                         {{-- Sağ Kolon --}}
                         <div class="col-6">
-                            {{-- Token Yönetimi --}}
+                            {{-- Enterprise Credit Management --}}
                             @role('root')
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">Enterprise Credit System</span>
+                            </h6>
+                            
+                            <a class="dropdown-item" href="{{ route('admin.ai.credit-rates.index') }}">
+                                Model Credit Rates
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.credit-rates.calculator') }}">
+                                Credit Calculator
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.credit-warnings.index') }}">
+                                Credit Warnings
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.silent-fallback.index') }}">
+                                Silent Fallback System
+                            </a>
+
+                            <a class="dropdown-item" href="{{ route('admin.ai.central-fallback.index') }}">
+                                Central Fallback System
+                            </a>
+
+                            {{-- Legacy Credit Management --}}
                             <h6 class="dropdown-menu-header card-header-light">
                                 <span class="dropdown-header">{{ __('ai::admin.token_management') }}</span>
                             </h6>
-                            
+
                             <a class="dropdown-item" href="{{ route('admin.ai.credits.index') }}">
                                 {{ __('ai::admin.token_management') }}
                             </a>
@@ -160,18 +179,6 @@
 
                             <a class="dropdown-item" href="{{ route('admin.ai.credits.usage-stats') }}">
                                 {{ __('ai::admin.usage_statistics') }}
-                            </a>
-
-                            <a class="dropdown-item" href="{{ route('admin.ai.credits.usage') }}">
-                                {{ __('ai::admin.usage_examples') }}
-                            </a>
-
-                            <a class="dropdown-item" href="{{ route('admin.ai.credits.transactions') }}">
-                                Credit Transactions
-                            </a>
-
-                            <a class="dropdown-item" href="{{ route('admin.ai.credits.show') }}">
-                                Credit Details
                             </a>
 
                             {{-- Bulk Operations - Phase 3'te eklenecek

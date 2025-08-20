@@ -19,7 +19,17 @@ class SeoMeta extends Component
     public function __construct(
         private readonly SeoMetaTagService $seoService
     ) {
+        \Log::info('🔧 SeoMeta Component constructor called', [
+            'url' => request()->fullUrl(),
+            'path' => request()->path()
+        ]);
+        
         $this->metaTags = $this->seoService->generateMetaTags();
+        
+        \Log::info('🔧 SeoMeta Component meta tags generated', [
+            'has_schema' => isset($this->metaTags['schema']) && !empty($this->metaTags['schema']),
+            'title' => $this->metaTags['title'] ?? 'null'
+        ]);
     }
 
     /**

@@ -173,9 +173,20 @@ if (!function_exists('ai_widget_token_data')) {
             $stats['remaining_tokens'] = $stats['remaining'];
             $stats['total_tokens'] = $stats['total_purchased'];
             
-            // Provider bilgileri
-            $stats['provider'] = 'deepseek';
-            $stats['provider_active'] = true;
+            // Provider bilgileri - dinamik olarak al
+            try {
+                $defaultProvider = \Modules\AI\App\Models\AIProvider::getDefault();
+                if ($defaultProvider) {
+                    $stats['provider'] = $defaultProvider->name;
+                    $stats['provider_active'] = $defaultProvider->is_active;
+                } else {
+                    $stats['provider'] = 'openai';
+                    $stats['provider_active'] = true;
+                }
+            } catch (\Exception $e) {
+                $stats['provider'] = 'openai';
+                $stats['provider_active'] = true;
+            }
             
             // Durum belirleme
             if ($stats['remaining'] <= 0) {

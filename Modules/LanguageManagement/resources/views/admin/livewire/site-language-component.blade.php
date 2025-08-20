@@ -12,7 +12,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="Dil adı, kod veya yerel adla arayın... (örn: İngilizce, en, English)">
+                        placeholder="Dil ara... (örn: İngilizce, en, English)">
                 </div>
             </div>
             <!-- Loading -->
@@ -53,8 +53,13 @@
                     <h5 class="mb-0 text-success">
                         <i class="fas fa-check-circle me-2"></i>Aktif Diller
                     </h5>
-                    <span class="badge bg-success ms-2">{{ $activeLanguages->count() }}</span>
-                    <small class="text-muted ms-3">Sitede gözüken diller • <i class="fas fa-arrows-alt"></i> Sürükle-bırak ile sıralayabilirsiniz</small>
+                    <span class="badge ms-2">{{ $activeLanguages->count() }}</span>
+                </div>
+                <div class="mb-3 d-none d-md-block">
+                    <small class="text-muted">Sitede gözüken diller • <i class="fas fa-arrows-alt"></i> Sürükle-bırak ile sıralayabilirsiniz</small>
+                </div>
+                <div class="mb-3 d-md-none">
+                    <small class="text-muted">Sitede gözüken diller<br><i class="fas fa-arrows-alt"></i> Sürükleyerek sıralayın</small>
                 </div>
                 <div class="row" id="active-sortable-list">
                     @foreach($activeLanguages as $language)
@@ -71,8 +76,13 @@
                     <h5 class="mb-0 text-warning">
                         <i class="fas fa-cog me-2"></i>Pasif Diller (Hazırlık)
                     </h5>
-                    <span class="badge bg-warning ms-2">{{ $inactiveLanguages->count() }}</span>
-                    <small class="text-muted ms-3">Admin panelde hazırlık için gözüken, sitede gözükmeyen diller</small>
+                    <span class="badge ms-2">{{ $inactiveLanguages->count() }}</span>
+                </div>
+                <div class="mb-3 d-none d-md-block">
+                    <small class="text-muted">Admin panelde hazırlık için gözüken, sitede gözükmeyen diller</small>
+                </div>
+                <div class="mb-3 d-md-none">
+                    <small class="text-muted">Hazırlık aşamasındaki diller<br>Sitede gözükmez</small>
                 </div>
                 <div class="row" id="inactive-sortable-list">
                     @foreach($inactiveLanguages as $language)
@@ -82,18 +92,46 @@
             </div>
         @endif
 
-        <!-- 3. DİĞER DİLLER (Dünya dilleri - Seçilebilir) -->
-        @if($hiddenLanguages->count() > 0)
+        <!-- 3A. ANA DİLLER (Popüler gizli diller) -->
+        @if($hiddenLanguages->where('is_main_language', true)->count() > 0)
             <div class="mb-4">
                 <div class="d-flex align-items-center mb-3">
                     <h5 class="mb-0 text-info">
+                        <i class="fas fa-star me-2"></i>Ana Diller
+                    </h5>
+                    <span class="badge ms-2">{{ $hiddenLanguages->where('is_main_language', true)->count() }}</span>
+                </div>
+                <div class="mb-3 d-none d-md-block">
+                    <small class="text-muted">Popüler dünya dilleri - pasif veya aktif yapılabilir</small>
+                </div>
+                <div class="mb-3 d-md-none">
+                    <small class="text-muted">Popüler diller<br>Kullanmak için "Kullan" tıklayın</small>
+                </div>
+                <div class="row" id="main-hidden-sortable-list">
+                    @foreach($hiddenLanguages->where('is_main_language', true) as $language)
+                        @include('languagemanagement::admin.partials.language-card', ['language' => $language, 'category' => 'hidden'])
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <!-- 3B. DİĞER DİLLER (AI odaklı gizli diller) -->
+        @if($hiddenLanguages->where('is_main_language', false)->count() > 0)
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0 text-secondary">
                         <i class="fas fa-globe me-2"></i>Diğer Diller
                     </h5>
-                    <span class="badge bg-info ms-2">{{ $hiddenLanguages->count() }}</span>
-                    <small class="text-muted ms-3">Kullanılabilir dünya dilleri - pasif veya aktif yapılabilir</small>
+                    <span class="badge ms-2">{{ $hiddenLanguages->where('is_main_language', false)->count() }}</span>
                 </div>
-                <div class="row" id="hidden-sortable-list">
-                    @foreach($hiddenLanguages as $language)
+                <div class="mb-3 d-none d-md-block">
+                    <small class="text-muted">Özel kullanım dilleri (AI çeviri için) - pasif veya aktif yapılabilir</small>
+                </div>
+                <div class="mb-3 d-md-none">
+                    <small class="text-muted">Özel diller<br>AI çeviri için</small>
+                </div>
+                <div class="row" id="other-hidden-sortable-list">
+                    @foreach($hiddenLanguages->where('is_main_language', false) as $language)
                         @include('languagemanagement::admin.partials.language-card', ['language' => $language, 'category' => 'hidden'])
                     @endforeach
                 </div>
@@ -104,19 +142,18 @@
         @if($search && $activeLanguages->count() === 0 && $inactiveLanguages->count() === 0 && $hiddenLanguages->count() === 0)
             <div class="alert alert-info">
                 <div class="row align-items-center">
-                    <div class="col">
+                    <div class="col-12 col-md-8">
                         <h5 class="alert-heading mb-1">
-                            <i class="fas fa-search me-2"></i>Aradığınız dil bulunamadı
+                            <i class="fas fa-search me-2"></i>Dil bulunamadı
                         </h5>
-                        <p class="mb-0">
-                            "<strong>{{ $search }}</strong>" araması için sonuç bulunamadı. 
-                            Bu dili sisteme eklemek ister misiniz?
+                        <p class="mb-0 small">
+                            "<strong>{{ $search }}</strong>" bulunamadı. Eklemek ister misiniz?
                         </p>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-12 col-md-4 mt-2 mt-md-0">
                         <a href="{{ route('admin.languagemanagement.site.manage') }}?suggested={{ urlencode($search) }}" 
-                           class="btn btn-info">
-                            <i class="fas fa-plus me-1"></i> "{{ $search }}" Dilini Ekle
+                           class="btn btn-info btn-sm w-100">
+                            <i class="fas fa-plus me-1"></i> Ekle
                         </a>
                     </div>
                 </div>
@@ -143,28 +180,58 @@
 @include('languagemanagement::admin.partials.language-action-modal')
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Sadece aktif diller için sortable aktif et
-    const activeSortableList = document.getElementById('active-sortable-list');
-    if (activeSortableList) {
-        new Sortable(activeSortableList, {
-            animation: 150,
-            ghostClass: 'opacity-25',
-            chosenClass: 'shadow',
-            handle: '.card', // Kartın tamamını sürüklenebilir yap
-            onEnd: function(evt) {
-                const itemIds = Array.from(activeSortableList.children).map(item => 
-                    item.getAttribute('data-id')
-                );
-                @this.call('updateOrder', itemIds);
+document.addEventListener('livewire:initialized', function() {
+    initLanguageSortable();
+    
+    // Livewire morph (güncelleme) sonrası tekrar başlat
+    Livewire.hook('morph.updated', () => {
+        initLanguageSortable();
+    });
+    
+    function initLanguageSortable() {
+        const activeSortableList = document.getElementById('active-sortable-list');
+        if (!activeSortableList) {
+            return;
+        }
+        
+        // Mevcut sortable'ı temizle
+        if (window.languageSortable) {
+            window.languageSortable.destroy();
+            window.languageSortable = null;
+        }
+        
+        // Yeni sortable oluştur
+        window.languageSortable = new Sortable(activeSortableList, {
+            animation: 250,
+            delay: 50,
+            delayOnTouchOnly: true,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            handle: '.card',
+            forceFallback: false,
+            
+            onStart: function () {
+                document.body.style.cursor = 'grabbing';
+            },
+            
+            onEnd: function (evt) {
+                document.body.style.cursor = 'default';
+                
+                // Sıralama verilerini hazırla
+                const items = Array.from(activeSortableList.children).map((item, index) => ({
+                    value: parseInt(item.dataset.id),
+                    order: index + 1,
+                }));
+
+                console.log('🔄 Language order updated:', items);
+                
+                // Livewire metodunu çağır
+                Livewire.dispatch('updateOrder', { list: items });
             }
         });
     }
-    
-    // Pasif ve Diğer diller alfabetik kalır (sortable yok)
-    console.log('🎯 Sortable sadece aktif dillerde aktif edildi');
 });
 </script>
 @endpush

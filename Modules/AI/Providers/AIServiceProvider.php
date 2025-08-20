@@ -41,10 +41,7 @@ class AIServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
-        // Route'ları yükle (sadece admin routes)
-        $this->loadRoutesFrom(module_path('AI', 'routes/admin.php'));
-        
-        // View'ları yükle (sadece admin)
+        // View'ları yükle (sadece admin) - Routes RouteServiceProvider'da yükleniyor
         $this->loadViewsFrom(module_path('AI', 'resources/views'), 'ai');
 
         // Livewire bileşenlerini kaydet - ai::admin namespace ile
@@ -59,6 +56,9 @@ class AIServiceProvider extends ServiceProvider
         Livewire::component('ai::admin.ai-test-panel', AITestPanel::class);
         Livewire::component('ai::admin.ai-features-management', AIFeaturesManagement::class);
         Livewire::component('ai::admin.ai-feature-manage-component', AIFeatureManageComponent::class);
+        
+        // Credit Warning System - Livewire Component
+        Livewire::component('ai::admin.credit-warning-component', \Modules\AI\App\Http\Livewire\Admin\CreditWarningComponent::class);
         Livewire::component('ai::admin.ai-profile-management', \Modules\AI\App\Http\Livewire\Admin\Profile\AIProfileManagement::class);
         Livewire::component('ai::admin.ai-profile-wizard-step', \Modules\AI\App\Http\Livewire\Admin\Profile\AIProfileWizardStep::class);
         
@@ -96,6 +96,14 @@ class AIServiceProvider extends ServiceProvider
             // Servisi talep üzerine başlat (lazy loading)
             return new DeepSeekService(!$aiModuleActive); // !$aiModuleActive = safe mode
         });
+        
+        // Enterprise Credit System Services
+        $this->app->singleton(\Modules\AI\App\Services\CreditWarningService::class);
+        $this->app->singleton(\Modules\AI\App\Services\ModelBasedCreditService::class);
+        $this->app->singleton(\Modules\AI\App\Services\SilentFallbackService::class);
+        $this->app->singleton(\Modules\AI\App\Services\CentralFallbackService::class);
+        $this->app->singleton(\Modules\AI\App\Services\CreditCalculatorService::class);
+        $this->app->singleton(\Modules\AI\App\Services\AIProviderManager::class);
     }
     
     /**

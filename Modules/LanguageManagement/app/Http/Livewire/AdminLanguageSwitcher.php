@@ -197,7 +197,7 @@ class AdminLanguageSwitcher extends Component
         $currentAdminLanguageData = $adminLanguages->firstWhere('code', $this->currentLanguage);
         $currentSiteLanguageData = collect($siteLanguages)->firstWhere('code', $this->currentSiteLanguage);
         
-        // Başlangıçta admin dilini göster (admin flag icon'u)
+        // Language switching icon'u için admin dili base alınır
         $currentLanguageObject = $currentAdminLanguageData;
         
         return view('languagemanagement::livewire.admin-language-switcher', [

@@ -86,115 +86,106 @@ class AIProviderManager
     }
 
     /**
-     * En hızlı provider'ı getir
+     * Tenant provider/model seçimi - YENI SİSTEM
+     * Tenant'ın kendi seçimi varsa onu kullan, yoksa central default'u kullan
      */
-    public function getFastestProvider()
+    public function getTenantProvider($tenantId = null)
     {
-        return $this->providers
-            ->where('average_response_time', '>', 0)
-            ->sortBy('average_response_time')
-            ->first();
-    }
-
-    /**
-     * Provider'ları öncelik sırasına göre getir
-     */
-    public function getProvidersByPriority()
-    {
-        return $this->providers
-            ->sortByDesc('priority')
-            ->values();
-    }
-
-    /**
-     * Provider'ları doğru sırada getir - 3 Aşamalı Sistem:
-     * 1. Tenant'ın seçtiği provider (tenants.default_ai_provider_id)
-     * 2. Sistem varsayılanı (ai_providers.is_default=1)  
-     * 3. Fallback (priority sırasına göre)
-     */
-    public function getOrderedProviders($tenantId = null)
-    {
-        $orderedProviders = collect();
+        // Tenant ID'yi belirle
+        if (!$tenantId) {
+            $tenantId = tenant('id') ?: session('admin_tenant_id');
+        }
         
-        // 1. AŞAMA: Tenant'ın seçtiği provider
+        // 1. Tenant'ın kendi seçimi var mı?
         if ($tenantId) {
             $tenant = \App\Models\Tenant::find($tenantId);
             if ($tenant && $tenant->default_ai_provider_id) {
                 $tenantProvider = $this->providers->where('id', $tenant->default_ai_provider_id)->first();
-                if ($tenantProvider) {
-                    $orderedProviders->push($tenantProvider);
-                    Log::info("🎯 Tenant provider seçildi", [
+                if ($tenantProvider && $tenantProvider->isAvailable()) {
+                    Log::info("🎯 Tenant provider selected", [
                         'tenant_id' => $tenantId,
                         'provider' => $tenantProvider->name,
                         'provider_id' => $tenantProvider->id
                     ]);
+                    return $tenantProvider;
                 }
             }
         }
         
-        // 2. AŞAMA: Sistem varsayılanı (eğer tenant'ta yoksa)
+        // 2. Central default provider kullan
         $defaultProvider = $this->providers->where('is_default', true)->first();
-        if ($defaultProvider && !$orderedProviders->contains('id', $defaultProvider->id)) {
-            $orderedProviders->push($defaultProvider);
-            Log::info("🔧 Sistem varsayılan provider eklendi", [
+        if ($defaultProvider && $defaultProvider->isAvailable()) {
+            Log::info("🔧 Central default provider selected", [
                 'provider' => $defaultProvider->name,
-                'is_default' => true
+                'is_default' => true,
+                'tenant_id' => $tenantId
             ]);
+            return $defaultProvider;
         }
         
-        // 3. AŞAMA: Fallback (priority sırasına göre geri kalanlar)
-        $fallbackProviders = $this->providers
-            ->whereNotIn('id', $orderedProviders->pluck('id'))
-            ->sortByDesc('priority');
-            
-        foreach ($fallbackProviders as $provider) {
-            $orderedProviders->push($provider);
-        }
-        
-        return $orderedProviders;
+        throw new \Exception("No available AI provider found for tenant: " . ($tenantId ?: 'none'));
     }
 
     /**
-     * Automatic failover - bir provider çalışmazsa diğerine geç
-     * 3 Aşamalı Provider Seçimi ile
+     * Tenant model seçimi - YENI SİSTEM  
      */
-    public function getProviderServiceWithFailover($preferredProvider = null, $tenantId = null)
+    public function getTenantModel($tenantId = null)
     {
-        // Tenant ID'yi al (session'dan veya parametre)
-        if (!$tenantId && session('admin_tenant_id')) {
-            $tenantId = session('admin_tenant_id');
+        if (!$tenantId) {
+            $tenantId = tenant('id') ?: session('admin_tenant_id');
         }
         
-        // 3 aşamalı provider seçimi kullan
-        $providers = $preferredProvider 
-            ? $this->providers->where('name', $preferredProvider)->concat($this->getOrderedProviders($tenantId))
-            : $this->getOrderedProviders($tenantId);
-
-        foreach ($providers as $provider) {
-            try {
-                if ($provider->isAvailable()) {
-                    $service = $provider->getServiceInstance();
-                    
-                    Log::info("AI Provider seçildi: {$provider->name}", [
-                        'provider' => $provider->name,
-                        'average_response_time' => $provider->average_response_time,
-                        'priority' => $provider->priority,
-                        'tenant_id' => $tenantId,
-                        'selection_reason' => $preferredProvider ? 'preferred' : 'priority_order'
-                    ]);
-                    
-                    return ['provider' => $provider, 'service' => $service];
-                }
-            } catch (\Exception $e) {
-                Log::warning("AI Provider unavailable: {$provider->name}", [
-                    'error' => $e->getMessage(),
-                    'tenant_id' => $tenantId
+        // 1. Tenant'ın kendi model seçimi var mı?
+        if ($tenantId) {
+            $tenant = \App\Models\Tenant::find($tenantId);
+            if ($tenant && $tenant->default_ai_model) {
+                Log::info("🎯 Tenant model selected", [
+                    'tenant_id' => $tenantId,
+                    'model' => $tenant->default_ai_model
                 ]);
-                continue;
+                return $tenant->default_ai_model;
             }
         }
+        
+        // 2. Provider'ın default model'ini kullan
+        $provider = $this->getTenantProvider($tenantId);
+        $defaultModel = $provider->default_model ?? 'gpt-3.5-turbo';
+        
+        Log::info("🔧 Default model selected", [
+            'model' => $defaultModel,
+            'provider' => $provider->name,
+            'tenant_id' => $tenantId
+        ]);
+        
+        return $defaultModel;
+    }
 
-        throw new \Exception("No available AI providers found for tenant: " . ($tenantId ?: 'none'));
+    /**
+     * Provider + Model birlikte getir - YENI SİSTEM
+     */
+    public function getTenantProviderWithModel($tenantId = null)
+    {
+        $provider = $this->getTenantProvider($tenantId);
+        $model = $this->getTenantModel($tenantId);
+        
+        return [
+            'provider' => $provider,
+            'model' => $model,
+            'service' => $provider->getServiceInstance()
+        ];
+    }
+
+    /**
+     * Central defaults getir
+     */
+    public function getCentralDefaults()
+    {
+        $defaultProvider = $this->providers->where('is_default', true)->first();
+        
+        return [
+            'provider' => $defaultProvider,
+            'model' => $defaultProvider?->default_model ?? 'gpt-3.5-turbo'
+        ];
     }
 
     /**

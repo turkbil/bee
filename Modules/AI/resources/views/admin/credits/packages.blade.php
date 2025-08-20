@@ -42,7 +42,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 @if($package->is_popular)
-                                                    <span class="badge bg-primary me-2">
+                                                    <span class="badge badge-primary me-2">
                                                         <i class="fas fa-star"></i>
                                                     </span>
                                                 @endif

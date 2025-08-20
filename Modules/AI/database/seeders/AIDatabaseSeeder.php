@@ -24,6 +24,9 @@ class AIDatabaseSeeder extends Seeder
             // Sadece temel provider'ları koru
             $this->call(AIProviderSeeder::class);
             
+            // 🔥 GÜNCEL MODEL KREDİ ORANLARI (x5 Markup - Ağustos 2025)
+            $this->call(UpdatedModelCreditRatesSeeder::class);
+            
             // AI ayarları bilgilendirme
             $this->createSettings();
             
@@ -55,6 +58,7 @@ class AIDatabaseSeeder extends Seeder
                 CleanAIProfileQuestionsSeeder::class,
                 SectorCommonQuestionsSeeder::class,
                 CleanAITenantProfileSeeder::class,
+                TestCreditPurchaseSeeder::class,
             ]);
             
             // Seeder tamamlandıktan sonra da cache'leri temizle

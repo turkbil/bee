@@ -1,9 +1,9 @@
 <div wire:id="{{ $this->getId() }}" class="page-component-wrapper">
     <div class="card">
         @include('page::admin.helper')
-        <div class="card-body">
+        <div class="card-body p-0">
                         <!-- Header Bölümü -->
-                        <div class="row mb-3">
+                        <div class="row mx-2 my-3">
                             <!-- Arama Kutusu -->
                             <div class="col">
                                 <div class="input-icon">
@@ -161,11 +161,10 @@
                                    style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                     <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
                                 </a>
-                                <a href="javascript:void(0);" onclick="openTranslationModal('page', {{ $page->page_id }})"
-                                   data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.ai_translate') }}"
-                                   style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                    <i class="fas fa-language link-secondary fa-lg"></i>
-                                </a>
+                                <x-ai-translation 
+                                    :entity-type="'page'" 
+                                    :entity-id="$page->page_id" 
+                                    tooltip="{{ __('admin.ai_translate') }}" />
                                 @if(!$page->is_homepage)
                                     @hasmoduleaccess('page', 'delete')
                                     <div class="dropdown">
@@ -210,7 +209,15 @@
         
         <!-- Pagination -->
         <div class="card-footer">
-            {{ $pages->links() }}
+            @if($pages->hasPages())
+                {{ $pages->links() }}
+            @else
+                <div class="d-flex justify-content-between align-items-center mb-0">
+                    <p class="small text-muted mb-0">
+                        Toplam <span class="fw-semibold">{{ $pages->total() }}</span> sonuç
+                    </p>
+                </div>
+            @endif
         </div>
         
         <!-- Bulk Actions -->
@@ -226,7 +233,7 @@
 </div>
 
 @push('styles')
-    <link href="{{ asset('assets/js/simple-translation-modal.js') }}" rel="preload" as="script">
+    {{-- Preload removed to prevent warning --}}
 @endpush
 
 @push('scripts')

@@ -1,6 +1,6 @@
 @if ($paginator->hasPages())
-    <nav role="navigation" aria-label="{{ __('admin.pagination_navigation') }}">
-        <ul class="pagination">
+    <nav role="navigation" aria-label="{{ __('admin.pagination_navigation') }}" class="mb-0">
+        <ul class="pagination mb-0">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <li class="page-item disabled" aria-disabled="true">

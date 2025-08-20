@@ -16,27 +16,21 @@ Bu component frontend'de şu şekilde çıkıyor:
 {{-- BASIC META TAGS --}}
 @if($metaTags['description'])<meta name="description" content="{{ $metaTags['description'] }}">
 @endif
-@if($metaTags['keywords'])<meta name="keywords" content="{{ $metaTags['keywords'] }}">
-@endif
+{{-- Keywords, publisher, copyright meta tags removed - 2025 standards --}}
 
-@if(isset($metaTags['author']) && !empty($metaTags['author']))<meta name="author" content="{{ $metaTags['author'] }}">
-@endif
-@if(isset($metaTags['publisher']) && !empty($metaTags['publisher']))<meta name="publisher" content="{{ $metaTags['publisher'] }}">
-@endif
-@if(isset($metaTags['copyright']) && !empty($metaTags['copyright']))<meta name="copyright" content="{{ $metaTags['copyright'] }}">
-@endif
+{{-- 2025 CORE WEB VITALS & MODERN META TAGS --}}
+<meta name="theme-color" content="{{ setting('site_theme_color', '#000000') }}" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="{{ setting('site_theme_color_light', '#ffffff') }}" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="light dark">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
 
-{{-- ROBOTS & AI CRAWLERS --}}
-@if($metaTags['robots'])<meta name="robots" content="{{ $metaTags['robots'] }}, max-snippet:160, max-image-preview:large">
+{{-- ROBOTS & SEARCH ENGINE DIRECTIVES (2025 Standards) --}}
+@if($metaTags['robots'])<meta name="robots" content="{{ $metaTags['robots'] }}, max-snippet:320, max-image-preview:standard, max-video-preview:-1">
 @else
-<meta name="robots" content="index, follow, max-snippet:160, max-image-preview:large">
+<meta name="robots" content="index, follow, max-snippet:320, max-image-preview:standard, max-video-preview:-1">
 @endif
-<meta name="googlebot" content="index, follow">
-<meta name="bingbot" content="index, follow">
-<meta name="PerplexityBot" content="index, follow">
-<meta name="ClaudeBot" content="index, follow">
-<meta name="GPTBot" content="index, follow">
-<meta name="Google-Extended" content="index, follow">
+{{-- Bot-specific directives removed - robots meta sufficient for all crawlers --}}
 @if($metaTags['canonical_url'])<link rel="canonical" href="{{ $metaTags['canonical_url'] }}">
 @endif
 

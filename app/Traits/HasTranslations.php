@@ -63,15 +63,20 @@ trait HasTranslations
             if (is_array($value)) {
                 return json_encode($value);
             }
-            // Array ise string'e çevir (keywords gibi alanlar için)
-            if (is_array($value)) {
-                return json_encode($value);
-            }
             return is_string($value) ? $value : (string) $value;
         }
         
-        // Fallback sistemi - null locale kontrolü
-        return $this->getFallbackTranslation($translations, $locale ?? 'tr');
+        // DEBUG: Neden fallback'e geçiliyor?
+        \Log::info('🐛 Translation Debug - Fallback nedeni', [
+            'locale' => $locale,
+            'translations' => $translations,
+            'isset_check' => isset($translations[$locale]),
+            'empty_check' => isset($translations[$locale]) ? empty($translations[$locale]) : 'key_not_exists',
+            'value' => $translations[$locale] ?? 'null'
+        ]);
+        
+        // Fallback yazı sistemi - çevirisi olmayan dillerde fallback dildeki YAZIYI göster
+        return $this->getFallbackTranslation($translations, $locale);
     }
     
     /**
@@ -129,7 +134,7 @@ trait HasTranslations
                 
                 // Array ise string'e çevir (keywords gibi alanlar için)
                 if (is_array($content)) {
-                    return implode(', ', $content);
+                    return json_encode($content);
                 }
                 return is_string($content) ? $content : (string) $content;
             }

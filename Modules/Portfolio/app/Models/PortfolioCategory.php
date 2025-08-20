@@ -7,6 +7,7 @@ use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PortfolioCategory extends BaseModel 
@@ -16,6 +17,7 @@ class PortfolioCategory extends BaseModel
     protected $primaryKey = 'portfolio_category_id';
 
     protected $fillable = [
+        'parent_id',
         'title',
         'slug',
         'body',
@@ -24,6 +26,7 @@ class PortfolioCategory extends BaseModel
     ];
 
     protected $casts = [
+        'parent_id' => 'integer',
         'is_active' => 'boolean',
         'order' => 'integer',
         'title' => 'array',
@@ -50,6 +53,71 @@ class PortfolioCategory extends BaseModel
     public function portfolios(): HasMany
     {
         return $this->hasMany(Portfolio::class, 'portfolio_category_id', 'portfolio_category_id');
+    }
+
+    /**
+     * Ana kategori ilişkisi
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(static::class, 'parent_id', 'portfolio_category_id');
+    }
+
+    /**
+     * Alt kategoriler ilişkisi
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(static::class, 'parent_id', 'portfolio_category_id')
+                    ->where('is_active', true)
+                    ->orderBy('order', 'asc');
+    }
+
+    /**
+     * Tüm alt kategoriler (aktif/pasif fark etmez)
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->hasMany(static::class, 'parent_id', 'portfolio_category_id')
+                    ->orderBy('order', 'asc');
+    }
+
+    /**
+     * Sadece ana kategorileri getir (parent_id null olanlar)
+     */
+    public static function scopeParents($query)
+    {
+        return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Belirli bir kategorinin alt kategorilerini getir
+     */
+    public static function scopeChildrenOf($query, $parentId)
+    {
+        return $query->where('parent_id', $parentId);
+    }
+
+    /**
+     * Kategori ağacını getir (hierarchical)
+     */
+    public static function getTree($onlyActive = true)
+    {
+        $query = static::query()
+            ->with(['children' => function($q) use ($onlyActive) {
+                if ($onlyActive) {
+                    $q->where('is_active', true);
+                }
+                $q->orderBy('order', 'asc');
+            }])
+            ->whereNull('parent_id')
+            ->orderBy('order', 'asc');
+            
+        if ($onlyActive) {
+            $query->where('is_active', true);
+        }
+        
+        return $query->get();
     }
     
     /**

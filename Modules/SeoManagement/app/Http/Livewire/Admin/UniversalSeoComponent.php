@@ -7,6 +7,7 @@ namespace Modules\SeoManagement\app\Http\Livewire\Admin;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Modules\SeoManagement\app\Services\Interfaces\SeoServiceInterface;
+use Modules\SeoManagement\app\Services\SchemaGeneratorService;
 use App\Services\GlobalTabService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -31,11 +32,13 @@ class UniversalSeoComponent extends Component
     
     private SeoServiceInterface $seoService;
     private GlobalTabService $tabService;
+    private SchemaGeneratorService $schemaGenerator;
 
     public function boot(): void
     {
         $this->seoService = app(SeoServiceInterface::class);
         $this->tabService = app(GlobalTabService::class);
+        $this->schemaGenerator = app(SchemaGeneratorService::class);
     }
 
     public function mount(?string $modelType = null, ?int $modelId = null): void
@@ -125,8 +128,8 @@ class UniversalSeoComponent extends Component
                     'keywords' => is_array($seoSettings->keywords[$lang] ?? null) 
                         ? implode(',', $seoSettings->keywords[$lang]) 
                         : ($seoSettings->keywords[$lang] ?? ''),
-                    'og_title' => $seoSettings->og_title[$lang] ?? '',
-                    'og_description' => $seoSettings->og_description[$lang] ?? '',
+                    'og_title' => $seoSettings->og_titles[$lang] ?? '',
+                    'og_description' => $seoSettings->og_descriptions[$lang] ?? '',
                     'focus_keywords' => is_array($seoSettings->focus_keywords[$lang] ?? null)
                         ? implode(',', $seoSettings->focus_keywords[$lang])
                         : ($seoSettings->focus_keywords[$lang] ?? ''),
@@ -156,7 +159,7 @@ class UniversalSeoComponent extends Component
             'focus_keyword' => '',
             'additional_keywords' => [],
             'status' => 'active',
-            'priority' => 'medium',
+            'priority_score' => 5,
         ];
 
         foreach ($this->availableLanguages as $lang) {
@@ -228,6 +231,41 @@ class UniversalSeoComponent extends Component
             $this->dispatch('toast', [
                 'title' => __('admin.error'),
                 'message' => 'SEO ayarları güncellenirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Schema.org otomatik oluştur
+     */
+    public function generateAutoSchema(): void
+    {
+        if (!$this->model) {
+            $this->dispatch('toast', [
+                'title' => 'Hata',
+                'message' => 'Model bulunamadı. Schema oluşturulamaz.',
+                'type' => 'error'
+            ]);
+            return;
+        }
+
+        try {
+            $schema = $this->schemaGenerator->generateSchema($this->model, $this->currentLanguage);
+            $this->seoData['schema_markup'] = json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+
+            $this->dispatch('toast', [
+                'title' => 'Başarılı',
+                'message' => 'Schema.org otomatik oluşturuldu!',
+                'type' => 'success'
+            ]);
+
+            $this->updateTabCompletionStatus();
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => 'Hata',
+                'message' => 'Schema oluşturulurken hata: ' . $e->getMessage(),
                 'type' => 'error'
             ]);
         }

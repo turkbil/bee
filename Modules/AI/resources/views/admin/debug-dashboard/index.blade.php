@@ -376,7 +376,7 @@
           🤖 AI Provider & Model İstatistikleri
         </h3>
         <div class="card-actions">
-          <span class="badge bg-primary-lt">{{ $stats['provider_stats']['total_usage'] ?? 0 }} Total Usage</span>
+          <span class="badge badge-primary-lt">{{ $stats['provider_stats']['total_usage'] ?? 0 }} Total Usage</span>
         </div>
       </div>
       <div class="card-body">
@@ -928,7 +928,7 @@ document.getElementById('promptTestForm').addEventListener('submit', async funct
             <tbody>
               ${analysis.used_prompts.map(prompt => `
                 <tr>
-                  <td><span class="badge bg-primary-lt">${prompt.position}</span></td>
+                  <td><span class="badge badge-primary-lt">${prompt.position}</span></td>
                   <td>${prompt.name}</td>
                   <td><span class="badge priority-badge-${prompt.priority}">${prompt.category_label}</span></td>
                   <td><span class="badge bg-gray-lt">${prompt.priority_label}</span></td>

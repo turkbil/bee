@@ -121,7 +121,7 @@
     <!-- Bilgilendirme -->
     <div class="alert alert-info mb-4">
         <h4 class="alert-heading">
-            <i class="ti ti-info-circle"></i> AI Test Sayfasına Hoş Geldiniz!
+            <i class="fa-solid fa-info-circle"></i> AI Test Sayfasına Hoş Geldiniz!
         </h4>
         <p class="mb-0">
             Aşağıdaki kutulardan herhangi birine tıklayarak AI özelliklerini test edebilirsiniz. 
@@ -135,7 +135,7 @@
         <div class="col-md-6 mb-3">
             <div class="feature-box" onclick="testFeature('{{ $name }}')">
                 <div class="feature-title">
-                    <i class="ti ti-sparkles"></i> {{ $name }}
+                    <i class="fa-solid fa-sparkles"></i> {{ $name }}
                 </div>
                 <div class="feature-desc">{{ $description }}</div>
             </div>
@@ -147,7 +147,7 @@
     <div id="resultArea" class="result-box">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">
-                <i class="ti ti-robot"></i> AI Sonucu
+                <i class="fa-solid fa-robot"></i> AI Sonucu
             </h4>
             <button class="btn btn-sm btn-secondary" onclick="closeResult()">Kapat</button>
         </div>
@@ -226,8 +226,8 @@ function testFeature(featureName) {
                     </div>
                     
                     <div class="mt-3 text-muted small">
-                        <i class="ti ti-clock"></i> İşlem süresi: ${data.processing_time}ms | 
-                        <i class="ti ti-coins"></i> Kalan token: ${data.new_balance_formatted || data.new_balance || data.remaining_tokens || 0}
+                        <i class="fa-solid fa-clock"></i> İşlem süresi: ${data.processing_time}ms | 
+                        <i class="fa-solid fa-coins"></i> Kalan token: ${data.new_balance_formatted || data.new_balance || data.remaining_tokens || 0}
                     </div>
                 `;
             } else {

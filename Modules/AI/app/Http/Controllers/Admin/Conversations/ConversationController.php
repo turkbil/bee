@@ -5,6 +5,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
+use Modules\AI\App\Models\AICreditUsage;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\MarkdownService;
 use Illuminate\Support\Facades\Auth;
@@ -85,8 +86,20 @@ class ConversationController extends Controller
             'real_tests' => Conversation::active()->realTests()->count(),
             'chat_conversations' => Conversation::active()->byType('chat')->count(),
         ];
+
+        // Credit istatistikleri - sadece aktif konuşmaları
+        $activeConversationIds = Conversation::active()->pluck('id');
+        $creditStats = [
+            'total_credits_used' => AICreditUsage::whereIn('conversation_id', $activeConversationIds)->sum('credits_used') ?? 0,
+            'avg_credits_per_conversation' => $activeConversationIds->count() > 0 ? 
+                (AICreditUsage::whereIn('conversation_id', $activeConversationIds)->sum('credits_used') / $activeConversationIds->count()) : 0,
+            'demo_credits_used' => AICreditUsage::whereIn('conversation_id', 
+                Conversation::active()->demoTests()->pluck('id'))->sum('credits_used') ?? 0,
+            'real_credits_used' => AICreditUsage::whereIn('conversation_id', 
+                Conversation::active()->realTests()->pluck('id'))->sum('credits_used') ?? 0,
+        ];
             
-        return view('ai::admin.conversations.index', compact('conversations', 'filterOptions', 'stats'));
+        return view('ai::admin.conversations.index', compact('conversations', 'filterOptions', 'stats', 'creditStats'));
     }
 
     public function archived(Request $request)
@@ -206,8 +219,27 @@ class ConversationController extends Controller
             'completion_tokens' => $messages->sum('completion_tokens'),
             'avg_processing_time' => $messages->where('processing_time_ms', '>', 0)->avg('processing_time_ms'),
         ];
+
+        // Bu konuşmaya ait credit kullanımları
+        $conversationCredits = AICreditUsage::where('conversation_id', $conversation->id)
+            ->selectRaw('
+                SUM(credits_used) as total_credits,
+                COUNT(*) as total_usage_records,
+                AVG(credits_used) as avg_credits_per_request,
+                provider_name,
+                model
+            ')
+            ->groupBy('provider_name', 'model')
+            ->get();
+
+        $creditSummary = [
+            'total_credits_used' => $conversationCredits->sum('total_credits'),
+            'total_usage_records' => $conversationCredits->sum('total_usage_records'),
+            'avg_credits_per_request' => $conversationCredits->avg('avg_credits_per_request'),
+            'providers_used' => $conversationCredits->groupBy('provider_name'),
+        ];
         
-        return view('ai::admin.conversations.show', compact('conversation', 'messages', 'messageStats'));
+        return view('ai::admin.conversations.show', compact('conversation', 'messages', 'messageStats', 'creditSummary'));
     }
 
     public function delete($id)

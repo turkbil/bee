@@ -25,7 +25,7 @@ trait HasSeo
                 'default_language' => app()->getLocale(),
                 'available_languages' => ['tr', 'en'],
                 'status' => 'active',
-                'priority' => 'medium'
+                'priority_score' => 5
             ]);
             
             // Refresh relationship
@@ -74,6 +74,18 @@ trait HasSeo
     }
 
     /**
+     * Get SEO focus keywords for current or specified locale
+     */
+    public function getSeoFocusKeywords(?string $locale = null): ?string
+    {
+        if (!$this->seoSetting) {
+            return null;
+        }
+
+        return $this->seoSetting->getFocusKeywords($locale);
+    }
+
+    /**
      * Get canonical URL for SEO
      */
     public function getSeoCanonicalUrl(): ?string
@@ -93,8 +105,8 @@ trait HasSeo
         $seo = $this->seoSetting;
         
         return [
-            'title' => $seo?->og_title ?? $this->getSeoTitle($locale),
-            'description' => $seo?->og_description ?? $this->getSeoDescription($locale),
+            'title' => $seo?->og_titles ?? $this->getSeoTitle($locale),
+            'description' => $seo?->og_descriptions ?? $this->getSeoDescription($locale),
             'image' => $seo?->og_image ?? $this->getSeoFallbackImage(),
             'type' => $seo?->og_type ?? 'website',
             'url' => $this->getSeoCanonicalUrl()

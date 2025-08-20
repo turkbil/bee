@@ -166,8 +166,8 @@ class Announcement extends BaseModel
                 'descriptions' => [],
                 'keywords' => [],
                 'focus_keywords' => [],
-                'og_title' => [],
-                'og_description' => [],
+                'og_titles' => [],
+                'og_descriptions' => [],
                 'robots_meta' => [
                     'index' => true,
                     'follow' => true,

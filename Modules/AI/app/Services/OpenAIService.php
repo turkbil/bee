@@ -12,9 +12,26 @@ class OpenAIService
     protected $model;
     protected $lastFullResponse = '';
 
-    public function __construct()
+    protected $provider;
+    protected $providerId;
+
+    public function __construct($config = null)
     {
-        $this->loadProviderConfig();
+        if ($config && is_array($config)) {
+            // YENİ GLOBAL STANDART - Constructor'dan config al
+            $this->providerId = $config['provider_id'] ?? null;
+            $this->apiKey = $config['api_key'] ?? null;
+            $this->baseUrl = $config['base_url'] ?? 'https://api.openai.com';
+            $this->model = $config['model'] ?? 'gpt-4o-mini';
+            
+            // Base URL'yi ayarla
+            if (!str_contains($this->baseUrl, '/v1')) {
+                $this->baseUrl = rtrim($this->baseUrl, '/') . '/v1';
+            }
+        } else {
+            // ESKİ FALLBACK - Compatibility için
+            $this->loadProviderConfig();
+        }
     }
 
     /**
@@ -256,6 +273,19 @@ class OpenAIService
         
         // OpenAI token tahmini (basit hesaplama)
         return intval(strlen($text) / 4);
+    }
+
+    /**
+     * GLOBAL STANDART - Provider bilgilerini al
+     */
+    public function getProviderInfo()
+    {
+        return [
+            'provider_id' => $this->providerId,
+            'api_key_set' => !empty($this->apiKey),
+            'base_url' => $this->baseUrl,
+            'model' => $this->model
+        ];
     }
 
     /**

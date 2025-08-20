@@ -11,10 +11,8 @@ use Modules\AI\App\Http\Controllers\Admin\Tokens\TokenController;
 use Modules\AI\App\Http\Livewire\Admin\Tokens\TokenManagement;
 use Modules\AI\App\Http\Livewire\Admin\Tokens\TokenPackageManagement;
 
-// Admin rotaları
-Route::middleware(['admin', 'admin.tenant.select'])
-    ->prefix('admin')
-    ->name('admin.')
+// Admin rotaları - middleware RouteServiceProvider'da uygulanıyor
+Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
     ->group(function () {
         Route::prefix('ai')
             ->name('ai.')
@@ -246,13 +244,6 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->middleware('module.permission:ai,view')
                     ->name('prowess');
                 
-                // AI Test Panel
-                Route::get('/test-panel', function() {
-                    return view('ai::admin.features.ai-test-panel');
-                })
-                    ->middleware('module.permission:ai,view')
-                    ->name('test-panel');
-
                 // AI Providers Management
                 Route::get('/providers', function() {
                     $providers = \Modules\AI\App\Models\AIProvider::orderBy('priority', 'asc')->get();
@@ -260,57 +251,7 @@ Route::middleware(['admin', 'admin.tenant.select'])
                 })
                     ->middleware('module.permission:ai,view')
                     ->name('providers');
-
-                // SEO AI Center
-                Route::get('/seo', function() {
-                    // SEO kategorisindeki feature'ları getir
-                    $seoFeatures = \Modules\AI\App\Models\AIFeature::with(['category'])
-                        ->whereHas('category', function($query) {
-                            $query->where('ai_feature_categories.title', 'SEO & Marketing')
-                                  ->where('ai_feature_categories.is_active', true);
-                        })
-                        ->where('ai_features.status', 'active')
-                        ->orderBy('complexity_level')
-                        ->get()
-                        ->groupBy(function($feature) {
-                            return $feature->category->title ?? 'other';
-                        });
-
-                    $categoryNames = [
-                        'SEO & Marketing' => 'SEO & Pazarlama Araçları'
-                    ];
-
-                    // Token durumunu al
-                    $tokenStatus = [
-                        'remaining' => ai_get_credit_balance() ?? 1000,
-                        'provider' => ai_get_active_provider_name() ?? 'DeepSeek',
-                        'provider_active' => true
-                    ];
-
-                    return view('ai::admin.seo.prowess', compact('seoFeatures', 'categoryNames', 'tokenStatus'));
-                })
-                    ->middleware('module.permission:ai,view')
-                    ->name('seo.prowess');
                     
-                // AI Provider Update
-                Route::post('/providers/{provider}/update', function(\Modules\AI\App\Models\AIProvider $provider, \Illuminate\Http\Request $request) {
-                    $data = $request->only(['is_active', 'is_default', 'priority', 'api_key']);
-                    
-                    // Boolean değerleri düzelt
-                    $data['is_active'] = $request->has('is_active') || $request->boolean('is_active');
-                    $data['is_default'] = $request->has('is_default') || $request->boolean('is_default');
-                    
-                    $provider->update($data);
-                    
-                    // AJAX mi normal request mi kontrol et
-                    if ($request->expectsJson()) {
-                        return response()->json(['success' => true, 'message' => 'Provider güncellendi!']);
-                    }
-                    
-                    return redirect()->route('admin.ai.providers')->with('success', 'Provider güncellendi!');
-                })
-                    ->middleware('module.permission:ai,update')
-                    ->name('providers.update');
 
                 // AI Features Test API
                 Route::post('/test-feature', function(\Illuminate\Http\Request $request) {
@@ -868,6 +809,136 @@ Route::middleware(['admin', 'admin.tenant.select'])
                 // Analytics Admin Pages
                 Route::prefix('analytics')->name('analytics.')->group(function() {
                     Route::get('/dashboard', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'index'])->name('dashboard');
+                });
+                
+                // PHASE 4: Model Credit Rate Management Pages
+                Route::prefix("credit-rates")->name("credit-rates.")->group(function() {
+                    // Ana model credit rate yönetim sayfası
+                    Route::get("/", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "index"])->name("index");
+                    
+                    // Credit rate düzenleme sayfası  
+                    Route::get("/manage/{providerId}/{modelName?}", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "manage"])->name("manage");
+                    
+                    // Bulk credit rate import/export
+                    Route::get("/import", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "importPage"])->name("import");
+                    Route::post("/import", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "processImport"])->name("import.process");
+                    Route::get("/export", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "export"])->name("export");
+                    
+                    // Credit calculator dashboard
+                    Route::get("/calculator", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "calculator"])->name("calculator");
+                    
+                    // Model performance analytics
+                    Route::get("/analytics", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "analytics"])->name("analytics");
+                    
+                    // API Endpoints for AJAX calls
+                    Route::prefix("api")->name("api.")->group(function() {
+                        // Get credit rates list for DataTable (manage sayfası için)
+                        Route::get("/index", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "apiIndex"])->name("index");
+                        
+                        // Get providers with models
+                        Route::get("/providers-models", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "getProvidersWithModels"])->name("providers-models");
+                        
+                        // Get models for specific provider
+                        Route::get("/provider/{providerId}/models", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "getProviderModels"])->name("provider-models");
+                        
+                        // Calculate credit cost
+                        Route::get("/calculate-cost", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "calculateCreditCost"])->name("calculate-cost");
+                        
+                        // CRUD operations
+                        Route::post("/store", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "store"])->name("store");
+                        Route::put("/{id}", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "update"])->name("update");
+                        Route::delete("/{id}", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "destroy"])->name("destroy");
+                    });
+                    
+                // Admin Compare Models API endpoint (calculator sayfası için)
+                Route::post('/compare-models', [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, 'compareModels'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('compare.models');
+                });
+                
+                // PHASE 5: Credit Warning Management Pages
+                Route::prefix("credit-warnings")->name("credit-warnings.")->group(function() {
+                    // Ana credit warning yönetim sayfası
+                    Route::get("/", [\Modules\AI\App\Http\Controllers\Admin\CreditWarningController::class, "index"])->name("index");
+                    
+                    // Credit warning konfigürasyon sayfası  
+                    Route::get("/configuration", [\Modules\AI\App\Http\Controllers\Admin\CreditWarningController::class, "configuration"])->name("configuration");
+                    Route::post("/configuration", [\Modules\AI\App\Http\Controllers\Admin\CreditWarningController::class, "updateConfiguration"])->name("configuration.update");
+                    
+                    // Credit warning test sayfası
+                    Route::get("/test", [\Modules\AI\App\Http\Controllers\Admin\CreditWarningController::class, "test"])->name("test");
+                    Route::post("/test", [\Modules\AI\App\Http\Controllers\Admin\CreditWarningController::class, "runTest"])->name("test.run");
+                    
+                    // Credit warning analytics
+                    Route::get("/analytics", [\Modules\AI\App\Http\Controllers\Admin\CreditWarningController::class, "analytics"])->name("analytics");
+                });
+                
+                // PHASE 6: Silent Fallback Management Pages
+                Route::prefix("silent-fallback")->name("silent-fallback.")->group(function() {
+                    // Ana silent fallback yönetim sayfası
+                    Route::get("/", [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, "index"])->name("index");
+                    
+                    // Silent fallback konfigürasyon sayfası  
+                    Route::get("/configuration", [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, "configuration"])->name("configuration");
+                    
+                    // Silent fallback test sayfası
+                    Route::post("/test", [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, "test"])->name("test");
+                    
+                    // Silent fallback analytics
+                    Route::get("/analytics", [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, "analytics"])->name("analytics");
+                    
+                    // Clear statistics
+                    Route::post("/clear-stats", [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, "clearStatistics"])->name("clear-stats");
+                });
+                
+                // PHASE 7: Central Fallback Management Pages
+                Route::prefix("central-fallback")->name("central-fallback.")->group(function() {
+                    // Ana central fallback yönetim sayfası
+                    Route::get("/", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "index"])->name("index");
+                    
+                    // Central fallback konfigürasyon sayfası  
+                    Route::get("/configuration", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "configuration"])->name("configuration");
+                    Route::post("/configuration", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "updateConfiguration"])->name("configuration.update");
+                    
+                    // Central fallback test sayfası
+                    Route::post("/test", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "test"])->name("test");
+                    
+                    // Central fallback statistics
+                    Route::get("/statistics", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "statistics"])->name("statistics");
+                    
+                    // Model recommendations
+                    Route::post("/model-recommendations", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "getModelRecommendations"])->name("model-recommendations");
+                    
+                    // Reset failures
+                    Route::post("/reset-failures", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "resetFailures"])->name("reset-failures");
+                    
+                    // Clear statistics
+                    Route::post("/clear-statistics", [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, "clearStatistics"])->name("clear-statistics");
+                });
+                
+                // PHASE 8: Model Credit Rate Management Pages
+                Route::prefix("model-credit-rates")->name("model-credit-rates.")->group(function() {
+                    // Ana model credit rate yönetim sayfası
+                    Route::get("/", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "index"])->name("index");
+                    
+                    // Model credit rate oluşturma/düzenleme sayfası
+                    Route::get("/create", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "create"])->name("create");
+                    Route::post("/", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "store"])->name("store");
+                    Route::get("/{id}/edit", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "edit"])->name("edit");
+                    Route::put("/{id}", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "update"])->name("update");
+                    Route::delete("/{id}", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "destroy"])->name("destroy");
+                    
+                    // Bulk operations
+                    Route::post("/bulk-update", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "bulkUpdate"])->name("bulk-update");
+                    Route::post("/bulk-delete", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "bulkDelete"])->name("bulk-delete");
+                    
+                    // Import/Export
+                    Route::get("/export", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "export"])->name("export");
+                    Route::post("/import", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "import"])->name("import");
+                    
+                    // Model specific operations
+                    Route::post("/sync-models", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "syncModels"])->name("sync-models");
+                    Route::get("/model-info/{model}", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "getModelInfo"])->name("model-info");
                 });
             });
     });

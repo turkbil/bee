@@ -6,6 +6,33 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Middleware\InitializeTenancy;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
 
+// Tenant dilleri API endpoint'i - Basitleştirilmiş auth
+Route::middleware(['web', 'auth', 'tenant'])->get('/admin/api/tenant-languages', function () {
+    try {
+        $languages = TenantLanguage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get(['code', 'name', 'flag'])
+            ->map(function ($language) {
+                return [
+                    'code' => $language->code,
+                    'name' => $language->name,
+                    'flag' => $language->flag ?? getFlagForLanguage($language->code)
+                ];
+            })
+            ->toArray();
+
+        return response()->json([
+            'success' => true,
+            'languages' => $languages
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to load tenant languages: ' . $e->getMessage()
+        ], 500);
+    }
+});
+
 // Cache temizleme endpoint'i
 Route::middleware(['admin', 'tenant'])->post('/admin/cache/clear', function () {
     try {
@@ -143,35 +170,41 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
     });
     
     // API endpoints for AI Translation Modal
-    Route::group(['prefix' => 'api'], function () {
-        Route::get('/tenant-languages', function () {
-            try {
-                $languages = TenantLanguage::where('is_active', true)
-                    ->orderBy('sort_order')
-                    ->select('code', 'name', 'native_name')
-                    ->get()
-                    ->map(function ($lang) {
-                        return [
-                            'code' => $lang->code,
-                            'name' => $lang->name,
-                            'native_name' => $lang->native_name,
-                            'flag' => null // Flag henüz eklenmedi
-                        ];
-                    });
-                
-                return response()->json($languages);
-            } catch (\Exception $e) {
-                \Log::error('Tenant languages API error: ' . $e->getMessage());
-                
-                // Fallback with basic languages
-                return response()->json([
-                    ['code' => 'tr', 'name' => 'Turkish', 'native_name' => 'Türkçe', 'flag' => null],
-                    ['code' => 'en', 'name' => 'English', 'native_name' => 'English', 'flag' => null],
-                    ['code' => 'ar', 'name' => 'Arabic', 'native_name' => 'العربية', 'flag' => null],
-                ]);
-            }
-        })->name('api.tenant-languages');
-    });
+    Route::get('/api/tenant-languages', function () {
+        try {
+            $languages = TenantLanguage::where('is_active', true)
+                ->orderBy('sort_order')
+                ->select('code', 'name', 'native_name')
+                ->get()
+                ->map(function ($lang) {
+                    return [
+                        'code' => $lang->code,
+                        'name' => $lang->name,
+                        'native_name' => $lang->native_name,
+                        'flag' => getFlagForLanguage($lang->code)
+                    ];
+                });
+            
+            return response()->json([
+                'success' => true,
+                'languages' => $languages->toArray()
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Tenant languages API error: ' . $e->getMessage());
+            
+            // Fallback with basic languages
+            $fallbackLanguages = [
+                ['code' => 'tr', 'name' => 'Turkish', 'native_name' => 'Türkçe', 'flag' => '🇹🇷'],
+                ['code' => 'en', 'name' => 'English', 'native_name' => 'English', 'flag' => '🇬🇧'],
+                ['code' => 'ar', 'name' => 'Arabic', 'native_name' => 'العربية', 'flag' => '🇸🇦'],
+            ];
+            
+            return response()->json([
+                'success' => true,
+                'languages' => $fallbackLanguages
+            ]);
+        }
+    })->name('api.tenant-languages');
     
     // SEO Management Routes - Artık SeoManagement modülünde
     
@@ -298,6 +331,65 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         return redirect()->back();
     })->name('language.switch');
     
+    // Studio AJAX Language Switch - POST için
+    Route::post('/language/switch', function () {
+        $locale = request()->input('language');
+        $type = request()->input('type', 'admin');
+        
+        \Log::info('🔄 STUDIO DİL DEĞİŞİMİ BAŞLADI', [
+            'requested_language' => $locale,
+            'type' => $type,
+            'current_user_id' => auth()->id(),
+            'current_url' => request()->url()
+        ]);
+        
+        // Geçerli dilleri kontrol et
+        $validLanguages = [];
+        try {
+            $validLanguages = \DB::table('tenant_languages')
+                ->where('is_active', true)
+                ->pluck('code')
+                ->toArray();
+        } catch (\Exception $e) {
+            $validLanguages = ['tr']; // Fallback
+            \Log::warning('tenant_languages tablosu bulunamadı, fallback kullanılıyor', ['error' => $e->getMessage()]);
+        }
+        
+        // Geçerlik kontrolü
+        if (!in_array($locale, $validLanguages) || !auth()->check()) {
+            \Log::warning('❌ Geçersiz dil kodu veya giriş yapmamış', ['requested' => $locale, 'valid' => $validLanguages, 'authenticated' => auth()->check()]);
+            return response()->json(['success' => false, 'message' => 'Geçersiz dil kodu'], 400);
+        }
+        
+        // Session güncelle
+        session(['admin_locale' => $locale]);
+        app()->setLocale($locale);
+        
+        \Log::info('✅ Studio admin locale güncellendi', [
+            'new_admin_locale' => $locale,
+            'session_updated' => true
+        ]);
+        
+        // Cache temizleme
+        try {
+            $tenant = tenant();
+            if ($tenant) {
+                $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
+                \Cache::tags([$tenantTag])->flush();
+                \Log::info('🧹 Tenant cache temizlendi', ['tenant_id' => $tenant->id]);
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Studio cache clear error: ' . $e->getMessage());
+        }
+        
+        return response()->json([
+            'success' => true, 
+            'message' => 'Dil başarıyla değiştirildi',
+            'language' => $locale,
+            'reload_required' => true
+        ]);
+    })->name('language.switch.ajax');
+
     // AdminLanguageSwitcher için alias route - SADECE admin_locale değişir
     Route::get('/admin-language/{locale}', function ($locale) {
         \Log::info('🔄 ADMİN DİL DEĞİŞİMİ BAŞLADI', [
@@ -417,4 +509,60 @@ Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin/debu
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz
 Route::middleware(['web', 'auth', InitializeTenancy::class, 'admin.access'])->prefix('admin')->name('admin.')->group(function () {
     // Burada spesifik admin kontrolleri gerektiren rotaları tanımlayabilirsiniz
+});
+
+// AI SILENT FALLBACK ROUTES
+Route::middleware(['admin', 'tenant'])->prefix('admin/ai/silent-fallback')->name('admin.ai.silent-fallback.')->group(function () {
+    Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, 'index'])->name('index');
+    Route::get('/configuration', [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, 'configuration'])->name('configuration');
+    Route::post('/test', [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, 'test'])->name('test');
+    Route::post('/clear-stats', [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, 'clearStats'])->name('clear-stats');
+    Route::get('/analytics', [\Modules\AI\App\Http\Controllers\Admin\SilentFallbackController::class, 'analytics'])->name('analytics');
+});
+
+// AI CENTRAL FALLBACK ROUTES
+Route::middleware(['admin', 'tenant'])->prefix('admin/ai/central-fallback')->name('admin.ai.central-fallback.')->group(function () {
+    Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'index'])->name('index');
+    Route::get('/configuration', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'configuration'])->name('configuration');
+    Route::post('/configuration', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'updateConfiguration'])->name('update-configuration');
+    Route::post('/test', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'test'])->name('test');
+    Route::get('/statistics', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'statistics'])->name('statistics');
+    Route::post('/model-recommendations', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'modelRecommendations'])->name('model-recommendations');
+    Route::post('/reset-failures', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'resetProviderFailures'])->name('reset-failures');
+    Route::post('/clear-statistics', [\Modules\AI\App\Http\Controllers\Admin\CentralFallbackController::class, 'clearStatistics'])->name('clear-statistics');
+});
+
+// Universal Entity mapping endpoint for translation system
+Route::middleware(['web', 'tenant'])->get('/admin/api/entity-mapping', function () {
+    try {
+        $mapping = \App\Services\TranslationModuleRegistry::getEntityMapping();
+        $stats = \App\Services\TranslationModuleRegistry::getStats();
+
+        return response()->json([
+            'success' => true,
+            'mapping' => $mapping,
+            'stats' => $stats,
+            'cache_status' => 'registry_based'
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('🚨 Entity mapping registry error', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        // Fallback to static mapping
+        $fallbackMapping = [
+            'portfolio_category' => 'portfolio-category',
+            'portfolio' => 'portfolio',
+            'announcement' => 'announcement',
+            'page' => 'page'
+        ];
+        
+        return response()->json([
+            'success' => true,
+            'mapping' => $fallbackMapping,
+            'fallback' => true,
+            'error' => $e->getMessage()
+        ]);
+    }
 });

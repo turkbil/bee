@@ -88,7 +88,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <span class="badge bg-primary">{{ $provider->priority }}</span>
+                                                <span class="badge badge-primary">{{ $provider->priority }}</span>
                                             </td>
                                             <td>
                                                 @if($provider->is_default)

@@ -1,28 +1,21 @@
 <div>
+    @include('page::admin.helper')
     @include('admin.partials.error_message')
 
     <form method="post" wire:submit.prevent="save">
         <div class="card">
-            {{-- Action Buttons Row --}}
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div class="d-flex gap-2">
-                    {{-- Studio Edit Button --}}
-                    @if ($studioEnabled && $pageId)
-                        <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $pageId]) }}"
-                            target="_blank" class="btn btn-outline-primary btn-sm">
-                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i>{{ __('page::admin.studio.editor') }}
-                        </a>
-                    @endif
-
-                    {{-- Livewire Based Translation Button --}}
-                    <button type="button" class="btn btn-outline-info btn-sm"
-                        onclick="openPageTranslationModal()">
-                        <i class="fas fa-sync-alt me-1"></i>Hızlı Çeviri
-                    </button>
-                </div>
-            </div>
             
             <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="page_active_tab">
+                {{-- Studio Edit Button --}}
+                @if ($studioEnabled && $pageId)
+                    <li class="nav-item ms-3">
+                        <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $pageId]) }}"
+                            target="_blank" class="btn btn-outline-primary" style="padding: 0.20rem 0.75rem; margin-top: 5px;">
+                            <i class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('page::admin.studio.editor') }}
+                        </a>
+                    </li>
+                @endif
+
                 <x-manage.language.switcher :current-language="$currentLanguage" />
             </x-tab-system>
             <div class="card-body">
@@ -96,6 +89,7 @@ $langName =
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
+
                         <!-- Aktif/Pasif - sadece bir kere -->
                         <div class="mb-3">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
@@ -142,192 +136,49 @@ $langName =
         </div>
     </form>
 
-    {{-- Page Translation Modal --}}
-    <div class="modal fade" id="pageTranslationModal" tabindex="-1" wire:ignore.self>
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-language me-2"></i>Sayfa İçeriği Çeviri
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label">Kaynak Dil</label>
-                            <select id="translationSourceLang" class="form-select mb-3">
-                                @foreach($availableLanguages as $lang)
-                                    <option value="{{ $lang }}" {{ $lang === $currentLanguage ? 'selected' : '' }}>
-                                        {{ strtoupper($lang) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Hedef Diller</label>
-                            <div class="border rounded p-2" style="max-height: 150px; overflow-y: auto;">
-                                @foreach($availableLanguages as $lang)
-                                    <div class="form-check">
-                                        <input class="form-check-input translation-target-lang" 
-                                               type="checkbox" 
-                                               value="{{ $lang }}" 
-                                               id="target_{{ $lang }}">
-                                        <label class="form-check-label" for="target_{{ $lang }}">
-                                            {{ strtoupper($lang) }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <label class="form-label">Çevrilecek Alanlar</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="translateTitle" checked>
-                                    <label class="form-check-label" for="translateTitle">Başlık</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="translateBody" checked>
-                                    <label class="form-check-label" for="translateBody">İçerik</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="overwriteExisting">
-                                    <label class="form-check-label" for="overwriteExisting">
-                                        Mevcut çevirilerin üzerine yaz
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="btn btn-primary" onclick="startPageTranslation()">
-                        <i class="fas fa-sync-alt me-2"></i>Çeviriyi Başlat
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+ </div>
 
 @push('scripts')
     <script>
         window.currentPageId = {{ $jsVariables['currentPageId'] ?? 'null' }};
         window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
         
-        // Page Translation Functions
-        function openPageTranslationModal() {
-            // Wait for DOM and Tabler to be ready
-            if (document.readyState !== 'complete') {
-                window.addEventListener('load', openPageTranslationModal);
-                return;
-            }
-            
-            const modalElement = document.getElementById('pageTranslationModal');
-            if (!modalElement) {
-                console.error('Translation modal element not found');
-                return;
-            }
-            
-            // Try multiple Bootstrap/Tabler modal approaches
-            let modal;
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                modal = new bootstrap.Modal(modalElement);
-            } else if (typeof window.bootstrap !== 'undefined' && window.bootstrap.Modal) {
-                modal = new window.bootstrap.Modal(modalElement);
-            } else {
-                // Direct modal show as last resort
-                modalElement.classList.add('show');
-                modalElement.style.display = 'block';
-                document.body.classList.add('modal-open');
-                
-                // Add backdrop
-                const backdrop = document.createElement('div');
-                backdrop.className = 'modal-backdrop fade show';
-                document.body.appendChild(backdrop);
-                
-                console.warn('Using manual modal display');
-                return;
-            }
-            
-            // Kaynak dili değiştirdiğinde hedef dilleri güncelle
-            document.getElementById('translationSourceLang').addEventListener('change', function() {
-                const sourceLang = this.value;
-                document.querySelectorAll('.translation-target-lang').forEach(checkbox => {
-                    if (checkbox.value === sourceLang) {
-                        checkbox.checked = false;
-                        checkbox.disabled = true;
-                        checkbox.closest('.form-check').style.opacity = '0.5';
-                    } else {
-                        checkbox.disabled = false;
-                        checkbox.closest('.form-check').style.opacity = '1';
-                    }
-                });
-            });
-            
-            // İlk yüklemede kaynak dili tetikle
-            document.getElementById('translationSourceLang').dispatchEvent(new Event('change'));
-            
-            modal.show();
-        }
+        // Debug: currentPageId değerini logla
+        console.log('🔍 Page ID Debug:', {
+            currentPageId: window.currentPageId,
+            pageIdFromJsVars: {{ $jsVariables['currentPageId'] ?? 'null' }},
+            pageIdFromLivewire: {{ $pageId ?? 'null' }}
+        });
         
-        function startPageTranslation() {
-            const sourceLang = document.getElementById('translationSourceLang').value;
-            const targetLangs = [];
-            const fields = [];
-            
-            // Hedef dilleri topla
-            document.querySelectorAll('.translation-target-lang:checked').forEach(checkbox => {
-                targetLangs.push(checkbox.value);
+        
+
+        // 🔥 ÇEVİRİ SONRASI REFRESH EVENT LİSTENER
+        document.addEventListener('livewire:initialized', () => {
+            // Component refresh event'ini dinle
+            Livewire.on('refreshComponent', () => {
+                console.log('🔄 Çeviri tamamlandı - component yenileniyor...');
+                Livewire.components.getByName('page-manage-component')[0].$refresh();
             });
             
-            // Çevrilecek alanları topla
-            if (document.getElementById('translateTitle').checked) fields.push('title');
-            if (document.getElementById('translateBody').checked) fields.push('body');
-            
-            const overwriteExisting = document.getElementById('overwriteExisting').checked;
-            
-            if (targetLangs.length === 0) {
-                alert('Lütfen en az bir hedef dil seçin');
-                return;
-            }
-            
-            if (fields.length === 0) {
-                alert('Lütfen en az bir alan seçin');
-                return;
-            }
-            
-            // Loading göster
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Çevriliyor...';
-            
-            // Livewire metodunu çağır
-            @this.call('translateContent', {
-                sourceLanguage: sourceLang,
-                targetLanguages: targetLangs,
-                fields: fields,
-                overwriteExisting: overwriteExisting
-            }).then(() => {
-                // Modal'ı kapat
-                bootstrap.Modal.getInstance(document.getElementById('pageTranslationModal')).hide();
-                
-                // Butonu eski haline getir
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }).catch(error => {
-                console.error('Çeviri hatası:', error);
-                btn.disabled = false;
-                btn.innerHTML = originalText;
+            // TinyMCE editör refresh event'ini dinle
+            Livewire.on('refresh-editors', () => {
+                console.log('📝 TinyMCE editörleri yenileniyor...');
+                setTimeout(() => {
+                    // TinyMCE editörlerini yeniden başlat
+                    if (typeof tinymce !== 'undefined') {
+                        tinymce.editors.forEach(editor => {
+                            if (editor && editor.id) {
+                                try {
+                                    editor.setContent(editor.getContent());
+                                    console.log(`✅ TinyMCE editor yenilendi: ${editor.id}`);
+                                } catch (e) {
+                                    console.warn(`⚠️ TinyMCE editor yenileme hatası: ${editor.id}`, e);
+                                }
+                            }
+                        });
+                    }
+                }, 500); // Kısa gecikme ekle
             });
-        }
+        });
     </script>
 @endpush

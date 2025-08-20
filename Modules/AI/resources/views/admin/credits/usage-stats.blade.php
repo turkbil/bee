@@ -144,7 +144,7 @@
                     <div class="mb-3">
                         <div class="row align-items-center mb-2">
                             <div class="col-auto">
-                                <span class="badge bg-primary">{{ $provider['name'] }}</span>
+                                <span class="badge badge-primary">{{ $provider['name'] }}</span>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm">

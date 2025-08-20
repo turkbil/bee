@@ -175,6 +175,21 @@ class AIResponseRepository
         $inputText = $params['input_text'] ?? '';
         $universalInputs = $params['universal_inputs'] ?? [];
 
+        // TENANT CONTEXT'İ ZORLA AYARLA - KRİTİK FİX
+        if (!tenant('id') && auth()->check()) {
+            $user = auth()->user();
+            if ($user->tenant_id) {
+                $tenant = \App\Models\Tenant::find($user->tenant_id);
+                if ($tenant) {
+                    tenancy()->initialize($tenant);
+                    Log::info('🔧 Prowess Test: Tenant context ayarlandı', [
+                        'tenant_id' => $tenant->id,
+                        'user_id' => $user->id
+                    ]);
+                }
+            }
+        }
+
         if (!$featureId) {
             return [
                 'success' => false,

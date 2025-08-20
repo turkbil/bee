@@ -440,3 +440,155 @@ if (!function_exists('ai_format_response')) {
         }
     }
 }
+
+if (!function_exists('getFlagForLanguage')) {
+    /**
+     * Dil koduna göre flag emoji döndürür
+     * 
+     * @param string $languageCode
+     * @return string Flag emoji
+     */
+    function getFlagForLanguage(string $languageCode): string
+    {
+        $flags = [
+            'tr' => '🇹🇷',
+            'en' => '🇬🇧', 
+            'ar' => '🇸🇦',
+            'da' => '🇩🇰',
+            'sq' => '🇦🇱',
+            'de' => '🇩🇪',
+            'fr' => '🇫🇷',
+            'es' => '🇪🇸',
+            'it' => '🇮🇹',
+            'pt' => '🇵🇹',
+            'ru' => '🇷🇺',
+            'zh' => '🇨🇳',
+            'ja' => '🇯🇵',
+            'ko' => '🇰🇷',
+            'nl' => '🇳🇱',
+            'pl' => '🇵🇱',
+            'cs' => '🇨🇿',
+            'hu' => '🇭🇺',
+            'ro' => '🇷🇴',
+            'bg' => '🇧🇬',
+            'hr' => '🇭🇷',
+            'sk' => '🇸🇰',
+            'sl' => '🇸🇮',
+            'et' => '🇪🇪',
+            'lv' => '🇱🇻',
+            'lt' => '🇱🇹',
+            'fi' => '🇫🇮',
+            'sv' => '🇸🇪',
+            'no' => '🇳🇴',
+            'is' => '🇮🇸',
+            'ga' => '🇮🇪',
+            'mt' => '🇲🇹',
+            'cy' => '🏴󠁧󠁢󠁷󠁬󠁳󠁿',
+            'eu' => '🇪🇸', // Basque
+            'ca' => '🇪🇸', // Catalan
+            'gl' => '🇪🇸', // Galician
+            'he' => '🇮🇱',
+            'hi' => '🇮🇳',
+            'bn' => '🇧🇩',
+            'ur' => '🇵🇰',
+            'fa' => '🇮🇷',
+            'th' => '🇹🇭',
+            'vi' => '🇻🇳',
+            'id' => '🇮🇩',
+            'ms' => '🇲🇾',
+            'tl' => '🇵🇭', // Filipino
+            'sw' => '🇰🇪', // Swahili
+            'am' => '🇪🇹', // Amharic
+            'yo' => '🇳🇬', // Yoruba
+            'ig' => '🇳🇬', // Igbo
+            'ha' => '🇳🇬', // Hausa
+            'zu' => '🇿🇦', // Zulu
+            'af' => '🇿🇦', // Afrikaans
+            'xh' => '🇿🇦', // Xhosa
+        ];
+        
+        return $flags[strtolower($languageCode)] ?? '🌐';
+    }
+}
+
+// 💰 CLAUDE_AI.MD UYUMLU KREDİ SİSTEMİ
+if (!function_exists('ai_deduct_credits_properly')) {
+    /**
+     * Doğru kredi düşürme fonksiyonu - claude_ai.md tam uyumlu
+     */
+    function ai_deduct_credits_properly(
+        int $inputTokens,
+        int $outputTokens, 
+        string $providerName,
+        string $model,
+        array $metadata = []
+    ): float {
+        try {
+            // Calculate credits first
+            $credits = ai_calculate_model_credits($inputTokens, $outputTokens, $providerName, $model);
+            
+            // Get tenant with fallback
+            $tenant = tenant();
+            if (!$tenant) {
+                // Fallback to tenant ID 1 for CLI/testing context
+                $tenant = \App\Models\Tenant::find(1);
+                if (!$tenant) {
+                    Log::warning('No tenant found for credit deduction');
+                    return 0;
+                }
+            }
+            
+            // Check if tenant has enough credits
+            if ($tenant->credits < $credits) {
+                Log::warning('Insufficient credits', [
+                    'required' => $credits,
+                    'available' => $tenant->credits
+                ]);
+                // Still process but log warning
+            }
+            
+            // Deduct credits
+            $tenant->credits -= $credits;
+            $tenant->save();
+            
+            // Record transaction in new ai_credit_transactions table
+            DB::table('ai_credit_transactions')->insert([
+                'tenant_id' => $tenant->id,
+                'user_id' => auth()->id() ?? 1,
+                'provider' => $providerName,
+                'model' => $model,
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
+                'total_tokens' => $inputTokens + $outputTokens,
+                'credits_used' => $credits,
+                'cost_per_token' => $credits / ($inputTokens + $outputTokens),
+                'transaction_type' => $metadata['transaction_type'] ?? 'ai_usage',
+                'feature_name' => $metadata['feature'] ?? $metadata['source'] ?? 'ai_feature',
+                'metadata' => json_encode($metadata),
+                'processed_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+            
+            Log::info('💰 Credits deducted successfully', [
+                'tenant_id' => $tenant->id,
+                'credits_used' => $credits,
+                'remaining_credits' => $tenant->credits,
+                'provider' => $providerName,
+                'model' => $model,
+                'tokens' => $inputTokens + $outputTokens
+            ]);
+            
+            return $credits;
+            
+        } catch (\Exception $e) {
+            Log::error('❌ Credit deduction failed', [
+                'error' => $e->getMessage(),
+                'provider' => $providerName,
+                'model' => $model,
+                'tokens' => $inputTokens + $outputTokens
+            ]);
+            return 0;
+        }
+    }
+}

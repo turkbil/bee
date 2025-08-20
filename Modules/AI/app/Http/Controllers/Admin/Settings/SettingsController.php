@@ -21,7 +21,9 @@ class SettingsController extends Controller
     public function api()
     {
         // Artık sadece ai_providers tablosunu kullanıyoruz
-        $providers = AIProvider::orderBy('priority', 'desc')->get();
+        $providers = AIProvider::with(['modelCreditRates' => function($query) {
+            $query->where('is_active', true);
+        }])->orderBy('priority', 'desc')->get();
         
         // Global config'den varsayılan ayarları al
         $globalSettings = [
@@ -443,8 +445,8 @@ class SettingsController extends Controller
             'total_tokens' => $tokenStats['total_purchased'],
             'daily_usage' => ai_get_total_used($tenantId), // Geçici - daha sonra daily hesaplama eklenecek
             'monthly_usage' => $tokenStats['total_used'],
-            'provider' => config('ai.default_provider', 'deepseek'),
-            'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
+            'provider' => \Modules\AI\App\Models\AIProvider::getDefault()?->name ?? 'openai',
+            'provider_active' => \Modules\AI\App\Models\AIProvider::getDefault()?->is_active ?? true
         ];
         
         // AI özellikleri ve kategorileri
@@ -625,8 +627,8 @@ class SettingsController extends Controller
             'total_tokens' => $tokenStats['total_purchased'],
             'daily_usage' => ai_get_total_used($tenantId), // Geçici - daha sonra daily hesaplama eklenecek
             'monthly_usage' => $tokenStats['total_used'],
-            'provider' => config('ai.default_provider', 'deepseek'),
-            'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
+            'provider' => \Modules\AI\App\Models\AIProvider::getDefault()?->name ?? 'openai',
+            'provider_active' => \Modules\AI\App\Models\AIProvider::getDefault()?->is_active ?? true
         ];
         
         // Basitleştirilmiş özellik listesi (adminler için)

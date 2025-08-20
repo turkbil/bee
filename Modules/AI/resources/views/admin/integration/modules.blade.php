@@ -14,11 +14,11 @@
             <div class="col-auto ms-auto d-print-none">
                 <div class="btn-list">
                     <button type="button" class="btn btn-success" onclick="saveAllChanges()">
-                        <i class="ti ti-device-floppy"></i>
+                        <i class="fa-solid fa-floppy-disk"></i>
                         Tüm Değişiklikleri Kaydet
                     </button>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addIntegrationModal">
-                        <i class="ti ti-plus"></i>
+                        <i class="fa-solid fa-plus"></i>
                         Yeni Entegrasyon
                     </button>
                 </div>
@@ -41,7 +41,7 @@
                             <div class="card-status-start bg-primary"></div>
                             <div class="card-header">
                                 <div class="card-title d-flex align-items-center">
-                                    <i class="ti ti-file-text me-2 text-primary"></i>
+                                    <i class="fa-solid fa-file-text me-2 text-primary"></i>
                                     <strong>Page Modülü</strong>
                                 </div>
                                 <div class="card-actions">
@@ -115,13 +115,13 @@
                                 <div class="row align-items-center">
                                     <div class="col">
                                         <button class="btn btn-sm btn-outline-primary" onclick="configureModule('page')">
-                                            <i class="ti ti-settings"></i>
+                                            <i class="fa-solid fa-gear"></i>
                                             Yapılandır
                                         </button>
                                     </div>
                                     <div class="col-auto">
                                         <button class="btn btn-sm btn-outline-success" onclick="testModule('page')">
-                                            <i class="ti ti-play"></i>
+                                            <i class="fa-solid fa-play"></i>
                                             Test Et
                                         </button>
                                     </div>
@@ -136,7 +136,7 @@
                             <div class="card-status-start bg-success"></div>
                             <div class="card-header">
                                 <div class="card-title d-flex align-items-center">
-                                    <i class="ti ti-briefcase me-2 text-success"></i>
+                                    <i class="fa-solid fa-briefcase me-2 text-success"></i>
                                     <strong>Portfolio Modülü</strong>
                                 </div>
                                 <div class="card-actions">
@@ -210,13 +210,13 @@
                                 <div class="row align-items-center">
                                     <div class="col">
                                         <button class="btn btn-sm btn-outline-primary" onclick="configureModule('portfolio')">
-                                            <i class="ti ti-settings"></i>
+                                            <i class="fa-solid fa-gear"></i>
                                             Yapılandır
                                         </button>
                                     </div>
                                     <div class="col-auto">
                                         <button class="btn btn-sm btn-outline-success" onclick="testModule('portfolio')">
-                                            <i class="ti ti-play"></i>
+                                            <i class="fa-solid fa-play"></i>
                                             Test Et
                                         </button>
                                     </div>
@@ -231,7 +231,7 @@
                             <div class="card-status-start bg-warning"></div>
                             <div class="card-header">
                                 <div class="card-title d-flex align-items-center">
-                                    <i class="ti ti-speakerphone me-2 text-warning"></i>
+                                    <i class="fa-solid fa-bullhorn me-2 text-warning"></i>
                                     <strong>Announcement Modülü</strong>
                                 </div>
                                 <div class="card-actions">
@@ -293,7 +293,7 @@
                                 <div class="row align-items-center">
                                     <div class="col">
                                         <button class="btn btn-sm btn-outline-primary" onclick="configureModule('announcement')" disabled>
-                                            <i class="ti ti-settings"></i>
+                                            <i class="fa-solid fa-gear"></i>
                                             Yapılandır
                                         </button>
                                     </div>

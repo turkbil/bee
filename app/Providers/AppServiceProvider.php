@@ -81,6 +81,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Livewire pagination views are published and customized in resources/views/vendor/livewire/
+        
         // Manual module translations registration
         $this->loadModuleTranslations();
         

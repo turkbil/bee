@@ -492,37 +492,32 @@ class AIFeaturesController extends Controller
     {
         $features = \Modules\AI\App\Models\AIFeature::where('status', 'active')
             ->where('show_in_examples', true)
-            ->with('category')
             ->orderBy('sort_order')
             ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy(function($feature) {
-                return $feature->category && is_object($feature->category) && isset($feature->category->slug) 
-                    ? $feature->category->slug 
-                    : 'uncategorized';
+                // Manuel kategori ilişkisi - relationship çalışmıyor
+                if ($feature->ai_feature_category_id) {
+                    $category = \Modules\AI\App\Models\AIFeatureCategory::where('ai_feature_category_id', $feature->ai_feature_category_id)->first();
+                    return $category ? $category->slug : 'uncategorized';
+                }
+                return 'uncategorized';
             });
 
-        $categoryNames = [
-            'content-creation' => 'İçerik Oluşturma',
-            'seo-tools' => 'SEO Araçları',
-            'marketing' => 'Pazarlama',
-            'web-editor' => 'Web Editör',
-            'content-analysis' => 'İçerik Analizi',
-            'creative' => 'Yaratıcı Tasarım',
-            'business' => 'İş Geliştirme',
-            'technical' => 'Teknik & Geliştirme',
-            'translation' => 'Çeviri & Lokalizasyon',
-            'education' => 'Eğitim',
-            'health' => 'Sağlık',
-            'legal' => 'Hukuk',
-            'finance' => 'Finans',
-            'travel' => 'Seyahat',
-            'food' => 'Yemek',
-            'sports' => 'Spor',
-            'technology' => 'Teknoloji',
-            'entertainment' => 'Eğlence',
-            'other' => 'Diğer'
-        ];
+        // Kategori isimlerini ai_feature_categories tablosundan al
+        $categoryNames = \Modules\AI\App\Models\AIFeatureCategory::where('is_active', true)
+            ->orderBy('order')
+            ->pluck('title', 'slug')
+            ->toArray();
+            
+        // Debug: Kategori-feature ilişkisini kontrol et
+        \Log::info('Prowess Debug:', [
+            'total_features' => $features->count(),
+            'grouped_features' => $features->mapWithKeys(function($group, $key) {
+                return [$key => $group->count()];
+            })->toArray(),
+            'category_names' => $categoryNames
+        ]);
 
         // Content length prompts'ları veritabanından çek
         // Content length prompts: Range 1-5 = Çok Kısa'dan Çok Detaylı'ya doğru

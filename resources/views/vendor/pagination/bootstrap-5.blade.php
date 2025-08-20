@@ -1,7 +1,7 @@
 @if ($paginator->hasPages())
-    <nav class="d-flex justify-items-center justify-content-between">
+    <nav class="d-flex justify-items-center justify-content-between mb-0">
         <div class="d-flex justify-content-between flex-fill d-sm-none">
-            <ul class="pagination">
+            <ul class="pagination mb-0 pb-0">
                 {{-- Previous Page Link --}}
                 @if ($paginator->onFirstPage())
                     <li class="page-item disabled" aria-disabled="true">
@@ -28,19 +28,15 @@
 
         <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
             <div>
-                <p class="small text-muted">
-                    {{ __('admin.pagination_showing') }}
-                    <span class="fw-semibold">{{ $paginator->firstItem() }}</span>
-                    {{ __('admin.pagination_to') }}
+                <p class="small text-muted mb-0 pb-0">
+                    Gösteriliyor <span class="fw-semibold">{{ $paginator->firstItem() }}</span> -
                     <span class="fw-semibold">{{ $paginator->lastItem() }}</span>
-                    {{ __('admin.pagination_of') }}
-                    <span class="fw-semibold">{{ $paginator->total() }}</span>
-                    {{ __('admin.pagination_results') }}
+                    arası, / <span class="fw-semibold">{{ $paginator->total() }}</span> sonuç
                 </p>
             </div>
 
             <div>
-                <ul class="pagination">
+                <ul class="pagination mb-0">
                     {{-- Previous Page Link --}}
                     @if ($paginator->onFirstPage())
                         <li class="page-item disabled" aria-disabled="true" aria-label="{{ __('admin.pagination_previous') }}">

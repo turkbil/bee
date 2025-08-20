@@ -53,7 +53,7 @@
         {{-- Error State --}}
         <div class="alert alert-danger">
             <div class="d-flex align-items-center">
-                <i class="ti ti-alert-circle me-2"></i>
+                <i class="fa-solid fa-exclamation-circle me-2"></i>
                 <div>
                     <h4 class="alert-title">Form Yüklenemedi</h4>
                     <div class="text-muted">{{ $errorMessage }}</div>
@@ -94,7 +94,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">
-                        <i class="ti ti-sparkles me-2"></i>
+                        <i class="fa-solid fa-sparkles me-2"></i>
                         AI Sonucu
                     </h4>
                 </div>
@@ -106,16 +106,16 @@
                 <div class="card-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="text-muted small">
-                            <i class="ti ti-clock me-1"></i>
+                            <i class="fa-solid fa-clock me-1"></i>
                             <span class="generation-time">-</span>
                         </div>
                         <div class="result-actions">
                             <button type="button" class="btn btn-outline-secondary btn-sm copy-result-btn">
-                                <i class="ti ti-copy me-1"></i>
+                                <i class="fa-solid fa-copy me-1"></i>
                                 Kopyala
                             </button>
                             <button type="button" class="btn btn-outline-primary btn-sm regenerate-btn">
-                                <i class="ti ti-refresh me-1"></i>
+                                <i class="fa-solid fa-rotate-right me-1"></i>
                                 Yeniden Üret
                             </button>
                         </div>
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const submitBtn = document.getElementById('submitFormBtn');
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="ti ti-sparkles me-1"></i><span class="submit-text">AI ile İşle</span>';
+                submitBtn.innerHTML = '<i class="fa-solid fa-sparkles me-1"></i><span class="submit-text">AI ile İşle</span>';
             }
         }
     };

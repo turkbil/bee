@@ -23,6 +23,12 @@ readonly class SeoMetaTagService
      */
     public function detectModel(): ?Model
     {
+        // Öncelikle view'dan share edilen model'i kontrol et
+        $sharedData = view()->getShared();
+        if (isset($sharedData['currentModel']) && $sharedData['currentModel'] instanceof Model) {
+            return $sharedData['currentModel'];
+        }
+        
         $route = Route::current();
         
         // Homepage kontrolü
@@ -418,7 +424,7 @@ readonly class SeoMetaTagService
                     
                     public function __get($name)
                     {
-                        if ($name === 'og_title' || $name === 'og_description') {
+                        if ($name === 'og_titles' || $name === 'og_descriptions') {
                             return $this->seoData[$name] ?? null;
                         }
                         if ($name === 'twitter_title' || $name === 'twitter_description') {
@@ -431,6 +437,30 @@ readonly class SeoMetaTagService
                             return $this->seoData[$name] ?? null;
                         }
                         return null;
+                    }
+                    
+                    public function hasDirectTitle(?string $locale = null): bool
+                    {
+                        $locale = $locale ?? $this->locale;
+                        return !empty($this->seoData['title'][$locale] ?? '');
+                    }
+                    
+                    public function getTitle(?string $locale = null): ?string
+                    {
+                        $locale = $locale ?? $this->locale;
+                        return $this->seoData['title'][$locale] ?? null;
+                    }
+                    
+                    public function hasDirectDescription(?string $locale = null): bool
+                    {
+                        $locale = $locale ?? $this->locale;
+                        return !empty($this->seoData['description'][$locale] ?? '');
+                    }
+                    
+                    public function getDescription(?string $locale = null): ?string
+                    {
+                        $locale = $locale ?? $this->locale;
+                        return $this->seoData['description'][$locale] ?? null;
                     }
                 };
             }
@@ -482,14 +512,22 @@ readonly class SeoMetaTagService
                 'title' => $siteName,
                 'description' => null,
                 'keywords' => null,
-                'og_title' => null,
-                'og_description' => null,
+                'canonical_url' => null,
+                'author' => null,
+                'publisher' => null,
+                'copyright' => null,
+                'og_titles' => null,
+                'og_descriptions' => null,
                 'og_image' => null,
                 'og_type' => 'website',
+                'og_locale' => null,
+                'og_site_name' => null,
                 'twitter_card' => 'summary',
                 'twitter_title' => null,
                 'twitter_description' => null,
                 'twitter_image' => null,
+                'twitter_site' => null,
+                'twitter_creator' => null,
                 'robots' => 'index, follow',
                 'schema' => null,
             ];
@@ -505,14 +543,27 @@ readonly class SeoMetaTagService
             }
             
             // 1. TITLE
-            if ($seoSetting && $seoTitle = $seoSetting->getTranslated('titles', $locale)) {
+            if ($seoSetting && $seoSetting->hasDirectTitle($locale) && $seoTitle = $seoSetting->getTitle($locale)) {
                 $data['title'] = $seoTitle . ' - ' . $siteName;
             } elseif (method_exists($model, 'getTranslated') && $modelTitle = $model->getTranslated('title', $locale)) {
+                
+                // DEBUG: Title translation'ı logla
+                \Log::info('🐛 Title Translation Debug', [
+                    'model_class' => get_class($model),
+                    'model_id' => $model->getKey(),
+                    'requested_locale' => $locale,
+                    'raw_title' => $model->getRawOriginal('title'),
+                    'translated_title' => $modelTitle,
+                    'app_locale' => app()->getLocale(),
+                    'full_path' => request()->path(),
+                    'detected_locale_logic' => 'LOCALE_DEBUG_' . $locale
+                ]);
+                
                 $data['title'] = $modelTitle . ' - ' . $siteName;
             }
             
             // 2. DESCRIPTION
-            if ($seoSetting && $seoDesc = $seoSetting->getTranslated('descriptions', $locale)) {
+            if ($seoSetting && $seoSetting->hasDirectDescription($locale) && $seoDesc = $seoSetting->getDescription($locale)) {
                 // SEO description'ı temizle
                 $seoDesc = strip_tags($seoDesc);
                 $seoDesc = preg_replace('/\s+/', ' ', $seoDesc);
@@ -544,31 +595,52 @@ readonly class SeoMetaTagService
                 $data['keywords'] = is_array($keywords) ? implode(', ', $keywords) : $keywords;
             }
             
+            // 3.1. BASIC META FIELDS
+            if ($seoSetting && $seoSetting->author) {
+                $data['author'] = $seoSetting->author;
+            }
+            
+            if ($seoSetting && $seoSetting->publisher) {
+                $data['publisher'] = $seoSetting->publisher;
+            }
+            
+            if ($seoSetting && $seoSetting->copyright) {
+                $data['copyright'] = $seoSetting->copyright;
+            }
+            
+            // 3.5. CANONICAL URL
+            if ($seoSetting && isset($seoSetting->canonical_url) && !empty($seoSetting->canonical_url)) {
+                $data['canonical_url'] = $seoSetting->canonical_url;
+            } else {
+                // Varsayılan: mevcut URL
+                $data['canonical_url'] = url()->current();
+            }
+            
             // 4. OPEN GRAPH
             // og:title
             if ($seoSetting) {
-                $ogTitleField = $seoSetting->og_title;
+                $ogTitleField = $seoSetting->og_titles;
                 if (is_array($ogTitleField) && isset($ogTitleField[$locale])) {
-                    $data['og_title'] = $ogTitleField[$locale];
+                    $data['og_titles'] = $ogTitleField[$locale];
                 } elseif (is_string($ogTitleField) && !empty($ogTitleField)) {
-                    $data['og_title'] = $ogTitleField;
+                    $data['og_titles'] = $ogTitleField;
                 }
             }
-            if (empty($data['og_title'])) {
-                $data['og_title'] = $data['title'];
+            if (empty($data['og_titles'])) {
+                $data['og_titles'] = $data['title'];
             }
             
             // og:description
             if ($seoSetting) {
-                $ogDescField = $seoSetting->og_description;
+                $ogDescField = $seoSetting->og_descriptions;
                 if (is_array($ogDescField) && isset($ogDescField[$locale])) {
-                    $data['og_description'] = $ogDescField[$locale];
+                    $data['og_descriptions'] = $ogDescField[$locale];
                 } elseif (is_string($ogDescField) && !empty($ogDescField)) {
-                    $data['og_description'] = $ogDescField;
+                    $data['og_descriptions'] = $ogDescField;
                 }
             }
-            if (empty($data['og_description'])) {
-                $data['og_description'] = $data['description'];
+            if (empty($data['og_descriptions'])) {
+                $data['og_descriptions'] = $data['description'];
             }
             
             // og:image
@@ -587,22 +659,46 @@ readonly class SeoMetaTagService
                 default => 'website'
             };
             
+            // og:locale
+            if ($seoSetting && $seoSetting->og_locale) {
+                $data['og_locale'] = $seoSetting->og_locale;
+            } else {
+                // Varsayılan: mevcut locale
+                $data['og_locale'] = str_replace('-', '_', $locale);
+            }
+            
+            // og:site_name
+            if ($seoSetting && $seoSetting->og_site_name) {
+                $data['og_site_name'] = $seoSetting->og_site_name;
+            } else {
+                $data['og_site_name'] = $siteName;
+            }
+            
             // 5. TWITTER CARDS
             $data['twitter_card'] = $data['og_image'] ? 'summary_large_image' : 'summary';
             
             if ($seoSetting && $seoSetting->twitter_title) {
                 $data['twitter_title'] = $seoSetting->twitter_title;
             } else {
-                $data['twitter_title'] = $data['og_title'];
+                $data['twitter_title'] = $data['og_titles'];
             }
             
             if ($seoSetting && $seoSetting->twitter_description) {
                 $data['twitter_description'] = $seoSetting->twitter_description;
             } else {
-                $data['twitter_description'] = $data['og_description'];
+                $data['twitter_description'] = $data['og_descriptions'];
             }
             
             $data['twitter_image'] = $data['og_image'];
+            
+            // Twitter additional fields
+            if ($seoSetting && $seoSetting->twitter_site) {
+                $data['twitter_site'] = $seoSetting->twitter_site;
+            }
+            
+            if ($seoSetting && $seoSetting->twitter_creator) {
+                $data['twitter_creator'] = $seoSetting->twitter_creator;
+            }
             
             // 6. ROBOTS
             if ($seoSetting && $seoSetting->robots) {
@@ -632,40 +728,51 @@ readonly class SeoMetaTagService
     }
     
     /**
-     * Schema.org markup generate et
+     * Schema.org markup generate et - V2 Dinamik
      */
     private function generateSchema(Model $model, array $seoData): array
     {
-        $schema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'WebPage',
-            'name' => $seoData['title'],
-        ];
-        
-        if ($seoData['description']) {
-            $schema['description'] = $seoData['description'];
+        try {
+            // Yeni dinamik schema generator'ı kullan
+            $schemaGenerator = app(\Modules\SeoManagement\app\Services\SchemaGeneratorService::class);
+            $currentLocale = app()->getLocale();
+            
+            $schema = $schemaGenerator->generateSchema($model, $currentLocale);
+            
+            // SEO ayarlarından gelen verilerle override et
+            if (!empty($seoData['title'])) {
+                $schema['name'] = $seoData['title'];
+                $schema['headline'] = $seoData['title']; // Article types için
+            }
+            
+            if (!empty($seoData['description'])) {
+                $schema['description'] = $seoData['description'];
+            }
+            
+            if (!empty($seoData['og_image'])) {
+                $schema['image'] = [
+                    '@type' => 'ImageObject',
+                    'url' => $seoData['og_image']
+                ];
+            }
+            
+            return $schema;
+            
+        } catch (\Exception $e) {
+            // Fallback - basit schema
+            \Log::warning('Dinamik schema generation hatası, fallback kullanılıyor', [
+                'error' => $e->getMessage(),
+                'model' => get_class($model)
+            ]);
+            
+            return [
+                '@context' => 'https://schema.org',
+                '@type' => 'WebPage',
+                'name' => $seoData['title'] ?? 'Content',
+                'description' => $seoData['description'] ?? '',
+                'url' => url()->current()
+            ];
         }
-        
-        // Model tipine göre özelleştir
-        switch($model->getMorphClass()) {
-            case 'Modules\Portfolio\app\Models\Portfolio':
-                $schema['@type'] = 'CreativeWork';
-                if ($seoData['og_image']) {
-                    $schema['image'] = $seoData['og_image'];
-                }
-                break;
-                
-            case 'Modules\Announcement\app\Models\Announcement':
-                $schema['@type'] = 'NewsArticle';
-                $schema['headline'] = $seoData['title'];
-                $schema['datePublished'] = $model->created_at->toIso8601String();
-                if ($model->updated_at) {
-                    $schema['dateModified'] = $model->updated_at->toIso8601String();
-                }
-                break;
-        }
-        
-        return $schema;
     }
     
     /**

@@ -64,6 +64,45 @@
         href="{{ asset('admin-assets/libs/studio/css/quick-editor.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/quick-editor.css')) }}">
 
     @livewireStyles
+    
+    <style>
+        .studio-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.25rem;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            position: relative;
+        }
+        
+        .header-left, .header-left-secondary {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-left-secondary {
+            position: absolute;
+            right: 320px;
+        }
+        
+        .header-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .studio-language-switch.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
 </head>
 
 <body class="studio-editor-body">
@@ -104,6 +143,45 @@
         <div class="header-center">
             <div class="studio-brand">
                 Studio <i class="fa-solid fa-wand-magic-sparkles mx-2"></i> Editor
+            </div>
+        </div>
+
+        <div class="header-left-secondary">
+            <!-- Studio Dil Seçici (Hem arayüz hem içerik) -->
+            <div class="dropdown me-3">
+                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="studioLanguageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-language me-1"></i>
+                    @php
+                        $currentLocale = request()->route('locale') ?? 'tr';
+                    @endphp
+                    <span id="current-studio-lang-label">{{ strtoupper($currentLocale) }}</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="studioLanguageDropdown">
+                    @php
+                        try {
+                            $tenantLanguages = DB::table('tenant_languages')
+                                ->where('is_active', true)
+                                ->orderBy('sort_order')
+                                ->select('code', 'name', 'native_name', 'flag_icon')
+                                ->get();
+                        } catch (\Exception $e) {
+                            $tenantLanguages = collect([
+                                (object) ['code' => 'tr', 'name' => 'Turkish', 'native_name' => 'Türkçe', 'flag_icon' => '🇹🇷']
+                            ]);
+                        }
+                    @endphp
+                    @foreach($tenantLanguages as $studioLang)
+                        <li>
+                            <a class="dropdown-item studio-language-switch {{ $currentLocale == $studioLang->code ? 'active' : '' }}" 
+                               href="{{ route('admin.studio.editor', ['module' => request()->route('module') ?? 'page', 'id' => request()->route('id') ?? 1, 'locale' => $studioLang->code]) }}">
+                                @if(!empty($studioLang->flag_icon))
+                                    <span class="me-2">{{ $studioLang->flag_icon }}</span>
+                                @endif
+                                {{ $studioLang->native_name }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
         </div>
 
@@ -232,6 +310,42 @@
         src="{{ asset('admin-assets/libs/js-cookie@3.0.5/js.cookie.min.js') }}?v={{ filemtime(public_path('admin-assets/libs/js-cookie@3.0.5/js.cookie.min.js')) }}">
     </script>
     <script src="{{ asset('admin-assets/libs/studio/app.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/app.js')) }}">
+    </script>
+
+    <!-- Studio Basitleştirilmiş Sistem - Sadece URL ile dil değiştirme -->
+    <script>
+        $(document).ready(function() {
+            // Basit toast sistemi
+            function showToast(message, type = 'info') {
+                const colorClass = type === 'success' ? 'success' : 
+                                 type === 'error' ? 'danger' : 
+                                 type === 'warning' ? 'warning' : 'info';
+                
+                const toastHtml = `
+                    <div class="toast align-items-center text-white bg-${colorClass} border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">${message}</div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+                
+                $('.toast-container').append(toastHtml);
+                const $toast = $('.toast-container .toast:last');
+                const toast = new bootstrap.Toast($toast[0], { delay: 3000 });
+                toast.show();
+                
+                // Toast kaldırıldıktan sonra DOM'dan temizle
+                $toast.on('hidden.bs.toast', function() {
+                    $(this).remove();
+                });
+            }
+            
+            // Global olarak erişilebilir hale getir
+            window.StudioLanguage = {
+                showToast: showToast
+            };
+        });
     </script>
 
     @livewireScripts

@@ -113,7 +113,7 @@
                             <i class="fas fa-filter me-1"></i>
                             {{ __('ai::admin.filters') }}
                             @if(request('type') || request('feature_name') || request('is_demo') || (request('tenant_id') && auth()->user()->isRoot()))
-                            <span class="badge bg-primary ms-1">{{ __('ai::admin.active') }}</span>
+                            <span class="badge badge-primary ms-1">{{ __('ai::admin.active') }}</span>
                             @endif
                         </button>
                         

@@ -87,6 +87,11 @@
                                         class="btn btn-icon btn-sm">
                                         <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                     </a>
+                                    <x-ai-translation 
+                                        entity-type="portfolio_category" 
+                                        :entity-id="$category->portfolio_category_id" 
+                                        button-class="btn btn-icon btn-sm"
+                                        tooltip="Yapay Zeka ile Çeviri" />
                                     <div class="dropdown">
                                         <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
                                             aria-haspopup="true" aria-expanded="false">

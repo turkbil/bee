@@ -27,9 +27,9 @@ return new class extends Migration
             $table->json('descriptions')->nullable(); // {"tr": "Açıklama", "en": "Description"}  
             $table->json('keywords')->nullable(); // {"tr": ["anahtar"], "en": ["keyword"]}
             
-            // Open Graph
-            $table->string('og_title')->nullable();
-            $table->text('og_description')->nullable();
+            // Open Graph - JSON for multi-language support
+            $table->json('og_titles')->nullable(); // {"tr": "Başlık", "en": "Title"}
+            $table->json('og_descriptions')->nullable(); // {"tr": "Açıklama", "en": "Description"}
             $table->string('og_image')->nullable();
             $table->string('og_type')->default('website');
             
@@ -43,7 +43,6 @@ return new class extends Migration
             $table->string('canonical_url')->nullable();
             $table->json('robots_meta')->nullable(); // {"index": true, "follow": true, "archive": false}
             $table->json('schema_markup')->nullable(); // Structured data
-            $table->string('focus_keyword')->nullable();
             $table->json('focus_keywords')->nullable(); // Dil bazında focus keywords {"tr": "anahtar", "en": "keyword"}
             $table->json('additional_keywords')->nullable(); // ["keyword1", "keyword2"]
             
@@ -83,7 +82,6 @@ return new class extends Migration
             $table->index(['seoable_id', 'seoable_type']);
             $table->index('status');
             $table->index('seo_score');
-            $table->index('focus_keyword');
             $table->index('last_analyzed');
         });
     }

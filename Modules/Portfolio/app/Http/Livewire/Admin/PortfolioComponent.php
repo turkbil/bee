@@ -9,11 +9,12 @@ use Modules\Portfolio\App\Http\Livewire\Traits\InlineEditTitle;
 use Modules\Portfolio\App\Http\Livewire\Traits\WithBulkActions;
 use Modules\Portfolio\App\Models\Portfolio;
 use Modules\Portfolio\App\Models\PortfolioCategory;
+use App\Traits\HasUniversalTranslation;
 
 #[Layout('admin.layout')]
 class PortfolioComponent extends Component
 {
-    use WithPagination, WithBulkActions, InlineEditTitle;
+    use WithPagination, WithBulkActions, InlineEditTitle, HasUniversalTranslation;
 
     #[Url]
     public $search = '';
@@ -123,5 +124,164 @@ class PortfolioComponent extends Component
             'portfolios' => $portfolios,
             'categories' => $categories,
         ]);
+    }
+
+    public function queueTranslation($portfolioId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
+    {
+        try {
+            \Log::info("🚀 PORTFOLIO QUEUE Translation başlatıldı", [
+                'portfolio_id' => $portfolioId,
+                'source' => $sourceLanguage,
+                'targets' => $targetLanguages
+            ]);
+
+            // Job'ı kuyruğa ekle
+            \Modules\AI\app\Jobs\TranslateEntityJob::dispatch(
+                'portfolio',
+                $portfolioId,
+                $sourceLanguage,
+                $targetLanguages,
+                $overwriteExisting
+            );
+
+            $this->dispatch('translationQueued', 'Portfolio çeviri işlemi başlatıldı!');
+            
+        } catch (\Exception $e) {
+            \Log::error('❌ Portfolio queue translation hatası', [
+                'portfolio_id' => $portfolioId,
+                'error' => $e->getMessage()
+            ]);
+            
+            $this->dispatch('translationError', 'Portfolio çeviri kuyruğu hatası: ' . $e->getMessage());
+        }
+    }
+
+    public function translateFromModal(int $portfolioId, string $sourceLanguage, array $targetLanguages): void
+    {
+        try {
+            \Log::info('🌍 Portfolio Translation modal çeviri başlatıldı', [
+                'portfolio_id' => $portfolioId,
+                'source_language' => $sourceLanguage,
+                'target_languages' => $targetLanguages,
+                'user_id' => auth()->id()
+            ]);
+
+            // Portfolio'yu bul
+            $portfolio = Portfolio::find($portfolioId);
+            if (!$portfolio) {
+                $this->dispatch('translationError', 'Portfolio bulunamadı');
+                return;
+            }
+
+            // Her hedef dil için çeviri yap
+            $translatedCount = 0;
+            $errors = [];
+
+            foreach ($targetLanguages as $targetLanguage) {
+                try {
+                    // Kaynak dil verilerini al
+                    $sourceTitle = $portfolio->getTranslated('title', $sourceLanguage);
+                    $sourceBody = $portfolio->getTranslated('body', $sourceLanguage);
+
+                    if (empty($sourceTitle) && empty($sourceBody)) {
+                        $errors[] = "Kaynak dil ({$sourceLanguage}) verileri bulunamadı";
+                        continue;
+                    }
+
+                    $translatedData = [];
+
+                    // Title çevir
+                    if (!empty($sourceTitle)) {
+                        $translatedTitle = app(\Modules\AI\App\Services\AIService::class)->translateText(
+                            $sourceTitle,
+                            $sourceLanguage,
+                            $targetLanguage,
+                            ['context' => 'portfolio_title', 'source' => 'translation_modal']
+                        );
+                        $translatedData['title'] = $translatedTitle;
+                    }
+
+                    // Body çevir
+                    if (!empty($sourceBody)) {
+                        $translatedBody = app(\Modules\AI\App\Services\AIService::class)->translateText(
+                            $sourceBody,
+                            $sourceLanguage,
+                            $targetLanguage,
+                            ['context' => 'portfolio_content', 'source' => 'translation_modal', 'preserve_html' => true]
+                        );
+                        $translatedData['body'] = $translatedBody;
+                    }
+
+                    // Slug oluştur
+                    if (!empty($translatedData['title'])) {
+                        $translatedData['slug'] = \App\Helpers\SlugHelper::generateFromTitle(
+                            Portfolio::class,
+                            $translatedData['title'],
+                            $targetLanguage,
+                            'slug',
+                            'portfolio_id',
+                            $portfolioId
+                        );
+                    }
+
+                    // Çevrilmiş verileri kaydet
+                    if (!empty($translatedData)) {
+                        foreach ($translatedData as $field => $value) {
+                            $currentData = $portfolio->{$field} ?? [];
+                            $currentData[$targetLanguage] = $value;
+                            $portfolio->{$field} = $currentData;
+                        }
+                        $portfolio->save();
+                        $translatedCount++;
+
+                        \Log::info('✅ Portfolio çevirisi tamamlandı', [
+                            'portfolio_id' => $portfolioId,
+                            'target_language' => $targetLanguage,
+                            'fields' => array_keys($translatedData)
+                        ]);
+                    }
+
+                } catch (\Exception $e) {
+                    $errors[] = "Çeviri hatası ({$targetLanguage}): " . $e->getMessage();
+                    \Log::error('❌ Portfolio çeviri hatası', [
+                        'portfolio_id' => $portfolioId,
+                        'target_language' => $targetLanguage,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Session ID oluştur ve döndür
+            $sessionId = 'translation_' . uniqid();
+            
+            // Başarı mesajı
+            if ($translatedCount > 0) {
+                $message = "{$translatedCount} dil için Portfolio çeviri tamamlandı";
+                if (!empty($errors)) {
+                    $message .= ". " . count($errors) . " hata oluştu";
+                }
+                
+                $this->dispatch('translationQueued', [
+                    'sessionId' => $sessionId,
+                    'success' => true,
+                    'message' => $message,
+                    'translatedCount' => $translatedCount,
+                    'errors' => $errors
+                ]);
+                
+                // Sayfayı yenile
+                $this->render();
+            } else {
+                $this->dispatch('translationError', 'Hiçbir Portfolio çeviri yapılamadı: ' . implode(', ', $errors));
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('❌ Portfolio Translation modal genel hatası', [
+                'portfolio_id' => $portfolioId,
+                'error' => $e->getMessage()
+            ]);
+            
+            $this->dispatch('translationError', 'Portfolio çeviri işlemi başarısız: ' . $e->getMessage());
+        }
     }
 }

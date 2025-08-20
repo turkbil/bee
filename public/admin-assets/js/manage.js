@@ -6,6 +6,52 @@ window.currentPageId = null;
 window.currentLanguage = window.tenantDefaultLanguage || 'tr';
 window.allLanguagesSeoData = {};
 
+// ===== MODAL BACKDROP TEMİZLEME SİSTEMİ =====
+window.cleanModalBackdrop = function() {
+    console.log('🔒 NURU: Modal backdrop temizleme işlemi başlıyor...');
+    
+    // TÜM BACKDROP'LARI BUL VE SİL
+    const backdrops = document.querySelectorAll('.modal-backdrop, #aiTranslationModalBackdrop, #translation-modal-backdrop, [id*="backdrop"], [class*="backdrop"]');
+    backdrops.forEach((backdrop, index) => {
+        console.log(`🗑️ NURU: Backdrop ${index + 1} siliniyor:`, backdrop.id || backdrop.className);
+        backdrop.remove();
+    });
+    
+    // BODY CLASS VE STYLE TEMİZLE
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    
+    // MODAL CONTAINER'LARI TEMİZLE
+    const modalContainers = document.querySelectorAll('.modal[style*="display: block"]');
+    modalContainers.forEach(modal => {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+    });
+    
+    console.log('✅ NURU: Modal backdrop temizleme tamamlandı');
+};
+
+// BOOTSTRAP MODAL EVENT'LERİNE HOOK ET
+document.addEventListener('DOMContentLoaded', function() {
+    // Bootstrap modal hide event'inde backdrop temizle
+    $(document).on('hide.bs.modal', function(e) {
+        console.log('🎭 NURU: Bootstrap modal hide event tetiklendi');
+        setTimeout(() => {
+            window.cleanModalBackdrop();
+        }, 100);
+    });
+    
+    // Modal kapatma butonlarına hook et
+    $(document).on('click', '[data-bs-dismiss="modal"], .btn-close', function() {
+        console.log('🔘 NURU: Modal kapatma butonu tıklandı');
+        setTimeout(() => {
+            window.cleanModalBackdrop();
+        }, 300);
+    });
+});
+
 // ===== SYSTEM INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
     // Dinamik sayfa tespiti
@@ -28,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupLanguageSwitching();
     setupSaveAndContinueSystem();
     setupSeoCharacterCounters();
+    setupSeoEnterPrevention();
     initializeTabSystem();
     setupSlugNormalization();
     
@@ -111,6 +158,50 @@ function setupLanguageSwitching() {
                 console.log('✅ Language badge güncellendi:', nativeName);
             }
         }
+        
+        // Update dropdown current language
+        const dropdownCurrentLang = document.getElementById('dropdown-current-lang');
+        if (dropdownCurrentLang && nativeName) {
+            dropdownCurrentLang.textContent = nativeName;
+            console.log('✅ Dropdown current language güncellendi:', nativeName);
+        }
+        
+        // Update dropdown items state (active/inactive styling and check icons)
+        const dropdownItems = document.querySelectorAll('.dropdown-item.language-switch-btn');
+        dropdownItems.forEach(item => {
+            const itemLanguage = item.getAttribute('data-language');
+            const checkIcon = item.querySelector('.fas.fa-check');
+            
+            if (itemLanguage === language) {
+                // Active item - Tabler.io standart active bg renkleri
+                item.classList.add('active');
+                item.style.backgroundColor = 'var(--tblr-active-bg, #e9ecef)';
+                item.style.color = 'var(--tblr-body-color, #1a1a1a)';
+                item.setAttribute('disabled', 'true');
+                
+                // Add check icon if not exists
+                if (!checkIcon) {
+                    const newCheckIcon = document.createElement('i');
+                    newCheckIcon.className = 'fas fa-check ms-2';
+                    newCheckIcon.style.color = 'var(--tblr-body-color, #1a1a1a)';
+                    item.appendChild(newCheckIcon);
+                } else {
+                    // Update existing check icon color
+                    checkIcon.style.color = 'var(--tblr-body-color, #1a1a1a)';
+                }
+            } else {
+                // Inactive item
+                item.classList.remove('active');
+                item.style.backgroundColor = '';
+                item.style.color = '';
+                item.removeAttribute('disabled');
+                
+                // Remove check icon if exists
+                if (checkIcon) {
+                    checkIcon.remove();
+                }
+            }
+        });
         
         // Aktif tab'ı logla
         const activeTabElement = $('.nav-tabs .nav-link.active');
@@ -251,14 +342,32 @@ function setupLanguageSwitching() {
         window.currentLanguage = language;
         console.log('✅ Global currentLanguage güncellendi:', window.currentLanguage);
         
-        // *** LIVEWIRE DİSPATCH - SERVER VERI GÜNCELLEMESİ ***
+        // *** LIVEWIRE COMPONENT ÇAĞRISI - SERVER VERI GÜNCELLEMESİ ***
         if (livewireExists) {
-            console.log('🚀 Livewire dispatch gönderiliyor: switchLanguage');
+            console.log('🚀 Livewire component switchLanguage çağrılıyor...');
             try {
-                Livewire.dispatch('switchLanguage', { language: language });
-                console.log('✅ Livewire switchLanguage dispatch başarılı:', language);
+                // Livewire 3.x için component metodunu direkt çağır
+                const component = Livewire.getByName('page-manage-component')[0];
+                if (component) {
+                    component.switchLanguage(language);
+                    console.log('✅ Livewire component switchLanguage başarılı:', language);
+                } else {
+                    // Fallback: find component by any method
+                    const allComponents = Livewire.all();
+                    const pageComponent = allComponents.find(comp => 
+                        comp.name === 'page-manage-component' || 
+                        comp.fingerprint?.name === 'page-manage-component'
+                    );
+                    
+                    if (pageComponent) {
+                        pageComponent.switchLanguage(language);
+                        console.log('✅ Livewire component switchLanguage fallback başarılı:', language);
+                    } else {
+                        console.error('❌ Page manage component bulunamadı');
+                    }
+                }
             } catch (error) {
-                console.error('❌ Livewire dispatch hatası:', error);
+                console.error('❌ Livewire component çağrı hatası:', error);
             }
         } else {
             console.log('⚠️ Livewire yok - sadece jQuery çalıştı');
@@ -743,6 +852,7 @@ document.addEventListener('livewire:updated', function() {
         
         setTimeout(function() {
             setupSeoCharacterCounters();
+            setupSeoEnterPrevention();
             MultiLangFormSwitcher.init();
             
             // 🔄 Language switching sistemini yeniden kur
@@ -1018,6 +1128,71 @@ function setupSlugNormalization() {
     }, 500); // Wait for DOM to be ready
 }
 
+// ===== SEO ENTER KEY PREVENTION SYSTEM =====
+function setupSeoEnterPrevention() {
+    console.log('🚫 SEO Enter tuşu engelleme sistemi kuruluyor...');
+    
+    // Enter tuşunu engelleyecek CSS sınıfını hedef al
+    const seoInputs = document.querySelectorAll('.seo-no-enter');
+    
+    console.log('🔍 Bulunan seo-no-enter input sayısı:', seoInputs.length);
+    
+    seoInputs.forEach((input, index) => {
+        console.log(`  Input ${index}: ${input.tagName} - name: ${input.name || 'yok'} - placeholder: ${input.placeholder || 'yok'}`);
+        
+        // Enter tuşu event listener'ı ekle
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('🚫 Enter tuşu engellendi - SEO alanında:', input.name || input.placeholder);
+                
+                // Kullanıcıya görsel geri bildirim
+                const originalBorder = input.style.border;
+                input.style.border = '2px solid #dc3545';
+                input.style.backgroundColor = '#ffeaea';
+                
+                // Tooltip veya uyarı göster
+                showSeoEnterWarning(input);
+                
+                // 1 saniye sonra görsel efekti kaldır
+                setTimeout(() => {
+                    input.style.border = originalBorder;
+                    input.style.backgroundColor = '';
+                }, 1000);
+                
+                return false;
+            }
+        });
+        
+        // Paste event'i için de temizlik
+        input.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                const value = input.value;
+                if (value.includes('\n') || value.includes('\r')) {
+                    const cleanValue = value.replace(/[\r\n]/g, ' ').replace(/\s+/g, ' ').trim();
+                    input.value = cleanValue;
+                    
+                    console.log('🧹 Yapıştırılan metindeki Enter karakterleri temizlendi');
+                    showSeoEnterWarning(input, 'Yapıştırılan metindeki satır sonları kaldırıldı');
+                    
+                    // Livewire'a güncellemeyi bildir
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }, 10);
+        });
+    });
+    
+    console.log(`✅ ${seoInputs.length} SEO input için Enter tuşu engelleme aktif`);
+}
+
+// SEO Enter uyarısı göster (sessiz)
+function showSeoEnterWarning(input, customMessage = null) {
+    // Sadece konsola log - kullanıcıya görsel uyarı yok
+    console.log('🚫 Enter tuşu engellendi - SEO alanında:', input.name || input.placeholder);
+}
+
 // ===== GLOBAL EXPORTS =====
 // window.TabManager = TabManager; // Already exported from main.js
 window.MultiLangFormSwitcher = MultiLangFormSwitcher;
@@ -1025,6 +1200,7 @@ window.setupLanguageSwitching = setupLanguageSwitching;
 window.setupSaveAndContinueSystem = setupSaveAndContinueSystem;
 window.setupSeoCharacterCounters = setupSeoCharacterCounters;
 window.setupSlugNormalization = setupSlugNormalization;
+window.setupSeoEnterPrevention = setupSeoEnterPrevention;
 
 // Helper functions for loading data
 function loadDataForLanguage(language) {

@@ -12,11 +12,12 @@ use Modules\Announcement\App\Services\AnnouncementService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Announcement\App\DataTransferObjects\AnnouncementOperationResult;
 use Modules\Announcement\App\Models\Announcement;
+use App\Traits\HasUniversalTranslation;
 
 #[Layout('admin.layout')]
 class AnnouncementComponent extends Component
 {
-    use WithPagination, WithBulkActions, InlineEditTitle;
+    use WithPagination, WithBulkActions, InlineEditTitle, HasUniversalTranslation;
 
     #[Url]
     public $search = '';
@@ -168,5 +169,164 @@ class AnnouncementComponent extends Component
             'currentSiteLocale' => $this->siteLocale,
             'siteLanguages' => $this->availableSiteLanguages,
         ]);
+    }
+
+    public function queueTranslation($announcementId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
+    {
+        try {
+            \Log::info("🚀 ANNOUNCEMENT QUEUE Translation başlatıldı", [
+                'announcement_id' => $announcementId,
+                'source' => $sourceLanguage,
+                'targets' => $targetLanguages
+            ]);
+
+            // Job'ı kuyruğa ekle
+            \Modules\AI\app\Jobs\TranslateEntityJob::dispatch(
+                'announcement',
+                $announcementId,
+                $sourceLanguage,
+                $targetLanguages,
+                $overwriteExisting
+            );
+
+            $this->dispatch('translationQueued', 'Announcement çeviri işlemi başlatıldı!');
+            
+        } catch (\Exception $e) {
+            \Log::error('❌ Announcement queue translation hatası', [
+                'announcement_id' => $announcementId,
+                'error' => $e->getMessage()
+            ]);
+            
+            $this->dispatch('translationError', 'Announcement çeviri kuyruğu hatası: ' . $e->getMessage());
+        }
+    }
+
+    public function translateFromModal(int $announcementId, string $sourceLanguage, array $targetLanguages): void
+    {
+        try {
+            \Log::info('🌍 Announcement Translation modal çeviri başlatıldı', [
+                'announcement_id' => $announcementId,
+                'source_language' => $sourceLanguage,
+                'target_languages' => $targetLanguages,
+                'user_id' => auth()->id()
+            ]);
+
+            // Announcement'ı bul
+            $announcement = Announcement::find($announcementId);
+            if (!$announcement) {
+                $this->dispatch('translationError', 'Announcement bulunamadı');
+                return;
+            }
+
+            // Her hedef dil için çeviri yap
+            $translatedCount = 0;
+            $errors = [];
+
+            foreach ($targetLanguages as $targetLanguage) {
+                try {
+                    // Kaynak dil verilerini al
+                    $sourceTitle = $announcement->getTranslated('title', $sourceLanguage);
+                    $sourceBody = $announcement->getTranslated('body', $sourceLanguage);
+
+                    if (empty($sourceTitle) && empty($sourceBody)) {
+                        $errors[] = "Kaynak dil ({$sourceLanguage}) verileri bulunamadı";
+                        continue;
+                    }
+
+                    $translatedData = [];
+
+                    // Title çevir
+                    if (!empty($sourceTitle)) {
+                        $translatedTitle = app(\Modules\AI\App\Services\AIService::class)->translateText(
+                            $sourceTitle,
+                            $sourceLanguage,
+                            $targetLanguage,
+                            ['context' => 'announcement_title', 'source' => 'translation_modal']
+                        );
+                        $translatedData['title'] = $translatedTitle;
+                    }
+
+                    // Body çevir
+                    if (!empty($sourceBody)) {
+                        $translatedBody = app(\Modules\AI\App\Services\AIService::class)->translateText(
+                            $sourceBody,
+                            $sourceLanguage,
+                            $targetLanguage,
+                            ['context' => 'announcement_content', 'source' => 'translation_modal', 'preserve_html' => true]
+                        );
+                        $translatedData['body'] = $translatedBody;
+                    }
+
+                    // Slug oluştur
+                    if (!empty($translatedData['title'])) {
+                        $translatedData['slug'] = \App\Helpers\SlugHelper::generateFromTitle(
+                            Announcement::class,
+                            $translatedData['title'],
+                            $targetLanguage,
+                            'slug',
+                            'announcement_id',
+                            $announcementId
+                        );
+                    }
+
+                    // Çevrilmiş verileri kaydet
+                    if (!empty($translatedData)) {
+                        foreach ($translatedData as $field => $value) {
+                            $currentData = $announcement->{$field} ?? [];
+                            $currentData[$targetLanguage] = $value;
+                            $announcement->{$field} = $currentData;
+                        }
+                        $announcement->save();
+                        $translatedCount++;
+
+                        \Log::info('✅ Announcement çevirisi tamamlandı', [
+                            'announcement_id' => $announcementId,
+                            'target_language' => $targetLanguage,
+                            'fields' => array_keys($translatedData)
+                        ]);
+                    }
+
+                } catch (\Exception $e) {
+                    $errors[] = "Çeviri hatası ({$targetLanguage}): " . $e->getMessage();
+                    \Log::error('❌ Announcement çeviri hatası', [
+                        'announcement_id' => $announcementId,
+                        'target_language' => $targetLanguage,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Session ID oluştur ve döndür
+            $sessionId = 'translation_' . uniqid();
+            
+            // Başarı mesajı
+            if ($translatedCount > 0) {
+                $message = "{$translatedCount} dil için Announcement çeviri tamamlandı";
+                if (!empty($errors)) {
+                    $message .= ". " . count($errors) . " hata oluştu";
+                }
+                
+                $this->dispatch('translationQueued', [
+                    'sessionId' => $sessionId,
+                    'success' => true,
+                    'message' => $message,
+                    'translatedCount' => $translatedCount,
+                    'errors' => $errors
+                ]);
+                
+                // Sayfayı yenile
+                $this->render();
+            } else {
+                $this->dispatch('translationError', 'Hiçbir Announcement çeviri yapılamadı: ' . implode(', ', $errors));
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('❌ Announcement Translation modal genel hatası', [
+                'announcement_id' => $announcementId,
+                'error' => $e->getMessage()
+            ]);
+            
+            $this->dispatch('translationError', 'Announcement çeviri işlemi başarısız: ' . $e->getMessage());
+        }
     }
 }

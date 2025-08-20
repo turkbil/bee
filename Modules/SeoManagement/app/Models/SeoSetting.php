@@ -12,19 +12,20 @@ class SeoSetting extends Model
 {
     use HasTranslations;
     
-    protected $translatable = ['titles', 'descriptions', 'keywords', 'og_title', 'og_description', 'focus_keywords'];
+    protected $translatable = ['titles', 'descriptions', 'keywords', 'og_titles', 'og_descriptions', 'focus_keywords'];
     
     protected $fillable = [
         'seoable_type', 'seoable_id', // Polymorphic relationship fields
         'meta_title', 'meta_description', 'meta_keywords',
         'titles', 'descriptions', 'keywords', 'canonical_url',
-        'og_title', 'og_description', 'og_image', 'og_type',
-        'twitter_card', 'twitter_title', 'twitter_description', 'twitter_image',
-        'robots_meta', 'schema_markup', 'focus_keyword', 'focus_keywords',
+        'author', 'publisher', 'copyright', // Yeni temel meta alanları
+        'og_titles', 'og_descriptions', 'og_image', 'og_type', 'og_locale', 'og_site_name',
+        'twitter_card', 'twitter_title', 'twitter_description', 'twitter_image', 'twitter_site', 'twitter_creator',
+        'robots_meta', 'schema_markup', 'focus_keywords',
         'additional_keywords', 'seo_score', 'seo_analysis', 'last_analyzed',
         'hreflang_urls', 'content_length', 'keyword_density', 'readability_score',
         'page_speed_images', 'last_crawled', 'ai_suggestions', 'auto_optimize',
-        'status', 'priority', 'available_languages', 'default_language', 'language_fallbacks'
+        'status', 'priority_score', 'available_languages', 'default_language', 'language_fallbacks'
     ];
 
     protected $casts = [
@@ -32,8 +33,8 @@ class SeoSetting extends Model
         'descriptions' => 'array', 
         'keywords' => 'array',
         'focus_keywords' => 'array',
-        'og_title' => 'array',
-        'og_description' => 'array',
+        'og_titles' => 'array',
+        'og_descriptions' => 'array',
         'robots_meta' => 'array',
         'schema_markup' => 'array',
         'additional_keywords' => 'array',
@@ -54,10 +55,24 @@ class SeoSetting extends Model
         'twitter_card' => 'summary',
         'seo_score' => 0,
         'status' => 'active',
-        'priority' => 'medium',
+        'priority_score' => 5,
         'default_language' => 'tr',
         'auto_optimize' => false
     ];
+
+    /**
+     * Get default robots meta values - Google SEO best practices
+     */
+    public function getDefaultRobotsMeta(): array
+    {
+        return [
+            'index' => true,          // ✅ Aktif - Arama motorlarında görünsün
+            'follow' => true,         // ✅ Aktif - Linkleri takip etsin
+            'archive' => false,       // ❌ Pasif - Web arşivlemesi genel olarak gerekli değil
+            'snippet' => true,        // ✅ Aktif - Arama sonuçlarında özet göstersin
+            'imageindex' => true      // ✅ Aktif - Resimleri indekslesin
+        ];
+    }
 
     public function seoable(): MorphTo
     {
@@ -100,6 +115,17 @@ class SeoSetting extends Model
             ($keywords ? explode(',', $keywords) : []);
     }
 
+    public function getFocusKeywords(?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (!$this->focus_keywords) {
+            return null;
+        }
+
+        return $this->getTranslated('focus_keywords', $locale);
+    }
+
     public function getRobotsMeta(): array
     {
         return array_merge([
@@ -132,22 +158,22 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
-        if (!$this->og_title) {
+        if (!$this->og_titles) {
             return $this->getTitle($locale);
         }
 
-        return $this->getTranslated('og_title', $locale) ?? $this->getTitle($locale);
+        return $this->getTranslated('og_titles', $locale) ?? $this->getTitle($locale);
     }
 
     public function getOgDescription(?string $locale = null): ?string
     {
         $locale = $locale ?? app()->getLocale();
         
-        if (!$this->og_description) {
+        if (!$this->og_descriptions) {
             return $this->getDescription($locale);
         }
 
-        return $this->getTranslated('og_description', $locale) ?? $this->getDescription($locale);
+        return $this->getTranslated('og_descriptions', $locale) ?? $this->getDescription($locale);
     }
 
     public function isOptimized(): bool
@@ -193,12 +219,128 @@ class SeoSetting extends Model
 
     public function scopeHighPriority($query)
     {
-        return $query->whereIn('priority', ['high', 'critical']);
+        return $query->where('priority_score', '>=', 8);
     }
 
     public function scopeByScore($query, string $operator = '>=', int $score = 80)
     {
         return $query->where('seo_score', $operator, $score);
+    }
+
+    /**
+     * Update SEO data for a specific language
+     */
+    public function updateLanguageData(string $locale, array $data): void
+    {
+        // Title güncelle
+        if (isset($data['title'])) {
+            $titles = $this->titles ?? [];
+            $titles[$locale] = $data['title'];
+            $this->titles = $titles;
+        }
+
+        // Description güncelle  
+        if (isset($data['description'])) {
+            $descriptions = $this->descriptions ?? [];
+            $descriptions[$locale] = $data['description'];
+            $this->descriptions = $descriptions;
+        }
+
+        // Keywords güncelle
+        if (isset($data['keywords'])) {
+            $keywords = $this->keywords ?? [];
+            // String'i array'e çevir
+            if (is_string($data['keywords'])) {
+                $keywordArray = array_filter(array_map('trim', explode(',', $data['keywords'])));
+                $keywords[$locale] = $keywordArray;
+            } else {
+                $keywords[$locale] = $data['keywords'];
+            }
+            $this->keywords = $keywords;
+        }
+
+        
+        // Focus keywords güncelle - titles/descriptions ile aynı pattern
+        if (isset($data['focus_keywords'])) {
+            \Log::info('🔥 DERIN DEBUG - SeoSetting focus_keywords girdi', [
+                'locale' => $locale,
+                'input_type' => gettype($data['focus_keywords']),
+                'input_value' => $data['focus_keywords'],
+                'input_is_array' => is_array($data['focus_keywords']),
+                'current_focus_keywords' => $this->focus_keywords ?? 'NULL'
+            ]);
+            
+            $focusKeywords = $this->focus_keywords ?? [];
+            if (is_array($data['focus_keywords'])) {
+                // Eğer focus_keywords direkt array ise (tüm diller)
+                $this->focus_keywords = $data['focus_keywords'];
+                \Log::info('🔥 FOCUS KEYWORDS - Array olarak kaydedildi', [
+                    'saved_data' => $this->focus_keywords
+                ]);
+            } else {
+                // Eğer tek dil için string ise
+                $focusKeywords[$locale] = $data['focus_keywords'];
+                $this->focus_keywords = $focusKeywords;
+                \Log::info('🔥 FOCUS KEYWORDS - String olarak locale bazlı kaydedildi', [
+                    'locale' => $locale,
+                    'input_string' => $data['focus_keywords'],
+                    'saved_data' => $this->focus_keywords
+                ]);
+            }
+        }
+
+        // OG Title güncelle - çoklu dil JSON (focus_keywords pattern)
+        if (isset($data['og_title'])) {
+            $ogTitles = $this->og_titles ?? [];
+            $ogTitles[$locale] = $data['og_title'];
+            $this->og_titles = $ogTitles;
+        }
+
+        // OG Description güncelle - çoklu dil JSON
+        if (isset($data['og_description'])) {
+            $ogDescriptions = $this->og_descriptions ?? [];
+            $ogDescriptions[$locale] = $data['og_description'];
+            $this->og_descriptions = $ogDescriptions;
+        }
+
+        // Diğer alanları güncelle - tek alan (dil bağımsız)
+        $directFields = [
+            'canonical_url', 'priority_score',
+            'og_image', 'og_type', 
+            'twitter_title', 'twitter_description', 'twitter_image', 'twitter_card'
+        ];
+        foreach ($directFields as $field) {
+            if (isset($data[$field])) {
+                $this->$field = $data[$field];
+            }
+        }
+
+        // Robots Meta güncelle - JSON format
+        $robotsFields = ['robots_index', 'robots_follow', 'robots_archive', 'robots_snippet'];
+        $robotsData = [];
+        foreach ($robotsFields as $field) {
+            if (isset($data[$field])) {
+                $key = str_replace('robots_', '', $field);
+                $robotsData[$key] = (bool)$data[$field];
+            }
+        }
+        
+        if (!empty($robotsData)) {
+            $currentRobots = $this->robots_meta ?? [];
+            $this->robots_meta = array_merge($currentRobots, $robotsData);
+        }
+
+        // Değişiklikleri kaydet
+        $this->save();
+
+        \Log::info('✅ SeoSetting updateLanguageData çalıştı', [
+            'locale' => $locale,
+            'has_title' => isset($data['title']),
+            'has_description' => isset($data['description']), 
+            'has_keywords' => isset($data['keywords']),
+            'has_focus_keywords' => isset($data['focus_keywords']),
+            'focus_keywords_value' => $data['focus_keywords'] ?? 'YOK'
+        ]);
     }
 
     protected static function boot()

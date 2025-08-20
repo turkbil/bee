@@ -33,25 +33,11 @@
 </div>
 
 <script>
-// Global fonksiyonu hemen tanımla (Livewire kartları için)
-window.showLanguageActionModal = function(action, languageId, languageName) {
-    // DOM hazır olmayabilir, kısa bekleme ile tekrar dene
-    setTimeout(() => {
-        const modalElement = document.getElementById('language-action-modal');
-        if (!modalElement) {
-            console.error('Modal element bulunamadı');
-            return;
-        }
-        
-        // Modal script'i henüz yüklenmemişse event dispatch et
-        const event = new CustomEvent('showLanguageModal', {
-            detail: { action, languageId, languageName }
-        });
-        document.dispatchEvent(event);
-    }, 50);
-};
+// Singleton pattern ile modal çakışmasını önle
+if (!window.languageModalInitialized) {
+    window.languageModalInitialized = true;
 
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // Bootstrap Modal'ı başlat (Tabler.io uyumlu)
     const modalElement = document.getElementById('language-action-modal');
     let modal;
@@ -119,10 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Custom event listener için modal açma fonksiyonu
+    // Modal açma fonksiyonu
     function openModalWithConfig(action, languageId, languageName) {
         const config = configs[action];
-        if (!config) return;
+        if (!config) {
+            console.error('Modal config bulunamadı:', action);
+            return;
+        }
         
         // Modal içeriğini ayarla
         statusBar.className = `modal-status bg-${config.color}`;
@@ -135,7 +124,11 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmBtn.className = `btn btn-${config.color} w-100`;
         confirmBtn.querySelector('.confirm-text').textContent = config.btnText;
         
-        // Click handler'ı ayarla
+        // Mevcut scroll pozisyonunu kaydet
+        const savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Click handler'ı her seferinde yeniden ata (önceki handler temizlenir)
+        confirmBtn.onclick = null; // Önceki handler'ı temizle
         confirmBtn.onclick = function() {
             // Loading state
             confirmBtn.querySelector('.confirm-text').classList.add('d-none');
@@ -157,66 +150,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
             }
             
-            // Modal'ı kapat
+            // Modal'ı kapat ve scroll pozisyonunu geri yükle
             setTimeout(() => {
                 modal.hide();
-                // Reset loading state
-                confirmBtn.querySelector('.confirm-text').classList.remove('d-none');
-                confirmBtn.querySelector('.loading-text').classList.add('d-none');
-                confirmBtn.disabled = false;
                 
-                // Scroll pozisyonunu geri yükle
+                // Scroll pozisyonunu derhal geri yükle
                 setTimeout(() => {
-                    const scrollPos = parseInt(document.body.style.top || '0') * -1;
                     document.body.classList.remove('modal-open-fixed');
                     document.body.style.top = '';
-                    window.scrollTo(0, scrollPos);
-                }, 150);
-            }, 500);
+                    window.scrollTo(0, savedScrollPosition);
+                    
+                    // Reset loading state
+                    confirmBtn.querySelector('.confirm-text').classList.remove('d-none');
+                    confirmBtn.querySelector('.loading-text').classList.add('d-none');
+                    confirmBtn.disabled = false;
+                }, 50);
+            }, 300);
         };
-        
-        // Scroll pozisyonunu koru
-        const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-        document.body.style.top = `-${scrollPosition}px`;
-        document.body.classList.add('modal-open-fixed');
         
         modal.show();
     }
     
-    // Custom event listener
-    document.addEventListener('showLanguageModal', function(e) {
-        const { action, languageId, languageName } = e.detail;
-        openModalWithConfig(action, languageId, languageName);
-    });
-    
-    // Global fonksiyonu da burada tanımla (DOMContentLoaded sonrası için)
+    // Tek global fonksiyon tanımla
     window.showLanguageActionModal = function(action, languageId, languageName) {
         openModalWithConfig(action, languageId, languageName);
     };
-    
-    // Modal kapanma olaylarını dinle
-    modalElement.addEventListener('hidden.bs.modal', function() {
-        // Scroll pozisyonunu geri yükle
-        const scrollPos = parseInt(document.body.style.top || '0') * -1;
-        document.body.classList.remove('modal-open-fixed');
-        document.body.style.top = '';
-        if (scrollPos > 0) {
-            window.scrollTo(0, scrollPos);
-        }
-    });
-    
-    // jQuery için modal kapanma olayı
-    if (typeof jQuery !== 'undefined') {
-        $(modalElement).on('hidden.bs.modal', function() {
-            const scrollPos = parseInt(document.body.style.top || '0') * -1;
-            document.body.classList.remove('modal-open-fixed');
-            document.body.style.top = '';
-            if (scrollPos > 0) {
-                window.scrollTo(0, scrollPos);
-            }
-        });
-    }
-});
+    }); // DOMContentLoaded içi bitiş
+} // Singleton if bitiş
 </script>
 
 <style>

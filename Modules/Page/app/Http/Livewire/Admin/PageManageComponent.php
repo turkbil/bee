@@ -38,6 +38,28 @@ class PageManageComponent extends Component
    public $seo_description = '';
    public $seo_keywords = '';
    public $canonical_url = '';
+   
+   // Open Graph & Twitter Cards
+   public $og_title = '';
+   public $og_description = '';
+   public $og_image = '';
+   public $og_type = 'website';
+   public $twitter_title = '';
+   public $twitter_description = '';
+   public $twitter_image = '';
+   public $twitter_card = 'summary_large_image';
+   
+   // SEO Image Files for upload
+   public $seoImageFiles = [
+       'og_image' => null,
+       'twitter_image' => null
+   ];
+   
+   // Robots Meta - SEO açısından optimal varsayılan değerler
+   public $robots_index = true;        // ✅ Aktif - Arama motorlarında görünsün
+   public $robots_follow = true;       // ✅ Aktif - Linkleri takip etsin
+   public $robots_snippet = true;      // ✅ Aktif - Arama sonuçlarında özet göstersin
+   public $robots_imageindex = true;
   
   // SEO Cache - Tüm dillerin SEO verileri (Performance Optimization)
   public $seoDataCache = [];
@@ -90,6 +112,89 @@ class PageManageComponent extends Component
        'set-continue-mode' => 'setContinueMode',
        'translate-content' => 'translateContent'
    ];
+
+   /**
+    * SEO Image File Upload Handlers
+    */
+   public function updatedSeoImageFiles($value, $name)
+   {
+       // $name = 'og_image' veya 'twitter_image'
+       \Log::info('📁 SEO image file uploaded', [
+           'field' => $name,
+           'file' => $value ? get_class($value) : 'null',
+           'current_language' => $this->currentLanguage
+       ]);
+
+       if ($value) {
+           try {
+               // Dosyayı storage'a kaydet ve URL al
+               $imageUrl = $this->processImageUpload($value, $name);
+               
+               if ($imageUrl) {
+                   // SEO cache'e kaydet
+                   $this->seoDataCache[$this->currentLanguage][$name] = $imageUrl;
+                   
+                   // Success event dispatch
+                   $this->dispatch('seoImageUploaded', [
+                       'type' => $name,
+                       'url' => $imageUrl,
+                       'language' => $this->currentLanguage
+                   ]);
+                   
+                   $this->dispatch('toast', [
+                       'title' => 'Başarılı',
+                       'message' => ($name === 'og_image' ? 'Sosyal medya resmi' : 'Twitter resmi') . ' yüklendi',
+                       'type' => 'success'
+                   ]);
+                   
+                   \Log::info('✅ SEO image uploaded successfully', [
+                       'field' => $name,
+                       'url' => $imageUrl,
+                       'language' => $this->currentLanguage
+                   ]);
+               }
+               
+           } catch (\Exception $e) {
+               \Log::error('❌ SEO image upload error', [
+                   'field' => $name,
+                   'error' => $e->getMessage()
+               ]);
+               
+               $this->dispatch('toast', [
+                   'title' => 'Hata',
+                   'message' => 'Resim yükleme başarısız: ' . $e->getMessage(),
+                   'type' => 'error'
+               ]);
+           }
+           
+           // Clear temporary file
+           $this->seoImageFiles[$name] = null;
+       }
+   }
+
+   /**
+    * Process image upload and return URL
+    */
+   protected function processImageUpload($file, $fieldType)
+   {
+       // Dosya doğrulama
+       $this->validateOnly("seoImageFiles.{$fieldType}", [
+           "seoImageFiles.{$fieldType}" => 'image|max:2048' // 2MB limit
+       ]);
+
+       // Dosya adını oluştur
+       $extension = $file->getClientOriginalExtension();
+       $filename = 'seo_' . $fieldType . '_' . time() . '.' . $extension;
+       
+       // Public storage'a kaydet
+       $path = $file->storeAs('seo-images', $filename, 'public');
+       
+       if ($path) {
+           return asset('storage/' . $path);
+       }
+       
+       throw new \Exception('Dosya kaydedilemedi');
+   }
    
    /**
     * SEO Keywords Updated Handler
@@ -279,6 +384,7 @@ class PageManageComponent extends Component
                        'seo_title' => $titles[$lang] ?? '',
                        'seo_description' => $descriptions[$lang] ?? '',
                        'seo_keywords' => $keywordString,
+                       'focus_keywords' => $seoSettings->focus_keywords[$lang] ?? '',
                        'canonical_url' => $seoSettings->canonical_url ?? ''
                    ];
                }
@@ -295,6 +401,7 @@ class PageManageComponent extends Component
                        'seo_title' => '',
                        'seo_description' => '',
                        'seo_keywords' => '',
+                       'focus_keywords' => '',
                        'canonical_url' => ''
                    ];
                }
@@ -329,6 +436,12 @@ class PageManageComponent extends Component
        $this->seo_keywords = '';
        $this->canonical_url = '';
        
+       // ✅ ROBOTS META İÇİN GOOGLE SEO VARSAYILAN DEĞERLERİ
+       $this->robots_index = true;          // ✅ Aktif - Arama motorlarında görünsün  
+       $this->robots_follow = true;         // ✅ Aktif - Linkleri takip etsin
+       $this->robots_snippet = true;        // ✅ Aktif - Arama sonuçlarında özet göstersin
+       $this->robots_imageindex = true;     // ✅ Aktif - Resimleri indekslesin
+       
        // SEO cache'i de başlat - her dil için boş veri
        foreach ($this->availableLanguages as $lang) {
            $this->seoDataCache[$lang] = [
@@ -339,8 +452,22 @@ class PageManageComponent extends Component
                'og_title' => '',
                'og_description' => '',
                'og_image' => '',
-               'robots_meta' => 'index, follow, archive, snippet, imageindex',
-               'focus_keyword' => '',
+               'og_type' => 'website',
+               'twitter_title' => '',
+               'twitter_description' => '',
+               'twitter_image' => '',
+               'twitter_card' => 'summary_large_image',
+               // Google SEO optimal varsayılanlar
+               'robots_index' => true,
+               'robots_follow' => true,
+               'robots_snippet' => true,
+               'robots_imageindex' => true,
+               // ✅ 2025 AI CRAWLER PERMISSIONS (Varsayılan: İZİNLİ)
+               'allow_gptbot' => true,          // ChatGPT crawling izni
+               'allow_claudebot' => true,       // Claude crawling izni  
+               'allow_google_extended' => true, // Bard/Gemini crawling izni
+               'allow_bingbot_ai' => true,      // Bing AI crawling izni
+               'focus_keywords' => '',
                'auto_generate' => false
            ];
        }
@@ -540,6 +667,7 @@ class PageManageComponent extends Component
           'titles' => [],
           'descriptions' => [],
           'keywords' => [],
+          'focus_keywords' => [],
           'canonical_url' => $this->seoDataCache[$this->currentLanguage]['canonical_url'] ?? ''
       ];
       
@@ -556,6 +684,9 @@ class PageManageComponent extends Component
               } else {
                   $allLanguagesSeoData['keywords'][$lang] = [];
               }
+              
+              // Focus Keywords ekle
+              $allLanguagesSeoData['focus_keywords'][$lang] = $this->seoDataCache[$lang]['focus_keywords'] ?? '';
           }
       }
       
@@ -603,6 +734,7 @@ class PageManageComponent extends Component
                       'title' => $allLanguagesSeoData['titles'][$lang] ?? '',
                       'description' => $allLanguagesSeoData['descriptions'][$lang] ?? '', 
                       'keywords' => implode(', ', $allLanguagesSeoData['keywords'][$lang] ?? []),
+                      'focus_keywords' => $allLanguagesSeoData['focus_keywords'][$lang] ?? '',
                       'canonical_url' => $allLanguagesSeoData['canonical_url']
                   ];
                   
@@ -1069,6 +1201,117 @@ class PageManageComponent extends Component
                    'seoDataCache_updated' => true
                ]);
                break;
+           case 'focus_keywords':
+               $this->seoDataCache[$language]['focus_keywords'] = $value;
+               \Log::info('✅ Focus Keywords güncellendi:', [
+                   'language' => $language,
+                   'value' => $value,
+                   'length' => strlen($value),
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+           
+           // OPEN GRAPH ALANLARI - Çoklu Dil
+           case 'og_title':
+               $this->seoDataCache[$language]['og_title'] = $value;
+               \Log::info('✅ OG Title güncellendi:', [
+                   'language' => $language,
+                   'value' => $value,
+                   'length' => strlen($value),
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+           
+           case 'og_description':
+               $this->seoDataCache[$language]['og_description'] = $value;
+               \Log::info('✅ OG Description güncellendi:', [
+                   'language' => $language,
+                   'value' => $value,
+                   'length' => strlen($value),
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+           
+           // OPEN GRAPH & TWITTER - Tek Alan (Dil Bağımsız)
+           case 'og_image':
+               $this->seoDataCache[$language]['og_image'] = $value;
+               \Log::info('✅ OG Image güncellendi:', [
+                   'value' => $value,
+                   'is_valid_url' => filter_var($value, FILTER_VALIDATE_URL) !== false,
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+               
+           case 'og_type':
+               $this->seoDataCache[$language]['og_type'] = $value;
+               \Log::info('✅ OG Type güncellendi:', [
+                   'value' => $value,
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+           
+           case 'twitter_title':
+               $this->seoDataCache[$language]['twitter_title'] = $value;
+               \Log::info('✅ Twitter Title güncellendi:', [
+                   'value' => $value,
+                   'length' => strlen($value),
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+               
+           case 'twitter_description':
+               $this->seoDataCache[$language]['twitter_description'] = $value;
+               \Log::info('✅ Twitter Description güncellendi:', [
+                   'value' => $value,
+                   'length' => strlen($value),
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+               
+           case 'twitter_image':
+               $this->seoDataCache[$language]['twitter_image'] = $value;
+               \Log::info('✅ Twitter Image güncellendi:', [
+                   'value' => $value,
+                   'is_valid_url' => filter_var($value, FILTER_VALIDATE_URL) !== false,
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+               
+           case 'twitter_card':
+               $this->seoDataCache[$language]['twitter_card'] = $value;
+               \Log::info('✅ Twitter Card güncellendi:', [
+                   'value' => $value,
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+           
+           // ROBOTS META - Boolean Alanlar
+           case 'robots_index':
+           case 'robots_follow':  
+           case 'robots_imageindex':
+           case 'robots_snippet':
+               $this->seoDataCache[$language][$field] = (bool)$value;
+               \Log::info('✅ Robots Meta güncellendi:', [
+                   'field' => $field,
+                   'value' => (bool)$value,
+                   'seoDataCache_updated' => true
+               ]);
+               break;
+
+           // ✅ 2025 AI CRAWLER PERMISSIONS - Boolean Alanlar
+           case 'allow_gptbot':       // ChatGPT crawling izni
+           case 'allow_claudebot':    // Claude crawling izni
+           case 'allow_google_extended': // Bard/Gemini crawling izni
+           case 'allow_bingbot_ai':   // Bing AI crawling izni
+               $this->seoDataCache[$language][$field] = (bool)$value;
+               \Log::info('✅ AI Crawler Permission güncellendi:', [
+                   'field' => $field,
+                   'value' => (bool)$value,
+                   'crawler_type' => str_replace('allow_', '', $field),
+                   'seoDataCache_updated' => true,
+                   'ai_crawler_2025' => true
+               ]);
+               break;
            default:
                \Log::warning('❌ Bilinmeyen SEO field:', $field);
        }
@@ -1410,6 +1653,21 @@ class PageManageComponent extends Component
                                );
                                $this->seoDataCache[$targetLang]['seo_keywords'] = $translatedSeoKeywords;
                                \Log::info("✅ SEO Keywords çevrildi: {$targetLang}");
+                           }
+                       }
+
+                       // Focus Keywords çevir
+                       if (!empty(trim($sourceSeo['focus_keywords'] ?? ''))) {
+                           $existingFocusKeywords = $this->seoDataCache[$targetLang]['focus_keywords'] ?? '';
+                           if (empty(trim($existingFocusKeywords)) || $overwriteExisting) {
+                               $translatedFocusKeywords = $this->aiService->translateText(
+                                   $sourceSeo['focus_keywords'],
+                                   $sourceLanguage,
+                                   $targetLang,
+                                   ['context' => 'focus_keywords']
+                               );
+                               $this->seoDataCache[$targetLang]['focus_keywords'] = $translatedFocusKeywords;
+                               \Log::info("✅ Focus Keywords çevrildi: {$targetLang}");
                            }
                        }
 

@@ -27,6 +27,9 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'default_ai_provider_id' => 'integer',
         'ai_settings' => 'array',
         'ai_tokens_balance' => 'integer',
+        'ai_credits_balance' => 'decimal:4',
+        'ai_credits_used_this_month' => 'decimal:4',
+        'ai_monthly_credit_limit' => 'decimal:4',
         'ai_tokens_used_this_month' => 'integer',
         'ai_monthly_token_limit' => 'integer',
         'ai_enabled' => 'boolean',
@@ -251,5 +254,37 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         }
 
         return $this->ai_tokens_used_this_month >= $this->ai_monthly_token_limit;
+    }
+
+    /**
+     * Decrement AI credits from balance
+     */
+    public function decrementCredit(float $amount): bool
+    {
+        if ($this->ai_credits_balance < $amount) {
+            return false; // Insufficient credits
+        }
+
+        $this->ai_credits_balance = max(0, $this->ai_credits_balance - $amount);
+        $this->ai_credits_used_this_month = $this->ai_credits_used_this_month + $amount;
+        $this->ai_last_used_at = now();
+        
+        return $this->save();
+    }
+
+    /**
+     * Get current AI credits balance
+     */
+    public function getCreditBalance(): float
+    {
+        return (float) $this->ai_credits_balance;
+    }
+
+    /**
+     * Check if tenant has enough credits
+     */
+    public function hasEnoughCredits(float $amount): bool
+    {
+        return $this->ai_credits_balance >= $amount;
     }
 }

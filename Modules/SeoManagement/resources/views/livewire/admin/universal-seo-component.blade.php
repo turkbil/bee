@@ -33,83 +33,389 @@
                             
                             {{-- Basic SEO Tab --}}
                             <x-slot name="basic_seo">
+                                {{-- TEMEL SEO ALANLARI --}}
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-star me-2"></i>Temel SEO Ayarları
+                                            <small class="opacity-75 ms-2">Mutlaka doldurulması gerekenler</small>
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            {{-- Meta Title --}}
+                                            <div class="col-12 mb-3">
+                                                <div class="form-floating">
+                                                    <input type="text" 
+                                                           wire:model.live="multiLangInputs.{{ $currentLanguage }}.title"
+                                                           class="form-control seo-no-enter @error('multiLangInputs.' . $currentLanguage . '.title') is-invalid @enderror"
+                                                           placeholder="Google'da gözükecek başlık"
+                                                           maxlength="60">
+                                                    <label>
+                                                        <i class="fas fa-heading me-1"></i>
+                                                        Meta Title ({{ strtoupper($currentLanguage) }})
+                                                        <small class="text-muted">50-60 karakter</small>
+                                                    </label>
+                                                    <div class="form-text">
+                                                        <small class="text-info">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            Google arama sonuçlarında gözüken başlık. Tıklanmak isteyecek şekilde yazın.
+                                                        </small>
+                                                    </div>
+                                                    @error('multiLangInputs.' . $currentLanguage . '.title')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            {{-- Meta Description --}}
+                                            <div class="col-12 mb-3">
+                                                <div class="form-floating">
+                                                    <input type="text" 
+                                                           wire:model.live="multiLangInputs.{{ $currentLanguage }}.description"
+                                                           class="form-control seo-no-enter @error('multiLangInputs.' . $currentLanguage . '.description') is-invalid @enderror"
+                                                           placeholder="Google'da başlığın altında gözükecek açıklama"
+                                                           maxlength="160">
+                                                    <label>
+                                                        <i class="fas fa-align-left me-1"></i>
+                                                        Meta Description ({{ strtoupper($currentLanguage) }})
+                                                        <small class="text-muted">150-160 karakter</small>
+                                                    </label>
+                                                    <div class="form-text">
+                                                        <small class="text-info">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            Google'da başlığın altında gözüken açıklama. İnsanı tıklamaya teşvik etmeli.
+                                                        </small>
+                                                    </div>
+                                                    @error('multiLangInputs.' . $currentLanguage . '.description')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            {{-- Keywords --}}
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">
+                                                    <i class="fas fa-tags me-1"></i>
+                                                    Keywords ({{ strtoupper($currentLanguage) }})
+                                                    <small class="text-muted">Virgül ile ayırın</small>
+                                                </label>
+                                                <input type="text" 
+                                                       wire:model.live="multiLangInputs.{{ $currentLanguage }}.keywords"
+                                                       class="form-control seo-no-enter @error('multiLangInputs.' . $currentLanguage . '.keywords') is-invalid @enderror"
+                                                       placeholder="anahtar1, anahtar2, anahtar3">
+                                                <div class="form-text">
+                                                    <small class="text-info">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        5-10 kelime yeterli. Sayfanızın hangi kelimelerle bulunacağını belirler.
+                                                    </small>
+                                                </div>
+                                                @error('multiLangInputs.' . $currentLanguage . '.keywords')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                            {{-- Focus Keyword --}}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-floating">
+                                                    <input type="text" 
+                                                           wire:model.live="seoData.focus_keyword"
+                                                           class="form-control seo-no-enter @error('seoData.focus_keyword') is-invalid @enderror"
+                                                           placeholder="Ana odaklanılan kelime">
+                                                    <label>
+                                                        <i class="fas fa-bullseye me-1"></i>
+                                                        Focus Keyword (Odak Kelime)
+                                                    </label>
+                                                    <div class="form-text">
+                                                        <small class="text-info">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            Sayfanın ana odaklandığı tek kelime. Bu kelimeyi sayfada 3-5 kez geçirin.
+                                                        </small>
+                                                    </div>
+                                                    @error('seoData.focus_keyword')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            {{-- Priority --}}
+                                            <div class="col-md-6 mb-0">
+                                                <div class="form-floating">
+                                                    <select wire:model.live="seoData.priority" class="form-select">
+                                                        <option value="low">📗 Düşük (Blog yazıları, arşiv)</option>
+                                                        <option value="medium">📘 Orta (Ürün, kategori sayfaları)</option>
+                                                        <option value="high">📙 Yüksek (Ana sayfa, önemli kategoriler)</option>
+                                                        <option value="critical">📕 Kritik (Kampanya, en önemli sayfalar)</option>
+                                                    </select>
+                                                    <label>
+                                                        <i class="fas fa-flag me-1"></i>
+                                                        SEO Önceliği
+                                                    </label>
+                                                    <div class="form-text">
+                                                        <small class="text-info">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            Hangi sayfaların daha önemli olduğunu belirler. Kritik sayfalar önce optimize edilir.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- DIVIDER --}}
+                                <div class="text-center my-4">
+                                    <div class="border-top border-3 border-secondary position-relative">
+                                        <span class="bg-body px-4 position-absolute top-50 start-50 translate-middle text-secondary fw-bold">
+                                            <i class="fas fa-cogs me-2"></i>GELİŞMİŞ SEO AYARLARI<i class="fas fa-cogs ms-2"></i>
+                                        </span>
+                                    </div>
+                                    <small class="text-muted d-block mt-3">
+                                        Aşağıdaki alanlar isteğe bağlıdır. Daha detaylı SEO kontrolü için kullanın.
+                                    </small>
+                                </div>
+
+                                {{-- GELİŞMİŞ SEO ALANLARI --}}
                                 <div class="row">
-                                    {{-- Meta Title --}}
+                                    {{-- Social Media Card --}}
+                                    <div class="col-12 mb-4">
+                                        <div class="card border-info">
+                                            <div class="card-header bg-info text-white">
+                                                <h6 class="mb-0">
+                                                    <i class="fab fa-facebook me-2"></i>Sosyal Medya Paylaşımı
+                                                    <small class="opacity-75 ms-2">Facebook, WhatsApp, LinkedIn</small>
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    {{-- Open Graph Title --}}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="text" 
+                                                                   wire:model.live="multiLangInputs.{{ $currentLanguage }}.og_title"
+                                                                   class="form-control seo-no-enter @error('multiLangInputs.' . $currentLanguage . '.og_title') is-invalid @enderror"
+                                                                   placeholder="Sosyal medyada gözükecek başlık"
+                                                                   maxlength="60">
+                                                            <label>
+                                                                Open Graph Başlık ({{ strtoupper($currentLanguage) }})
+                                                            </label>
+                                                            <div class="form-text">
+                                                                <small class="text-muted">Boş bırakılırsa SEO başlığı kullanılır</small>
+                                                            </div>
+                                                            @error('multiLangInputs.' . $currentLanguage . '.og_title')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Open Graph Description --}}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="text" 
+                                                                   wire:model.live="multiLangInputs.{{ $currentLanguage }}.og_description"
+                                                                   class="form-control seo-no-enter @error('multiLangInputs.' . $currentLanguage . '.og_description') is-invalid @enderror"
+                                                                   placeholder="Sosyal medyada gözükecek açıklama"
+                                                                   maxlength="160">
+                                                            <label>
+                                                                Open Graph Açıklama ({{ strtoupper($currentLanguage) }})
+                                                            </label>
+                                                            <div class="form-text">
+                                                                <small class="text-muted">Boş bırakılırsa SEO açıklaması kullanılır</small>
+                                                            </div>
+                                                            @error('multiLangInputs.' . $currentLanguage . '.og_description')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Open Graph Image --}}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="url" 
+                                                                   wire:model.live="seoData.og_image"
+                                                                   class="form-control seo-no-enter @error('seoData.og_image') is-invalid @enderror"
+                                                                   placeholder="https://site.com/resim.jpg">
+                                                            <label>
+                                                                <i class="fas fa-image me-1"></i>
+                                                                Open Graph Resim URL
+                                                            </label>
+                                                            <div class="form-text">
+                                                                <small class="text-info">Sosyal medyada paylaşılınca gözükecek resim</small>
+                                                            </div>
+                                                            @error('seoData.og_image')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Open Graph Type --}}
+                                                    <div class="col-md-6 mb-0">
+                                                        <div class="form-floating">
+                                                            <select wire:model.live="seoData.og_type" class="form-select">
+                                                                <option value="website">🌐 Website (Genel site sayfaları)</option>
+                                                                <option value="article">📰 Article (Blog yazıları, makaleler)</option>
+                                                                <option value="product">🛍️ Product (Ürün sayfaları)</option>
+                                                                <option value="profile">👤 Profile (Profil sayfaları)</option>
+                                                            </select>
+                                                            <label>Open Graph Türü</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Twitter Card --}}
+                                    <div class="col-12 mb-4">
+                                        <div class="card border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <h6 class="mb-0">
+                                                    <i class="fab fa-twitter me-2"></i>Twitter Cards
+                                                    <small class="opacity-75 ms-2">Twitter'a özel ayarlar</small>
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    {{-- Twitter Card Type --}}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-floating">
+                                                            <select wire:model.live="seoData.twitter_card" class="form-select">
+                                                                <option value="summary">📝 Summary (Küçük kart)</option>
+                                                                <option value="summary_large_image">🖼️ Large Image (Büyük resimli kart)</option>
+                                                                <option value="app">📱 App (Uygulama kartı)</option>
+                                                                <option value="player">▶️ Player (Video/ses oynatıcı)</option>
+                                                            </select>
+                                                            <label>Twitter Card Türü</label>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Twitter Title --}}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="text" 
+                                                                   wire:model.live="seoData.twitter_title"
+                                                                   class="form-control seo-no-enter @error('seoData.twitter_title') is-invalid @enderror"
+                                                                   placeholder="Twitter'da gözükecek başlık"
+                                                                   maxlength="60">
+                                                            <label>Twitter Başlık</label>
+                                                            @error('seoData.twitter_title')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Twitter Description --}}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="text" 
+                                                                   wire:model.live="seoData.twitter_description"
+                                                                   class="form-control seo-no-enter @error('seoData.twitter_description') is-invalid @enderror"
+                                                                   placeholder="Twitter'da gözükecek açıklama"
+                                                                   maxlength="160">
+                                                            <label>Twitter Açıklama</label>
+                                                            @error('seoData.twitter_description')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Twitter Image --}}
+                                                    <div class="col-md-6 mb-0">
+                                                        <div class="form-floating">
+                                                            <input type="url" 
+                                                                   wire:model.live="seoData.twitter_image"
+                                                                   class="form-control seo-no-enter @error('seoData.twitter_image') is-invalid @enderror"
+                                                                   placeholder="https://site.com/twitter-resim.jpg">
+                                                            <label>
+                                                                <i class="fas fa-image me-1"></i>
+                                                                Twitter Resim URL
+                                                            </label>
+                                                            @error('seoData.twitter_image')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Technical SEO Card --}}
                                     <div class="col-12 mb-3">
-                                        <div class="form-floating">
-                                            <input type="text" 
-                                                   wire:model.live="multiLangInputs.{{ $currentLanguage }}.title"
-                                                   class="form-control @error('multiLangInputs.' . $currentLanguage . '.title') is-invalid @enderror"
-                                                   placeholder="{{ __('admin.seo_title') }}"
-                                                   maxlength="60">
-                                            <label>
-                                                {{ __('admin.seo_title') }} ({{ strtoupper($currentLanguage) }})
-                                                <small class="text-muted">0-60 karakter</small>
-                                            </label>
-                                            @error('multiLangInputs.' . $currentLanguage . '.title')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                        <div class="card border-warning">
+                                            <div class="card-header bg-warning text-dark">
+                                                <h6 class="mb-0">
+                                                    <i class="fas fa-cogs me-2"></i>Teknik SEO
+                                                    <small class="opacity-75 ms-2">İleri seviye ayarlar</small>
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    {{-- Canonical URL --}}
+                                                    <div class="col-12 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="url" 
+                                                                   wire:model.live="seoData.canonical_url"
+                                                                   class="form-control seo-no-enter @error('seoData.canonical_url') is-invalid @enderror"
+                                                                   placeholder="https://site.com/asil-sayfa-adresi">
+                                                            <label>
+                                                                <i class="fas fa-link me-1"></i>
+                                                                Canonical URL (Asıl Adres)
+                                                            </label>
+                                                            <div class="form-text">
+                                                                <small class="text-info">
+                                                                    <i class="fas fa-info-circle me-1"></i>
+                                                                    Google'a "bu sayfanın asıl adresi budur" der. Aynı içerik birden fazla adreste varsa kullanın.
+                                                                </small>
+                                                            </div>
+                                                            @error('seoData.canonical_url')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
 
-                                    {{-- Meta Description --}}
-                                    <div class="col-12 mb-3">
-                                        <div class="form-floating">
-                                            <textarea wire:model.live="multiLangInputs.{{ $currentLanguage }}.description"
-                                                      class="form-control @error('multiLangInputs.' . $currentLanguage . '.description') is-invalid @enderror"
-                                                      placeholder="{{ __('admin.seo_description') }}"
-                                                      style="height: 100px"
-                                                      maxlength="160"></textarea>
-                                            <label>
-                                                {{ __('admin.seo_description') }} ({{ strtoupper($currentLanguage) }})
-                                                <small class="text-muted">0-160 karakter</small>
-                                            </label>
-                                            @error('multiLangInputs.' . $currentLanguage . '.description')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                                    {{-- Additional Keywords --}}
+                                                    <div class="col-12 mb-3">
+                                                        <label class="form-label">
+                                                            <i class="fas fa-plus-circle me-1"></i>
+                                                            Additional Keywords (Ek Anahtar Kelimeler)
+                                                            <small class="text-muted">Virgül ile ayırın</small>
+                                                        </label>
+                                                        <input type="text" 
+                                                               wire:model.live="seoData.additional_keywords"
+                                                               class="form-control seo-no-enter @error('seoData.additional_keywords') is-invalid @enderror"
+                                                               placeholder="ek kelime1, ek kelime2, ilgili terim">
+                                                        <div class="form-text">
+                                                            <small class="text-info">
+                                                                <i class="fas fa-info-circle me-1"></i>
+                                                                Ana kelimenin yanında ilgili kelimeler. LSI (ilgili) kelimeler, doğal geçirin.
+                                                            </small>
+                                                        </div>
+                                                        @error('seoData.additional_keywords')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
-                                    {{-- Keywords --}}
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">
-                                            {{ __('admin.seo_keywords') }} ({{ strtoupper($currentLanguage) }})
-                                            <small class="text-muted">Virgül ile ayırın</small>
-                                        </label>
-                                        <input type="text" 
-                                               wire:model.live="multiLangInputs.{{ $currentLanguage }}.keywords"
-                                               class="form-control @error('multiLangInputs.' . $currentLanguage . '.keywords') is-invalid @enderror"
-                                               placeholder="anahtar1, anahtar2, anahtar3">
-                                        @error('multiLangInputs.' . $currentLanguage . '.keywords')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-
-                                    {{-- Focus Keyword --}}
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-floating">
-                                            <input type="text" 
-                                                   wire:model.live="seoData.focus_keyword"
-                                                   class="form-control @error('seoData.focus_keyword') is-invalid @enderror"
-                                                   placeholder="Odak anahtar kelime">
-                                            <label>Odak Anahtar Kelime</label>
-                                            @error('seoData.focus_keyword')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- Priority --}}
-                                    <div class="col-md-6 mb-3">
-                                        <div class="form-floating">
-                                            <select wire:model.live="seoData.priority" class="form-select">
-                                                <option value="low">Düşük</option>
-                                                <option value="medium">Orta</option>
-                                                <option value="high">Yüksek</option>
-                                                <option value="critical">Kritik</option>
-                                            </select>
-                                            <label>SEO Önceliği</label>
+                                                    {{-- Auto Optimize Switch --}}
+                                                    <div class="col-12 mb-0">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" 
+                                                                   wire:model.live="seoData.auto_optimize" id="autoOptimize">
+                                                            <label class="form-check-label" for="autoOptimize">
+                                                                <i class="fas fa-magic me-1"></i>
+                                                                <strong>Auto Optimize (Otomatik Optimizasyon)</strong>
+                                                            </label>
+                                                            <div class="form-text">
+                                                                <small class="text-info">
+                                                                    <i class="fas fa-info-circle me-1"></i>
+                                                                    Açık olursa: AI sistemi sayfayı otomatik iyileştirir ve öneriler verir.<br>
+                                                                    Kapalı olursa: Manuel olarak siz yönetirsiniz.
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -300,10 +606,19 @@
 
                                     {{-- Schema Markup --}}
                                     <div class="col-12 mb-3">
-                                        <label class="form-label">
-                                            Schema Markup (JSON-LD)
-                                            <small class="text-muted">Geçerli JSON formatında yapılandırılmış veri</small>
-                                        </label>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label mb-0">
+                                                Schema Markup (JSON-LD)
+                                                <small class="text-muted">Geçerli JSON formatında yapılandırılmış veri</small>
+                                            </label>
+                                            @if($model)
+                                                <button type="button" 
+                                                        wire:click="generateAutoSchema" 
+                                                        class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-magic me-1"></i>Otomatik Oluştur
+                                                </button>
+                                            @endif
+                                        </div>
                                         <textarea wire:model.live="seoData.schema_markup"
                                                   class="form-control @error('seoData.schema_markup') is-invalid @enderror"
                                                   placeholder='{"@context": "https://schema.org", "@type": "Article", "headline": "Başlık"}'
@@ -311,6 +626,13 @@
                                         @error('seoData.schema_markup')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
+                                        @if(!empty($seoData['schema_markup']))
+                                            <div class="form-text">
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Schema markup başarıyla yüklendi
+                                                </small>
+                                            </div>
+                                        @endif
                                     </div>
 
                                     {{-- Additional Keywords --}}

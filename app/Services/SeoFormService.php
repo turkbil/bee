@@ -72,8 +72,8 @@ class SeoFormService
                 'robots_follow' => $seoSettings->robots_follow ?? true,
                 'robots_archive' => $seoSettings->robots_archive ?? true,
                 'auto_generate' => $seoSettings->auto_generate ?? false,
-                'og_title' => $seoSettings->og_title ?? '',
-                'og_description' => $seoSettings->og_description ?? '',
+                'og_titles' => $seoSettings->og_titles ?? '',
+                'og_descriptions' => $seoSettings->og_descriptions ?? '',
                 'og_image' => $seoSettings->og_image ?? '',
                 'og_type' => $seoSettings->og_type ?? 'website',
                 'twitter_card' => $seoSettings->twitter_card ?? 'summary',
@@ -99,8 +99,8 @@ class SeoFormService
             'robots_follow' => true,
             'robots_archive' => true,
             'auto_generate' => false,
-            'og_title' => '',
-            'og_description' => '',
+            'og_titles' => '',
+            'og_descriptions' => '',
             'og_image' => '',
             'og_type' => 'website',
             'twitter_card' => 'summary',
@@ -132,8 +132,8 @@ class SeoFormService
                 'robots_follow' => $seoData['robots_follow'] ?? true,
                 'robots_archive' => $seoData['robots_archive'] ?? true,
                 'auto_generate' => $seoData['auto_generate'] ?? false,
-                'og_title' => $seoData['og_title'] ?? '',
-                'og_description' => $seoData['og_description'] ?? '',
+                'og_titles' => $seoData['og_titles'] ?? '',
+                'og_descriptions' => $seoData['og_descriptions'] ?? '',
                 'og_image' => $seoData['og_image'] ?? '',
                 'og_type' => $seoData['og_type'] ?? 'website',
                 'twitter_card' => $seoData['twitter_card'] ?? 'summary',
@@ -201,8 +201,8 @@ class SeoFormService
             'robots_follow' => 'boolean',
             'robots_archive' => 'boolean',
             'auto_generate' => 'boolean',
-            'og_title' => 'nullable|string|max:60',
-            'og_description' => 'nullable|string|max:160',
+            'og_titles' => 'nullable|string|max:60',
+            'og_descriptions' => 'nullable|string|max:160',
             'og_image' => 'nullable|url|max:500',
             'og_type' => 'nullable|string|in:website,article,product',
             'twitter_card' => 'nullable|string|in:summary,summary_large_image,app,player',
@@ -274,7 +274,7 @@ class SeoFormService
         }
         
         // Open Graph kontrolü (10 puan)
-        if (!empty($seoSettings->og_title) && !empty($seoSettings->og_description)) {
+        if (!empty($seoSettings->og_titles) && !empty($seoSettings->og_descriptions)) {
             $score += 10;
         }
         

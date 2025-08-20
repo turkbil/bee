@@ -13,11 +13,11 @@
             <div class="col-auto ms-auto d-print-none">
                 <div class="btn-list">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
-                        <i class="ti ti-plus"></i>
+                        <i class="fa-solid fa-plus"></i>
                         Yeni Template
                     </button>
                     <button type="button" class="btn btn-success" onclick="refreshSystemCache()">
-                        <i class="ti ti-refresh"></i>
+                        <i class="fa-solid fa-rotate-right"></i>
                         Cache Yenile
                     </button>
                 </div>
@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="ms-3">
                                         <span class="text-green d-inline-flex align-items-center lh-1">
-                                            85% <i class="ti ti-trending-up ms-1" style="font-size: 0.75rem"></i>
+                                            85% <i class="fa-solid fa-arrow-trend-up ms-1" style="font-size: 0.75rem"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -86,7 +86,7 @@
                                     </div>
                                     <div class="ms-3">
                                         <span class="text-green d-inline-flex align-items-center lh-1">
-                                            +12% <i class="ti ti-trending-up ms-1" style="font-size: 0.75rem"></i>
+                                            +12% <i class="fa-solid fa-arrow-trend-up ms-1" style="font-size: 0.75rem"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
                                     </div>
                                     <div class="ms-3">
                                         <span class="text-green d-inline-flex align-items-center lh-1">
-                                            +5% <i class="ti ti-trending-up ms-1" style="font-size: 0.75rem"></i>
+                                            +5% <i class="fa-solid fa-arrow-trend-up ms-1" style="font-size: 0.75rem"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -243,7 +243,7 @@
                                     </div>
                                     <div class="col-md-6 text-end">
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
-                                            <i class="ti ti-plus"></i>
+                                            <i class="fa-solid fa-plus"></i>
                                             Yeni Template
                                         </button>
                                     </div>
@@ -272,7 +272,7 @@
                                     </div>
                                     <div class="col-md-6 text-end">
                                         <button type="button" class="btn btn-primary btn-sm" onclick="addContextRule()">
-                                            <i class="ti ti-plus"></i>
+                                            <i class="fa-solid fa-plus"></i>
                                             Yeni Kural
                                         </button>
                                     </div>
@@ -496,7 +496,7 @@ function loadFeatures(status = 'all') {
                     </div>
                 </td>
                 <td>
-                    <span class="badge bg-primary-lt">${feature.category}</span>
+                    <span class="badge badge-primary-lt">${feature.category}</span>
                 </td>
                 <td>
                     <span class="badge bg-secondary-lt">${feature.module_type}</span>
@@ -613,7 +613,7 @@ function loadContextRules() {
             <tr>
                 <td>${rule.name}</td>
                 <td>
-                    <span class="badge bg-primary-lt">${rule.type}</span>
+                    <span class="badge badge-primary-lt">${rule.type}</span>
                 </td>
                 <td>
                     <code class="text-secondary">${rule.conditions}</code>

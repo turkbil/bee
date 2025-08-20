@@ -12,6 +12,7 @@ use Spatie\ResponseCache\Facades\ResponseCache;
 use App\Services\ModuleSlugService;
 use App\Traits\HasModuleAccessControl;
 use App\Models\ModuleTenantSetting;
+use App\Services\SeoMetaTagService;
 
 class PageController extends Controller
 {
@@ -30,7 +31,7 @@ class PageController extends Controller
     /**
      * Ana sayfa için is_homepage = 1 olan sayfayı getirir
      */
-    public function homepage()
+    public function homepage(SeoMetaTagService $seoService)
     {
         $isAuthenticated = auth()->check();
         $userId = $isAuthenticated ? auth()->id() : 'guest';
@@ -41,10 +42,33 @@ class PageController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
             
-
+        // SEO meta tags'i ayarla
+        view()->share('currentModel', $page);
         
         try {
-            // Modül adıyla tema yolunu al
+            // Tenant'a göre anasayfa view seçimi
+            $tenantId = tenant()?->id;
+            $tenantSpecificView = null;
+            
+            // Tenant'a özel anasayfa view'ları
+            if ($tenantId == 2) { // a.test - Digital Agency
+                $tenantSpecificView = 'themes.blank.index-tenant2';
+            } elseif ($tenantId == 3) { // b.test - Tech Solutions  
+                $tenantSpecificView = 'themes.blank.index-tenant3';
+            } elseif ($tenantId == 4) { // c.test - SaaS Platform
+                $tenantSpecificView = 'themes.blank.index-tenant4';
+            }
+            
+            // Tenant'a özel view varsa kullan, yoksa varsayılan
+            if ($tenantSpecificView && view()->exists($tenantSpecificView)) {
+                Log::info("🎨 Tenant-specific homepage loaded", [
+                    'tenant_id' => $tenantId,
+                    'view' => $tenantSpecificView
+                ]);
+                return view($tenantSpecificView, ['item' => $page, 'is_homepage' => true]);
+            }
+            
+            // Varsayılan tema yolu
             $viewPath = $this->themeService->getThemeViewPath('show', 'page');
             return view($viewPath, ['item' => $page, 'is_homepage' => true]);
         } catch (\Exception $e) {
@@ -110,8 +134,16 @@ class PageController extends Controller
         }
     }
 
-    public function show($slug, $is_homepage_context = false)
+    public function show($slug, $is_homepage_context = false, SeoMetaTagService $seoService = null)
     {
+        // Debug log ekle
+        Log::info('🔍 PageController::show called', [
+            'slug' => $slug,
+            'request_url' => request()->fullUrl(),
+            'app_locale' => app()->getLocale(),
+            'is_homepage_context' => $is_homepage_context
+        ]);
+        
         // Aktif dili al
         $currentLocale = app()->getLocale();
         
@@ -135,25 +167,39 @@ class PageController extends Controller
                     ->first();
                     
                 if ($item) {
-                    // Farklı dilde bulundu, doğru URL'e redirect et
-                    $correctUrl = $this->generatePageUrl($item, $locale);
-                    return redirect()->to($correctUrl, 301); // 301 = Permanent redirect
+                    // Farklı dilde bulundu, ama kullanıcının seçtiği dilde göster (fallback content ile)
+                    // Redirect etmek yerine mevcut locale'de göster
+                    break; // Döngüden çık ve sayfayı göster
                 }
             }
             
-            // Hiçbir dilde bulunamadı
-            Log::warning("Page not found in any language", [
-                'slug' => $slug,
-                'searched_locales' => $allLocales
-            ]);
-            abort(404, "Page not found for slug '{$slug}'");
+            // Döngü bittikten sonra hala bulunamadıysa 404
+            if (!$item) {
+                Log::warning("Page not found in any language", [
+                    'slug' => $slug,
+                    'searched_locales' => $allLocales
+                ]);
+                abort(404, "Page not found for slug '{$slug}'");
+            }
         }
         
         // Canonical URL kontrolü - doğru slug kullanılıyor mu?
         $expectedSlug = $item->getTranslated('slug', $currentLocale);
+        Log::info('🔍 Canonical URL check', [
+            'slug' => $slug,
+            'expectedSlug' => $expectedSlug,
+            'currentLocale' => $currentLocale,
+            'will_redirect' => $slug !== $expectedSlug
+        ]);
+        
         if ($slug !== $expectedSlug) {
+            $redirectUrl = $this->generatePageUrl($item, $currentLocale);
+            Log::info('🔄 Canonical redirect', [
+                'from' => request()->fullUrl(),
+                'to' => $redirectUrl
+            ]);
             // Yanlış slug ile erişim, doğru URL'e redirect
-            return redirect()->to($this->generatePageUrl($item, $currentLocale));
+            return redirect()->to($redirectUrl);
         }
 
         // Eğer bu sayfa veritabanında ana sayfa olarak işaretlenmişse ($item->is_homepage == true)
@@ -166,6 +212,8 @@ class PageController extends Controller
             return redirect()->route('home');
         }
 
+        // SEO meta tags için model'i global olarak paylaş
+        view()->share('currentModel', $item);
 
         try {
             // Modül adıyla tema yolunu al

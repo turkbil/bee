@@ -565,4 +565,12 @@ return [
     'seo_tab_preview_description' => 'Below you can see how the SEO tab looks in content editing pages:',
     'preview_title' => 'Preview: Content Editing - SEO Tab',
     'preview_note' => 'This is a preview. To make real SEO settings, edit any content and use the SEO tab.',
+    
+    // Pagination
+    'pagination_showing' => 'Showing',
+    'pagination_to' => 'to',
+    'pagination_of' => 'of',
+    'pagination_results' => 'results',
+    'pagination_previous' => 'Previous',
+    'pagination_next' => 'Next',
 ];

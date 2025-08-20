@@ -15,7 +15,7 @@
             var originalError = console.error;
             console.error = function() {
                 var message = String(arguments[0] || '');
-                if (message.toLowerCase().includes('source map') || 
+                if (message.toLowerCase().includes('source map') ||
                     message.includes('bootstrap.esm.js.map') ||
                     message.includes('chart.umd.min.js.map') ||
                     message.includes('ENOENT') ||
@@ -24,12 +24,12 @@
                 }
                 originalError.apply(console, arguments);
             };
-            
+
             // Disable sourcemap requests globally
             if (window.SourceMap) {
                 window.SourceMap = undefined;
             }
-            
+
             // Override fetch to block source map requests
             var originalFetch = window.fetch;
             window.fetch = function(url, options) {
@@ -39,7 +39,7 @@
                 return originalFetch.apply(this, arguments);
             };
         })();
-        
+
         (function() {
             var darkMode = "<?php echo isset($_COOKIE['dark']) ? $_COOKIE['dark'] : 'auto'; ?>";
             if(darkMode === 'auto') {
@@ -64,22 +64,20 @@
             }
         })();
     </script>
-    <!-- Google Fontları - Local -->
-    <link rel="stylesheet" href="{{ asset('frontend-assets/css/google-fonts.css') }}">
     @livewireStyles
     <link rel="stylesheet" href="/admin-assets/css/tabler.min.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/theme-font-size.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/tabler-vendors.min.css?v={{ time() }}">
-    
+
     {{-- Alternate Language Links for SEO (Admin Panel) --}}
     @php
         use App\Helpers\CanonicalHelper;
-        
+
         // Admin panelde model yok, sadece route bazlı alternate link'ler
         $alternateLinks = CanonicalHelper::generateAlternateLinks();
         echo CanonicalHelper::generateAlternateMetaTags($alternateLinks);
     @endphp
-    
+
     <!-- CORE SYSTEM STYLES - DO NOT REMOVE OR MODIFY -->
     <!-- Bu CSS tüm temalarda ve admin panelde zorunludur / This CSS is mandatory everywhere -->
     <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.0">
@@ -94,7 +92,7 @@
     <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/ai-response-templates.css?v={{ time() }}" />
-    
+
     {{-- Global AI Widget System CSS - Auto-load if AI module is active --}}
     @php
         $aiModuleActive = false;
@@ -109,7 +107,7 @@
     <link rel="stylesheet" href="/admin-assets/css/ai-widget.css?v={{ time() }}" />
     @endif
     @stack('styles') @stack('css')
-    
+
     {{-- Module Menu Icon Symmetry CSS --}}
     <style>
         .icon-menu {
@@ -122,24 +120,24 @@
             line-height: 20px;
             vertical-align: middle;
         }
-        
+
         .dropdown-item .icon-menu,
         .dropdown-module-item .icon-menu,
         .btn .icon-menu {
             flex-shrink: 0;
         }
-        
+
         .dropdown-item {
             display: flex;
             align-items: center;
         }
-        
+
         .dropdown-module-item {
             display: flex;
             align-items: center;
             justify-content: flex-start;
         }
-        
+
         :root {
             --primary-color: <?php echo isset($_COOKIE['siteColor']) ? $_COOKIE['siteColor']: '#066fd1';
             ?>;
@@ -152,12 +150,18 @@
             font-family: var(--tblr-font-family);
         }
     </style>
+
+
+    <style>
+      @import url("https://rsms.me/inter/inter.css");
+    </style>
+
 </head>
 <body<?php
     $darkMode = isset($_COOKIE['dark']) ? $_COOKIE['dark'] : 'auto';
     $tableCompact = isset($_COOKIE['tableCompact']) ? $_COOKIE['tableCompact'] : '0';
     $themeFontSize = isset($_COOKIE['themeFontSize']) ? $_COOKIE['themeFontSize'] : 'small';
-    
+
     // Sistem teması kontrolü için PHP tarafında
     $isDark = false;
     if ($darkMode == '1') {
@@ -166,7 +170,7 @@
         // HTTP başlığından tarayıcı tercihini kontrol et (modern tarayıcılar için)
         $isDark = $_SERVER['HTTP_SEC_CH_PREFERS_COLOR_SCHEME'] === 'dark';
     }
-    
+
     if ($isDark) {
         echo ' class="dark' . ($tableCompact == '1' ? ' table-compact' : '') . ' font-size-' . $themeFontSize . '" data-bs-theme="dark"';
     } else if ($darkMode == '0') {
@@ -196,9 +200,12 @@
             transition: width 0.2s ease;
         "></div>
     </div>
-    
+
+    {{-- AI Credit Warning System --}}
+    @livewire('ai::admin.credit-warning-component')
+
     @include('admin.components.navigation')
-    
+
     <div class="page-wrapper">
         @hasSection('pretitle')
         <div class="page-header d-print-none">
@@ -286,9 +293,7 @@
 {{-- 🤖 AI Widget System artık readme/ai-assistant klasöründe --}}
 
 {{-- 🌍 Global AI Translation Modal - Available in all modules --}}
-@if($aiModuleActive ?? false)
-    @include('admin.partials.global-ai-translation-modal')
-@endif
+@include('admin.partials.global-ai-translation-modal')
 
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>
@@ -307,18 +312,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loadingBar = document.getElementById('global-loading-bar');
     const progressBar = document.getElementById('loading-progress');
-    
+
     // Tabler Turbo benzeri loading bar sistemi
     const loader = {
         show: function() {
             loadingBar.style.opacity = '1';
             progressBar.style.width = '10%';
         },
-        
+
         setValue: function(value) {
             progressBar.style.width = (value * 100) + '%';
         },
-        
+
         hide: function() {
             this.setValue(1);
             setTimeout(() => {
@@ -327,71 +332,71 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         }
     };
-    
+
     // Loading bar gösterme
     function showLoadingBar() {
         loader.show();
         // Yavaş yavaş %90'a kadar çıkar
         setTimeout(() => loader.setValue(0.9), 200);
     }
-    
+
     // Loading bar gizleme
     function hideLoadingBar() {
         loader.hide();
     }
-    
+
     // Admin linkleri ve AJAX işlemleri için loading bar
     function attachLoadingToLinks() {
         const links = document.querySelectorAll('a[href]:not([href^="#"]):not([href^="javascript:"]):not([href^="mailto:"]):not([href^="tel:"]):not([data-no-loading])');
-        
+
         links.forEach(link => {
             // Zaten event listener eklenmiş mi kontrol et
             if (link.dataset.loadingAttached) return;
             link.dataset.loadingAttached = 'true';
-            
+
             link.addEventListener('click', function(e) {
                 // External linkler için loading bar gösterme
                 if (this.hostname !== window.location.hostname) return;
-                
+
                 // Dropdown toggle'lar için loading bar gösterme
                 if (this.getAttribute('data-bs-toggle')) return;
-                
+
                 // Modal toggle'lar için loading bar gösterme
                 if (this.getAttribute('data-bs-target')) return;
-                
+
                 showLoadingBar();
             });
         });
-        
+
         // Wire:click elementleri için de loading bar (escape edilen selector)
         const wireElements = document.querySelectorAll('[wire\\:click]');
         wireElements.forEach(element => {
             if (element.dataset.wireLoadingAttached) return;
             element.dataset.wireLoadingAttached = 'true';
-            
+
             element.addEventListener('click', function(e) {
                 showLoadingBar();
             });
         });
     }
-    
+
     // Sayfa yüklendiğinde loading bar'ı %100 yap ve gizle
     window.addEventListener('load', hideLoadingBar);
-    
+
     // Linkleri yakala
     attachLoadingToLinks();
-    
+
     // Livewire için loading bar
     if (typeof Livewire !== 'undefined') {
         Livewire.hook('message.sent', () => {
             showLoadingBar();
         });
-        
+
         Livewire.hook('message.processed', () => {
             hideLoadingBar();
         });
     }
-    
+
     // Sayfa değişikliklerinde linkleri yeniden yakala (AJAX sonrası)
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
@@ -401,19 +406,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     observer.observe(document.body, {
         childList: true,
         subtree: true
     });
-    
+
     // Form submit'leri için loading bar
     document.addEventListener('submit', function(e) {
         if (e.target.tagName === 'FORM') {
             showLoadingBar();
         }
     });
-    
+
     // Browser back/forward için loading bar
     window.addEventListener('beforeunload', function() {
         showLoadingBar();
@@ -446,16 +451,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // 🚫 SESSION TOAST DUPLICATE CONTROL
             const currentTime = Date.now();
             const currentMessage = toastData.title + toastData.message;
-            
+
             // Global duplicate control değişkenlerini kontrol et
-            if (typeof lastToastTime !== 'undefined' && 
-                currentTime - lastToastTime < 1000 && 
-                typeof lastToastMessage !== 'undefined' && 
+            if (typeof lastToastTime !== 'undefined' &&
+                currentTime - lastToastTime < 1000 &&
+                typeof lastToastMessage !== 'undefined' &&
                 lastToastMessage === currentMessage) {
                 console.log('🚫 Session toast duplicate prevented:', currentMessage);
                 return;
             }
-            
+
             showToast(toastData.title, toastData.message, toastData.type || 'success');
         }
     });
@@ -464,14 +469,62 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @if (request()->routeIs('admin.*.manage*') || request()->routeIs('admin.menumanagement.index'))
     <x-head.hugerte-config />
-    
+
     {{-- Tenant default language for manage.js --}}
     <script>
         window.tenantDefaultLanguage = '{{ get_tenant_default_locale() }}';
     </script>
-    
+
+
     {{-- Load Manage.js for manage pages --}}
     <script src="/admin-assets/js/manage.js?v={{ time() }}"></script>
+
+    {{-- Language Dropdown with Bootstrap Initialize --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap dropdowns with overflow fix
+            const allDropdownTriggers = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+            allDropdownTriggers.forEach(trigger => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+                    const dropdown = new bootstrap.Dropdown(trigger, {
+                        boundary: 'viewport',
+                        popperConfig: {
+                            strategy: 'fixed',
+                            modifiers: [
+                                {
+                                    name: 'computeStyles',
+                                    options: {
+                                        adaptive: false
+                                    }
+                                },
+                                {
+                                    name: 'offset',
+                                    options: {
+                                        offset: [0, 5]
+                                    }
+                                }
+                            ]
+                        }
+                    });
+                    
+                    trigger.addEventListener('show.bs.dropdown', function(e) {
+                        const dropdownMenu = this.nextElementSibling;
+                        if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                            dropdownMenu.style.position = 'fixed';
+                            dropdownMenu.style.zIndex = '99999';
+                            
+                            const rect = this.getBoundingClientRect();
+                            dropdownMenu.style.top = (rect.bottom + 5) + 'px';
+                            dropdownMenu.style.right = '20px';
+                            dropdownMenu.style.left = 'auto';
+                            dropdownMenu.style.transform = 'none';
+                        }
+                    });
+                }
+            });
+            
+        });
+    </script>
 @endif
 </body>
 </html>

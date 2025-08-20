@@ -347,7 +347,7 @@ function updateTransactionsTable(transactions) {
                 ${transaction.amount ? '$' + transaction.amount : '-'}
             </td>
             <td>
-                ${transaction.provider ? '<span class="badge bg-primary">' + transaction.provider + '</span>' : '-'}
+                ${transaction.provider ? '<span class="badge badge-primary">' + transaction.provider + '</span>' : '-'}
             </td>
             <td>
                 <span class="badge ${getStatusBadgeClass(transaction.status)}">

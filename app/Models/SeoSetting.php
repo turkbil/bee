@@ -19,15 +19,15 @@ class SeoSetting extends Model
     protected $translatable = ['titles', 'descriptions', 'keywords'];
     
     protected $fillable = [
-        'meta_title', 'meta_description', 'meta_keywords',
+        'seoable_type', 'seoable_id',
         'titles', 'descriptions', 'keywords',
-        'og_title', 'og_description', 'og_image', 'og_type',
+        'og_titles', 'og_descriptions', 'og_image', 'og_type',
         'twitter_card', 'twitter_title', 'twitter_description', 'twitter_image',
         'canonical_url', 'robots_meta', 'schema_markup', 'focus_keyword', 'focus_keywords',
         'additional_keywords', 'seo_score', 'seo_analysis', 'last_analyzed',
         'hreflang_urls', 'content_length', 'keyword_density', 'readability_score',
         'page_speed_insights', 'last_crawled', 'ai_suggestions', 'auto_optimize',
-        'status', 'priority', 'available_languages', 'default_language', 'language_fallbacks'
+        'status', 'priority_score', 'available_languages', 'default_language', 'language_fallbacks'
     ];
 
     protected $casts = [
@@ -35,6 +35,8 @@ class SeoSetting extends Model
         'descriptions' => 'array', 
         'keywords' => 'array',
         'focus_keywords' => 'array',
+        'og_titles' => 'array',
+        'og_descriptions' => 'array',
         'og_title' => 'array',
         'og_description' => 'array',
         'canonical_url' => 'array',
@@ -58,7 +60,7 @@ class SeoSetting extends Model
         'twitter_card' => 'summary',
         'seo_score' => 0,
         'status' => 'active',
-        'priority' => 'medium',
+        'priority_score' => 5,
         'default_language' => 'tr',
         'auto_optimize' => false
     ];
@@ -78,16 +80,39 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
-        // Debug logs removed - reducing log noise
-        
         if (!$this->titles) {
-            return $this->meta_title;
+            return null;
         }
 
-        $result = SeoLanguageManager::getSafeValue($this->titles, $locale, $this->default_language)
-            ?? $this->meta_title;
+        return SeoLanguageManager::getSafeValue($this->titles, $locale, $this->default_language);
+    }
+
+    /**
+     * Check if direct title exists for specific locale (no fallback)
+     */
+    public function hasDirectTitle(?string $locale = null): bool
+    {
+        $locale = $locale ?? app()->getLocale();
         
-        return $result;
+        if (!$this->titles || !is_array($this->titles)) {
+            return false;
+        }
+
+        return isset($this->titles[$locale]) && !empty($this->titles[$locale]);
+    }
+
+    /**
+     * Check if direct description exists for specific locale (no fallback)
+     */
+    public function hasDirectDescription(?string $locale = null): bool
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (!$this->descriptions || !is_array($this->descriptions)) {
+            return false;
+        }
+
+        return isset($this->descriptions[$locale]) && !empty($this->descriptions[$locale]);
     }
 
     /**
@@ -97,16 +122,11 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
-        // Debug logs removed - reducing log noise
-        
         if (!$this->descriptions) {
-            return $this->meta_description;
+            return null;
         }
 
-        $result = SeoLanguageManager::getSafeValue($this->descriptions, $locale, $this->default_language)
-            ?? $this->meta_description;
-        
-        return $result;
+        return SeoLanguageManager::getSafeValue($this->descriptions, $locale, $this->default_language);
     }
 
     /**
@@ -117,13 +137,27 @@ class SeoSetting extends Model
         $locale = $locale ?? app()->getLocale();
         
         if (!$this->keywords) {
-            return $this->meta_keywords ? explode(',', $this->meta_keywords) : [];
+            return [];
         }
 
         $keywords = SeoLanguageManager::getSafeValue($this->keywords, $locale, $this->default_language);
         
         return is_array($keywords) ? $keywords : 
             ($keywords ? explode(',', $keywords) : []);
+    }
+
+    /**
+     * Multi-language focus keywords getter with fallback
+     */
+    public function getFocusKeywords(?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (!$this->focus_keywords) {
+            return null;
+        }
+
+        return SeoLanguageManager::getSafeValue($this->focus_keywords, $locale, $this->default_language);
     }
 
     /**
@@ -186,11 +220,11 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
-        if (!$this->og_title) {
+        if (!$this->og_titles) {
             return $this->getTitle($locale);
         }
 
-        return SeoLanguageManager::getSafeValue($this->og_title, $locale, $this->default_language)
+        return SeoLanguageManager::getSafeValue($this->og_titles, $locale, $this->default_language)
             ?? $this->getTitle($locale);
     }
 
@@ -201,11 +235,11 @@ class SeoSetting extends Model
     {
         $locale = $locale ?? app()->getLocale();
         
-        if (!$this->og_description) {
+        if (!$this->og_descriptions) {
             return $this->getDescription($locale);
         }
 
-        return SeoLanguageManager::getSafeValue($this->og_description, $locale, $this->default_language)
+        return SeoLanguageManager::getSafeValue($this->og_descriptions, $locale, $this->default_language)
             ?? $this->getDescription($locale);
     }
 
@@ -354,6 +388,12 @@ class SeoSetting extends Model
             $this->keywords = $keywords;
         }
 
+        if (isset($data['focus_keywords'])) {
+            $focusKeywords = $this->focus_keywords ?? [];
+            $focusKeywords[$locale] = $data['focus_keywords'];
+            $this->focus_keywords = $focusKeywords;
+        }
+
         if (isset($data['canonical_url'])) {
             $this->canonical_url = $data['canonical_url'];
         }
@@ -385,7 +425,7 @@ class SeoSetting extends Model
 
     public function scopeHighPriority($query)
     {
-        return $query->whereIn('priority', ['high', 'critical']);
+        return $query->where('priority_score', '>=', 8);
     }
 
     public function scopeByScore($query, string $operator = '>=', int $score = 80)
@@ -454,24 +494,24 @@ class SeoSetting extends Model
 
     public function setOgTitle(string $locale, ?string $value): void
     {
-        $ogTitles = $this->og_title ?? [];
+        $ogTitles = $this->og_titles ?? [];
         if ($value !== null && $value !== '') {
             $ogTitles[$locale] = SeoLanguageManager::sanitizeString($value);
         } else {
             unset($ogTitles[$locale]);
         }
-        $this->og_title = $ogTitles;
+        $this->og_titles = $ogTitles;
     }
 
     public function setOgDescription(string $locale, ?string $value): void
     {
-        $ogDescriptions = $this->og_description ?? [];
+        $ogDescriptions = $this->og_descriptions ?? [];
         if ($value !== null && $value !== '') {
             $ogDescriptions[$locale] = SeoLanguageManager::sanitizeString($value);
         } else {
             unset($ogDescriptions[$locale]);
         }
-        $this->og_description = $ogDescriptions;
+        $this->og_descriptions = $ogDescriptions;
     }
 
     public function setOgImage(string $locale, ?string $value): void
@@ -490,9 +530,10 @@ class SeoSetting extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            // Set default language support
+            // Set default language support based on available languages or fallback
             if (!$model->available_languages) {
-                $model->available_languages = ['tr', 'en'];
+                // Try to get from context or default to multilingual support
+                $model->available_languages = ['tr', 'en', 'ar'];
             }
         });
 

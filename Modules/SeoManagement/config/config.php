@@ -85,7 +85,7 @@ return [
                 'required' => false,
                 'ai_suggest' => true
             ],
-            'og_title' => [
+            'og_titles' => [
                 'type' => 'text',
                 'max_length' => 60,
                 'required' => false,
@@ -140,7 +140,7 @@ return [
                 'key' => 'social_media',
                 'name' => 'Sosyal Medya',
                 'icon' => 'share',
-                'fields' => ['og_title', 'og_description', 'og_image', 'twitter_title', 'twitter_description']
+                'fields' => ['og_titles', 'og_descriptions', 'og_image', 'twitter_title', 'twitter_description']
             ],
             [
                 'key' => 'advanced',
@@ -221,7 +221,7 @@ return [
             'meta_title.*' => 'nullable|string|max:60',
             'meta_description.*' => 'nullable|string|max:160',
             'meta_keywords.*' => 'nullable|string|max:255',
-            'og_title.*' => 'nullable|string|max:60',
+            'og_titles.*' => 'nullable|string|max:60',
             'og_description.*' => 'nullable|string|max:160',
             'og_image' => 'nullable|image|max:2048',
             'twitter_title.*' => 'nullable|string|max:60',

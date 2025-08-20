@@ -65,6 +65,65 @@
         </div>
     </div>
 
+    <!-- Credit İstatistikleri Kartları -->
+    <div class="row mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="subheader">Toplam Credit Kullanımı</div>
+                    </div>
+                    <div class="h1 mb-3 text-warning">{{ number_format($creditStats['total_credits_used'], 2) }}</div>
+                    <div class="d-flex mb-2">
+                        <div class="text-muted">Aktif konuşmalarda</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="subheader">Ortalama Credit/Konuşma</div>
+                    </div>
+                    <div class="h1 mb-3 text-info">{{ number_format($creditStats['avg_credits_per_conversation'], 2) }}</div>
+                    <div class="d-flex mb-2">
+                        <div class="text-muted">Konuşma başına</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="subheader">Demo Credit Kullanımı</div>
+                    </div>
+                    <div class="h1 mb-3 text-muted">{{ number_format($creditStats['demo_credits_used'], 2) }}</div>
+                    <div class="d-flex mb-2">
+                        <div class="text-muted">Ücretsiz testlerde</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="subheader">Gerçek AI Credit Kullanımı</div>
+                    </div>
+                    <div class="h1 mb-3 text-primary">{{ number_format($creditStats['real_credits_used'], 2) }}</div>
+                    <div class="d-flex mb-2">
+                        <div class="text-muted">Ücretli testlerde</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Arşiv Butonu -->
     <div class="mb-3">
         <a href="{{ route('admin.ai.conversations.archived') }}" class="btn btn-outline-warning">
@@ -113,7 +172,7 @@
                             <i class="fas fa-filter me-1"></i>
                             Filtreler
                             @if(request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && auth()->user()->isRoot()))
-                            <span class="badge bg-primary ms-1">Aktif</span>
+                            <span class="badge badge-primary ms-1">Aktif</span>
                             @endif
                         </button>
                         
@@ -271,6 +330,7 @@
                                     Token
                                 </button>
                             </th>
+                            <th>Credit</th>
                             <th>Model</th>
                             <th>Mesaj</th>
                             <th>Durum</th>
@@ -342,6 +402,16 @@
                             </td>
                             <td>
                                 <span class="badge bg-gray-lt">{{ ai_format_token_count($conversation->total_tokens_used) }}</span>
+                            </td>
+                            <td>
+                                @php
+                                    $creditsUsed = $conversation->getTotalCreditsUsed();
+                                @endphp
+                                @if($creditsUsed > 0)
+                                    <span class="badge bg-warning-lt">{{ number_format($creditsUsed, 2) }}</span>
+                                @else
+                                    <span class="text-muted small">-</span>
+                                @endif
                             </td>
                             <td>
                                 @php
@@ -435,7 +505,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="11" class="text-center py-4">
+                            <td colspan="12" class="text-center py-4">
                                 <div class="empty">
                                     <p class="empty-title">Kayıt bulunamadı</p>
                                     <p class="empty-subtitle text-muted">

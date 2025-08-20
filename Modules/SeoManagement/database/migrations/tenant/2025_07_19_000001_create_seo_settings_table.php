@@ -29,8 +29,8 @@ return new class extends Migration
             $table->string('canonical_url')->nullable(); // Canonical URL
             
             // Open Graph - JSON support for multilingual
-            $table->json('og_title')->nullable(); // {"tr": "OG Title", "en": "OG Title"}
-            $table->json('og_description')->nullable(); // {"tr": "OG Description", "en": "OG Description"}
+            $table->json('og_titles')->nullable(); // {"tr": "OG Title", "en": "OG Title"}
+            $table->json('og_descriptions')->nullable(); // {"tr": "OG Description", "en": "OG Description"}
             $table->string('og_image')->nullable();
             $table->string('og_type')->default('website');
             
@@ -43,7 +43,6 @@ return new class extends Migration
             // Advanced SEO
             $table->json('robots_meta')->nullable(); // {"index": true, "follow": true, "archive": false}
             $table->json('schema_markup')->nullable(); // Structured data
-            $table->string('focus_keyword')->nullable();
             $table->json('focus_keywords')->nullable(); // Dil bazında focus keywords {"tr": "anahtar", "en": "keyword"}
             $table->json('additional_keywords')->nullable(); // ["keyword1", "keyword2"]
             
@@ -74,7 +73,7 @@ return new class extends Migration
             
             // Language management
             $table->json('available_languages')->nullable(); // ["tr", "en", "de"]
-            $table->string('default_language')->default('tr');
+            $table->string('default_language')->nullable();
             $table->json('language_fallbacks')->nullable(); // {"de": "en", "fr": "en"}
             
             $table->timestamps();
@@ -83,7 +82,6 @@ return new class extends Migration
             $table->index(['seoable_id', 'seoable_type']);
             $table->index('status');
             $table->index('seo_score');
-            $table->index('focus_keyword');
             $table->index('last_analyzed');
         });
     }

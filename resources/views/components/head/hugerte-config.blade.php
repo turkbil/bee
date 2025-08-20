@@ -1,6 +1,44 @@
 {{-- HugeRTE Configuration - Simple & Dark Mode Compatible --}}
 <script src="/admin-assets/libs/hugerte/hugerte.min.js?v={{ time() }}"></script>
 <script>
+    // ENHANCED: Sayfa yüklenmeden önce dark mode kontrolü - multiple fallbacks
+    function getInitialDarkMode() {
+        try {
+            // 1. localStorage kontrolü (primary)
+            const tablerTheme = localStorage.getItem('tablerTheme');
+            if (tablerTheme === 'dark') return true;
+            if (tablerTheme === 'light') return false;
+            
+            // 2. DOM element kontrolü (secondary)
+            if (document.body) {
+                const bodyTheme = document.body.getAttribute('data-bs-theme');
+                if (bodyTheme === 'dark') return true;
+                if (bodyTheme === 'light') return false;
+            }
+            
+            // 3. HTML element kontrolü (tertiary)  
+            if (document.documentElement) {
+                const htmlTheme = document.documentElement.getAttribute('data-bs-theme');
+                if (htmlTheme === 'dark') return true;
+                if (htmlTheme === 'light') return false;
+            }
+            
+            // 4. CSS class kontrolü (fallback)
+            if (document.body?.classList.contains('theme-dark')) return true;
+            if (document.documentElement?.classList.contains('theme-dark')) return true;
+            
+            // 5. System preference (ultimate fallback)
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return true;
+            }
+            
+            return false;
+        } catch (e) {
+            console.warn('Dark mode detection failed:', e);
+            return false;
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         // HugeRTE temel yapılandırması
         let options = {
@@ -33,7 +71,7 @@
           statusbar: false,
           // License key for HugeRTE
           license_key: "gpl",
-          // İçerik stili
+          // İçerik stili - base styles
           content_style: "body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; }",
           
           // Livewire sync için setup callback
@@ -55,56 +93,56 @@
           },
         };
         
-        // Tabler dark mode detection - comprehensive
-        function detectDarkMode() {
-            // Multiple detection methods
-            const tablerTheme = localStorage.getItem("tablerTheme");
-            const bodyDataTheme = document.body.getAttribute('data-bs-theme');
-            const bodyHasDark = document.body.classList.contains('theme-dark');
-            const bodyIsDark = document.body.classList.contains('dark');
-            const htmlDataTheme = document.documentElement.getAttribute('data-bs-theme');
-            const htmlIsDark = document.documentElement.getAttribute('data-theme');
-            
-            // Background color check (Tabler dark mode has dark background)
-            const bodyBgColor = window.getComputedStyle(document.body).backgroundColor;
-            const isBackgroundDark = bodyBgColor && (
-                bodyBgColor.includes('rgb(26') || // dark background rgb values
-                bodyBgColor.includes('rgb(33') ||
-                bodyBgColor.includes('rgb(40') ||
-                bodyBgColor === 'rgb(26, 32, 44)' // common dark bg
-            );
-            
-            // Dark mode detection checks
-            
-            // Comprehensive dark mode detection
-            return tablerTheme === "dark" || 
-                   bodyDataTheme === "dark" || 
-                   htmlDataTheme === "dark" ||
-                   htmlIsDark === "dark" ||
-                   bodyHasDark || 
-                   bodyIsDark ||
-                   isBackgroundDark;
+        // FIXED: Immediate dark mode detection for page load
+        const isDarkMode = getInitialDarkMode();
+        
+        // Apply dark mode styles immediately
+        function applyDarkModeStyles(opts, isDark) {
+            if (isDark) {
+                opts.skin = "oxide-dark";
+                opts.content_css = "dark";
+                // Dark mode için özel CSS override
+                opts.content_style = "body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; }" + `
+                  body { 
+                    background-color: #1a1a1a !important; 
+                    color: #e3e3e3 !important; 
+                  }
+                  p { color: #e3e3e3 !important; }
+                  h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
+                  a { color: #4dabf7 !important; }
+                  blockquote { 
+                    border-left: 4px solid #495057 !important; 
+                    background-color: #212529 !important; 
+                    color: #e3e3e3 !important; 
+                  }
+                  pre, code { 
+                    background-color: #212529 !important; 
+                    color: #f8f9fa !important; 
+                    border: 1px solid #495057 !important; 
+                  }
+                  table { border-color: #495057 !important; }
+                  td, th { 
+                    border-color: #495057 !important; 
+                    color: #e3e3e3 !important; 
+                  }
+                  th { background-color: #343a40 !important; }
+                  hr { border-color: #495057 !important; }
+                `;
+            } else {
+                opts.skin = "oxide";
+                opts.content_css = "default";
+            }
+            return opts;
         }
         
-        const isDarkMode = detectDarkMode();
-        
-        if (isDarkMode) {
-          options.skin = "hugerte-5-dark";
-          options.content_css = "dark";
-          // Dark mode için ek ayarlar
-          options.toolbar_mode = "sliding";
-          // Dark theme applied
-        } else {
-          options.skin = "hugerte-5";
-          options.content_css = "default";
-          // Light theme applied
-        }
+        // Apply initial theme
+        options = applyDarkModeStyles(options, isDarkMode);
         
         hugerte.init(options);
         
         // Tema değişimini dinle ve editörü güncelle
         function updateEditorTheme() {
-            const isDark = detectDarkMode();
+            const isDark = getInitialDarkMode();
             
             // Tüm editör instance'larını tamamen temizle
             try {
@@ -112,8 +150,8 @@
                     // Önce tüm editörleri remove et
                     hugerte.remove();
                     
-                    // DOM'dan kalan HugeRTE elementlerini temizle
-                    document.querySelectorAll('.tox-hugerte, .tox-hugerte-inline, .tox-hugerte-aux').forEach(el => {
+                    // DOM'dan kalan TinyMCE elementlerini temizle
+                    document.querySelectorAll('.tox-tinymce, .tox-tinymce-inline, .tox-tinymce-aux').forEach(el => {
                         el.remove();
                     });
                 }
@@ -121,19 +159,13 @@
                 console.warn('HugeRTE editor cleanup failed:', error);
             }
             
-            // Yeni tema ile editörü yeniden başlat
-            if (isDark) {
-                options.skin = "hugerte-5-dark";
-                options.content_css = "dark";
-            } else {
-                options.skin = "hugerte-5";
-                options.content_css = "default";
-            }
+            // Use the same styling function
+            options = applyDarkModeStyles(options, isDark);
             
             // Editörü yeniden başlat - daha uzun timeout
             setTimeout(() => {
                 hugerte.init(options);
-            }, 300);
+            }, 500);
         }
         
         // Tema değişimi için debounced function - çoklu çağrıları önler

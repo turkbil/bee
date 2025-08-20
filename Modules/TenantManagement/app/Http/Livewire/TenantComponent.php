@@ -87,26 +87,35 @@ class TenantComponent extends Component
             try {
                 $provider = \Modules\AI\App\Models\AIProvider::find($providerId);
                 if ($provider && $provider->available_models) {
-                    // available_models string array ise
-                    if (is_array($provider->available_models) && isset($provider->available_models[0]) && is_string($provider->available_models[0])) {
-                        $this->availableModels = collect($provider->available_models)->map(function($model, $index) {
-                            return [
-                                'value' => $model,
-                                'label' => $model,
-                                'cost' => ''
-                            ];
-                        })->toArray();
-                    } 
-                    // available_models object array ise (detaylı bilgi ile)
-                    else {
-                        $this->availableModels = collect($provider->available_models)->map(function($model, $key) {
-                            return [
-                                'value' => is_string($model) ? $model : $key,
-                                'label' => is_array($model) ? ($model['name'] ?? $key) : $model,
-                                'cost' => is_array($model) && isset($model['input_cost']) ? '$' . $model['input_cost'] . '/' . $model['output_cost'] : ''
-                            ];
-                        })->toArray();
-                    }
+                    // Model-based credit rates entegrasyonu ile modellerle birlikte maliyet bilgisi
+                    $this->availableModels = collect($provider->available_models)->map(function($model, $key) use ($provider) {
+                        $modelName = is_string($model) ? $model : $key;
+                        $modelLabel = is_array($model) ? ($model['name'] ?? $key) : $model;
+                        
+                        // Model için credit rate'i kontrol et
+                        $creditRate = $provider->getModelRate($modelName);
+                        $costInfo = '';
+                        
+                        if ($creditRate) {
+                            $inputCost = $creditRate->input_cost_per_1k ?? 0;
+                            $outputCost = $creditRate->output_cost_per_1k ?? 0;
+                            $costInfo = $inputCost > 0 || $outputCost > 0 
+                                ? sprintf('%s/%s kredi/1K token', $inputCost, $outputCost)
+                                : '';
+                        } else {
+                            // Fallback: available_models'dan maliyet bilgisi
+                            if (is_array($model) && isset($model['input_cost'])) {
+                                $costInfo = '$' . $model['input_cost'] . '/' . $model['output_cost'];
+                            }
+                        }
+                        
+                        return [
+                            'value' => $modelName,
+                            'label' => $modelLabel,
+                            'cost' => $costInfo,
+                            'credit_rate_id' => $creditRate ? $creditRate->id : null
+                        ];
+                    })->toArray();
                     
                     // Varsayılan modeli ayarla
                     $this->default_ai_model = $provider->default_model;

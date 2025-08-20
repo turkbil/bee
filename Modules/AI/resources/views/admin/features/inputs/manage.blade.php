@@ -19,11 +19,11 @@
         <div class="col-auto ms-auto d-print-none">
             <div class="btn-list">
                 <a href="{{ route('admin.ai.features.index') }}" class="btn btn-outline-secondary">
-                    <i class="ti ti-arrow-left"></i>
+                    <i class="fa-solid fa-arrow-left"></i>
                     Geri Dön
                 </a>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInputModal">
-                    <i class="ti ti-plus"></i>
+                    <i class="fa-solid fa-plus"></i>
                     Yeni Input Ekle
                 </button>
             </div>
@@ -78,12 +78,12 @@
                             <div class="btn-list">
                                 <button class="btn btn-sm btn-outline-primary edit-input-btn" 
                                         data-input-id="{{ $feature->primaryInput->id }}">
-                                    <i class="ti ti-edit"></i>
+                                    <i class="fa-solid fa-pen"></i>
                                     Düzenle
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger delete-input-btn" 
                                         data-input-id="{{ $feature->primaryInput->id }}">
-                                    <i class="ti ti-trash"></i>
+                                    <i class="fa-solid fa-trash"></i>
                                     Sil
                                 </button>
                             </div>
@@ -92,7 +92,7 @@
                 @else
                     <div class="empty">
                         <div class="empty-img">
-                            <i class="ti ti-forms" style="font-size: 4rem; opacity: 0.3;"></i>
+                            <i class="fa-solid fa-clipboard-list" style="font-size: 4rem; opacity: 0.3;"></i>
                         </div>
                         <p class="empty-title">Ana Input Tanımlanmamış</p>
                         <p class="empty-subtitle text-muted">
@@ -100,7 +100,7 @@
                         </p>
                         <div class="empty-action">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInputModal" data-is-primary="true">
-                                <i class="ti ti-plus"></i>
+                                <i class="fa-solid fa-plus"></i>
                                 Ana Input Oluştur
                             </button>
                         </div>
@@ -180,7 +180,7 @@
                                                 @endif
                                                 <button class="btn btn-sm btn-outline-primary edit-input-btn" 
                                                         data-input-id="{{ $input->id }}">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="fa-solid fa-pen"></i>
                                                     Düzenle
                                                 </button>
                                                 <button class="btn btn-sm btn-outline-secondary duplicate-input-btn" 
@@ -189,7 +189,7 @@
                                                 </button>
                                                 <button class="btn btn-sm btn-outline-danger delete-input-btn" 
                                                         data-input-id="{{ $input->id }}">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -209,7 +209,7 @@
                         </p>
                         <div class="empty-action">
                             <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addInputModal" data-is-primary="false">
-                                <i class="ti ti-plus"></i>
+                                <i class="fa-solid fa-plus"></i>
                                 İlk Input'u Ekle
                             </button>
                         </div>
@@ -314,7 +314,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-plus"></i>
+                        <i class="fa-solid fa-plus"></i>
                         Input Ekle
                     </button>
                 </div>
@@ -445,7 +445,7 @@
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-plus"></i>
+                                <i class="fa-solid fa-plus"></i>
                                 Seçenek Ekle
                             </button>
                         </form>
@@ -599,7 +599,7 @@ $(document).ready(function() {
                                 </div>
                                 <button class="btn btn-sm btn-outline-danger delete-option-btn" 
                                         data-option-id="${option.id}">
-                                    <i class="ti ti-trash"></i>
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </div>

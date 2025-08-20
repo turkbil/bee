@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Modules\LanguageManagement\app\Services\TenantLanguageService;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
 use App\Services\LanguageCleanupService;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 #[Layout('admin.layout')]
 class TenantLanguageComponent extends Component
@@ -46,6 +48,12 @@ class TenantLanguageComponent extends Component
         // Varsayılan dil silinemez
         if ($currentTenant && $language->code === $currentTenant->tenant_default_locale) {
             session()->flash('error', 'Varsayılan site dili silinemez.');
+            return;
+        }
+
+        // Kullanılan (aktif) dil silinemez
+        if ($language->is_active) {
+            session()->flash('error', 'Aktif kullanımdaki dil silinemez. Önce pasif yapın.');
             return;
         }
 
@@ -126,6 +134,9 @@ class TenantLanguageComponent extends Component
             $siteLanguageService = app(TenantLanguageService::class);
             $siteLanguageService->clearTenantLanguageCache();
             
+            // Cache'leri temizle
+            $this->clearAllCaches();
+            
             $status = $language->is_active ? 'aktif' : 'pasif';
             
             // Eğer pasif yapıldıysa JSON temizleme işlemi başlat
@@ -204,18 +215,36 @@ class TenantLanguageComponent extends Component
         }
     }
 
-    public function updateOrder($itemIds)
+    public function updateOrder($list)
     {
-        foreach ($itemIds as $index => $id) {
-            TenantLanguage::where('id', $id)->update(['sort_order' => $index + 1]);
+        // Livewire.dispatch'den gelen veriyi işle
+        if (isset($list['list']) && is_array($list['list'])) {
+            $items = $list['list'];
+        } else {
+            $items = $list;
+        }
+        
+        // Sıralama güncelleme
+        foreach ($items as $item) {
+            $id = isset($item['value']) ? $item['value'] : $item['id'];
+            $order = isset($item['order']) ? $item['order'] : ($item['sort_order'] ?? 1);
+            
+            TenantLanguage::where('id', $id)->update(['sort_order' => $order]);
         }
 
-        if (function_exists('log_activity') && !empty($itemIds)) {
-            $firstLanguage = TenantLanguage::find($itemIds[0]);
+        if (function_exists('log_activity') && !empty($items)) {
+            $firstId = isset($items[0]['value']) ? $items[0]['value'] : $items[0]['id'];
+            $firstLanguage = TenantLanguage::find($firstId);
             if ($firstLanguage) {
                 log_activity($firstLanguage, 'sıralama_güncellendi');
             }
         }
+
+        Log::info('Language order updated', [
+            'items' => $items,
+            'tenant_id' => tenant('id'),
+            'user_id' => auth()->id()
+        ]);
 
         session()->flash('message', 'Sıralama başarıyla güncellendi.');
     }
@@ -241,6 +270,9 @@ class TenantLanguageComponent extends Component
             $siteLanguageService = app(TenantLanguageService::class);
             $siteLanguageService->clearTenantLanguageCache();
             
+            // Cache'leri temizle
+            $this->clearAllCaches();
+            
             $status = $language->is_visible ? 'görünür' : 'gizli';
             $action = $language->is_visible ? 'görünür yapıldı' : 'silindi';
             
@@ -262,6 +294,35 @@ class TenantLanguageComponent extends Component
             session()->flash('message', "Site dili {$status} yapıldı.");
         } else {
             session()->flash('error', 'Görünürlük güncellenirken hata oluştu.');
+        }
+    }
+
+    private function clearAllCaches()
+    {
+        try {
+            // Cache'leri temizle
+            Cache::flush();
+            
+            // Artisan komutlarıyla ekstra temizlik
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('view:clear');
+            Artisan::call('route:clear');
+            
+            if (function_exists('opcache_reset')) {
+                opcache_reset();
+            }
+            
+            Log::info('All caches cleared after language status change', [
+                'tenant_id' => tenant('id'),
+                'user_id' => auth()->id()
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Cache clearing failed', [
+                'error' => $e->getMessage(),
+                'tenant_id' => tenant('id')
+            ]);
         }
     }
 

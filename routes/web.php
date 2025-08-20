@@ -37,7 +37,8 @@ Route::middleware(['site', 'page.tracker'])->group(function () {
             // Varsayılan dil bile olsa göster, redirect etme
             // Çünkü kullanıcı alternate link'ten geliyor olabilir
             $controller = app(\Modules\Page\App\Http\Controllers\Front\PageController::class);
-            return $controller->homepage();
+            $seoService = app(\App\Services\SeoMetaTagService::class);
+            return $controller->homepage($seoService);
         }
         
         // Geçersiz locale ise 404

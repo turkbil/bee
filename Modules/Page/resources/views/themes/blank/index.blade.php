@@ -36,7 +36,13 @@
                 if (is_string($slugData)) {
                     $slugData = json_decode($slugData, true) ?: [];
                 }
-                $slug = is_array($slugData) ? ($slugData[$currentLocale] ?? $slugData['tr'] ?? reset($slugData)) : $slugData;
+                // Slug için öncelikle mevcut dili kontrol et, yoksa fallback ama URL'de mevcut dili koru
+                if (is_array($slugData) && isset($slugData[$currentLocale]) && !empty($slugData[$currentLocale])) {
+                    $slug = $slugData[$currentLocale];
+                } else {
+                    // Mevcut dilde slug yoksa fallback kullan ama URL'de mevcut dili koru
+                    $slug = is_array($slugData) ? ($slugData['tr'] ?? reset($slugData)) : $slugData;
+                }
                 $slug = $slug ?: $item->page_id;
                 
                 $title = $item->getTranslated('title') ?? $item->getRawOriginal('title') ?? $item->title ?? 'Başlıksız';

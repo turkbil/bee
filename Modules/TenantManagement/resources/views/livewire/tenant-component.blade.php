@@ -129,6 +129,124 @@
     
     {{ $tenants->links() }}
     
+    <!-- JavaScript for AI Model Loading -->
+    @push('scripts')
+    <script>
+        // PHASE 3: Real-time AI Model Loading with Credit Information
+        document.addEventListener('livewire:initialized', () => {
+            
+            // Provider değişikliğini dinle
+            Livewire.on('providerChanged', (providerId) => {
+                if (providerId) {
+                    loadModelsWithCredits(providerId);
+                }
+            });
+            
+            // Model seçimini dinle
+            Livewire.on('modelSelected', (modelName, providerId) => {
+                if (modelName && providerId) {
+                    showModelCreditInfo(modelName, providerId);
+                }
+            });
+            
+            /**
+             * Provider'a ait modelleri ve kredi bilgilerini yükle
+             */
+            async function loadModelsWithCredits(providerId) {
+                try {
+                    const response = await fetch(`/api/ai/admin/provider/${providerId}/models`, {
+                        headers: {
+                            'Authorization': 'Bearer ' + (window.authToken || ''),
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        updateModelSelectOptions(data.data.models);
+                    }
+                } catch (error) {
+                    console.warn('Model bilgileri yüklenemedi:', error);
+                }
+            }
+            
+            /**
+             * Model select option'larını güncelle
+             */
+            function updateModelSelectOptions(models) {
+                const editSelect = document.getElementById('ai-model-select-edit');
+                const addSelect = document.getElementById('ai-model-select-add');
+                
+                [editSelect, addSelect].forEach(select => {
+                    if (select) {
+                        // Önce temizle
+                        select.innerHTML = '<option value="">Model seçin</option>';
+                        
+                        // Yeni option'ları ekle
+                        models.forEach(model => {
+                            const option = document.createElement('option');
+                            option.value = model.name;
+                            
+                            let label = model.label;
+                            if (model.input_cost_per_1k > 0 || model.output_cost_per_1k > 0) {
+                                label += ` (${model.input_cost_per_1k}/${model.output_cost_per_1k} kredi/1K token)`;
+                            }
+                            
+                            option.textContent = label;
+                            select.appendChild(option);
+                        });
+                        
+                        select.disabled = false;
+                    }
+                });
+            }
+            
+            /**
+             * Seçilen model için kredi bilgisini göster
+             */
+            async function showModelCreditInfo(modelName, providerId) {
+                const infoElements = [
+                    document.getElementById('credit-display-edit'),
+                    document.getElementById('credit-display-add')
+                ];
+                
+                try {
+                    const response = await fetch('/api/ai/admin/calculate-cost', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + (window.authToken || ''),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            provider_id: providerId,
+                            model_name: modelName,
+                            input_tokens: 1000,
+                            output_tokens: 1000
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const costText = `${modelName}: ${data.data.total_credits} kredi (1000 input + 1000 output token için)`;
+                        
+                        infoElements.forEach(element => {
+                            if (element) element.textContent = costText;
+                        });
+                    }
+                } catch (error) {
+                    console.warn('Kredi bilgisi yüklenemedi:', error);
+                    infoElements.forEach(element => {
+                        if (element) element.textContent = 'Kredi bilgisi hesaplanamadı';
+                    });
+                }
+            }
+        });
+    </script>
+    @endpush
+    
     <!-- Tenant Düzenleme Modal -->
     <div class="modal fade" id="modal-tenant-edit" tabindex="-1" wire:ignore.self>
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -231,6 +349,14 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        @endif
+                        
+                        <!-- Model Credit Info Display for Edit Modal -->
+                        @if(!empty($availableModels) && $default_ai_model)
+                        <div class="alert alert-info p-2 mt-2" id="model-credit-info-edit" style="font-size: 0.85em;">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <span id="credit-display-edit">Seçilen model için kredi bilgisi yükleniyor...</span>
                         </div>
                         @endif
                     </div>

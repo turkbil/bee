@@ -17,11 +17,11 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:studio,view')
                     ->name('index');
                 
-                Route::get('/editor/{module}/{id}', EditorComponent::class)
+                Route::get('/editor/{module}/{id}/{locale?}', EditorComponent::class)
                     ->middleware('module.permission:studio,view')
                     ->name('editor');
                 
-                Route::post('/save/{module}/{id}', [StudioController::class, 'save'])
+                Route::post('/save/{module}/{id}/{locale?}', [StudioController::class, 'save'])
                     ->middleware('module.permission:studio,update')
                     ->name('save');
                 

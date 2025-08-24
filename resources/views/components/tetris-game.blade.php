@@ -55,9 +55,63 @@
 
         <!-- Controls -->
         <div class="mt-6 text-center text-white/60 text-xs">
-            <div class="mb-1">{{ __('front.controls_move') }}</div>
-            <div class="mb-1">{{ __('front.controls_pause') }}</div>
-            <div class="opacity-75">{{ __('front.controls_info') }}</div>
+            <div class="mb-3 font-semibold text-white/80">{{ __('front.game_controls') }}:</div>
+            <div class="inline-block mx-auto">
+                <!-- Tablo benzeri düzen -->
+                <div class="grid grid-cols-2 gap-x-8 gap-y-2 text-left">
+                    <!-- Sol kolon - Hareket -->
+                    <div class="min-w-[140px]">
+                        <div class="text-white/80 font-semibold mb-2 text-center border-b border-white/20 pb-1">{{ __('front.movement') }}</div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center py-0.5">
+                                <span class="text-white/90">↑ / W / I / 8</span>
+                                <span class="text-white/60">→</span>
+                                <span class="text-white/90">{{ __('front.rotate') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-0.5">
+                                <span class="text-white/90">↓ / S / K / 2</span>
+                                <span class="text-white/60">→</span>
+                                <span class="text-white/90">{{ __('front.soft_drop') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-0.5">
+                                <span class="text-white/90">← / A / J / 4</span>
+                                <span class="text-white/60">→</span>
+                                <span class="text-white/90">{{ __('front.move_left') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-0.5">
+                                <span class="text-white/90">→ / D / L / 6</span>
+                                <span class="text-white/60">→</span>
+                                <span class="text-white/90">{{ __('front.move_right') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sağ kolon - Özel -->
+                    <div class="min-w-[140px]">
+                        <div class="text-white/80 font-semibold mb-2 text-center border-b border-white/20 pb-1">{{ __('front.special') }}</div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center py-0.5">
+                                <span class="text-white/90">Space / C</span>
+                                <span class="text-white/60">→</span>
+                                <span class="text-white/90">{{ __('front.hard_drop') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-0.5">
+                                <span class="text-white/90">Enter / P</span>
+                                <span class="text-white/60">→</span>
+                                <span class="text-white/90">{{ __('front.pause') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-0.5">
+                                <span class="text-white/90">R / T</span>
+                                <span class="text-white/60">→</span>
+                                <span class="text-white/90">{{ __('front.restart') }}</span>
+                            </div>
+                            <div class="flex justify-center items-center py-0.5 mt-2">
+                                <span class="opacity-60 text-xs text-white/50">Mac {{ __('front.friendly_keys') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -721,19 +775,28 @@
             setTimeout(() => container.focus(), 100);
             
             container.addEventListener('keydown', (e) => {
-                // Prevent default for all game-related keys
-                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Enter', 'r', 'R'].includes(e.key)) {
+                // Prevent default for all game-related keys - Genişletilmiş tuş listesi
+                const gameKeys = [
+                    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Enter', 
+                    'r', 'R', 't', 'T', 'p', 'P', 'c', 'C',
+                    'w', 'W', 'a', 'A', 's', 'S', 'd', 'D',
+                    'j', 'J', 'k', 'K', 'l', 'L', 'i', 'I',
+                    '2', '4', '6', '8'
+                ];
+                
+                if (gameKeys.includes(e.key)) {
                     e.preventDefault();
                 }
                 
                 if (this.gameOver) {
-                    if (e.key === ' ' || e.key.toLowerCase() === 'r') {
+                    if (e.key === ' ' || e.key.toLowerCase() === 'r' || e.key.toLowerCase() === 't' || e.key.toLowerCase() === 'c') {
                         restartTetris();
                     }
                     return;
                 }
                 
-                if (e.key === 'Enter') {
+                // Pause kontrolü - Enter ve P
+                if (e.key === 'Enter' || e.key.toLowerCase() === 'p') {
                     this.togglePause();
                     return;
                 }
@@ -755,13 +818,33 @@
                 this.keys[e.key] = true;
                 
                 switch(e.key) {
+                    // Sol hareket - Arrow, A, J, 4
                     case 'ArrowLeft':
+                    case 'a':
+                    case 'A':
+                    case 'j':
+                    case 'J':
+                    case '4':
                         this.handleKeyRepeat('left', () => this.movePiece(-1, 0));
                         break;
+                    
+                    // Sağ hareket - Arrow, D, L, 6
                     case 'ArrowRight':
+                    case 'd':
+                    case 'D':
+                    case 'l':
+                    case 'L':
+                    case '6':
                         this.handleKeyRepeat('right', () => this.movePiece(1, 0));
                         break;
+                    
+                    // Aşağı hareket - Arrow, S, K, 2
                     case 'ArrowDown':
+                    case 's':
+                    case 'S':
+                    case 'k':
+                    case 'K':
+                    case '2':
                         this.handleKeyRepeat('down', () => {
                             if (this.dropPiece()) {
                                 this.score += 1;
@@ -769,14 +852,29 @@
                             }
                         });
                         break;
+                    
+                    // Döndürme - Arrow Up, W, I, 8
                     case 'ArrowUp':
+                    case 'w':
+                    case 'W':
+                    case 'i':
+                    case 'I':
+                    case '8':
                         this.rotatePiece();
                         break;
+                    
+                    // Hard Drop - Space ve C
                     case ' ':
+                    case 'c':
+                    case 'C':
                         this.hardDrop();
                         break;
+                    
+                    // Restart - R ve T
                     case 'r':
                     case 'R':
+                    case 't':
+                    case 'T':
                         restartTetris();
                         break;
                 }

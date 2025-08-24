@@ -29,10 +29,7 @@
                                 <div class="text-muted">{{ $module->description }}</div>
                             </div>
                             <div class="text-muted ms-3">
-                                <span
-                                    class="badge bg-{{ $module->type === 'system' ? 'red' : ($module->type === 'management' ? 'yellow' : 'green') }}-lt">
-                                    {{ ucfirst($module->type) }}
-                                </span>
+                                {{ ucfirst($module->type) }}
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ namespace Modules\Portfolio\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\PortfolioCategory;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Portfolio Category Seeder for Tenant4 Database
@@ -25,7 +25,7 @@ class PortfolioCategorySeederTenant4 extends Seeder
         
         // Mevcut kategorileri sil (sadece boşsa)
         PortfolioCategory::truncate();
-        SeoSetting::where('seoable_type', 'like', '%PortfolioCategory%')->delete();
+        
         
         $this->createWebDevelopmentCategory();
         $this->createMobileAppCategory();
@@ -105,8 +105,6 @@ class PortfolioCategorySeederTenant4 extends Seeder
             'og_descriptions' => [
                 'en' => $descriptionEn
             ],
-            'available_languages' => ['en'],
-            'default_language' => 'en',
             'seo_score' => rand(80, 95),
         ]);
     }

@@ -4,7 +4,7 @@ namespace Modules\Page\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Page\App\Models\Page;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 use App\Helpers\TenantHelpers;
 use Modules\Page\database\seeders\PageSeederCentral;
 use Modules\Page\database\seeders\PageSeederTenant2;

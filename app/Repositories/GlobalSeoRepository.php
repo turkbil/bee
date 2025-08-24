@@ -49,12 +49,12 @@ class GlobalSeoRepository implements GlobalSeoRepositoryInterface
         return [
             'seo_title' => $seoSettings->getTitle($language) ?? '',
             'seo_description' => $seoSettings->getDescription($language) ?? '',
-            'seo_keywords' => $seoSettings->getKeywords($language) ?? '',
-            'canonical_url' => $seoSettings->getCanonicalUrl($language) ?? '',
-            'robots' => $seoSettings->getRobots($language) ?? 'index,follow',
+            'seo_keywords' => '', // Keywords kaldırıldı - AI tarafından doldurulacak
+            'canonical_url' => $seoSettings->canonical_url ?? '',
+            'robots' => $seoSettings->getRobotsMetaString() ?? 'index, follow',
             'og_titles' => $seoSettings->getOgTitle($language) ?? '',
             'og_descriptions' => $seoSettings->getOgDescription($language) ?? '',
-            'og_image' => $seoSettings->getOgImage($language) ?? '',
+            'og_image' => $seoSettings->og_image ?? '',
         ];
     }
 
@@ -105,20 +105,30 @@ class GlobalSeoRepository implements GlobalSeoRepositoryInterface
             }
 
             $methodMap = [
-                'seo_title' => 'setTitle',
-                'seo_description' => 'setDescription', 
-                'seo_keywords' => 'setKeywords',
-                'canonical_url' => 'setCanonicalUrl',
-                'robots' => 'setRobots',
-                'og_titles' => 'setOgTitle',
-                'og_descriptions' => 'setOgDescription',
-                'og_image' => 'setOgImage'
+                'seo_title' => 'updateLanguageData',
+                'seo_description' => 'updateLanguageData', 
+                'canonical_url' => 'updateLanguageData',
+                'og_titles' => 'updateLanguageData',
+                'og_descriptions' => 'updateLanguageData',
+                'og_image' => 'updateLanguageData'
+                // Keywords ve robots artık kaldırıldı - AI ve model içinde yönetiliyor
             ];
 
             if (isset($methodMap[$field])) {
-                $method = $methodMap[$field];
-                $seoSettings->$method($language, $value);
-                $seoSettings->save();
+                // updateLanguageData metodunu kullan
+                $fieldMap = [
+                    'seo_title' => 'title',
+                    'seo_description' => 'description',
+                    'og_titles' => 'og_title',
+                    'og_descriptions' => 'og_description'
+                ];
+                
+                if (isset($fieldMap[$field])) {
+                    $seoSettings->updateLanguageData($language, [$fieldMap[$field] => $value]);
+                } else {
+                    // Direct field update (canonical_url, og_image)
+                    $seoSettings->updateLanguageData($language, [$field => $value]);
+                }
                 
                 $this->clearSeoCache($model);
                 return true;

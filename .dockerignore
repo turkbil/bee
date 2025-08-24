@@ -1,0 +1,73 @@
+# Ignore development files
+node_modules
+npm-debug.log
+.npm
+
+# Ignore dependency directories
+vendor
+
+# Ignore version control
+.git
+.gitignore
+.gitattributes
+
+# Ignore IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Laravel files that should not be in container
+.env.example
+.env.local
+.env.testing
+.env.backup
+
+# Ignore log files
+storage/logs/*
+!storage/logs/.gitignore
+
+# Ignore cache files
+storage/framework/cache/*
+!storage/framework/cache/.gitignore
+storage/framework/sessions/*
+!storage/framework/sessions/.gitignore
+storage/framework/views/*
+!storage/framework/views/.gitignore
+
+# Ignore uploaded files in development
+storage/app/public/*
+!storage/app/public/.gitignore
+
+# Ignore testing files
+.phpunit.result.cache
+tests/Browser/screenshots/*
+tests/Browser/console/*
+tests/DuskTestCase.php
+
+# Ignore documentation
+readme
+README.md
+CHANGELOG.md
+
+# Ignore Docker files
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# Ignore package files
+package-lock.json
+yarn.lock
+
+# Ignore build files
+public/build
+public/hot
+public/storage
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log

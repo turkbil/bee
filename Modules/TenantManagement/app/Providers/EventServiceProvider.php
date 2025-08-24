@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\TenantManagement\Providers;
+namespace Modules\TenantManagement\App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

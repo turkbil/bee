@@ -11,14 +11,14 @@ class SettingsGroupsTableSeeder extends Seeder
     public function run(): void
     {
         $groups = [
-            ['id' => 1, 'name' => 'Sistem', 'parent_id' => null, 'icon' => 'fas fa-cogs'],
+            ['id' => 1, 'name' => 'Genel Sistem', 'parent_id' => null, 'icon' => 'fas fa-cogs'],
             ['id' => 2, 'name' => 'Tenant', 'parent_id' => null, 'icon' => 'fas fa-building'],
             ['id' => 3, 'name' => 'Kullanıcı', 'parent_id' => null, 'icon' => 'fas fa-users'],
             ['id' => 4, 'name' => 'Modül', 'parent_id' => null, 'icon' => 'fas fa-puzzle-piece'],
             ['id' => 5, 'name' => 'Site', 'parent_id' => null, 'icon' => 'fas fa-globe'],
             ['id' => 6, 'name' => 'Site Ayarları', 'parent_id' => 1, 'icon' => 'fas fa-sliders-h', 'prefix' => 'site', 'layout' => $this->getSiteAyarlariLayout()],
             ['id' => 7, 'name' => 'Tema', 'parent_id' => 5, 'icon' => 'fas fa-palette', 'prefix' => 'theme'],
-            // NOT: Daha önce 'Tema Ayarları' olarak eklenmiş grup kaldırıldı, bu tüm tema ayarları 'Tema' grubu altında olacak
+            ['id' => 8, 'name' => 'SEO Ayarları', 'parent_id' => 1, 'icon' => 'fas fa-search', 'prefix' => 'seo', 'layout' => $this->getSeoAyarlariLayout()]
         ];
         
         foreach ($groups as $group) {
@@ -60,7 +60,7 @@ class SettingsGroupsTableSeeder extends Seeder
                                 [
                                     'type' => 'text',
                                     'properties' => [
-                                        'label' => 'Site Başlığı',
+                                        'label' => 'Site - Firma - Kurum Adı',
                                         'name' => 'site_title',
                                         'placeholder' => 'Site başlığını giriniz',
                                         'help_text' => 'Sitenizin başlığı tüm sayfalarda görünecektir',
@@ -136,6 +136,77 @@ class SettingsGroupsTableSeeder extends Seeder
                         'required' => false,
                         'default_value' => '',
                         'setting_id' => 5
+                    ]
+                ]
+            ]
+        ];
+        
+        return json_encode($layout);
+    }
+    
+    private function getSeoAyarlariLayout(): string
+    {
+        $layout = [
+            'title' => 'SEO Ayarları Formu',
+            'elements' => [
+                [
+                    'type' => 'row',
+                    'properties' => [
+                        'columns' => [
+                            ['index' => 1, 'width' => 6],
+                            ['index' => 2, 'width' => 6]
+                        ]
+                    ],
+                    'columns' => [
+                        [
+                            'width' => 6,
+                            'elements' => [
+                                [
+                                    'type' => 'text',
+                                    'properties' => [
+                                        'label' => 'Varsayılan Yazar',
+                                        'name' => 'seo_default_author',
+                                        'placeholder' => 'Varsayılan yazar adını giriniz',
+                                        'help_text' => 'Sayfalarda author meta tag için kullanılacak varsayılan yazar adı',
+                                        'width' => 12,
+                                        'required' => false,
+                                        'default_value' => 'Nurullah Okatan',
+                                        'setting_id' => 1
+                                    ]
+                                ]
+                            ]
+                        ],
+                        [
+                            'width' => 6,
+                            'elements' => [
+                                [
+                                    'type' => 'text',
+                                    'properties' => [
+                                        'label' => 'Twitter Site Hesabı',
+                                        'name' => 'seo_default_twitter_site',
+                                        'placeholder' => '@sitenizinhesabi',
+                                        'help_text' => 'Twitter Cards için site hesabı (@ işareti ile başlamalıdır)',
+                                        'width' => 12,
+                                        'required' => false,
+                                        'default_value' => '@turkbilisim',
+                                        'setting_id' => 2
+                                    ]
+                                ],
+                                [
+                                    'type' => 'text',
+                                    'properties' => [
+                                        'label' => 'Twitter Creator Hesabı',
+                                        'name' => 'seo_default_twitter_creator',
+                                        'placeholder' => '@creatorhesabi',
+                                        'help_text' => 'Twitter Cards için creator hesabı (@ işareti ile başlamalıdır)',
+                                        'width' => 12,
+                                        'required' => false,
+                                        'default_value' => '@nurullahokatan',
+                                        'setting_id' => 3
+                                    ]
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ]

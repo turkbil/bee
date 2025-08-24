@@ -339,7 +339,14 @@ readonly class UniversalInputAIService
      */
     private function calculateInputComplexity(array $userInputs): string
     {
-        $totalLength = array_sum(array_map('strlen', array_map('strval', $userInputs)));
+        $flatInputs = [];
+        array_walk_recursive($userInputs, function($value) use (&$flatInputs) {
+            if (is_string($value) || is_numeric($value)) {
+                $flatInputs[] = (string) $value;
+            }
+        });
+        
+        $totalLength = array_sum(array_map('strlen', $flatInputs));
         
         if ($totalLength < 100) return 'simple';
         if ($totalLength < 500) return 'medium';

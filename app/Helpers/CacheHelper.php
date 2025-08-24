@@ -1,9 +1,11 @@
 <?php
 
+namespace App\Helpers;
+
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-if (!class_exists('CacheHelper')) {
+if (!class_exists('App\Helpers\CacheHelper')) {
     class CacheHelper
     {
         // Standart TTL sabitleri
@@ -139,33 +141,3 @@ if (!class_exists('CacheHelper')) {
     }
 }
 
-// Global helper functions
-if (!function_exists('cache_key')) {
-    /**
-     * Generate tenant-aware cache key
-     */
-    function cache_key(string $key, string $type = 'general'): string
-    {
-        return CacheHelper::key($key, $type);
-    }
-}
-
-if (!function_exists('cache_remember_tenant')) {
-    /**
-     * Remember with tenant awareness
-     */
-    function cache_remember_tenant(string $key, $ttl, callable $callback, string $type = 'general')
-    {
-        return CacheHelper::remember($key, $ttl, $callback, $type);
-    }
-}
-
-if (!function_exists('cache_forget_tenant')) {
-    /**
-     * Forget tenant-aware cache
-     */
-    function cache_forget_tenant(string $key, string $type = 'general'): bool
-    {
-        return CacheHelper::forget($key, $type);
-    }
-}

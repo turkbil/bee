@@ -17,9 +17,9 @@ return [
     
     'bootstrappers' => [
         Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper::class,
-        Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper::class,
+        \App\Tenancy\RedisTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
-        Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class,
+        \App\Tenancy\QueueTenancyBootstrapper::class,
         \App\Tenancy\SessionTenancyBootstrapper::class,
     ],
     

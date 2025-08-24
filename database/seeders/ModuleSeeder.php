@@ -69,7 +69,7 @@ class ModuleSeeder extends Seeder
                 }
                 
                 // Page ve Announcement modülleri için ana seeder varsa sadece onu çalıştır
-                if (in_array($moduleBaseName, ['Page', 'Announcement'])) {
+                if (in_array($moduleBaseName, ['Page', 'Announcement']) && class_exists($moduleSeederClassName)) {
                     $this->command->info("{$moduleBaseName} module has main seeder, skipping individual seeders");
                     continue;
                 }
@@ -107,10 +107,12 @@ class ModuleSeeder extends Seeder
                         'AIFeatureSeeder_Part1_Updated',
                         'AIFeatureSeeder_Part2',
                         'AIFeatureSeeder_Part3',
-                        'AISEOFeaturesSeeder'  // Duplicate slug hatası önlenmesi için
+                        'AISEOFeaturesSeeder',  // Duplicate slug hatası önlenmesi için
+                        'SeoAdvancedInputSystemSeeder'  // SEO expert prompts seeder'ı dahil et
                     ])) {
                         continue;
                     }
+                    
                     
                     $fullClassName = "Modules\\" . $moduleBaseName . "\\Database\\Seeders\\" . $className;
                     
@@ -190,7 +192,11 @@ class ModuleSeeder extends Seeder
                             'BlogWriterUniversalInputSeeder',
                             'TranslationUniversalInputSeeder',
                             'UniversalContentLengthPromptsSeeder',
-                            'ModernBlogContentSeeder'
+                            'ModernBlogContentSeeder',
+                            // SEO AI seeder'ları - tenant'ta AI tabloları yok
+                            'SeoAdvancedFeaturesSeeder',
+                            'SeoAdvancedInputSystemSeeder',
+                            'SeoFeaturesSeeder'
                         ])) {
                             continue;
                         }

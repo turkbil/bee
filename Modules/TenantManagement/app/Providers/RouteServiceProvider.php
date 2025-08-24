@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\TenantManagement\Providers;
+namespace Modules\TenantManagement\App\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -26,6 +26,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
+        $this->mapAdminRoutes();
     }
 
     /**
@@ -46,5 +47,17 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes(): void
     {
         Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
+    }
+
+    /**
+     * Define the \"admin\" routes for the application.
+     *
+     * These routes are for admin panel functionality.
+     */
+    protected function mapAdminRoutes(): void
+    {
+        if (file_exists(module_path($this->name, '/routes/admin.php'))) {
+            Route::middleware('web')->group(module_path($this->name, '/routes/admin.php'));
+        }
     }
 }

@@ -100,7 +100,7 @@ class AIFeature extends Model
      */
     public function prompts(): BelongsToMany
     {
-        return $this->belongsToMany(Prompt::class, 'ai_feature_prompt_relations', 'feature_id', 'prompt_id')
+        return $this->belongsToMany(Prompt::class, 'ai_feature_prompt_relations', 'feature_id', 'prompt_id', 'id', 'prompt_id')
             ->withPivot(['role', 'priority', 'is_active', 'conditions', 'notes'])
             ->withTimestamps()
             ->orderBy('priority');

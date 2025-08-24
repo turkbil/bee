@@ -4,7 +4,7 @@ namespace Modules\Portfolio\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\PortfolioCategory;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Portfolio Category Seeder for Tenant2 Database
@@ -25,7 +25,7 @@ class PortfolioCategorySeederTenant2 extends Seeder
         
         // Mevcut kategorileri sil (sadece boşsa)
         PortfolioCategory::truncate();
-        SeoSetting::where('seoable_type', 'like', '%PortfolioCategory%')->delete();
+        
         
         $this->createWebDevelopmentCategory();
         $this->createDigitalMarketingCategory();
@@ -150,8 +150,6 @@ class PortfolioCategorySeederTenant2 extends Seeder
                 'tr' => $descriptionTr,
                 'en' => $descriptionEn
             ],
-            'available_languages' => ['tr', 'en'],
-            'default_language' => 'tr',
             'seo_score' => rand(80, 95),
         ]);
     }

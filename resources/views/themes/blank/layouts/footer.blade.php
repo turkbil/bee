@@ -134,7 +134,7 @@
                     {{-- Copyright --}}
                     <div class="text-center md:text-left">
                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                            &copy; {{ date('Y') }} {{ config('app.name') }}. Tüm hakları saklıdır.
+                            {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright(setting('site_title', config('app.name')), app()->getLocale()) }}
                         </p>
                     </div>
                     

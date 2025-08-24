@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 use App\Services\SeoLanguageManager;
 use App\Services\SeoMetaTagService;
 use App\Services\AI\SeoAnalysisService;

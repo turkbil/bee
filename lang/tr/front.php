@@ -18,6 +18,19 @@ return [
     'controls_pause' => 'ENTER Duraklat | R Yeniden Başlat',
     'controls_info' => 'Kesikli çizgi: Taşın düşeceği yer | 0.5sn ek yerleştirme süresi',
     
+    // Yeni kontrol sistemi
+    'game_controls' => 'Oyun Kontrolleri',
+    'movement' => 'Hareket',
+    'special' => 'Özel',
+    'rotate' => 'Döndür',
+    'soft_drop' => 'Yumuşak Düşür',
+    'move_left' => 'Sola Git',
+    'move_right' => 'Sağa Git', 
+    'hard_drop' => 'Sert Düşür',
+    'pause' => 'Duraklat',
+    'restart' => 'Yeniden Başlat',
+    'friendly_keys' => 'Dostu Tuşlar',
+    
     // =============================================
     // GENEL FRONTEND ÇEVİRİLERİ
     // =============================================

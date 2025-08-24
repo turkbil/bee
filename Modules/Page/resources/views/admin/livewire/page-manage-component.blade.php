@@ -110,7 +110,7 @@ $langName =
                     <!-- SEO Tab -->
                     <div class="tab-pane fade" id="1" role="tabpanel">
                         <x-seomanagement::universal-seo-tab :model="$this->currentPage" :available-languages="$availableLanguages" :current-language="$currentLanguage"
-                            :seo-data-cache="$seoDataCache" />
+                            :seo-data-cache="$seoDataCache" :page-id="$pageId" />
                     </div>
 
                     <!-- Code Tab -->

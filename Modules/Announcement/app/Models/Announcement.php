@@ -164,8 +164,6 @@ class Announcement extends BaseModel
             $this->seoSetting()->create([
                 'titles' => [],
                 'descriptions' => [],
-                'keywords' => [],
-                'focus_keywords' => [],
                 'og_titles' => [],
                 'og_descriptions' => [],
                 'robots_meta' => [
@@ -173,8 +171,7 @@ class Announcement extends BaseModel
                     'follow' => true,
                     'archive' => true
                 ],
-                'status' => 'active',
-                'default_language' => 'tr'
+                'status' => 'active'
             ]);
             
             // Refresh relationship

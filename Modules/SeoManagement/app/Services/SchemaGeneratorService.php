@@ -172,7 +172,7 @@ class SchemaGeneratorService
     }
 
     /**
-     * Page için Article schema - ULTRA TEMİZ
+     * Page için WebPage schema - UPDATED 2025
      */
     private function generatePageSchema(Page $model, string $language): array
     {
@@ -190,31 +190,12 @@ class SchemaGeneratorService
             url("/{$language}/page/{$slug}");
 
         return [
-            '@type' => 'Article',
+            '@type' => 'WebPage',
             'name' => $cleanTitle,
-            'headline' => $cleanTitle,
             'description' => $this->extractDescription($content),
-            'articleBody' => $this->cleanArticleBody($content),
             'url' => $pageUrl,
             'dateCreated' => $model->created_at?->toISOString(),
-            'datePublished' => $model->created_at?->toISOString(),
             'dateModified' => $model->updated_at?->toISOString(),
-            'author' => [
-                '@type' => 'Organization',
-                'name' => $siteTitle
-            ],
-            'publisher' => [
-                '@type' => 'Organization',
-                'name' => $siteTitle,
-                'logo' => [
-                    '@type' => 'ImageObject',
-                    'url' => setting('site_logo', asset('logo.png'))
-                ]
-            ],
-            'mainEntityOfPage' => [
-                '@type' => 'WebPage',
-                '@id' => $pageUrl
-            ],
             'inLanguage' => $language,
             'isPartOf' => [
                 '@type' => 'WebSite',

@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait HasSeo
@@ -22,8 +22,6 @@ trait HasSeo
     {
         if (!$this->seoSetting) {
             $this->seoSetting()->create([
-                'default_language' => app()->getLocale(),
-                'available_languages' => ['tr', 'en'],
                 'status' => 'active',
                 'priority_score' => 5
             ]);
@@ -60,17 +58,12 @@ trait HasSeo
     }
 
     /**
-     * Get SEO keywords for current or specified locale
+     * Get SEO keywords for current or specified locale (DEPRECATED)
      */
     public function getSeoKeywords(?string $locale = null): array
     {
-        if (!$this->seoSetting) {
-            return $this->getSeoFallbackKeywords();
-        }
-
-        $keywords = $this->seoSetting->getKeywords($locale);
-        
-        return !empty($keywords) ? $keywords : $this->getSeoFallbackKeywords();
+        // Keywords field removed from SEO settings
+        return [];
     }
 
     /**
@@ -103,10 +96,11 @@ trait HasSeo
     public function getOpenGraphData(?string $locale = null): array
     {
         $seo = $this->seoSetting;
+        $locale = $locale ?? app()->getLocale();
         
         return [
-            'title' => $seo?->og_titles ?? $this->getSeoTitle($locale),
-            'description' => $seo?->og_descriptions ?? $this->getSeoDescription($locale),
+            'title' => ($seo && $seo->og_titles) ? \App\Services\SeoLanguageManager::getSafeValue($seo->og_titles, $locale) : $this->getSeoTitle($locale),
+            'description' => ($seo && $seo->og_descriptions) ? \App\Services\SeoLanguageManager::getSafeValue($seo->og_descriptions, $locale) : $this->getSeoDescription($locale),
             'image' => $seo?->og_image ?? $this->getSeoFallbackImage(),
             'type' => $seo?->og_type ?? 'website',
             'url' => $this->getSeoCanonicalUrl()
@@ -119,11 +113,12 @@ trait HasSeo
     public function getTwitterCardData(?string $locale = null): array
     {
         $seo = $this->seoSetting;
+        $locale = $locale ?? app()->getLocale();
         
         return [
             'card' => $seo?->twitter_card ?? 'summary',
-            'title' => $seo?->twitter_title ?? $this->getSeoTitle($locale),
-            'description' => $seo?->twitter_description ?? $this->getSeoDescription($locale),
+            'title' => ($seo && $seo->twitter_title) ? \App\Services\SeoLanguageManager::getSafeValue($seo->twitter_title, $locale) : $this->getSeoTitle($locale),
+            'description' => ($seo && $seo->twitter_description) ? \App\Services\SeoLanguageManager::getSafeValue($seo->twitter_description, $locale) : $this->getSeoDescription($locale),
             'image' => $seo?->twitter_image ?? $this->getSeoFallbackImage()
         ];
     }
@@ -291,8 +286,8 @@ trait HasSeo
         if (!$seoSetting->getTitle($locale)) {
             $this->updateSeoForLanguage($locale, [
                 'title' => $this->getSeoFallbackTitle(),
-                'description' => $this->getSeoFallbackDescription(),
-                'keywords' => $this->getSeoFallbackKeywords()
+                'description' => $this->getSeoFallbackDescription()
+                // Keywords removed - will be handled by AI
             ]);
         }
     }
@@ -308,8 +303,8 @@ trait HasSeo
         });
 
         static::updated(function ($model) {
-            // Auto-update SEO if enabled
-            if ($model->seoSetting && $model->seoSetting->auto_optimize) {
+            // Auto-update SEO when model is updated
+            if ($model->seoSetting) {
                 $model->autoUpdateSeo();
             }
         });

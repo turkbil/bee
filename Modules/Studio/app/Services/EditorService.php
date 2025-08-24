@@ -79,14 +79,29 @@ class EditorService
             'title' => 'Editör',
         ];
         
+        // Locale değerini belirle - URL'den gelen parametre öncelikli
+        $targetLocale = $locale ?: app()->getLocale();
+        
         // Dinamik modül yükleme sistemi
         try {
             $model = $this->getModuleModel($module, $id);
             if ($model) {
-                $result['content'] = $this->safeTranslatableGet($model->body ?? '', '', $locale);
-                $result['css'] = $this->safeTranslatableGet($model->css ?? '', '', $locale);
-                $result['js'] = $this->safeTranslatableGet($model->js ?? '', '', $locale);
-                $result['title'] = $this->safeTranslatableGet($model->title ?? '', ucfirst($module) . ' Düzenleyici', $locale);
+                $result['content'] = $this->safeTranslatableGet($model->body ?? '', '', $targetLocale);
+                $result['css'] = $this->safeTranslatableGet($model->css ?? '', '', $targetLocale);
+                $result['js'] = $this->safeTranslatableGet($model->js ?? '', '', $targetLocale);
+                $result['title'] = $this->safeTranslatableGet($model->title ?? '', ucfirst($module) . ' Düzenleyici', $targetLocale);
+                
+                // Debug: Log the locale and content check
+                Log::info("Studio Editor Content Load", [
+                    'module' => $module,
+                    'id' => $id,
+                    'url_locale' => $locale,
+                    'target_locale' => $targetLocale,
+                    'content_keys' => is_array($model->body) ? array_keys($model->body) : 'string',
+                    'content_preview' => is_array($model->body) ? 
+                        substr($model->body[$targetLocale] ?? 'NOT_FOUND', 0, 100) : 
+                        substr($model->body ?? 'EMPTY', 0, 100)
+                ]);
             }
         } catch (\Exception $e) {
             Log::error($module . ' yüklenirken hata: ' . $e->getMessage());

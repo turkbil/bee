@@ -7,6 +7,7 @@ namespace Modules\AI\App\Services\FormBuilder;
 use Modules\AI\App\Models\AIFeature;
 use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 readonly class PromptMapper
 {
@@ -28,24 +29,45 @@ readonly class PromptMapper
             $promptParts[] = "=== GÖREV TANIMI ===\n" . $feature->quick_prompt;
         }
         
-        // 2. User input'larından gelen prompt'ları eşleştir
+        // 2. **YENİ: Expert Prompt'ları ekle (SEO için kritik)**
+        $expertPrompts = $this->getExpertPromptsForFeature($featureId);
+        foreach ($expertPrompts as $expertPrompt) {
+            $promptParts[] = "=== UZMAN TALİMATI: {$expertPrompt->name} ===\n" . $expertPrompt->expert_prompt;
+        }
+        
+        // 3. User input'larından gelen prompt'ları eşleştir
         $selectedPrompts = $this->mapUserInputsToPrompts($userInputs, $featureId);
         
         foreach ($selectedPrompts as $prompt) {
             $promptParts[] = "=== {$prompt->title} ===\n" . $prompt->content;
         }
         
-        // 3. Response Template (Çıktı formatı)
+        // 4. Response Template (Çıktı formatı)
         if ($feature->hasResponseTemplate()) {
             $promptParts[] = "=== YANIT FORMATI ===\n" . $feature->getFormattedTemplate();
         }
         
-        // 4. User input'ları ekle
+        // 5. User input'ları ekle
         if (!empty($userInputs['primary_input'])) {
             $promptParts[] = "=== KULLANICI GİRDİSİ ===\n" . $userInputs['primary_input'];
         }
         
         return implode("\n\n" . str_repeat("-", 50) . "\n\n", $promptParts);
+    }
+    
+    /**
+     * Feature için expert prompt'ları getir
+     */
+    private function getExpertPromptsForFeature(int $featureId): \Illuminate\Support\Collection
+    {
+        return \DB::table('ai_feature_prompt_relations as r')
+            ->join('ai_prompts as p', 'r.prompt_id', '=', 'p.prompt_id')
+            ->where('r.feature_id', $featureId)
+            ->where('r.is_active', true)
+            ->orderBy('r.priority')
+            ->orderBy('r.role') // primary, secondary, supportive
+            ->select('p.name', 'p.content as expert_prompt', 'r.role', 'r.priority')
+            ->get();
     }
     
     /**

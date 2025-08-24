@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 use App\Services\SeoLanguageManager;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 

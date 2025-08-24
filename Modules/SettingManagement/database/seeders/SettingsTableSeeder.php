@@ -12,7 +12,7 @@ class SettingsTableSeeder extends Seeder
         $settings = [
             [
                 'group_id' => 6,
-                'label' => 'Site Başlığı',
+                'label' => 'Site - Firma - Kurum Adı',
                 'key' => 'site_title',
                 'type' => 'text',
                 'default_value' => 'Türk Bilişim',
@@ -69,6 +69,43 @@ class SettingsTableSeeder extends Seeder
                 'is_system' => false,
                 'is_required' => false,
                 'help_text' => 'Google Analytics takip kodunuz (örn: G-XXXXXXXXXX). Boş bırakılırsa analitik takibi devre dışı kalır.'
+            ],
+            // SEO Varsayılan Değerleri - Genel Sistem kategorisi altında
+            [
+                'group_id' => 8,
+                'label' => 'Varsayılan Yazar',
+                'key' => 'seo_default_author',
+                'type' => 'text',
+                'default_value' => 'Nurullah Okatan',
+                'sort_order' => 1,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => false,
+                'help_text' => 'Sayfalarda author meta tag için kullanılacak varsayılan yazar adı.'
+            ],
+            [
+                'group_id' => 8,
+                'label' => 'Twitter Site Hesabı',
+                'key' => 'seo_default_twitter_site',
+                'type' => 'text',
+                'default_value' => '@turkbilisim',
+                'sort_order' => 2,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => false,
+                'help_text' => 'Twitter Cards için site hesabı (@ işareti ile başlamalıdır).'
+            ],
+            [
+                'group_id' => 8,
+                'label' => 'Twitter Creator Hesabı',
+                'key' => 'seo_default_twitter_creator',
+                'type' => 'text',
+                'default_value' => '@nurullahokatan',
+                'sort_order' => 3,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => false,
+                'help_text' => 'Twitter Cards için creator hesabı (@ işareti ile başlamalıdır).'
             ]
         ];
 

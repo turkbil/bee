@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 use App\Services\SeoCacheService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;

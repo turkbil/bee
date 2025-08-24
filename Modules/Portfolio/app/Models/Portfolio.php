@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 use App\Traits\HasTranslations;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -96,7 +96,7 @@ class Portfolio extends BaseModel implements HasMedia
     {
         // SEO verisi boş mu kontrol et
         $hasAnyData = false;
-        foreach (['seo_title', 'seo_description', 'seo_keywords'] as $field) {
+        foreach (['seo_title', 'seo_description'] as $field) {
             if (!empty($seoData[$field])) {
                 $hasAnyData = true;
                 break;
@@ -132,17 +132,7 @@ class Portfolio extends BaseModel implements HasMedia
         }
         $seoSetting->descriptions = $descriptions;
         
-        // Update keywords (convert string to array)
-        $keywords = $seoSetting->keywords ?? [];
-        if (!empty($seoData['seo_keywords'])) {
-            if (is_string($seoData['seo_keywords'])) {
-                $keywordArray = array_filter(array_map('trim', explode(',', $seoData['seo_keywords'])));
-                $keywords[$language] = $keywordArray;
-            } else {
-                $keywords[$language] = $seoData['seo_keywords'];
-            }
-        }
-        $seoSetting->keywords = $keywords;
+        // Keywords field removed - will be handled by AI
         
         // Update canonical URL
         if (!empty($seoData['canonical_url'])) {

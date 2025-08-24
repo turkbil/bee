@@ -346,8 +346,10 @@ readonly class CreditWarningService
      * @param float $maxCredits
      * @return string|null
      */
-    private function getCurrentWarningLevel(float $currentCredits, float $maxCredits): ?string
+    private function getCurrentWarningLevel(float|string $currentCredits, float|string $maxCredits): ?string
     {
+        $currentCredits = (float) $currentCredits;
+        $maxCredits = (float) $maxCredits;
         $remainingPercentage = ($currentCredits / $maxCredits) * 100;
         
         if ($remainingPercentage <= self::WARNING_LEVELS['critical']) {

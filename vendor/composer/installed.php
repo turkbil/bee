@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'a2662124daaba928b367ba6d1e72fbc75add8724',
+        'reference' => '3c7bdc4b90d9b7b37c72093fa1d3f4e54fe027e1',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -138,6 +138,12 @@
             'install_path' => __DIR__ . '/../facade/ignition-contracts',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'facebook/webdriver' => array(
+            'dev_requirement' => true,
+            'replaced' => array(
+                0 => '*',
+            ),
         ),
         'fakerphp/faker' => array(
             'pretty_version' => 'v1.24.1',
@@ -466,6 +472,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'laravel/dusk' => array(
+            'pretty_version' => 'v8.3.3',
+            'version' => '8.3.3.0',
+            'reference' => '077d448cd993a08f97bfccf0ea3d6478b3908f7e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/dusk',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'laravel/framework' => array(
             'pretty_version' => 'v12.18.0',
             'version' => '12.18.0.0',
@@ -478,7 +493,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'a2662124daaba928b367ba6d1e72fbc75add8724',
+            'reference' => '3c7bdc4b90d9b7b37c72093fa1d3f4e54fe027e1',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -820,6 +835,15 @@
             'reference' => '16fa68da5617220594aa5e33fa9de415f94784a0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../php-debugbar/php-debugbar',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'php-webdriver/webdriver' => array(
+            'pretty_version' => '1.15.2',
+            'version' => '1.15.2.0',
+            'reference' => '998e499b786805568deaf8cbf06f4044f05d91bf',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../php-webdriver/webdriver',
             'aliases' => array(),
             'dev_requirement' => true,
         ),

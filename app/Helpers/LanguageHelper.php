@@ -26,8 +26,9 @@ if (!function_exists('getSupportedLanguageRegex')) {
             return $cachedRegex;
         }
         
-        // Redis cache'den al veya oluştur - sadece ilk çağrıda
-        $cachedRegex = \Illuminate\Support\Facades\Cache::remember('supported_language_regex', 3600, function () {
+        // Redis cache'den al veya oluştur - sadece ilk çağrıda (build sırasında güvenli)
+        try {
+            $cachedRegex = \Illuminate\Support\Facades\Cache::remember('supported_language_regex', 3600, function () {
             // UrlPrefixService varsa oradan al
             if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
                 $locales = UrlPrefixService::getAvailableLocales();
@@ -52,6 +53,10 @@ if (!function_exists('getSupportedLanguageRegex')) {
             // Fallback - en azından temel diller
             return 'tr|en|ar|de|fr|es|ru|zh';
         });
+        } catch (\Exception $e) {
+            // Redis/Cache bağlantı hatası - fallback kullan
+            $cachedRegex = 'tr|en|ar|de|fr|es|ru|zh';
+        }
         
         return $cachedRegex;
     }

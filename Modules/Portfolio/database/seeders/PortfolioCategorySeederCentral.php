@@ -4,7 +4,7 @@ namespace Modules\Portfolio\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\PortfolioCategory;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Portfolio Category Seeder for Central Database
@@ -31,7 +31,7 @@ class PortfolioCategorySeederCentral extends Seeder
             \DB::table('portfolios')->truncate();
         }
         PortfolioCategory::truncate();
-        SeoSetting::where('seoable_type', 'like', '%PortfolioCategory%')->delete();
+        
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         
         // Ana kategorileri oluştur
@@ -300,7 +300,7 @@ class PortfolioCategorySeederCentral extends Seeder
     {
         // Frontend Development
         $frontendCategory = PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'Frontend Geliştirme',
                 'en' => 'Frontend Development',
@@ -322,7 +322,7 @@ class PortfolioCategorySeederCentral extends Seeder
 
         // Backend Development
         $backendCategory = PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'Backend Geliştirme',
                 'en' => 'Backend Development',
@@ -352,7 +352,7 @@ class PortfolioCategorySeederCentral extends Seeder
     {
         // iOS Development
         PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'iOS Geliştirme',
                 'en' => 'iOS Development',
@@ -374,7 +374,7 @@ class PortfolioCategorySeederCentral extends Seeder
 
         // Android Development
         PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'Android Geliştirme',
                 'en' => 'Android Development',
@@ -404,7 +404,7 @@ class PortfolioCategorySeederCentral extends Seeder
     {
         // B2B Solutions
         PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'B2B Çözümleri',
                 'en' => 'B2B Solutions',
@@ -426,7 +426,7 @@ class PortfolioCategorySeederCentral extends Seeder
 
         // B2C Solutions
         PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'B2C Çözümleri',
                 'en' => 'B2C Solutions',
@@ -456,7 +456,7 @@ class PortfolioCategorySeederCentral extends Seeder
     {
         // CMS Development
         PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'CMS Geliştirme',
                 'en' => 'CMS Development',
@@ -478,7 +478,7 @@ class PortfolioCategorySeederCentral extends Seeder
 
         // API Development
         PortfolioCategory::create([
-            'parent_id' => $parentCategory->portfolio_category_id,
+            'parent_id' => $parentCategory->id,
             'title' => [
                 'tr' => 'API Geliştirme',
                 'en' => 'API Development',
@@ -522,11 +522,6 @@ class PortfolioCategorySeederCentral extends Seeder
                 'en' => $descEn,
                 'ar' => $descAr
             ],
-            'keywords' => [
-                'tr' => ['kategori', 'portfolio', 'hizmet', 'teknoloji', 'çözüm'],
-                'en' => ['category', 'portfolio', 'service', 'technology', 'solution'],
-                'ar' => ['فئة', 'محفظة', 'خدمة', 'تكنولوجيا', 'حل']
-            ],
             'og_titles' => [
                 'tr' => $titleTr,
                 'en' => $titleEn,
@@ -537,8 +532,6 @@ class PortfolioCategorySeederCentral extends Seeder
                 'en' => $descEn,
                 'ar' => $descAr
             ],
-            'available_languages' => ['tr', 'en', 'ar'],
-            'default_language' => 'tr',
             'seo_score' => rand(80, 95),
         ]);
     }

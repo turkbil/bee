@@ -4,15 +4,18 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
+use App\Services\RedisClusterService;
 
 class TenantCacheManager
 {
     protected string $tenantPrefix;
     protected int $defaultTtl = 3600; // 1 saat
+    protected $clusterService;
 
     public function __construct()
     {
         $this->tenantPrefix = $this->getTenantPrefix();
+        $this->clusterService = app(RedisClusterService::class);
     }
 
     /**
@@ -158,17 +161,24 @@ class TenantCacheManager
     }
 
     /**
-     * Redis ile pattern matching
+     * Redis ile pattern matching (Cluster desteği ile)
      */
     protected function forgetByPattern(string $pattern): void
     {
         try {
             if (config('cache.default') === 'redis') {
-                $redis = Redis::connection(config('cache.stores.redis.connection'));
-                $keys = $redis->keys($pattern);
-                
-                if (!empty($keys)) {
-                    $redis->del($keys);
+                // Redis clustering aktif mi?
+                if (config('redis_cluster.clustering.enabled')) {
+                    $tenantKey = $this->extractTenantKey();
+                    $this->clusterService->clearTenantCache($tenantKey);
+                } else {
+                    // Single Redis
+                    $redis = Redis::connection(config('cache.stores.redis.connection'));
+                    $keys = $redis->keys($pattern);
+                    
+                    if (!empty($keys)) {
+                        $redis->del($keys);
+                    }
                 }
             }
         } catch (\Exception $e) {
@@ -178,6 +188,14 @@ class TenantCacheManager
                 'error' => $e->getMessage()
             ]);
         }
+    }
+    
+    /**
+     * Tenant key'ini prefix'ten çıkar
+     */
+    protected function extractTenantKey(): string
+    {
+        return str_replace('tenant_', '', $this->tenantPrefix);
     }
 
     /**

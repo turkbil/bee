@@ -543,40 +543,36 @@ readonly class SeoMetaTagService
                 $seoSetting = $model->seoSetting;
             }
             
-            // 1. TITLE
+            // 1. TITLE - Geliştirilmiş Hiyerarşi
             if ($seoSetting && $seoSetting->hasDirectTitle($locale) && $seoTitle = $seoSetting->getTitle($locale)) {
+                // 1. Öncelik: SEO ayarlarındaki manuel title
+                // Site name'i SettingManagement'ten al
+                $settingSiteName = setting('site_name') ?: setting('site_title', $siteName);
+                
                 // SEO title zaten site name içeriyorsa ekleme
-                if (str_contains($seoTitle, $siteName)) {
+                if (str_contains($seoTitle, $settingSiteName) || str_contains($seoTitle, $siteName)) {
                     $data['title'] = $seoTitle;
                 } else {
-                    $data['title'] = $seoTitle . ' - ' . $siteName;
+                    $data['title'] = $seoTitle . ' - ' . $settingSiteName;
                 }
             } elseif (method_exists($model, 'getTranslated') && $modelTitle = $model->getTranslated('title', $locale)) {
-                
-                // DEBUG: Title translation'ı logla
-                \Log::info('🐛 Title Translation Debug', [
-                    'model_class' => get_class($model),
-                    'model_id' => $model->getKey(),
-                    'requested_locale' => $locale,
-                    'raw_title' => $model->getRawOriginal('title'),
-                    'translated_title' => $modelTitle,
-                    'app_locale' => app()->getLocale(),
-                    'full_path' => request()->path(),
-                    'detected_locale_logic' => 'LOCALE_DEBUG_' . $locale
-                ]);
-                
-                $data['title'] = $modelTitle . ' - ' . $siteName;
+                // 2. Öncelik: Model'in title alanı + site name
+                $settingSiteName = setting('site_name') ?: setting('site_title', $siteName);
+                $data['title'] = $modelTitle . ' - ' . $settingSiteName;
+            } else {
+                // 3. Fallback: Sadece site default title
+                $data['title'] = setting('site_name') ?: setting('site_title', $siteName);
             }
             
-            // 2. DESCRIPTION
+            // 2. DESCRIPTION - Geliştirilmiş Hiyerarşi
             if ($seoSetting && $seoSetting->hasDirectDescription($locale) && $seoDesc = $seoSetting->getDescription($locale)) {
-                // SEO description'ı temizle
+                // 1. Öncelik: SEO ayarlarındaki manuel description
                 $seoDesc = strip_tags($seoDesc);
                 $seoDesc = preg_replace('/\s+/', ' ', $seoDesc);
                 $seoDesc = trim($seoDesc);
                 $data['description'] = $seoDesc;
             } elseif (method_exists($model, 'getTranslated') && $body = $model->getTranslated('body', $locale)) {
-                // Body'den excerpt al (HTML temizle, 160 karakter)
+                // 2. Öncelik: Model'in body alanından otomatik excerpt
                 $cleanBody = strip_tags($body);
                 $cleanBody = html_entity_decode($cleanBody, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $cleanBody = preg_replace('/\s+/', ' ', $cleanBody); // Çoklu boşlukları tek boşluğa çevir
@@ -584,6 +580,15 @@ readonly class SeoMetaTagService
                 if (!empty($cleanBody)) {
                     $data['description'] = mb_substr($cleanBody, 0, 160);
                     if (mb_strlen($cleanBody) > 160) {
+                        $data['description'] .= '...';
+                    }
+                }
+            } else {
+                // 3. Fallback: Setting'ten genel site açıklaması
+                $fallbackDescription = setting('site_description') ?: setting('site_slogan');
+                if ($fallbackDescription) {
+                    $data['description'] = mb_substr(strip_tags($fallbackDescription), 0, 160);
+                    if (mb_strlen($fallbackDescription) > 160) {
                         $data['description'] .= '...';
                     }
                 }
@@ -617,40 +622,56 @@ readonly class SeoMetaTagService
                 $data['canonical_url'] = url()->current();
             }
             
-            // 4. OPEN GRAPH
-            // og:title
+            // 4. OPEN GRAPH - Geliştirilmiş Hiyerarşi
+            // og:title - Özel fallback hiyerarşisi
             if ($seoSetting) {
                 $ogTitleField = $seoSetting->og_titles;
                 if (is_array($ogTitleField) && isset($ogTitleField[$locale])) {
+                    // 1. Öncelik: OG'ye özel tanımlanmış title
                     $data['og_titles'] = $ogTitleField[$locale];
                 } elseif (is_string($ogTitleField) && !empty($ogTitleField)) {
+                    // 1.1. Öncelik: OG'ye özel tanımlanmış title (string format)
                     $data['og_titles'] = $ogTitleField;
                 }
             }
             if (empty($data['og_titles'])) {
+                // 2. Fallback: Normal SEO title kullan
                 $data['og_titles'] = $data['title'];
             }
             
-            // og:description
+            // og:description - Özel fallback hiyerarşisi
             if ($seoSetting) {
                 $ogDescField = $seoSetting->og_descriptions;
                 if (is_array($ogDescField) && isset($ogDescField[$locale])) {
+                    // 1. Öncelik: OG'ye özel tanımlanmış description
                     $data['og_descriptions'] = $ogDescField[$locale];
                 } elseif (is_string($ogDescField) && !empty($ogDescField)) {
+                    // 1.1. Öncelik: OG'ye özel tanımlanmış description (string format)
                     $data['og_descriptions'] = $ogDescField;
                 }
             }
             if (empty($data['og_descriptions'])) {
+                // 2. Fallback: Normal SEO description kullan (zaten geliştirilmiş hiyerarşiye sahip)
                 $data['og_descriptions'] = $data['description'];
             }
             
-            // og:image
+            // og:image - Geliştirilmiş Hiyerarşi
             if ($seoSetting && $seoSetting->og_image) {
+                // 1. Öncelik: SEO ayarlarında tanımlı resim
                 $data['og_image'] = cdn($seoSetting->og_image);
-            } elseif (method_exists($model, 'getFirstMediaUrl')) {
-                $data['og_image'] = $model->getFirstMediaUrl('featured');
+            } elseif (method_exists($model, 'getFirstMediaUrl') && $mediaImage = $model->getFirstMediaUrl('featured')) {
+                // 2. Öncelik: Model'in featured resmi (Media library)
+                $data['og_image'] = $mediaImage;
+            } elseif (method_exists($model, 'getFirstMediaUrl') && $mediaImage = $model->getFirstMediaUrl()) {
+                // 3. Öncelik: Model'in 1 numaralı media fotoğrafı (herhangi bir collection)
+                $data['og_image'] = $mediaImage;
             } elseif (isset($model->image) && $model->image) {
+                // 4. Öncelik: Model'in image field'ı
                 $data['og_image'] = cdn($model->image);
+            } else {
+                // 5. Varsayılan: Site logo (her zaman var olmalı)
+                $defaultOgImage = setting('site_logo') ?: setting('site_logo_url') ?: asset('logo.png');
+                $data['og_image'] = $defaultOgImage;
             }
             
             // og:type - Model tipine göre
@@ -707,6 +728,13 @@ readonly class SeoMetaTagService
             
             // 7. SCHEMA.ORG
             $data['schema'] = $this->generateSchema($model, $data);
+            
+            // 7.1. BREADCRUMB SCHEMA (Otomatik)
+            $breadcrumbs = $this->generateAutoBreadcrumbs($model, $locale);
+            if (!empty($breadcrumbs)) {
+                $schemaGenerator = app(\Modules\SeoManagement\app\Services\SchemaGeneratorService::class);
+                $data['breadcrumb_schema'] = $schemaGenerator->generateBreadcrumbSchema($breadcrumbs);
+            }
             
             // 8. HREFLANG URLS
             if ($model) {
@@ -797,6 +825,72 @@ readonly class SeoMetaTagService
         }
     }
     
+    /**
+     * Otomatik breadcrumb oluştur
+     */
+    private function generateAutoBreadcrumbs(?Model $model, string $locale): array
+    {
+        if (!$model) {
+            return [];
+        }
+
+        $breadcrumbs = [];
+        $siteName = setting('site_title', 'Website');
+        
+        // 1. Ana sayfa (her zaman)
+        $breadcrumbs[] = [
+            'name' => $siteName,
+            'url' => url('/')
+        ];
+        
+        // 2. Model tipine göre orta seviye
+        $modelClass = get_class($model);
+        
+        if (str_contains($modelClass, 'Page')) {
+            // Page için breadcrumb yok - direkt ana sayfa → sayfa
+        } elseif (str_contains($modelClass, 'Portfolio')) {
+            $portfolioIndexText = __('Portfolio', [], $locale);
+            $breadcrumbs[] = [
+                'name' => $portfolioIndexText,
+                'url' => url('/portfolio')
+            ];
+            
+            // Portfolio kategorisi varsa
+            if (isset($model->category) && $model->category) {
+                $categoryTitle = $model->category->getTranslated('title', $locale);
+                $breadcrumbs[] = [
+                    'name' => $categoryTitle,
+                    'url' => url("/portfolio/category/{$model->category->id}")
+                ];
+            }
+        } elseif (str_contains($modelClass, 'Announcement')) {
+            $announcementIndexText = __('Announcements', [], $locale);
+            $breadcrumbs[] = [
+                'name' => $announcementIndexText,
+                'url' => url('/announcements')
+            ];
+        } elseif (str_contains($modelClass, 'PortfolioCategory')) {
+            $portfolioIndexText = __('Portfolio', [], $locale);
+            $breadcrumbs[] = [
+                'name' => $portfolioIndexText,
+                'url' => url('/portfolio')
+            ];
+        }
+        
+        // 3. Mevcut sayfa (son)
+        if (method_exists($model, 'getTranslated')) {
+            $currentTitle = $model->getTranslated('title', $locale);
+            if ($currentTitle) {
+                $breadcrumbs[] = [
+                    'name' => $currentTitle,
+                    'url' => url()->current()
+                ];
+            }
+        }
+        
+        return $breadcrumbs;
+    }
+
     /**
      * Otomatik çok dilli copyright oluştur - Public static metod
      */

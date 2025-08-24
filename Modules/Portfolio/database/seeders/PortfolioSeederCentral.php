@@ -5,7 +5,7 @@ namespace Modules\Portfolio\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\Portfolio;
 use Modules\Portfolio\App\Models\PortfolioCategory;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Portfolio Seeder for Central Database
@@ -31,6 +31,13 @@ class PortfolioSeederCentral extends Seeder
         $ecommerceCategory = PortfolioCategory::where('slug->tr', 'e-ticaret')->first();
         $corporateCategory = PortfolioCategory::where('slug->tr', 'kurumsal-web')->first();
         
+        $this->command->info('🔍 Category Debug:');
+        $this->command->info("Web Design Category: " . ($webDesignCategory ? "ID {$webDesignCategory->portfolio_category_id}" : "NOT FOUND"));
+        $this->command->info("Mobile Category: " . ($mobileCategory ? "ID {$mobileCategory->portfolio_category_id}" : "NOT FOUND"));
+        $this->command->info("E-commerce Category: " . ($ecommerceCategory ? "ID {$ecommerceCategory->portfolio_category_id}" : "NOT FOUND"));
+        $this->command->info("Corporate Category: " . ($corporateCategory ? "ID {$corporateCategory->portfolio_category_id}" : "NOT FOUND"));
+        $this->command->info("Total categories in DB: " . PortfolioCategory::count());
+        
         if (!$webDesignCategory || !$mobileCategory || !$ecommerceCategory || !$corporateCategory) {
             $this->command->error('Portfolio categories not found! Please run PortfolioCategorySeederCentral first.');
             return;
@@ -38,7 +45,7 @@ class PortfolioSeederCentral extends Seeder
         
         // Mevcut portfolioları sil (sadece boşsa)
         Portfolio::truncate();
-        SeoSetting::where('seoable_type', 'like', '%Portfolio%')->delete();
+        
         
         $this->createWebDesignPortfolio($webDesignCategory);
         $this->createMobileAppPortfolio($mobileCategory);
@@ -321,11 +328,6 @@ class PortfolioSeederCentral extends Seeder
                 'en' => $descEn,
                 'ar' => $descAr
             ],
-            'keywords' => [
-                'tr' => ['portfolio', 'proje', 'web tasarım', 'mobil uygulama', 'teknoloji'],
-                'en' => ['portfolio', 'project', 'web design', 'mobile app', 'technology'],
-                'ar' => ['محفظة', 'مشروع', 'تصميم ويب', 'تطبيق جوال', 'تكنولوجيا']
-            ],
             'og_titles' => [
                 'tr' => $titleTr,
                 'en' => $titleEn,
@@ -336,8 +338,6 @@ class PortfolioSeederCentral extends Seeder
                 'en' => $descEn,
                 'ar' => $descAr
             ],
-            'available_languages' => ['tr', 'en', 'ar'],
-            'default_language' => 'tr',
             'seo_score' => rand(80, 95),
         ]);
     }

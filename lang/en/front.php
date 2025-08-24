@@ -18,6 +18,19 @@ return [
     'controls_pause' => 'ENTER Pause | R Restart',
     'controls_info' => 'Dashed line: Drop location | 0.5s placement time',
     
+    // New control system
+    'game_controls' => 'Game Controls',
+    'movement' => 'Movement',
+    'special' => 'Special',
+    'rotate' => 'Rotate',
+    'soft_drop' => 'Soft Drop',
+    'move_left' => 'Move Left',
+    'move_right' => 'Move Right',
+    'hard_drop' => 'Hard Drop',
+    'pause' => 'Pause',
+    'restart' => 'Restart',
+    'friendly_keys' => 'Friendly Keys',
+    
     // =============================================
     // GENERAL FRONTEND TRANSLATIONS
     // =============================================

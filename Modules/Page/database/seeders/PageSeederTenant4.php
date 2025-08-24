@@ -4,7 +4,7 @@ namespace Modules\Page\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Page\App\Models\Page;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Page Seeder for Tenant4
@@ -25,7 +25,7 @@ class PageSeederTenant4 extends Seeder
         
         // Mevcut sayfaları sil (sadece boşsa)
         Page::truncate();
-        SeoSetting::where('seoable_type', 'like', '%Page%')->delete();
+        
         
         $this->createHomepage();
         $this->createAboutPage();
@@ -836,14 +836,6 @@ class PageSeederTenant4 extends Seeder
             ],
             'descriptions' => [
                 'en' => $description
-            ],
-            'keywords' => [
-                'en' => ['saas platform', 'business automation', 'workflow management', 'team collaboration', 'business software']
-            ],
-            'focus_keywords' => [
-                'tr' => 'saas platform',
-                'en' => 'saas platform',
-                'ar' => 'منصة خدمات'
             ],
             'robots_meta' => ['index' => true, 'follow' => true, 'archive' => true],
             'og_titles' => [

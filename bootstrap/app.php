@@ -6,6 +6,9 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Exceptions\Handler;
 
 return Application::configure(basePath: dirname(__DIR__))
+    ->withProviders([
+        \App\Providers\DatabasePoolServiceProvider::class,
+    ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -46,6 +49,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // 5. MissingPageRedirector
         $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
         
+        // 6. Database Pool - Connection pooling için (Tenant middleware'den sonra)
+        $middleware->appendToGroup('web', \App\Http\Middleware\DatabasePoolMiddleware::class);
+        $middleware->appendToGroup('api', \App\Http\Middleware\DatabasePoolMiddleware::class);
+        
+        // 7. Resource Tracking - Gerçek sistem verilerini topla
+        $middleware->appendToGroup('web', \Modules\TenantManagement\App\Http\Middleware\ResourceTrackingMiddleware::class);
+        $middleware->appendToGroup('api', \Modules\TenantManagement\App\Http\Middleware\ResourceTrackingMiddleware::class);
+        
         // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
@@ -62,6 +73,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'locale.site' => \Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class,
             'ai.tokens' => \App\Http\Middleware\CheckAITokensMiddleware::class,
             'admin.tenant.select' => \App\Http\Middleware\AdminTenantSelection::class,
+            'database.pool' => \App\Http\Middleware\DatabasePoolMiddleware::class,
+            'tenant.rate.limit' => \Modules\TenantManagement\App\Http\Middleware\TenantRateLimitMiddleware::class,
         ]);
                 
         // Admin middleware grubu

@@ -49,6 +49,12 @@ class AIDatabaseSeeder extends Seeder
             // Translation Feature Seeder (Page modülü toplu çeviri)
             $this->call(\Modules\AI\Database\Seeders\TranslationFeatureSeeder::class);
             
+            // SEO Advanced Input System Seeder (SEO expert prompts)
+            $this->call(\Modules\AI\Database\Seeders\SeoAdvancedInputSystemSeeder::class);
+            
+            // 🚀 ENTERPRISE SEO PROMPT SYSTEM V5.0
+            $this->call(\Modules\AI\Database\Seeders\SeoEnterprisePromptSeeder::class);
+            
             // 🎯 UNIVERSAL INPUT SYSTEM V3 - SEEDER'LAR (Feature'lar oluşturulduktan SONRA)
             $this->call(\Modules\AI\Database\Seeders\BlogWriterUniversalInputSeeder::class);
             $this->call(\Modules\AI\Database\Seeders\TranslationUniversalInputSeeder::class);

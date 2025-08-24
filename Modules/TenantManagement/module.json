@@ -5,7 +5,7 @@
     "keywords": [],
     "priority": 0,
     "providers": [
-        "Modules\\TenantManagement\\Providers\\TenantManagementServiceProvider"
+        "Modules\\TenantManagement\\App\\Providers\\TenantManagementServiceProvider"
     ],
     "files": []
 }

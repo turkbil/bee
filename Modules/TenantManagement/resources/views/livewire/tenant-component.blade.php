@@ -82,9 +82,9 @@
                                 <div class="small mt-1">
                                     <a href="javascript:void(0);" class="text-decoration-none" wire:click.prevent="toggleActive('{{ $tenant->id }}')">
                                         @if($tenant->is_active)
-                                        <span class="badge bg-green fa-fade"></span> <span class="text-muted">{{ __('tenantmanagement::admin.online') }}</span>
+                                        <span class="text-muted">{{ __('tenantmanagement::admin.online') }}</span>
                                         @else
-                                        <span class="badge bg-red fa-fade"></span> <span class="text-muted">{{ __('tenantmanagement::admin.offline') }}</span>
+                                        <span class="text-muted">{{ __('tenantmanagement::admin.offline') }}</span>
                                         @endif
                                     </a>
                                 </div>

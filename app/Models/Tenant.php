@@ -35,6 +35,13 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'ai_enabled' => 'boolean',
         'ai_monthly_reset_at' => 'datetime',
         'ai_last_used_at' => 'datetime',
+        // SEO default fields
+        'seo_default_author' => 'string',
+        'seo_default_publisher' => 'string',
+        'seo_default_copyright' => 'string',
+        'seo_default_og_site_name' => 'string',
+        'seo_default_twitter_site' => 'string',
+        'seo_default_twitter_creator' => 'string',
     ];
     
     public function getActivitylogOptions(): LogOptions

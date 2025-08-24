@@ -71,6 +71,15 @@ class EditorComponent extends Component
     {
         try {
             $editorService = app(EditorService::class);
+            
+            // Debug log - Component seviyesinde locale kontrolü
+            Log::info("EditorComponent loadContent", [
+                'module' => $this->module,
+                'moduleId' => $this->moduleId,
+                'component_locale' => $this->locale,
+                'app_locale' => app()->getLocale()
+            ]);
+            
             $data = $editorService->loadContent($this->module, $this->moduleId, $this->locale);
             
             // Array değerleri safe string'e dönüştür

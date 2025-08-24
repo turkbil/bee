@@ -4,7 +4,7 @@ namespace Modules\Page\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Page\App\Models\Page;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 use App\Helpers\TenantHelpers;
 use Modules\MenuManagement\App\Models\Menu;
 use Modules\MenuManagement\App\Models\MenuItem;
@@ -28,7 +28,7 @@ class PageSeederCentral extends Seeder
         
         // Mevcut sayfaları sil (sadece boşsa)
         Page::truncate();
-        SeoSetting::where('seoable_type', 'like', '%Page%')->delete();
+        
         
         $this->createHomepage();
         $this->createAboutPage();
@@ -802,11 +802,6 @@ class PageSeederCentral extends Seeder
                 'en' => $descriptionEn,
                 'ar' => $descriptionAr
             ],
-            'keywords' => [
-                'tr' => ['türk bilişim', 'yapay zeka', 'teknoloji'],
-                'en' => ['turkish tech', 'artificial intelligence', 'technology'],
-                'ar' => ['تكنولوجيا تركية', 'ذكاء اصطناعي', 'تقنية']
-            ],
             'og_titles' => [
                 'tr' => $titleTr,
                 'en' => $titleEn,
@@ -817,8 +812,6 @@ class PageSeederCentral extends Seeder
                 'en' => $descriptionEn,
                 'ar' => $descriptionAr
             ],
-            'available_languages' => ['tr', 'en', 'ar'],
-            'default_language' => 'tr',
             'seo_score' => rand(80, 95),
         ]);
     }

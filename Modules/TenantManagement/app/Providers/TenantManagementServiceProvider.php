@@ -1,12 +1,15 @@
 <?php
 
-namespace Modules\TenantManagement\Providers;
+namespace Modules\TenantManagement\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Modules\TenantManagement\App\Providers\EventServiceProvider;
+use Modules\TenantManagement\App\Providers\RouteServiceProvider;
 
 class TenantManagementServiceProvider extends ServiceProvider
 {
@@ -27,6 +30,11 @@ class TenantManagementServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        
+        // Livewire component registration - moved to end of boot method
+        $this->app->booted(function () {
+            $this->registerLivewireComponents();
+        });
     }
 
     /**
@@ -36,6 +44,10 @@ class TenantManagementServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        
+        // Service bindings
+        $this->app->singleton(\Modules\TenantManagement\App\Services\RealTimeAutoScalingService::class);
+        $this->app->singleton(\App\Services\DatabaseConnectionPoolService::class);
     }
 
     /**
@@ -131,5 +143,51 @@ class TenantManagementServiceProvider extends ServiceProvider
         }
 
         return $paths;
+    }
+
+    /**
+     * Register Livewire components.
+     */
+    protected function registerLivewireComponents(): void
+    {
+        try {
+            \Log::info('TenantManagement: registerLivewireComponents called');
+            
+            // Check if classes exist before registering - dual registration for compatibility
+            $components = [
+                // Short names for internal usage
+                'tenantcomponent' => \Modules\TenantManagement\App\Http\Livewire\TenantComponent::class,
+                'tenantcachecomponent' => \Modules\TenantManagement\App\Http\Livewire\TenantCacheComponent::class,
+                'tenantlimitscomponent' => \Modules\TenantManagement\App\Http\Livewire\TenantLimitsComponent::class,
+                'tenantmonitoringcomponent' => \Modules\TenantManagement\App\Http\Livewire\TenantMonitoringComponent::class,
+                'tenantratelimitcomponent' => \Modules\TenantManagement\App\Http\Livewire\TenantRateLimitComponent::class,
+                'tenantautoscalingcomponent' => \Modules\TenantManagement\App\Http\Livewire\TenantAutoScalingComponent::class,
+                'tenantpoolmonitoringcomponent' => \Modules\TenantManagement\App\Http\Livewire\Admin\TenantPoolMonitoringComponent::class,
+                'tenanthealthcheckcomponent' => \Modules\TenantManagement\App\Http\Livewire\Admin\TenantHealthCheckComponent::class,
+                
+                // Full namespace names for auto-discovery
+                'modules.tenantmanagement.app.http.livewire.tenant-component' => \Modules\TenantManagement\App\Http\Livewire\TenantComponent::class,
+                'modules.tenantmanagement.app.http.livewire.tenant-cache-component' => \Modules\TenantManagement\App\Http\Livewire\TenantCacheComponent::class,
+                'modules.tenantmanagement.app.http.livewire.tenant-limits-component' => \Modules\TenantManagement\App\Http\Livewire\TenantLimitsComponent::class,
+                'modules.tenantmanagement.app.http.livewire.tenant-monitoring-component' => \Modules\TenantManagement\App\Http\Livewire\TenantMonitoringComponent::class,
+                'modules.tenantmanagement.app.http.livewire.tenant-rate-limit-component' => \Modules\TenantManagement\App\Http\Livewire\TenantRateLimitComponent::class,
+                'modules.tenantmanagement.app.http.livewire.tenant-auto-scaling-component' => \Modules\TenantManagement\App\Http\Livewire\TenantAutoScalingComponent::class,
+                'modules.tenantmanagement.app.http.livewire.admin.tenant-pool-monitoring-component' => \Modules\TenantManagement\App\Http\Livewire\Admin\TenantPoolMonitoringComponent::class,
+                'modules.tenantmanagement.app.http.livewire.admin.tenant-health-check-component' => \Modules\TenantManagement\App\Http\Livewire\Admin\TenantHealthCheckComponent::class,
+            ];
+            
+            foreach ($components as $name => $class) {
+                if (class_exists($class)) {
+                    Livewire::component($name, $class);
+                    \Log::info("TenantManagement: Registered component {$name} -> {$class}");
+                } else {
+                    \Log::error("TenantManagement: Class not found {$class}");
+                }
+            }
+            
+            \Log::info('TenantManagement: registerLivewireComponents completed');
+        } catch (\Exception $e) {
+            \Log::error('TenantManagement: registerLivewireComponents failed: ' . $e->getMessage());
+        }
     }
 }

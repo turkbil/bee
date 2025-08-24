@@ -176,8 +176,6 @@ class Page extends BaseModel
             $this->seoSetting()->create([
                 'titles' => [],
                 'descriptions' => [],
-                'keywords' => [],
-                'focus_keywords' => [],
                 'og_titles' => [],
                 'og_descriptions' => [],
                 'robots_meta' => [
@@ -185,8 +183,7 @@ class Page extends BaseModel
                     'follow' => true,
                     'archive' => true
                 ],
-                'status' => 'active',
-                'default_language' => 'tr'
+                'status' => 'active'
             ]);
             
             // Refresh relationship

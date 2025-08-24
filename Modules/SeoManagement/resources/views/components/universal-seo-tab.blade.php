@@ -16,6 +16,10 @@
     // Eğer pageId geçilmişse Page modelini kullan, yoksa null
     $page = $pageId ? \App\Services\GlobalCacheService::getPageWithSeo($pageId) : null;
     $seoSettings = $page ? $page->seoSetting : null;
+    
+    // Kaydedilmiş analiz sonuçları var mı kontrol et (yeni alanda)
+    $hasAnalysisResults = $seoSettings && $seoSettings->analysis_results;
+    $analysisResults = $hasAnalysisResults ? $seoSettings->analysis_results : null;
 @endphp
 
 @foreach($availableLanguages as $lang)
@@ -39,11 +43,174 @@
 @endphp
 
 <div class="seo-language-content" data-language="{{ $lang }}" style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
+    
+    {{-- AI SEO TOOLBAR - YENİ TASARIM --}}
+    @if(!$disabled)
+    <div class="ai-seo-toolbar mb-4">
+        <div class="card border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px;">
+            <div class="card-body p-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" 
+                                    class="btn ai-seo-comprehensive-btn" 
+                                    data-seo-feature="seo-comprehensive-audit"
+                                    data-language="{{ $lang }}"
+                                    style="background: linear-gradient(45deg, #ff6b6b, #ee5a24); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 500; box-shadow: 0 2px 8px rgba(238, 90, 36, 0.3); transition: all 0.3s ease;">
+                                <i class="fas fa-chart-bar me-1"></i>
+                                {{ $hasAnalysisResults ? 'Verileri Yenile' : 'SEO Analizi' }}
+                            </button>
+                            <button type="button" 
+                                    class="btn seo-generator-btn"
+                                    data-action="generate-seo"
+                                    data-language="{{ $lang }}"
+                                    style="background: linear-gradient(45deg, #4ecdc4, #44a08d); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 500; box-shadow: 0 2px 8px rgba(68, 160, 141, 0.3); transition: all 0.3s ease;">
+                                <i class="fas fa-magic me-1"></i>
+                                SEO Oluştur
+                            </button>
+                        </div>
+                        <div class="mt-1">
+                            <small class="text-white opacity-75">AI ile SEO verilerinizi optimize edin</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- KAYDEDILMIŞ ANALIZ SONUÇLARI --}}
+    @if($hasAnalysisResults)
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-chart-line me-2"></i>
+                Kapsamlı SEO Analizi
+                <small class="ms-2 opacity-75">{{ $seoSettings->analysis_date ? \Carbon\Carbon::parse($seoSettings->analysis_date)->diffForHumans() : 'Yakın zamanda' }}</small>
+            </h3>
+        </div>
+        <div class="card-body">
+            @php
+                $analysisData = $analysisResults;
+                $overallScore = $analysisData['overall_score'] ?? $seoSettings->overall_score ?? null;
+                $detailedScores = $analysisData['detailed_scores'] ?? null;
+            @endphp
+            @if($overallScore)
+            <!-- GENEL SKOR -->
+            <div class="row mb-4">
+                <div class="col-auto">
+                    <div class="avatar avatar-xl {{ $overallScore >= 80 ? 'bg-success' : ($overallScore >= 60 ? 'bg-warning' : 'bg-danger') }} text-white" style="font-size: 1.5rem; font-weight: bold;">
+                        {{ $overallScore }}
+                    </div>
+                </div>
+                <div class="col">
+                    <h4>Genel SEO Skoru</h4>
+                    <p class="text-secondary">{{ $overallScore >= 80 ? 'Mükemmel' : ($overallScore >= 60 ? 'İyi' : 'Geliştirilebilir') }}</p>
+                </div>
+            </div>
+            
+            <!-- SKOR DETAYLARI -->
+            @if($detailedScores)
+            <div class="row g-3 mb-4">
+                @foreach($detailedScores as $category => $details)
+                    @if(isset($details['score']))
+                    @php $score = $details['score']; @endphp
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-sm">
+                            <div class="card-body p-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-fill">
+                                        <div class="font-weight-medium">{{ strtoupper(str_replace('_', ' ', $category)) }}</div>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-{{ $score >= 80 ? 'success' : ($score >= 60 ? 'warning' : 'danger') }}" style="width: {{ $score }}%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="ms-2 text-{{ $score >= 80 ? 'success' : ($score >= 60 ? 'warning' : 'danger') }}">{{ $score }}/100</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                @endforeach
+            </div>
+            @endif
+            @endif
+            
+            @php
+                // VERİLERİ HEM JSON'DAN HEM DB ALANLARDAN OKU (FALLBACK)
+                $strengths = $analysisData['strengths'] ?? ($seoSettings->strengths ?? null);
+                $improvements = $analysisData['improvements'] ?? ($seoSettings->improvements ?? null);
+                $actionItems = $analysisData['action_items'] ?? ($seoSettings->action_items ?? null);
+                
+                // HEP TAM LİSTE GÖSTER - KESME YOK
+                $displayLimit = null;
+            @endphp
+            <!-- OLUMLU YANLAR -->
+            @if($strengths)
+            <div class="mb-4">
+                <h5 class="text-success"><i class="fas fa-check-circle me-2"></i>Güçlü Yanlar</h5>
+                <div class="list-group list-group-flush">
+                    @if(is_array($strengths))
+                    @foreach($strengths as $strength)
+                    <div class="list-group-item border-0 px-0 py-2">
+                        <i class="fas fa-plus-circle text-success me-2"></i>{{ is_array($strength) ? ($strength['text'] ?? $strength['title'] ?? $strength['description'] ?? json_encode($strength)) : $strength }}
+                    </div>
+                    @endforeach
+                    @endif
+                </div>
+            </div>
+            @endif
+            
+            <!-- İYİLEŞTİRME ÖNERİLERİ -->
+            @if($improvements)
+            <div class="mb-4">
+                <h5 class="text-warning"><i class="fas fa-exclamation-triangle me-2"></i>İyileştirme Alanları</h5>
+                <div class="list-group list-group-flush">
+                    @if(is_array($improvements))
+                    @foreach($improvements as $improvement)
+                    <div class="list-group-item border-0 px-0 py-2">
+                        <i class="fas fa-arrow-up text-warning me-2"></i>{{ is_array($improvement) ? ($improvement['text'] ?? $improvement['title'] ?? $improvement['description'] ?? json_encode($improvement)) : $improvement }}
+                    </div>
+                    @endforeach
+                    @endif
+                </div>
+            </div>
+            @endif
+            
+            <!-- EYLEM ÖNERİLERİ -->
+            @if($actionItems)
+            <div>
+                <h5 class="text-primary"><i class="fas fa-tasks me-2"></i>Öncelikli Eylemler</h5>
+                <div class="list-group list-group-flush">
+                    @if(is_array($actionItems))
+                    @foreach($actionItems as $index => $item)
+                    <div class="list-group-item border-0 px-0 py-2">
+                        <span class="badge bg-primary me-2">{{ $index + 1 }}</span>
+                        <strong>{{ is_array($item) ? ($item['task'] ?? $item['text'] ?? $item['title'] ?? $item['description'] ?? 'Eylem tanımı bulunamadı') : $item }}</strong>
+                        @if(is_array($item) && isset($item['urgency']))
+                        <span class="badge bg-danger ms-2">{{ $item['urgency'] }}</span>
+                        @endif
+                        @if(is_array($item) && isset($item['area']))
+                        <br><small class="text-muted">Alan: {{ $item['area'] }}</small>
+                        @endif
+                        @if(is_array($item) && isset($item['expected_impact']))
+                        <small class="text-muted"> • Etki: {{ $item['expected_impact'] }}</small>
+                        @endif
+                    </div>
+                    @endforeach
+                    @endif
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+    @endif
+
     {{-- TEMEL SEO ALANLARI --}}
     <div class="card border-primary mb-4">
         <div class="card-header bg-primary text-white">
             <h6 class="mb-0">
-                <i class="fas fa-star me-2"></i>Temel SEO Ayarları ({{ strtoupper($lang) }})
+                Temel SEO Ayarları ({{ strtoupper($lang) }})
                 <small class="opacity-75 ms-2">Mutlaka doldurulması gerekenler</small>
             </h6>
         </div>
@@ -51,58 +218,145 @@
             <div class="row">
                 {{-- Meta Title --}}
                 <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <input type="text" 
-                               wire:model="seoDataCache.{{ $lang }}.seo_title"
-                               class="form-control seo-no-enter @error('seoDataCache.' . $lang . '.seo_title') is-invalid @enderror"
-                               placeholder="{{ __('page::admin.seo_title_placeholder') }}"
-                               maxlength="60"
-                               {{ $disabled ? 'disabled' : '' }}>
-                        <label>
-                            {{ __('page::admin.seo_title') }} ({{ strtoupper($lang) }})
-                            <small class="text-muted ms-2">50-60 karakter</small>
-                        </label>
-                        <div class="form-text">
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>{{ __('page::admin.seo_title_help') }}
-                            </small>
+                    <div class="position-relative">
+                        <div class="form-floating">
+                            <input type="text" 
+                                   wire:model="seoDataCache.{{ $lang }}.seo_title"
+                                   class="form-control seo-no-enter @error('seoDataCache.' . $lang . '.seo_title') is-invalid @enderror"
+                                   placeholder="{{ __('page::admin.seo_title_placeholder') }}"
+                                   maxlength="60"
+                                   {{ $disabled ? 'disabled' : '' }}>
+                            <label>
+                                {{ __('page::admin.seo_title') }} ({{ strtoupper($lang) }})
+                                <span class="character-counter float-end" id="title_counter_{{ $lang }}">
+                                    <small class="text-muted">0/60</small>
+                                </span>
+                            </label>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    {{ __('page::admin.seo_title_help') }}
+                                </small>
+                            </div>
+                            @error('seoDataCache.' . $lang . '.seo_title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @error('seoDataCache.' . $lang . '.seo_title')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        
+                        {{-- AI Meta Title Button --}}
+                        @if(!$disabled)
+                        <button type="button" 
+                                class="btn btn-outline-primary btn-sm ai-seo-btn position-absolute"
+                                style="top: 8px; right: 8px; z-index: 5;"
+                                data-feature="seo-meta-title-generator"
+                                data-target="seo_title"
+                                data-language="{{ $lang }}"
+                                title="AI ile Meta Title üret">
+                            <i class="ti ti-sparkles" style="font-size: 12px;"></i>
+                        </button>
+                        @endif
                     </div>
                 </div>
 
                 {{-- Meta Description --}}
                 <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <textarea wire:model="seoDataCache.{{ $lang }}.seo_description"
-                                  class="form-control seo-no-enter @error('seoDataCache.' . $lang . '.seo_description') is-invalid @enderror"
-                                  placeholder="{{ __('page::admin.seo_description_placeholder') }}"
-                                  style="height: 100px; resize: vertical;"
-                                  maxlength="160"
-                                  {{ $disabled ? 'disabled' : '' }}></textarea>
-                        <label>
-                            {{ __('page::admin.seo_description') }} ({{ strtoupper($lang) }})
-                            <small class="text-muted ms-2">150-160 karakter</small>
-                        </label>
-                        <div class="form-text">
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>{{ __('page::admin.seo_description_help') }}
-                            </small>
+                    <div class="position-relative">
+                        <div class="form-floating">
+                            <textarea wire:model="seoDataCache.{{ $lang }}.seo_description"
+                                      class="form-control seo-no-enter @error('seoDataCache.' . $lang . '.seo_description') is-invalid @enderror"
+                                      placeholder="{{ __('page::admin.seo_description_placeholder') }}"
+                                      style="height: 100px; resize: vertical;"
+                                      maxlength="160"
+                                      {{ $disabled ? 'disabled' : '' }}></textarea>
+                            <label>
+                                {{ __('page::admin.seo_description') }} ({{ strtoupper($lang) }})
+                                <span class="character-counter float-end" id="description_counter_{{ $lang }}">
+                                    <small class="text-muted">0/160</small>
+                                </span>
+                            </label>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    {{ __('page::admin.seo_description_help') }}
+                                </small>
+                            </div>
+                            @error('seoDataCache.' . $lang . '.seo_description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @error('seoDataCache.' . $lang . '.seo_description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        
+                        {{-- AI Meta Description Button --}}
+                        @if(!$disabled)
+                        <button type="button" 
+                                class="btn btn-outline-primary btn-sm ai-seo-btn position-absolute"
+                                style="top: 8px; right: 8px; z-index: 5;"
+                                data-feature="seo-meta-description-generator"
+                                data-target="seo_description"
+                                data-language="{{ $lang }}"
+                                title="AI ile Meta Description üret">
+                            <i class="ti ti-file-text" style="font-size: 12px;"></i>
+                        </button>
+                        @endif
                     </div>
                 </div>
 
+
+                {{-- İçerik Türü --}}
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <select wire:model="seoDataCache.{{ $lang }}.content_type"
+                                class="form-select"
+                                onchange="toggleCustomContentType(this, '{{ $lang }}')"
+                                {{ $disabled ? 'disabled' : '' }}>
+                            <option value="website">Website/WebPage (Genel Site)</option>
+                            <option value="article">Article (Makale/Blog)</option>
+                            <option value="product">Product (Ürün)</option>
+                            <option value="organization">Organization (Organizasyon)</option>
+                            <option value="local_business">LocalBusiness (Yerel İşletme)</option>
+                            <option value="event">Event (Etkinlik)</option>
+                            <option value="person">Person (Kişi)</option>
+                            <option value="video">Video (Film/Video)</option>
+                            <option value="music">Music (Müzik)</option>
+                            <option value="faq">FAQ (Sıkça Sorulan Sorular)</option>
+                            <option value="custom">Diğer (Manuel Giriş)</option>
+                        </select>
+                        <label>
+                            İçerik Türü
+                            <small class="text-muted ms-2">Schema.org + OpenGraph</small>
+                        </label>
+                        <div class="form-text">
+                            <small class="text-muted">
+                                Hem sosyal medya hem arama motorları için kullanılır
+                            </small>
+                        </div>
+                    </div>
+                    
+                    {{-- Custom Content Type Input --}}
+                    <div class="mt-3" 
+                         id="custom_content_type_{{ $lang }}" 
+                         style="display: none;">
+                        <div class="form-floating">
+                            <input type="text" 
+                                   wire:model="seoDataCache.{{ $lang }}.content_type_custom"
+                                   class="form-control seo-no-enter"
+                                   placeholder="Örn: Recipe, Book, Course..."
+                                   {{ $disabled ? 'disabled' : '' }}>
+                            <label>
+                                Özel İçerik Türü
+                                <small class="text-muted ms-2">Manuel giriş</small>
+                            </label>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    Schema.org'dan geçerli bir tür girin (Recipe, Book, Course...)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {{-- Priority --}}
                 <div class="col-md-6 mb-0">
                     <div class="d-flex justify-content-between align-items-center">
                         <label class="form-label mb-0">
-                            <i class="fas fa-flag me-1"></i>
+                            
                             SEO Önceliği
                         </label>
                         <span class="badge bg-primary priority-badge" style="position: relative;">
@@ -139,7 +393,7 @@
                     </div>
                     <div class="form-text mt-2 priority-examples">
                         <small class="text-muted">
-                            <i class="fas fa-info-circle me-1"></i>
+                            
                             <span class="priority-example" data-range="1-3" style="opacity: 0.4;"><strong>1-3:</strong> Blog yazıları, arşiv</span> &nbsp;•&nbsp; 
                             <span class="priority-example" data-range="4-6" style="opacity: 1;"><strong>4-6:</strong> Ürün sayfaları</span> &nbsp;•&nbsp; 
                             <span class="priority-example" data-range="7-8" style="opacity: 0.4;"><strong>7-8:</strong> Önemli kategoriler</span> &nbsp;•&nbsp; 
@@ -148,30 +402,31 @@
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 
     {{-- SOSYAL MEDYA & PAYLAŞIM SECTİON --}}
     <hr class="my-4">
     <h6 class="text-muted mb-3">
-        <i class="fas fa-share-alt me-2"></i>Sosyal Medya & Schema Ayarları
+        Sosyal Medya & Schema Ayarları
     </h6>
 
-    {{-- OG IMAGE & CONTENT TYPE --}}
-    <div class="card border-info mb-4">
-        <div class="card-header bg-info text-white">
+    {{-- SOSYAL MEDYA AYARLARI --}}
+    <div class="card border-success mb-4" style="--tblr-success: #28a745 !important; --tblr-success-rgb: 40, 167, 69 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+        <div class="card-header bg-success text-white" style="--tblr-success: #28a745 !important; --tblr-success-rgb: 40, 167, 69 !important; border-radius: 0.25rem 0.25rem 0px 0px !important;">
             <h6 class="mb-0">
-                <i class="fas fa-image me-2"></i>Sosyal Medya & İçerik Tipi
-                <small class="opacity-75 ms-2">OG Image ve Schema.org ayarları</small>
+                Sosyal Medya Paylaşım Ayarları
+                <small class="opacity-75 ms-2">Facebook, LinkedIn, WhatsApp için</small>
             </h6>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
             @if($lang === ($availableLanguages[0] ?? 'tr'))
             <div class="row">
-                {{-- OG Image Media Selector --}}
+                {{-- Sosyal Medya Görseli --}}
                 <div class="col-md-6 mb-3">
                     <label class="form-label">
-                        <i class="fas fa-image me-1"></i>Sosyal Medya Resmi
+                        Sosyal Medya Resmi
                         <small class="text-muted ms-2">1200x630 önerilen</small>
                     </label>
                     
@@ -186,7 +441,7 @@
                                 class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
                                 wire:click="$set('seoDataCache.{{ $lang }}.og_image', '')"
                                 {{ $disabled ? 'disabled' : '' }}>
-                            <i class="fas fa-times"></i>
+                            ×
                         </button>
                     </div>
                     @endif
@@ -197,7 +452,7 @@
                                 class="btn btn-outline-primary btn-sm flex-fill"
                                 onclick="document.getElementById('og_image_file_{{ $lang }}').click()"
                                 {{ $disabled ? 'disabled' : '' }}>
-                            <i class="fas fa-folder-open me-1"></i>
+                            
                             {{ empty($seoDataCache[$lang]['og_image']) ? 'Resim Seç' : 'Resim Değiştir' }}
                         </button>
                         
@@ -228,250 +483,93 @@
                     
                     <div class="form-text mt-2">
                         <small class="text-muted">
-                            <i class="fas fa-info-circle me-1"></i>Facebook, LinkedIn, WhatsApp paylaşımlarında görünür
+                            Facebook, LinkedIn, WhatsApp paylaşımlarında görünür
                         </small>
                     </div>
                 </div>
-
-                {{-- Universal Content Type (OG + Schema) --}}
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <select wire:model="seoDataCache.{{ $lang }}.content_type"
-                                class="form-select"
-                                onchange="toggleCustomContentType(this, '{{ $lang }}')"
-                                {{ $disabled ? 'disabled' : '' }}>
-                            <option value="website">Website/WebPage (Genel Site)</option>
-                            <option value="article">Article (Makale/Blog)</option>
-                            <option value="product">Product (Ürün)</option>
-                            <option value="organization">Organization (Organizasyon)</option>
-                            <option value="local_business">LocalBusiness (Yerel İşletme)</option>
-                            <option value="event">Event (Etkinlik)</option>
-                            <option value="person">Person (Kişi)</option>
-                            <option value="video">Video (Film/Video)</option>
-                            <option value="music">Music (Müzik)</option>
-                            <option value="faq">FAQ (Sıkça Sorulan Sorular)</option>
-                            <option value="custom">Diğer (Manuel Giriş)</option>
-                        </select>
-                        <label>
-                            <i class="fas fa-tags me-1"></i>İçerik Türü
-                            <small class="text-muted ms-2">Sosyal medya + Schema.org</small>
-                        </label>
-                        <div class="form-text">
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>Hem sosyal medya hem arama motorları için kullanılır
-                            </small>
-                        </div>
-                    </div>
-                    
-                    {{-- Custom Content Type Input --}}
-                    <div class="mt-3" 
-                         id="custom_content_type_{{ $lang }}" 
-                         style="display: none;">
-                        <div class="form-floating">
-                            <input type="text" 
-                                   wire:model="seoDataCache.{{ $lang }}.content_type_custom"
-                                   class="form-control seo-no-enter"
-                                   placeholder="Örn: Recipe, Book, Course..."
-                                   {{ $disabled ? 'disabled' : '' }}>
-                            <label>
-                                <i class="fas fa-edit me-1"></i>Özel İçerik Türü
-                                <small class="text-muted ms-2">Manuel giriş</small>
-                            </label>
-                            <div class="form-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-lightbulb me-1"></i>Schema.org'dan geçerli bir tür girin (Recipe, Book, Course...)
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @else
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                <strong>Bilgi:</strong> Sosyal medya ayarları tüm diller için ortaktır. Ana dil ({{ strtoupper($availableLanguages[0] ?? 'tr') }}) sekmesinden düzenleyebilirsiniz.
-            </div>
-            @endif
-        </div>
-    </div>
-
-    {{-- TWITTER CARDS --}}
-    <div class="card border-primary mb-4">
-        <div class="card-header bg-primary text-white">
-            <h6 class="mb-0">
-                <i class="fab fa-twitter me-2"></i>Twitter Cards
-                <small class="opacity-75 ms-2">Twitter paylaşım ayarları</small>
-            </h6>
-        </div>
-        <div class="card-body">
-            @if($lang === ($availableLanguages[0] ?? 'tr'))
-            <div class="row">
-                {{-- Twitter Card Type --}}
-                <div class="col-md-6 mb-3">
-                    <div class="form-floating">
-                        <select wire:model="seoDataCache.{{ $lang }}.twitter_card"
-                                class="form-select"
-                                {{ $disabled ? 'disabled' : '' }}>
-                            <option value="summary">Summary (Küçük resim)</option>
-                            <option value="summary_large_image">Summary Large Image (Büyük resim)</option>
-                        </select>
-                        <label>
-                            <i class="fab fa-twitter me-1"></i>Twitter Card Türü
-                            <small class="text-muted ms-2">Gösterim şekli</small>
-                        </label>
-                        <div class="form-text">
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>Boş alanlar SEO verilerinden otomatik alınır
-                            </small>
-                        </div>
-                    </div>
-                </div>
                 
-                {{-- Twitter Override Toggle --}}
+                {{-- Özelleştirme Switch --}}
                 <div class="col-md-6 mb-3">
                     <div class="mt-3">
                         <div class="pretty p-switch">
                             <input type="checkbox" 
-                                   wire:model="seoDataCache.{{ $lang }}.twitter_custom_enabled"
-                                   id="twitter_custom_{{ $lang }}"
-                                   onchange="toggleTwitterCustomFields(this, '{{ $lang }}')"
+                                   wire:model="seoDataCache.{{ $lang }}.og_custom_enabled"
+                                   id="og_custom_{{ $lang }}"
+                                   onchange="toggleOgCustomFields(this, '{{ $lang }}')"
                                    {{ $disabled ? 'disabled' : '' }}>
                             <div class="state">
-                                <label for="twitter_custom_{{ $lang }}">
-                                    <i class="fab fa-twitter me-1"></i>Özel Twitter içerikleri kullan
+                                <label for="og_custom_{{ $lang }}">
+                                    Ayarları özelleştirmek istiyorum
                                 </label>
                             </div>
                         </div>
                         <div class="form-text mt-2">
                             <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>Kapalıysa SEO verilerini kullanır (70/200 karakter, 1024x512)
+                                Kapalıysa yukarıdaki SEO verilerini kullanır (otomatik sistem)
                             </small>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            {{-- Twitter Custom Fields (Collapsible) --}}
-            <div class="twitter-custom-fields" 
-                 id="twitter_custom_fields_{{ $lang }}" 
-                 style="display: none;">
-                <hr class="my-3">
-                <div class="row">
-                    {{-- Twitter Title --}}
-                    <div class="col-md-6 mb-3">
-                        <div class="form-floating">
-                            <input type="text" 
-                                   wire:model="seoDataCache.{{ $lang }}.twitter_title"
-                                   class="form-control seo-no-enter"
-                                   placeholder="Twitter'da görünecek özel başlık"
-                                   maxlength="70"
-                                   {{ $disabled ? 'disabled' : '' }}>
-                            <label>
-                                <i class="fab fa-twitter me-1"></i>Twitter Başlığı
-                                <small class="text-muted ms-2">Maksimum 70 karakter</small>
-                            </label>
-                            <div class="form-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-hashtag me-1"></i>Twitter için optimize edilmiş başlık (hashtag kullanabilirsiniz)
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Twitter Description --}}
-                    <div class="col-md-6 mb-3">
-                        <div class="form-floating">
-                            <textarea wire:model="seoDataCache.{{ $lang }}.twitter_description"
-                                      class="form-control seo-no-enter"
-                                      placeholder="Twitter'da görünecek özel açıklama"
-                                      style="height: 100px; resize: vertical;"
-                                      maxlength="200"
-                                      {{ $disabled ? 'disabled' : '' }}></textarea>
-                            <label>
-                                <i class="fab fa-twitter me-1"></i>Twitter Açıklaması
-                                <small class="text-muted ms-2">Maksimum 200 karakter</small>
-                            </label>
-                            <div class="form-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-at me-1"></i>CTA ve mention kullanabilirsiniz (@username, #hashtag)
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Twitter Image Media Selector --}}
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">
-                            <i class="fab fa-twitter me-1"></i>Twitter Özel Resim
-                            <small class="text-muted ms-2">1024x512 önerilen</small>
-                        </label>
-                        
-                        {{-- Media Preview --}}
-                        @if(!empty($seoDataCache[$lang]['twitter_image']))
-                        <div class="media-preview-container mb-2 position-relative">
-                            <img src="{{ $seoDataCache[$lang]['twitter_image'] }}" 
-                                 class="img-fluid rounded border" 
-                                 style="max-height: 120px; width: auto;"
-                                 alt="Twitter Image Preview">
-                            <button type="button" 
-                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
-                                    wire:click="$set('seoDataCache.{{ $lang }}.twitter_image', '')"
-                                    {{ $disabled ? 'disabled' : '' }}>
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        @endif
-                        
-                        {{-- Media Selection Buttons --}}
-                        <div class="d-flex gap-2">
-                            <button type="button" 
-                                    class="btn btn-outline-info btn-sm flex-fill"
-                                    onclick="document.getElementById('twitter_image_file_{{ $lang }}').click()"
-                                    {{ $disabled ? 'disabled' : '' }}>
-                                <i class="fab fa-twitter me-1"></i>
-                                {{ empty($seoDataCache[$lang]['twitter_image']) ? 'Twitter Resim Seç' : 'Twitter Resim Değiştir' }}
-                            </button>
-                            
-                            <input type="url" 
-                                   wire:model="seoDataCache.{{ $lang }}.twitter_image_url"
-                                   class="form-control form-control-sm"
-                                   placeholder="Veya URL girin"
-                                   style="flex: 2;"
-                                   {{ $disabled ? 'disabled' : '' }}>
-                        </div>
-                        
-                        {{-- Hidden File Input --}}
-                        <input type="file" 
-                               id="twitter_image_file_{{ $lang }}"
-                               wire:model="seoImageFiles.twitter_image"
-                               class="d-none"
-                               accept="image/jpeg,image/jpg,image/png,image/webp"
-                               {{ $disabled ? 'disabled' : '' }}>
-                        
-                        {{-- Upload Progress --}}
-                        <div class="progress mt-2" 
-                             wire:loading 
-                             wire:target="seoImageFiles.twitter_image"
-                             style="height: 4px;">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
-                                 style="width: 100%"></div>
-                        </div>
-                        
-                        <div class="form-text mt-2">
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>Twitter için özel boyutlandırılmış resim (1024x512 px)
-                            </small>
-                        </div>
-                    </div>
-                    
                 </div>
             </div>
             @else
             <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
-                <strong>Bilgi:</strong> Twitter Cards ayarları tüm diller için ortaktır. Ana dil ({{ strtoupper($availableLanguages[0] ?? 'tr') }}) sekmesinden düzenleyebilirsiniz.
+                
+                <strong>Bilgi:</strong> Sosyal medya ayarları tüm diller için ortaktır. Ana dil ({{ strtoupper($availableLanguages[0] ?? 'tr') }}) sekmesinden düzenleyebilirsiniz.
             </div>
             @endif
+            
+            {{-- OG Custom Fields (Collapsible) --}}
+            <div class="og-custom-fields" 
+                 id="og_custom_fields_{{ $lang }}" 
+                 style="display: none; max-height: none; overflow: visible;">
+                <hr class="my-3">
+                <div class="row">
+                    {{-- OG Title --}}
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+                            <input type="text" 
+                                   wire:model="seoDataCache.{{ $lang }}.og_title"
+                                   class="form-control seo-no-enter"
+                                   placeholder="Facebook/LinkedIn'de görünecek özel başlık"
+                                   maxlength="60"
+                                   style="border-radius: 0.25rem !important;"
+                                   {{ $disabled ? 'disabled' : '' }}>
+                            <label>
+                                Sosyal Medya Başlığı
+                                <small class="text-muted ms-2">Maksimum 60 karakter</small>
+                            </label>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    Sosyal medya paylaşımlarında görünecek başlık
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- OG Description --}}
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+                            <textarea wire:model="seoDataCache.{{ $lang }}.og_description"
+                                      class="form-control seo-no-enter"
+                                      placeholder="Facebook/LinkedIn'de görünecek özel açıklama"
+                                      style="height: 100px; resize: vertical; border-radius: 0.25rem !important;"
+                                      maxlength="155"
+                                      {{ $disabled ? 'disabled' : '' }}></textarea>
+                            <label>
+                                Sosyal Medya Açıklaması
+                                <small class="text-muted ms-2">Maksimum 155 karakter</small>
+                            </label>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    Sosyal medyada görünecek çekici açıklama
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
         </div>
     </div>
 
@@ -479,7 +577,7 @@
     <div class="card border-info mb-4">
         <div class="card-header bg-info text-white">
             <h6 class="mb-0">
-                <i class="fas fa-user-edit me-2"></i>İçerik Bilgileri
+                İçerik Bilgileri
                 <small class="opacity-75 ms-2">Yazar ve içerik metadata</small>
             </h6>
         </div>
@@ -498,12 +596,12 @@
                                placeholder="Nurullah Okatan"
                                {{ $disabled ? 'disabled' : '' }}>
                         <label>
-                            <i class="fas fa-user me-1"></i>Yazar Adı
+                            Yazar Adı
                             <small class="text-muted ms-2">İçerik yazarı</small>
                         </label>
                         <div class="form-text">
                             <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>Bu içeriği yazan kişinin adı (schema.org author)
+                                Bu içeriği yazan kişinin adı (schema.org author)
                             </small>
                         </div>
                     </div>
@@ -518,12 +616,12 @@
                                placeholder="https://example.com/author/nurullah-okatan"
                                {{ $disabled ? 'disabled' : '' }}>
                         <label>
-                            <i class="fas fa-link me-1"></i>Yazar Profil URL'si
+                            Yazar Profil URL'si
                             <small class="text-muted ms-2">Yazarın profil sayfası</small>
                         </label>
                         <div class="form-text">
                             <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>Yazarın profil sayfası veya kişisel web sitesi
+                                Yazarın profil sayfası veya kişisel web sitesi
                             </small>
                         </div>
                     </div>
@@ -532,32 +630,13 @@
             </div>
             @else
             <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
+                
                 <strong>Bilgi:</strong> İçerik bilgileri tüm diller için ortaktır. Ana dil ({{ strtoupper($availableLanguages[0] ?? 'tr') }}) sekmesinden düzenleyebilirsiniz.
             </div>
             @endif
         </div>
     </div>
 
-    {{-- ROBOTS & AI CRAWLERS - OTOMATIK AKTIF --}}
-    <div class="alert mb-4">
-        <div class="d-flex align-items-center">
-            <div class="me-3">
-                <i class="fas fa-robot fa-2x"></i>
-            </div>
-            <div class="flex-grow-1">
-                <h6 class="mb-2">
-                    <i class="fas fa-check-circle me-2"></i>Robots ve AI Crawlers Otomatik Aktif
-                    <span class="badge ms-2">{{ date('Y') }} Standartlari</span>
-                </h6>
-                <p class="mb-0 small">
-                    <strong>Google Robots:</strong> index, follow, max-snippet:160, max-image-preview:large<br>
-                    <strong>AI Crawlers:</strong> GPTBot, ClaudeBot, PerplexityBot, Google-Extended, BingBot<br>
-                    <strong>Sonuc:</strong> Tum sayfalar otomatik olarak {{ date('Y') }} SEO standartlarinda optimize edildi
-                </p>
-            </div>
-        </div>
-    </div>
 
 </div>
 @endforeach
@@ -744,9 +823,9 @@
         console.log(`🎯 Universal Content Type changed for ${language}: ${selectElement.value}`);
     }
     
-    // Twitter Custom Fields Toggle Function
-    function toggleTwitterCustomFields(checkbox, language) {
-        const customDiv = document.getElementById('twitter_custom_fields_' + language);
+    // OG Custom Fields Toggle Function
+    function toggleOgCustomFields(checkbox, language) {
+        const customDiv = document.getElementById('og_custom_fields_' + language);
         const isEnabled = checkbox.checked;
         
         if (customDiv) {
@@ -757,24 +836,30 @@
                 customDiv.style.overflow = 'visible';
             } else {
                 customDiv.style.display = 'none';
-                // Clear Twitter custom fields if disabled
-                const twitterInputs = customDiv.querySelectorAll('input, textarea');
-                twitterInputs.forEach(input => {
-                    input.value = '';
-                    // Livewire'a da bildir
-                    input.dispatchEvent(new Event('input'));
+                // Clear OG custom fields if disabled
+                const ogInputs = customDiv.querySelectorAll('input, textarea, select');
+                ogInputs.forEach(input => {
+                    if (input.type !== 'checkbox') {
+                        input.value = '';
+                        // Livewire'a da bildir
+                        input.dispatchEvent(new Event('input'));
+                    }
                 });
             }
         }
         
-        console.log(`🐦 Twitter custom fields ${isEnabled ? 'enabled' : 'disabled'} for ${language}`);
+        console.log(`📘 OpenGraph custom fields ${isEnabled ? 'enabled' : 'disabled'} for ${language}`);
     }
     
     // Sayfa yüklendiğinde mevcut değerleri kontrol et
     document.addEventListener('DOMContentLoaded', function() {
         const contentTypeSelects = document.querySelectorAll('select[wire\\:model*="content_type"]');
         contentTypeSelects.forEach(select => {
-            const language = select.getAttribute('wire:model').match(/\.(\w+)\./)[1];
+            const wireModel = select.getAttribute('wire:model');
+            if (!wireModel) return;
+            const match = wireModel.match(/\.(\w+)\./); 
+            if (!match || !match[1]) return;
+            const language = match[1];
             if (select.value === 'custom') {
                 toggleCustomContentType(select, language);
             }
@@ -784,11 +869,13 @@
     // Universal Content Type initialization listener
     document.addEventListener('livewire:navigated', function() {
         setTimeout(function() {
-            const contentTypeSelects = document.querySelectorAll('select[wire\\\\:model*=\"content_type\"]');
+            const contentTypeSelects = document.querySelectorAll('select[wire\\:model*=\"content_type\"]');
             contentTypeSelects.forEach(select => {
                 const wireModel = select.getAttribute('wire:model');
                 if (wireModel) {
-                    const language = wireModel.match(/\\.(\\w+)\\./)[1];
+                    const match = wireModel.match(/\\.(\\w+)\\./); 
+                    if (!match || !match[1]) return;
+                    const language = match[1];
                     if (select.value === 'custom') {
                         toggleCustomContentType(select, language);
                     }
@@ -797,6 +884,73 @@
         }, 100);
     });
     
+    // Character Counter Functions
+    function updateCharacterCounter(inputElement, language, fieldType) {
+        if (!inputElement) return;
+        
+        const length = inputElement.value.length;
+        const maxLength = fieldType === 'title' ? 60 : 160;
+        const counterId = `${fieldType}_counter_${language}`;
+        const counter = document.getElementById(counterId);
+        
+        if (counter) {
+            const small = counter.querySelector('small');
+            if (small) {
+                small.textContent = `${length}/${maxLength}`;
+                
+                // Color coding
+                if (length > maxLength) {
+                    small.className = 'text-danger';
+                } else if (length >= maxLength * 0.9) {
+                    small.className = 'text-warning';
+                } else if (length >= maxLength * 0.7) {
+                    small.className = 'text-success';
+                } else {
+                    small.className = 'text-muted';
+                }
+            }
+        }
+    }
+    
+    // Initialize character counters
+    function initializeCharacterCounters() {
+        const visibleContent = document.querySelector('.seo-language-content[style*="display: block"], .seo-language-content[style=""], .seo-language-content:not([style*="display: none"])');
+        if (!visibleContent) return;
+        
+        const language = visibleContent.getAttribute('data-language');
+        
+        // Title input
+        const titleInput = visibleContent.querySelector(`input[wire\\:model*="seo_title"]`);
+        if (titleInput) {
+            updateCharacterCounter(titleInput, language, 'title');
+            titleInput.addEventListener('input', () => updateCharacterCounter(titleInput, language, 'title'));
+        }
+        
+        // Description textarea
+        const descInput = visibleContent.querySelector(`textarea[wire\\:model*="seo_description"]`);
+        if (descInput) {
+            updateCharacterCounter(descInput, language, 'description');
+            descInput.addEventListener('input', () => updateCharacterCounter(descInput, language, 'description'));
+        }
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initializeCharacterCounters, 100);
+    });
+    
+    // Re-initialize on language change
+    document.addEventListener('livewire:navigated', function() {
+        setTimeout(initializeCharacterCounters, 200);
+    });
+    
+    // Listen for language switch events
+    if (typeof window.addEventListener !== 'undefined') {
+        window.addEventListener('seo-language-changed', function(event) {
+            setTimeout(initializeCharacterCounters, 100);
+        });
+    }
+
     // File Upload Success Handler (for future expansion)
     document.addEventListener('livewire:load', function() {
         // Listen for successful file uploads
@@ -809,4 +963,7 @@
     });
     
 </script>
+
+{{-- AI SEO Integration JavaScript --}}
+<script src="{{ asset('assets/js/ai-seo-integration.js') }}"></script>
 @endif

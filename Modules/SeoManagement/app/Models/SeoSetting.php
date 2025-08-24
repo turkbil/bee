@@ -12,65 +12,78 @@ class SeoSetting extends Model
 {
     use HasTranslations;
     
-    protected $translatable = ['titles', 'descriptions', 'keywords', 'og_titles', 'og_descriptions', 'focus_keywords'];
+    public $timestamps = false; // Timestamps devre dışı - Page tablosunda zaten var
+    
+    protected $translatable = ['titles', 'descriptions', 'og_titles', 'og_descriptions'];
     
     protected $fillable = [
         'seoable_type', 'seoable_id', // Polymorphic relationship fields
-        'meta_title', 'meta_description', 'meta_keywords',
-        'titles', 'descriptions', 'keywords', 'canonical_url',
-        'author', 'publisher', 'copyright', // Yeni temel meta alanları
-        'og_titles', 'og_descriptions', 'og_image', 'og_type', 'og_locale', 'og_site_name',
-        'twitter_card', 'twitter_title', 'twitter_description', 'twitter_image', 'twitter_site', 'twitter_creator',
-        'robots_meta', 'schema_markup', 'focus_keywords',
-        'additional_keywords', 'seo_score', 'seo_analysis', 'last_analyzed',
-        'hreflang_urls', 'content_length', 'keyword_density', 'readability_score',
-        'page_speed_images', 'last_crawled', 'ai_suggestions', 'auto_optimize',
-        'status', 'priority_score', 'available_languages', 'default_language', 'language_fallbacks'
+        'titles', 'descriptions', 'canonical_url',
+        'author', // Sadece blog yazarları için - varsayılan null
+        'og_titles', 'og_descriptions', 'og_image', 'og_type',
+        // Twitter Cards - OG verilerinden otomatik üretiliyor
+        'robots_meta',
+        'seo_score', 'seo_analysis', 'last_analyzed',
+        'content_length', 'keyword_density', 'readability_score',
+        'page_speed_insights', 'last_crawled', 'ai_suggestions',
+        'status', 'priority_score',
+        // AI SEO Analysis Results
+        'analysis_results', 'analysis_date', 'overall_score',
+        'detailed_scores', 'strengths', 'improvements', 'action_items'
     ];
 
     protected $casts = [
         'titles' => 'array',
         'descriptions' => 'array', 
-        'keywords' => 'array',
-        'focus_keywords' => 'array',
         'og_titles' => 'array',
         'og_descriptions' => 'array',
         'robots_meta' => 'array',
-        'schema_markup' => 'array',
-        'additional_keywords' => 'array',
         'seo_analysis' => 'array',
-        'hreflang_urls' => 'array',
         'readability_score' => 'array',
         'page_speed_insights' => 'array',
         'ai_suggestions' => 'array',
-        'available_languages' => 'array',
-        'language_fallbacks' => 'array',
         'last_analyzed' => 'datetime',
         'last_crawled' => 'datetime',
-        'auto_optimize' => 'boolean'
+        // AI SEO Analysis Results casts
+        'analysis_results' => 'array',
+        'analysis_date' => 'datetime',
+        'detailed_scores' => 'array',
+        'strengths' => 'array',
+        'improvements' => 'array',
+        'action_items' => 'array'
     ];
 
     protected $attributes = [
         'og_type' => 'website',
-        'twitter_card' => 'summary',
         'seo_score' => 0,
         'status' => 'active',
-        'priority_score' => 5,
-        'default_language' => 'tr',
-        'auto_optimize' => false
+        'priority_score' => 5
     ];
 
     /**
-     * Get default robots meta values - Google SEO best practices
+     * Get default robots meta values - 2025 Google SEO best practices
      */
     public function getDefaultRobotsMeta(): array
     {
         return [
-            'index' => true,          // ✅ Aktif - Arama motorlarında görünsün
-            'follow' => true,         // ✅ Aktif - Linkleri takip etsin
-            'archive' => false,       // ❌ Pasif - Web arşivlemesi genel olarak gerekli değil
-            'snippet' => true,        // ✅ Aktif - Arama sonuçlarında özet göstersin
-            'imageindex' => true      // ✅ Aktif - Resimleri indekslesin
+            // Temel direktifler (her zaman)
+            'index' => true,          // ✅ Arama motorlarında indeksle
+            'follow' => true,         // ✅ Linkleri takip et
+            
+            // Snippet kontrolü (2025 güncel)
+            'max-snippet' => -1,     // ✅ Sınırsız snippet uzunluğu
+            'max-image-preview' => 'large',  // ✅ Büyük resim önizleme
+            'max-video-preview' => -1, // ✅ Sınırsız video önizleme
+            
+            // Arşivleme kontrolü
+            'noarchive' => false,     // ✅ Cache'e izin ver (performans için)
+            'noimageindex' => false,  // ✅ Resimleri indeksle
+            'notranslate' => false,   // ✅ Çeviriye izin ver
+            
+            // Gelişmiş 2025 özellikleri
+            'indexifembedded' => true, // ✅ Embedded content'i indeksle
+            'noydir' => true,         // ✅ DMOZ açıklamasını kullanma
+            'noodp' => true           // ✅ ODP açıklamasını kullanma
         ];
     }
 
@@ -84,10 +97,10 @@ class SeoSetting extends Model
         $locale = $locale ?? app()->getLocale();
         
         if (!$this->titles) {
-            return $this->meta_title;
+            return null;
         }
 
-        return $this->getTranslated('titles', $locale) ?? $this->meta_title;
+        return $this->getTranslated('titles', $locale);
     }
 
     public function getDescription(?string $locale = null): ?string
@@ -95,46 +108,47 @@ class SeoSetting extends Model
         $locale = $locale ?? app()->getLocale();
         
         if (!$this->descriptions) {
-            return $this->meta_description;
-        }
-
-        return $this->getTranslated('descriptions', $locale) ?? $this->meta_description;
-    }
-
-    public function getKeywords(?string $locale = null): array
-    {
-        $locale = $locale ?? app()->getLocale();
-        
-        if (!$this->keywords) {
-            return $this->meta_keywords ? explode(',', $this->meta_keywords) : [];
-        }
-
-        $keywords = $this->getTranslated('keywords', $locale);
-        
-        return is_array($keywords) ? $keywords : 
-            ($keywords ? explode(',', $keywords) : []);
-    }
-
-    public function getFocusKeywords(?string $locale = null): ?string
-    {
-        $locale = $locale ?? app()->getLocale();
-        
-        if (!$this->focus_keywords) {
             return null;
         }
 
-        return $this->getTranslated('focus_keywords', $locale);
+        return $this->getTranslated('descriptions', $locale);
     }
+
+    /**
+     * Check if direct title exists for locale
+     */
+    public function hasDirectTitle(?string $locale = null): bool
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (!$this->titles) {
+            return false;
+        }
+
+        $title = $this->getTranslated('titles', $locale);
+        return !empty($title);
+    }
+
+    /**
+     * Check if direct description exists for locale
+     */
+    public function hasDirectDescription(?string $locale = null): bool
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (!$this->descriptions) {
+            return false;
+        }
+
+        $description = $this->getTranslated('descriptions', $locale);
+        return !empty($description);
+    }
+
+    // Keywords metodları kaldırıldı - AI tarafından doldurulacak, manuel gerek yok
 
     public function getRobotsMeta(): array
     {
-        return array_merge([
-            'index' => true,
-            'follow' => true,
-            'archive' => true,
-            'snippet' => true,
-            'imageindex' => true
-        ], $this->robots_meta ?? []);
+        return array_merge($this->getDefaultRobotsMeta(), $this->robots_meta ?? []);
     }
 
     public function getRobotsMetaString(): string
@@ -145,8 +159,17 @@ class SeoSetting extends Model
         foreach ($robots as $directive => $value) {
             if ($value === true) {
                 $directives[] = $directive;
-            } elseif ($value === false && in_array($directive, ['index', 'follow'])) {
-                $directives[] = 'no' . $directive;
+            } elseif ($value === false) {
+                // Negatif direktifler
+                if (in_array($directive, ['index', 'follow', 'archive', 'imageindex', 'translate'])) {
+                    $directives[] = 'no' . $directive;
+                } else {
+                    // Zaten negatif olanlar (noarchive, noimageindex vs.)
+                    $directives[] = $directive;
+                }
+            } elseif (is_string($value) || is_numeric($value)) {
+                // max-snippet: 160, max-image-preview: large gibi değerler
+                $directives[] = $directive . ':' . $value;
             }
         }
 
@@ -246,48 +269,7 @@ class SeoSetting extends Model
             $this->descriptions = $descriptions;
         }
 
-        // Keywords güncelle
-        if (isset($data['keywords'])) {
-            $keywords = $this->keywords ?? [];
-            // String'i array'e çevir
-            if (is_string($data['keywords'])) {
-                $keywordArray = array_filter(array_map('trim', explode(',', $data['keywords'])));
-                $keywords[$locale] = $keywordArray;
-            } else {
-                $keywords[$locale] = $data['keywords'];
-            }
-            $this->keywords = $keywords;
-        }
-
-        
-        // Focus keywords güncelle - titles/descriptions ile aynı pattern
-        if (isset($data['focus_keywords'])) {
-            \Log::info('🔥 DERIN DEBUG - SeoSetting focus_keywords girdi', [
-                'locale' => $locale,
-                'input_type' => gettype($data['focus_keywords']),
-                'input_value' => $data['focus_keywords'],
-                'input_is_array' => is_array($data['focus_keywords']),
-                'current_focus_keywords' => $this->focus_keywords ?? 'NULL'
-            ]);
-            
-            $focusKeywords = $this->focus_keywords ?? [];
-            if (is_array($data['focus_keywords'])) {
-                // Eğer focus_keywords direkt array ise (tüm diller)
-                $this->focus_keywords = $data['focus_keywords'];
-                \Log::info('🔥 FOCUS KEYWORDS - Array olarak kaydedildi', [
-                    'saved_data' => $this->focus_keywords
-                ]);
-            } else {
-                // Eğer tek dil için string ise
-                $focusKeywords[$locale] = $data['focus_keywords'];
-                $this->focus_keywords = $focusKeywords;
-                \Log::info('🔥 FOCUS KEYWORDS - String olarak locale bazlı kaydedildi', [
-                    'locale' => $locale,
-                    'input_string' => $data['focus_keywords'],
-                    'saved_data' => $this->focus_keywords
-                ]);
-            }
-        }
+        // Keywords ve Focus Keywords kaldırıldı - AI tarafından doldurulacak
 
         // OG Title güncelle - çoklu dil JSON (focus_keywords pattern)
         if (isset($data['og_title'])) {
@@ -306,8 +288,8 @@ class SeoSetting extends Model
         // Diğer alanları güncelle - tek alan (dil bağımsız)
         $directFields = [
             'canonical_url', 'priority_score',
-            'og_image', 'og_type', 
-            'twitter_title', 'twitter_description', 'twitter_image', 'twitter_card'
+            'og_image', 'og_type'
+            // Twitter alanları kaldırıldı - OG'den otomatik üretiliyor
         ];
         foreach ($directFields as $field) {
             if (isset($data[$field])) {
@@ -348,9 +330,7 @@ class SeoSetting extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            if (!$model->available_languages) {
-                $model->available_languages = ['tr', 'en', 'ar'];
-            }
+            // Model temizliği sonrası available_languages kaldırıldı
         });
 
         static::updated(function ($model) {

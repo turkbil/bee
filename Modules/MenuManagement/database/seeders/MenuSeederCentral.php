@@ -5,7 +5,7 @@ namespace Modules\MenuManagement\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\MenuManagement\App\Models\Menu;
 use Modules\MenuManagement\App\Models\MenuItem;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Menu Seeder for Central Database

@@ -4,7 +4,7 @@ namespace Modules\Announcement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Announcement\App\Models\Announcement;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Announcement Seeder for Tenant3 Database
@@ -289,8 +289,6 @@ class AnnouncementSeederTenant3 extends Seeder
                 'en' => $descriptionEn,
                 'ar' => $descriptionAr
             ],
-            'available_languages' => ['en', 'ar'],
-            'default_language' => 'en',
             'seo_score' => rand(80, 95),
         ]);
     }

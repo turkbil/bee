@@ -1,6 +1,45 @@
 Login: nurullah@nurullah.net / test
 URL: www.laravel.test/login
 
+# 🤖 KRİTİK AGENT PROTOKOLÜ
+HER GELİŞTİRME SONRASI AGENT TEST ETSİN:
+1. **say "tamamlandı"** → Agent otomatik test başlatsın
+2. **"test et", "test", "kontrol et", "bak"** kelimeleri → Agent KESIN devreye girsin
+3. **Söylemezsem de** → Kendi kendine test etmeli
+4. **Söylersem** → MUTLAKA test etmeli
+5. **Agent**: laravel.test/login → Giriş → Test sayfası → Screenshot
+6. **Laravel.log** kontrolü → Hata varsa prompt ile Claude'a bildir
+7. **Eş zamanlı çalışma**: Agent hata bulursa direkt Claude'a söylesin
+7. **Sayfaya özel butonlar**: Agent her zaman sayfaya ait butonları da test etmeli, denemeleri yapmalı, on off yenilemeler vs dahil. Hepsini tek tek test etmeli linklerin.
+8. **Bu agent test sistemi HER ZAMAN aktif olsun ve agent sadece kod analizi yapmasın, mutlaka GERÇEK TEST yapsın**
+
+## 🎯 ROUTE & SAYFA STANDARTLARI
+**YENI ROUTE = AGENT TEST:**
+1. Her yeni route oluşturduğumda → Agent test etsin
+2. **helper.blade.php** her admin sayfasının en tepesinde olsun
+3. **Tablo yapısı** Page modülü index pattern'i ile birebir aynı
+4. **Satır/kolonlar** modülün ihtiyacına göre özelleştir
+5. **Bu standartlar her sayfa için geçerli**
+
+## 🧪 MODÜL & SAYFA DETAY TEST
+**YENİ MODÜL/SAYFA EKLEYİNCE AGENT YAPMALI:**
+1. **Tüm bağlı dosyaları** test et (Controller, Model, View, Route)
+2. **helper.blade.php** butonlarının tamamını tıkla ve test et
+3. **Her buton fonksiyonunu** tek tek dene ve çalıştığını kontrol et
+4. **CRUD işlemleri** (Create, Read, Update, Delete) tam test
+5. **Form validasyonları** çalışıyor mu test et
+6. **Ajax istekleri** ve **Livewire** componentler çalışıyor mu
+7. **Dil dosyaları** yükleniyor mu kontrol et
+8. **Database bağlantısı** ve sorguları test et
+9. **Bu detay test HER YENİ SAYFA için zorunlu**
+
+## 🗑️ DOSYA TEMİZLEME PROTOKOLÜ
+**LOG & FOTOĞRAF OTOMATIK TEMİZLEME:**
+1. **Log dosyası** gönderildiğinde → Oku → Analiz et → Boşalt → Sil
+2. **Fotoğraf** gönderildiğinde → Oku → İşle → Sil  
+3. **Her işlem sonrası** dosyalar otomatik temizlenir
+4. **Bu protokol HER ZAMAN aktif olsun**
+
 # NURULLAH'IN CLAUDE KURALLARI
 
 ## 🚨 TEMEL KURALLAR

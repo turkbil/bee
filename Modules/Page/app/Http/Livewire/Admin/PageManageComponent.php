@@ -33,45 +33,13 @@ class PageManageComponent extends Component
        'is_homepage' => false,
    ];
    
-   // SEO Alanları
-   public $seo_title = '';
-   public $seo_description = '';
-   public $seo_keywords = '';
-   public $canonical_url = '';
-   
-   // Open Graph & Twitter Cards
-   public $og_title = '';
-   public $og_description = '';
-   public $og_image = '';
-   public $og_type = 'website';
-   public $twitter_title = '';
-   public $twitter_description = '';
-   public $twitter_image = '';
-   public $twitter_card = 'summary_large_image';
-   
-   // SEO Image Files for upload
-   public $seoImageFiles = [
-       'og_image' => null,
-       'twitter_image' => null
-   ];
-   
-   // Robots Meta - SEO açısından optimal varsayılan değerler
-   public $robots_index = true;        // ✅ Aktif - Arama motorlarında görünsün
-   public $robots_follow = true;       // ✅ Aktif - Linkleri takip etsin
-   public $robots_snippet = true;      // ✅ Aktif - Arama sonuçlarında özet göstersin
-   public $robots_imageindex = true;
-  
-  // SEO Cache - Tüm dillerin SEO verileri (Performance Optimization)
-  public $seoDataCache = [];
-  
-  // JavaScript için tüm dillerin SEO verileri (Blade exposure)
-  public $allLanguagesSeoData = [];
+   // ✅ SEO system now handled by Universal SEO Tab component
+   public $seoDataCache = [];
+   public $allLanguagesSeoData = [];
    
    // Konfigürasyon verileri
    public $tabConfig = [];
-   public $seoConfig = [];
    public $tabCompletionStatus = [];
-   public $seoLimits = [];
    
    public $studioEnabled = false;
    
@@ -80,7 +48,6 @@ class PageManageComponent extends Component
    
    // SOLID Dependencies
    protected $pageService;
-   protected $seoRepository;
    protected $aiService;
    
    /**
@@ -100,8 +67,6 @@ class PageManageComponent extends Component
    protected $listeners = [
        'refreshComponent' => '$refresh',
        'tab-changed' => 'handleTabChange',
-       'seo-keywords-updated' => 'updateSeoKeywords',
-       'seo-field-updated' => 'handleSeoFieldUpdate',
        'switchLanguage' => 'switchLanguage',
        'js-language-sync' => 'handleJavaScriptLanguageSync',
        'handleTestEvent' => 'handleTestEvent',
@@ -196,37 +161,12 @@ class PageManageComponent extends Component
        throw new \Exception('Dosya kaydedilemedi');
    }
    
-   /**
-    * SEO Keywords Updated Handler
-    */
-   public function updateSeoKeywords($data)
-   {
-       $language = $data['lang'] ?? $this->currentLanguage;
-       $keywords = $data['keywords'] ?? '';
-       
-       // seoDataCache'e kaydet
-       if (!isset($this->seoDataCache[$language])) {
-           $this->seoDataCache[$language] = [
-               'seo_title' => '',
-               'seo_description' => '',
-               'seo_keywords' => '',
-               'canonical_url' => ''
-           ];
-       }
-       
-       $this->seoDataCache[$language]['seo_keywords'] = $keywords;
-       
-       // Mevcut dil ise eski property'yi de güncelle (backward compatibility)
-       if ($language === $this->currentLanguage) {
-           $this->seo_keywords = $keywords;
-       }
-   }
+   // ✅ SEO system now handled by Universal SEO Tab component
    
    // Dependency Injection Boot
    public function boot()
    {
        $this->pageService = app(\Modules\Page\App\Services\PageService::class);
-       $this->seoRepository = app(\App\Contracts\GlobalSeoRepositoryInterface::class);
        $this->aiService = app(\Modules\AI\App\Services\AIService::class);
        
        // Layout sections
@@ -236,10 +176,8 @@ class PageManageComponent extends Component
    
    public function updated($propertyName)
    {
-       // SEO alanları için real-time validation
-       if (in_array($propertyName, ['seo_title', 'seo_description', 'seo_keywords', 'canonical_url'])) {
-           $this->updateTabCompletionStatus();
-       }
+       // Tab completion status güncelleme
+       $this->updateTabCompletionStatus();
    }
    
    /**
@@ -247,14 +185,17 @@ class PageManageComponent extends Component
     */
    protected function updateTabCompletionStatus()
    {
+       // ✅ SEO verileri artık Universal SEO Tab'dan gelir
+       $currentSeoData = $this->seoDataCache[$this->currentLanguage] ?? [];
+       
        $allData = array_merge(
            $this->inputs,
            $this->multiLangInputs[$this->currentLanguage] ?? [],
            [
-               'seo_title' => $this->seo_title,
-               'seo_description' => $this->seo_description,
-               'seo_keywords' => $this->seo_keywords,
-               'canonical_url' => $this->canonical_url
+               'seo_title' => $currentSeoData['seo_title'] ?? '',
+               'seo_description' => $currentSeoData['seo_description'] ?? '',
+               'seo_keywords' => $currentSeoData['seo_keywords'] ?? '',
+               'canonical_url' => $currentSeoData['canonical_url'] ?? ''
            ]
        );
        
@@ -354,12 +295,7 @@ class PageManageComponent extends Component
                ];
            }
            
-           // SEO alanlarını yükle - sadece mevcut dil için (backward compatibility)
-           $seoData = $formData['seoData'];
-           $this->seo_title = $seoData['seo_title'] ?? '';
-           $this->seo_description = $seoData['seo_description'] ?? '';
-           $this->seo_keywords = $seoData['seo_keywords'] ?? '';
-           $this->canonical_url = $seoData['canonical_url'] ?? '';
+           // ✅ SEO verileri artık seoDataCache sistemi ile yüklenir
            
            // KRİTİK FİX: Tüm dillerin SEO verilerini seoDataCache'e yükle
            // 🚨 PERFORMANCE FIX: Cached page kullan
@@ -427,19 +363,18 @@ class PageManageComponent extends Component
                'body' => '',
                'slug' => '',
            ];
+           
+           // ✅ SEO veriler Universal SEO Tab component tarafından yönetilir
+           $this->seoDataCache[$lang] = [
+               'seo_title' => '',
+               'seo_description' => '',
+               'seo_keywords' => '',
+               'canonical_url' => '',
+               'robots_index' => true,
+               'robots_follow' => true,
+               'robots_snippet' => true
+           ];
        }
-       
-       // ✅ YENİ SAYFA İÇİN VARSAYILAN SEO AYARLARI - UX İYİLEŞTİRMESİ
-       // SEO alanlarını boşalt ama kullanıcı yazabilir hale getir
-       $this->seo_title = '';
-       $this->seo_description = '';
-       $this->seo_keywords = '';
-       $this->canonical_url = '';
-       
-       // ✅ ROBOTS META İÇİN GOOGLE SEO VARSAYILAN DEĞERLERİ
-       $this->robots_index = true;          // ✅ Aktif - Arama motorlarında görünsün  
-       $this->robots_follow = true;         // ✅ Aktif - Linkleri takip etsin
-       $this->robots_snippet = true;        // ✅ Aktif - Arama sonuçlarında özet göstersin
        $this->robots_imageindex = true;     // ✅ Aktif - Resimleri indekslesin
        
        // SEO cache'i de başlat - her dil için boş veri
@@ -453,10 +388,6 @@ class PageManageComponent extends Component
                'og_description' => '',
                'og_image' => '',
                'og_type' => 'website',
-               'twitter_title' => '',
-               'twitter_description' => '',
-               'twitter_image' => '',
-               'twitter_card' => 'summary_large_image',
                // Google SEO optimal varsayılanlar
                'robots_index' => true,
                'robots_follow' => true,
@@ -1109,216 +1040,7 @@ class PageManageComponent extends Component
        ]);
    }
 
-   // SEO Field Update Handler - EVENT BAZLI SİSTEM (MULTI-LANGUAGE)
-   public function handleSeoFieldUpdate($data)
-   {
-       $field = $data['field'] ?? '';
-       $value = $data['value'] ?? '';
-       $language = $data['language'] ?? $this->currentLanguage;
-       $silent = $data['silent'] ?? false;
-       
-       \Log::info('🚨 SEO Field EVENT ALINDI!', [
-           'field' => $field,
-           'value' => $value,
-           'language' => $language,
-           'current_language' => $this->currentLanguage,
-           'value_length' => strlen($value),
-           'silent_mode' => $silent,
-           'timestamp' => now()
-       ]);
-       
-       // CRITICAL FIX: JavaScript'ten gelen dil ile Livewire currentLanguage'i senkronize et
-       if ($language !== $this->currentLanguage && in_array($language, $this->availableLanguages)) {
-           \Log::info('🔄 LANGUAGE SYNC: JavaScript\'ten gelen dil ile senkronize ediliyor', [
-               'old_language' => $this->currentLanguage,
-               'new_language' => $language,
-               'field' => $field,
-               'syncing' => true
-           ]);
-           $this->currentLanguage = $language;
-           
-           // CRITICAL FIX: Cache temizle - anında güncellenme için
-           if ($this->pageId) {
-               $page = $this->getCachedPageWithSeo();
-               if ($page && $page->seoSetting) {
-                   \App\Services\SeoCacheService::forgetModelCache($page);
-                   \Log::info('🗑️ Livewire: SEO cache temizlendi', ['language' => $language]);
-                   // Clear our local cache too
-                   $this->clearCachedPage();
-               }
-           }
-       }
-       
-       // KRİTİK FİX: seoDataCache'i güncelle (yeni sistem)
-       if (!isset($this->seoDataCache[$language])) {
-           $this->seoDataCache[$language] = [
-               'seo_title' => '',
-               'seo_description' => '',
-               'seo_keywords' => '',
-               'canonical_url' => ''
-           ];
-       }
-       
-       // SEO alanlarını hem eski property'lerde hem seoDataCache'de güncelle
-       switch ($field) {
-           case 'seo_title':
-               $this->seo_title = $value;
-               $this->seoDataCache[$language]['seo_title'] = $value;
-               \Log::info('✅ SEO Title güncellendi:', [
-                   'language' => $language,
-                   'value' => $value,
-                   'length' => strlen($value),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           case 'seo_description':
-               $this->seo_description = $value;
-               $this->seoDataCache[$language]['seo_description'] = $value;
-               \Log::info('✅ SEO Description güncellendi:', [
-                   'language' => $language,
-                   'value' => $value,
-                   'length' => strlen($value),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           case 'seo_keywords':
-               $this->seo_keywords = $value;
-               $this->seoDataCache[$language]['seo_keywords'] = $value;
-               \Log::info('✅ SEO Keywords güncellendi:', [
-                   'language' => $language,
-                   'value' => $value,
-                   'keyword_count' => count(array_filter(explode(',', $value))),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           case 'canonical_url':
-               $this->canonical_url = $value;
-               $this->seoDataCache[$language]['canonical_url'] = $value;
-               \Log::info('✅ Canonical URL güncellendi:', [
-                   'language' => $language,
-                   'value' => $value,
-                   'is_valid_url' => filter_var($value, FILTER_VALIDATE_URL) !== false,
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           case 'focus_keywords':
-               $this->seoDataCache[$language]['focus_keywords'] = $value;
-               \Log::info('✅ Focus Keywords güncellendi:', [
-                   'language' => $language,
-                   'value' => $value,
-                   'length' => strlen($value),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           
-           // OPEN GRAPH ALANLARI - Çoklu Dil
-           case 'og_title':
-               $this->seoDataCache[$language]['og_title'] = $value;
-               \Log::info('✅ OG Title güncellendi:', [
-                   'language' => $language,
-                   'value' => $value,
-                   'length' => strlen($value),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           
-           case 'og_description':
-               $this->seoDataCache[$language]['og_description'] = $value;
-               \Log::info('✅ OG Description güncellendi:', [
-                   'language' => $language,
-                   'value' => $value,
-                   'length' => strlen($value),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           
-           // OPEN GRAPH & TWITTER - Tek Alan (Dil Bağımsız)
-           case 'og_image':
-               $this->seoDataCache[$language]['og_image'] = $value;
-               \Log::info('✅ OG Image güncellendi:', [
-                   'value' => $value,
-                   'is_valid_url' => filter_var($value, FILTER_VALIDATE_URL) !== false,
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-               
-           case 'og_type':
-               $this->seoDataCache[$language]['og_type'] = $value;
-               \Log::info('✅ OG Type güncellendi:', [
-                   'value' => $value,
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           
-           case 'twitter_title':
-               $this->seoDataCache[$language]['twitter_title'] = $value;
-               \Log::info('✅ Twitter Title güncellendi:', [
-                   'value' => $value,
-                   'length' => strlen($value),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-               
-           case 'twitter_description':
-               $this->seoDataCache[$language]['twitter_description'] = $value;
-               \Log::info('✅ Twitter Description güncellendi:', [
-                   'value' => $value,
-                   'length' => strlen($value),
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-               
-           case 'twitter_image':
-               $this->seoDataCache[$language]['twitter_image'] = $value;
-               \Log::info('✅ Twitter Image güncellendi:', [
-                   'value' => $value,
-                   'is_valid_url' => filter_var($value, FILTER_VALIDATE_URL) !== false,
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-               
-           case 'twitter_card':
-               $this->seoDataCache[$language]['twitter_card'] = $value;
-               \Log::info('✅ Twitter Card güncellendi:', [
-                   'value' => $value,
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-           
-           // ROBOTS META - Boolean Alanlar
-           case 'robots_index':
-           case 'robots_follow':  
-           case 'robots_imageindex':
-           case 'robots_snippet':
-               $this->seoDataCache[$language][$field] = (bool)$value;
-               \Log::info('✅ Robots Meta güncellendi:', [
-                   'field' => $field,
-                   'value' => (bool)$value,
-                   'seoDataCache_updated' => true
-               ]);
-               break;
-
-           // ✅ 2025 AI CRAWLER PERMISSIONS - Boolean Alanlar
-           case 'allow_gptbot':       // ChatGPT crawling izni
-           case 'allow_claudebot':    // Claude crawling izni
-           case 'allow_google_extended': // Bard/Gemini crawling izni
-           case 'allow_bingbot_ai':   // Bing AI crawling izni
-               $this->seoDataCache[$language][$field] = (bool)$value;
-               \Log::info('✅ AI Crawler Permission güncellendi:', [
-                   'field' => $field,
-                   'value' => (bool)$value,
-                   'crawler_type' => str_replace('allow_', '', $field),
-                   'seoDataCache_updated' => true,
-                   'ai_crawler_2025' => true
-               ]);
-               break;
-           default:
-               \Log::warning('❌ Bilinmeyen SEO field:', $field);
-       }
-       
-       // Tab completion durumunu güncelle
-       $this->updateTabCompletionStatus();
-   }
+   // ✅ SEO field updates now handled by Universal SEO Tab component
 
    // JavaScript Language Sync Handler
    public function handleJavaScriptLanguageSync($data)

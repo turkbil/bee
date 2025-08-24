@@ -4,7 +4,7 @@ namespace Modules\Announcement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Announcement\App\Models\Announcement;
-use App\Models\SeoSetting;
+use Modules\SeoManagement\App\Models\SeoSetting;
 
 /**
  * Announcement Seeder for Central Database
@@ -26,7 +26,7 @@ class AnnouncementSeederCentral extends Seeder
         
         // Mevcut duyuruları sil (sadece boşsa)
         Announcement::truncate();
-        SeoSetting::where('seoable_type', 'like', '%Announcement%')->delete();
+        // SEO settings cleanup - no longer needed with auto-creation
         
         $this->createWelcomeAnnouncement();
         $this->createNewProjectsAnnouncement();
@@ -786,11 +786,6 @@ class AnnouncementSeederCentral extends Seeder
                 'en' => $descEn,
                 'ar' => $descAr
             ],
-            'keywords' => [
-                'tr' => ['duyuru', 'haber', 'teknoloji', 'bilişim', 'yapay zeka'],
-                'en' => ['announcement', 'news', 'technology', 'informatics', 'artificial intelligence'],
-                'ar' => ['إعلان', 'أخبار', 'تكنولوجيا', 'معلوماتية', 'ذكاء اصطناعي']
-            ],
             'og_titles' => [
                 'tr' => $titleTr,
                 'en' => $titleEn,
@@ -801,8 +796,6 @@ class AnnouncementSeederCentral extends Seeder
                 'en' => $descEn,
                 'ar' => $descAr
             ],
-            'available_languages' => ['tr', 'en', 'ar'],
-            'default_language' => 'tr',
             'seo_score' => rand(80, 95),
         ]);
     }

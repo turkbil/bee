@@ -664,7 +664,9 @@ const MultiLangFormSwitcher = {
         const languageContents = document.querySelectorAll('.language-content');
         
         if (languageButtons.length === 0) {
-            console.warn('⚠️ Language switch buttons bulunamadı');
+            console.log('ℹ️ Language switch buttons bulunamadı - tek dil sistemi aktif');
+            // Tek dil durumunda da devam et - form işlevselliği etkilenmesin
+            this.setupSingleLanguageMode();
             return;
         }
         
@@ -679,6 +681,27 @@ const MultiLangFormSwitcher = {
                 }
             });
         });
+    },
+
+    setupSingleLanguageMode() {
+        console.log('🔧 Tek dil modu aktif - tüm language-content elementleri görünür yapılıyor');
+        
+        // Tek dil durumunda tüm content'leri görünür yap
+        const languageContents = document.querySelectorAll('.language-content, .seo-language-content');
+        languageContents.forEach(content => {
+            content.style.display = 'block';
+            content.classList.remove('d-none');
+        });
+        
+        // Tek dil durumu için global language ayarla
+        const firstLanguageContent = document.querySelector('.language-content[data-language]');
+        if (firstLanguageContent) {
+            const defaultLang = firstLanguageContent.getAttribute('data-language');
+            window.currentLanguage = defaultLang;
+            console.log('🌍 Tek dil modu - varsayılan dil:', defaultLang);
+        }
+        
+        console.log('✅ Tek dil modu kurulumu tamamlandı');
     },
     
     async switchLanguage(language) {

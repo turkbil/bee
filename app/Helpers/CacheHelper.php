@@ -40,7 +40,7 @@ if (!class_exists('App\Helpers\CacheHelper')) {
         /**
          * Dil bazlı cache key
          */
-        public static function languageKey(string $key, string $locale = null): string
+        public static function languageKey(string $key, ?string $locale = null): string
         {
             $locale = $locale ?? app()->getLocale();
             return self::key("{$locale}:{$key}", 'language');

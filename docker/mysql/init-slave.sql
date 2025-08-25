@@ -1,0 +1,2 @@
+-- Slave initialization placeholder
+-- Master connection will be configured externally

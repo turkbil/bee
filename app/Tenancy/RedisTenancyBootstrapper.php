@@ -26,10 +26,13 @@ class RedisTenancyBootstrapper implements TenancyBootstrapper
      */
     protected function setupSingleRedis($tenantKey)
     {
+        // Standart prefix formatı: tenant:{tenant_id}
+        $prefix = 'tenant:' . $tenantKey;
+        
         // Redis prefix'lerini tenant bazında ayarla
         Config::set([
-            'database.redis.options.prefix' => 'tenant_' . $tenantKey . ':',
-            'cache.prefix' => 'tenant_' . $tenantKey,
+            'database.redis.options.prefix' => $prefix . ':',
+            'cache.prefix' => $prefix,
         ]);
         
         // Farklı Redis connection'ları için prefix
@@ -38,23 +41,23 @@ class RedisTenancyBootstrapper implements TenancyBootstrapper
         foreach ($connections as $connection) {
             if (config("database.redis.{$connection}")) {
                 Config::set([
-                    "database.redis.{$connection}.options.prefix" => 'tenant_' . $tenantKey . ':' . $connection . ':',
+                    "database.redis.{$connection}.options.prefix" => $prefix . ':' . $connection . ':',
                 ]);
             }
         }
         
         // Cache store'ları için prefix
-        $cacheStores = ['redis', 'array', 'file'];
+        $cacheStores = ['redis', 'tenant', 'file'];
         
         foreach ($cacheStores as $store) {
             if (config("cache.stores.{$store}")) {
-                if ($store === 'redis') {
+                if ($store === 'redis' || $store === 'tenant') {
                     Config::set([
-                        "cache.stores.redis.prefix" => 'tenant_' . $tenantKey . ':cache',
+                        "cache.stores.{$store}.prefix" => $prefix . ':cache',
                     ]);
                 } elseif ($store === 'file') {
                     Config::set([
-                        "cache.stores.file.path" => storage_path('framework/cache/data/tenant_' . $tenantKey),
+                        "cache.stores.file.path" => storage_path('framework/cache/data/' . $prefix),
                     ]);
                 }
             }
@@ -64,14 +67,22 @@ class RedisTenancyBootstrapper implements TenancyBootstrapper
         if (config('session.driver') === 'redis') {
             Config::set([
                 'session.connection' => 'default',
-                'database.redis.default.options.prefix' => 'tenant_' . $tenantKey . ':session:',
+                'session.cookie' => 'laravel_session_' . $tenantKey,
+                'database.redis.default.options.prefix' => $prefix . ':session:',
             ]);
         }
         
         // Broadcast Redis prefix
         if (config('broadcasting.default') === 'redis') {
             Config::set([
-                'broadcasting.connections.redis.options.prefix' => 'tenant_' . $tenantKey . ':broadcast:',
+                'broadcasting.connections.redis.options.prefix' => $prefix . ':broadcast:',
+            ]);
+        }
+        
+        // Queue Redis prefix
+        if (config('queue.default') === 'redis') {
+            Config::set([
+                'queue.connections.redis.queue' => $prefix . ':queue',
             ]);
         }
     }
@@ -81,6 +92,9 @@ class RedisTenancyBootstrapper implements TenancyBootstrapper
      */
     protected function setupClusterRedis($tenantKey)
     {
+        // Standart prefix formatı: tenant:{tenant_id}
+        $prefix = 'tenant:' . $tenantKey;
+        
         // Cluster service'i kullan
         if (app()->has(\App\Services\RedisClusterService::class)) {
             $clusterService = app(\App\Services\RedisClusterService::class);
@@ -93,7 +107,7 @@ class RedisTenancyBootstrapper implements TenancyBootstrapper
                 'cluster' => true,
                 'options' => [
                     'cluster' => 'redis',
-                    'prefix' => 'tenant_' . $tenantKey . ':',
+                    'prefix' => $prefix . ':',
                 ],
             ];
             

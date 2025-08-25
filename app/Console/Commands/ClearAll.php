@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use App\Services\TenantCacheService;
 
 class ClearAll extends Command
 {
@@ -21,6 +22,12 @@ class ClearAll extends Command
         Artisan::call('view:clear');
         Artisan::call('event:clear');
         Artisan::call('optimize:clear');
+        
+        // Tenant cache'leri temizle
+        if (class_exists(TenantCacheService::class)) {
+            $this->info('Tenant cache temizleniyor...');
+            app(TenantCacheService::class)->flushAllTenants();
+        }
         
         // bootstrap/cache içeriğini temizle
         $this->info('bootstrap/cache içeriği temizleniyor...');

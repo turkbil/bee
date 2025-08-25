@@ -1,0 +1,67 @@
+# Prometheus Configuration for Laravel 500 Tenant System
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Laravel Application Metrics
+  - job_name: 'laravel-apps'
+    static_configs:
+      - targets: 
+        - 'app1:80'
+        - 'app2:80'
+        - 'app3:80'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # MySQL Master/Slave Monitoring
+  - job_name: 'mysql'
+    static_configs:
+      - targets: 
+        - 'mysql-master:3306'
+        - 'mysql-slave:3306'
+    scrape_interval: 60s
+
+  # Redis Cluster Monitoring
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-cluster:6379']
+    scrape_interval: 30s
+
+  # Nginx Load Balancer Monitoring
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-proxy:8080']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+
+  # Queue Workers Monitoring
+  - job_name: 'queue-workers'
+    static_configs:
+      - targets:
+        - 'queue1:80'
+        - 'queue2:80'
+    metrics_path: '/queue-metrics'
+    scrape_interval: 30s
+
+  # Scheduler Monitoring
+  - job_name: 'scheduler'
+    static_configs:
+      - targets: ['scheduler:80']
+    metrics_path: '/scheduler-metrics'
+    scrape_interval: 60s
+
+  # System Metrics (Node Exporter - if added)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

@@ -53,4 +53,6 @@ return array(
     '1396d18559aff122f3c2aa74b73a2e76' => $baseDir . '/app/Helpers/CreditHelpers.php',
     '83bd2eaaa0c8f246d1feccb8de5192b9' => $baseDir . '/app/Helpers/TranslationHelper.php',
     'c71260c1cf084f756474d36b60f4fe08' => $baseDir . '/app/Helpers/MenuHelper.php',
+    'a02b724d0c8910ca6d2a2dc3ad0e0ebd' => $baseDir . '/app/Helpers/tenant_helpers.php',
+    'cc908781867dd803042b960930928b7f' => $baseDir . '/app/Helpers/CacheHelper.php',
 );

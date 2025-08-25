@@ -1,0 +1,8 @@
+[mysqld]
+server-id=1
+log-bin=mysql-bin
+binlog-format=ROW
+expire-logs-days=7
+max-binlog-size=500M
+sync-binlog=1
+innodb-flush-log-at-trx-commit=1

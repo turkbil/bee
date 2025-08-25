@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Contracts\GlobalSeoRepositoryInterface;
 use App\Services\GlobalSeoService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
+use App\Services\TenantCacheService;
 
 class GlobalSeoRepository implements GlobalSeoRepositoryInterface
 {
@@ -23,11 +23,15 @@ class GlobalSeoRepository implements GlobalSeoRepositoryInterface
         }
         
         // Public sayfalarda cache kullan
-        $cacheKey = $this->getCacheKey($model, "seo_data.{$language}");
-        
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($model, $language) {
-            return $this->getFreshSeoData($model, $language);
-        });
+        $tenantCache = app(TenantCacheService::class);
+        return $tenantCache->remember(
+            TenantCacheService::PREFIX_SEO,
+            "data_{$model->getMorphClass()}_{$model->getKey()}_{$language}",
+            TenantCacheService::TTL_THIRTY_MINUTES,
+            function () use ($model, $language) {
+                return $this->getFreshSeoData($model, $language);
+            }
+        );
     }
     
     /**

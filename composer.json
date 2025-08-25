@@ -73,7 +73,9 @@
             "app/Helpers/AIHelper.php",
             "app/Helpers/CreditHelpers.php",
             "app/Helpers/TranslationHelper.php",
-            "app/Helpers/MenuHelper.php"
+            "app/Helpers/MenuHelper.php",
+            "app/Helpers/tenant_helpers.php",
+            "app/Helpers/CacheHelper.php"
         ]
     },
     "autoload-dev": {

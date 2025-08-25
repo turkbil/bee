@@ -2,6 +2,8 @@
 <style>
     .profile-card {
         border: 1px solid rgb(229 231 235);
+        width: 100%;
+        max-width: none;
     }
     .dark .profile-card {
         border-color: rgb(55 65 81);

@@ -18,7 +18,19 @@
 
         <!-- Content Area -->
         <div class="lg:col-span-3">
-            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg">
+            <!-- Profile Update -->
+            <div class="profile-card bg-white dark:bg-gray-800 rounded-xl p-6">
+                <div class="flex items-center mb-6">
+                    <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg mr-3">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Profil Bilgileri</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Hesap bilgilerinizi güncelleyebilirsiniz</p>
+                    </div>
+                </div>
                 @include('profile.partials.update-profile-information-form')
             </div>
         </div>

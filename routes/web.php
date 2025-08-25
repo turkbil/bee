@@ -12,6 +12,11 @@ use App\Services\DynamicRouteService;
 // Admin routes
 require __DIR__.'/admin/web.php';
 
+// Simple test route
+Route::get('/test', function () {
+    return 'Laravel is working!';
+});
+
 // Test SEO component
 Route::get('/test-seo', function() {
     return view('test-seo');

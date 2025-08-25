@@ -48,6 +48,10 @@ class AppServiceProvider extends ServiceProvider
         // URL ve Locale servisleri - YENİ
         $this->app->singleton(\App\Services\UnifiedUrlBuilderService::class);
         $this->app->singleton(\App\Services\LocaleValidationService::class);
+        
+        // Tenant Cache & Session Services
+        $this->app->singleton(\App\Services\TenantCacheService::class);
+        $this->app->singleton(\App\Services\TenantSessionService::class);
         $this->app->singleton(\App\Services\HomepageRouteService::class);
         
         // Service singletons

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Cache;
+use App\Services\TenantCacheService;
 use Illuminate\Database\Eloquent\Model;
 use Modules\SeoManagement\app\Models\SeoSetting;
 use App\Services\TenantLanguageProvider;
-use App\Helpers\TenantSeoHelper;
 
 /**
  * Global SEO Meta Tag Service
@@ -503,12 +502,12 @@ readonly class SeoMetaTagService
             'path' => request()->path()
         ]);
         
-        // Cache key
-        $cacheKey = $model 
-            ? "seo_meta_{$model->getMorphClass()}_{$model->getKey()}_{$locale}"
-            : "seo_meta_general_{$locale}";
-            
-        return Cache::remember($cacheKey, 3600, function() use ($model, $locale, $siteName) {
+        $tenantCache = app(TenantCacheService::class);
+        return $tenantCache->remember(
+            TenantCacheService::PREFIX_SEO,
+            $model ? "meta_{$model->getMorphClass()}_{$model->getKey()}_{$locale}" : "meta_general_{$locale}",
+            TenantCacheService::TTL_HOUR,
+            function() use ($model, $locale, $siteName) {
             $data = [
                 'title' => $siteName,
                 'description' => null,
@@ -607,7 +606,7 @@ readonly class SeoMetaTagService
             }
             
             // 3.1. BASIC META FIELDS - Tenant bazlı sistem
-            $data['author'] = ($seoSetting && $seoSetting->author) ? $seoSetting->author : TenantSeoHelper::getAuthor();
+            $data['author'] = ($seoSetting && $seoSetting->author) ? $seoSetting->author : null;
             $data['publisher'] = ($seoSetting && $seoSetting->publisher) ? $seoSetting->publisher : setting('site_title', $siteName);
             
             // Copyright - otomatik çok dilli oluşturma
@@ -711,11 +710,11 @@ readonly class SeoMetaTagService
             // Twitter additional fields - Tenant bazlı sistem
             $data['twitter_site'] = ($seoSetting && $seoSetting->twitter_site) 
                 ? $seoSetting->twitter_site 
-                : TenantSeoHelper::getTwitterSite();
+                : null;
                 
             $data['twitter_creator'] = ($seoSetting && $seoSetting->twitter_creator) 
                 ? $seoSetting->twitter_creator 
-                : TenantSeoHelper::getTwitterCreator();
+                : null;
             
             // 6. ROBOTS - 2025 Standards
             if ($seoSetting && $seoSetting->robots) {

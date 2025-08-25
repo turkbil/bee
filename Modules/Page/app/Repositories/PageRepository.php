@@ -6,7 +6,7 @@ namespace Modules\Page\App\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Cache;
+use App\Services\TenantCacheService;
 use Modules\Page\App\Contracts\PageRepositoryInterface;
 use Modules\Page\App\Models\Page;
 use Modules\Page\App\Enums\CacheStrategy;
@@ -15,12 +15,14 @@ readonly class PageRepository implements PageRepositoryInterface
 {
     private readonly string $cachePrefix;
     private readonly int $cacheTtl;
+    private readonly TenantCacheService $cache;
     
     public function __construct(
         private Page $model
     ) {
-        $this->cachePrefix = 'page';
-        $this->cacheTtl = 3600;
+        $this->cachePrefix = TenantCacheService::PREFIX_PAGE;
+        $this->cacheTtl = TenantCacheService::TTL_HOUR;
+        $this->cache = app(TenantCacheService::class);
     }
     
     public function findById(int $id): ?Page
@@ -33,10 +35,12 @@ readonly class PageRepository implements PageRepositoryInterface
         
         $cacheKey = $this->getCacheKey("find_by_id.{$id}");
         
-        return Cache::tags($this->getCacheTags())
-            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
-                $this->model->where('page_id', $id)->first()
-            );
+        return $this->cache->remember(
+            $this->cachePrefix,
+            "find_by_id.{$id}",
+            $strategy->getCacheTtl(),
+            fn() => $this->model->where('page_id', $id)->first()
+        );
     }
     
     public function findByIdWithSeo(int $id): ?Page
@@ -50,10 +54,12 @@ readonly class PageRepository implements PageRepositoryInterface
         
         $cacheKey = $this->getCacheKey("find_by_id_with_seo.{$id}");
         
-        return Cache::tags($this->getCacheTags())
-            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
-                $this->model->with('seoSetting')->where('page_id', $id)->first()
-            );
+        return $this->cache->remember(
+            $this->cachePrefix,
+            "find_by_id_with_seo.{$id}",
+            $strategy->getCacheTtl(),
+            fn() => $this->model->with('seoSetting')->where('page_id', $id)->first()
+        );
     }
     
     public function findBySlug(string $slug, string $locale = 'tr'): ?Page
@@ -265,18 +271,16 @@ readonly class PageRepository implements PageRepositoryInterface
     
     public function clearCache(): void
     {
-        Cache::tags($this->getCacheTags())->flush();
+        $this->cache->flushByPrefix($this->cachePrefix);
     }
     
     protected function getCacheKey(string $key): string
     {
-        $tenantId = tenant() ? tenant()->id : 'landlord';
-        return "{$this->cachePrefix}.tenant.{$tenantId}.{$key}";
+        return $this->cache->key($this->cachePrefix, $key);
     }
     
     protected function getCacheTags(): array
     {
-        $tenantId = tenant() ? tenant()->id : 'landlord';
-        return ["pages", "tenant.{$tenantId}"];
+        return $this->cache->tags([$this->cachePrefix]);
     }
 }

@@ -1,32 +1,49 @@
-# 🐳 500-Tenant Laravel Docker Deployment
+# 🐳 Laravel 500 Tenant System - Docker Deployment
 
-## 📋 Sistem Özellikleri
+Complete Docker containerization for the Laravel 500 Tenant System with production-ready orchestration, load balancing, database replication, and monitoring.
 
-- **PHP 8.2** + **Nginx** + **MySQL 8.0** + **Redis 7.0**
-- **500 Tenant** desteği ile tam yalıtımlı sistem
-- **Connection Pooling** + **Redis Clustering** 
-- **Auto-scaling** + **Resource Monitoring**
-- **Queue Workers** + **Scheduler** + **Supervisor**
+## 📋 System Overview
 
-## 🚀 Hızlı Başlangıç
+### Container Architecture
+- **3x Laravel App Instances**: Load balanced application containers
+- **Nginx Load Balancer**: High-performance reverse proxy
+- **MySQL Master-Slave**: Database replication for scalability
+- **Redis Cluster**: Distributed caching and sessions
+- **Queue Workers**: Background job processing (2x instances)
+- **Scheduler**: Automated task execution
+- **Monitoring**: Prometheus + Grafana dashboards
+- **Admin Tools**: PHPMyAdmin, Redis Commander
 
-### 1. Docker Kurulumu
+### Resource Allocation
+- **Total Memory**: ~8GB recommended
+- **CPU Cores**: 4+ cores recommended
+- **Storage**: 20GB+ available space
+- **Network**: Docker bridge networking
+
+## 🚀 Quick Start
+
+### Prerequisites
 ```bash
-./docker-start.sh
+# Install Docker and Docker Compose
+brew install docker docker-compose  # macOS
+# or
+sudo apt install docker.io docker-compose  # Ubuntu
+
+# Start Docker service
+sudo systemctl start docker  # Linux
+# Docker Desktop for macOS/Windows
 ```
 
-### 2. Manuel Kurulum
+### Launch System
 ```bash
-# Container'ları başlat
+# Clone and navigate to project
+cd /path/to/laravel-tenant-system
+
+# Start entire system
+./docker-start.sh
+
+# Or manually with docker-compose
 docker-compose up -d
-
-# Laravel kurulumu
-docker-compose exec app composer install
-docker-compose exec app php artisan key:generate
-docker-compose exec app php artisan migrate:fresh --seed
-
-# Tenant kurulumu
-docker-compose exec app php artisan tenants:install
 ```
 
 ## 📊 Servis Erişim Adresleri

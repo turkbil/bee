@@ -2,19 +2,27 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ __('admin.dashboard') }}</h2>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ __('admin.dashboard_welcome') }}</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Kullanıcı Paneli</h2>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ setting('site_name', 'Site') }} yönetim paneline hoş geldiniz</p>
             </div>
             <div>
                 <span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/50 px-3 py-1 text-sm font-medium text-blue-700 dark:text-blue-300">
-                    {{ tenant('title') ?? config('app.name') }}
+                    {{ setting('site_title') }}
                 </span>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <x-profile-layout-styles />
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Profile Sidebar -->
+        <div class="lg:col-span-1">
+            @livewire('profile-sidebar')
+        </div>
+
+        <!-- Content Area -->
+        <div class="lg:col-span-3">
             <!-- Welcome Card -->
             <div class="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-lg shadow-lg overflow-hidden mb-6">
                 <div class="px-6 py-8 sm:p-10 sm:pb-6">
@@ -24,7 +32,7 @@
                                 {{ __('admin.welcome') }}, {{ auth()->user()->name }}!
                             </h2>
                             <p class="mt-2 text-blue-100">
-                                {{ tenant('title') ?? config('app.name') }} {{ __('admin.dashboard_subtitle') }}
+                                {{ setting('site_title') }} {{ __('admin.dashboard_subtitle') }}
                             </p>
                             <div class="mt-4 flex items-center gap-4">
                                 <span class="inline-flex items-center rounded-full bg-blue-800 dark:bg-blue-900 px-3 py-1 text-sm font-medium text-blue-100">
@@ -45,7 +53,7 @@
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8">
                 <!-- Account Status -->
                 <div class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6">
                     <dt>
@@ -116,26 +124,12 @@
                     </dd>
                 </div>
 
-                <!-- Connection Status -->
-                <div class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 py-5 shadow sm:p-6">
-                    <dt>
-                        <div class="absolute rounded-md bg-green-500 dark:bg-green-600 p-3">
-                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                            </svg>
-                        </div>
-                        <p class="ml-16 text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ __('admin.connection_status') }}</p>
-                    </dt>
-                    <dd class="ml-16 flex items-baseline">
-                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ __('admin.active') }}</p>
-                    </dd>
-                </div>
             </div>
 
             <!-- Main Content Grid -->
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-1 xl:grid-cols-3">
                 <!-- Quick Actions -->
-                <div class="lg:col-span-2">
+                <div class="lg:col-span-1 xl:col-span-2">
                     <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
                         <div class="px-4 py-5 sm:p-6">
                             <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4">{{ __('admin.quick_actions') }}</h3>
@@ -168,33 +162,6 @@
                                     </div>
                                 </a>
 
-                                <a href="{{ url('/') }}" class="relative group bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
-                                    <div>
-                                        <span class="rounded-lg inline-flex p-3 bg-purple-50 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/70">
-                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="mt-4">
-                                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('admin.view_website') }}</h3>
-                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('admin.go_to_homepage') }}</p>
-                                    </div>
-                                </a>
-
-                                <button onclick="checkForUpdates(event)" class="relative group bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left">
-                                    <div>
-                                        <span class="rounded-lg inline-flex p-3 bg-green-50 dark:bg-green-900/50 text-green-700 dark:text-green-300 group-hover:bg-green-100 dark:group-hover:bg-green-900/70">
-                                            <svg id="update-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="mt-4">
-                                        <h3 id="update-title" class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('admin.check_updates') }}</h3>
-                                        <p id="update-desc" class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('admin.check_system_updates') }}</p>
-                                    </div>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -236,6 +203,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     @push('scripts')

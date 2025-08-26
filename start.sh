@@ -96,6 +96,13 @@ case $mode in
         brew services start nginx
         sleep 3
         
+        # FIX CONFIG QUEUE ERROR FIRST
+        print_status "Config queue error düzeltiliyor..."
+        if grep -q "request()->getHost()" /Users/nurullah/Desktop/cms/laravel/config/queue.php; then
+            sed -i '' "s/tenant_' . (request()->getHost() ?? 'default')/tenant_default'/g" /Users/nurullah/Desktop/cms/laravel/config/queue.php
+            print_success "Queue config düzeltildi!"
+        fi
+        
         # Clear cache güvenli şekilde
         php artisan config:clear 2>/dev/null || true
         sleep 1
@@ -114,6 +121,15 @@ case $mode in
         nohup php -d output_buffering=4096 -d implicit_flush=Off -d default_socket_timeout=60 -S 0.0.0.0:8000 -t public > /dev/null 2>&1 &
         sleep 3
         
+        # Queue Worker otomatik başlat - HER ZAMAN ÇALIŞMALI
+        print_status "Queue Worker başlatılıyor..."
+        if [ -f "./start-queue-worker.sh" ]; then
+            chmod +x ./start-queue-worker.sh
+            ./start-queue-worker.sh
+        else
+            print_warning "start-queue-worker.sh bulunamadı!"
+        fi
+        
         # Test bağlantı
         if curl -s http://laravel.test > /dev/null; then
             print_success "laravel.test çalışıyor!"
@@ -121,7 +137,7 @@ case $mode in
             print_warning "Bağlantı sorunu olabilir"
         fi
         
-        print_success "Development Mode Ready!"
+        print_success "Development Mode Ready! (Queue Worker Active)"
         ;;
         
     2)
@@ -131,19 +147,13 @@ case $mode in
         # Buffer ayarları
         ulimit -n 65536 2>/dev/null || true
         
-        # Adım adım temizleme
-        php artisan config:clear || true
-        sleep 1
-        php artisan cache:clear || true
-        sleep 1
-        php artisan view:clear || true
-        sleep 1
-        php artisan route:clear || true
-        sleep 1
+        # Doğru sıralama ile temizleme
+        php artisan app:clear-all || true
+        sleep 2
+        php artisan migrate:fresh --seed --force
+        sleep 3
         php artisan module:clear-cache || true
         sleep 1
-        php artisan migrate:fresh --seed --force
-        sleep 2
         php artisan responsecache:clear || true
         sleep 1
         php artisan telescope:clear || true
@@ -184,8 +194,34 @@ case $mode in
         ;;
         
     4)
-        print_header "🩺 Health Check & Auto Repair"
+        print_header "🩺 Health Check & Auto Repair + BROKEN PIPE FIX"
         print_status "Sistem durumu kontrol ediliyor..."
+        
+        # BROKEN PIPE FIX FIRST
+        print_status "🔧 BROKEN PIPE sorunu kontrol ediliyor ve düzeltiliyor..."
+        
+        # Mevcut PHP server'ları kapat
+        pkill -f "php.*serve" 2>/dev/null || true
+        pkill -f "php.*8000" 2>/dev/null || true
+        pkill -f "php.*8001" 2>/dev/null || true
+        sleep 3
+        
+        # ULTIMATE BROKEN PIPE FIX
+        print_status "Optimized PHP server başlatılıyor..."
+        export PHP_CLI_SERVER_WORKERS=1
+        export XDEBUG_MODE=off
+        ulimit -n 65536 2>/dev/null || true
+        
+        # En stabil server başlatma
+        nohup php -d output_buffering=4096 -d implicit_flush=Off -d default_socket_timeout=60 artisan serve --host=0.0.0.0 --port=8000 > /dev/null 2>&1 &
+        sleep 5
+        
+        # Test connection
+        if curl -s -o /dev/null -w "%{http_code}" "http://localhost:8000" | grep -q "200\|302"; then
+            print_success "✅ BROKEN PIPE sorunu çözüldü! Port: 8000"
+        else
+            print_warning "⚠️ Server başlatıldı ancak test edilemiyor"
+        fi
         
         # Health Check Functions
         check_php_server() {
@@ -278,13 +314,28 @@ case $mode in
         
         # Auto Repair Functions
         repair_php_server() {
-            print_status "PHP Server otomatik tamir ediliyor..."
-            pkill -f "php.*8000" 2>/dev/null || true
-            sleep 2
-            nohup php artisan serve --host=0.0.0.0 --port=8000 > /dev/null 2>&1 &
+            print_status "PHP Server otomatik tamir ediliyor (BROKEN PIPE FIX)..."
+            pkill -f "php.*serve" 2>/dev/null || true
+            pkill -f "php.*8000" 2>/dev/null || true  
+            pkill -f "php.*8001" 2>/dev/null || true
             sleep 3
+            
+            # FIX CONFIG QUEUE ERROR FIRST
+            print_status "Config queue error düzeltiliyor..."
+            if grep -q "request()->getHost()" /Users/nurullah/Desktop/cms/laravel/config/queue.php; then
+                sed -i '' "s/tenant_' . (request()->getHost() ?? 'default')/tenant_default'/g" /Users/nurullah/Desktop/cms/laravel/config/queue.php
+                print_success "Queue config düzeltildi!"
+            fi
+            
+            # OPTIMIZED SERVER START
+            export PHP_CLI_SERVER_WORKERS=1
+            export XDEBUG_MODE=off
+            ulimit -n 65536 2>/dev/null || true
+            nohup php -d output_buffering=4096 -d implicit_flush=Off -d default_socket_timeout=60 artisan serve --host=0.0.0.0 --port=8000 > /dev/null 2>&1 &
+            sleep 5
+            
             if check_php_server; then
-                print_success "PHP Server başarıyla onarıldı!"
+                print_success "PHP Server başarıyla onarıldı! (Port: 8000)"
             else
                 print_error "PHP Server onarılamadı!"
             fi
@@ -371,7 +422,8 @@ case $mode in
         
         docker-compose down 2>/dev/null || true
         pkill -f "php artisan serve" 2>/dev/null || true
-        pkill -f "php -S localhost:8001" 2>/dev/null || true
+        pkill -f "php.*8000" 2>/dev/null || true
+        pkill -f "php.*8001" 2>/dev/null || true
         brew services stop nginx 2>/dev/null || true
         
         print_success "Tüm servisler durduruldu!"

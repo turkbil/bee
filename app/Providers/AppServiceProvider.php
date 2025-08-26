@@ -10,6 +10,8 @@ use App\Services\TenantCacheManager;
 use Illuminate\Support\Facades\URL;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -114,6 +116,9 @@ class AppServiceProvider extends ServiceProvider
         
         // Performance: View Composers for commonly used data
         $this->registerViewComposers();
+        
+        // Rate limiting for AI translation jobs
+        $this->configureRateLimiters();
     }
     
     protected function registerViewComposers(): void
@@ -201,5 +206,34 @@ class AppServiceProvider extends ServiceProvider
         
         // Register SEO Meta Component
         Blade::component('seo-meta', \App\View\Components\SeoMeta::class);
+    }
+    
+    /**
+     * Configure rate limiters for AI translation system
+     */
+    protected function configureRateLimiters(): void
+    {
+        // 🤖 AI Translation API Rate Limiter
+        RateLimiter::for('ai-translation', function (object $job) {
+            // Tenant-based rate limiting (her tenant için ayrı limit)
+            $tenantId = $job->tenantId ?? 'default';
+            return Limit::perMinute(20)->by("ai_translation_tenant_{$tenantId}");
+        });
+        
+        // 📊 Queue Monitoring Rate Limiter  
+        RateLimiter::for('queue-monitoring', function () {
+            return Limit::perMinute(60); // Monitoring için daha yüksek limit
+        });
+        
+        // 🔄 Job Retry Rate Limiter
+        RateLimiter::for('job-retry', function (object $job) {
+            $jobClass = get_class($job);
+            return Limit::perHour(10)->by("job_retry_{$jobClass}");
+        });
+        
+        // 🚨 Critical Error Notification Rate Limiter
+        RateLimiter::for('critical-error-notification', function () {
+            return Limit::perHour(5); // Saatte max 5 kritik hata bildirimi
+        });
     }
 }

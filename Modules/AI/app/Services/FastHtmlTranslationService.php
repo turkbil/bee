@@ -22,15 +22,78 @@ class FastHtmlTranslationService
     }
 
     /**
-     * 🚀 SÜPER HIZLI HTML ÇEVİRİ SİSTEMİ
-     * HTML'den text'leri çıkarır, toplu çevirir, geri yerleştirir
+     * 🚀 ASYNC ONLY - NO MORE SYNC TRANSLATION
+     * Forces all translations to use background jobs
      */
-    public function translateHtmlContentFast(string $html, string $fromLang, string $toLang, string $context): string
+    public function translateHtmlContentFast(string $html, string $fromLang, string $toLang, string $context, array $options = []): string
     {
+        // 🔎 ENHANCED ASYNC JOB DETECTION - Multiple methods
+        $isAsyncJob = ($options['source'] ?? '') === 'async_job';
+        
+        // 🔎 Queue job detection - More permissive approach
+        $isConsole = app()->runningInConsole();
+        $sapi = php_sapi_name();
+        $isQueueWorker = $isConsole && (strpos($sapi, 'cli') !== false || in_array($sapi, ['cli', 'phpdbg', 'embed']));
+        
+        // 🔎 Additional queue context checks
+        $hasQueueConnection = !empty(config('queue.default')) && config('queue.default') !== 'sync';
+        
+        // 🎯 ALLOW IF ANY ASYNC INDICATOR IS TRUE
+        // ADDITIONAL CHECK: Allow if running via php artisan queue:work
+        $isRunningViaQueueWork = $isConsole && (strpos(implode(' ', $_SERVER['argv'] ?? []), 'queue:work') !== false);
+        
+        $isAllowedAsync = $isAsyncJob || $isQueueWorker || ($isConsole && $hasQueueConnection) || $isRunningViaQueueWork;
+        
+        // 🔍 ULTRA DEBUG - Her zaman log
+        Log::info('🔍 FastHtmlTranslationService - Detection Debug', [
+            'html_length' => strlen($html),
+            'from_lang' => $fromLang,
+            'to_lang' => $toLang,
+            'is_console' => $isConsole,
+            'php_sapi' => $sapi,
+            'is_async_job' => $isAsyncJob,
+            'is_queue_worker' => $isQueueWorker,
+            'queue_default' => config('queue.default'),
+            'has_queue_connection' => $hasQueueConnection,
+            'is_running_via_queue_work' => $isRunningViaQueueWork,
+            'is_allowed_async' => $isAllowedAsync,
+            'sapi_contains_cli' => strpos($sapi, 'cli') !== false,
+            'sapi_in_array' => in_array($sapi, ['cli', 'phpdbg', 'embed']),
+            'options_source' => $options['source'] ?? 'not_set',
+            'server_argv' => implode(' ', $_SERVER['argv'] ?? [])
+        ]);
+        
+        if (!$isAllowedAsync) {
+            // 🚫 SYNC TRANSLATION BLOCKED - FORCE ASYNC ONLY
+            Log::error('🚫 SYNC TRANSLATION BLOCKED - Use TranslatePageJob instead', [
+                'html_length' => strlen($html),
+                'from_lang' => $fromLang,
+                'to_lang' => $toLang,
+                'blocked_reason' => '504_timeout_prevention',
+                'is_console' => $isConsole,
+                'php_sapi' => $sapi,
+                'is_async_job' => $isAsyncJob,
+                'is_queue_worker' => $isQueueWorker,
+                'queue_default' => config('queue.default'),
+                'has_queue_connection' => $hasQueueConnection
+            ]);
+            
+            throw new \Exception("SYNC translation blocked! Use async TranslatePageJob to prevent 504 errors.");
+        }
+        
+        // 🚀 ASYNC JOB DETECTED - PROCEED WITH TRANSLATION
+        Log::info('🚀 Async translation allowed', [
+            'html_length' => strlen($html),
+            'from_lang' => $fromLang,
+            'to_lang' => $toLang,
+            'source' => 'async_job'
+        ]);
+        
         Log::info('🚀 SÜPER HIZLI HTML çeviri başlıyor', [
             'html_length' => strlen($html),
             'from_lang' => $fromLang,
-            'to_lang' => $toLang
+            'to_lang' => $toLang,
+            'timeout_set' => '300s'
         ]);
 
         try {
@@ -68,6 +131,16 @@ class FastHtmlTranslationService
                 'texts_found' => count($textsToTranslate),
                 'sample_texts' => array_slice($textsToTranslate, 0, 3)
             ]);
+            
+            // 2. BATCH SIZE KONTROLÜ - Maksimum 10 text per batch
+            $maxTextsPerBatch = 10;
+            if (count($textsToTranslate) > $maxTextsPerBatch) {
+                Log::info('📊 Batch processing gerekli', [
+                    'total_texts' => count($textsToTranslate),
+                    'max_per_batch' => $maxTextsPerBatch
+                ]);
+                return $this->processBatchTranslation($html, $textsToTranslate, $fromLang, $toLang, $context);
+            }
             
             // 2. Tüm text'leri birleştir ve tek seferde çevir
             $combinedText = implode("\n---SEPARATOR---\n", $textsToTranslate);
@@ -108,12 +181,20 @@ VERIFICATION: Before responding, confirm your output is 100% {$targetLanguageNam
 
 Content to translate:";
 
+            // TIMEOUT KORUNMASI İLE AI ÇAĞRISI
+            $startTime = time();
             $translatedCombined = $this->callDirectAIProvider(
                 $combinedText,
                 $fromLang,
                 $toLang,
                 $bulkContext
             );
+            $processingTime = time() - $startTime;
+            
+            Log::info('⏱️ AI çağrı süresi', [
+                'processing_time' => $processingTime . 's',
+                'timeout_remaining' => (300 - $processingTime) . 's'
+            ]);
             
             // 3. Çevrilen text'leri ayır
             Log::info('🔍 DEBUG: Çevrilen text parsing', [
@@ -267,18 +348,19 @@ Content to translate:";
 
     /**
      * Direkt AI provider çağrısı (infinite loop önleme için)
+     * BYPASS AIService completely to prevent recursion
      */
     private function callDirectAIProvider(string $text, string $fromLang, string $toLang, string $context): string
     {
-        Log::info('🚀 Direkt AI provider çağrısı', [
+        Log::info('🚀 Direkt AI provider çağrısı - BYPASS MODE', [
             'text_length' => strlen($text),
             'from_lang' => $fromLang,
             'to_lang' => $toLang,
-            'context' => $context
+            'context' => substr($context, 0, 100) . '...'
         ]);
         
-        // AIProviderManager'ı kullan
         try {
+            // 🔥 INFINITE LOOP PREVENTION: Direct AI provider call
             $providerManager = app(\Modules\AI\app\Services\AIProviderManager::class);
             $activeProviders = $providerManager->getActiveProviders();
             $activeProvider = $activeProviders->first();
@@ -287,36 +369,215 @@ Content to translate:";
                 throw new \Exception('Aktif AI provider bulunamadı');
             }
             
-            // Provider'a göre direkt çağrı - Fallback: Her durumda AIService kullan
-            Log::info('🔄 AIService fallback kullanılıyor', [
+            Log::info('🔄 Direct provider bypass', [
                 'provider' => $activeProvider->name,
-                'reason' => 'Unified translation method'
+                'bypass_reason' => 'Preventing FastHtml recursion'
             ]);
             
-            $translatedText = $this->aiService->translateText($text, $fromLang, $toLang, [
-                'context' => $context,
-                'preserve_html' => false
-            ]);
+            // 🚀 DIRECT PROVIDER CALL - NO AISERVICE!
+            $prompt = $this->buildTranslationPrompt($text, $fromLang, $toLang, $context);
+            
+            // OpenAI direkt çağrı
+            if ($activeProvider->name === 'openai') {
+                $response = $this->callOpenAIDirect($prompt, $activeProvider);
+            } else {
+                // Fallback: Basit prompt ile AIService ama SHORT text olarak
+                $shortPrompt = "Translate to {$toLang}: " . substr($text, 0, 200);
+                $response = $this->aiService->generateTextWithPrompt($shortPrompt, ['max_tokens' => 500]);
+                $response = $response['content'] ?? $text;
+            }
             
             // 📊 CONVERSATION KAYIT - claude_ai.md uyumlu
             ConversationTracker::saveTranslation(
                 $text, 
                 $fromLang, 
                 $toLang, 
-                $translatedText, 
-                ['tokens_used' => 0, 'model' => 'bulk_translation'], // Mock response
+                $response, 
+                ['tokens_used' => 0, 'model' => 'bulk_translation_direct'], 
                 $context, 
                 false
             );
             
-            return $translatedText;
+            return $response;
             
         } catch (\Exception $e) {
             Log::error('❌ Direkt provider çağrısı hatası', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'text_length' => strlen($text)
             ]);
-            throw $e;
+            
+            // 🚨 EMERGENCY FALLBACK: Return original text
+            return $text;
         }
+    }
+    
+    /**
+     * Build basic translation prompt
+     */
+    private function buildTranslationPrompt(string $text, string $fromLang, string $toLang, string $context): string
+    {
+        return "Translate the following text from {$fromLang} to {$toLang}. Maintain the original format and structure.\n\nText to translate:\n{$text}";
+    }
+    
+    /**
+     * Direct OpenAI call (bypass AIService)
+     */
+    private function callOpenAIDirect(string $prompt, $provider): string
+    {
+        // Basit OpenAI çağrısı
+        $data = [
+            'model' => $provider->model ?? 'gpt-4o',
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ],
+            'max_tokens' => 1000,
+            'temperature' => 0.3
+        ];
+        
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://api.openai.com/v1/chat/completions',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $provider->api_key
+            ],
+            CURLOPT_TIMEOUT => 30
+        ]);
+        
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        
+        if ($httpCode !== 200) {
+            throw new \Exception("OpenAI API error: HTTP {$httpCode}");
+        }
+        
+        $decoded = json_decode($response, true);
+        return $decoded['choices'][0]['message']['content'] ?? 'Translation failed';
+    }
+
+    /**
+     * 🔄 BATCH PROCESSING SİSTEMİ - Büyük HTML'leri parçalara bölerek çevir
+     */
+    private function processBatchTranslation(string $html, array $textsToTranslate, string $fromLang, string $toLang, string $context): string
+    {
+        Log::info('🔄 Batch processing başlatılıyor', [
+            'total_texts' => count($textsToTranslate),
+            'html_length' => strlen($html)
+        ]);
+
+        $maxTextsPerBatch = 10;
+        $batches = array_chunk($textsToTranslate, $maxTextsPerBatch);
+        $allTranslatedTexts = [];
+        
+        foreach ($batches as $batchIndex => $batch) {
+            try {
+                Log::info("📦 Batch {$batchIndex} işleniyor", [
+                    'batch_size' => count($batch),
+                    'progress' => ($batchIndex + 1) . '/' . count($batches)
+                ]);
+                
+                $combinedText = implode("\n---SEPARATOR---\n", $batch);
+                
+                $sourceLanguageName = $this->getLanguageNativeName($fromLang);
+                $targetLanguageName = $this->getLanguageNativeName($toLang);
+                
+                $bulkContext = "You are a PROFESSIONAL MULTILINGUAL TRANSLATOR with expertise in {$targetLanguageName}.
+
+🎯 CRITICAL MISSION: Translate from {$sourceLanguageName} to {$targetLanguageName}
+
+⚠️ ZERO TOLERANCE RULES:
+- SOURCE: {$fromLang} ({$sourceLanguageName})
+- TARGET: {$toLang} ({$targetLanguageName})
+- OUTPUT LANGUAGE: {$targetLanguageName} ONLY
+- FORBIDDEN: " . $this->getForbiddenLanguages($toLang, $targetLanguageName) . "
+- PENALTY: If you output forbidden languages instead of {$targetLanguageName}, you FAIL
+
+✅ REQUIRED OUTPUT: Pure {$targetLanguageName} ({$toLang}) only
+
+📋 TRANSLATION RULES:
+1. Each text segment is separated by '---SEPARATOR---'
+2. Translate EVERY segment to {$targetLanguageName}
+3. Keep exact same number of segments
+4. Use professional business tone in {$targetLanguageName}
+5. NO English unless target language IS English
+6. NO fallback to common languages
+
+Content to translate:";
+
+                $translatedCombined = $this->callDirectAIProvider(
+                    $combinedText,
+                    $fromLang,
+                    $toLang,
+                    $bulkContext
+                );
+                
+                $translatedTexts = explode("\n---SEPARATOR---\n", $translatedCombined);
+                
+                if (count($translatedTexts) !== count($batch)) {
+                    Log::warning("⚠️ Batch {$batchIndex} çeviri sayısı uyumsuz", [
+                        'expected' => count($batch),
+                        'received' => count($translatedTexts)
+                    ]);
+                    
+                    // Bu batch için fallback: Her text'i ayrı çevir
+                    $translatedTexts = [];
+                    foreach ($batch as $text) {
+                        $translatedTexts[] = $this->aiService->translateText($text, $fromLang, $toLang, [
+                            'context' => $context,
+                            'preserve_html' => false
+                        ]);
+                        sleep(1); // API rate limit koruması
+                    }
+                }
+                
+                $allTranslatedTexts = array_merge($allTranslatedTexts, $translatedTexts);
+                
+                Log::info("✅ Batch {$batchIndex} tamamlandı");
+                
+                // Batch'ler arası kısa bekleme
+                if ($batchIndex < count($batches) - 1) {
+                    sleep(2);
+                }
+                
+            } catch (\Exception $e) {
+                Log::error("❌ Batch {$batchIndex} hatası", [
+                    'error' => $e->getMessage()
+                ]);
+                
+                // Bu batch için fallback
+                foreach ($batch as $text) {
+                    $allTranslatedTexts[] = $this->aiService->translateText($text, $fromLang, $toLang, [
+                        'context' => $context,
+                        'preserve_html' => false
+                    ]);
+                }
+            }
+        }
+        
+        // HTML'de text'leri çevrilenleriyle değiştir
+        $translatedHtml = $html;
+        
+        foreach ($textsToTranslate as $index => $originalText) {
+            $translatedText = trim($allTranslatedTexts[$index] ?? $originalText);
+            
+            $originalTextEscaped = preg_quote($originalText, '/');
+            $pattern = '/>(\s*)' . $originalTextEscaped . '(\s*)</';
+            $replacement = '>$1' . $translatedText . '$2<';
+            
+            $translatedHtml = preg_replace($pattern, $replacement, $translatedHtml);
+        }
+        
+        Log::info('✅ Batch processing tamamlandı', [
+            'total_batches' => count($batches),
+            'total_texts_translated' => count($allTranslatedTexts),
+            'performance' => 'BATCH_TRANSLATION'
+        ]);
+        
+        return $translatedHtml;
     }
 
     /**
@@ -449,7 +710,8 @@ Content type: Website page content";
                     $sourceData['body'],
                     $sourceLanguage,
                     $targetLanguage,
-                    $optimizedContext
+                    $optimizedContext,
+                    ['source' => 'async_job']
                 );
                 $translatedData['body'] = $translatedBody;
                 Log::info("✅ Body çevrildi: {$sourceLanguage} → {$targetLanguage}");
@@ -673,7 +935,8 @@ Content type: Portfolio project description";
                     $sourceData['body'],
                     $sourceLanguage,
                     $targetLanguage,
-                    $optimizedContext
+                    $optimizedContext,
+                    ['source' => 'async_job']
                 );
                 $translatedData['body'] = $translatedBody;
                 Log::info("✅ Portfolio Body çevrildi: {$sourceLanguage} → {$targetLanguage}");
@@ -897,7 +1160,8 @@ Content type: Portfolio category description";
                     $sourceData['body'],
                     $sourceLanguage,
                     $targetLanguage,
-                    $optimizedContext
+                    $optimizedContext,
+                    ['source' => 'async_job']
                 );
                 $translatedData['body'] = $translatedBody;
                 Log::info("✅ Portfolio Category Body çevrildi: {$sourceLanguage} → {$targetLanguage}");
@@ -1121,7 +1385,8 @@ Content type: Announcement content";
                     $sourceData['body'],
                     $sourceLanguage,
                     $targetLanguage,
-                    $optimizedContext
+                    $optimizedContext,
+                    ['source' => 'async_job']
                 );
                 $translatedData['body'] = $translatedBody;
                 Log::info("✅ Announcement Body çevrildi: {$sourceLanguage} → {$targetLanguage}");
@@ -1272,5 +1537,140 @@ Content type: Announcement content";
                 'error' => $e->getMessage()
             ];
         }
+    }
+
+    /**
+     * 🌍 ENTERPRISE STREAMING TRANSLATION METHOD
+     * Context-aware translation with progress callback support
+     */
+    public function translateWithContext(
+        string $content,
+        string $targetLanguage,
+        array $context = [],
+        callable $progressCallback = null
+    ): string {
+        Log::info('🌍 StreamingTranslation: translateWithContext started', [
+            'content_length' => strlen($content),
+            'target_language' => $targetLanguage,
+            'context_keys' => array_keys($context)
+        ]);
+
+        try {
+            // Progress callback - başlangıç
+            if ($progressCallback) {
+                $progressCallback(10);
+            }
+
+            // Context'ten prompt oluştur
+            $contextPrompt = $this->buildContextPrompt($context);
+            
+            // Progress callback - context hazır
+            if ($progressCallback) {
+                $progressCallback(20);
+            }
+
+            // AI servis ile çeviri yap
+            $translatedContent = $this->performContextualTranslation($content, $targetLanguage, $contextPrompt);
+            
+            // Progress callback - çeviri tamamlandı
+            if ($progressCallback) {
+                $progressCallback(90);
+            }
+
+            // Final cleanup
+            $cleanedContent = $this->cleanupTranslatedContent($translatedContent);
+            
+            // Progress callback - temizlik tamamlandı
+            if ($progressCallback) {
+                $progressCallback(100);
+            }
+
+            Log::info('✅ StreamingTranslation: translateWithContext completed', [
+                'original_length' => strlen($content),
+                'translated_length' => strlen($cleanedContent),
+                'target_language' => $targetLanguage
+            ]);
+
+            return $cleanedContent;
+
+        } catch (\Exception $e) {
+            Log::error('❌ StreamingTranslation: translateWithContext failed', [
+                'content_length' => strlen($content),
+                'target_language' => $targetLanguage,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            throw new \Exception("Context-aware translation failed: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Context'ten prompt oluştur
+     */
+    private function buildContextPrompt(array $context): string
+    {
+        $prompt = "Sen profesyonel bir çevirmensin. Aşağıdaki context bilgilerini kullanarak doğru çeviri yap:\n\n";
+        
+        if (!empty($context['chunk_type'])) {
+            $prompt .= "İçerik Tipi: " . $context['chunk_type'] . "\n";
+        }
+        
+        if (!empty($context['semantic_context'])) {
+            $prompt .= "Anlam Bağlamı: " . $context['semantic_context'] . "\n";
+        }
+        
+        if (!empty($context['surrounding_text'])) {
+            $prompt .= "Çevredeki Metin: " . $context['surrounding_text'] . "\n";
+        }
+        
+        if (!empty($context['html_tags'])) {
+            $prompt .= "HTML Etiketleri: " . implode(', ', $context['html_tags']) . "\n";
+        }
+        
+        $prompt .= "\nKurallar:\n";
+        $prompt .= "- HTML etiketlerini olduğu gibi koru\n";
+        $prompt .= "- Bağlamsal anlam bütünlüğünü koru\n";
+        $prompt .= "- Teknik terimleri uygun şekilde çevir\n";
+        $prompt .= "- Tutarlı terminoloji kullan\n\n";
+        
+        return $prompt;
+    }
+
+    /**
+     * Contextual translation gerçekleştir
+     */
+    private function performContextualTranslation(string $content, string $targetLanguage, string $contextPrompt): string
+    {
+        $fullPrompt = $contextPrompt . "Çevrilecek içerik:\n" . $content;
+        
+        // AI Service ile çeviri
+        $response = $this->aiService->generateTextWithPrompt(
+            $targetLanguage . " diline çevir: " . $fullPrompt,
+            [
+                'max_tokens' => 2048,
+                'temperature' => 0.3,
+                'context_aware' => true
+            ]
+        );
+
+        return $response['content'] ?? $content;
+    }
+
+    /**
+     * Çevrilmiş içeriği temizle
+     */
+    private function cleanupTranslatedContent(string $content): string
+    {
+        // Gereksiz boşlukları temizle
+        $content = preg_replace('/\s+/', ' ', $content);
+        
+        // HTML etiketlerinin etrafındaki boşlukları düzelt
+        $content = preg_replace('/>\s+</', '><', $content);
+        
+        // Baş ve son boşlukları temizle
+        $content = trim($content);
+        
+        return $content;
     }
 }

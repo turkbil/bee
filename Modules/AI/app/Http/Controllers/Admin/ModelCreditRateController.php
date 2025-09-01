@@ -97,7 +97,8 @@ class ModelCreditRateController extends Controller
     {
         $request->validate([
             'provider_id' => 'required|integer|exists:ai_providers,id',
-            'model_name' => 'required|string',
+            'model_id' => 'sometimes|integer|exists:ai_provider_models,id',
+            'model_name' => 'sometimes|string',
             'input_tokens' => 'required|integer|min:0',
             'output_tokens' => 'required|integer|min:0'
         ]);
@@ -112,16 +113,30 @@ class ModelCreditRateController extends Controller
                 ], 404);
             }
 
+            // Model bilgilerini al - önce model_id, sonra model_name
+            $modelName = '';
+            if ($request->has('model_id')) {
+                $modelRecord = \Modules\AI\App\Models\AIProviderModel::find($request->integer('model_id'));
+                if (!$modelRecord) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Model not found'
+                    ], 404);
+                }
+                $modelName = $modelRecord->model_name;
+            } else {
+                $modelName = (string) $request->string('model_name');
+            }
+
             $cost = $this->creditCalculator->calculateCreditsForModel(
                 $provider->name,
-                (string) $request->string('model_name'),
+                $modelName,
                 $request->integer('input_tokens'),
                 $request->integer('output_tokens')
             );
 
             // Check if existing rate exists for form filling
-            $modelName = (string) $request->string('model_name');
-            $existingRate = $provider->modelCreditRates()
+            $existingRate = $provider->models()
                 ->where('model_name', $modelName)
                 ->first();
 

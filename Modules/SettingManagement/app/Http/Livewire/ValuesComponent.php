@@ -12,11 +12,12 @@ use Modules\SettingManagement\App\Models\SettingValue;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Modules\SettingManagement\app\Http\Livewire\Traits\WithBulkActionsQueue;
 
 #[Layout('admin.layout')]
 class ValuesComponent extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithPagination, WithFileUploads, WithBulkActionsQueue;
     
     public $groupId;
     public $values = [];
@@ -30,6 +31,18 @@ class ValuesComponent extends Component
     
     public $tempPhoto;
     public $photoField; // Hangi alan için yüklüyoruz
+
+    protected function getListeners()
+    {
+        return array_merge([
+            'refreshComponent' => '$refresh',
+        ], $this->getBulkListeners());
+    }
+
+    protected function getModelClass()
+    {
+        return SettingValue::class;
+    }
 
     public function updatedValues($value, $key)
     {

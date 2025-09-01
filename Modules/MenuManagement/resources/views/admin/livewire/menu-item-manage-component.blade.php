@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', $itemId ? 'Menü Öğesi Düzenleme' : 'Yeni Menü Öğesi Ekleme');
+@endphp
+
 <div wire:key="menu-item-manage-component" wire:id="menu-item-manage-component">
     {{-- Helper dosyası --}}
     @include('menumanagement::admin.helper')

@@ -104,7 +104,7 @@ class AIProviderSeeder extends Seeder
             ],
             [
                 'name' => 'anthropic',
-                'display_name' => 'Claude',
+                'display_name' => 'Anthropic Claude',
                 'service_class' => 'AnthropicService',
                 'default_model' => 'claude-3-haiku-20240307',
                 'available_models' => [

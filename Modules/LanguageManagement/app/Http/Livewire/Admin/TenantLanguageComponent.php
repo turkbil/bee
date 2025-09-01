@@ -11,6 +11,7 @@ use Modules\LanguageManagement\app\Models\TenantLanguage;
 use App\Services\LanguageCleanupService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Collator;
 
 #[Layout('admin.layout')]
 class TenantLanguageComponent extends Component
@@ -355,10 +356,18 @@ class TenantLanguageComponent extends Component
             ->orderBy('name')
             ->get();
 
-        // 3 seviyeli kategorize
+        // 3 seviyeli kategorize (Türkçe locale ile sıralama)
+        $collator = new Collator('tr_TR');
+        
         $activeLanguages = $allLanguages->where('is_active', true)->where('is_visible', true);
-        $inactiveLanguages = $allLanguages->where('is_active', false)->where('is_visible', true)->sortBy('name');
-        $hiddenLanguages = $allLanguages->where('is_visible', false)->sortBy('name');
+        $inactiveLanguages = $allLanguages->where('is_active', false)->where('is_visible', true)
+            ->sortBy('name', SORT_REGULAR, false)->sort(function($a, $b) use ($collator) {
+                return $collator->compare($a->name, $b->name);
+            });
+        $hiddenLanguages = $allLanguages->where('is_visible', false)
+            ->sortBy('name', SORT_REGULAR, false)->sort(function($a, $b) use ($collator) {
+                return $collator->compare($a->name, $b->name);
+            });
 
         // is_default kolonunu senkronize et
         app(TenantLanguageService::class)->syncDefaultLanguageColumn();

@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', $moduleId ? 'Modül Düzenleme' : 'Yeni Modül Ekleme');
+@endphp
+
 @include('modulemanagement::helper')
 <div>
     @include('admin.partials.error_message')

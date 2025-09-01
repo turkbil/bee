@@ -320,14 +320,6 @@ class AICreditService
             $totalUsed = (float) AICreditUsage::where('user_id', $user->id)->sum('credits_used');
 
             $realBalance = (float) max(0.0, $totalPurchased - $totalUsed);
-            
-            // Debug logging
-            Log::debug('Credit balance calculation', [
-                'user_id' => $user->id,
-                'total_purchased' => $totalPurchased,
-                'total_used' => $totalUsed,
-                'real_balance' => $realBalance
-            ]);
 
             return $realBalance;
         });

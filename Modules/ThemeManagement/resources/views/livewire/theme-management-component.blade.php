@@ -1,3 +1,11 @@
+@php
+    View::share('pretitle', 'Tema Listesi');
+@endphp
+
+@php
+    View::share('pretitle', 'Tema Listesi');
+@endphp
+
 @include('thememanagement::helper')
 <div class="card">
     <div class="card-body">

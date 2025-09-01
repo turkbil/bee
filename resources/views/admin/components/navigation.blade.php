@@ -328,6 +328,27 @@ app()->setLocale($originalLocale);
                                             <span class="nav-link-title">{{ __('admin.settings') }}</span>
                                         </a>
                                     </div>
+                                    <div class="col-4">
+                                        <a href="{{ url('/horizon') }}" target="_blank"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-tasks mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Horizon</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ url('/telescope') }}" target="_blank"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-telescope mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Telescope</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ url('/pulse') }}" target="_blank"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-heartbeat mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Pulse</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

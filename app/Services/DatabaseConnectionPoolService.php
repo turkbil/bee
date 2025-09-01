@@ -35,10 +35,7 @@ class DatabaseConnectionPoolService
             'created_at' => now(),
         ];
         
-        Log::info('Database connection pool initialized', [
-            'max_connections' => $poolConfig['max_connections'],
-            'min_connections' => $poolConfig['min_connections'],
-        ]);
+        // Database connection pool initialized
     }
     
     /**
@@ -74,11 +71,11 @@ class DatabaseConnectionPoolService
                 'last_used' => now(),
             ];
             
-            Log::debug("New tenant connection created", [
-                'tenant' => $tenantKey,
-                'connection' => $connectionName,
-                'active_count' => $this->pools[$tenantKey]['active_connections'],
-            ]);
+            // Log::debug("New tenant connection created", [
+            //     'tenant' => $tenantKey,
+            //     'connection' => $connectionName,
+            //     'active_count' => $this->pools[$tenantKey]['active_connections'],
+            // ]);
             
             return $connectionName;
             

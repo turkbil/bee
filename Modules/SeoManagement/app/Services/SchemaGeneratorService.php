@@ -50,13 +50,13 @@ class SchemaGeneratorService
             $finalSchema = ['@context' => 'https://schema.org'];
             $finalSchema = array_merge($finalSchema, $schema);
             
-            Log::info('Schema.org generated successfully', [
-                'model' => $className,
-                'id' => $model->getKey(),
-                'language' => $language,
-                'method' => $modelInfo ? 'registry' : 'hardcoded',
-                'confidence' => $modelInfo['confidence'] ?? 0
-            ]);
+            // Log::info('Schema.org generated successfully', [
+            //     'model' => $className,
+            //     'id' => $model->getKey(),
+            //     'language' => $language,
+            //     'method' => $modelInfo ? 'registry' : 'hardcoded',
+            //     'confidence' => $modelInfo['confidence'] ?? 0
+            // ]);
 
             return $finalSchema;
 

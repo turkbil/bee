@@ -411,19 +411,53 @@ class PageSeederCentral extends Seeder
                         </div>
                     </section>
                 </div>',
-                'ar' => '<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" dir="rtl">
-                    <div class="container mx-auto px-4 py-8">
-                        <div class="text-center mb-8">
-                            <h1 class="text-5xl font-bold text-gray-900 mb-4">
-                                <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ذكاء اصطناعي</span><br>
-                                <span class="text-gray-800">مدرب خصيصاً</span><br>
-                                <span class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">لشركتك</span>
-                            </h1>
-                            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-                                حلول ذكاء اصطناعي معززة ومدربة ومخصصة لنقل عملك إلى المستوى التالي.
-                            </p>
+                'ar' => '<div x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 300)">
+                    <!-- Hero Section -->
+                    <section class="relative py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 overflow-hidden">
+                            <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse"></div>
+                            <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
+                            <div class="absolute bottom-1/4 left-1/3 w-72 h-72 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-4000"></div>
                         </div>
-                    </div>
+                        
+                        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center" x-show="loaded" x-transition:enter="transition ease-out duration-1000" x-transition:enter-start="opacity-0 transform translate-y-8" x-transition:enter-end="opacity-100 transform translate-y-0" style="display: none;">
+                                
+                                <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
+                                    <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">المعلوماتية التركية</span><br>
+                                    <span class="text-gray-800 dark:text-gray-200">مؤسسي</span><br>
+                                    <span class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 bg-clip-text text-transparent">الذكاء الاصطناعي</span>
+                                </h1>
+                                
+                                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">🚀 عزز، ودرب، و<strong>يعمل خصيصًا لك</strong> ارفع عملك إلى المستوى التالي بحلول الذكاء الاصطناعي المصممة خصيصًا لك</p>
+                                
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+                                    <button class="group relative px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                                        <span class="relative z-10">🎯 ابدأ الآن</span>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </button>
+                                    <button class="px-6 py-3 border-2 border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 rounded-lg font-semibold hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-all duration-300">📊 استعرض الحافظة</button>
+                                </div>
+                                
+                                <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>تعليم خاص باللغة التركية</div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>تكامل API</div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-purple-500 rounded-full mr-2 animate-pulse"></span>دعم على مدار الساعة</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Scroll indicator -->
+                        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                            <svg class="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </section>
                 </div>'
             ],
             'is_homepage' => true,

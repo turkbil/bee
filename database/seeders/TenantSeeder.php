@@ -45,6 +45,9 @@ class TenantSeeder extends Seeder
         // DOĞRUDAN SQL komutu ile ekle, model olaylarını tetiklemeden
         DB::table('tenants')->insert([
             'title' => 'Laravel',
+            'fullname' => 'Nurullah Okatan',
+            'email' => 'nurullah@nurullah.net',
+            'phone' => '+90 533 123 45 67',
             'tenancy_db_name' => 'laravel',
             'is_active' => true,
             'central' => true,
@@ -108,22 +111,31 @@ class TenantSeeder extends Seeder
         $normalTenants = [
             [
                 'title' => 'Kırmızı',
+                'fullname' => 'Ahmet Kırmızı',
+                'email' => 'ahmet@kirmizi.test',
+                'phone' => '+90 532 111 11 11',
                 'domain' => 'a.test',
-                'email' => 'a@test',
+                'user_email' => 'a@test',
                 'db_name' => 'tenant_a',
                 'default_locale' => 'en',
             ],
             [
                 'title' => 'Sarı',
+                'fullname' => 'Fatma Sarı',
+                'email' => 'fatma@sari.test',
+                'phone' => '+90 533 222 22 22',
                 'domain' => 'b.test',
-                'email' => 'b@test',
+                'user_email' => 'b@test',
                 'db_name' => 'tenant_b',
                 'default_locale' => 'ar',
             ],
             [
                 'title' => 'Mavi',
+                'fullname' => 'Mehmet Mavi',
+                'email' => 'mehmet@mavi.test',
+                'phone' => '+90 534 333 33 33',
                 'domain' => 'c.test',
-                'email' => 'c@test',
+                'user_email' => 'c@test',
                 'db_name' => 'tenant_c',
                 'default_locale' => 'en',
             ]
@@ -134,6 +146,9 @@ class TenantSeeder extends Seeder
             // Tenant oluştur
             $tenant = Tenant::create([
                 'title' => $config['title'],
+                'fullname' => $config['fullname'],
+                'email' => $config['email'],
+                'phone' => $config['phone'],
                 'tenancy_db_name' => $config['db_name'],
                 'is_active' => true,
                 'central' => false,
@@ -153,7 +168,7 @@ class TenantSeeder extends Seeder
                 // Admin kullanıcısı
                 User::create([
                     'name' => $config['title'] . ' Yönetici',
-                    'email' => $config['email'],
+                    'email' => $config['user_email'],
                     'password' => Hash::make('test'),
                     'email_verified_at' => now(),
                 ]);

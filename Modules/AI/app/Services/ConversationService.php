@@ -201,7 +201,7 @@ class ConversationService
         }
     }
 
-    public function getStreamingAIResponse(Conversation $conversation, string $userMessage, callable $callback): Message
+    public function getStreamingAIResponse(Conversation $conversation, string $userMessage, callable $callback, array $options = []): Message
     {
         // Kredi kontrolü - tahmini 1.0 kredi
         if (!$this->checkTenantCreditBalance(1.0)) {
@@ -212,7 +212,22 @@ class ConversationService
 
         $userMsg = $this->addMessage($conversation, $userMessage, 'user');
 
-        $messages = $this->formatConversationMessages($conversation);
+        // Options'dan conversation history var mı kontrol et
+        if (!empty($options['conversation_history'])) {
+            $messages = $options['conversation_history'];
+            Log::info('🧠 Conversation history kullanılıyor', [
+                'conversation_id' => $conversation->id,
+                'history_count' => count($messages),
+                'prompt_id' => $options['prompt_id'] ?? null
+            ]);
+        } else {
+            // Fallback: veritabanından al
+            $messages = $this->formatConversationMessages($conversation);
+            Log::info('🔄 Fallback: veritabanından conversation history alındı', [
+                'conversation_id' => $conversation->id,
+                'message_count' => count($messages)
+            ]);
+        }
 
         $aiMessage = $this->addMessage($conversation, "", 'assistant', 0);
         
@@ -220,7 +235,15 @@ class ConversationService
         $promptTokens = 0;
         $completionTokens = 0;
         
-        $streamFunction = $this->aiService->ask($messages, true);
+        // AIService options hazırla
+        $aiOptions = [
+            'source' => 'admin_chat',
+            'conversation_history' => $messages,
+            'prompt_id' => $options['prompt_id'] ?? null,
+            'tenant_id' => $conversation->tenant_id
+        ];
+        
+        $streamFunction = $this->aiService->ask($userMessage, $aiOptions);
         
         if (is_callable($streamFunction)) {
             $streamFunction(function ($content) use (&$fullContent, $callback, $aiMessage) {

@@ -38,12 +38,15 @@ class TranslateEntityJob implements ShouldQueue
                 'session_id' => $this->sessionId
             ]);
 
-            // Progress güncelleme
+            // Progress güncelleme - Hem broadcast hem cache
             broadcast(new TranslationProgressUpdated(
                 $this->sessionId,
                 10,
                 "Çeviri başlatıldı..."
             ));
+            
+            // Cache'e de yaz (JavaScript polling için)
+            $this->updateProgressCache(10, 'processing', 'Çeviri başlatıldı...');
 
             $translationService = app(FastHtmlTranslationService::class);
             
@@ -60,6 +63,9 @@ class TranslateEntityJob implements ShouldQueue
                     (int)$progress,
                     "Çeviriliyor: {$this->sourceLanguage} → {$targetLang}"
                 ));
+                
+                // Cache'e de yaz
+                $this->updateProgressCache((int)$progress, 'processing', "Çeviriliyor: {$this->sourceLanguage} → {$targetLang}");
 
                 $result = $translationService->translateEntity(
                     $this->entityType,
@@ -85,6 +91,9 @@ class TranslateEntityJob implements ShouldQueue
                 100,
                 "Tüm çeviriler tamamlandı!"
             ));
+            
+            // Final cache update
+            $this->updateProgressCache(100, 'completed', 'Tüm çeviriler tamamlandı!');
 
             // Completion event
             broadcast(new TranslationCompleted(
@@ -115,6 +124,9 @@ class TranslateEntityJob implements ShouldQueue
                     'error' => $e->getMessage()
                 ]
             ));
+            
+            // Error cache update
+            $this->updateProgressCache(0, 'failed', 'Çeviri hatası: ' . $e->getMessage());
 
             throw $e;
         }
@@ -137,5 +149,40 @@ class TranslateEntityJob implements ShouldQueue
                 'error' => 'Çeviri işlemi başarısız: ' . $exception->getMessage()
             ]
         ));
+        
+        // Failed cache update
+        $this->updateProgressCache(0, 'failed', 'Çeviri işlemi başarısız: ' . $exception->getMessage());
+    }
+    
+    /**
+     * 📊 Progress Cache Update - JavaScript polling için
+     */
+    private function updateProgressCache(int $percentage, string $status, string $message, array $additionalData = []): void
+    {
+        try {
+            // JavaScript'in beklediği cache key formatını kullan
+            \Illuminate\Support\Facades\Cache::put("progress:{$this->sessionId}", $percentage, 300);
+            \Illuminate\Support\Facades\Cache::put("status:{$this->sessionId}", $status, 300);
+            \Illuminate\Support\Facades\Cache::put("message:{$this->sessionId}", $message, 300);
+            
+            if (!empty($additionalData)) {
+                \Illuminate\Support\Facades\Cache::put("data:{$this->sessionId}", $additionalData, 300);
+            }
+
+            Log::info('📊 Translation progress cache updated', [
+                'session_id' => $this->sessionId,
+                'entity_id' => $this->entityId,
+                'progress' => $percentage,
+                'status' => $status,
+                'message' => $message,
+                'additional_data' => $additionalData
+            ]);
+
+        } catch (\Exception $e) {
+            Log::warning('⚠️ Progress cache update failed', [
+                'session_id' => $this->sessionId,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }

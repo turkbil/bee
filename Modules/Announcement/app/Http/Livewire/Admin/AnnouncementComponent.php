@@ -7,7 +7,7 @@ namespace Modules\Announcement\App\Http\Livewire\Admin;
 use Livewire\Attributes\{Url, Layout, Computed};
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Announcement\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActions};
+use Modules\Announcement\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActionsQueue};
 use Modules\Announcement\App\Services\AnnouncementService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Announcement\App\DataTransferObjects\AnnouncementOperationResult;
@@ -17,7 +17,12 @@ use App\Traits\HasUniversalTranslation;
 #[Layout('admin.layout')]
 class AnnouncementComponent extends Component
 {
-    use WithPagination, WithBulkActions, InlineEditTitle, HasUniversalTranslation;
+    use WithPagination, WithBulkActionsQueue, InlineEditTitle, HasUniversalTranslation;
+
+    // Bulk actions properties (WithBulkActionsQueue trait için gerekli)
+    public $selectedItems = [];
+    public $selectAll = false;
+    public $bulkActionsEnabled = false;
 
     #[Url]
     public $search = '';
@@ -34,8 +39,14 @@ class AnnouncementComponent extends Component
     // Hibrit dil sistemi için dinamik dil listesi
     private ?array $availableSiteLanguages = null;
     
-    // Event listeners
-    protected $listeners = ['refreshAnnouncementData' => 'refreshAnnouncementData'];
+    // Event listeners - trait'ten gelen listeners ile merge edilecek
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners() ?? [],
+            ['refreshAnnouncementData' => 'refreshAnnouncementData']
+        );
+    }
     
     private AnnouncementService $announcementService;
     

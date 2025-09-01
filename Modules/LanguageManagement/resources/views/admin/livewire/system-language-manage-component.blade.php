@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Sistem Dil Yönetimi');
+@endphp
 <div>
 @include('languagemanagement::admin.helper')
 @include('admin.partials.error_message')

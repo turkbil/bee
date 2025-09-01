@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Menü Listesi');
+@endphp
+
 @include('menumanagement::admin.helper')
 <div class="card">
     <div class="card-body">

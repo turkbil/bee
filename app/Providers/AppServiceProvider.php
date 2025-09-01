@@ -82,6 +82,9 @@ class AppServiceProvider extends ServiceProvider
             return new TenantCacheManager();
         });
         
+        // Enterprise Queue Health Service
+        $this->app->singleton(\App\Services\EnterpriseQueueHealthService::class);
+        
         $this->loadHelperFiles();
     }
 
@@ -119,6 +122,9 @@ class AppServiceProvider extends ServiceProvider
         
         // Rate limiting for AI translation jobs
         $this->configureRateLimiters();
+        
+        // 🚀 OTOMATIK QUEUE WORKER BAŞLATMA SİSTEMİ
+        $this->ensureQueueWorkerRunning();
     }
     
     protected function registerViewComposers(): void
@@ -213,27 +219,83 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiters(): void
     {
-        // 🤖 AI Translation API Rate Limiter
-        RateLimiter::for('ai-translation', function (object $job) {
-            // Tenant-based rate limiting (her tenant için ayrı limit)
-            $tenantId = $job->tenantId ?? 'default';
+        // 🤖 AI Translation API Rate Limiter - Düzeltilmiş Job parametre tipi
+        RateLimiter::for('ai-translation', function ($request) {
+            // Request üzerinden tenant ID'yi al (web istekleri için)
+            $tenantId = tenant()?->id ?? 'central';
             return Limit::perMinute(20)->by("ai_translation_tenant_{$tenantId}");
         });
         
         // 📊 Queue Monitoring Rate Limiter  
-        RateLimiter::for('queue-monitoring', function () {
+        RateLimiter::for('queue-monitoring', function ($request) {
             return Limit::perMinute(60); // Monitoring için daha yüksek limit
         });
         
-        // 🔄 Job Retry Rate Limiter
-        RateLimiter::for('job-retry', function (object $job) {
-            $jobClass = get_class($job);
-            return Limit::perHour(10)->by("job_retry_{$jobClass}");
+        // 🔄 Job Retry Rate Limiter - Request-based
+        RateLimiter::for('job-retry', function ($request) {
+            $userId = auth()->id() ?? 'guest';
+            return Limit::perHour(10)->by("job_retry_user_{$userId}");
         });
         
         // 🚨 Critical Error Notification Rate Limiter
-        RateLimiter::for('critical-error-notification', function () {
+        RateLimiter::for('critical-error-notification', function ($request) {
             return Limit::perHour(5); // Saatte max 5 kritik hata bildirimi
         });
+    }
+    
+    /**
+     * 🚀 OTOMATIK QUEUE WORKER BAŞLATMA SİSTEMİ
+     * Manuel müdahale gerektirmeden queue worker'ı başlatır
+     */
+    protected function ensureQueueWorkerRunning(): void
+    {
+        // Sadece web request'lerinde ve local environment'ta çalıştır
+        if (!app()->runningInConsole() && env('APP_ENV') === 'local') {
+            
+            // Tenant bilgisi ile PID dosyası storage/logs içinde
+            $tenantId = tenant()?->id ?? 'central';
+            $lockFile = storage_path('logs/queue-worker-tenant-' . $tenantId . '.pid');
+            
+            // Process çalışıyor mu kontrol et
+            if (file_exists($lockFile)) {
+                $pid = file_get_contents($lockFile);
+                
+                // Process hala aktif mi?
+                if ($this->isProcessRunning($pid)) {
+                    return; // Zaten çalışıyor
+                } else {
+                    // Ölü process file'ı temizle
+                    unlink($lockFile);
+                }
+            }
+            
+            // Queue worker'ı arka planda başlat
+            $command = sprintf(
+                'nohup php %s queue:work --queue=tenant_isolated,default --timeout=300 --memory=512 --tries=3 --sleep=1 > /dev/null 2>&1 & echo $! > %s',
+                base_path('artisan'),
+                $lockFile
+            );
+            
+            exec($command);
+            
+            \Illuminate\Support\Facades\Log::info('🚀 QUEUE WORKER AUTO-STARTED', [
+                'tenant_id' => $tenantId,
+                'command' => $command,
+                'pid_file' => $lockFile,
+                'timestamp' => now()
+            ]);
+        }
+    }
+    
+    /**
+     * Process'in çalışıp çalışmadığını kontrol eder
+     */
+    protected function isProcessRunning($pid): bool
+    {
+        if (empty($pid)) return false;
+        
+        // macOS/Linux için process kontrol
+        $result = shell_exec("ps -p {$pid} -o pid=");
+        return !empty(trim($result));
     }
 }

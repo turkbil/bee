@@ -15,6 +15,8 @@ class TenantLanguage extends Model
         'direction',
         'flag_icon',
         'is_active',
+        'is_visible', // 3 SEVİYELİ DİL SİSTEMİ
+        'is_main_language',
         'is_default', // Dinamik olarak senkronize edilecek
         'is_rtl',
         'flag_emoji', 
@@ -23,6 +25,8 @@ class TenantLanguage extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_visible' => 'boolean',
+        'is_main_language' => 'boolean',
         'is_default' => 'boolean',
         'is_rtl' => 'boolean',
         'sort_order' => 'integer',
@@ -34,6 +38,24 @@ class TenantLanguage extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Görünür tenant dilleri (is_visible=true)
+     * 3 SEVİYELİ DİL SİSTEMİ - AI çeviri için kritik!
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('is_visible', true);
+    }
+
+    /**
+     * AI çeviri için kullanılacak diller: visible ve main_language DEĞİL (aktif/pasif fark etmez)
+     */
+    public function scopeForTranslation($query)
+    {
+        return $query->where('is_visible', true)
+                    ->where('is_main_language', false);
     }
 
     /**

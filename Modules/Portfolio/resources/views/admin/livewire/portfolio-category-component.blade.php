@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Portföy Kategori Listesi');
+@endphp
+
 @include('portfolio::admin.helper')
 <div>
     <div class="card mb-3">

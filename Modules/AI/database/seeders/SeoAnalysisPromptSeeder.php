@@ -16,51 +16,79 @@ class SeoAnalysisPromptSeeder extends Seeder
         }
         echo "\n🔍 SEO ANALYSIS PROMPT SYSTEM oluşturuluyor...\n";
 
-        // SEO Analysis için özel prompt
+        // 🚀 2025 Enhanced SEO Analysis Prompt
         $promptData = [
             'prompt_id' => 3081, // Manuel prompt ID
-            'name' => 'SEO Comprehensive Analysis & Suggestions System',
-            'content' => "You are a comprehensive SEO analysis expert. You MUST analyze all 6 required areas and provide scores for each.
+            'name' => '2025 Enhanced SEO Analysis & Actionable Recommendations',
+            'content' => "Sen 2025 SEO analizi uzmanısın ve UYGULANAGELEN, SPESIFIK öneriler sunuyorsun - NASIL YAPILIR rehberleriyle birlikte.
 
-REQUIRED ANALYSIS AREAS (score each 0-100):
-1. title: Page title evaluation (length, clarity, relevance)  
-2. description: Page description analysis (length, effectiveness, appeal)
-3. content: Content quality assessment (structure, length, readability)
-4. technical: Technical SEO elements (meta tags, structure, formatting, HTML validation) - MANDATORY FIELD
-5. social: Social sharing optimization (Open Graph tags, Twitter cards)
-6. priority: Content importance score (value, relevance, timeliness)
+=== ANALİZ ÇERÇEVESİ ===
+ÖNEMLİ: Genel öneriler değil, SPESIFIK, UYGULANAGELEN rehberler sunun - detaylı NASIL YAPILIR talimatlarıyla.
 
-CRITICAL: You MUST include ALL 6 scores in your response. The technical_score is mandatory and cannot be omitted.
+GEREKLİ ANALİZ ALANLARI (her biri 0-100 puan):
+1. title: Sayfa başlığı değerlendirme (50-60 karakter optimal, anahtar kelime yerleşimi, marka entegrasyonu)
+2. description: Meta açıklama analizi (150-160 karakter, değer önerisi, CTA dahil)
+3. content: İçerik kalitesi değerlendirme (yapı, 800+ kelime uzunluk, okunabilirlik, anahtar kelime yoğunluğu %1-3)
+4. technical: Teknik SEO elementleri (URL yapısı, schema markup, meta etiketler, HTML doğrulama) - ZORUNLU
+5. social: Sosyal medya paylaşım optimizasyonu (OG etiketler, Twitter kartları, optimize edilmiş görseller 1200x630)
+6. priority: Sayfa önemi ve dönüşüm potansiyeli içerik tipine dayalı
 
-Return your analysis in this EXACT JSON format (all fields required):
+=== 2025 SEO STANDARTLARI ===
+- Başlık: Ana anahtar kelime başta, duygusal tetikleyiciler, lokasyon/marka varsa
+- Açıklama: Net değer önerisi, ikna edici CTA, fayda odaklı
+- İçerik: Taranabilir yapı, semantik anahtar kelimeler, kullanıcı niyeti uyumu
+- Teknik: Core Web Vitals, mobil-öncelik, yapılandırılmış veri
+- Sosyal: Platform-optimize içerik, etkileyici görseller
+
+=== GEREKLİ YANIT FORMATI ===
+Analizinizi bu TAM JSON formatında uygulanagelen önerilerle döndürün:
 
 {
     \"overall_score\": 75,
-    \"title_score\": 85,
-    \"description_score\": 70,
-    \"content_type_score\": 60,
-    \"technical_score\": 45,
-    \"social_score\": 80,
-    \"priority_score\": 65,
+    \"detailed_scores\": {
+        \"title\": {\"score\": 85, \"analysis\": \"Başlık analizi spesifik sorunlarla\"},
+        \"description\": {\"score\": 70, \"analysis\": \"Açıklama güçlü ve zayıf yanları\"},
+        \"content\": {\"score\": 60, \"analysis\": \"İçerik yapısı ve optimizasyon seviyesi\"},
+        \"technical\": {\"score\": 45, \"analysis\": \"Teknik SEO uygulama durumu\"},
+        \"social\": {\"score\": 80, \"analysis\": \"Sosyal medya optimizasyonu değerlendirmesi\"}
+    },
+    \"actionable_recommendations\": [
+        {
+            \"title\": \"Başlık Uzunluğunu ve Anahtar Kelime Yerleşimini Optimize Et\",
+            \"description\": \"Mevcut başlık 72 karakter, optimal 50-60 aralığını aşıyor\",
+            \"how_to_implement\": \"1) 55 karaktere kısalt 2) Ana anahtar kelimeyi başa taşı 3) Duygusal tetikleyici kelime ekle 4) Lokasyon/marka varsa dahil et\",
+            \"example\": \"Web Tasarım Hizmeti | Modern & SEO Uyumlu | İstanbul\",
+            \"expected_impact\": \"Başlık tıklama oranında %15-25 artış\",
+            \"priority\": \"high\",
+            \"effort\": \"low\"
+        }
+    ],
     \"strengths\": [
-        \"Page title length is appropriate\",
-        \"Social media sharing tags are present\",
-        \"Key term placement is good\"
+        \"Güçlü yanları listeleyin - her biri tek satırda kısa ve net\",
+        \"Pozitif SEO elementlerini belirtin\",
+        \"Mevcut iyi uygulamaları vurgulayın\"
     ],
     \"improvements\": [
-        \"Page description should be shorter\",
-        \"Content length can be increased\",
-        \"Technical web elements can be improved\"
+        \"İyileştirme gereken alanları listeleyin - spesifik ve actionable\",
+        \"En önemli eksiklikleri belirtin\",
+        \"Hızlı wins için kolay düzeltmeler önerin\",
+        \"Uzun vadeli SEO stratejisi için öneriler sunun\"
     ],
-    \"action_items\": [
-        \"Limit page description to 160 characters\",
-        \"Add main heading (H1)\",
-        \"Expand content to 500+ words\",
-        \"Add structured data markup\"
-    ]
+    \"keywords_suggestions\": [\"İçerik analizine dayalı önerilen anahtar kelimeler\"]
 }
 
-USER INPUT:
+KRİTİK TALİMATLAR:
+- Her actionable_recommendation MUTLAKA spesifik NASIL YAPILIR adımları içermeli
+- Belirsiz öneriler değil, somut örnekler verin
+- 2025 SEO en iyi uygulamalarına odaklanın (E-E-A-T, kullanıcı deneyimi, Core Web Vitals)
+- Bağlam-spesifik öneriler için sayfa tipini dikkate alın
+- Mümkün olduğunda beklenen etki metriklerini dahil edin
+- TÜM YANITLARI TÜRKÇE VERİN
+- ZORUNLU: strengths ve improvements alanlarını MUTLAKA doldur
+- ZORUNLU: JSON formatını TAM olarak kullan, eksik alan bırakma
+- ZORUNLU: Her alanı Türkçe ve detaylı doldur
+
+ANALİZ EDİLECEK KULLANICI GİRDİSİ:
 {{user_input}}",
             'prompt_type' => 'feature',
             'module_specific' => 'seo',
@@ -81,7 +109,7 @@ USER INPUT:
         );
 
         $insertedPromptId = DB::table('ai_prompts')
-            ->where('name', 'SEO Comprehensive Analysis & Suggestions System')
+            ->where('name', '2025 Enhanced SEO Analysis & Actionable Recommendations')
             ->value('prompt_id');
 
         echo "✅ SEO Comprehensive Analysis prompt eklendi (ID: {$insertedPromptId})\n";

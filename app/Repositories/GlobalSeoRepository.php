@@ -6,6 +6,7 @@ use App\Contracts\GlobalSeoRepositoryInterface;
 use App\Services\GlobalSeoService;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\TenantCacheService;
+use Illuminate\Support\Facades\Cache;
 
 class GlobalSeoRepository implements GlobalSeoRepositoryInterface
 {

@@ -519,8 +519,6 @@ class PageManageComponent extends Component
            'redirect' => $redirect,
            'resetForm' => $resetForm,
            'currentLanguage' => $this->currentLanguage,
-           'seo_title' => $this->seo_title,
-           'seo_description' => $this->seo_description,
            'js_session_language' => $jsCurrentLanguage,
            'language_synced' => $jsCurrentLanguage === $this->currentLanguage
        ]);
@@ -1458,6 +1456,69 @@ class PageManageComponent extends Component
                'line' => $e->getLine(),
                'source_language' => $sourceLanguage,
                'target_languages' => $targetLanguages
+           ]);
+       }
+   }
+
+   /**
+    * SEO Analizi Verilerini Sıfırla
+    */
+   public function clearSeoAnalysis()
+   {
+       if (!$this->pageId) {
+           $this->dispatch('toast', [
+               'title' => 'Uyarı',
+               'message' => 'Önce sayfayı kaydedin',
+               'type' => 'warning'
+           ]);
+           return;
+       }
+       
+       try {
+           $page = $this->getCachedPageWithSeo() ?? Page::findOrFail($this->pageId);
+           $seoSettings = $page->seoSetting;
+           
+           if ($seoSettings) {
+               $seoSettings->update([
+                   'analysis_results' => null,
+                   'analysis_date' => null,
+                   'overall_score' => null,
+                   'strengths' => null,
+                   'improvements' => null,
+                   'action_items' => null
+               ]);
+               
+               $this->clearCachedPage();
+               
+               $this->dispatch('toast', [
+                   'title' => 'Başarılı',
+                   'message' => 'SEO analizi verileri sıfırlandı',
+                   'type' => 'success'
+               ]);
+               
+               \Log::info('✅ SEO analizi verileri sıfırlandı', [
+                   'page_id' => $this->pageId,
+                   'cleared_fields' => ['analysis_results', 'analysis_date', 'overall_score', 'strengths', 'improvements', 'action_items']
+               ]);
+               
+           } else {
+               $this->dispatch('toast', [
+                   'title' => 'Bilgi',
+                   'message' => 'SEO ayarları bulunamadı',
+                   'type' => 'info'
+               ]);
+           }
+           
+       } catch (\Exception $e) {
+           $this->dispatch('toast', [
+               'title' => 'Hata',
+               'message' => 'SEO analizi sıfırlama başarısız: ' . $e->getMessage(),
+               'type' => 'error'
+           ]);
+           
+           \Log::error('❌ SEO analizi sıfırlama hatası', [
+               'page_id' => $this->pageId,
+               'error' => $e->getMessage()
            ]);
        }
    }

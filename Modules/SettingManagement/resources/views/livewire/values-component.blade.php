@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Ayar Değerleri');
+@endphp
 @include('settingmanagement::helper')
 <div>
     @include('admin.partials.error_message')

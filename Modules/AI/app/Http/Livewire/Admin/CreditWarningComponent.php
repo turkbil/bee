@@ -5,31 +5,50 @@ declare(strict_types=1);
 namespace Modules\AI\App\Http\Livewire\Admin;
 
 use Livewire\Component;
-use Modules\AI\App\Services\ModelBasedCreditService;
+use App\Models\Tenant;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Credit Warning Component
+ * 🚨 AI CREDIT WARNING COMPONENT v3.0
  * 
- * Real-time kredi uyarı sistemi - Admin panelinde görüntülenir
+ * Global kredi uyarı sistemi - Tüm admin sayfalarında gösterilir
+ * 
+ * Özellikler:
+ * - 💰 Real-time kredi durumu
+ * - ⚠️ Düşük kredi uyarıları
+ * - 🚫 Yetersiz kredi bildirimleri
+ * - 🔔 Session flash mesajları (AIServiceWrapper entegrasyonu)
+ * - 🎯 Auto-refresh capability
+ * - 🛒 Kredi satın alma yönlendirme
+ * 
+ * @package Modules\AI\App\Http\Livewire\Admin
+ * @author AI System v3.0
+ * @version 3.0.0
  */
 class CreditWarningComponent extends Component
 {
-    public array $warningData = [];
-    public bool $showWarning = false;
-    public string $warningType = 'none';
-    public bool $isDismissed = false;
+    public $currentBalance;
+    public $lowCreditThreshold = 10.0;
+    public $criticalCreditThreshold = 5.0;
+    public $showWarning = false;
+    public $warningType = 'info'; // info, warning, critical, error
+    public $warningMessage = '';
+    public $buyCreditUrl = '';
+    public $refreshInterval = 30; // seconds
+    public $isDismissed = false;
+    public $creditDetails = [];
 
-    protected ModelBasedCreditService $creditService;
-
-    public function boot(): void
-    {
-        $this->creditService = app(ModelBasedCreditService::class);
-    }
+    protected $listeners = [
+        'creditBalanceUpdated' => 'refreshBalance',
+        'aiOperationCompleted' => 'refreshBalance',
+        'refreshCreditWarning' => 'refreshBalance'
+    ];
 
     public function mount(): void
     {
-        $this->checkCreditWarning();
+        $this->refreshBalance();
+        $this->checkSessionMessages();
     }
 
     public function render()
@@ -38,40 +57,148 @@ class CreditWarningComponent extends Component
     }
 
     /**
-     * Kredi uyarısını kontrol et
+     * 🔄 Kredi bakiyesini güncelle ve uyarıları kontrol et
      */
-    public function checkCreditWarning(): void
+    public function refreshBalance()
     {
-        $tenant = tenant();
-        
-        if (!$tenant) {
-            $this->showWarning = false;
-            return;
-        }
+        try {
+            $tenant = tenancy()->tenant ?? tenant();
+            if (!$tenant) {
+                $this->currentBalance = 0;
+                $this->showWarning = false;
+                return;
+            }
 
-        // Cache key for dismissed warnings
-        $dismissCacheKey = "credit_warning_dismissed_{$tenant->id}_" . now()->format('Y-m-d');
-        
-        // Check if warning was dismissed today
-        if (Cache::has($dismissCacheKey)) {
-            $this->isDismissed = true;
-            $this->showWarning = false;
-            return;
-        }
+            $this->currentBalance = ai_credit_balance($tenant);
+            $this->buyCreditUrl = route('admin.ai.credits.purchase', ['tenant' => $tenant->id]);
+            
+            // Cache key for daily warning dismissal
+            $cacheKey = "credit_warning_dismissed_{$tenant->id}_" . now()->format('Y-m-d');
+            
+            // Eğer bugün dismiss edilmişse gösterme (kritik durumlar hariç)
+            if (Cache::has($cacheKey) && $this->currentBalance > 0) {
+                $this->isDismissed = true;
+                $this->showWarning = false;
+                return;
+            }
+            
+            // Kredi durumunu değerlendir
+            $this->evaluateCreditStatus($tenant, $cacheKey);
+            $this->prepareCreditDetails($tenant);
 
-        // Get warning level
-        $this->warningData = $this->creditService->getCreditWarningLevel($tenant);
-        $this->warningType = $this->warningData['level'] ?? 'none';
-        $this->showWarning = $this->creditService->shouldShowCreditWarning($tenant);
-        $this->isDismissed = false;
+            Log::debug('🔄 Credit balance refreshed', [
+                'tenant_id' => $tenant->id,
+                'balance' => $this->currentBalance,
+                'warning_type' => $this->warningType,
+                'show_warning' => $this->showWarning
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Credit balance refresh failed', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            $this->currentBalance = 0;
+            $this->showWarning = true;
+            $this->warningType = 'error';
+            $this->warningMessage = 'Kredi bilgileri alınamadı. Lütfen sayfayı yenileyin.';
+        }
     }
 
     /**
-     * Uyarıyı kapat (bugün için)
+     * 📊 Kredi durumunu değerlendir
+     */
+    private function evaluateCreditStatus(Tenant $tenant, string $cacheKey)
+    {
+        if ($this->currentBalance <= 0) {
+            $this->showWarning = true;
+            $this->warningType = 'error';
+            $this->warningMessage = sprintf(
+                '🚫 AI kredisi tükendi! Mevcut: %.2f kredi. AI özelliklerini kullanmak için kredi satın alın.',
+                $this->currentBalance
+            );
+        }
+        elseif ($this->currentBalance <= $this->criticalCreditThreshold) {
+            $this->showWarning = true;
+            $this->warningType = 'critical';
+            $this->warningMessage = sprintf(
+                '🔴 Kritik seviyede düşük AI kredisi! Mevcut: %.2f kredi. Acil kredi alımı yapmanız öneriliyor.',
+                $this->currentBalance
+            );
+        }
+        elseif ($this->currentBalance <= $this->lowCreditThreshold) {
+            // Günlük bir kez göster (dismiss edilmemişse)
+            if (!$this->isDismissed) {
+                $this->showWarning = true;
+                $this->warningType = 'warning';
+                $this->warningMessage = sprintf(
+                    '🟡 Düşük AI kredisi uyarısı! Mevcut: %.2f kredi. Yakında kredi alımı yapmanız öneriliyor.',
+                    $this->currentBalance
+                );
+            }
+        }
+        else {
+            $this->showWarning = false;
+        }
+    }
+
+    /**
+     * 💬 Session flash mesajlarını kontrol et (AIServiceWrapper entegrasyonu)
+     */
+    private function checkSessionMessages()
+    {
+        // AIServiceWrapper'dan gelen yetersiz kredi hatası
+        if (session()->has('ai_credit_error')) {
+            $errorData = session()->get('ai_credit_error');
+            $this->showWarning = true;
+            $this->warningType = 'error';
+            $this->warningMessage = $errorData['message'] ?? 'Yetersiz AI kredisi!';
+            $this->buyCreditUrl = $errorData['buy_credits_url'] ?? $this->buyCreditUrl;
+            $this->isDismissed = false; // Kritik hata - dismiss edilemez
+            
+            session()->forget('ai_credit_error');
+        }
+        
+        // AIServiceWrapper'dan gelen düşük kredi uyarısı
+        if (session()->has('ai_credit_warning')) {
+            $warningData = session()->get('ai_credit_warning');
+            $this->showWarning = true;
+            $this->warningType = $warningData['type'] ?? 'warning';
+            $this->warningMessage = $warningData['message'] ?? 'Düşük AI kredisi!';
+            $this->buyCreditUrl = $warningData['buy_credits_url'] ?? $this->buyCreditUrl;
+            
+            session()->forget('ai_credit_warning');
+        }
+    }
+
+    /**
+     * 📋 Kredi detaylarını hazırla
+     */
+    private function prepareCreditDetails(Tenant $tenant)
+    {
+        $this->creditDetails = [
+            'current_credits' => $this->currentBalance,
+            'low_threshold' => $this->lowCreditThreshold,
+            'critical_threshold' => $this->criticalCreditThreshold,
+            'percentage' => $this->currentBalance > 0 ? min(100, ($this->currentBalance / $this->lowCreditThreshold) * 100) : 0,
+            'tenant_id' => $tenant->id,
+            'last_updated' => now()->format('H:i:s')
+        ];
+    }
+
+    /**
+     * ❌ Uyarıyı kapat (bugün için)
      */
     public function dismissWarning(): void
     {
-        $tenant = tenant();
+        $tenant = tenancy()->tenant ?? tenant();
+        
+        // Kritik durumları dismiss etme
+        if ($this->warningType === 'error' || $this->currentBalance <= 0) {
+            return;
+        }
         
         if ($tenant) {
             $dismissCacheKey = "credit_warning_dismissed_{$tenant->id}_" . now()->format('Y-m-d');
@@ -81,82 +208,114 @@ class CreditWarningComponent extends Component
         $this->isDismissed = true;
         $this->showWarning = false;
 
+        // Analytics için log
+        Log::info('👋 Credit warning dismissed', [
+            'tenant_id' => $tenant?->id,
+            'warning_type' => $this->warningType,
+            'balance' => $this->currentBalance
+        ]);
+
         $this->dispatch('credit-warning-dismissed');
     }
 
     /**
-     * Kredi satın al sayfasına yönlendir
+     * 🛒 Kredi satın alma sayfasına yönlendir
      */
     public function buyCredits()
     {
-        return redirect()->route('admin.ai.credits.purchase');
+        // Analytics için log
+        Log::info('💰 Buy credit clicked from warning', [
+            'tenant_id' => tenancy()->tenant?->id ?? tenant()?->id,
+            'current_balance' => $this->currentBalance,
+            'warning_type' => $this->warningType,
+            'source' => 'credit_warning_component'
+        ]);
+        
+        return redirect($this->buyCreditUrl);
     }
 
     /**
-     * Kredi durumunu yenile
+     * 🔄 Manuel kredi durumu yenileme
      */
     public function refreshCredits(): void
     {
-        $this->checkCreditWarning();
+        $this->refreshBalance();
+        $this->checkSessionMessages();
         $this->dispatch('credit-status-refreshed');
+        
+        // User feedback
+        $this->dispatch('show-toast', [
+            'type' => 'info',
+            'message' => 'Kredi durumu güncellendi.'
+        ]);
     }
 
     /**
-     * Credit warning level'a göre CSS class döndür
+     * 🎨 Warning alert class generator
      */
     public function getWarningClass(): string
     {
         return match($this->warningType) {
+            'error' => 'alert-danger',
             'critical' => 'alert-danger',
-            'low' => 'alert-warning', 
-            'moderate' => 'alert-info',
+            'warning' => 'alert-warning',
+            'info' => 'alert-info',
             default => 'alert-secondary'
         };
     }
 
     /**
-     * Credit warning icon döndür
+     * 🎭 Warning icon generator
      */
     public function getWarningIcon(): string
     {
         return match($this->warningType) {
+            'error' => 'ti-x-circle',
             'critical' => 'ti-alert-triangle',
-            'low' => 'ti-alert-circle',
-            'moderate' => 'ti-info-circle',
+            'warning' => 'ti-alert-circle',
+            'info' => 'ti-info-circle',
             default => 'ti-check'
         };
     }
 
     /**
-     * Kredi durumunu detaylı bilgi olarak al
+     * 📊 Kredi durumunu detaylı bilgi olarak al
      */
     public function getCreditDetails(): array
     {
-        $tenant = tenant();
-        
-        if (!$tenant) {
-            return [
-                'current_credits' => 'Unlimited',
-                'warning_threshold' => 0,
-                'recommendation' => 'System tenant - no credit limits'
-            ];
+        return $this->creditDetails;
+    }
+    
+    /**
+     * 🌟 Kredi durumu özeti
+     */
+    public function getCreditSummary(): string
+    {
+        if ($this->currentBalance <= 0) {
+            return 'Kredi tükendi';
+        } elseif ($this->currentBalance <= $this->criticalCreditThreshold) {
+            return 'Kritik seviye';
+        } elseif ($this->currentBalance <= $this->lowCreditThreshold) {
+            return 'Düşük seviye';
+        } else {
+            return 'Yeterli seviye';
         }
-
-        $currentCredits = $tenant->ai_credits ?? $tenant->credits ?? 0;
-        $warning = $this->warningData;
-
-        $recommendation = match($warning['level'] ?? 'sufficient') {
-            'critical' => 'Acilen kredi satın alın! AI özellikler çalışmayabilir.',
-            'low' => 'Yakında kredi satın alın. Stok azalıyor.',
-            'moderate' => 'Kredi durumunuzu takip edin.',
-            default => 'Kredi durumunuz yeterli.'
-        };
-
-        return [
-            'current_credits' => $currentCredits,
-            'warning_threshold' => $warning['threshold'] ?? 0,
-            'recommendation' => $recommendation,
-            'percentage' => $warning['threshold'] ? round(($currentCredits / $warning['threshold']) * 100, 1) : 100
-        ];
+    }
+    
+    /**
+     * 🎯 Component'in gösterilip gösterilmeyeceğini kontrol et
+     */
+    public function shouldRender(): bool
+    {
+        return $this->showWarning && !$this->isDismissed;
+    }
+    
+    /**
+     * 🔄 Otomatik refresh için lifecycle hook
+     */
+    public function hydrate()
+    {
+        // Her 30 saniyede bir otomatik refresh (opsiyonel)
+        // JavaScript tarafında implement edilecek
     }
 }

@@ -767,15 +767,30 @@ document.addEventListener('DOMContentLoaded', function() {
             this.setValue(1);
             setTimeout(() => {
                 loadingBar.style.opacity = '0';
-                progressBar.style.width = '0%';
-            }, 100);
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                }, 300);
+            }, 200);
         }
     };
     
-    // Show loading bar
+    // Show loading bar - MODAL SAFE
     function showLoadingBar() {
+        // 🚫 MODAL AÇIKKEN LOADING BAR GÖSTERME
+        const activeModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
+        if (activeModals.length > 0) {
+            console.log('🚫 MANAGE.JS MODAL AÇIK: Loading bar iptal edildi');
+            return;
+        }
+
         loader.show();
         setTimeout(() => loader.setValue(0.9), 200);
+        
+        // AUTO-HIDE: 2 saniye sonra otomatik gizle (modal safe)
+        setTimeout(() => {
+            console.log('🚨 MANAGE.JS AUTO-HIDE: Loading bar otomatik gizleniyor (2 saniye)');
+            hideLoadingBar();
+        }, 2000);
     }
     
     // Hide loading bar
@@ -795,6 +810,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (this.hostname !== window.location.hostname) return;
                 if (this.getAttribute('data-bs-toggle')) return;
                 if (this.getAttribute('data-bs-target')) return;
+                if (this.getAttribute('data-bs-dismiss')) return;
+                
+                // Modal içindeki linkler için loading bar gösterme
+                if (this.closest('.modal')) {
+                    console.log('🚫 MANAGE.JS MODAL İÇİ LINK: Loading bar iptal edildi');
+                    return;
+                }
                 
                 showLoadingBar();
             });
@@ -807,6 +829,11 @@ document.addEventListener('DOMContentLoaded', function() {
             element.dataset.wireLoadingAttached = 'true';
             
             element.addEventListener('click', function(e) {
+                // Modal içindeki wire:click için loading bar gösterme
+                if (this.closest('.modal')) {
+                    console.log('🚫 MANAGE.JS MODAL İÇİ WIRE:CLICK: Loading bar iptal edildi');
+                    return;
+                }
                 showLoadingBar();
             });
         });
@@ -814,6 +841,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize
     window.addEventListener('load', hideLoadingBar);
+    
+    // ULTRA AGGRESSIVE FIX: 2 saniye sonra zorla gizle
+    setTimeout(() => {
+        console.log('🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor');
+        if (loadingBar) {
+            loadingBar.style.display = 'none';
+            loadingBar.style.opacity = '0';
+            progressBar.style.width = '0%';
+            console.log('✅ MANAGE.JS: Loading bar zorla gizlendi');
+        }
+    }, 2000);
+    
+    // BACKUP FIX: 1 saniye sonra da kontrol et
+    setTimeout(() => {
+        if (loadingBar && (loadingBar.style.display !== 'none' || loadingBar.style.opacity !== '0')) {
+            console.log('🚨 MANAGE.JS BACKUP FIX: Loading bar hala görünür, zorla gizleniyor');
+            loadingBar.style.display = 'none';
+            loadingBar.style.opacity = '0';
+            progressBar.style.width = '0%';
+        }
+    }, 1000);
+    
     attachLoadingToLinks();
     
     // Livewire integration

@@ -494,13 +494,6 @@ readonly class SeoMetaTagService
         
         $siteName = setting('site_title');
         
-        \Log::info('SeoMetaTagService::generateMetaTags', [
-            'model' => $model ? get_class($model) : 'null',
-            'model_id' => $model ? $model->getKey() : 'null',
-            'locale' => $locale,
-            'siteName' => $siteName,
-            'path' => request()->path()
-        ]);
         
         $tenantCache = app(TenantCacheService::class);
         return $tenantCache->remember(
@@ -740,13 +733,6 @@ readonly class SeoMetaTagService
                 $data['hreflang'] = $this->generateHreflangLinks($model);
             }
             
-            \Log::info('SeoMetaTagService::generateMetaTags result', [
-                'title' => $data['title'],
-                'has_description' => !empty($data['description']),
-                'has_keywords' => !empty($data['keywords']),
-                'schema_type' => $data['schema']['@type'] ?? 'null',
-                'has_hreflang' => !empty($data['hreflang'])
-            ]);
             
             return $data;
         });

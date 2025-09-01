@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'AI Özellik Listesi');
+@endphp
 @include('ai::helper')
 
 <div class="card">

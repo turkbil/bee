@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('portfolio_categories', function (Blueprint $table) {
             $table->id('portfolio_category_id');              // Özel primary key
+            $table->unsignedBigInteger('parent_id')->nullable()->index()->comment('Ana kategori ID si (Alt kategoriler için)');
             $table->json('title')->comment('Çoklu dil başlık: {"tr": "Kategori Başlığı", "en": "Category Title", "ar": "عنوان الفئة"}');
             $table->json('slug')->comment('Çoklu dil slug: {"tr": "kategori-slug", "en": "category-slug", "ar": "فئة-slug"}');
             $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "İçerik", "en": "Content", "ar": "المحتوى"}');
@@ -25,9 +26,14 @@ return new class extends Migration
             $table->index('updated_at');
             $table->index('deleted_at');
             
+            // Foreign Key Constraints
+            $table->foreign('parent_id')->references('portfolio_category_id')->on('portfolio_categories')->onDelete('cascade');
+            
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'deleted_at'], 'portfolio_categories_active_deleted_idx');
             $table->index(['is_active', 'deleted_at', 'order'], 'portfolio_categories_active_deleted_order_idx');
+            $table->index(['parent_id', 'is_active', 'deleted_at'], 'portfolio_categories_parent_active_deleted_idx');
+            $table->index(['parent_id', 'order'], 'portfolio_categories_parent_order_idx');
         });
     }
 

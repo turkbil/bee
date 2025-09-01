@@ -61,10 +61,10 @@ class PageController extends Controller
             
             // Tenant'a özel view varsa kullan, yoksa varsayılan
             if ($tenantSpecificView && view()->exists($tenantSpecificView)) {
-                Log::info("🎨 Tenant-specific homepage loaded", [
-                    'tenant_id' => $tenantId,
-                    'view' => $tenantSpecificView
-                ]);
+                // Log::info("🎨 Tenant-specific homepage loaded", [
+                //     'tenant_id' => $tenantId,
+                //     'view' => $tenantSpecificView
+                // ]);
                 return view($tenantSpecificView, ['item' => $page, 'is_homepage' => true]);
             }
             

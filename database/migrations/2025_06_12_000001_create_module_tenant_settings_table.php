@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('module_name'); // portfolio, page, announcement etc.
             $table->json('settings'); // {"slugs": {"index": "portfolios", "show": "portfolio"}, "display_name": "Projelerim", "other_settings": {}}
+            $table->json('title')->nullable(); // Title eklendi
             $table->timestamps();
             
             $table->unique('module_name');

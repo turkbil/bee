@@ -35,7 +35,7 @@ class DatabasePoolServiceProvider extends ServiceProvider
             }
         });
 
-        Log::info('DatabaseConnectionPool service provider booted');
+        // DatabaseConnectionPool service provider booted
     }
 
     /**

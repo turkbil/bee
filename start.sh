@@ -75,12 +75,13 @@ case $mode in
         # Stop any Docker apps that might conflict
         docker-compose stop nginx-proxy app1 app2 app3 2>/dev/null || true
         
-        # Start Docker support services
-        print_status "Starting Docker services (MySQL, Redis, PHPMyAdmin, Redis Commander)..."
-        docker-compose up -d mysql-master redis-cluster phpmyadmin redis-commander
+        # Start Docker support services - 500 TENANT OPTIMIZED
+        print_status "Starting Docker services (MySQL Master+Slave, Redis Cluster, PHPMyAdmin, Redis Commander)..."
+        docker-compose up -d mysql-master mysql-slave-2 redis-cluster redis-slave-1 redis-slave-2 phpmyadmin redis-commander
         
-        # Wait for services
-        sleep 10
+        # Wait for services - Extra time for new containers
+        print_status "Waiting for all database and cache services to be healthy..."
+        sleep 15
         
         # KÖKTEN ÇÖZÜM - Nginx ve Broken Pipe
         print_status "Applying ROOT FIXES for Nginx & Broken Pipe..."
@@ -121,13 +122,30 @@ case $mode in
         nohup php -d output_buffering=4096 -d implicit_flush=Off -d default_socket_timeout=60 -S 0.0.0.0:8000 -t public > /dev/null 2>&1 &
         sleep 3
         
-        # Queue Worker otomatik başlat - HER ZAMAN ÇALIŞMALI
-        print_status "Queue Worker başlatılıyor..."
-        if [ -f "./start-queue-worker.sh" ]; then
-            chmod +x ./start-queue-worker.sh
-            ./start-queue-worker.sh
+        # Laravel Horizon otomatik başlat - PRODUCTION GRADE QUEUE SYSTEM
+        print_status "🚀 Laravel Horizon başlatılıyor (Redis Queue Management)..."
+        
+        # Eski queue worker'ları durdur (custom system artık kullanılmıyor)
+        pkill -f "queue:work" 2>/dev/null || true
+        
+        # Horizon'un çalışıp çalışmadığını kontrol et
+        if pgrep -f "horizon" > /dev/null; then
+            print_status "Horizon zaten çalışıyor, yeniden başlatılıyor..."
+            php artisan horizon:terminate 2>/dev/null || true
+            sleep 3
+        fi
+        
+        # Horizon'u arkaplanda başlat
+        nohup php artisan horizon > /dev/null 2>&1 &
+        sleep 3
+        
+        # Horizon durumunu kontrol et
+        if php artisan horizon:status | grep -q "Running"; then
+            print_success "✅ Laravel Horizon başlatıldı! (Professional Queue Management)"
+            print_status "📊 Dashboard: http://laravel.test/horizon"
         else
-            print_warning "start-queue-worker.sh bulunamadı!"
+            print_error "❌ Horizon başlatılamadı!"
+            print_status "Redis bağlantısını kontrol edin..."
         fi
         
         # Test bağlantı

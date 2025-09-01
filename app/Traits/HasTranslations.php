@@ -22,12 +22,9 @@ trait HasTranslations
         // Alan çevrilebilir mi kontrol et
         if (!$this->isTranslatable($field)) {
             $value = $this->getAttribute($field);
-            // Eğer array ise string'e çevir
+            // Non-translatable fields için direkt değeri döndür
             if (is_array($value)) {
-                return json_encode($value);
-            }
-            // Array ise string'e çevir (keywords gibi alanlar için)
-            if (is_array($value)) {
+                // Arrays should be returned as JSON for non-translatable fields like keywords/tags
                 return json_encode($value);
             }
             return is_string($value) ? $value : (string) $value;
@@ -59,21 +56,9 @@ trait HasTranslations
         // İstenen dil varsa döndür
         if (isset($translations[$locale]) && !empty($translations[$locale])) {
             $value = $translations[$locale];
-            // Array ise string'e çevir (keywords gibi alanlar için)
-            if (is_array($value)) {
-                return json_encode($value);
-            }
             return is_string($value) ? $value : (string) $value;
         }
         
-        // DEBUG: Neden fallback'e geçiliyor?
-        \Log::info('🐛 Translation Debug - Fallback nedeni', [
-            'locale' => $locale,
-            'translations' => $translations,
-            'isset_check' => isset($translations[$locale]),
-            'empty_check' => isset($translations[$locale]) ? empty($translations[$locale]) : 'key_not_exists',
-            'value' => $translations[$locale] ?? 'null'
-        ]);
         
         // Fallback yazı sistemi - çevirisi olmayan dillerde fallback dildeki YAZIYI göster
         return $this->getFallbackTranslation($translations, $locale);
@@ -88,54 +73,18 @@ trait HasTranslations
         $defaultLocale = $this->getTenantDefaultLanguage();
         if (isset($translations[$defaultLocale]) && !empty($translations[$defaultLocale])) {
             $value = $translations[$defaultLocale];
-            
-            \Log::info('📝 Fallback translation kullanıldı', [
-                'requested_locale' => $requestedLocale,
-                'tenant_default_locale' => $defaultLocale,
-                'fallback_method' => 'tenant_default',
-                'has_content' => !empty($value)
-            ]);
-            
-            // Array ise string'e çevir (keywords gibi alanlar için)
-            if (is_array($value)) {
-                return json_encode($value);
-            }
             return is_string($value) ? $value : (string) $value;
         }
         
         // 2. Sistem varsayılanı (tr) varsa döndür
         if ($defaultLocale !== 'tr' && isset($translations['tr']) && !empty($translations['tr'])) {
             $value = $translations['tr'];
-            
-            \Log::info('📝 Fallback translation kullanıldı', [
-                'requested_locale' => $requestedLocale,
-                'tenant_default_locale' => $defaultLocale,
-                'fallback_method' => 'system_default_tr',
-                'has_content' => !empty($value)
-            ]);
-            
-            // Array ise string'e çevir (keywords gibi alanlar için)
-            if (is_array($value)) {
-                return json_encode($value);
-            }
             return is_string($value) ? $value : (string) $value;
         }
         
         // 3. İlk dolu dili bul
         foreach ($translations as $locale => $content) {
             if (!empty($content)) {
-                \Log::info('📝 Fallback translation kullanıldı', [
-                    'requested_locale' => $requestedLocale,
-                    'tenant_default_locale' => $defaultLocale,
-                    'fallback_method' => 'first_available',
-                    'found_locale' => $locale,
-                    'has_content' => !empty($content)
-                ]);
-                
-                // Array ise string'e çevir (keywords gibi alanlar için)
-                if (is_array($content)) {
-                    return json_encode($content);
-                }
                 return is_string($content) ? $content : (string) $content;
             }
         }
@@ -287,7 +236,15 @@ trait HasTranslations
      */
     public function isTranslatable(string $field): bool
     {
-        return in_array($field, $this->getTranslatableFields());
+        $fields = $this->getTranslatableFields();
+        
+        // If getTranslatableFields returns associative array (from TranslatableEntity interface)
+        if (is_array($fields) && count($fields) > 0 && !is_numeric(array_keys($fields)[0])) {
+            return array_key_exists($field, $fields);
+        }
+        
+        // If it returns simple array (from $translatable property)
+        return in_array($field, $fields);
     }
     
     /**
@@ -295,6 +252,8 @@ trait HasTranslations
      */
     public function getTranslatableFields(): array
     {
+        // If the model implements TranslatableEntity interface, it should override this method
+        // Otherwise, use the $translatable property
         return $this->translatable ?? [];
     }
     

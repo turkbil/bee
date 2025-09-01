@@ -1,7 +1,7 @@
 services:
   # Nginx Load Balancer - High Performance Proxy
   nginx-proxy:
-    image: nginx:alpine
+    image: jwilder/nginx-proxy:latest
     container_name: laravel-nginx-proxy
     restart: unless-stopped
     ports:
@@ -10,6 +10,10 @@ services:
     volumes:
       - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/ssl:/etc/nginx/ssl:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
     depends_on:
       - app1
       - app2
@@ -21,6 +25,25 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  # Let's Encrypt SSL Automation
+  acme-companion:
+    image: nginxproxy/acme-companion:latest
+    container_name: laravel-acme-companion
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certs:/etc/nginx/certs:rw
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - acme:/etc/acme.sh
+    environment:
+      NGINX_PROXY_CONTAINER: laravel-nginx-proxy
+      DEFAULT_EMAIL: ${ACME_EMAIL:-admin@example.com}
+    depends_on:
+      - nginx-proxy
+    networks:
+      - laravel-network
 
   # Laravel Application Instance 1
   app1:
@@ -57,8 +80,17 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: '0.5'
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
 
   # Laravel Application Instance 2
   app2:
@@ -95,8 +127,17 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: '0.5'
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
 
   # Laravel Application Instance 3
   app3:
@@ -133,8 +174,17 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: '0.5'
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
 
   # MySQL Master Database
   mysql-master:
@@ -162,7 +212,7 @@ services:
       interval: 15s
       retries: 5
 
-  # MySQL Slave Database
+  # MySQL Slave Database (Read Replica 1)
   mysql-slave:
     image: mysql:8.0
     container_name: laravel-mysql-slave
@@ -192,19 +242,108 @@ services:
       interval: 15s
       retries: 5
 
-  # Redis Cluster Node 1
+  # MySQL Slave Database (Read Replica 2) - 500 Tenant Scaling
+  mysql-slave-2:
+    image: mysql:8.0
+    container_name: laravel-mysql-slave-2
+    restart: unless-stopped
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-strongpassword123}
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+      MYSQL_REPLICATION_MODE: slave
+      MYSQL_REPLICATION_USER: replicator
+      MYSQL_REPLICATION_PASSWORD: replicatorpass123
+      MYSQL_MASTER_HOST: mysql-master
+    volumes:
+      - mysql_slave_2_data:/var/lib/mysql
+      - ./docker/mysql/slave.cnf:/etc/mysql/conf.d/slave.cnf
+      - ./docker/mysql/init-slave.sql:/docker-entrypoint-initdb.d/init-slave.sql
+    networks:
+      - laravel-network
+    command: --default-authentication-plugin=mysql_native_password --server-id=3
+    depends_on:
+      mysql-master:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-strongpassword123}"]
+      timeout: 10s
+      interval: 15s
+      retries: 5
+
+  # Redis Master Node (Primary)
   redis-cluster:
     image: redis:7-alpine
-    container_name: laravel-redis-cluster
+    container_name: laravel-redis-master
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
       - redis_cluster_data:/data
-      - ./docker/redis/redis.conf:/etc/redis/redis.conf
+      - ./docker/redis/redis-master.conf:/etc/redis/redis.conf
     networks:
       - laravel-network
-    command: redis-server /etc/redis/redis.conf --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    command: redis-server /etc/redis/redis.conf --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      interval: 5s
+      retries: 5
+
+  # Redis Slave Node 1 (Read Replica)
+  redis-slave-1:
+    image: redis:7-alpine
+    container_name: laravel-redis-slave-1
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_slave_1_data:/data
+      - ./docker/redis/redis-slave.conf:/etc/redis/redis.conf
+    networks:
+      - laravel-network
+    command: redis-server /etc/redis/redis.conf --appendonly yes --slaveof redis-cluster 6379
+    depends_on:
+      redis-cluster:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      interval: 5s
+      retries: 5
+
+  # Redis Slave Node 2 (Read Replica)  
+  redis-slave-2:
+    image: redis:7-alpine
+    container_name: laravel-redis-slave-2
+    restart: unless-stopped
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_slave_2_data:/data
+      - ./docker/redis/redis-slave.conf:/etc/redis/redis.conf
+    networks:
+      - laravel-network
+    command: redis-server /etc/redis/redis.conf --appendonly yes --slaveof redis-cluster 6379
+    depends_on:
+      redis-cluster:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       timeout: 3s
@@ -212,19 +351,22 @@ services:
       retries: 5
 
 
-  # Laravel Queue Worker (Scaled)
-  queue1:
+  # Laravel Horizon - Queue Manager & Dashboard
+  horizon:
     build:
       context: .
       dockerfile: Dockerfile
       target: production
-    container_name: laravel-queue1
+    container_name: laravel-horizon
     restart: unless-stopped
-    command: php artisan queue:work --verbose --tries=3 --timeout=90 --sleep=3 --max-jobs=1000
+    command: php artisan horizon
     environment:
+      APP_ENV: production
       QUEUE_CONNECTION: redis
       REDIS_HOST: redis-cluster
       DB_HOST: mysql-master
+      PHP_MEMORY_LIMIT: 2G
+      HORIZON_ENVIRONMENT: production
     volumes:
       - storage_data:/var/www/html/storage
     depends_on:
@@ -237,48 +379,93 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
-          cpus: '0.25'
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "php", "artisan", "horizon:status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  queue2:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
-    container_name: laravel-queue2
-    restart: unless-stopped
-    command: php artisan queue:work --verbose --tries=3 --timeout=90 --sleep=3 --max-jobs=1000
-    environment:
-      QUEUE_CONNECTION: redis
-      REDIS_HOST: redis-cluster
-      DB_HOST: mysql-master
-    volumes:
-      - storage_data:/var/www/html/storage
-    depends_on:
-      mysql-master:
-        condition: service_healthy
-      redis-cluster:
-        condition: service_healthy
-    networks:
-      - laravel-network
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.25'
-
-  # Laravel Cron Scheduler (Enhanced)
+  # Laravel Cron Scheduler (Supercronic - Production Ready)
   scheduler:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
+    image: supercronic/supercronic:latest
     container_name: laravel-scheduler
     restart: unless-stopped
-    command: sh -c "while true; do php artisan schedule:run --verbose; sleep 60; done"
+    volumes:
+      - ./docker/crontab:/etc/cron.d/laravel-cron:ro
+      - storage_data:/var/www/html/storage
     environment:
       DB_HOST: mysql-master
       REDIS_HOST: redis-cluster
+      SUPERCRONIC_OPTIONS: "-debug"
+    command: ["/usr/local/bin/supercronic", "/etc/cron.d/laravel-cron"]
+    depends_on:
+      mysql-master:
+        condition: service_healthy
+      redis-cluster:
+        condition: service_healthy
+    networks:
+      - laravel-network
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.05'
+
+  # 🔥 BACKUP MANAGER - Data Protection (500 Tenant Critical)
+  backup-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: laravel-backup-manager
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql-master
+      DB_SLAVE_HOST: mysql-slave
+      REDIS_HOST: redis-cluster
+      BACKUP_SCHEDULE: "0 2 * * *"  # Daily 2 AM
+      BACKUP_RETENTION_DAYS: 7
+      AWS_S3_BACKUP: ${BACKUP_S3_ENABLED:-false}
+    volumes:
+      - backup_data:/backups
+      - storage_data:/var/www/html/storage:ro
+      - ./docker/backup-scripts:/backup-scripts:ro
+    command: php artisan schedule:work --verbose
+    depends_on:
+      mysql-master:
+        condition: service_healthy
+      redis-cluster:
+        condition: service_healthy
+    networks:
+      - laravel-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  # 🤖 AI QUEUE WORKER - Specialized AI Processing
+  queue-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: laravel-queue-ai
+    restart: unless-stopped
+    command: php artisan horizon --queue=ai_translation,ai_processing,ai_heavy
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql-master
+      REDIS_HOST: redis-cluster
+      QUEUE_CONNECTION: redis
+      PHP_MEMORY_LIMIT: 6G
+      HORIZON_ENVIRONMENT: ai_worker
     volumes:
       - storage_data:/var/www/html/storage
     depends_on:
@@ -291,8 +478,110 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-          cpus: '0.1'
+          memory: 6G
+          cpus: '2.0'
+        reservations:
+          memory: 3G
+          cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "php", "artisan", "horizon:status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 🔄 GENERAL QUEUE WORKER - High Availability Multi-Worker
+  queue-general:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: laravel-queue-general
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo 'Starting General Queue Worker with Auto-Recovery...'
+        while true; do
+          php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600 --memory=1024 --queue=default,tenant_isolated,critical
+          echo 'General Worker stopped, restarting in 5 seconds...'
+          sleep 5
+        done
+      "
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql-master
+      REDIS_HOST: redis-cluster
+      QUEUE_CONNECTION: redis
+      PHP_MEMORY_LIMIT: 2G
+      WORKER_TYPE: general
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      mysql-master:
+        condition: service_healthy
+      redis-cluster:
+        condition: service_healthy
+    networks:
+      - laravel-network
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "ps", "aux", "|", "grep", "-q", "queue:work"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 🎯 TENANT QUEUE WORKER - Isolated Tenant Processing
+  queue-tenant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: laravel-queue-tenant
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo 'Starting Tenant Queue Worker with Auto-Recovery...'
+        while true; do
+          php artisan queue:work redis --sleep=2 --tries=5 --max-time=7200 --memory=2048 --queue=tenant_isolated,tenant_critical
+          echo 'Tenant Worker stopped, restarting in 5 seconds...'
+          sleep 5
+        done
+      "
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql-master
+      REDIS_HOST: redis-cluster
+      QUEUE_CONNECTION: redis
+      PHP_MEMORY_LIMIT: 4G
+      WORKER_TYPE: tenant
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      mysql-master:
+        condition: service_healthy
+      redis-cluster:
+        condition: service_healthy
+    networks:
+      - laravel-network
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '1.5'
+        reservations:
+          memory: 2G
+          cpus: '0.75'
+    healthcheck:
+      test: ["CMD", "ps", "aux", "|", "grep", "-q", "queue:work"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # PhpMyAdmin (Production Ready)
   phpmyadmin:
@@ -368,6 +657,37 @@ services:
     depends_on:
       - prometheus
 
+  # Laravel Metrics Exporter (Prometheus)
+  laravel-exporter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: laravel-exporter
+    restart: unless-stopped
+    command: php artisan serve --host=0.0.0.0 --port=9091
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql-master
+      REDIS_HOST: redis-cluster
+      PROMETHEUS_METRICS_ENABLED: true
+    expose:
+      - "9091"
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      mysql-master:
+        condition: service_healthy
+      redis-cluster:
+        condition: service_healthy
+    networks:
+      - laravel-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.1'
+
 # Docker Networks
 networks:
   laravel-network:
@@ -378,13 +698,15 @@ networks:
 
 # Docker Volumes (Production Optimized)
 volumes:
-  # Application Storage
+  # Application Storage (Production: Use NFS/S3)
   storage_data:
     driver: local
     driver_opts:
       type: none
       device: ${PWD}/storage
       o: bind
+    # Alternative for high-scale: 
+    # external: true  # Use external NFS/S3 mount
   
   bootstrap_cache:
     driver: local
@@ -431,6 +753,34 @@ volumes:
       device: ${PWD}/docker/volumes/redis-cluster
       o: bind
 
+  redis_slave_1_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/redis-slave-1
+      o: bind
+
+  redis_slave_2_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/redis-slave-2
+      o: bind
+      
+  mysql_slave_2_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/mysql-slave-2
+      o: bind
+      
+  backup_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/backups
+      o: bind
+
   # Monitoring Volumes
   prometheus_data:
     driver: local
@@ -444,4 +794,33 @@ volumes:
     driver_opts:
       type: none
       device: ${PWD}/docker/volumes/grafana
+      o: bind
+
+  # SSL/TLS Volumes
+  certs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/ssl/certs
+      o: bind
+      
+  vhost.d:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/ssl/vhost.d
+      o: bind
+
+  html:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/ssl/html
+      o: bind
+
+  acme:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/docker/volumes/ssl/acme
       o: bind

@@ -152,8 +152,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge badge-outline {{ $tenant->ai_enabled ? 'text-green' : 'text-red' }}">
-                                        {{ $tenant->ai_enabled ? 'Aktif' : 'Pasif' }}
+                                    <span class="badge badge-outline text-green">
+                                        Aktif
                                     </span>
                                 </td>
                                 <td>
@@ -194,11 +194,6 @@
                                            title="İstatistikler">
                                             <i class="fas fa-chart-line"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-outline-success" 
-                                                onclick="toggleAI({{ $tenant->id }}, {{ $tenant->ai_enabled ? 'false' : 'true' }})"
-                                                title="AI Durumunu Değiştir">
-                                            <i class="fas fa-power-off"></i>
-                                        </button>
                                         <button class="btn btn-sm btn-outline-warning" 
                                                 onclick="adjustTokens({{ $tenant->id }})"
                                                 title="Token Ayarla">

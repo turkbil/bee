@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', $categoryId ? 'Portföy Kategori Düzenleme' : 'Yeni Portföy Kategori Ekleme');
+@endphp
+
 @include('portfolio::admin.helper')
 <div>
     @include('admin.partials.error_message')

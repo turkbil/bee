@@ -21,7 +21,8 @@ return new class extends Migration
                 'conditional',     // Şartlı yanıtlar
                 'writing_tone',    // Yazım tonu (tüm feature'larda kullanılabilir)
                 'content_length',  // İçerik uzunluğu (tüm feature'larda kullanılabilir)
-                'feature'          // Feature-specific prompt
+                'feature',         // Feature-specific prompt
+                'chat'             // Sohbet odaklı prompt'lar
             ])->default('standard');
             
             // Priority System
@@ -45,6 +46,15 @@ return new class extends Migration
                 'conditional_info'    // Şartlı yanıtlar (en düşük)
             ])->default('expert_knowledge')
               ->comment('AIPriorityEngine category mapping');
+              
+            // ADD columns from 2025_08_10_200001_add_v3_columns_to_ai_prompts_table.php
+            $table->enum('prompt_type_v3', ['system', 'tone', 'length', 'style', 'context', 'template', 'writing_tone', 'content_length', 'target_audience'])
+                  ->default('system')
+                  ->comment('Universal Input System V3 - Prompt kategorisi');
+            $table->string('module_specific', 50)->nullable()->comment('Hangi modül için özel');
+            $table->json('context_conditions')->nullable()->comment('Bu prompt ne zaman kullanılır');
+            $table->json('variables')->nullable()->comment('[\"company_name\", \"user_name\", \"module_type\"]');
+            $table->boolean('is_chainable')->default(true)->comment('Diğer promptlarla birleştirilebilir mi');
             
             $table->boolean('is_default')->default(false);
             $table->boolean('is_system')->default(false); // Sistem promptları değiştirilemez
@@ -65,6 +75,8 @@ return new class extends Migration
             $table->index(['priority', 'ai_weight'], 'idx_prompt_priority_weight');
             $table->index(['prompt_category', 'priority'], 'idx_prompt_category_priority');
             $table->index(['is_active', 'prompt_type'], 'idx_prompt_active_type');
+            // ADD index from 2025_08_10_200001_add_v3_columns_to_ai_prompts_table.php
+            $table->index(['prompt_type_v3', 'module_specific'], 'idx_prompt_type_module');
         });
     }
 

@@ -315,14 +315,14 @@ class SeoSetting extends Model
         // Değişiklikleri kaydet
         $this->save();
 
-        \Log::info('✅ SeoSetting updateLanguageData çalıştı', [
-            'locale' => $locale,
-            'has_title' => isset($data['title']),
-            'has_description' => isset($data['description']), 
-            'has_keywords' => isset($data['keywords']),
-            'has_focus_keywords' => isset($data['focus_keywords']),
-            'focus_keywords_value' => $data['focus_keywords'] ?? 'YOK'
-        ]);
+        // \Log::info('✅ SeoSetting updateLanguageData çalıştı', [
+        //     'locale' => $locale,
+        //     'has_title' => isset($data['title']),
+        //     'has_description' => isset($data['description']), 
+        //     'has_keywords' => isset($data['keywords']),
+        //     'has_focus_keywords' => isset($data['focus_keywords']),
+        //     'focus_keywords_value' => $data['focus_keywords'] ?? 'YOK'
+        // ]);
     }
 
     protected static function boot()

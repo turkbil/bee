@@ -44,11 +44,10 @@ class AITenantSetupSeeder extends Seeder
         DB::table('ai_token_usage')->delete();
 
         foreach ($allTenants as $tenant) {
-            // Tüm tenant'larda AI'yi aktif hale getir
+            // Tüm tenant'larda AI ayarlarını güncelle
             DB::table('tenants')
                 ->where('id', $tenant->id)
                 ->update([
-                    'ai_enabled' => true,
                     'ai_monthly_token_limit' => 0, // Sınırsız
                     'updated_at' => $now
                 ]);

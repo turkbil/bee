@@ -6,7 +6,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Portfolio\App\Http\Livewire\Traits\InlineEditTitle;
-use Modules\Portfolio\App\Http\Livewire\Traits\WithBulkActions;
+use Modules\Portfolio\App\Http\Livewire\Traits\WithBulkActionsQueue;
 use Modules\Portfolio\App\Models\Portfolio;
 use Modules\Portfolio\App\Models\PortfolioCategory;
 use App\Traits\HasUniversalTranslation;
@@ -14,7 +14,7 @@ use App\Traits\HasUniversalTranslation;
 #[Layout('admin.layout')]
 class PortfolioComponent extends Component
 {
-    use WithPagination, WithBulkActions, InlineEditTitle, HasUniversalTranslation;
+    use WithPagination, WithBulkActionsQueue, InlineEditTitle, HasUniversalTranslation;
 
     #[Url]
     public $search = '';
@@ -30,6 +30,11 @@ class PortfolioComponent extends Component
 
     #[Url]
     public $selectedCategory = '';
+
+    // Bulk actions properties (WithBulkActionsQueue trait için gerekli)
+    public $selectedItems = [];
+    public $selectAll = false;
+    public $bulkActionsEnabled = false;
 
     protected $queryString = [
         'sortField' => ['except' => 'portfolio_id'],

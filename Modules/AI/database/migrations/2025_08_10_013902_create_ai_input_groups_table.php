@@ -24,6 +24,8 @@ return new class extends Migration
             
             $table->unique(['feature_id', 'slug']);
             $table->index(['feature_id', 'sort_order']);
+            // ADD indexes from 2025_08_10_040000_add_universal_input_system_indexes.php
+            $table->index(['feature_id', 'is_collapsible'], 'ai_input_groups_feature_collapsible_idx');
         });
     }
 

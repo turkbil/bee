@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', $announcementId ? 'Duyuru Düzenleme' : 'Yeni Duyuru Ekleme');
+@endphp
+
 <div wire:key="announcement-manage-component" wire:id="announcement-manage-component">
     {{-- Helper dosyası --}}
     @include('announcement::admin.helper')

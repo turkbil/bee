@@ -23,6 +23,8 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['input_id', 'sort_order']);
+            // ADD indexes from 2025_08_10_040000_add_universal_input_system_indexes.php
+            $table->index(['input_id', 'value'], 'ai_input_options_input_value_idx');
         });
     }
 

@@ -137,7 +137,7 @@ class AIProvider extends Model
      */
     public function tenants()
     {
-        return $this->hasMany(\App\Models\Tenant::class, 'default_ai_provider_id');
+        return $this->hasMany(\App\Models\Tenant::class, 'tenant_ai_provider_id');
     }
 
     /**
@@ -157,19 +157,27 @@ class AIProvider extends Model
     }
 
     /**
-     * Model credit rates relationship - YENI SİSTEM
+     * Provider models relationship - YENİ SİSTEM
      */
-    public function modelCreditRates()
+    public function providerModels()
     {
-        return $this->hasMany(AIModelCreditRate::class, 'provider_id');
+        return $this->hasMany(AIProviderModel::class, 'provider_id');
     }
 
     /**
-     * Specific model için rate getir - YENI SİSTEM
+     * Model credit rates relationship - BACKWARD COMPATIBILITY
      */
-    public function getModelRate(string $modelName): ?AIModelCreditRate
+    public function modelCreditRates()
     {
-        return $this->modelCreditRates()
+        return $this->hasMany(AIProviderModel::class, 'provider_id');
+    }
+
+    /**
+     * Specific model için rate getir - YENİ SİSTEM
+     */
+    public function getModelRate(string $modelName): ?AIProviderModel
+    {
+        return $this->providerModels()
             ->where('model_name', $modelName)
             ->where('is_active', true)
             ->first();
@@ -191,20 +199,25 @@ class AIProvider extends Model
     }
 
     /**
-     * Mevcut modeller ve rate'leri - YENI SİSTEM
+     * Mevcut modeller ve rate'leri - YENİ SİSTEM
      */
     public function getAvailableModelsWithRates()
     {
-        return $this->modelCreditRates()
+        return $this->providerModels()
             ->where('is_active', true)
+            ->orderBy('credit_per_1k_input_tokens', 'asc')
+            ->orderBy('is_default', 'desc')
             ->orderBy('model_name')
             ->get()
             ->map(function($rate) {
                 return [
+                    'id' => $rate->id,
                     'model_name' => $rate->model_name,
                     'input_rate' => $rate->credit_per_1k_input_tokens,
                     'output_rate' => $rate->credit_per_1k_output_tokens,
-                    'cost_estimate' => $rate->estimateCost(1000, 1000)
+                    'is_default' => $rate->is_default,
+                    'sort_order' => $rate->sort_order,
+                    'cost_info' => $rate->cost_info
                 ];
             });
     }
@@ -270,10 +283,10 @@ class AIProvider extends Model
     }
 
     /**
-     * AIProvider modelleri relationship
+     * AIProvider modelleri relationship - YENİ SİSTEM
      */
     public function models()
     {
-        return $this->hasMany(AIModelCreditRate::class, 'provider_id');
+        return $this->hasMany(AIProviderModel::class, 'provider_id');
     }
 }

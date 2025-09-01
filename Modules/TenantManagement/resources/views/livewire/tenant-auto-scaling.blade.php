@@ -236,7 +236,7 @@ document.addEventListener('livewire:load', function () {
             @this.loadMetrics();
         }, data.interval || 5000);
         
-        console.log('Auto-refresh started with interval:', data.interval);
+        // Auto-refresh started with interval: data.interval
     });
 
     Livewire.on('stopAutoRefresh', function () {
@@ -244,7 +244,7 @@ document.addEventListener('livewire:load', function () {
             clearInterval(autoRefreshInterval);
             autoRefreshInterval = null;
         }
-        console.log('Auto-refresh stopped');
+        // Auto-refresh stopped
     });
 });
 </script>

@@ -120,11 +120,12 @@ class AIChatController extends Controller
                 'tokens' => $userMessage->tokens
             ]);
             
-            // Prepare conversation history - CONNECTION ERROR FIX
+            // Prepare conversation history - MEMORY FIX
             $messages = $conversation->messages()
-                ->orderBy('created_at', 'asc')
-                ->limit(20) // Son 20 mesajla sınırla - memory/connection sorununu önler
-                ->get();
+                ->orderBy('created_at', 'desc') // Son mesajları al
+                ->limit(100) // Son 100 mesaj - doğal sohbet için artırıldı
+                ->get()
+                ->reverse(); // AI için kronolojik sıraya çevir
                 
             $conversationHistory = $messages->map(function($msg) {
                 return [

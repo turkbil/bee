@@ -8,6 +8,7 @@ use App\Exceptions\Handler;
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
         \App\Providers\DatabasePoolServiceProvider::class,
+        \App\Providers\QueueResilienceServiceProvider::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -40,7 +41,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
-        // 2. DİL - Tenant'tan HEMEN sonra (Session'dan ÖNCE çalışmalı) - admin hariç
+        // 2. REDIS HEALTH CHECK - Redis bağlantı sağlığı kontrolü
+        $middleware->appendToGroup('web', \App\Http\Middleware\RedisHealthCheckMiddleware::class);
+        
+        // 3. DİL - Tenant'tan HEMEN sonra (Session'dan ÖNCE çalışmalı) - admin hariç
         // SiteSetLocaleMiddleware web grubundan kaldırıldı, sadece belirli route'larda kullanılacak
         
         // 4. TEMA - Dil'den sonra
@@ -75,6 +79,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.tenant.select' => \App\Http\Middleware\AdminTenantSelection::class,
             'database.pool' => \App\Http\Middleware\DatabasePoolMiddleware::class,
             'tenant.rate.limit' => \Modules\TenantManagement\App\Http\Middleware\TenantRateLimitMiddleware::class,
+            'auto.queue.health' => \App\Http\Middleware\AutoQueueHealthCheck::class, // 🚀 OTOMATIK QUEUE HEALTH CHECK
         ]);
                 
         // Admin middleware grubu
@@ -84,6 +89,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.access',
             'admin.nocache', // MUTLAK CACHE ENGELLEMESİ
             'locale.admin',
+            'auto.queue.health', // 🚀 OTOMATIK QUEUE HEALTH CHECK
         ]);
         
         // API middleware grubu

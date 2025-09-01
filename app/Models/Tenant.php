@@ -24,17 +24,11 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'central' => 'boolean',
         'data' => 'array',
         'theme_id' => 'integer',
-        'default_ai_provider_id' => 'integer',
-        'ai_settings' => 'array',
-        'ai_tokens_balance' => 'integer',
-        'ai_credits_balance' => 'decimal:4',
-        'ai_credits_used_this_month' => 'decimal:4',
-        'ai_monthly_credit_limit' => 'decimal:4',
-        'ai_tokens_used_this_month' => 'integer',
         'ai_monthly_token_limit' => 'integer',
-        'ai_enabled' => 'boolean',
-        'ai_monthly_reset_at' => 'datetime',
         'ai_last_used_at' => 'datetime',
+        'tenant_ai_provider_id' => 'integer',
+        'tenant_ai_provider_model_id' => 'integer',
+        'ai_credits_balance' => 'float',
     ];
     
     public function getActivitylogOptions(): LogOptions
@@ -123,168 +117,132 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     }
 
     /**
-     * Default AI Provider relationship
+     * AI Provider relationship
      */
-    public function defaultAiProvider()
+    public function aiProvider()
     {
-        return $this->belongsTo(\Modules\AI\App\Models\AIProvider::class, 'default_ai_provider_id');
+        return $this->belongsTo(\Modules\AI\App\Models\AIProvider::class, 'tenant_ai_provider_id');
     }
 
     /**
-     * Get default AI model for this tenant
+     * AI Provider Model relationship
+     */
+    public function aiProviderModel()
+    {
+        return $this->belongsTo(\Modules\AI\App\Models\AIProviderModel::class, 'tenant_ai_provider_model_id');
+    }
+
+    /**
+     * Get effective AI provider (Hierarchy: Tenant -> Global Default)
+     */
+    public function getEffectiveAiProvider()
+    {
+        // 1. Tenant'ın kendi provider'ı varsa
+        if ($this->tenant_ai_provider_id && $this->aiProvider && $this->aiProvider->is_active) {
+            return $this->aiProvider;
+        }
+        
+        // 2. Global varsayılan provider
+        return \Modules\AI\App\Models\AIProvider::where('is_default', true)
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
+     * Get effective AI model (Hierarchy: Tenant Model -> Tenant Provider Default -> Global)
+     */
+    public function getEffectiveAiModel()
+    {
+        // 1. Tenant'ın belirttiği specific model
+        if ($this->tenant_ai_provider_model_id && $this->aiProviderModel && $this->aiProviderModel->is_active) {
+            return $this->aiProviderModel;
+        }
+        
+        // 2. Tenant'ın provider'ının varsayılan modeli
+        $provider = $this->getEffectiveAiProvider();
+        if ($provider) {
+            $model = \Modules\AI\App\Models\AIProviderModel::where('provider_id', $provider->id)
+                ->where('is_default', true)
+                ->where('is_active', true)
+                ->orderBy('sort_order', 'desc')
+                ->first();
+                
+            if ($model) {
+                return $model;
+            }
+        }
+        
+        // 3. Global varsayılan model
+        return \Modules\AI\App\Models\AIProviderModel::getDefaultModel();
+    }
+
+    /**
+     * Backward compatibility - eski string provider method
+     */
+    public function getDefaultAiProvider()
+    {
+        $provider = $this->getEffectiveAiProvider();
+        return $provider ? $provider->name : null;
+    }
+
+    /**
+     * Backward compatibility - eski string model method
      */
     public function getDefaultAiModel()
     {
-        $data = $this->data ?? [];
-        return $data['default_ai_model'] ?? null;
+        $model = $this->getEffectiveAiModel();
+        return $model ? $model->model_name : null;
     }
 
     /**
-     * Set default AI model for this tenant
+     * Set AI provider by name (for backward compatibility)
      */
-    public function setDefaultAiModel($model)
+    public function setDefaultAiProvider($providerName)
     {
-        $data = $this->data ?? [];
-        $data['default_ai_model'] = $model;
-        $this->data = $data;
+        $provider = \Modules\AI\App\Models\AIProvider::where('name', $providerName)->first();
+        if ($provider) {
+            $this->tenant_ai_provider_id = $provider->id;
+        }
         return $this;
     }
 
     /**
-     * Check if tenant has enough AI tokens
+     * Set AI model by name (for backward compatibility)
      */
-    public function hasEnoughTokens(int $tokensNeeded): bool
+    public function setDefaultAiModel($modelName)
     {
-        return $this->ai_enabled && $this->real_token_balance >= $tokensNeeded;
+        $provider = $this->getEffectiveAiProvider();
+        if ($provider) {
+            $model = \Modules\AI\App\Models\AIProviderModel::where('provider_id', $provider->id)
+                ->where('model_name', $modelName)
+                ->first();
+            if ($model) {
+                $this->tenant_ai_provider_model_id = $model->id;
+            }
+        }
+        return $this;
     }
 
     /**
-     * Use AI tokens
+     * Check if tenant has enough AI credits
      */
-    public function useTokens(int $tokensUsed, string $usageType = 'chat', ?string $description = null, ?string $referenceId = null): bool
+    public function hasEnoughCredits(float $creditsNeeded): bool
     {
-        if (!$this->hasEnoughTokens($tokensUsed)) {
+        return $this->ai_credits_balance >= $creditsNeeded;
+    }
+
+    /**
+     * Use AI credits
+     */
+    public function useCredits(float $creditsUsed): bool
+    {
+        if (!$this->hasEnoughCredits($creditsUsed)) {
             return false;
         }
 
-        // Update token balance
-        $this->decrement('ai_tokens_balance', $tokensUsed);
-        $this->increment('ai_tokens_used_this_month', $tokensUsed);
+        $this->decrement('ai_credits_balance', $creditsUsed);
         $this->update(['ai_last_used_at' => now()]);
 
-        // Log usage
-        \Modules\AI\App\Models\AITokenUsage::create([
-            'tenant_id' => $this->id,
-            'tokens_used' => $tokensUsed,
-            'usage_type' => $usageType,
-            'description' => $description,
-            'reference_id' => $referenceId,
-            'used_at' => now()
-        ]);
-
         return true;
-    }
-
-    /**
-     * Add AI tokens to balance
-     */
-    public function addTokens(int $tokensToAdd, ?string $reason = null): bool
-    {
-        $this->increment('ai_tokens_balance', $tokensToAdd);
-        
-        return true;
-    }
-
-    /**
-     * Reset monthly token usage
-     */
-    public function resetMonthlyTokenUsage(): bool
-    {
-        return $this->update([
-            'ai_tokens_used_this_month' => 0,
-            'ai_monthly_reset_at' => now()
-        ]);
-    }
-
-    /**
-     * Get real token balance based on purchases minus usage
-     */
-    public function getRealTokenBalanceAttribute(): int
-    {
-        $totalPurchased = $this->aiTokenPurchases()
-            ->where('status', 'completed')
-            ->sum('token_amount') ?? 0;
-
-        $totalUsed = \Modules\AI\App\Models\AICreditUsage::where('tenant_id', $this->id)
-            ->sum('input_tokens') ?? 0;
-
-        return max(0, $totalPurchased - $totalUsed);
-    }
-
-    /**
-     * Calculate actual token balance from purchases and usage
-     */
-    public function calculateRealTokenBalance(): int
-    {
-        return $this->real_token_balance;
-    }
-
-    /**
-     * Get remaining tokens for this month
-     */
-    public function getRemainingMonthlyTokensAttribute(): int
-    {
-        if ($this->ai_monthly_token_limit <= 0) {
-            return $this->real_token_balance;
-        }
-
-        $usedThisMonth = $this->ai_tokens_used_this_month ?? 0;
-        $remaining = $this->ai_monthly_token_limit - $usedThisMonth;
-        
-        return max(0, min($remaining, $this->real_token_balance));
-    }
-
-    /**
-     * Check if monthly limit is exceeded
-     */
-    public function isMonthlyLimitExceeded(): bool
-    {
-        if ($this->ai_monthly_token_limit <= 0) {
-            return false; // No limit set
-        }
-
-        return $this->ai_tokens_used_this_month >= $this->ai_monthly_token_limit;
-    }
-
-    /**
-     * Decrement AI credits from balance
-     */
-    public function decrementCredit(float $amount): bool
-    {
-        if ($this->ai_credits_balance < $amount) {
-            return false; // Insufficient credits
-        }
-
-        $this->ai_credits_balance = max(0, $this->ai_credits_balance - $amount);
-        $this->ai_credits_used_this_month = $this->ai_credits_used_this_month + $amount;
-        $this->ai_last_used_at = now();
-        
-        return $this->save();
-    }
-
-    /**
-     * Get current AI credits balance
-     */
-    public function getCreditBalance(): float
-    {
-        return (float) $this->ai_credits_balance;
-    }
-
-    /**
-     * Check if tenant has enough credits
-     */
-    public function hasEnoughCredits(float $amount): bool
-    {
-        return $this->ai_credits_balance >= $amount;
     }
 }

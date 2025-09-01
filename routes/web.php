@@ -17,6 +17,13 @@ Route::get('/test', function () {
     return 'Laravel is working!';
 });
 
+
+// Health check endpoint for Docker containers
+Route::get('/health', [App\Http\Controllers\HealthController::class, 'check'])->name('health.check');
+
+// System health check endpoint for AI translation system
+Route::get('/health/system', [App\Http\Controllers\HealthController::class, 'systemHealth'])->name('health.system');
+
 // Test SEO component
 Route::get('/test-seo', function() {
     return view('test-seo');

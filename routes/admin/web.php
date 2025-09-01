@@ -6,17 +6,28 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Middleware\InitializeTenancy;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
 
-// Tenant dilleri API endpoint'i - Basitleştirilmiş auth
+// System health check endpoint - AI çeviri için
+Route::middleware(['web', 'auth', 'tenant'])->get('/admin/system/health', [App\Http\Controllers\HealthController::class, 'systemHealth'])->name('admin.system.health');
+
+// 🚀 GERÇEK ZAMANLI PROGRESS TRACKING API
+Route::middleware(['web', 'auth', 'tenant'])->post('/admin/api/translation-progress', [App\Http\Controllers\Admin\TranslationProgressController::class, 'checkProgress'])->name('admin.translation.progress');
+
+// Laravel log temizleme API (admin only)
+Route::middleware(['web', 'auth', 'tenant'])->post('/admin/api/clear-log', [App\Http\Controllers\Admin\TranslationProgressController::class, 'clearLog'])->name('admin.clear.log');
+
+// Tenant dilleri API endpoint'i - AI Uyarı Sistemi ile Güçlendirildi
 Route::middleware(['web', 'auth', 'tenant'])->get('/admin/api/tenant-languages', function () {
     try {
-        $languages = TenantLanguage::where('is_active', true)
+        // GÜNCELLEME: AI uyarı sistemi için is_main_language bilgisi de dahil edildi
+        $languages = TenantLanguage::where('is_visible', true)
             ->orderBy('sort_order')
-            ->get(['code', 'name', 'flag'])
+            ->get(['code', 'name', 'flag_icon', 'is_main_language'])
             ->map(function ($language) {
                 return [
                     'code' => $language->code,
                     'name' => $language->name,
-                    'flag' => $language->flag ?? getFlagForLanguage($language->code)
+                    'flag' => $language->flag_icon ?? getFlagForLanguage($language->code),
+                    'is_main_language' => (bool) $language->is_main_language  // AI uyarı sistemi için
                 ];
             })
             ->toArray();
@@ -169,19 +180,29 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         Route::post('/send-message', [\Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController::class, 'sendMessage'])->name('send-message');
     });
     
+    // Translation routes - Background processing for long-running translations
+    Route::prefix('translation')->name('translation.')->group(function () {
+        Route::post('/translate-page-async', [\App\Http\Controllers\Admin\TranslationController::class, 'translatePageAsync'])->name('page.async');
+        Route::get('/status', [\App\Http\Controllers\Admin\TranslationController::class, 'checkTranslationStatus'])->name('status');
+        Route::post('/instant', [\App\Http\Controllers\Admin\TranslationController::class, 'translateInstant'])->name('instant');
+    });
+    
     // API endpoints for AI Translation Modal
     Route::get('/api/tenant-languages', function () {
         try {
-            $languages = TenantLanguage::where('is_active', true)
+            // KAYNAK DİL İÇİN: TÜM görünür diller (ana dil dahil)
+            $languages = TenantLanguage::where('is_visible', true)
+                ->where('is_active', true)
                 ->orderBy('sort_order')
-                ->select('code', 'name', 'native_name')
+                ->select('code', 'name', 'native_name', 'flag_icon', 'is_main_language')
                 ->get()
                 ->map(function ($lang) {
                     return [
                         'code' => $lang->code,
                         'name' => $lang->name,
                         'native_name' => $lang->native_name,
-                        'flag' => getFlagForLanguage($lang->code)
+                        'flag' => $lang->flag_icon ?? getFlagForLanguage($lang->code),
+                        'is_main_language' => (bool) $lang->is_main_language
                     ];
                 });
             
@@ -495,6 +516,13 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
 
 
     // AI Token Management routes kaldırıldı - AI modülündeki routes/admin.php kullanılıyor
+    
+    // System status endpoints for modal auto cleanup
+    Route::prefix('system')->name('system.')->group(function () {
+        Route::get('/queue-status', [App\Http\Controllers\Admin\SystemController::class, 'queueStatus'])->name('queue-status');
+        Route::get('/health', [App\Http\Controllers\Admin\SystemController::class, 'healthCheck'])->name('health');
+    });
+    
 });
 
 // Simple Debug Routes - NEW (Basit ve etkili debug sistemi)
@@ -566,3 +594,24 @@ Route::middleware(['web', 'tenant'])->get('/admin/api/entity-mapping', function 
         ]);
     }
 });
+
+// ALTERNATIVE TRANSLATION STATUS - Livewire bypass  
+Route::middleware(['web', 'auth', 'tenant'])->group(function () {
+    Route::get('/admin/translation/progress', [App\Http\Controllers\TranslationStatusController::class, 'checkProgress']);
+    Route::post('/admin/translation/progress', [App\Http\Controllers\TranslationStatusController::class, 'updateProgress']);
+    
+    // JavaScript için API endpoint
+    Route::post('/admin/api/translation-status', [App\Http\Controllers\TranslationStatusController::class, 'checkProgress']);
+});
+
+
+// MODAL TEST ROUTES - AI çeviri modallarının test sayfaları (Page module pattern)
+Route::middleware(["admin", "tenant"])->prefix("admin/page/modal-test")->name("admin.page.modal.test.")->group(function () {
+    Route::get("/1", [App\Http\Controllers\Admin\ModalTestController::class, "test1"])->name("test1");
+    Route::get("/2", [App\Http\Controllers\Admin\ModalTestController::class, "test2"])->name("test2");
+    Route::get("/3", [App\Http\Controllers\Admin\ModalTestController::class, "test3"])->name("test3");
+    Route::get("/4", [App\Http\Controllers\Admin\ModalTestController::class, "test4"])->name("test4");
+    Route::get("/5", [App\Http\Controllers\Admin\ModalTestController::class, "test5"])->name("test5");
+});
+
+

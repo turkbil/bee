@@ -16,40 +16,38 @@ class CreateTenantsTable extends Migration
     public function up(): void
     {
         Schema::create('tenants', function (Blueprint $table) {
+            // Ana Alanlar
             $table->id();
             $table->string('title');
             $table->string('tenancy_db_name')->unique();
-            $table->boolean('is_active')->default(true)->index();
+            $table->boolean('is_active')->default(true);
             $table->boolean('central')->default(false);
-            $table->unsignedBigInteger('theme_id')->default(1)->index();
-            $table->string('admin_default_locale', 10)->default('tr'); // Admin panel varsayılan dili
-            $table->string('tenant_default_locale', 10)->default('tr'); // Tenant site varsayılan dili
-            $table->foreign('theme_id')->references('theme_id')->on('themes');
+            
+            // Yetkili Bilgileri (Kritik Alanlar)
+            $table->string('fullname')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            
+            // Yapılandırma
+            $table->unsignedBigInteger('theme_id')->default(1);
+            $table->string('admin_default_locale', 10)->default('tr');
+            $table->string('tenant_default_locale', 10)->default('tr');
             $table->json('data')->nullable();
             
-            // AI Token Sistemi
-            $table->unsignedInteger('ai_tokens_balance')->default(0); // Mevcut token bakiyesi
-            $table->unsignedInteger('ai_tokens_used_this_month')->default(0); // Bu ay kullanılan tokenlar
-            $table->unsignedInteger('ai_monthly_token_limit')->default(0); // Aylık token limiti
-            $table->boolean('ai_enabled')->default(false); // AI kullanımı aktif mi?
-            $table->timestamp('ai_monthly_reset_at')->nullable(); // Son aylık sıfırlama tarihi
-            $table->timestamp('ai_last_used_at')->nullable(); // Son AI kullanım tarihi
+            // AI Sistemi (Basit - Foreign Key Yok)
+            $table->unsignedInteger('ai_credits_balance')->default(0);
+            $table->timestamp('ai_last_used_at')->nullable();
+            $table->unsignedBigInteger('tenant_ai_provider_id')->nullable();
+            $table->unsignedBigInteger('tenant_ai_provider_model_id')->nullable();
             
             $table->timestamps();
             
-            // İlave indeksler eklendi
-            $table->index('title');
-            $table->index('created_at');
-            $table->index('updated_at');
-            $table->index('admin_default_locale');
-            $table->index('tenant_default_locale');
-            $table->index(['ai_enabled']);
-            $table->index(['ai_monthly_reset_at']);
-            $table->index(['ai_last_used_at']);
+            // Foreign Keys  
+            $table->foreign('theme_id')->references('theme_id')->on('themes');
             
-            // Composite index'ler - Performans optimizasyonu
-            $table->index(['is_active', 'central'], 'tenants_active_central_idx');
-            $table->index(['theme_id', 'is_active'], 'tenants_theme_active_idx');
+            // Performans İndeksleri
+            $table->index(['is_active', 'central']);
+            $table->index(['theme_id', 'is_active']);
         });
     }
 

@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Ayar Grupları');
+@endphp
 @include('settingmanagement::helper')
 <div>
     <div class="card">

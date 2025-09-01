@@ -508,10 +508,10 @@
                 <i class="icon fas fa-power-off"></i>
             </div>
             
-            <h1>Sistem Şu Anda Erişilemez</h1>
+            <h1>Erişim Engellendi</h1>
             <div class="divider"></div>
             
-            <p>Bu alana şu anda erişim sağlanamamaktadır. Sistem geçici olarak devre dışı bırakılmıştır. En kısa sürede tekrar hizmet vermeye başlayacaktır.</p>
+            <p>Bu siteye şu anda erişim yoktur. Lütfen daha sonra tekrar deneyiniz.</p>
             
             <div class="status">503 Service Unavailable</div>
             
@@ -521,7 +521,7 @@
             </a>
             
             <footer>
-                &copy; {{ date('Y') }} - {{ __('LanguageManagement::front.all_rights_reserved') }}
+                &copy; {{ date('Y') }} - Tüm hakları saklıdır
             </footer>
         </div>
     </div>

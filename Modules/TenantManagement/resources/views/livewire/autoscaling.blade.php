@@ -497,7 +497,7 @@ document.addEventListener('livewire:init', function () {
     
     // Toast notifications
     Livewire.on('toast', (event) => {
-        console.log('Toast:', event);
+        // Toast event received
     });
     
     // İlk yüklemede auto refresh başlat

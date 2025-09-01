@@ -97,6 +97,30 @@
                     </a>
                     @endhasmoduleaccess
                     
+                    {{-- Queue & Job Monitoring --}}
+                    <h6 class="dropdown-menu-header card-header-light">
+                        <span class="dropdown-header">{{ __('tenantmanagement::admin.queue_monitoring') }}</span>
+                    </h6>
+                    
+                    @hasmoduleaccess('tenantmanagement', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.tenantmanagement.queue-monitoring') }}">
+                        <i class="icon-menu fas fa-tasks"></i>{{ __('tenantmanagement::admin.queue_monitoring') }}
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('tenantmanagement', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.tenantmanagement.failed-jobs') }}">
+                        <i class="icon-menu fas fa-exclamation-triangle"></i>{{ __('tenantmanagement::admin.failed_jobs') }}
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('tenantmanagement', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.tenantmanagement.job-statistics') }}">
+                        <i class="icon-menu fas fa-chart-bar"></i>{{ __('tenantmanagement::admin.job_statistics') }}
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    
                 </div>
             </div>
 @if(request()->routeIs('admin.tenantmanagement.index'))

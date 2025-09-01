@@ -90,10 +90,19 @@ if (!function_exists('ai_use_credits')) {
                 'used_at' => $metadata['used_at'] ?? now()
             ]);
             
-            // Tenant credit balance güncelle (eğer böyle bir alan varsa)
-            if (method_exists($tenant, 'decrementCredit')) {
-                $tenant->decrementCredit($creditAmount);
-            }
+            // 💰 KRİTİK: Tenant tablosundaki ai_credits_balance kolonunu direkt güncelle
+            $currentBalance = $tenant->ai_credits_balance ?? 0;
+            $newBalance = max(0, $currentBalance - $creditAmount);
+            
+            $tenant->update(['ai_credits_balance' => $newBalance]);
+            
+            Log::info('💰 TENANT BALANCE GÜNCELLENDİ', [
+                'tenant_id' => $tenant->id,
+                'previous_balance' => $currentBalance,
+                'credits_deducted' => $creditAmount,
+                'new_balance' => $newBalance,
+                'update_method' => 'direct_column_update'
+            ]);
             
             Log::info('✅ AI Credits used successfully', [
                 'tenant_id' => $tenantId,
@@ -199,20 +208,8 @@ if (!function_exists('ai_get_credit_balance')) {
                 return 0.0;
             }
             
-            // DOĞRU HESAPLAMA: Satın alınan - kullanılan (gerçek zamanlı)
-            $totalPurchased = ai_get_total_credits_purchased($tenantId);
-            $totalUsed = ai_get_total_credits_used($tenantId);
-            $realBalance = max(0, $totalPurchased - $totalUsed);
-            
-            // Debug log
-            Log::debug('Credit balance calculation', [
-                'tenant_id' => $tenantId,
-                'total_purchased' => $totalPurchased,
-                'total_used' => $totalUsed,
-                'real_balance' => $realBalance
-            ]);
-            
-            return $realBalance;
+            // DİREKT TENANTS TABLOSUNDAN ÇEK - HESAPLAMA YOK
+            return (float) $tenant->ai_credits_balance;
             
         } catch (\Exception $e) {
             Log::error('ai_get_credit_balance error', [

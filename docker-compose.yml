@@ -390,9 +390,9 @@ services:
       timeout: 10s
       retries: 3
 
-  # Laravel Cron Scheduler (Supercronic - Production Ready)
+  # Laravel Cron Scheduler (Alpine-based with crond)
   scheduler:
-    image: supercronic/supercronic:latest
+    image: alpine:latest
     container_name: laravel-scheduler
     restart: unless-stopped
     volumes:
@@ -401,8 +401,11 @@ services:
     environment:
       DB_HOST: mysql-master
       REDIS_HOST: redis-cluster
-      SUPERCRONIC_OPTIONS: "-debug"
-    command: ["/usr/local/bin/supercronic", "/etc/cron.d/laravel-cron"]
+    command: >
+      sh -c "
+        apk add --no-cache curl php81 php81-cli &&
+        crond -f -l 2
+      "
     depends_on:
       mysql-master:
         condition: service_healthy
@@ -720,14 +723,14 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/sessions
+      device: ${PWD}/../docker-data/sessions
       o: bind
 
   cache_data:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/cache
+      device: ${PWD}/../docker-data/cache
       o: bind
 
   # Database Volumes
@@ -735,14 +738,14 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/mysql-master
+      device: ${PWD}/../docker-data/mysql-master
       o: bind
       
   mysql_slave_data:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/mysql-slave
+      device: ${PWD}/../docker-data/mysql-slave
       o: bind
 
   # Redis Volumes
@@ -750,35 +753,35 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/redis-cluster
+      device: ${PWD}/../docker-data/redis-cluster
       o: bind
 
   redis_slave_1_data:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/redis-slave-1
+      device: ${PWD}/../docker-data/redis-slave-1
       o: bind
 
   redis_slave_2_data:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/redis-slave-2
+      device: ${PWD}/../docker-data/redis-slave-2
       o: bind
       
   mysql_slave_2_data:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/mysql-slave-2
+      device: ${PWD}/../docker-data/mysql-slave-2
       o: bind
       
   backup_data:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/backups
+      device: ${PWD}/../docker-data/backups
       o: bind
 
   # Monitoring Volumes
@@ -786,14 +789,14 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/prometheus
+      device: ${PWD}/../docker-data/prometheus
       o: bind
       
   grafana_data:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/grafana
+      device: ${PWD}/../docker-data/grafana
       o: bind
 
   # SSL/TLS Volumes
@@ -801,26 +804,26 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/ssl/certs
+      device: ${PWD}/../docker-data/ssl/certs
       o: bind
       
   vhost.d:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/ssl/vhost.d
+      device: ${PWD}/../docker-data/ssl/vhost.d
       o: bind
 
   html:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/ssl/html
+      device: ${PWD}/../docker-data/ssl/html
       o: bind
 
   acme:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/docker/volumes/ssl/acme
+      device: ${PWD}/../docker-data/ssl/acme
       o: bind

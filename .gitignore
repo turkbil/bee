@@ -45,3 +45,9 @@ Thumbs.db
 *.log
 *.bak
 *.swp
+
+# Readme klasörü - yerel dokümantasyon
+/readme
+
+# Docker volumes - veritabanı ve cache dosyaları
+/docker/volumes

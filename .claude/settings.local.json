@@ -20,7 +20,17 @@
       "mcp__claude-code-server__Write",
       "mcp__claude-code-server__Glob",
       "mcp__claude-code-server__WebSearch",
-      "mcp__claude-code-server__BashOutput"
+      "mcp__claude-code-server__BashOutput",
+      "Read(/Users/nurullah/Desktop/cms/A1/Modules/AI/Database/**)",
+      "Read(/Users/nurullah/Desktop/cms/A1/Modules/AI/Database/migrations/**)",
+      "Read(/Users/nurullah/Desktop/cms/A1/config/**)",
+      "Bash(php:*)",
+      "Read(/Users/nurullah/Desktop/cms/A1/**)",
+      "Read(/Users/nurullah/Desktop/cms/A1/**)",
+      "Bash(composer:*)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": [],

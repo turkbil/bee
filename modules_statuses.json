@@ -1,0 +1,16 @@
+{
+    "Page": true,
+    "Portfolio": true,
+    "UserManagement": true,
+    "ModuleManagement": true,
+    "SettingManagement": true,
+    "TenantManagement": true,
+    "WidgetManagement": true,
+    "ThemeManagement": true,
+    "Studio": true,
+    "Announcement": true,
+    "AI": true,
+    "LanguageManagement": true,
+    "SeoManagement": true,
+    "MenuManagement": true
+}

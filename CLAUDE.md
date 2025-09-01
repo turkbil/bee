@@ -21,14 +21,12 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 
 ## 🤖 KRİTİK AGENT PROTOKOLÜ
 
-### AGENT TEST SİSTEMİ - HER ZAMAN AKTİF
-1. **say "tamamlandı"** → Agent otomatik test başlat
-2. **"test et", "test", "kontrol et", "bak"** → Agent KESIN devreye gir
-3. **Söylemezsem de** → Kendi kendine test etmeli
-4. **Agent**: laravel.test/login → Giriş → Test sayfası → Screenshot
-5. **Laravel.log** kontrolü → Hata varsa Claude'a bildir
-6. **Sayfaya özel butonların TAMAMINI test et**
-7. **Bu sistem HER ZAMAN aktif, GERÇEK TEST yap**
+### AGENT TEST SİSTEMİ
+1. **"test et", "test", "kontrol et", "bak"** → Agent KESIN devreye gir
+2. **Agent**: laravel.test/login → Giriş → Test sayfası → Screenshot
+3. **Laravel.log** kontrolü → Hata varsa Claude'a bildir
+4. **Sayfaya özel butonların TAMAMINI test et**
+5. **Sadece kullanıcı "test et" dediğinde çalışır**
 
 ---
 

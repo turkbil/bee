@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', $portfolioId ? 'Portföy Düzenleme' : 'Yeni Portföy Ekleme');
+@endphp
+
 <div wire:key="portfolio-manage-component" wire:id="portfolio-manage-component">
     {{-- Helper dosyası --}}
     @include('portfolio::admin.helper')

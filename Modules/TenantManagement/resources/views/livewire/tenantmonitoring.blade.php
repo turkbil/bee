@@ -1,6 +1,10 @@
 {{-- Modules/TenantManagement/resources/views/livewire/tenantmonitoring.blade.php --}}
 <div wire:id="{{ $this->getId() }}" class="tenantmonitoring-component-wrapper">
     <div class="card">
+@php
+    View::share('pretitle', 'Kiracı İzleme');
+@endphp
+
         @include('tenantmanagement::helper')
         <div class="card-body p-0">
             <!-- Header Bölümü -->

@@ -11,11 +11,12 @@ use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Spatie\Permission\Models\Role;
+use Modules\WidgetManagement\app\Http\Livewire\Traits\WithBulkActionsQueue;
 
 #[Layout('admin.layout')]
 class WidgetComponent extends Component
 {
-    use WithPagination;
+    use WithPagination, WithBulkActionsQueue;
     
     #[Url]
     public $search = '';
@@ -31,6 +32,21 @@ class WidgetComponent extends Component
     
     #[Url]
     public $perPage = 100;
+
+    protected function getListeners()
+    {
+        return array_merge([
+            'refreshComponent' => '$refresh',
+            'bulkProgressUpdate' => 'refreshBulkProgress',
+            'bulkJobCompleted' => 'onBulkJobCompleted',
+            'closeBulkModal' => 'closeBulkModal'
+        ]);
+    }
+
+    protected function getModelClass()
+    {
+        return Widget::class;
+    }
     
     public function updatedSearch()
     {

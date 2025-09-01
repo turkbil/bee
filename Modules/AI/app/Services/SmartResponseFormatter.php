@@ -488,8 +488,8 @@ class SmartResponseFormatter
         // Liste formatını kaldır ama içeriği koru
         $enhanced = $this->removeListing($content);
         
-        // Emoji ekle (yaratıcı yazılarda uygun)
-        $enhanced = $this->addCreativeEmojis($enhanced);
+        // DISABLED: Emoji ekle (çeviri sorunları nedeniyle devre dışı)
+        // $enhanced = $this->addCreativeEmojis($enhanced);
         
         return $enhanced;
     }
@@ -507,11 +507,14 @@ class SmartResponseFormatter
             'tavsiye' => '💫'
         ];
         
+        // DISABLED: Otomatik emoji ekleme çeviri sistemlerini bozuyor
+        /*
         foreach ($emojiMap as $keyword => $emoji) {
             $content = preg_replace("/\b{$keyword}\b/ui", "{$emoji} $keyword", $content);
         }
+        */
         
-        return $content;
+        return $content; // İçeriği değiştirmeden döndür
     }
 
     /**

@@ -78,4 +78,9 @@ return [
     'version_placeholder' => 'Enter version...',
     'view_detail' => 'View Detail',
     'widget_modules' => 'Widget Modules',
+    
+    // Module Slug Settings
+    'module_name' => 'Module Name',
+    'module_name_info' => 'The name of the module used in URLs and system references',
+    'module_name_used_in' => 'Module name is used in',
 ];

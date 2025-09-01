@@ -50,7 +50,6 @@ class ModulePermissionMiddleware
             // ID yoksa, bu bir create işlemidir
             if ($id === null || $id === '') {
                 $permissionType = 'create';
-                Log::info("Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.");
             }
         }
         

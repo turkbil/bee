@@ -4,9 +4,10 @@ namespace Modules\Page\App\Models;
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
+use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class Page extends BaseModel
+class Page extends BaseModel implements TranslatableEntity
 {
     use Sluggable, HasTranslations, HasSeo;
 
@@ -191,6 +192,54 @@ class Page extends BaseModel
         }
         
         return $this->seoSetting;
+    }
+
+    /**
+     * 🌍 UNIVERSAL TRANSLATION INTERFACE METHODS
+     * TranslatableEntity interface implementation
+     */
+
+    /**
+     * Çevrilebilir alanları döndür
+     */
+    public function getTranslatableFields(): array
+    {
+        return [
+            'title' => 'text',  // Basit metin çevirisi
+            'body' => 'html',   // HTML korunarak çeviri
+            'slug' => 'auto'    // Otomatik oluştur (title'dan)
+        ];
+    }
+
+    /**
+     * SEO desteği var mı?
+     */
+    public function hasSeoSettings(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Çeviri sonrası ek işlemler
+     */
+    public function afterTranslation(string $targetLanguage, array $translatedData): void
+    {
+        // Page modülü için özel işlemler burada yapılabilir
+        // Örneğin: Cache temizleme, sitemap güncelleme vb.
+        
+        \Log::info("Page çevirisi tamamlandı", [
+            'page_id' => $this->page_id,
+            'target_language' => $targetLanguage,
+            'translated_fields' => array_keys($translatedData)
+        ]);
+    }
+
+    /**
+     * Primary key field adı
+     */
+    public function getPrimaryKeyName(): string
+    {
+        return 'page_id';
     }
     
 }

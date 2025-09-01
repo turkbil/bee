@@ -40,6 +40,15 @@ return new class extends Migration
             $table->string('emoji', 10)->nullable(); // 📝, 💻, ✍️
             $table->string('icon', 50)->nullable(); // FontAwesome class: "fas fa-edit"
             
+            // ADD columns from 2025_08_10_200000_add_v3_columns_to_ai_features_table.php
+            $table->string('module_type', 50)->nullable()->comment('blog, page, email, seo, translation');
+            $table->string('category', 100)->nullable()->comment('content_generation, optimization, translation');
+            $table->json('supported_modules')->nullable()->comment('[\"page\", \"blog\", \"portfolio\"]');
+            $table->json('context_rules')->nullable()->comment('Module ve context bazlı kurallar');
+            $table->boolean('template_support')->default(false);
+            $table->boolean('bulk_support')->default(false);
+            $table->boolean('streaming_support')->default(false);
+            
             // Kategori artık sadece ai_feature_categories tablosundan alınacak
             
             // Helper function name ve detayları
@@ -79,6 +88,7 @@ return new class extends Migration
             $table->boolean('is_system')->default(false); // Sistem özelliği (silinemez)
             $table->boolean('is_featured')->default(false); // Öne çıkan özellik
             $table->boolean('show_in_examples')->default(true); // Examples sayfasında göster
+            $table->boolean('show_in_prowess')->default(true)->comment('Prowess sayfasında gösterilsin mi?'); // Eklenen
             
             // UI Özellikleri
             $table->integer('sort_order')->default(0); // Sıralama

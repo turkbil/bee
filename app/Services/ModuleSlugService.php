@@ -43,7 +43,7 @@ class ModuleSlugService
         try {
             $cacheKey = "module_name_{$moduleName}_{$locale}";
             
-            $name = Cache::remember($cacheKey, 60, function() use ($moduleName, $locale) {
+            $name = Cache::remember($cacheKey, 1440, function() use ($moduleName, $locale) {
                 // ModuleTenantSetting'den title kolonunu al
                 $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
                 
@@ -80,7 +80,6 @@ class ModuleSlugService
      */
     public static function getDefaultModuleName(string $moduleName, string $locale): string
     {
-        \Log::debug("ModuleSlugService::getDefaultModuleName called", ['module' => $moduleName, 'locale' => $locale]);
         try {
             // Önce modules tablosundan display_name'i al
             if (\Schema::hasTable('modules')) {
@@ -137,7 +136,7 @@ class ModuleSlugService
             // MultiLang ayarlarından al
             $cacheKey = "module_multilang_slug_{$moduleName}_{$slugKey}_{$locale}";
             
-            $slug = Cache::remember($cacheKey, 60, function() use ($moduleName, $slugKey, $locale) {
+            $slug = Cache::remember($cacheKey, 1440, function() use ($moduleName, $slugKey, $locale) {
                 // ModuleTenantSetting'den multiLangSlugs'ı al
                 $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
                 

@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Modules\AI\App\Services\UniversalInputAIService;
+use Modules\AI\App\Services\AIService;
 use Modules\Page\App\Models\Page;
 use Throwable;
 
@@ -37,12 +37,26 @@ class TranslatePageJob implements ShouldQueue
         public string $quality = 'balanced',
         public array $options = [],
         public string $operationId = ''
-    ) {}
+    ) {
+        // Force Redis connection ve queue
+        $this->onConnection('redis')->onQueue('tenant_isolated');
+    }
 
     public function handle(): void
     {
+        // 🚨 ULTRA DEBUG - Handle metoduna giriş
+        Log::info('🔥🔥🔥 TRANSLATEPAGEJOB HANDLE() BAŞLADI! 🔥🔥🔥', [
+            'pageIds' => $this->pageIds,
+            'sourceLanguage' => $this->sourceLanguage,
+            'targetLanguages' => $this->targetLanguages,
+            'operationId' => $this->operationId,
+            'queue' => $this->queue ?? 'default',
+            'connection' => $this->connection ?? 'default',
+            'timestamp' => now()->toDateTimeString()
+        ]);
+        
         try {
-            $aiService = app(UniversalInputAIService::class);
+            $aiService = app(AIService::class);
             
             // İlerleme durumunu güncelle
             $this->updateProgress('processing', 0);
@@ -71,10 +85,13 @@ class TranslatePageJob implements ShouldQueue
 
                     try {
                         // Kaynak içeriği al
+                        $title = is_array($page->title) ? ($page->title[$this->sourceLanguage] ?? '') : ($page->title ?? '');
+                        $body = is_array($page->body) ? ($page->body[$this->sourceLanguage] ?? '') : ($page->body ?? '');
+                        
                         $sourceData = [
-                            'title' => $page->getTranslated('title', $this->sourceLanguage) ?? '',
-                            'body' => $page->getTranslated('body', $this->sourceLanguage) ?? '',
-                            'excerpt' => $page->getTranslated('excerpt', $this->sourceLanguage) ?? ''
+                            'title' => $title,
+                            'body' => $body,
+                            'excerpt' => ''
                         ];
 
                         // Boş içerik varsa atla
@@ -84,18 +101,30 @@ class TranslatePageJob implements ShouldQueue
                             continue;
                         }
 
-                        // AI çeviri isteği hazırla
-                        $prompt = $this->buildTranslationPrompt($sourceData, $targetLanguage);
-                        
-                        // AI çeviri feature'ını çalıştır (ID: 301 - TranslationFeatureSeeder'dan)
-                        $response = $aiService->processFeature(301, $prompt, [
-                            'quality' => $this->quality,
-                            'source_language' => $this->sourceLanguage,
-                            'target_language' => $targetLanguage,
-                            'preserve_formatting' => $this->options['preserve_formatting'] ?? true,
-                            'preserve_seo' => $this->options['preserve_seo'] ?? true,
-                            'cultural_adaptation' => $this->options['cultural_adaptation'] ?? false
-                        ]);
+                        // Title çeviri
+                        $translatedTitle = $aiService->translateText(
+                            $sourceData['title'],
+                            $this->sourceLanguage,
+                            $targetLanguage,
+                            ['context' => 'page_title']
+                        );
+
+                        // Body HTML çeviri
+                        $translatedBody = $aiService->translateHtml(
+                            $sourceData['body'],
+                            $this->sourceLanguage,
+                            $targetLanguage
+                        );
+
+                        $response = [
+                            'success' => true,
+                            'response' => json_encode([
+                                'title' => $translatedTitle,
+                                'body' => $translatedBody,
+                                'excerpt' => !empty($sourceData['excerpt']) ? $aiService->translateText($sourceData['excerpt'], $this->sourceLanguage, $targetLanguage, 'excerpt') : ''
+                            ]),
+                            'tokens_used' => 100
+                        ];
 
                         if ($response['success'] ?? false) {
                             // Çeviri sonucunu parse et
@@ -111,6 +140,36 @@ class TranslatePageJob implements ShouldQueue
                             
                             // Sayfayı güncelle
                             $this->updatePageTranslation($page, $translatedData, $targetLanguage);
+                            
+                            // 💰 KRİTİK: Her başarılı çeviri için 1 kredi düş
+                            try {
+                                $tenantId = (string) (tenancy()->tenant?->id ?? '1'); // String olarak cast
+                                $perLanguageCost = 1.0; // Her dil = 1 kredi
+                                
+                                ai_use_credits($perLanguageCost, $tenantId, [
+                                    'usage_type' => 'translation',
+                                    'description' => "Page Translation: #{$pageId} ({$this->sourceLanguage} → {$targetLanguage})",
+                                    'entity_type' => 'page',
+                                    'entity_id' => $pageId,
+                                    'source_language' => $this->sourceLanguage,
+                                    'target_language' => $targetLanguage,
+                                    'provider_name' => 'page_translation_service',
+                                    'tokens_used' => $response['tokens_used'] ?? 0
+                                ]);
+                                
+                                Log::info('💰 KREDİ DÜŞÜRÜLDİ: PAGE ÇEVİRİ - 1 DİL = 1 KREDİ', [
+                                    'page_id' => $pageId,
+                                    'language_pair' => "{$this->sourceLanguage} → {$targetLanguage}",
+                                    'credits_deducted' => $perLanguageCost,
+                                    'tenant_id' => $tenantId
+                                ]);
+                                
+                            } catch (\Exception $e) {
+                                Log::warning('⚠️ Kredi düşürme hatası (çeviri devam ediyor)', [
+                                    'page_id' => $pageId,
+                                    'error' => $e->getMessage()
+                                ]);
+                            }
                             
                             $successCount++;
                             $totalTokensUsed += $response['tokens_used'] ?? 0;
@@ -140,6 +199,15 @@ class TranslatePageJob implements ShouldQueue
             $this->updateProgress('completed', $processedCount, $successCount, $failedCount, $totalTokensUsed);
             
             Log::info("Translation job completed. Success: {$successCount}, Failed: {$failedCount}, Tokens: {$totalTokensUsed}");
+
+            // Frontend'e completion event'ini gönder
+            event(new \Modules\Page\App\Events\TranslationCompletedEvent([
+                'sessionId' => $this->operationId,
+                'pageIds' => $this->pageIds,
+                'success' => $successCount,
+                'failed' => $failedCount,
+                'status' => 'completed'
+            ]));
 
         } catch (Throwable $e) {
             $this->updateProgress('failed', $processedCount ?? 0, $successCount ?? 0, $failedCount ?? 0, $totalTokensUsed ?? 0);

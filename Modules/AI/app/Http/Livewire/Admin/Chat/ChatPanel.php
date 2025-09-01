@@ -46,10 +46,10 @@ class ChatPanel extends Component
         $this->loadConversations();
         $this->loadPrompts();
         
-        // PERFORMANCE: Find default prompt from cached collection instead of new query
-        $defaultPrompt = collect($this->prompts)->firstWhere('is_default', true);
-        if ($defaultPrompt) {
-            $this->selectedPromptId = $defaultPrompt['id'];
+        // Varsayılan prompt'ı seç (is_default = true), yoksa ilkini al
+        if (!empty($this->prompts)) {
+            $defaultPrompt = $this->prompts->where('is_default', true)->first();
+            $this->selectedPromptId = $defaultPrompt ? $defaultPrompt->id : $this->prompts[0]->id;
         }
     }
 
@@ -80,17 +80,18 @@ class ChatPanel extends Component
     public function loadPrompts()
     {
         try {
-            // PERFORMANCE: Cache prompts with Redis for 5 minutes
-            $cacheKey = 'ai_prompts_active_' . (tenancy()->tenant?->id ?? 'central');
+            // PERFORMANCE: Cache chat prompts with Redis for 5 minutes
+            $cacheKey = 'ai_chat_prompts_' . (tenancy()->tenant?->id ?? 'central');
             $this->prompts = Cache::remember($cacheKey, 300, function() {
-                return Prompt::where('is_active', true)
-                    ->select('id', 'name', 'content', 'is_default', 'prompt_type') // Correct field names
-                    ->orderBy('is_default', 'desc')
+                return \Modules\AI\App\Models\Prompt::where('is_active', true)
+                    ->where('prompt_type', 'chat') // Sadece chat prompt'ları
+                    ->select('id', 'name', 'content', 'is_default')
+                    ->orderBy('is_default', 'desc') // Varsayılan prompt'lar önce
                     ->orderBy('name')
                     ->get();
             });
         } catch (\Exception $e) {
-            Log::error('Promptlar yüklenirken hata: ' . $e->getMessage());
+            Log::error('Chat promptları yüklenirken hata: ' . $e->getMessage());
             $this->prompts = [];
         }
     }
@@ -153,14 +154,31 @@ class ChatPanel extends Component
             $userMessageContent = $this->message;
             $this->message = '';
 
-            // AI yanıtını al (streaming)
+            // Conversation history hazırla (son 50 mesaj - DÜZELTME)
+            $conversationHistory = $this->conversation->messages()
+                ->latest() // En son mesajları al (created_at desc)
+                ->limit(100) // Son 100 mesaj - doğal sohbet için
+                ->get()
+                ->reverse() // AI için kronolojik sıraya çevir
+                ->map(function($msg) {
+                    return [
+                        'role' => $msg->role,
+                        'content' => $msg->content
+                    ];
+                })->toArray();
+
+            // AI yanıtını al (conversation history ile)
             $aiMessage = $this->conversationService->getStreamingAIResponse(
                 $this->conversation,
                 $userMessageContent,
                 function($content) {
                     $this->streamContent .= $content;
                     $this->dispatch('contentStreamed', $this->streamContent);
-                }
+                },
+                [
+                    'conversation_history' => $conversationHistory,
+                    'prompt_id' => $this->selectedPromptId
+                ]
             );
 
             $this->messages[] = $aiMessage->toArray();

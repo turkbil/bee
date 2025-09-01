@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Kullanıcı Listesi');
+@endphp
 @include('usermanagement::helper')
 <div class="card">
     <div class="card-body">

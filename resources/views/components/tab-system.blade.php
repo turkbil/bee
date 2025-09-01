@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ✅ GÜNCELLEME: Tab system component artık page manage ile uyumlu!
     const isPageManage = window.location.pathname.includes('/admin/page/manage');
     if (isPageManage) {
-        console.log('✅ Tab-system component page manage için aktif edildi');
+        // Tab-system component page manage için aktif edildi
         // Page manage sayfasında localStorage key'i özel olacak
         // storageKey zaten 'page_active_tab' olarak geliyor
     }

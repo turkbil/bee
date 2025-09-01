@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Sistem Dilleri');
+@endphp
 <div>
 @include('languagemanagement::admin.helper')
 

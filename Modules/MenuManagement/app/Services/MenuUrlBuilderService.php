@@ -33,12 +33,6 @@ readonly class MenuUrlBuilderService
     {
         $locale = $locale ?? app()->getLocale();
         
-        // Debug log
-        Log::info('MenuUrlBuilderService::buildUrl called', [
-            'urlType' => $urlType,
-            'urlData' => $urlData,
-            'locale' => $locale
-        ]);
         
         try {
             // UnifiedUrlService varsa onu kullan (en yeni sistem)
@@ -53,9 +47,6 @@ readonly class MenuUrlBuilderService
             
             // UnifiedUrlBuilder varsa onu kullan
             if ($this->unifiedUrlBuilder) {
-                Log::info('MenuUrlBuilderService: Using UnifiedUrlBuilder', [
-                    'urlType' => $urlType
-                ]);
                 return match($urlType) {
                     'internal' => $this->unifiedUrlBuilder->buildUrlForPath($urlData['url'] ?? '/', $locale),
                     'external' => $this->buildExternalUrl($urlData),
@@ -65,9 +56,6 @@ readonly class MenuUrlBuilderService
             }
             
             // Fallback: eski sistem
-            Log::info('MenuUrlBuilderService: Using legacy system', [
-                'urlType' => $urlType
-            ]);
             
             $result = match($urlType) {
                 'internal' => $this->buildInternalUrl($urlData, $locale),
@@ -75,12 +63,6 @@ readonly class MenuUrlBuilderService
                 'module' => $this->buildModuleUrl($urlData, $locale),
                 default => '#'
             };
-            
-            Log::info('MenuUrlBuilderService::buildUrl result', [
-                'urlType' => $urlType,
-                'result' => $result,
-                'urlData' => $urlData
-            ]);
             
             return $result;
         } catch (\Exception $e) {
@@ -273,13 +255,6 @@ readonly class MenuUrlBuilderService
         $id = $urlData['id'] ?? null;
         $slug = $urlData['slug'] ?? null;
         
-        Log::info('buildModuleUrl debug', [
-            'module' => $module,
-            'type' => $type,
-            'id' => $id,
-            'slug' => $slug,
-            'locale' => $locale
-        ]);
         
         if (!$module) {
             return '#';
@@ -315,25 +290,6 @@ readonly class MenuUrlBuilderService
         // ID varsa onu kullan, yoksa slug kullan
         // ID daha güvenilir çünkü dil bağımsız
         
-        Log::info('buildModuleUrl calling buildModuleActionUrl', [
-            'module' => $module,
-            'type' => $type,
-            'id' => $id,
-            'slug' => $slug,
-            'selected' => $id ?? $slug,
-            'locale' => $locale
-        ]);
-        
-        // Web Tasarım kategorisi için özel debug
-        if ($module === 'Portfolio' && $type === 'category' && $id == 1) {
-            Log::warning('WEB TASARIM DEBUG', [
-                'module' => $module,
-                'type' => $type,
-                'id' => $id,
-                'locale' => $locale,
-                'calling_buildModuleActionUrl' => true
-            ]);
-        }
         
         return $this->buildModuleActionUrl($module, $type, $id ?? $slug, $locale);
     }
@@ -852,13 +808,6 @@ readonly class MenuUrlBuilderService
                 $actionSlug = strtolower($action);
             }
             
-            logger('MenuUrlBuilderService: Module and action slugs', [
-                'module' => $module,
-                'moduleSlug' => $moduleSlug,
-                'action' => $action,
-                'actionSlug' => $actionSlug,
-                'locale' => $locale
-            ]);
             
             
             // İçerik slug'ını al
@@ -877,26 +826,6 @@ readonly class MenuUrlBuilderService
                         $contentSlug = $model->getTranslated('slug', $defaultLocale);
                     }
                     
-                    logger('MenuUrlBuilderService: Found model slug', [
-                        'module' => $module,
-                        'action' => $action,
-                        'id' => $idOrSlug,
-                        'locale' => $locale,
-                        'slug' => $contentSlug
-                    ]);
-                    
-                    // Web Tasarım debug
-                    if ($idOrSlug == 1 && $action === 'category') {
-                        Log::warning('WEB TASARIM CATEGORY FOUND', [
-                            'id' => $idOrSlug,
-                            'model_class' => get_class($model),
-                            'slug_tr' => $model->getTranslated('slug', 'tr'),
-                            'slug_en' => $model->getTranslated('slug', 'en'),
-                            'slug_ar' => $model->getTranslated('slug', 'ar'),
-                            'current_locale' => $locale,
-                            'found_slug' => $contentSlug
-                        ]);
-                    }
                 }
             } else {
                 // ID değilse, direkt slug olarak kullan
@@ -916,17 +845,6 @@ readonly class MenuUrlBuilderService
             
             $finalUrl = url($prefix . '/' . $moduleSlug . '/' . $actionSlug . '/' . ltrim($contentSlug, '/'));
             
-            // Web Tasarım final URL debug
-            if ($idOrSlug == 1 && $action === 'category') {
-                Log::warning('WEB TASARIM FINAL URL', [
-                    'prefix' => $prefix,
-                    'moduleSlug' => $moduleSlug,
-                    'actionSlug' => $actionSlug,
-                    'contentSlug' => $contentSlug,
-                    'finalUrl' => $finalUrl,
-                    'locale' => $locale
-                ]);
-            }
             
             return $finalUrl;
             
@@ -993,26 +911,12 @@ readonly class MenuUrlBuilderService
                         // Model'i bul ve döndür
                         $model = $fullClass::find($id);
                         if ($model) {
-                            logger("MenuUrlBuilderService: Found action model", [
-                                'module' => $module,
-                                'action' => $action,
-                                'class' => $fullClass,
-                                'id' => $id
-                            ]);
                             return $model;
                         }
                     }
                 }
             }
             
-            // Hiçbir model bulunamazsa loglayalım
-            logger("MenuUrlBuilderService: No action model found", [
-                'module' => $module,
-                'action' => $action,
-                'id' => $id,
-                'tried_namespaces' => $possibleNamespaces,
-                'tried_models' => $possibleModelNames
-            ]);
             
         } catch (\Exception $e) {
             logger('MenuUrlBuilderService::getModuleActionModel error: ' . $e->getMessage());

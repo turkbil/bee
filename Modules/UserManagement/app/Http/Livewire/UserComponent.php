@@ -8,11 +8,12 @@ use Livewire\WithPagination;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Livewire\Attributes\Layout;
+use Modules\UserManagement\app\Http\Livewire\Traits\WithBulkActionsQueue;
 
 #[Layout('admin.layout')]
 class UserComponent extends Component
 {
-    use WithPagination;
+    use WithPagination, WithBulkActionsQueue;
 
     #[Url]
     public $search = '';
@@ -44,6 +45,16 @@ class UserComponent extends Component
         'statusFilter' => ['except' => ''],
         'viewType' => ['except' => 'list'],
     ];
+
+    protected function getListeners()
+    {
+        return array_merge([
+            'refreshComponent' => '$refresh',
+            'bulkProgressUpdate' => 'refreshBulkProgress',
+            'bulkJobCompleted' => 'onBulkJobCompleted',
+            'closeBulkModal' => 'closeBulkModal'
+        ]);
+    }
 
     protected function getModelClass()
     {

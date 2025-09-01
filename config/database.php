@@ -181,6 +181,11 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
             'read_write_timeout' => 60,
+            'retry_after' => 100,
+            'retry_attempts' => 3,
+            'options' => [
+                'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            ],
         ],
 
         'cache' => [
@@ -191,6 +196,53 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
             'read_write_timeout' => 60,
+            'retry_after' => 100,
+            'retry_attempts' => 3,
+            'options' => [
+                'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
+            ],
+        ],
+
+        // 🔒 TENANT ISOLATED REDIS - Prevents cross-tenant queue blocking
+        'tenant_isolated' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => 2, // Separate database for tenant queues
+            'read_write_timeout' => 30, // Shorter timeout for tenant operations
+            'options' => [
+                'prefix' => env('TENANT_REDIS_PREFIX', 'tenant_default_'),
+            ],
+        ],
+
+        // ⚡ CRITICAL OPERATIONS REDIS - Ultra-fast response
+        'critical_operations' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => 3, // Dedicated database for critical ops
+            'read_write_timeout' => 10, // Ultra-fast timeout
+            'options' => [
+                'prefix' => 'critical_',
+            ],
+        ],
+
+        // 🏢 CENTRAL TENANT ISOLATED - Prevents central affecting other tenants
+        'central_isolated' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => 4, // Dedicated database for central operations
+            'read_write_timeout' => 30,
+            'options' => [
+                'prefix' => 'central_',
+            ],
         ],
     ],
 ];

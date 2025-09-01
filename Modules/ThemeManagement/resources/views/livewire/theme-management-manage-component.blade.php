@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', $themeId ? 'Tema Düzenleme' : 'Yeni Tema Ekleme');
+@endphp
+
 @include('thememanagement::helper')
 <div>
     @include('admin.partials.error_message')

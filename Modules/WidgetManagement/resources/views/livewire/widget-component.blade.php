@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Widget Listesi');
+@endphp
 @include('widgetmanagement::helper')
 <div>
     <div class="row g-4">

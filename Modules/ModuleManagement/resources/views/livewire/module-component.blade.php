@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Modül Listesi');
+@endphp
+
 @include('modulemanagement::helper')
 <div class="card">
     <div class="card-body">

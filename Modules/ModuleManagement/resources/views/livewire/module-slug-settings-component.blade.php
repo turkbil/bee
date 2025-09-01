@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Modül Slug Ayarları');
+@endphp
+
 <div wire:key="module-slug-manage-component" wire:id="module-slug-manage-component">
     {{-- Helper dosyası --}}
     @include('modulemanagement::helper')

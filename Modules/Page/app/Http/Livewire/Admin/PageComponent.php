@@ -7,7 +7,7 @@ namespace Modules\Page\App\Http\Livewire\Admin;
 use Livewire\Attributes\{Url, Layout, Computed};
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Page\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActions};
+use Modules\Page\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActionsQueue};
 use Modules\Page\App\Services\PageService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Page\App\DataTransferObjects\PageOperationResult;
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 #[Layout('admin.layout')]
 class PageComponent extends Component
 {
-    use WithPagination, WithBulkActions, InlineEditTitle, HasUniversalTranslation;
+    use WithPagination, WithBulkActionsQueue, InlineEditTitle, HasUniversalTranslation;
 
     #[Url]
     public $search = '';
@@ -31,6 +31,11 @@ class PageComponent extends Component
 
     #[Url]
     public $sortDirection = 'desc';
+
+    // Bulk actions properties (WithBulkActionsQueue trait için gerekli)
+    public $selectedItems = [];
+    public $selectAll = false;
+    public $bulkActionsEnabled = false;
 
     // Hibrit dil sistemi için dinamik dil listesi
     private ?array $availableSiteLanguages = null;
@@ -71,9 +76,23 @@ class PageComponent extends Component
             'sessionId' => $eventData['sessionId'] ?? null,
             'entityType' => $eventData['entityType'] ?? 'page',
             'entityId' => $eventData['entityId'] ?? null,
+            'successCount' => $eventData['success'] ?? 0,
+            'failedCount' => $eventData['failed'] ?? 0,
             'message' => 'Çeviri başarıyla tamamlandı!',
             'timestamp' => now()->toISOString()
         ]);
+        
+        // JavaScript'e direkt completion sinyali gönder
+        $this->js('
+            console.log("🎉 Translation completed - dispatching to modal");
+            if (window.handleTranslationCompletion) {
+                window.handleTranslationCompletion({
+                    success: ' . ($eventData['success'] ?? 0) . ',
+                    failed: ' . ($eventData['failed'] ?? 0) . ',
+                    sessionId: "' . ($eventData['sessionId'] ?? '') . '"
+                });
+            }
+        ');
         
         // Sayfayı yenile
         $this->dispatch('refreshPageData');
@@ -179,150 +198,6 @@ class PageComponent extends Component
         }
     }
 
-
-    /**
-     * AI Translation for single page - PageManageComponent ile aynı format
-     * Unified translation method for both PageManageComponent and PageComponent
-     */
-    public function translateContent($data, int $pageId = null): void
-    {
-        // Data'dan parametreleri çıkar (PageManageComponent formatı)
-        $sourceLanguage = $data['sourceLanguage'] ?? 'tr';
-        $targetLanguages = $data['targetLanguages'] ?? [];
-        $fields = $data['fields'] ?? ['title', 'body'];
-        $overwriteExisting = $data['overwriteExisting'] ?? true;
-        
-        // Eğer pageId verilmemişse ve mevcut sayfa varsa onu kullan
-        if (!$pageId && isset($this->pageId)) {
-            $pageId = $this->pageId;
-        }
-        
-        if (!$pageId) {
-            $this->dispatch('toast', [
-                'title' => 'Çeviri Hatası',
-                'message' => 'Sayfa ID bulunamadı',
-                'type' => 'error'
-            ]);
-            return;
-        }
-
-        // Execution time'ı artır (çeviri işlemi uzun sürebilir)
-        set_time_limit(0);
-        ini_set('max_execution_time', 0);
-        
-        try {
-            \Log::info("🔄 PAGE LISTING ÇEVİRİ BAŞLADI", [
-                'page_id' => $pageId,
-                'source' => $sourceLanguage, 
-                'targets' => $targetLanguages,
-                'fields' => $fields
-            ]);
-
-            // Sayfayı bul
-            $page = Page::findOrFail($pageId);
-
-            $translatedCount = 0;
-            $messages = [];
-
-            foreach ($targetLanguages as $targetLanguage) {
-                if ($sourceLanguage === $targetLanguage) {
-                    continue;
-                }
-
-                try {
-                    foreach ($fields as $field) {
-                        $sourceText = $page->getTranslated($field, $sourceLanguage);
-                        
-                        if (empty($sourceText)) {
-                            continue;
-                        }
-
-                        // Mevcut çeviri kontrolü
-                        $existingTranslation = $page->getTranslated($field, $targetLanguage);
-                        if (!$overwriteExisting && !empty($existingTranslation)) {
-                            continue;
-                        }
-
-                        // AI çeviri yap (Universal Translation System)
-                        $translatedText = app(\Modules\AI\App\Services\AIService::class)->translateText($sourceText, $sourceLanguage, $targetLanguage);
-                        
-                        if (!empty($translatedText) && $translatedText !== $sourceText) {
-                            // Mevcut veriyi al
-                            $currentData = $page->{$field};
-                            if (is_string($currentData)) {
-                                $currentData = json_decode($currentData, true) ?: [];
-                            }
-                            
-                            // Çeviriyi ekle
-                            $currentData[$targetLanguage] = $translatedText;
-                            
-                            // Güncelle
-                            $page->update([$field => $currentData]);
-                            
-                            \Log::info("✅ Çeviri başarılı", [
-                                'field' => $field,
-                                'target' => $targetLanguage,
-                                'original' => substr($sourceText, 0, 100),
-                                'translated' => substr($translatedText, 0, 100)
-                            ]);
-                        }
-                    }
-
-                    $translatedCount++;
-                    $messages[] = strtoupper($targetLanguage) . ' çevirisi';
-
-                } catch (\Exception $e) {
-                    \Log::error("❌ Çeviri hatası", [
-                        'page_id' => $pageId,
-                        'target_language' => $targetLanguage,
-                        'error' => $e->getMessage()
-                    ]);
-                    
-                    $this->dispatch('toast', [
-                        'title' => 'Çeviri Hatası',
-                        'message' => strtoupper($targetLanguage) . ' çevirisi başarısız: ' . $e->getMessage(),
-                        'type' => 'error'
-                    ]);
-                }
-            }
-
-            if ($translatedCount > 0) {
-                $this->dispatch('toast', [
-                    'title' => 'Çeviri Tamamlandı',
-                    'message' => implode(', ', $messages) . ' başarıyla kaydedildi',
-                    'type' => 'success'
-                ]);
-
-                \Log::info("🎉 PAGE LISTING ÇEVİRİ TAMAMLANDI", [
-                    'page_id' => $pageId,
-                    'translated_count' => $translatedCount,
-                    'messages' => $messages
-                ]);
-
-                // JavaScript'e çeviri tamamlandı event'ini gönder
-                $this->dispatch('translation-complete', [
-                    'page_id' => $pageId,
-                    'translated_count' => $translatedCount,
-                    'success' => true
-                ]);
-            }
-
-        } catch (\Exception $e) {
-            \Log::error("💥 PAGE LISTING ÇEVİRİ GENEL HATA", [
-                'page_id' => $pageId,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            $this->dispatch('toast', [
-                'title' => 'Çeviri Sistemi Hatası',
-                'message' => 'Çeviri işlemi başarısız oldu: ' . $e->getMessage(),
-                'type' => 'error'
-            ]);
-        }
-    }
-
-
     public function render(): \Illuminate\Contracts\View\View
     {
         $filters = [
@@ -342,158 +217,36 @@ class PageComponent extends Component
         ]);
     }
 
-    /**
-     * 🌍 Translation Modal için çeviri işlemi
-     * claude_ai.md uyumlu - conversation tracking ve credit deduction ile
-     */
-    public function translateFromModal(int $pageId, string $sourceLanguage, array $targetLanguages): void
-    {
-        try {
-            Log::info('🌍 Translation modal çeviri başlatıldı', [
-                'page_id' => $pageId,
-                'source_language' => $sourceLanguage,
-                'target_languages' => $targetLanguages,
-                'user_id' => auth()->id()
-            ]);
-
-            // Page'i bul
-            $page = Page::find($pageId);
-            if (!$page) {
-                $this->dispatch('translationError', 'Page bulunamadı');
-                return;
-            }
-
-            // Her hedef dil için çeviri yap
-            $translatedCount = 0;
-            $errors = [];
-
-            foreach ($targetLanguages as $targetLanguage) {
-                try {
-                    // Kaynak dil verilerini al
-                    $sourceTitle = $page->getTranslated('title', $sourceLanguage);
-                    $sourceBody = $page->getTranslated('body', $sourceLanguage);
-
-                    if (empty($sourceTitle) && empty($sourceBody)) {
-                        $errors[] = "Kaynak dil ({$sourceLanguage}) verileri bulunamadı";
-                        continue;
-                    }
-
-                    $translatedData = [];
-
-                    // Title çevir
-                    if (!empty($sourceTitle)) {
-                        $translatedTitle = app(\Modules\AI\App\Services\AIService::class)->translateText(
-                            $sourceTitle,
-                            $sourceLanguage,
-                            $targetLanguage,
-                            ['context' => 'page_title', 'source' => 'translation_modal']
-                        );
-                        $translatedData['title'] = $translatedTitle;
-                    }
-
-                    // Body çevir
-                    if (!empty($sourceBody)) {
-                        $translatedBody = app(\Modules\AI\App\Services\AIService::class)->translateText(
-                            $sourceBody,
-                            $sourceLanguage,
-                            $targetLanguage,
-                            ['context' => 'page_content', 'source' => 'translation_modal', 'preserve_html' => true]
-                        );
-                        $translatedData['body'] = $translatedBody;
-                    }
-
-                    // Slug oluştur
-                    if (!empty($translatedData['title'])) {
-                        $translatedData['slug'] = \App\Helpers\SlugHelper::generateFromTitle(
-                            Page::class,
-                            $translatedData['title'],
-                            $targetLanguage,
-                            'slug',
-                            'page_id',
-                            $pageId
-                        );
-                    }
-
-                    // Çevrilmiş verileri kaydet
-                    if (!empty($translatedData)) {
-                        foreach ($translatedData as $field => $value) {
-                            $currentData = $page->{$field} ?? [];
-                            $currentData[$targetLanguage] = $value;
-                            $page->{$field} = $currentData;
-                        }
-                        $page->save();
-                        $translatedCount++;
-
-                        Log::info('✅ Page çevirisi tamamlandı', [
-                            'page_id' => $pageId,
-                            'target_language' => $targetLanguage,
-                            'fields' => array_keys($translatedData)
-                        ]);
-                    }
-
-                } catch (\Exception $e) {
-                    $errors[] = "Çeviri hatası ({$targetLanguage}): " . $e->getMessage();
-                    Log::error('❌ Page çeviri hatası', [
-                        'page_id' => $pageId,
-                        'target_language' => $targetLanguage,
-                        'error' => $e->getMessage()
-                    ]);
-                }
-            }
-
-            // Session ID oluştur ve döndür
-            $sessionId = 'translation_' . uniqid();
-            
-            // Başarı mesajı
-            if ($translatedCount > 0) {
-                $message = "{$translatedCount} dil için çeviri tamamlandı";
-                if (!empty($errors)) {
-                    $message .= ". " . count($errors) . " hata oluştu";
-                }
-                
-                $this->dispatch('translationQueued', [
-                    'sessionId' => $sessionId,
-                    'success' => true,
-                    'message' => $message,
-                    'translatedCount' => $translatedCount,
-                    'errors' => $errors
-                ]);
-                
-                // Sayfayı yenile
-                $this->dispatch('refreshPageData');
-            } else {
-                $this->dispatch('translationError', 'Hiçbir çeviri yapılamadı: ' . implode(', ', $errors));
-            }
-
-        } catch (\Exception $e) {
-            Log::error('❌ Translation modal genel hatası', [
-                'page_id' => $pageId,
-                'error' => $e->getMessage()
-            ]);
-            
-            $this->dispatch('translationError', 'Çeviri işlemi başarısız: ' . $e->getMessage());
-        }
-    }
 
     public function queueTranslation($pageId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
     {
         try {
+            // Session ID oluştur
+            $sessionId = 'translation_' . uniqid() . '_' . time();
+            
             \Log::info("🚀 QUEUE Translation başlatıldı", [
                 'page_id' => $pageId,
                 'source' => $sourceLanguage,
-                'targets' => $targetLanguages
+                'targets' => $targetLanguages,
+                'session_id' => $sessionId
             ]);
 
-            // Job'ı kuyruğa ekle
+            // Job'ı kuyruğa ekle - sessionId ile
             \Modules\AI\app\Jobs\TranslateEntityJob::dispatch(
                 'page',
                 $pageId,
                 $sourceLanguage,
                 $targetLanguages,
-                $overwriteExisting
+                $sessionId
             );
 
-            $this->dispatch('translationQueued', 'Çeviri işlemi başlatıldı!');
+            // JavaScript'e sessionId gönder
+            $this->dispatch('translationQueued', [
+                'sessionId' => $sessionId,
+                'success' => true,
+                'message' => 'Çeviri işlemi başlatıldı!',
+                'page_id' => $pageId
+            ]);
             
         } catch (\Exception $e) {
             \Log::error('❌ Queue translation hatası', [
@@ -502,6 +255,96 @@ class PageComponent extends Component
             ]);
             
             $this->dispatch('translationError', 'Çeviri kuyruğu hatası: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * 🌍 MODAL Bridge: JavaScript'den çağrılan çeviri metodu
+     * Modal'dan gelen çeviri işlemlerini mevcut translateContent metoduna yönlendirir
+     */
+    public function translateFromModal(array $data): array
+    {
+        try {
+            Log::info('🚀 Translation modal ASYNC çeviri başlatıldı', [
+                'page_id' => $data['entityId'] ?? null,
+                'source_language' => $data['sourceLanguage'] ?? null,
+                'target_languages' => $data['targetLanguages'] ?? [],
+                'user_id' => auth()->id()
+            ]);
+
+            // Veriyi standard translateContent formatına dönüştür
+            $translationData = [
+                'sourceLanguage' => $data['sourceLanguage'] ?? 'tr',
+                'targetLanguages' => $data['targetLanguages'] ?? [],
+                'fields' => ['title', 'body'], // Sabit alanlar
+                'overwriteExisting' => $data['overwriteExisting'] ?? true
+            ];
+
+            // TranslatePageJob kullanarak async çeviri başlat
+            $pageId = $data['entityId'] ?? null;
+            if (!$pageId) {
+                throw new \Exception('Page ID bulunamadı');
+            }
+
+            // Session ID oluştur
+            $sessionId = 'translation_' . uniqid() . '_' . time();
+
+            // Job'u kuyruğa ekle
+            Log::info('📦 TranslatePageJob kuyruğa ekleniyor', [
+                'page_id' => $pageId,
+                'source' => $translationData['sourceLanguage'],
+                'targets' => $translationData['targetLanguages'],
+                'queue_system' => 'tenant_isolated'
+            ]);
+
+            $job = \Modules\Page\App\Jobs\TranslatePageJob::dispatch(
+                [$pageId], // Array olarak gönder
+                $translationData['sourceLanguage'],
+                $translationData['targetLanguages'],
+                'balanced', // quality
+                $translationData, // options
+                $sessionId // operationId
+            )->onQueue('tenant_isolated');
+
+            // 🚨 ULTRA DEBUG - Dispatch sonrası
+            Log::info('🔥 JOB DISPATCH EDİLDİ!', [
+                'job_class' => get_class($job),
+                'queue_name' => 'tenant_isolated',
+                'connection' => config('queue.default'),
+                'redis_status' => \Illuminate\Support\Facades\Redis::ping()
+            ]);
+
+            Log::info('✅ TranslatePageJob başarıyla kuyruğa eklendi', [
+                'session_id' => $sessionId,
+                'page_id' => $pageId
+            ]);
+
+            // JavaScript'e translationQueued event'ini dispatch et
+            $this->dispatch('translationQueued', [
+                'sessionId' => $sessionId,
+                'pageId' => $pageId,
+                'success' => true,
+                'message' => 'Çeviri kuyruğa başarıyla eklendi'
+            ]);
+
+            // JavaScript'e session ID döndür
+            return [
+                'success' => true,
+                'session_id' => $sessionId,
+                'message' => 'Çeviri kuyruğa başarıyla eklendi'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('❌ Modal çeviri başlatma hatası', [
+                'data' => $data,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
         }
     }
 }

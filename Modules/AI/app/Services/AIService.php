@@ -264,6 +264,24 @@ class AIService
             ];
         }
         
+        // 🧠 CONVERSATION HISTORY - Hafıza sistemi
+        if (isset($options['conversation_history']) && is_array($options['conversation_history'])) {
+            foreach ($options['conversation_history'] as $historyMessage) {
+                if (isset($historyMessage['role']) && isset($historyMessage['content']) 
+                    && !empty(trim($historyMessage['content']))) {
+                    $messages[] = [
+                        'role' => $historyMessage['role'],
+                        'content' => $historyMessage['content']
+                    ];
+                }
+            }
+            
+            Log::info('🧠 AIService: Conversation history eklendi', [
+                'history_count' => count($options['conversation_history']),
+                'total_messages_to_api' => count($messages) + 1 // +1 for user message
+            ]);
+        }
+        
         $messages[] = [
             'role' => 'user',
             'content' => $prompt
@@ -2036,7 +2054,7 @@ class AIService
     }
 
     /**
-     * Text translation using AI
+     * Text translation using AI - with Smart HTML detection
      */
     public function translateText(string $text, string $fromLang, string $toLang, array $options = []): string
     {
@@ -2053,6 +2071,41 @@ class AIService
             return '';
         }
 
+        // 🧠 SMART HTML DETECTION - Büyük HTML içerikleri için
+        if ($this->shouldUseSmartHtmlTranslation($text, $options)) {
+            Log::info('🧠 Smart HTML Translation kullanılıyor', [
+                'text_length' => strlen($text),
+                'html_tag_count' => substr_count($text, '<')
+            ]);
+
+            try {
+                $smartHtmlService = app(SmartHtmlTranslationService::class);
+                return $smartHtmlService->translateHtmlContent($text, $fromLang, $toLang);
+            } catch (\Exception $e) {
+                Log::error('❌ Smart HTML Translation hatası, normal sisteme fallback', [
+                    'error' => $e->getMessage()
+                ]);
+                // Fallback: Normal translation devam etsin
+            }
+        }
+
+        // 🚀 STREAMING TRANSLATION - Çok büyük HTML içerikleri için
+        if ($this->shouldUseStreamingTranslation($text, $options)) {
+            Log::info('🚀 Streaming Translation kullanılıyor', [
+                'text_length' => strlen($text),
+                'session_id' => $options['session_id'] ?? 'auto_generated'
+            ]);
+
+            try {
+                return $this->handleStreamingTranslation($text, $fromLang, $toLang, $options);
+            } catch (\Exception $e) {
+                Log::error('❌ Streaming Translation hatası, normal sisteme fallback', [
+                    'error' => $e->getMessage()
+                ]);
+                // Fallback: Normal translation devam etsin
+            }
+        }
+
         if ($fromLang === $toLang) {
             Log::info('⚠️ Aynı dil, çeviri yapılmadı');
             return $text;
@@ -2061,6 +2114,18 @@ class AIService
         $context = $options['context'] ?? 'general';
         $maxLength = $options['max_length'] ?? null;
         $preserveHtml = $options['preserve_html'] ?? false;
+
+        // 🔍 CHUNKING DEBUG - CRITICAL INVESTIGATION
+        Log::info('🔍 CHUNKING DEBUG - Parameters check', [
+            'text_length' => strlen($text),
+            'preserve_html_raw' => $options['preserve_html'] ?? 'NOT_SET',
+            'preserve_html_bool' => $preserveHtml,
+            'condition_text_length' => strlen($text) > 500,
+            'condition_preserve_html' => $preserveHtml,
+            'condition_both' => $preserveHtml && strlen($text) > 500,
+            'options_keys' => array_keys($options),
+            'options_full' => $options
+        ]);
 
         // 🔥 HTML İÇERİK CHUNK ÇEVİRİ SİSTEMİ - HER ZAMAN AKTIF
         if ($preserveHtml && strlen($text) > 500) {
@@ -2071,11 +2136,11 @@ class AIService
             ]);
             // 🚀 SÜPER HIZLI BULK TRANSLATION SİSTEMİ
             $fastTranslator = new \Modules\AI\App\Services\FastHtmlTranslationService($this);
-            return $fastTranslator->translateHtmlContentFast($text, $fromLang, $toLang, $context);
+            return $fastTranslator->translateHtmlContentFast($text, $fromLang, $toLang, $context, $options);
         }
 
-        // Build translation prompt
-        $prompt = $this->buildTranslationPrompt($text, $fromLang, $toLang, $context, $preserveHtml);
+        // 🔥 ULTRA ASSERTIVE PROMPT SİSTEMİ - Zero refusal tolerance
+        $prompt = \Modules\AI\App\Services\UltraAssertiveTranslationPrompt::buildPrompt($text, $fromLang, $toLang, $context, $preserveHtml);
         
         Log::info('📝 Translation prompt hazırlandı', [
             'prompt_length' => strlen($prompt),
@@ -2170,7 +2235,7 @@ class AIService
                 try {
                     \DB::table('ai_conversations')->insert([
                         'tenant_id' => TenantHelpers::getTenantId(),
-                        'user_id' => auth()->id(),
+                        'user_id' => $this->getSafeUserId(),
                         'session_id' => 'translation_' . uniqid(),
                         'title' => "Translation: {$fromLang} → {$toLang}",
                         'type' => 'translation',
@@ -2409,6 +2474,191 @@ CONTEXT: {$contextInstructions}
             
             // Fallback: Normal çeviri yap (kesilse bile)
             return $this->translateText($html, $fromLang, $toLang, ['context' => $context, 'preserve_html' => true]);
+        }
+    }
+
+    /**
+     * Smart HTML Translation kullanılıp kullanılmayacağını belirler
+     */
+    private function shouldUseSmartHtmlTranslation(string $text, array $options = []): bool
+    {
+        // HTML içerik kontrolü
+        $hasHtmlTags = substr_count($text, '<') > 5; // En az 5 HTML tag
+        
+        // Boyut kontrolü (5KB üzeri)
+        $isLargeContent = strlen($text) > 5120;
+        
+        // HTML oranı kontrolü
+        $textOnly = strip_tags($text);
+        $htmlRatio = (strlen($text) - strlen($textOnly)) / strlen($text);
+        $hasHighHtmlRatio = $htmlRatio > 0.3; // %30'dan fazla HTML
+        
+        // Context kontrolü - body alanları için özellikle aktif
+        $isBodyContent = isset($options['context']) && 
+                        (strpos($options['context'], 'body') !== false || 
+                         strpos($options['context'], 'content') !== false);
+        
+        return $hasHtmlTags && ($isLargeContent || $hasHighHtmlRatio || $isBodyContent);
+    }
+
+    /**
+     * Streaming Translation kullanılıp kullanılmayacağını belirler
+     */
+    private function shouldUseStreamingTranslation(string $text, array $options = []): bool
+    {
+        // Çok büyük içerikler için streaming (15KB üzeri)
+        $isVeryLargeContent = strlen($text) > 15360;
+        
+        // Session ID var mı (modal'dan gelen istekler)
+        $hasSessionId = isset($options['session_id']);
+        
+        // Chunk context'i var mı
+        $isChunkContext = isset($options['context']) && 
+                         strpos($options['context'], 'chunk') !== false;
+        
+        return $isVeryLargeContent && ($hasSessionId || $isChunkContext);
+    }
+
+    /**
+     * Streaming translation'ı handle eder
+     */
+    private function handleStreamingTranslation(
+        string $text, 
+        string $fromLang, 
+        string $toLang, 
+        array $options
+    ): string {
+        $sessionId = $options['session_id'] ?? 'auto_' . uniqid();
+        
+        Log::info('🚀 Starting streaming translation', [
+            'session_id' => $sessionId,
+            'text_length' => strlen($text),
+            'from' => $fromLang,
+            'to' => $toLang
+        ]);
+
+        try {
+            $streamingEngine = app(StreamingTranslationEngine::class);
+            
+            $result = $streamingEngine->startStreamingTranslation(
+                $text, 
+                $fromLang, 
+                $toLang, 
+                $sessionId, 
+                $options
+            );
+            
+            if ($result['success']) {
+                // Streaming başarıyla başladı, placeholder döndür
+                return "<!-- STREAMING_TRANSLATION_PLACEHOLDER:{$sessionId} -->";
+            } else {
+                throw new \Exception('Streaming translation başlatılamadı: ' . $result['error']);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('❌ Streaming translation handle error', [
+                'session_id' => $sessionId,
+                'error' => $e->getMessage()
+            ]);
+            
+            // Fallback to normal translation
+            throw $e;
+        }
+    }
+
+    /**
+     * Smart HTML Translation kullanılıp kullanılmayacağını belirler
+     */
+
+    /**
+     * 🌐 HTML içerikli metinleri çevirir
+     * Ultra Assertive Translation sistemi ile
+     */
+    public function translateHtml(
+        string $html, 
+        string $fromLang, 
+        string $toLang, 
+        array $options = []
+    ): string {
+        // HTML çevirisi için özel context ayarla
+        $options['context'] = $options['context'] ?? 'html_content';
+        $options['preserve_html'] = true;
+        
+        return $this->translateText($html, $fromLang, $toLang, $options);
+    }
+
+    /**
+     * 🔒 SAFE USER ID DETECTION - Multi-tenant uyumlu
+     * Queue/Job context'inde auth()->id() null döner, bu metod her durumda geçerli user_id verir
+     */
+    private function getSafeUserId(): int
+    {
+        try {
+            // Web context - normal auth check
+            if (function_exists('auth') && auth()->guard('web')->check()) {
+                $userId = auth()->guard('web')->id();
+                if ($userId && is_numeric($userId) && $userId > 0) {
+                    \Log::debug('🔍 AIService: Web auth user_id found', ['user_id' => $userId]);
+                    return (int) $userId;
+                }
+            }
+            
+            // CLI/Queue/Artisan context - tenant'daki ilk admin user'ı al
+            try {
+                $tenantId = TenantHelpers::getTenantId();
+                
+                // Tenant'daki active admin user'ı bul (Spatie roles ile)
+                try {
+                    $adminUser = \DB::table('users')
+                        ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                        ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('model_has_roles.model_type', 'App\\Models\\User')
+                        ->whereIn('roles.name', ['admin', 'super-admin'])
+                        ->where('users.is_active', true)
+                        ->select('users.*')
+                        ->orderBy('users.id', 'asc')
+                        ->first();
+                    
+                    if ($adminUser) {
+                        \Log::debug('🔍 AIService: Admin user found for tenant', [
+                            'tenant_id' => $tenantId,
+                            'user_id' => $adminUser->id,
+                            'user_name' => $adminUser->name ?? 'unknown'
+                        ]);
+                        return (int) $adminUser->id;
+                    }
+                } catch (\Exception $e) {
+                    \Log::debug('🔍 AIService: Spatie role lookup failed, trying direct user lookup', [
+                        'error' => $e->getMessage()
+                    ]);
+                }
+                
+                // Admin user yoksa ilk active user'ı al
+                $firstUser = \DB::table('users')
+                    ->where('is_active', true)
+                    ->orderBy('id', 'asc')
+                    ->first();
+                    
+                if ($firstUser) {
+                    \Log::debug('🔍 AIService: First active user found', [
+                        'tenant_id' => $tenantId,
+                        'user_id' => $firstUser->id,
+                        'user_name' => $firstUser->name ?? 'unknown'
+                    ]);
+                    return (int) $firstUser->id;
+                }
+                
+            } catch (\Exception $e) {
+                \Log::warning('🔍 AIService: Tenant user lookup failed', ['error' => $e->getMessage()]);
+            }
+            
+            // Son çare: System user (ID=1)
+            \Log::info('🔍 AIService: Using fallback system user_id = 1 (CLI/Queue/Background context)');
+            return 1; // GUARANTEED valid user ID
+            
+        } catch (\Exception $e) {
+            \Log::warning('🔍 AIService: Exception in getSafeUserId, using fallback', ['error' => $e->getMessage()]);
+            return 1; // GUARANTEED valid user ID  
         }
     }
 }

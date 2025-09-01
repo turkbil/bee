@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace Modules\ModuleManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -35,7 +36,7 @@ class ModuleManagementSeeder extends Seeder
                 ],
                 [
                     'name' => 'tenantmanagement',
-                    'display_name' => 'Domainler Yönetimi', 
+                    'display_name' => 'Alan Adı Yönetimi',
                     'description' => 'Çoklu müşteri yönetim sistemi',
                     'version' => '1.0.0',
                     'settings' => null,
@@ -156,10 +157,10 @@ class ModuleManagementSeeder extends Seeder
             if (Schema::hasTable('modules')) {
                 // Foreign key constraint hatası için DISABLE FOREIGN_KEY_CHECKS
                 DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                
+
                 // Temizlik yapalım önce
                 DB::table('modules')->truncate();
-                
+
                 // Foreign key constraint'leri tekrar aktif et
                 DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             } else {
@@ -181,20 +182,20 @@ class ModuleManagementSeeder extends Seeder
                     'updated_at' => now()
                 ]);
             }
-            
+
             // Modülleri tüm tenant'lara otomatik ata
             $this->assignModulesToTenants();
-            
+
             // Modüller için default permission'ları oluştur
             $this->createDefaultPermissions();
-            
+
             $this->command->info('Modules seeded successfully!');
         } catch (\Exception $e) {
             Log::error('Module seeding failed: ' . $e->getMessage());
             $this->command->error('Module seeding error: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Modülleri tüm tenant'lara otomatik ata
      */
@@ -203,10 +204,10 @@ class ModuleManagementSeeder extends Seeder
         try {
             // Tüm tenant'ları al
             $tenants = DB::table('tenants')->get();
-            
-            // Tüm modülleri al  
+
+            // Tüm modülleri al
             $modules = DB::table('modules')->get();
-            
+
             foreach ($tenants as $tenant) {
                 foreach ($modules as $module) {
                     // Eğer atama yoksa ekle
@@ -214,7 +215,7 @@ class ModuleManagementSeeder extends Seeder
                         ->where('tenant_id', $tenant->id)
                         ->where('module_id', $module->module_id)
                         ->exists();
-                        
+
                     if (!$exists) {
                         DB::table('module_tenants')->insert([
                             'tenant_id' => $tenant->id,
@@ -224,20 +225,19 @@ class ModuleManagementSeeder extends Seeder
                             'created_at' => now(),
                             'updated_at' => now()
                         ]);
-                        
+
                         $this->command->info("Module '{$module->name}' assigned to tenant {$tenant->id}");
                     }
                 }
             }
-            
+
             $this->command->info('All modules assigned to all tenants successfully!');
-            
         } catch (\Exception $e) {
             Log::error('Module tenant assignment failed: ' . $e->getMessage());
             $this->command->error('Module tenant assignment error: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Modüller için default CRUD permission'ları oluştur
      */
@@ -247,26 +247,25 @@ class ModuleManagementSeeder extends Seeder
             // Tüm tenant'lara modül permission'larını oluştur
             $tenants = DB::table('tenants')->get();
             $modules = DB::table('modules')->get();
-            
+
             foreach ($tenants as $tenant) {
                 foreach ($modules as $module) {
                     // Permission service'i kullanarak otomatik permission oluştur
                     $permissionService = app(\App\Services\ModuleTenantPermissionService::class);
-                    
+
                     // Modül verilerini hazırla
                     $moduleData = [
                         'name' => $module->name,
                         'display_name' => $module->display_name,
                         'is_active' => $module->is_active
                     ];
-                    
+
                     // Permission'ları oluştur
                     $permissionService->handleModuleAddedToTenant($module->module_id, $tenant->id);
-                    
+
                     $this->command->info("Permissions created for {$module->name} in tenant {$tenant->id}");
                 }
             }
-            
         } catch (\Exception $e) {
             Log::error('Default permission creation failed: ' . $e->getMessage());
             $this->command->error('Default permission creation error: ' . $e->getMessage());

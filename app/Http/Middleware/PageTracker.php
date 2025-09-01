@@ -55,9 +55,7 @@ class PageTracker
         ];
         
         // Log seviyesi: sadece local/staging'de info, production'da devre dışı
-        if (app()->environment(['local', 'staging'])) {
-            \Log::info('🎯 PAGE TRACKER', array_merge($preRequestData, $postRequestData));
-        }
+        // \Log::info('🎯 PAGE TRACKER', array_merge($preRequestData, $postRequestData));
         
         return $response;
     }

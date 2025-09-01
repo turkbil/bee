@@ -10,7 +10,7 @@
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     
     function attachButtonListeners() {
-        const seoButtons = document.querySelectorAll('.ai-seo-comprehensive-btn, .seo-generator-btn, .seo-suggestions-btn, [data-seo-feature], [data-action]');
+        const seoButtons = document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn, .seo-generator-btn, .seo-suggestions-btn, [data-seo-feature], [data-action]');
         
         seoButtons.forEach((button) => {
             // Remove existing listeners
@@ -34,6 +34,12 @@
                     return;
                 }
                 
+                if (this.classList.contains('ai-seo-recommendations-btn') || 
+                    this.getAttribute('data-seo-feature') === 'seo-smart-recommendations') {
+                    handleSeoRecommendations(this);
+                    return;
+                }
+                
                 if (this.classList.contains('seo-suggestions-btn') || 
                     this.getAttribute('data-action') === 'get-suggestions') {
                     handleSeoSuggestions(this);
@@ -41,9 +47,150 @@
                 }
             });
         });
+        
+        // AI Recommendations section handlers
+        attachRecommendationHandlers();
+    }
+    
+    function attachRecommendationHandlers() {
+        // Close recommendations
+        document.querySelectorAll('.ai-close-recommendations').forEach(button => {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            newButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const language = this.getAttribute('data-language');
+                const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
+                if (section) {
+                    section.style.display = 'none';
+                }
+            });
+        });
+        
+        // Select all recommendations
+        document.querySelectorAll('.ai-select-all-recommendations').forEach(button => {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            newButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const checkboxes = document.querySelectorAll('.ai-recommendation-checkbox');
+                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                
+                checkboxes.forEach(cb => {
+                    cb.checked = !allChecked;
+                });
+                
+                updateApplyButton();
+                
+                // Update button text
+                this.innerHTML = allChecked ? 
+                    '<i class="fas fa-check-double me-1"></i>Tümünü Seç' : 
+                    '<i class="fas fa-square me-1"></i>Seçimi Kaldır';
+            });
+        });
+        
+        // Apply selected recommendations
+        document.querySelectorAll('.ai-apply-selected-recommendations').forEach(button => {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            newButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                applySelectedRecommendations(this);
+            });
+        });
+        
+        // Retry recommendations
+        document.querySelectorAll('.ai-retry-recommendations').forEach(button => {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            newButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const recommendationsBtn = document.querySelector('.ai-seo-recommendations-btn');
+                if (recommendationsBtn) {
+                    handleSeoRecommendations(recommendationsBtn);
+                }
+            });
+        });
     }
     
     // Real AI API handlers
+    async function handleSeoRecommendations(button) {
+        console.log('🚀 SEO RECOMMENDATIONS START');
+        const language = button.getAttribute('data-language') || 'tr';
+        
+        try {
+            // Show the recommendations section
+            const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
+            if (section) {
+                section.style.display = 'block';
+                
+                // Show loading state
+                const loading = section.querySelector('.ai-recommendations-loading');
+                const content = section.querySelector('.ai-recommendations-content');
+                const error = section.querySelector('.ai-recommendations-error');
+                
+                loading.style.display = 'block';
+                content.style.display = 'none';
+                error.style.display = 'none';
+            }
+            
+            setButtonLoading(button, 'Öneriler Üretiliyor...');
+            
+            const collectedData = collectFormData();
+            const formData = {
+                feature_slug: 'seo-smart-recommendations',
+                form_content: collectedData,
+                language: language
+            };
+            console.log('📋 Recommendations Form data:', formData);
+            
+            console.log('🔗 Sending request to:', '/admin/seo/ai/recommendations');
+            const response = await fetch('/admin/seo/ai/recommendations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            console.log('📡 Response status:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ HTTP Error Response:', errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText.substring(0, 200)}...`);
+            }
+            
+            const responseText = await response.text();
+            console.log('📄 Raw response:', responseText.substring(0, 500));
+            
+            let result;
+            try {
+                result = JSON.parse(responseText);
+                console.log('✅ Parsed JSON result:', result);
+            } catch (jsonError) {
+                console.error('❌ JSON Parse Error:', jsonError);
+                console.error('❌ Response was not JSON:', responseText.substring(0, 1000));
+                throw new Error('Server returned HTML instead of JSON. Check if endpoint exists.');
+            }
+            
+            if (result.success) {
+                console.log('✅ Success - displaying recommendations:', result.data);
+                displayRecommendations(result.data, language);
+            } else {
+                console.error('❌ API Error:', result.message);
+                showRecommendationsError(result.message, language);
+            }
+        } catch (error) {
+            console.error('💥 RECOMMENDATIONS ERROR:', error);
+            console.error('💥 Error stack:', error.stack);
+            showRecommendationsError('Bağlantı hatası: ' + error.message, language);
+        } finally {
+            resetButton(button, '<i class="fas fa-magic me-1"></i>AI Önerileri');
+        }
+    }
+    
     async function handleSeoAnalysis(button) {
         console.log('🚀 SEO ANALYSIS START');
         try {
@@ -97,6 +244,40 @@
                 window.lastSeoResponse = result;
                 console.log('💾 SAVED TO WINDOW:', window.lastSeoResponse);
                 displayComprehensiveAnalysis(result.data);
+                
+                // Blade accordion'unu da görünür hale getir - real-time
+                setTimeout(() => {
+                    // Force göster - PHP @if koşulunu JavaScript ile aşalım
+                    const accordionSection = document.getElementById('seoAnalysisAccordion');
+                    if (accordionSection) {
+                        // Accordion'un kendisini göster
+                        accordionSection.style.display = 'block';
+                        accordionSection.classList.remove('d-none');
+                        
+                        // Parent card'ı da force göster (@if($hasAnalysisResults) için)
+                        let parent = accordionSection.parentElement;
+                        while (parent && parent !== document.body) {
+                            if (parent.classList.contains('card') || parent.classList.contains('mt-3')) {
+                                parent.style.display = 'block';
+                                parent.classList.remove('d-none');
+                                console.log('✅ Parent container görünür yapıldı:', parent.className);
+                            }
+                            parent = parent.parentElement;
+                        }
+                        
+                        // En üstteki card container'ı spesifik olarak bul ve göster
+                        const cardContainer = accordionSection.closest('.card.mt-3');
+                        if (cardContainer) {
+                            cardContainer.style.display = 'block';
+                            cardContainer.classList.remove('d-none');
+                            console.log('✅ Card container force gösterildi');
+                        }
+                        
+                        console.log('✅ Blade accordion real-time gösterildi');
+                    } else {
+                        console.warn('⚠️ seoAnalysisAccordion bulunamadı - accordion henüz DOM\'a eklenmemiş olabilir');
+                    }
+                }, 500);
             } else {
                 console.error('❌ API Error:', result.message);
                 showError('Analiz sırasında hata: ' + result.message);
@@ -266,6 +447,10 @@
             }
         });
         
+        // 🚀 SAYFA TİPİ ALGILAMA SİSTEMİ - 2025 AI ENHANCED
+        const pageType = detectPageType();
+        console.log('🎯 Algılanan sayfa tipi:', pageType);
+        
         // DEBUG: Form field mapping - logda hangi fieldlar var görelim
         console.log('🔍 COLLECTED FORM DATA:', data);
         console.log('🔍 Form data keys:', Object.keys(data));
@@ -286,12 +471,134 @@
             }
         });
         
+        // 🎯 SAYFA TİPİ VE CONTEXT BİLGİLERİ EKLE
+        mappedData.page_type = pageType.type;
+        mappedData.page_context = pageType.context;
+        mappedData.content_category = pageType.category;
+        mappedData.seo_priority = pageType.seo_priority;
+        
         // Add current page context
         mappedData.current_url = window.location.href;
         mappedData.language = document.documentElement.lang || 'tr';
         
         console.log('🔍 MAPPED DATA FOR BACKEND:', mappedData);
+        console.log('🎯 PAGE TYPE CONTEXT:', {
+            type: pageType.type,
+            context: pageType.context,
+            category: pageType.category,
+            priority: pageType.seo_priority
+        });
+        
         return mappedData;
+    }
+    
+    // 🚀 SAYFA TİPİ ALGILAMA SİSTEMİ - 2025 AI ENHANCED
+    function detectPageType() {
+        const url = window.location.pathname.toLowerCase();
+        const title = document.querySelector('[wire\\:model*="title"]')?.value?.toLowerCase() || '';
+        const content = document.querySelector('.ql-editor')?.textContent?.toLowerCase() || '';
+        
+        console.log('🔍 Page detection inputs:', { url, title: title.substring(0, 50), content: content.substring(0, 100) });
+        
+        // URL Pattern Analysis
+        if (url.includes('/contact') || url.includes('/iletisim')) {
+            return {
+                type: 'contact',
+                category: 'business_essential',
+                context: 'Contact ve iletişim sayfası - müşteri dostu dil, güven inşası, yerel SEO odaklı',
+                seo_priority: 'high',
+                keywords_focus: ['iletişim', 'adres', 'telefon', 'email', 'randevu', 'harita'],
+                content_style: 'professional_friendly'
+            };
+        }
+        
+        if (url.includes('/about') || url.includes('/hakkimizda') || url.includes('/hakkinda')) {
+            return {
+                type: 'about',
+                category: 'brand_identity',
+                context: 'Hakkımızda sayfası - marka hikayesi, güvenilirlik, uzmanlık alanları, kurumsal kimlik',
+                seo_priority: 'high',
+                keywords_focus: ['hakkımızda', 'hikaye', 'misyon', 'vizyon', 'takım', 'deneyim', 'uzmanlık'],
+                content_style: 'authoritative_storytelling'
+            };
+        }
+        
+        if (url.includes('/service') || url.includes('/hizmet')) {
+            return {
+                type: 'service',
+                category: 'conversion_focused',
+                context: 'Hizmet tanıtım sayfası - değer önerisi, faydalar, call-to-action odaklı',
+                seo_priority: 'very_high',
+                keywords_focus: ['hizmet', 'çözüm', 'avantaj', 'fiyat', 'başvuru', 'randevu'],
+                content_style: 'persuasive_professional'
+            };
+        }
+        
+        if (url.includes('/portfolio') || url.includes('/galeri') || url.includes('/work')) {
+            return {
+                type: 'portfolio',
+                category: 'showcase',
+                context: 'Portfolio ve çalışma örnekleri - görsel odaklı, başarı hikayeleri, teknik detaylar',
+                seo_priority: 'high',
+                keywords_focus: ['portfolio', 'proje', 'çalışma', 'örnek', 'başarı', 'referans'],
+                content_style: 'visual_storytelling'
+            };
+        }
+        
+        if (url.includes('/blog') || url.includes('/makale') || url.includes('/news')) {
+            return {
+                type: 'blog',
+                category: 'content_marketing',
+                context: 'Blog ve içerik pazarlama - bilgi verici, SEO odaklı, okuyucu etkileşimi',
+                seo_priority: 'very_high',
+                keywords_focus: ['blog', 'makale', 'rehber', 'ipucu', 'bilgi', 'uzman görüşü'],
+                content_style: 'informative_engaging'
+            };
+        }
+        
+        if (url.includes('/product') || url.includes('/urun')) {
+            return {
+                type: 'product',
+                category: 'ecommerce',
+                context: 'Ürün tanıtım sayfası - özellikler, faydalar, satış odaklı, karşılaştırma',
+                seo_priority: 'very_high',
+                keywords_focus: ['ürün', 'özellik', 'fiyat', 'satın al', 'inceleme', 'karşılaştır'],
+                content_style: 'sales_optimized'
+            };
+        }
+        
+        // Content-Based Detection
+        if (title.includes('iletişim') || title.includes('contact') || content.includes('adres') || content.includes('telefon')) {
+            return {
+                type: 'contact',
+                category: 'business_essential',
+                context: 'İletişim sayfası - başlık/içerik analizi ile tespit edildi',
+                seo_priority: 'high',
+                keywords_focus: ['iletişim', 'adres', 'telefon', 'email'],
+                content_style: 'professional_friendly'
+            };
+        }
+        
+        if (title.includes('hakkımızda') || title.includes('about') || content.includes('hikaye') || content.includes('misyon')) {
+            return {
+                type: 'about',
+                category: 'brand_identity', 
+                context: 'Hakkımızda sayfası - başlık/içerik analizi ile tespit edildi',
+                seo_priority: 'high',
+                keywords_focus: ['hakkımızda', 'hikaye', 'misyon', 'vizyon'],
+                content_style: 'authoritative_storytelling'
+            };
+        }
+        
+        // Default case - general page
+        return {
+            type: 'general',
+            category: 'informational',
+            context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı',
+            seo_priority: 'medium',
+            keywords_focus: ['bilgi', 'detay', 'rehber', 'açıklama'],
+            content_style: 'balanced_informative'
+        };
     }
     
     function setButtonLoading(button, text) {
@@ -332,11 +639,18 @@
         let badgeClass = score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-danger';
         
         panel.innerHTML = `
-            <div class="card-header">
-                <h3 class="card-title">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
                     <i class="fas fa-chart-line me-2"></i>
                     Kapsamlı SEO Analizi
                 </h3>
+                <button type="button" 
+                        class="btn btn-outline-danger btn-sm"
+                        onclick="if(confirm('SEO analizi verileri silinecek. Emin misiniz?')) { Livewire.dispatch('clearSeoAnalysis') }"
+                        title="SEO analizi verilerini sıfırla">
+                    <i class="fas fa-trash-alt me-1"></i>
+                    Verileri Sıfırla
+                </button>
             </div>
             <div class="card-body">
                 <!-- GENEL SKOR -->
@@ -664,6 +978,327 @@
         console.error('❌ ERROR:', message);
     }
 
+    // AI RECOMMENDATIONS HELPER FUNCTIONS
+    function displayRecommendations(data, language) {
+        console.log('🎯 RECOMMENDATIONS Results data:', data);
+        
+        const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
+        if (!section) return;
+        
+        const loading = section.querySelector('.ai-recommendations-loading');
+        const content = section.querySelector('.ai-recommendations-content');
+        const list = section.querySelector('.ai-recommendations-list');
+        const count = section.querySelector('.ai-recommendations-count');
+        
+        // Hide loading, show content
+        loading.style.display = 'none';
+        content.style.display = 'block';
+        
+        // Parse recommendations data
+        const recommendations = data.recommendations || [];
+        console.log('📝 Parsed recommendations:', recommendations);
+        
+        // Update count
+        if (count) {
+            count.textContent = recommendations.length;
+        }
+        
+        // Add Apply All button and controls at the top
+        let controlsHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="applyAllRecommendations()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M5 12l2 0l10 -10l-2 -2l-10 10l0 2z"/>
+                            <path d="M19 4l2 2"/>
+                        </svg>
+                        Tümünü Uygula (#1 Seçenekleri)
+                    </button>
+                    <button type="button" class="btn btn-outline-primary btn-sm ai-apply-selected-recommendations" disabled onclick="applySelectedRecommendations(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M9 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+                            <path d="M9 17l0 -10"/>
+                            <path d="M19 16.5c0 .667 -.167 1.167 -.5 1.5s-.833 .333 -1.5 .333s-1.167 -.167 -1.5 -.5s-.333 -.833 -.333 -1.5c0 -.667 .167 -1.167 .5 -1.5s.833 -.333 1.5 -.333s1.167 .167 1.5 .5s.333 .833 .333 1.5z"/>
+                        </svg>
+                        Seçilenleri Uygula
+                    </button>
+                </div>
+                <small class="text-muted">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/>
+                        <path d="M12 9h.01"/>
+                        <path d="M11 12h1v4h1"/>
+                    </svg>
+                    Radio butonları tek seçim, direkt tıklama da desteklenir
+                </small>
+            </div>
+        `;
+        
+        // Generate recommendation items with alternatives
+        let recommendationsHTML = controlsHTML;
+        recommendations.forEach((rec, index) => {
+            const id = `rec_${index}`;
+            const hasAlternatives = rec.alternatives && rec.alternatives.length > 0;
+            
+            recommendationsHTML += `
+                <div class="card mb-3 ai-recommendation-item" data-recommendation='${JSON.stringify(rec)}'>
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-1">
+                                        <i class="fas ${rec.type === 'title' ? 'fa-heading' : rec.type === 'description' ? 'fa-align-left' : rec.type === 'keywords' ? 'fa-tags' : 'fa-magic'} me-2"></i>
+                                        ${rec.title || rec.field || 'SEO Önerisi'}
+                                    </h6>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-${rec.priority === 'high' ? 'danger' : rec.priority === 'medium' ? 'warning' : 'success'}">
+                                            ${rec.priority === 'high' ? 'Yüksek' : rec.priority === 'medium' ? 'Orta' : 'Düşük'}
+                                        </span>
+                                        ${rec.impact_score ? `<small class="text-success"><i class="fas fa-chart-line me-1"></i>${rec.impact_score}%</small>` : ''}
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-3">${rec.description || rec.reason || ''}</p>
+                                
+                                ${hasAlternatives ? `
+                                    <div class="alternatives-compact">
+                                        <small class="text-muted d-block mb-2">
+                                            <i class="fas fa-magic me-1"></i>${rec.alternatives.length} AI Alternatifi
+                                        </small>
+                                        <div class="alternatives-list">
+                                            <div class="btn-group${rec.alternatives.length > 3 ? '-vertical' : ''} ${rec.alternatives.length > 3 ? 'w-100' : 'w-100'}" role="group">
+                                                ${rec.alternatives.map((alt, altIndex) => `
+                                                    <input type="radio" class="btn-check alternative-radio" 
+                                                           name="alt_${rec.type}" value="${alt.id}" id="alt_${id}_${altIndex}" 
+                                                           autocomplete="off"
+                                                           onchange="updateApplyButton()" 
+                                                           onclick="applyAlternativeDirectly('${rec.field_target}', '${alt.value.replace(/'/g, "\\'")}', this)">
+                                                    <label for="alt_${id}_${altIndex}" type="button" class="btn${rec.alternatives.length > 3 ? '' : ' flex-fill'} text-start">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="flex-grow-1 min-w-0">
+                                                                <div class="fw-medium small text-truncate mb-1">${alt.label}</div>
+                                                                <div class="text-muted small text-truncate" style="font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;">
+                                                                    ${alt.value.length > 50 ? alt.value.substring(0, 50) + '...' : alt.value}
+                                                                </div>
+                                                            </div>
+                                                            <span class="badge bg-azure ms-2">${alt.score}</span>
+                                                        </div>
+                                                    </label>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <div class="ai-single-suggestion p-2 bg-light rounded">
+                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                            <small class="text-muted"><i class="fas fa-robot me-1"></i>AI Önerisi</small>
+                                            <span class="badge bg-primary">${rec.impact_score || 85}%</span>
+                                        </div>
+                                        <code class="text-primary small">${rec.value || rec.suggested_value || ''}</code>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+        
+        if (list) {
+            list.innerHTML = recommendationsHTML;
+        }
+        
+        // Update apply button state
+        updateApplyButton();
+        
+        console.log('✅ Recommendations displayed successfully');
+    }
+    
+    function showRecommendationsError(message, language) {
+        const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
+        if (!section) return;
+        
+        const loading = section.querySelector('.ai-recommendations-loading');
+        const content = section.querySelector('.ai-recommendations-content');
+        const error = section.querySelector('.ai-recommendations-error');
+        
+        loading.style.display = 'none';
+        content.style.display = 'none';
+        error.style.display = 'block';
+        
+        // Update error message if needed
+        const errorMsg = error.querySelector('p');
+        if (errorMsg) {
+            errorMsg.textContent = message;
+        }
+        
+        console.error('❌ Recommendations error shown:', message);
+    }
+    
+    function updateApplyButton() {
+        // RADIO BUTTON: Seçili radio buttonları sayıyoruz
+        const radioButtons = document.querySelectorAll('.alternative-radio:checked');
+        const applyBtn = document.querySelector('.ai-apply-selected-recommendations');
+        
+        if (!applyBtn) return;
+        
+        const selectedCount = radioButtons.length;
+        
+        if (selectedCount > 0) {
+            applyBtn.disabled = false;
+            applyBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M9 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+                    <path d="M9 17l0 -10"/>
+                    <path d="M19 16.5c0 .667 -.167 1.167 -.5 1.5s-.833 .333 -1.5 .333s-1.167 -.167 -1.5 -.5s-.333 -.833 -.333 -1.5c0 -.667 .167 -1.167 .5 -1.5s.833 -.333 1.5 -.333s1.167 .167 1.5 .5s.333 .833 .333 1.5z"/>
+                </svg>
+                Seçilenleri Uygula (${selectedCount})
+            `;
+        } else {
+            applyBtn.disabled = true;
+            applyBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M9 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+                    <path d="M9 17l0 -10"/>
+                    <path d="M19 16.5c0 .667 -.167 1.167 -.5 1.5s-.833 .333 -1.5 .333s-1.167 -.167 -1.5 -.5s-.333 -.833 -.333 -1.5c0 -.667 .167 -1.167 .5 -1.5s.833 -.333 1.5 -.333s1.167 .167 1.5 .5s.333 .833 .333 1.5z"/>
+                </svg>
+                Seçilenleri Uygula
+            `;
+        }
+    }
+    
+    async function applySelectedRecommendations(button) {
+        // RADIO BUTTON: Seçili radio buttonları al  
+        const selectedRadios = document.querySelectorAll('.alternative-radio:checked');
+        
+        if (selectedRadios.length === 0) {
+            showError('Lütfen uygulamak istediğiniz önerileri seçin.');
+            return;
+        }
+        
+        setButtonLoading(button, 'Uygulanıyor...');
+        
+        try {
+            console.log(`🚀 Applying ${selectedRadios.length} selected recommendations...`);
+            
+            // Her seçili radio button için doğrudan uygula
+            let successCount = 0;
+            selectedRadios.forEach(radio => {
+                try {
+                    // Radio button'un onclick fonksiyonunu çağır
+                    const onclickAttr = radio.getAttribute('onclick');
+                    if (onclickAttr) {
+                        // Extract fieldTarget and value from onclick
+                        const match = onclickAttr.match(/applyAlternativeDirectly\('([^']+)',\s*'([^']+)'/);
+                        if (match) {
+                            const fieldTarget = match[1];
+                            const value = match[2].replace(/\\'/g, "'");
+                            
+                            // Direct apply
+                            applyAlternativeDirectly(fieldTarget, value, radio);
+                            successCount++;
+                            console.log(`✅ Applied: ${fieldTarget} = ${value.substring(0, 50)}...`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error applying radio selection:', error);
+                }
+            });
+            
+            // Show success feedback
+            if (successCount > 0) {
+                showSuccess(`${successCount} öneri başarıyla uygulandı!`);
+                
+                // Clear all radio selections after applying
+                selectedRadios.forEach(radio => {
+                    radio.checked = false;
+                });
+                updateApplyButton();
+            }
+            
+        } catch (error) {
+            console.error('💥 Apply recommendations error:', error);
+            showError('Öneri uygulanırken hata oluştu: ' + error.message);
+        } finally {
+            resetButton(button, `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M9 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+                    <path d="M9 17l0 -10"/>
+                    <path d="M19 16.5c0 .667 -.167 1.167 -.5 1.5s-.833 .333 -1.5 .333s-1.167 -.167 -1.5 -.5s-.333 -.833 -.333 -1.5c0 -.667 .167 -1.167 .5 -1.5s.833 -.333 1.5 -.333s1.167 .167 1.5 .5s.333 .833 .333 1.5z"/>
+                </svg>
+                Seçilenleri Uygula
+            `);
+        }
+    }
+    
+    async function applyRecommendation(rec) {
+        console.log('🔧 Applying single recommendation:', rec);
+        
+        const language = document.querySelector('.seo-language-content[style*="display: block"]')?.getAttribute('data-language') || 'tr';
+        let valueToApply = rec.value || rec.suggested_value;
+        
+        // CHECK FOR SELECTED ALTERNATIVE
+        if (rec.alternatives && rec.alternatives.length > 0) {
+            // Find the selected alternative for this recommendation
+            const recItem = document.querySelector(`[data-recommendation*='"id":${rec.id}']`);
+            if (recItem) {
+                const selectedRadio = recItem.querySelector('input.alternative-radio:checked');
+                if (selectedRadio) {
+                    // Get the selected alternative data
+                    const altOption = selectedRadio.closest('.alternative-option');
+                    if (altOption) {
+                        const altData = JSON.parse(altOption.getAttribute('data-alternative'));
+                        valueToApply = altData.value;
+                        console.log('✅ Using selected alternative:', altData.label, '=', valueToApply);
+                    }
+                } else {
+                    console.warn('⚠️ No alternative selected for recommendation with alternatives');
+                    return Promise.reject(new Error('Lütfen bir seçenek belirleyin'));
+                }
+            }
+        }
+        
+        // Apply the selected value
+        if (rec.type === 'title' || rec.field_target === 'seoDataCache.tr.seo_title') {
+            const titleField = document.querySelector(`input[wire\\:model*="seoDataCache.${language}.seo_title"]`);
+            if (titleField) {
+                titleField.value = valueToApply;
+                titleField.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log('✅ Title updated:', valueToApply);
+            }
+        } else if (rec.type === 'description' || rec.field_target === 'seoDataCache.tr.seo_description') {
+            const descField = document.querySelector(`textarea[wire\\:model*="seoDataCache.${language}.seo_description"]`);
+            if (descField) {
+                descField.value = valueToApply;
+                descField.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log('✅ Description updated:', valueToApply);
+            }
+        } else if (rec.type === 'og_title' || rec.field_target === 'seoDataCache.tr.og_title') {
+            const ogTitleField = document.querySelector(`input[wire\\:model*="seoDataCache.${language}.og_title"]`);
+            if (ogTitleField) {
+                ogTitleField.value = valueToApply;
+                ogTitleField.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log('✅ OG Title updated:', valueToApply);
+            }
+        } else if (rec.type === 'og_description' || rec.field_target === 'seoDataCache.tr.og_description') {
+            const ogDescField = document.querySelector(`textarea[wire\\:model*="seoDataCache.${language}.og_description"]`);
+            if (ogDescField) {
+                ogDescField.value = valueToApply;
+                ogDescField.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log('✅ OG Description updated:', valueToApply);
+            }
+        } else if (rec.type === 'keywords') {
+            // For keywords, show as info for now (can be implemented later)
+            console.log('ℹ️ Keywords suggestion:', valueToApply);
+        }
+        
+        return Promise.resolve();
+    }
+
     // Save SEO Content to Database
     window.saveSeoToDatabase = function(type, data) {
         console.log('💾 Saving SEO data to database:', type, data);
@@ -740,6 +1375,190 @@
                 showSuccess('Description güncellendi');
             }
         }
+    };
+    
+    // CLICK-TO-FILL functionality for SEO recommendations
+    window.applyAlternativeDirectly = function(fieldTarget, value, element) {
+        console.log('🎯 Direct apply:', fieldTarget, value);
+        
+        // Enhanced field mappings with wire:model targeting
+        const fieldMappings = {
+            'seo_title': 'input[wire\\:model="seoDataCache.tr.seo_title"]',
+            'seo_description': 'textarea[wire\\:model="seoDataCache.tr.seo_description"]', 
+            'content_type': 'select[wire\\:model="seoDataCache.tr.content_type"]',
+            'og_title': 'input[wire\\:model="seoDataCache.tr.og_title"]',
+            'og_description': 'textarea[wire\\:model="seoDataCache.tr.og_description"]',
+            'priority_score': 'input[wire\\:model="seoDataCache.tr.priority_score"]'
+        };
+        
+        const selector = fieldMappings[fieldTarget];
+        if (!selector) {
+            showError('Alan bulunamadı: ' + fieldTarget);
+            return;
+        }
+        
+        const field = document.querySelector(selector);
+        if (!field) {
+            showError('Form alanı bulunamadı: ' + selector);
+            return;
+        }
+        
+        // Special handling for content_type (select vs custom input)
+        if (fieldTarget === 'content_type') {
+            handleContentTypeSelection(value);
+        } else {
+            // Update field value
+            field.value = value;
+            
+            // Trigger Livewire update
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        
+        // Auto-enable OG custom fields if OG fields are filled
+        if (fieldTarget === 'og_title' || fieldTarget === 'og_description') {
+            enableOgCustomFields();
+        }
+        
+        // Visual feedback
+        field.style.backgroundColor = '#d4edda';
+        field.style.border = '2px solid #28a745';
+        
+        // Mark the clicked alternative as selected
+        if (element) {
+            const parent = element.closest('.ai-recommendation-item');
+            if (parent) {
+                const alternatives = parent.querySelectorAll('.form-check');
+                alternatives.forEach(alt => alt.classList.remove('bg-success', 'text-white'));
+                element.classList.add('bg-success', 'text-white');
+            }
+        }
+        
+        // Reset visual feedback after 2 seconds
+        setTimeout(() => {
+            field.style.backgroundColor = '';
+            field.style.border = '';
+        }, 2000);
+        
+        showSuccess('Öneri uygulandı: ' + getFieldDisplayName(fieldTarget));
+    };
+    
+    // Handle content type selection (dropdown vs custom input)
+    function handleContentTypeSelection(value) {
+        const selectField = document.querySelector('select[wire\\:model="seoDataCache.tr.content_type"]');
+        if (!selectField) return;
+        
+        // Check if value exists in select options
+        const optionExists = Array.from(selectField.options).some(option => option.value === value);
+        
+        if (optionExists) {
+            // Select from dropdown
+            selectField.value = value;
+            selectField.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+            // Use custom input
+            selectField.value = 'custom';
+            selectField.dispatchEvent(new Event('change', { bubbles: true }));
+            
+            // Fill custom input
+            setTimeout(() => {
+                const customInput = document.querySelector('input[wire\\:model="seoDataCache.tr.content_type_custom"]');
+                if (customInput) {
+                    customInput.value = value;
+                    customInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }, 100);
+        }
+    }
+    
+    // Auto-enable OG custom fields when OG values are set
+    function enableOgCustomFields() {
+        const checkbox = document.querySelector('input[wire\\:model="seoDataCache.tr.og_custom_enabled"]');
+        if (checkbox && !checkbox.checked) {
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            
+            // Show custom fields
+            const customFields = document.getElementById('og_custom_fields_tr');
+            if (customFields) {
+                customFields.style.display = 'block';
+                customFields.style.maxHeight = 'none';
+                customFields.style.overflow = 'visible';
+            }
+        }
+    }
+    
+    // Get user-friendly field names
+    function getFieldDisplayName(fieldTarget) {
+        const displayNames = {
+            'seo_title': 'Meta Başlık',
+            'seo_description': 'Meta Açıklama',
+            'content_type': 'İçerik Türü',
+            'og_title': 'Sosyal Medya Başlığı',
+            'og_description': 'Sosyal Medya Açıklaması',
+            'priority_score': 'SEO Önceliği'
+        };
+        return displayNames[fieldTarget] || fieldTarget;
+    };
+    
+    // APPLY ALL functionality
+    window.applyAllRecommendations = function() {
+        console.log('🔥 Applying all #1 recommendations...');
+        
+        const recommendationItems = document.querySelectorAll('.recommendation-item');
+        let appliedCount = 0;
+        
+        recommendationItems.forEach(item => {
+            const firstAlternative = item.querySelector('.form-check:first-child .form-check-label[onclick]');
+            if (firstAlternative) {
+                const onclickAttr = firstAlternative.getAttribute('onclick');
+                if (onclickAttr) {
+                    // Extract parameters from onclick
+                    const match = onclickAttr.match(/applyAlternativeDirectly\('([^']+)',\s*'([^']+)'/);
+                    if (match) {
+                        const fieldTarget = match[1];
+                        const value = match[2].replace(/\\'/g, "'");
+                        applyAlternativeDirectly(fieldTarget, value, firstAlternative);
+                        appliedCount++;
+                    }
+                }
+            }
+        });
+        
+        showSuccess(appliedCount + ' öneri otomatik uygulandı!');
+    };
+    
+    // TOGGLE ALL CHECKBOXES functionality
+    window.toggleAllCheckboxes = function() {
+        console.log('🔄 Toggling all checkboxes...');
+        
+        const checkboxes = document.querySelectorAll('.ai-recommendation-checkbox');
+        if (checkboxes.length === 0) {
+            showError('Öneri bulunamadı');
+            return;
+        }
+        
+        // Check if all are currently selected
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        
+        // Toggle all checkboxes
+        checkboxes.forEach(cb => {
+            cb.checked = !allChecked;
+        });
+        
+        // Update apply button
+        updateApplyButton();
+        
+        // Update button text
+        const toggleButton = document.querySelector('button[onclick="toggleAllCheckboxes()"]');
+        if (toggleButton) {
+            toggleButton.innerHTML = allChecked ? 
+                '<i class="fas fa-check-square me-1"></i>Tümünü Seç' : 
+                '<i class="fas fa-square me-1"></i>Seçimi Kaldır';
+        }
+        
+        const action = allChecked ? 'kaldırıldı' : 'seçildi';
+        showSuccess(`${checkboxes.length} öneri ${action}`);
     };
     
     // Initialize the system

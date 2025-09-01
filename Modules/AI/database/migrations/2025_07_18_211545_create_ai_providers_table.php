@@ -30,6 +30,9 @@ return new class extends Migration
             $table->integer('tokens_per_request_estimate')->default(1000); // İstek başına tahmini token
             $table->json('cost_structure')->nullable(); // Maliyet yapısı detayları
             $table->boolean('tracks_usage')->default(true); // Kullanım takibi
+            // ADD columns from 2025_07_20_153506_add_token_cost_to_ai_providers_table.php
+            $table->decimal('credit_cost_multiplier', 8, 4)->default(1.0000)->comment('Kredi maliyet çarpanı - DeepSeek 0.5, OpenAI 1.0, Anthropic 1.2 gibi');
+            $table->integer('credits_per_request_estimate')->default(10)->comment('Request başına ortalama kredi tahmini');
             $table->timestamps();
         });
     }

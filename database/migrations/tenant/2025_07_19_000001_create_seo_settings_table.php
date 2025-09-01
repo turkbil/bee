@@ -17,11 +17,6 @@ return new class extends Migration
             // Polymorphic relationship - herhangi bir modele bağlanabilir
             $table->morphs('seoable'); // seoable_id, seoable_type
             
-            // Temel SEO alanları
-            $table->string('meta_title')->nullable();
-            $table->text('meta_description')->nullable();
-            $table->text('meta_keywords')->nullable();
-            
             // JSON language support - bulletproof multi-language
             $table->json('titles')->nullable(); // {"tr": "Başlık", "en": "Title"}
             $table->json('descriptions')->nullable(); // {"tr": "Açıklama", "en": "Description"}  

@@ -20,9 +20,12 @@ class SettingsController extends Controller
     
     public function api()
     {
-        // Artık sadece ai_providers tablosunu kullanıyoruz
-        $providers = AIProvider::with(['modelCreditRates' => function($query) {
-            $query->where('is_active', true);
+        // Yeni sistem - ai_provider_models tablosunu kullan
+        $providers = AIProvider::with(['providerModels' => function($query) {
+            $query->where('is_active', true)
+                  ->orderBy('credit_per_1k_input_tokens', 'asc')
+                  ->orderBy('is_default', 'desc')
+                  ->orderBy('model_name');
         }])->orderBy('priority', 'desc')->get();
         
         // Global config'den varsayılan ayarları al
@@ -800,6 +803,87 @@ class SettingsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Öncelik güncelleme hatası: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Model sıralama güncelle (Sortable)
+     */
+    public function updateModelSortOrder(Request $request)
+    {
+        $request->validate([
+            'models' => 'required|array',
+            'models.*.id' => 'required|integer|exists:ai_provider_models,id',
+            'models.*.sort_order' => 'required|integer|min:0'
+        ]);
+
+        try {
+            $sortData = collect($request->models)->map(function($item) {
+                return [
+                    'id' => $item['id'],
+                    'sort_order' => $item['sort_order']
+                ];
+            })->toArray();
+
+            $success = \Modules\AI\App\Models\AIProviderModel::updateSortOrder($sortData);
+
+            if ($success) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Model sıralaması başarıyla güncellendi'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Model sıralaması güncellenirken hata oluştu'
+                ], 500);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sıralama güncelleme hatası: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Model varsayılan yap
+     */
+    public function setDefaultModel(Request $request)
+    {
+        $request->validate([
+            'model_id' => 'required|integer|exists:ai_provider_models,id'
+        ]);
+
+        try {
+            $model = \Modules\AI\App\Models\AIProviderModel::findOrFail($request->model_id);
+
+            if (!$model->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pasif model varsayılan yapılamaz'
+                ], 400);
+            }
+
+            // Aynı provider'daki diğer modelleri varsayılan olmaktan çıkar
+            \Modules\AI\App\Models\AIProviderModel::where('provider_id', $model->provider_id)
+                ->where('id', '!=', $model->id)
+                ->update(['is_default' => false]);
+
+            $model->is_default = true;
+            $model->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Model varsayılan olarak ayarlandı'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Varsayılan model ayarlama hatası: ' . $e->getMessage()
             ], 500);
         }
     }

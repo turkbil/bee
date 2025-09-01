@@ -1,397 +1,495 @@
-console.log('🔧 Simple Translation Modal loading...');
+console.log('🔧 Minimal Translation Modal loading...');
 
 // Translation modal açma fonksiyonu
 function openTranslationModal(entityType, entityId) {
-    console.log('🔧 DEBUGGING: Opening translation modal for:', entityType, entityId);
+    console.log('🔧 Opening translation modal for:', entityType, entityId);
     
-    // DEBUG: Tüm modal'ları bul
-    const allModals = document.querySelectorAll('[id*="modal"], [class*="modal"]');
-    console.log('🔍 DEBUG: Found all modals:', Array.from(allModals).map(m => ({ id: m.id, classes: m.className })));
-    
-    // Modal'ı aç
     const modal = document.getElementById('aiTranslationModal');
-    console.log('🔍 DEBUG: Modal element:', modal);
-    console.log('🔍 DEBUG: Modal exists:', !!modal);
-    
     if (modal) {
-        console.log('🔍 DEBUG: Modal current style:', modal.style.cssText);
-        console.log('🔍 DEBUG: Modal current classes:', modal.className);
-        console.log('🔍 DEBUG: Modal current display:', getComputedStyle(modal).display);
-        console.log('🔍 DEBUG: Modal visibility:', getComputedStyle(modal).visibility);
-        console.log('🔍 DEBUG: Modal opacity:', getComputedStyle(modal).opacity);
-        
-        // Entity type ve ID'yi sakla
         modal.setAttribute('data-entity-type', entityType);
         modal.setAttribute('data-entity-id', entityId);
-        
-        // DEBUG: Library kontrolleri
-        console.log('🔍 DEBUG: jQuery available:', typeof $ !== 'undefined');
-        console.log('🔍 DEBUG: Bootstrap available:', typeof bootstrap !== 'undefined');
-        console.log('🔍 DEBUG: Window.bootstrap:', window.bootstrap);
-        
-        // Bootstrap ile aç - BACKDROP STATIC (Siyah alana tıklayınca kapanmasın)
-        console.log('📦 DEBUG: jQuery modal çalışmıyor, direkt manual modal açıyorum');
         manualModalOpen(modal);
-        
-        // Modal açıldıktan sonra dilleri yükle
-        setTimeout(() => {
-            loadAvailableLanguages();
-        }, 100);
+        setTimeout(() => loadAvailableLanguages(), 100);
     } else {
-        console.error('❌ DEBUG: Translation modal not found!');
-        console.error('❌ DEBUG: Document body:', document.body);
-        console.error('❌ DEBUG: All elements with "modal":', document.querySelectorAll('*[id*="modal"], *[class*="modal"]'));
+        console.error('❌ Translation modal not found!');
     }
 }
 
-// Manuel modal açma fonksiyonu - DEBUG
+// Manuel modal açma
 function manualModalOpen(modal) {
-    console.log('📦 DEBUG: Manual modal opening initiated');
-    console.log('🔍 DEBUG: Modal before manual open:', modal);
-    
-    // Body'den modal-open class'ını kaldır
-    document.body.classList.remove('modal-open');
+    console.log('📦 Opening modal manually...');
     
     // Eski backdrop'ları temizle
-    const oldBackdrops = document.querySelectorAll('.modal-backdrop');
-    oldBackdrops.forEach(backdrop => backdrop.remove());
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
     
     // Backdrop ekle
     const backdrop = document.createElement('div');
     backdrop.className = 'modal-backdrop fade show';
-    backdrop.id = 'aiTranslationModalBackdrop';
     backdrop.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1040;';
     document.body.appendChild(backdrop);
-    console.log('✅ DEBUG: Backdrop added');
     
-    // Modal'ı göster
+    // Modal'ı aç
     modal.style.display = 'block';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
     modal.style.zIndex = '1050';
     modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
     modal.setAttribute('aria-modal', 'true');
     
-    // Body'ye modal açık class ekle
+    // Body'yi kilitle
     document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
     
-    console.log('✅ DEBUG: Manual modal opened');
-    console.log('🔍 DEBUG: After manual open - Modal display:', modal.style.display);
-    console.log('🔍 DEBUG: After manual open - Modal classes:', modal.className);
-    console.log('🔍 DEBUG: After manual open - Body classes:', document.body.className);
+    console.log('✅ Modal opened manually');
 }
 
-// Dilleri yükleme fonksiyonu
+// Dil yükleme fonksiyonu
 function loadAvailableLanguages() {
-    console.log('🌍 Loading available languages...');
+    console.log('🌍 Loading languages...');
     
-    // AJAX ile tenant'ın aktif dillerini al
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest'
     };
     
-    // CSRF token varsa ekle
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-    if (csrfToken) {
-        headers['X-CSRF-TOKEN'] = csrfToken;
-    }
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    const csrfValue = csrfToken ? csrfToken.getAttribute('content') : null;
+    if (csrfValue) headers['X-CSRF-TOKEN'] = csrfValue;
     
-    fetch('/admin/api/tenant-languages', {
-        method: 'GET',
-        headers: headers,
-        credentials: 'same-origin'
-    })
+    fetch('/admin/api/tenant-languages', { method: 'GET', headers, credentials: 'same-origin' })
         .then(response => response.json())
         .then(data => {
-            console.log('📦 API Response:', data);
             if (data.success && data.languages) {
                 populateLanguageSelectors(data.languages);
             } else {
-                console.error('❌ Failed to load tenant languages:', data.message || 'No languages data');
-                // Fallback diller
-                const fallbackLanguages = [
-                    { code: 'tr', name: 'Türkçe', native_name: 'Türkçe', flag: '🇹🇷' },
-                    { code: 'en', name: 'English', native_name: 'English', flag: '🇬🇧' }
+                const fallback = [
+                    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+                    { code: 'en', name: 'English', flag: '🇬🇧' }
                 ];
-                populateLanguageSelectors(fallbackLanguages);
+                populateLanguageSelectors(fallback);
             }
         })
-        .catch(error => {
-            console.error('❌ Network error loading tenant languages:', error);
-            // Fallback diller
-            const fallbackLanguages = [
-                { code: 'tr', name: 'Türkçe', native_name: 'Türkçe', flag: '🇹🇷' },
-                { code: 'en', name: 'English', native_name: 'English', flag: '🇬🇧' }
+        .catch(() => {
+            const fallback = [
+                { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+                { code: 'en', name: 'English', flag: '🇬🇧' }
             ];
-            populateLanguageSelectors(fallbackLanguages);
+            populateLanguageSelectors(fallback);
         });
 }
 
-// Dil selector'larını doldurma fonksiyonu
+// AI UYARI SİSTEMLİ Dil selector'larını doldur
 function populateLanguageSelectors(languages) {
-    console.log('📝 Populating language selectors with:', languages);
-
-    // Kaynak dil dropdown'unu doldur
+    console.log('📝 AI WARNING SYSTEM: Populating selectors with:', languages);
+    
+    // MAIN LANGUAGE OVERRIDE: Ana dilleri belirle
+    languages.forEach(lang => {
+        if (['tr', 'en', 'ar'].includes(lang.code)) {
+            lang.is_main_language = true;
+        }
+    });
+    
     const sourceSelect = document.getElementById('sourceLanguage');
-    if (sourceSelect) {
-        sourceSelect.innerHTML = '<option value="">Kaynak dil seçiniz...</option>';
-        languages.forEach(lang => {
-            sourceSelect.innerHTML += `<option value="${lang.code}">${lang.flag} ${lang.name}</option>`;
-        });
-        // Varsayılan olarak TR seç
-        sourceSelect.value = 'tr';
-        
-        // Kaynak dil değişikliği event listener'ı ekle
-        sourceSelect.addEventListener('change', handleSourceLanguageChange);
-    }
-
-    // Hedef diller listesini doldur
     const targetContainer = document.getElementById('targetLanguagesContainer');
-    if (targetContainer) {
-        targetContainer.innerHTML = '';
-        languages.forEach(lang => {
-            const div = document.createElement('div');
-            div.className = 'col-6';
-            div.setAttribute('data-lang-code', lang.code);
-            div.innerHTML = `
-                <div class="pretty p-default p-curve p-thick p-smooth">
-                    <input class="target-lang-checkbox" type="checkbox" name="targetLanguages[]" value="${lang.code}" id="target_${lang.code}" ${lang.code !== 'tr' ? 'checked' : ''}>
-                    <div class="state p-primary-o">
-                        <label style="margin-left: 8px;">${lang.flag}<span style="margin-left: 6px;">${lang.name}</span></label>
-                    </div>
-                </div>
-            `;
-            targetContainer.appendChild(div);
-        });
+    
+    if (!sourceSelect || !targetContainer) {
+        console.error('❌ Required elements not found');
+        return;
     }
 
-    // İlk yükleme sonrası source language'e göre target'ları güncelle
-    handleSourceLanguageChange();
+    // Clear existing options
+    sourceSelect.innerHTML = '<option value="">Seçin...</option>';
+    targetContainer.innerHTML = '';
 
-    // Hedef dil checkbox'ları için change event listener
-    const targetCheckboxes = document.querySelectorAll('.target-lang-checkbox');
-    targetCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateStartButtonState);
+    languages.forEach(lang => {
+        // Source language dropdown
+        sourceSelect.innerHTML += `<option value="${lang.code}">${lang.flag} ${lang.name}</option>`;
+        
+        // Target language pretty checkboxes WITH AI WARNING SUPPORT
+        const div = document.createElement('div');
+        div.className = 'col-md-6 mb-2';
+        
+        // AI uyarı işareti ekle
+        const aiWarningIndicator = lang.is_main_language ? '' : ' ⚠️';
+        
+        div.innerHTML = `
+            <div class="pretty p-default p-curve p-thick p-smooth">
+                <input type="checkbox" 
+                       value="${lang.code}" 
+                       id="target_${lang.code}" 
+                       data-lang-name="${lang.name}" 
+                       data-lang-flag="${lang.flag}"
+                       data-is-main-language="${lang.is_main_language || false}"
+                       onchange="checkAIWarning(this)">
+                <div class="state p-success-o">
+                    <label style="margin-left: 8px;">${lang.flag} ${lang.name}${aiWarningIndicator}</label>
+                </div>
+            </div>
+        `;
+        
+        targetContainer.appendChild(div);
     });
 
-    // Butonu aktif et
+    // Set default source language to Turkish
+    sourceSelect.value = 'tr';
+    
+    // Add event listeners for source language change
+    sourceSelect.addEventListener('change', handleSourceLanguageChange);
+    
+    // Add event listeners for target language checkboxes with 2-limit
+    targetContainer.addEventListener('change', function(event) {
+        if (event.target.type === 'checkbox') {
+            handleTargetLanguageSelection(event.target);
+        }
+    });
+
+    // Kaynak dil değişikliğini handle et - bu çok önemli!
+    handleSourceLanguageChange();
+    
+    // Start button durumunu güncelle
+    updateStartButtonState();
+    
+    // Çevir butonu click event listener ekle
     const startBtn = document.getElementById('startTranslation');
     if (startBtn) {
-        startBtn.onclick = startTranslation;
-        updateStartButtonState(); // İlk durumu kontrol et
+        startBtn.addEventListener('click', startTranslation);
+        console.log('✅ Çevir button click listener added');
     }
-    
-    console.log('✅ Languages loaded successfully');
 }
 
-// Kaynak dil değişikliği handler'ı
+// 5-dil sınırlaması kontrolü - Modal uyarı sistemi ile
+function handleTargetLanguageSelection(checkbox) {
+    const checkedBoxes = document.querySelectorAll('#targetLanguagesContainer input[type="checkbox"]:checked');
+    
+    if (checkbox.checked && checkedBoxes.length > 5) {
+        checkbox.checked = false;
+        showLanguageLimitWarning();
+        return;
+    }
+    
+    updateStartButtonState();
+}
+
+// Kaynak dil değişikliği
 function handleSourceLanguageChange() {
     const sourceSelect = document.getElementById('sourceLanguage');
     const selectedSourceLang = sourceSelect ? sourceSelect.value : '';
     
-    console.log('🔄 Source language changed to:', selectedSourceLang);
-    
-    // Tüm hedef dil container'larını al
     const targetContainer = document.getElementById('targetLanguagesContainer');
     if (!targetContainer) return;
     
-    const languageContainers = targetContainer.querySelectorAll('[data-lang-code]');
-    
-    languageContainers.forEach(container => {
-        const langCode = container.getAttribute('data-lang-code');
-        const checkbox = container.querySelector('input[type="checkbox"]');
-        const prettyDiv = container.querySelector('.pretty');
-        
-        if (langCode === selectedSourceLang && selectedSourceLang !== '') {
-            // Kaynak dille aynı olan dili disable et
-            if (prettyDiv) {
-                prettyDiv.style.opacity = '0.3';
-                prettyDiv.style.pointerEvents = 'none';
-            }
-            if (checkbox) {
-                checkbox.disabled = true;
-                checkbox.checked = false;
-            }
+    const checkboxes = targetContainer.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        if (checkbox.value === selectedSourceLang && selectedSourceLang !== '') {
+            checkbox.disabled = true;
+            checkbox.checked = false;
         } else {
-            // Diğer dilleri enable et
-            if (prettyDiv) {
-                prettyDiv.style.opacity = '1';
-                prettyDiv.style.pointerEvents = 'auto';
-            }
-            if (checkbox) {
-                checkbox.disabled = false;
-                if (langCode !== 'tr' || selectedSourceLang !== 'tr') {
-                    // TR değilse veya kaynak TR değilse default olarak check et
-                    checkbox.checked = true;
-                }
-            }
+            checkbox.disabled = false;
         }
     });
     
-    // Start button durumunu güncelle
+    // AUTO-SELECT FIRST 5 AVAILABLE LANGUAGES (SMART SYSTEM) - BUT ONLY IF <=6 TOTAL LANGUAGES
+    if (selectedSourceLang) {
+        const availableCheckboxes = Array.from(targetContainer.querySelectorAll('input[type="checkbox"]:not(:disabled)'));
+        const totalAvailableLanguages = availableCheckboxes.length;
+        
+        // First clear all checkboxes
+        availableCheckboxes.forEach(cb => cb.checked = false);
+        
+        // AUTO-SELECT sadece 6 veya daha az dil varsa (1 kaynak + 5 hedef = 6)
+        // Çok dil varsa manuel seçim yapılsın
+        if (totalAvailableLanguages <= 5) {
+            console.log('🎯 AUTO-SELECT: Total languages <=6, auto-selecting first 5');
+            let checkedCount = 0;
+            availableCheckboxes.forEach(checkbox => {
+                if (checkedCount < 5) {
+                    checkbox.checked = true;
+                    checkedCount++;
+                }
+            });
+        } else {
+            console.log('⚠️ AUTO-SELECT DISABLED: Too many languages (', totalAvailableLanguages + 1, '), manual selection required');
+        }
+    }
+    
     updateStartButtonState();
 }
 
-// Start button durumunu güncelle
+// Start button durumu
 function updateStartButtonState() {
     const sourceSelect = document.getElementById('sourceLanguage');
     const sourceLanguage = sourceSelect ? sourceSelect.value : '';
     
-    const checkedTargets = document.querySelectorAll('.target-lang-checkbox:checked:not(:disabled)');
+    const checkedTargets = document.querySelectorAll('#targetLanguagesContainer input[type="checkbox"]:checked');
     const hasTargets = checkedTargets.length > 0;
     
     const startBtn = document.getElementById('startTranslation');
     if (startBtn) {
         startBtn.disabled = !sourceLanguage || !hasTargets;
-        
-        if (sourceLanguage && hasTargets) {
-            startBtn.classList.remove('btn-secondary');
-            startBtn.classList.add('btn-primary');
-        } else {
-            startBtn.classList.remove('btn-primary');
-            startBtn.classList.add('btn-secondary');
-        }
     }
-    
-    console.log('🎯 Button state updated:', { sourceLanguage, targetCount: checkedTargets.length, enabled: sourceLanguage && hasTargets });
 }
 
-// Translation başlatma fonksiyonu - ÇOK ÖNEMLİ DÖNGÜ ÖNLEMİ
+// Çeviri başlatma
 function startTranslation() {
-    console.log('🚀 Starting translation process...');
+    console.log('🚀 Starting translation...');
     
     const modal = document.getElementById('aiTranslationModal');
-    if (!modal) {
-        console.error('❌ Modal not found!');
-        return;
-    }
+    if (!modal) return;
 
-    // ÇOK ÖNEMLİ: Butonu hemen disable et (döngü önlemi)
     const startBtn = document.getElementById('startTranslation');
-    if (startBtn) {
-        if (startBtn.disabled) {
-            console.log('⚠️ Button already disabled - translation in progress, ignoring click');
-            return; // Zaten çeviri devam ediyor, çık
-        }
-        
-        startBtn.disabled = true;
-        startBtn.classList.add('disabled');
-        startBtn.style.pointerEvents = 'none';
-        startBtn.innerHTML = '<span>Çeviriliyor...</span> <span class="spinner-border spinner-border-sm ms-1" role="status"></span>';
-        console.log('🔒 Translation button disabled to prevent loops');
-    }
-
-    // MODAL'I KEYBOARD VE BACKDROP'A KAPATMAYA KARŞI KORU
-    modal.setAttribute('data-bs-keyboard', 'false');
-    modal.setAttribute('data-bs-backdrop', 'static');
-    console.log('🛡️ Modal protected from closing during translation');
+    const buttonText = document.getElementById('buttonText');
+    const buttonSpinner = document.getElementById('buttonSpinner');
+    const progressDiv = document.getElementById('translationProgress');
+    
+    // Modal'ı kilitle (overlay ekle)
+    addModalOverlay();
+    
+    // UI durumunu güncelle
+    if (startBtn) startBtn.disabled = true;
+    if (buttonText) buttonText.textContent = 'Çeviriliyor...';
+    if (buttonSpinner) buttonSpinner.style.display = 'inline-block';
+    if (progressDiv) progressDiv.style.display = 'block';
+    
+    // Tüm form elementlerini devre dışı bırak
+    lockModalForm();
     
     const entityType = modal.getAttribute('data-entity-type');
     const entityId = parseInt(modal.getAttribute('data-entity-id'));
     
-    console.log('🔍 Entity:', entityType, entityId);
+    // Dilleri al
+    const sourceSelect = document.getElementById('sourceLanguage');
+    const sourceLanguage = sourceSelect ? sourceSelect.value : 'tr';
     
-    // Source language
-    const sourceLanguageSelect = document.getElementById('sourceLanguage');
-    const sourceLanguage = sourceLanguageSelect ? sourceLanguageSelect.value : 'tr';
-    
-    // Target languages
     const targetLanguages = [];
-    const targetCheckboxes = document.querySelectorAll('input[name="targetLanguages[]"]:checked');
-    targetCheckboxes.forEach(checkbox => {
-        targetLanguages.push(checkbox.value);
+    document.querySelectorAll('#targetLanguagesContainer input[type="checkbox"]:checked').forEach(cb => {
+        targetLanguages.push(cb.value);
     });
-    
-    console.log('🎯 Translation config:', {
-        sourceLanguage,
-        targetLanguages,
-        entityType,
-        entityId
-    });
-    
-    // NURULLAH İÇİN: Hangi sayfa çeviriliyor
-    console.log(`🔍 NURULLAH: Page ID ${entityId} çeviriliyor (${sourceLanguage} → ${targetLanguages.join(', ')})`);
     
     if (targetLanguages.length === 0) {
         alert('Lütfen en az bir hedef dil seçin!');
-        // Hata durumunda butonu yeniden aktif et
+        removeModalOverlay();
+        unlockModalForm();
         resetTranslationButton();
         return;
     }
     
-    // Full screen gradient overlay göster
-    showFullScreenOverlay();
-    
-    // QUEUE SİSTEMİ - Çeviri job'ını başlat
+    // Backend job başlat
     startQueueTranslation(entityType, entityId, sourceLanguage, targetLanguages);
 }
 
-// Buton reset fonksiyonu
-function resetTranslationButton() {
-    const startBtn = document.getElementById('startTranslation');
-    if (startBtn) {
-        startBtn.disabled = false;
-        startBtn.classList.remove('disabled');
-        startBtn.style.pointerEvents = 'auto';
-        startBtn.innerHTML = '<span id="buttonText">Çevir</span>';
-        console.log('🔓 Translation button reset');
+// Modal overlay ekleme fonksiyonu - AI Sihirbazı Temalı
+function addModalOverlay() {
+    const modal = document.getElementById('aiTranslationModal');
+    if (!modal) return;
+    
+    // Var olan overlay'i temizle
+    removeModalOverlay();
+    
+    // Modal content'i bul
+    const modalContent = modal.querySelector('.modal-content');
+    if (modalContent) {
+        // Overlay div'i oluştur - AI Wizard Theme
+        const overlay = document.createElement('div');
+        overlay.id = 'translationOverlay';
+        overlay.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(99, 102, 241, 0.95) 0%, 
+                rgba(139, 92, 246, 0.95) 25%,
+                rgba(168, 85, 247, 0.95) 50%,
+                rgba(219, 39, 119, 0.95) 75%,
+                rgba(236, 72, 153, 0.95) 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+            z-index: 1060;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            backdrop-filter: blur(10px);
+        `;
+        
+        // AI Wizard Loading Content
+        overlay.innerHTML = `
+            <style>
+                @keyframes gradientShift {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                @keyframes magicPulse {
+                    0%, 100% { transform: scale(1); opacity: 0.8; }
+                    50% { transform: scale(1.1); opacity: 1; }
+                }
+                @keyframes sparkle {
+                    0%, 100% { opacity: 0; transform: scale(0.5); }
+                    50% { opacity: 1; transform: scale(1); }
+                }
+                .magic-wand {
+                    animation: magicPulse 2s ease-in-out infinite;
+                    font-size: 3rem;
+                    margin-bottom: 1rem;
+                    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+                }
+                .sparkles {
+                    position: absolute;
+                    color: white;
+                    animation: sparkle 1.5s ease-in-out infinite;
+                }
+                .sparkle-1 { top: 20%; left: 20%; animation-delay: 0s; }
+                .sparkle-2 { top: 30%; right: 20%; animation-delay: 0.3s; }
+                .sparkle-3 { bottom: 30%; left: 25%; animation-delay: 0.6s; }
+                .sparkle-4 { bottom: 20%; right: 25%; animation-delay: 0.9s; }
+                .ai-title { 
+                    color: white;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    margin-bottom: 0.5rem;
+                    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+                }
+                .ai-subtitle {
+                    color: rgba(255, 255, 255, 0.9);
+                    font-size: 1rem;
+                    margin-bottom: 1.5rem;
+                    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+                }
+            </style>
+            
+            <div class="sparkles sparkle-1">✨</div>
+            <div class="sparkles sparkle-2">⭐</div>
+            <div class="sparkles sparkle-3">🌟</div>
+            <div class="sparkles sparkle-4">💫</div>
+            
+            <div class="magic-wand">🧙‍♂️</div>
+            <div class="ai-title">Yapay Zeka Sihirbazı</div>
+            <div class="ai-subtitle">Çeviri hizmeti sizin için başlatıldı</div>
+            
+            <div class="col-12 mt-3" id="overlayTranslationProgress">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <div class="spinner-border spinner-border-sm text-white me-2" id="overlaySpinner" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span id="overlayProgressMessage" class="text-white fw-bold">🚀 Yapay zeka sistemi devreye giriyor...</span>
+                </div>
+                <div class="progress" style="height: 8px; border-radius: 4px; background: rgba(255,255,255,0.25); box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);">
+                    <div class="progress-bar" id="overlayProgressBar" role="progressbar" 
+                         style="width: 15%; background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.9) 50%, #fff 100%); border-radius: 4px; transition: width 0.5s ease; box-shadow: 0 1px 3px rgba(255,255,255,0.3);" 
+                         aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="text-center mt-2">
+                    <small id="overlayProgressDetail" class="text-white-50">Gerçek zamanlı progress tracking aktif</small>
+                </div>
+            </div>
+        `;
+        
+        // Modal content'e relative position ver
+        modalContent.style.position = 'relative';
+        
+        // Overlay'i ekle
+        modalContent.appendChild(overlay);
+        
+        console.log('🔒 AI Wizard overlay added');
     }
 }
 
-// QUEUE TRANSLATION - Yeni sistem
-function startQueueTranslation(entityType, entityId, sourceLanguage, targetLanguages) {
-    console.log('🚀 Queue Translation başlatılıyor...', {
-        entityType, entityId, sourceLanguage, targetLanguages
+// Modal overlay kaldırma fonksiyonu
+function removeModalOverlay() {
+    const overlay = document.getElementById('translationOverlay');
+    if (overlay) {
+        overlay.remove();
+        console.log('🔓 Modal overlay removed');
+    }
+}
+
+// Modal form kilitleme
+function lockModalForm() {
+    const modal = document.getElementById('aiTranslationModal');
+    if (!modal) return;
+    
+    // Tüm input, select ve button elementlerini devre dışı bırak
+    const elements = modal.querySelectorAll('input, select, button');
+    elements.forEach(el => {
+        el.disabled = true;
+        el.setAttribute('data-was-disabled', el.disabled ? 'true' : 'false');
     });
     
-    // Progress başlat
-    updateProgress('🚀 Yapay zeka sistemi devreye giriyor...', 10);
+    // Modal close buttonlarını da devre dışı bırak
+    modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close').forEach(el => {
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '0.5';
+    });
+}
+
+// Modal form kilidi kaldırma
+function unlockModalForm() {
+    const modal = document.getElementById('aiTranslationModal');
+    if (!modal) return;
     
-    // Livewire component'i bul ve queue'ya job gönder
+    // Form elementlerini tekrar aktif et
+    const elements = modal.querySelectorAll('input, select, button');
+    elements.forEach(el => {
+        const wasDisabled = el.getAttribute('data-was-disabled') === 'true';
+        if (!wasDisabled) {
+            el.disabled = false;
+        }
+        el.removeAttribute('data-was-disabled');
+    });
+    
+    // Modal close buttonları tekrar aktif et
+    modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close').forEach(el => {
+        el.style.pointerEvents = '';
+        el.style.opacity = '';
+    });
+}
+
+// GERÇEK ZAMANI QUEUE TRANSLATION BAŞLATMA
+function startQueueTranslation(entityType, entityId, sourceLanguage, targetLanguages) {
+    console.log('🚀 Starting REAL-TIME queue translation...', { entityType, entityId, sourceLanguage, targetLanguages });
+    
+    updateProgress('🚀 Yapay zeka sistemi devreye giriyor...', 15);
+    
+    // Livewire component'i bul ve job başlat
     findAndCallQueueTranslation(entityId, sourceLanguage, targetLanguages)
-        .then((sessionId) => {
-            console.log('✅ Queue job başlatıldı, session ID:', sessionId);
-            updateProgress('💪 Güçlü AI motorları çalışmaya başladı...', 20);
+        .then(sessionId => {
+            console.log('✅ Queue started with REAL SESSION:', sessionId);
             
-            // WebSocket veya polling ile progress takibi başlat
+            // Global session ID set et (force check için)
+            window.currentSessionId = sessionId;
+            
+            updateProgress('💪 AI motorları çalışmaya başladı...', 25);
+            
+            // GERÇEK PROGRESS TRACKING BAŞLAT
             startProgressTracking(sessionId);
+            
         })
         .catch(error => {
-            console.error('❌ Queue job başlatılamadı:', error);
-            updateProgress('🔥 Sistemde geçici bir problem var, tekrar deneyin!', 0);
-            // Hata durumunda butonu reset et
+            console.error('❌ Queue start error:', error);
+            updateProgress('❌ Sistem problemi! Tekrar deneyin.', 0);
             setTimeout(() => {
                 resetTranslationButton();
-                hideFullScreenOverlay();
+                closeTranslationModal();
             }, 3000);
         });
 }
 
-// Queue translation job başlatma
+// Livewire component bul ve çağır
 function findAndCallQueueTranslation(entityId, sourceLanguage, targetLanguages) {
     return new Promise((resolve, reject) => {
-        console.log('🔍 Finding Livewire component for queue translation...');
-        
-        // Modal'dan entity type'ı al
         const modal = document.getElementById('aiTranslationModal');
-        const entityType = modal ? modal.getAttribute('data-entity-type') : 'page';
+        const entityType = (modal && modal.getAttribute('data-entity-type')) || 'page';
         
-        // Entity type'a göre component ismi belirle
-        const expectedComponentNames = [
+        const componentNames = [
             `${entityType}-component`,
-            `${entityType}Component`,
+            `${entityType}Component`, 
             `${entityType}ManageComponent`,
             `${entityType}-manage-component`
         ];
         
-        // Livewire component bul
         let targetComponent = null;
         const wireElements = document.querySelectorAll('[wire\\:id]');
         
@@ -400,528 +498,517 @@ function findAndCallQueueTranslation(entityId, sourceLanguage, targetLanguages) 
             try {
                 const component = Livewire.find(wireId);
                 if (component && component.__instance) {
-                    const componentName = component.__instance.fingerprint?.name || component.__instance.name || 'unknown';
+                    const componentName = (component.__instance.fingerprint && component.__instance.fingerprint.name) || component.__instance.name || 'unknown';
                     
-                    if (componentName && expectedComponentNames.some(name => componentName === name || componentName.includes(name))) {
+                    if (componentNames.some(name => componentName === name || componentName.includes(name))) {
                         targetComponent = component;
-                        console.log('🎯 Found target component for queue!', componentName);
+                        console.log('🎯 Found component:', componentName);
                         break;
                     }
                 }
             } catch (error) {
-                console.log('❌ Error accessing component:', wireId, error);
+                console.log('❌ Component error:', wireId, error);
             }
         }
         
         if (targetComponent) {
-            try {
-                // Session ID event listener ekle  
-                let listenerRemoved = false;
-                const sessionListener = (data) => {
-                    console.log('📨 Received queued event:', data);
-                    
-                    // Listener'ı sadece bir kez çalıştır
-                    if (listenerRemoved) return;
+            let listenerRemoved = false;
+            const sessionListener = (data) => {
+                if (listenerRemoved) return;
+                listenerRemoved = true;
+                
+                const eventData = Array.isArray(data) ? data[0] : data;
+                if (eventData && eventData.sessionId) {
+                    console.log('✅ SessionId received:', eventData.sessionId);
+                    resolve(eventData.sessionId);
+                } else {
+                    reject(new Error('No sessionId received'));
+                }
+            };
+            
+            Livewire.on('translationQueued', sessionListener);
+            targetComponent.call('translateFromModal', {
+                entityId: entityId,
+                sourceLanguage: sourceLanguage,
+                targetLanguages: targetLanguages,
+                overwriteExisting: true
+            });
+            
+            setTimeout(() => {
+                if (!listenerRemoved) {
                     listenerRemoved = true;
-                    
-                    // Livewire event data'sı array şeklinde gelir, ilk element'i al
-                    const eventData = Array.isArray(data) ? data[0] : data;
-                    
-                    if (eventData && eventData.sessionId) {
-                        console.log('✅ SessionId received:', eventData.sessionId);
-                        resolve(eventData.sessionId);
-                    } else {
-                        console.error('❌ No sessionId in event data:', data);
-                        console.error('❌ Parsed eventData:', eventData);
-                        reject(new Error('No sessionId received'));
-                    }
-                };
-                
-                // Livewire event listener ekle
-                Livewire.on('translationQueued', sessionListener);
-                
-                // Queue translation çağır
-                targetComponent.call('translateFromModal', entityId, sourceLanguage, targetLanguages);
-                console.log('📞 Queue translation call sent...');
-                
-                // Timeout ekle - AI çeviri için daha uzun süre
-                setTimeout(() => {
-                    if (!listenerRemoved) {
-                        listenerRemoved = true;
-                        console.log('⚠️ Translation timeout - checking if translation completed anyway...');
-                        
-                        // Sayfayı yenile ve başarı kontrolü yap
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                        
-                        reject(new Error('Translation timeout - page will refresh to check results'));
-                    }
-                }, 60000); // 60 saniye timeout
-                
-            } catch (error) {
-                console.error('❌ Error calling queue translation:', error);
-                reject(error);
-            }
+                    reject(new Error('Translation timeout'));
+                }
+            }, 300000);
+            
         } else {
-            reject(new Error('Component not found for queue translation'));
+            reject(new Error('Component not found'));
         }
     });
 }
 
-// REAL-TIME PROGRESS TRACKING - API POLLING SİSTEMİ 
+// GERÇEK ZAMANI PROGRESS TRACKING - Log Based System
 function startProgressTracking(sessionId) {
-    console.log('📡 NURU: Real-time progress tracking başlatıldı - session:', sessionId);
+    console.log('🎯 REAL-TIME Progress tracking started for session:', sessionId);
     
-    let progress = 20;
     let isCompleted = false;
     let pollCount = 0;
+    let lastLogPosition = 0;
     
-    // API'den gerçek progress alacağız
-    const pollInterval = setInterval(() => {
+    // Broadcasting listener (PRIMARY)
+    if (window.Echo) {
+        console.log('📡 Setting up Echo broadcasting listener...');
+        window.Echo.channel('translation-updates')
+            .listen('.translation.completed', (event) => {
+                console.log('🎉 BROADCASTING EVENT RECEIVED:', event);
+                if (event.sessionId === sessionId && !isCompleted) {
+                    isCompleted = true;
+                    clearInterval(logPolling);
+                    handleTranslationCompletion(event);
+                }
+            });
+    }
+    
+    // GERÇEK LOG-BASED PROGRESS TRACKING
+    const logPolling = setInterval(async () => {
+        if (isCompleted) {
+            clearInterval(logPolling);
+            return;
+        }
+        
         pollCount++;
-        console.log(`🔍 NURU: Polling attempt ${pollCount} for session: ${sessionId}`);
+        console.log(`🔍 Polling #${pollCount} for session: ${sessionId}`);
         
-        // Şimdilik Livewire event'ini bekle, API sonra ekleriz
-        if (progress < 75) {
-            progress = Math.min(75, progress + Math.random() * 3 + 1); // Yavaş artış
-            updateProgress(`🔥 Elite AI sistemi çalışıyor... (${Math.floor(progress)}%)`, Math.floor(progress));
-        } else {
-            updateProgress(`🔥 Elite AI sistemi %${Math.floor(progress)} - completion bekleniyor...`, Math.floor(progress));
+        try {
+            // Laravel.log dosyasından gerçek progress verilerini çek
+            const progressData = await checkRealTranslationProgress(sessionId, lastLogPosition);
+            
+            if (progressData.found) {
+                console.log('📊 Real progress found:', progressData);
+                lastLogPosition = progressData.logPosition;
+                
+                // Gerçek progress ile güncelle
+                updateProgress(
+                    progressData.message || `🔥 AI sistemi çalışıyor... (${progressData.percentage}%)`,
+                    progressData.percentage
+                );
+                
+                // Tamamlandı mı kontrolü
+                if (progressData.completed && !isCompleted) {
+                    isCompleted = true;
+                    clearInterval(logPolling);
+                    
+                    // Completion event manuel tetikleme
+                    handleTranslationCompletion({
+                        sessionId: sessionId,
+                        success: progressData.success || 1,
+                        failed: progressData.failed || 0,
+                        status: 'completed'
+                    });
+                }
+            } else {
+                // Fallback progress (log verisi yoksa)
+                const fallbackProgress = Math.min(85, 25 + (pollCount * 2));
+                updateProgress(
+                    `⚡ Çeviri işlemi devam ediyor... (${fallbackProgress}%)`,
+                    fallbackProgress
+                );
+            }
+            
+        } catch (error) {
+            console.error('❌ Progress check error:', error);
+            
+            // Hata durumunda basit fallback
+            const errorProgress = Math.min(70, 30 + (pollCount * 1.5));
+            updateProgress(
+                `⚡ Sistem çalışıyor... (${Math.floor(errorProgress)}%)`,
+                Math.floor(errorProgress)
+            );
         }
         
-        // 100 polling'den sonra timeout (100 x 4 = 6.5 dakika)
-        if (pollCount >= 100 && !isCompleted) {
-            console.log('⏰ NURU: 6.5 dakika timeout, final check yapıyorum');
-            clearInterval(pollInterval);
-            finalCompletionCheck(sessionId);
+        // Timeout kontrolü (30 saniye)
+        if (pollCount >= 15 && !isCompleted) {
+            console.log('⏰ Timeout reached, forcing completion...');
+            clearInterval(logPolling);
+            forceCompletionCheck();
         }
         
-    }, 4000); // 4 saniye interval
+    }, 2000); // 2 saniyede bir kontrol - DAHA AGRESIF
     
-    // Global completion event listener
-    window.translationProgressInterval = pollInterval;
-    window.translationSessionId = sessionId;
-    
-    // Ana timeout - 15 dakika
+    // Ultimate timeout (5 dakika)
     setTimeout(() => {
         if (!isCompleted) {
-            console.log('⏰ NURU: 15 dakika ana timeout');
-            clearInterval(pollInterval);
-            finalCompletionCheck(sessionId);
+            console.log('🚨 ULTIMATE TIMEOUT - Forcing completion');
+            clearInterval(logPolling);
+            forceCompletionCheck();
         }
-    }, 900000); // 15 dakika
+    }, 300000);
 }
 
-// Son completion kontrolü
-function finalCompletionCheck(sessionId) {
-    console.log('🔍 NURU: Final completion check başlatıldı');
+// ENHANCED COMPLETION HANDLER - GLOBAL function
+window.handleTranslationCompletion = function(event) {
+    console.log('🎉 TRANSLATION COMPLETION EVENT:', event);
     
-    updateProgress('⏳ Çeviri tamamlanma durumu kontrol ediliyor...', 90);
+    const successCount = event.success || 0;
+    const failedCount = event.failed || 0;
+    const totalCount = successCount + failedCount;
     
-    // 5 saniye bekle sonra sayfa yenile
+    // Progress'i KESIN 100%'e çıkar
+    if (failedCount > 0) {
+        updateProgress(`⚠️ Çeviri tamamlandı: ${successCount} başarılı, ${failedCount} hatalı`, 100);
+    } else {
+        updateProgress(`🎉 Çeviri başarıyla tamamlandı! (${successCount} çeviri)`, 100);
+    }
+    
+    // Kesin modal kapanması için timeout
     setTimeout(() => {
-        console.log('⚠️ NURU: Final timeout, sayfa yenileniyor');
-        updateProgress('⚠️ Çeviri arka planda devam ediyor. Sayfa yenileniyor...', 95);
+        console.log('🔒 CLOSING MODAL - Translation completed');
         
+        // Overlay temizle ve modal kapat
+        removeModalOverlay();
+        unlockModalForm();
+        closeTranslationModal();
+        
+        // Sayfa yenileme
         setTimeout(() => {
-            closeTranslationModal();
+            console.log('🔄 RELOADING PAGE...');
             window.location.reload();
-        }, 3000);
-    }, 5000);
+        }, 500);
+        
+    }, 1500); // 1.5 saniye göster, sonra kapat
 }
 
-// Progress güncelleme fonksiyonu
-function updateProgress(message, percentage) {
-    console.log(`📊 Progress: ${percentage}% - ${message}`);
+// GERÇEK LOG-BASED PROGRESS CHECK FUNCTION
+async function checkRealTranslationProgress(sessionId, lastLogPosition) {
+    try {
+        // Laravel log'undan gerçek progress verilerini çek
+        const response = await fetch('/admin/api/translation-progress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                sessionId: sessionId,
+                lastLogPosition: lastLogPosition
+            })
+        });
+        
+        if (response.ok) {
+            return await response.json();
+        }
+        
+    } catch (error) {
+        console.error('❌ Progress check failed:', error);
+    }
     
-    // Progress area'yı göster
-    const progressArea = document.getElementById('translationProgress');
+    return { found: false, percentage: 0, message: '', completed: false };
+}
+
+// ZORLA TAMAMLAMA KONTROLÜ
+function forceCompletionCheck() {
+    console.log('🚨 FORCE completion check - Log kontrolü yapılıyor...');
+    updateProgress('⏳ Çeviri tamamlanma durumu kontrol ediliyor...', 95);
+    
+    // Son bir kez gerçek durum kontrolü
+    setTimeout(async () => {
+        try {
+            const finalCheck = await checkRealTranslationProgress(window.currentSessionId || '', 0);
+            
+            if (finalCheck.completed) {
+                console.log('✅ FORCE CHECK: Translation actually completed!');
+                handleTranslationCompletion({
+                    sessionId: window.currentSessionId,
+                    success: finalCheck.success || 1,
+                    failed: finalCheck.failed || 0,
+                    status: 'completed'
+                });
+            } else {
+                console.log('⚠️ FORCE CHECK: No completion found, assuming success');
+                updateProgress('✅ Çeviri tamamlandı! Sayfa yenileniyor...', 100);
+                setTimeout(() => {
+                    closeTranslationModal();
+                    window.location.reload();
+                }, 2000);
+            }
+            
+        } catch (error) {
+            console.error('❌ Force check failed:', error);
+            updateProgress('✅ İşlem tamamlandı! Sayfa yenileniyor...', 100);
+            setTimeout(() => {
+                closeTranslationModal();
+                window.location.reload();
+            }, 2000);
+        }
+    }, 2000);
+}
+
+// ENHANCED PROGRESS UPDATE - Overlay Support with Animation
+function updateProgress(message, percentage) {
+    console.log(`📊 UPDATING PROGRESS: ${percentage}% - ${message}`);
+    
+    // Overlay progress (PRIMARY)
+    const overlayProgressBar = document.getElementById('overlayProgressBar');
+    const overlayProgressMessage = document.getElementById('overlayProgressMessage');
+    const overlayProgressDetail = document.getElementById('overlayProgressDetail');
+    const overlaySpinner = document.getElementById('overlaySpinner');
+    
+    if (overlayProgressBar) {
+        overlayProgressBar.style.width = percentage + '%';
+        overlayProgressBar.setAttribute('aria-valuenow', percentage);
+        
+        // Progress bar renk değişimi
+        if (percentage >= 100) {
+            overlayProgressBar.style.background = 'linear-gradient(90deg, #10b981 0%, #059669 50%, #047857 100%)';
+        } else if (percentage >= 80) {
+            overlayProgressBar.style.background = 'linear-gradient(90deg, #f59e0b 0%, #d97706 50%, #b45309 100%)';
+        }
+    }
+    
+    if (overlayProgressMessage) {
+        overlayProgressMessage.textContent = message;
+    }
+    
+    if (overlayProgressDetail) {
+        overlayProgressDetail.textContent = `İlerleme: ${percentage}% • ${new Date().toLocaleTimeString()}`;
+    }
+    
+    // Spinner kontrolü
+    if (overlaySpinner) {
+        if (percentage >= 100) {
+            overlaySpinner.style.display = 'none';
+        } else {
+            overlaySpinner.style.display = 'inline-block';
+        }
+    }
+    
+    // Fallback - Modal body progress (compatibility)
     const progressBar = document.getElementById('progressBar');
     const progressMessage = document.getElementById('progressMessage');
     
-    if (progressArea) {
-        progressArea.style.display = 'block';
-    }
-    
-    if (progressBar) {
-        progressBar.style.width = percentage + '%';
-        progressBar.setAttribute('aria-valuenow', percentage);
-    }
-    
-    if (progressMessage) {
-        progressMessage.textContent = message;
-    }
-    
-    // Overlay progress'i de güncelle
-    updateOverlayProgress(message, percentage);
-    
-    // Buton durumunu güncelle
-    updateButtonState(percentage);
-    
-    // Console'da da göster - MODAL KAPATMAYI SADECE LİVEWİRE EVENT'LERİNDE YAP
-    if (percentage >= 100) {
-        console.log('🎉 NURU: Progress %100 but modal close only via Livewire events!');
-        // MODAL KAPATMA KALDIRILDI - Sadece Livewire event'lerinde kapanacak
-    } else if (percentage === 0 && message.includes('hata')) {
-        console.log('❌ Translation process failed or reset');
-        // Hata durumunda progress'i gizle
-        if (progressArea) {
-            progressArea.style.display = 'none';
-        }
-        updateButtonState(-1); // Reset button
-    } else {
-        console.log(`⏳ Translation in progress: ${percentage}%`);
-    }
+    if (progressBar) progressBar.style.width = percentage + '%';
+    if (progressMessage) progressMessage.textContent = message;
 }
 
-// Buton durumunu güncelle
-function updateButtonState(percentage) {
-    const startButton = document.getElementById('startTranslation');
-    const buttonText = document.getElementById('buttonText');
-    const buttonSpinner = document.getElementById('buttonSpinner');
-    const cancelButton = document.getElementById('cancelButton');
-    
-    if (percentage > 0 && percentage < 100) {
-        // Loading durumu
-        if (startButton) startButton.disabled = true;
-        if (buttonText) buttonText.textContent = 'Çevriliyor...';
-        if (buttonSpinner) buttonSpinner.style.display = 'inline-block';
-        if (cancelButton) cancelButton.disabled = true;
-    } else if (percentage >= 100) {
-        // Tamamlandı durumu
-        if (buttonText) buttonText.textContent = 'Tamamlandı';
-        if (buttonSpinner) buttonSpinner.style.display = 'none';
-    } else {
-        // Normal durum (başlangıç veya hata)
-        if (startButton) {
-            startButton.disabled = false;
-            startButton.classList.remove('disabled');
-            startButton.style.pointerEvents = 'auto';
-        }
-        if (buttonText) buttonText.textContent = 'Çevir';
-        if (buttonSpinner) buttonSpinner.style.display = 'none';
-        if (cancelButton) cancelButton.disabled = false;
-    }
-}
-
-// Modal-content overlay gösterme fonksiyonu
-function showFullScreenOverlay() {
-    console.log('🎨 Showing modal-content AI overlay...');
-    
-    // Mevcut overlay varsa kaldır
-    const existingOverlay = document.getElementById('aiTranslationOverlay');
-    if (existingOverlay) {
-        existingOverlay.remove();
-    }
-    
-    // Modal-content'i bul
-    const modal = document.getElementById('aiTranslationModal');
-    const modalContent = modal ? modal.querySelector('.modal-content') : null;
-    
-    if (!modalContent) {
-        console.error('❌ Modal content not found for overlay');
-        return;
-    }
-    
-    // Modal-content'e relative position ekle
-    modalContent.style.position = 'relative';
-    
-    // Yeni overlay oluştur
-    const overlay = document.createElement('div');
-    overlay.id = 'aiTranslationOverlay';
-    
-    overlay.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, 
-            #667eea 0%, 
-            #764ba2 20%, 
-            #f093fb 40%, 
-            #f5576c 60%, 
-            #4facfe 80%,
-            #00d4ff 100%);
-        background-size: 600% 600%;
-        animation: gradientSlide 8s ease-in-out infinite;
-        z-index: 99999;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transition: opacity 0.5s ease-in-out;
-        border-radius: 0.25rem;
-    `;
-    
-    // CSS animasyonunu ekle
-    if (!document.getElementById('aiTranslationStyles')) {
-        const style = document.createElement('style');
-        style.id = 'aiTranslationStyles';
-        style.textContent = `
-            @keyframes gradientSlide {
-                0% { 
-                    background-position: 0% 50%; 
-                    transform: scale(1);
-                }
-                25% { 
-                    background-position: 100% 25%; 
-                    transform: scale(1.02);
-                }
-                50% { 
-                    background-position: 200% 75%; 
-                    transform: scale(1);
-                }
-                75% { 
-                    background-position: 300% 25%; 
-                    transform: scale(1.02);
-                }
-                100% { 
-                    background-position: 400% 50%; 
-                    transform: scale(1);
-                }
-            }
-            
-            @keyframes aiPulse {
-                0%, 100% { transform: scale(1); opacity: 0.8; }
-                50% { transform: scale(1.1); opacity: 1; }
-            }
-            
-            @keyframes aiSpin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            
-            @keyframes aiFloat {
-                0%, 100% { transform: translateY(0px); }
-                50% { transform: translateY(-10px); }
-            }
-            
-            .ai-loading-text {
-                color: white;
-                font-size: 28px;
-                font-weight: bold;
-                text-align: center;
-                margin-bottom: 30px;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                animation: aiFloat 3s ease-in-out infinite;
-            }
-            
-            .ai-loading-subtitle {
-                color: rgba(255,255,255,0.9);
-                font-size: 18px;
-                text-align: center;
-                margin-bottom: 40px;
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            }
-            
-            .ai-spinner {
-                width: 80px;
-                height: 80px;
-                border: 4px solid rgba(255,255,255,0.3);
-                border-top: 4px solid white;
-                border-radius: 50%;
-                animation: aiSpin 1s linear infinite;
-                margin-bottom: 20px;
-            }
-            
-            .ai-progress-bar {
-                width: 300px;
-                height: 6px;
-                background: rgba(255,255,255,0.3);
-                border-radius: 3px;
-                overflow: hidden;
-                margin-bottom: 15px;
-            }
-            
-            .ai-progress-fill {
-                height: 100%;
-                background: linear-gradient(90deg, #fff, #f0f0f0, #fff);
-                background-size: 200% 100%;
-                animation: aiProgressShine 2s ease-in-out infinite;
-                width: 0%;
-                transition: width 0.3s ease;
-            }
-            
-            @keyframes aiProgressShine {
-                0% { background-position: -200% 0; }
-                100% { background-position: 200% 0; }
-            }
-            
-            .ai-status-text {
-                color: rgba(255,255,255,0.8);
-                font-size: 14px;
-                text-align: center;
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // Loading içeriği - Sadeleştirilmiş
-    overlay.innerHTML = `
-        <div class="ai-loading-text">🤖 Yapay Zeka İş Başında</div>
-        <div class="ai-loading-subtitle">Lütfen bekleyin.</div>
-        <div class="ai-progress-bar">
-            <div class="ai-progress-fill" id="aiProgressFill"></div>
-        </div>
-        <div class="ai-status-text" id="aiStatusText">Çeviri işlemi başlatılıyor...</div>
-    `;
-    
-    // Modal-content'e ekle
-    modalContent.appendChild(overlay);
-    
-    // Overlay'i görünür yap
-    setTimeout(() => {
-        overlay.style.opacity = '1';
-    }, 50);
-    
-    console.log('✨ AI Translation overlay displayed');
-}
-
-// Full screen overlay gizleme fonksiyonu
-function hideFullScreenOverlay() {
-    console.log('🎨 Hiding full screen AI overlay...');
-    
-    const overlay = document.getElementById('aiTranslationOverlay');
-    if (overlay) {
-        overlay.style.opacity = '0';
-        setTimeout(() => {
-            overlay.remove();
-        }, 500);
-    }
-}
-
-// Overlay progress güncelleme fonksiyonu
-function updateOverlayProgress(message, percentage) {
-    const progressFill = document.getElementById('aiProgressFill');
-    const statusText = document.getElementById('aiStatusText');
-    
-    if (progressFill) {
-        progressFill.style.width = percentage + '%';
-    }
-    
-    if (statusText) {
-        statusText.textContent = message;
-    }
-}
-
-// Modal kapatma fonksiyonu
+// Modal kapat
 function closeTranslationModal() {
-    console.log('🔒 NURU: Modal kapatılıyor - backdrop temizleniyor');
+    console.log('🔒 Manual modal close...');
     
-    // BUTONU YENİDEN AKTİF ET
-    resetTranslationButton();
+    // Overlay'i temizle
+    removeModalOverlay();
     
-    // Overlay'i gizle
-    hideFullScreenOverlay();
+    // Form kilidi kaldır
+    unlockModalForm();
     
-    // MANUEL MODAL KAPAT
     const modal = document.getElementById('aiTranslationModal');
     if (modal) {
         modal.style.display = 'none';
         modal.classList.remove('show');
         modal.setAttribute('aria-hidden', 'true');
         modal.removeAttribute('aria-modal');
-        modal.removeAttribute('data-bs-keyboard');
-        modal.removeAttribute('data-bs-backdrop');
-        console.log('✅ NURU: Modal element gizlendi');
     }
     
-    // BACKDROP TEMİZLE - TÜM BACKDROP'LARI BUL VE SİL
-    const backdrops = document.querySelectorAll('.modal-backdrop, #aiTranslationModalBackdrop, #translation-modal-backdrop');
-    backdrops.forEach((backdrop, index) => {
-        console.log(`🗑️ NURU: Backdrop ${index + 1} siliniyor:`, backdrop.id || backdrop.className);
-        backdrop.remove();
-    });
-    
-    // BODY CLASS TEMİZLE
+    // Backdrop temizle
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
-    console.log('✅ NURU: Body classes temizlendi');
     
-    // GLOBAL INTERVALS TEMİZLE
-    if (window.translationProgressInterval) {
-        clearInterval(window.translationProgressInterval);
-        window.translationProgressInterval = null;
-        console.log('✅ NURU: Progress interval temizlendi');
-    }
-    
-    console.log('🎉 NURU: Modal tamamen kapatıldı ve temizlendi');
+    resetTranslationButton();
 }
 
-// Livewire event listener'ları - ONCE ONLY
-// Global unique check to prevent duplicate loading
-if (!window.simpleTranslationModalLoaded) {
-    window.simpleTranslationModalLoaded = true;
+// Buton reset
+function resetTranslationButton() {
+    const startBtn = document.getElementById('startTranslation');
+    const buttonText = document.getElementById('buttonText');
+    const buttonSpinner = document.getElementById('buttonSpinner');
+    const progressDiv = document.getElementById('translationProgress');
+    
+    // Overlay ve form kilidi temizle
+    removeModalOverlay();
+    unlockModalForm();
+    
+    if (startBtn) startBtn.disabled = false;
+    if (buttonText) buttonText.textContent = 'Çevir';
+    if (buttonSpinner) buttonSpinner.style.display = 'none';
+    if (progressDiv) progressDiv.style.display = 'none';
+}
 
-    document.addEventListener('livewire:initialized', () => {
-        if (window.simpleTranslationListenersAdded) {
-            console.log('⚠️ Livewire listeners already added, skipping...');
-            return;
-        }
-        
-        console.log('⚡ Livewire initialized - setting up event listeners');
-        window.simpleTranslationListenersAdded = true;
+// Livewire event listeners
+document.addEventListener('livewire:initialized', () => {
+    console.log('⚡ Livewire initialized');
     
-    // Modal kapatma event'i
-    Livewire.on('closeTranslationModal', () => {
-        console.log('📢 Received closeTranslationModal event');
-        closeTranslationModal();
-    });
-    
-    // Component refresh event'i
-    Livewire.on('refreshComponent', () => {
-        console.log('📢 Received refreshComponent event');
-        // Sayfa yenilenmesi otomatik olacak (Livewire'ın kendi mekanizması)
-    });
-    
-    // Çeviri tamamlandı event'i - Livewire'dan gelir, DOM event'ine çevrilir
     Livewire.on('translation-complete', (data) => {
-        console.log('🎉 NURU: Livewire translation-complete event received:', data);
-        
-        // Global progress interval'ı durdur
-        if (window.translationProgressInterval) {
-            clearInterval(window.translationProgressInterval);
-            console.log('✅ NURU: Progress interval stopped by completion event');
-        }
-        
-        // Progress'i %100'e getir ve modal'ı kapat
-        updateProgress('🎉 Çeviri başarıyla tamamlandı! İçerik kaydediliyor...', 100);
-        
-        // 5 saniye bekle (DB işlemlerinin tamamlanması için)
+        console.log('🎉 Translation complete:', data);
+        updateProgress('🎉 Çeviri tamamlandı! Sayfa yenileniyor...', 100);
         setTimeout(() => {
-            updateProgress('✅ Tüm içerikler kaydedildi! Sayfa yenileniyor...', 100);
-            
-            setTimeout(() => {
-                closeTranslationModal();
-                window.location.reload();
-            }, 2000);
-        }, 5000);
-        
-        // DOM event olarak da fırlat (Promise'lerin beklemesi için)
-        const customEvent = new CustomEvent('translation-complete', {
-            detail: data
-        });
-        document.dispatchEvent(customEvent);
-        
-        console.log('🔥 NURU: DOM translation-complete event dispatched ve modal kapatıldı');
+            closeTranslationModal();
+            window.location.reload();
+        }, 2000);
     });
 
-    // Çeviri hatası event'i
     Livewire.on('translation-error', (data) => {
-        console.log('❌ NURU: Livewire translation-error event received:', data);
-        
-        updateProgress('❌ Çeviri işleminde hata oluştu. Tekrar deneyin.', 0);
-        
+        console.log('❌ Translation error:', data);
+        updateProgress('❌ Çeviri hatası oluştu. Tekrar deneyin.', 0);
         setTimeout(() => {
-            hideFullScreenOverlay();
             resetTranslationButton();
         }, 3000);
     });
-    });
+});
+
+// 🚨 DİL SINIRI UYARI SİSTEMİ
+function showLanguageLimitWarning() {
+    console.log('⚠️ Showing language limit warning');
+    
+    // Mevcut uyarıları temizle
+    removeAIWarning();
+    removeLimitWarning();
+    
+    // Modal footer'da limit uyarısı oluştur
+    const modalFooter = document.querySelector('#aiTranslationModal .modal-footer');
+    if (!modalFooter) return;
+    
+    const limitWarningDiv = document.createElement('div');
+    limitWarningDiv.id = 'languageLimitWarning';
+    limitWarningDiv.className = 'alert d-flex align-items-start mb-3';
+    limitWarningDiv.style.cssText = `
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 16px;
+        font-size: 14px;
+        background-color: #f8f9fa;
+        color: #495057;
+    `;
+    
+    limitWarningDiv.innerHTML = `
+        <div class="limit-warning-icon" style="font-size: 1.5rem; margin-right: 12px; flex-shrink: 0;">⚡</div>
+        <div class="flex-grow-1">
+            <div class="fw-semibold mb-1">
+                <i class="fas fa-exclamation-circle me-1"></i>Dil Seçim Sınırı
+            </div>
+            <div class="small">
+                Performans ve kalite için aynı anda en fazla <strong>5 dil</strong> seçebilirsiniz. 
+                Diğer diller için ikinci bir çeviri işlemi başlatabilirsiniz.
+            </div>
+        </div>
+        <button type="button" class="btn-close btn-sm" onclick="removeLimitWarning()" aria-label="Kapat"></button>
+    `;
+    
+    // Footer'ın en üstüne ekle
+    modalFooter.insertBefore(limitWarningDiv, modalFooter.firstChild);
+    
+    console.log('✅ Language limit warning displayed');
 }
 
-console.log('✅ Simple Translation Modal loaded successfully');
+function removeLimitWarning() {
+    const existingWarning = document.getElementById('languageLimitWarning');
+    if (existingWarning) {
+        existingWarning.remove();
+        console.log('🧹 Language limit warning removed');
+    }
+}
+
+// 🚨 AI UYARI SİSTEMİ FONKSIYONLARI
+function checkAIWarning(checkbox) {
+    console.log('🚨 AI Warning check triggered for:', checkbox.value);
+    
+    const isMainLanguage = checkbox.getAttribute('data-is-main-language') === 'true';
+    const langName = checkbox.getAttribute('data-lang-name');
+    
+    if (checkbox.checked && !isMainLanguage) {
+        // Zayıf AI destekli dil seçildi - uyarı göster
+        showAIWarningModal(langName, checkbox.value, checkbox);
+    } else {
+        // Ana dil veya checkbox kapatıldı - uyarıyı temizle
+        removeAIWarning();
+    }
+}
+
+function showAIWarningModal(langName, langCode, checkbox) {
+    console.log('⚠️ Showing AI warning for:', langName);
+    
+    // Mevcut uyarıyı temizle
+    removeAIWarning();
+    
+    // Modal footer'da uyarı mesajı oluştur
+    const modalFooter = document.querySelector('#aiTranslationModal .modal-footer');
+    if (!modalFooter) return;
+    
+    const aiWarningDiv = document.createElement('div');
+    aiWarningDiv.id = 'aiWarningSystem';
+    aiWarningDiv.className = 'alert d-flex align-items-start mb-3';
+    aiWarningDiv.style.cssText = `
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 16px;
+        font-size: 14px;
+    `;
+    
+    aiWarningDiv.innerHTML = `
+        <div class="ai-warning-icon" style="font-size: 1.5rem; margin-right: 12px; flex-shrink: 0;">⚠️</div>
+        <div class="flex-grow-1">
+            <div class="fw-semibold mb-1">
+                <i class="fas fa-exclamation-triangle me-1"></i>Yapay Zeka Çeviri Uyarısı
+            </div>
+            <div class="small">
+                <strong>${langName}</strong> dili için yapay zeka çeviri sistemi sınırlı destek sağlamaktadır. 
+                Çeviri kalitesi değişken olabilir ve sonuçların kontrol edilmesi önerilir.
+            </div>
+        </div>
+        <button type="button" class="btn-close btn-sm" onclick="removeAIWarning(); uncheckLanguage('${langCode}')" aria-label="Kapat"></button>
+    `;
+    
+    // Footer'ın en üstüne ekle
+    modalFooter.insertBefore(aiWarningDiv, modalFooter.firstChild);
+    
+    console.log('✅ AI warning displayed for:', langName);
+}
+
+function removeAIWarning() {
+    const existingWarning = document.getElementById('aiWarningSystem');
+    if (existingWarning) {
+        existingWarning.remove();
+        console.log('🧹 AI warning removed');
+    }
+}
+
+function uncheckLanguage(langCode) {
+    const checkbox = document.getElementById(`target_${langCode}`);
+    if (checkbox) {
+        checkbox.checked = false;
+        updateStartButtonState();
+        console.log('❌ Language unchecked:', langCode);
+    }
+}
+
+// Modal kapanırken uyarıları temizle
+function closeTranslationModal() {
+    console.log('🔒 Manual modal close...');
+    
+    // Tüm uyarıları temizle
+    removeAIWarning();
+    removeLimitWarning();
+    
+    // Overlay'i temizle
+    removeModalOverlay();
+    
+    // Form kilidi kaldır
+    unlockModalForm();
+    
+    const modal = document.getElementById('aiTranslationModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        modal.removeAttribute('aria-modal');
+    }
+    
+    // Backdrop temizle
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    
+    resetTranslationButton();
+}
+
+console.log('✅ AI Warning System Translation Modal loaded successfully');

@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', $itemId ? 'Widget Öğe Düzenle' : 'Yeni Widget Öğe');
+@endphp
 @include('widgetmanagement::helper')
 <div>
     @include('admin.partials.error_message')

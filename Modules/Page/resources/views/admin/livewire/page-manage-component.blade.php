@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', $pageId ? 'Sayfa Düzenleme' : 'Yeni Sayfa Ekleme');
+@endphp
+
 <div>
     @include('page::admin.helper')
     @include('admin.partials.error_message')

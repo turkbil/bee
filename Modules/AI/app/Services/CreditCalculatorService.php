@@ -65,7 +65,7 @@ readonly class CreditCalculatorService
      */
     public function getBaseTokenRate(): float
     {
-        return Cache::remember('base_token_rate', self::CACHE_TTL, function() {
+        return (float) Cache::remember('base_token_rate', self::CACHE_TTL, function() {
             // Settings tablosundan al, yoksa default - float'a cast et
             $rate = setting('base_token_credit_rate', self::DEFAULT_RATE);
             return (float) $rate;

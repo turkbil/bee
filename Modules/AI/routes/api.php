@@ -59,27 +59,4 @@ Route::prefix('ai/v1')->name('ai.api.v1.')->group(function () {
     
 });
 
-// ✨ PHASE 3: Model Credit Rate Management API
-use Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController;
-
-Route::prefix('ai/admin')->name('ai.admin.')->middleware(['auth:sanctum'])->group(function () {
-    
-    // 🏷️ Provider & Model Selection APIs
-    Route::get('/providers-models', [ModelCreditRateController::class, 'getProvidersWithModels'])
-        ->name('providers.models');
-    
-    Route::get('/provider/{providerId}/models', [ModelCreditRateController::class, 'getProviderModels'])
-        ->name('provider.models');
-    
-    // 💰 Credit Calculation APIs
-    Route::post('/calculate-cost', [ModelCreditRateController::class, 'calculateCreditCost'])
-        ->name('calculate.cost');
-    
-    Route::post('/compare-models', [ModelCreditRateController::class, 'compareModels'])
-        ->name('compare.models');
-    
-    // 🏢 Tenant Configuration APIs
-    Route::get('/tenant-config/{tenantId?}', [ModelCreditRateController::class, 'getTenantConfiguration'])
-        ->name('tenant.config');
-        
-});
+// ✨ PHASE 3: Model Credit Rate Management API - MOVED TO web.php for CSRF support

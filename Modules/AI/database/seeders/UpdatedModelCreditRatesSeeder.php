@@ -6,7 +6,7 @@ namespace Modules\AI\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\AI\App\Models\AIProvider;
-use Modules\AI\App\Models\AIModelCreditRate;
+use Modules\AI\App\Models\AIProviderModel;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\TenantHelpers;
 
@@ -42,11 +42,11 @@ class UpdatedModelCreditRatesSeeder extends Seeder
         }
 
         $rates = [
-            // EN UCUZ CLAUDE MODELLER - Yüksek Markup (x6)
+            // GÜNCEL CLAUDE HAİKU 3.5 - Standard Pricing (Ağustos 2025)
             [
                 'model_name' => 'claude-3-haiku-20240307',
-                'input_rate' => 1.5,   // $0.25 x6 (EN UCUZ!)
-                'output_rate' => 7.5,  // $1.25 x6
+                'input_rate' => 4.8,   // $0.80 x6
+                'output_rate' => 24.0,  // $4.00 x6
                 'markup_percentage' => 500.0, // x6 markup
                 'base_cost_per_request' => 0.001,
                 'notes' => 'Claude 3 Haiku - En ekonomik seçenek',
@@ -56,11 +56,11 @@ class UpdatedModelCreditRatesSeeder extends Seeder
             // ORTA SEGMENT CLAUDE MODELLER - Orta Markup (x3-4)
             [
                 'model_name' => 'claude-haiku-3.5',
-                'input_rate' => 3.2,   // $0.80 x4
-                'output_rate' => 16.0,  // $4 x4
-                'markup_percentage' => 300.0, // x4 markup
+                'input_rate' => 4.8,   // $0.80 x6 (güncel)
+                'output_rate' => 24.0,  // $4.00 x6 (güncel)
+                'markup_percentage' => 500.0, // x6 markup
                 'base_cost_per_request' => 0.002,
-                'notes' => 'Claude Haiku 3.5 - Gelişmiş ekonomik model'
+                'notes' => 'Claude Haiku 3.5 - Hızlı, ekonomik model'
             ],
             [
                 'model_name' => 'claude-3-5-sonnet-20241022',
@@ -71,20 +71,20 @@ class UpdatedModelCreditRatesSeeder extends Seeder
                 'notes' => 'Claude 3.5 Sonnet - Mevcut popüler model'
             ],
             [
-                'model_name' => 'claude-sonnet-3.7',
-                'input_rate' => 9.0,   // $3 x3
-                'output_rate' => 45.0,  // $15 x3
+                'model_name' => 'claude-sonnet-4',
+                'input_rate' => 9.0,   // $3 x3 (≤200K tokens)
+                'output_rate' => 45.0,  // $15 x3 (≤200K tokens)
                 'markup_percentage' => 200.0, // x3 markup
                 'base_cost_per_request' => 0.003,
-                'notes' => 'Claude Sonnet 3.7 - Gelişmiş sürüm'
+                'notes' => 'Claude Sonnet 4 - Optimal denge (≤200K tokens)'
             ],
             [
-                'model_name' => 'claude-sonnet-4',
-                'input_rate' => 9.0,   // $3 x3
-                'output_rate' => 45.0,  // $15 x3
+                'model_name' => 'claude-sonnet-4-large',
+                'input_rate' => 18.0,  // $6 x3 (>200K tokens)
+                'output_rate' => 67.5,  // $22.50 x3 (>200K tokens)
                 'markup_percentage' => 200.0, // x3 markup
-                'base_cost_per_request' => 0.003,
-                'notes' => 'Claude Sonnet 4 - En yeni Sonnet'
+                'base_cost_per_request' => 0.005,
+                'notes' => 'Claude Sonnet 4 - Büyük prompt (>200K tokens)'
             ],
 
             // PREMIUM CLAUDE MODELLER - Düşük Markup (x2)
@@ -114,8 +114,9 @@ class UpdatedModelCreditRatesSeeder extends Seeder
             ],
         ];
 
+        $sortOrder = 1;
         foreach ($rates as $rate) {
-            AIModelCreditRate::updateOrCreate(
+            AIProviderModel::updateOrCreate(
                 [
                     'provider_id' => $anthropic->id,
                     'model_name' => $rate['model_name']
@@ -126,9 +127,11 @@ class UpdatedModelCreditRatesSeeder extends Seeder
                     'markup_percentage' => $rate['markup_percentage'],
                     'base_cost_usd' => $rate['base_cost_per_request'],
                     'is_active' => true,
-                    'is_default' => $rate['is_default'] ?? false
+                    'is_default' => $rate['is_default'] ?? false,
+                    'sort_order' => $sortOrder
                 ]
             );
+            $sortOrder++;
         }
 
         Log::info('✅ Anthropic updated model rates seeded (8 models)');
@@ -189,8 +192,9 @@ class UpdatedModelCreditRatesSeeder extends Seeder
             ],
         ];
 
+        $sortOrder = 1;
         foreach ($rates as $rate) {
-            AIModelCreditRate::updateOrCreate(
+            AIProviderModel::updateOrCreate(
                 [
                     'provider_id' => $deepseek->id,
                     'model_name' => $rate['model_name']
@@ -201,12 +205,14 @@ class UpdatedModelCreditRatesSeeder extends Seeder
                     'markup_percentage' => $rate['markup_percentage'],
                     'base_cost_usd' => $rate['base_cost_per_request'],
                     'is_active' => true,
-                    'is_default' => $rate['is_default'] ?? false
+                    'is_default' => $rate['is_default'] ?? false,
+                    'sort_order' => $sortOrder
                 ]
             );
+            $sortOrder++;
         }
 
-        Log::info('✅ DeepSeek updated model rates seeded (3 models)');
+        Log::info('✅ DeepSeek updated model rates seeded (5 models)');
     }
 
     private function seedOpenAIUpdatedRates(): void
@@ -414,8 +420,9 @@ class UpdatedModelCreditRatesSeeder extends Seeder
             ],
         ];
 
+        $sortOrder = 1;
         foreach ($rates as $rate) {
-            AIModelCreditRate::updateOrCreate(
+            AIProviderModel::updateOrCreate(
                 [
                     'provider_id' => $openai->id,
                     'model_name' => $rate['model_name']
@@ -426,11 +433,13 @@ class UpdatedModelCreditRatesSeeder extends Seeder
                     'markup_percentage' => $rate['markup_percentage'],
                     'base_cost_usd' => $rate['base_cost_per_request'],
                     'is_active' => true,
-                    'is_default' => $rate['is_default'] ?? false
+                    'is_default' => $rate['is_default'] ?? false,
+                    'sort_order' => $sortOrder
                 ]
             );
+            $sortOrder++;
         }
 
-        Log::info('✅ OpenAI updated model rates seeded (10 models)');
+        Log::info('✅ OpenAI updated model rates seeded (21 models)');
     }
 }

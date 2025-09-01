@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', $userId ? 'Kullanıcı Düzenle' : 'Yeni Kullanıcı');
+@endphp
 {{-- Modules/UserManagement/resources/views/livewire/user-manage-component.blade.php --}}
 @include('usermanagement::helper')
 <div>

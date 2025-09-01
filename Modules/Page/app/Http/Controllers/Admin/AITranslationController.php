@@ -176,7 +176,7 @@ class AITranslationController extends Controller
             'created_at' => now()
         ], 3600); // 1 saat
 
-        // Queue job'unu dispatch et
+        // Queue job'unu dispatch et (tenant_isolated queue'ya)
         TranslatePageJob::dispatch(
             $pageIds,
             $sourceLanguage,
@@ -184,7 +184,7 @@ class AITranslationController extends Controller
             $quality,
             $options,
             $operationId
-        );
+        )->onQueue('tenant_isolated');
 
         return response()->json([
             'success' => true,

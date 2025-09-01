@@ -289,7 +289,7 @@ if (!function_exists('can_use_ai_tokens')) {
     {
         $tenant = $tenant ?? tenant();
         
-        if (!$tenant || !$tenant->ai_enabled) {
+        if (!$tenant) {
             return false;
         }
 
@@ -305,7 +305,7 @@ if (!function_exists('ai_enabled')) {
     function ai_enabled(?Tenant $tenant = null): bool
     {
         $tenant = $tenant ?? tenant();
-        return $tenant ? $tenant->ai_enabled : false;
+        return $tenant ? true : false;
     }
 }
 
@@ -428,7 +428,7 @@ if (!function_exists('ai_token_status')) {
         }
 
         return [
-            'enabled' => $tenant->ai_enabled,
+            'enabled' => true,
             'balance' => $tenant->ai_tokens_balance,
             'monthly_used' => $tenant->ai_tokens_used_this_month,
             'monthly_limit' => $tenant->ai_monthly_token_limit,

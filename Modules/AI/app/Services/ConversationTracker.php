@@ -74,27 +74,30 @@ class ConversationTracker
     }
     
     /**
-     * Safe user ID retrieval - CLI ve web context için güvenli
+     * Safe user ID retrieval - NULL NEVER RETURNED
      */
     private static function getUserId(): int
     {
         try {
-            // Web context - normal auth
-            if (auth()->check()) {
-                return auth()->id();
+            // Web context - normal auth check
+            if (function_exists('auth') && auth()->guard('web')->check()) {
+                $userId = auth()->guard('web')->id();
+                if ($userId && is_numeric($userId) && $userId > 0) {
+                    Log::debug('🔍 ConversationTracker: Web auth user_id found', ['user_id' => $userId]);
+                    return (int) $userId;
+                }
             }
             
-            // CLI context - default user
-            if (app()->runningInConsole()) {
-                return 1; // Default admin user
-            }
+            // Skip admin guard check - not defined in this system
+            // Admin context handled by web guard
             
-            // Fallback - guest
-            return 1;
+            // CLI/Queue/Artisan context - ALWAYS use system user
+            Log::info('🔍 ConversationTracker: Using system user_id = 1 (CLI/Queue/Background context)');
+            return 1; // GUARANTEED valid user ID
             
         } catch (\Exception $e) {
-            Log::debug('getUserId fallback to 1', ['error' => $e->getMessage()]);
-            return 1;
+            Log::warning('🔍 ConversationTracker: Exception in getUserId, using fallback', ['error' => $e->getMessage()]);
+            return 1; // GUARANTEED valid user ID  
         }
     }
 
@@ -130,9 +133,17 @@ class ConversationTracker
         bool $preserveHtml = false
     ): void {
         try {
+            $userId = self::getUserId();
+            Log::info('🔍 DEBUGGING saveTranslation user_id', [
+                'user_id' => $userId,
+                'type' => gettype($userId),
+                'is_null' => is_null($userId),
+                'is_numeric' => is_numeric($userId)
+            ]);
+            
             DB::table('ai_conversations')->insert([
                 'tenant_id' => TenantHelpers::getTenantId(),
-                'user_id' => self::getUserId(), // Safe user ID retrieval
+                'user_id' => $userId, // Safe user ID retrieval
                 'session_id' => 'translation_' . uniqid(),
                 'title' => "Translation: {$fromLang} → {$toLang}",
                 'type' => 'translation',

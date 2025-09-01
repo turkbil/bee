@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => env('QUEUE_CONNECTION', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -69,6 +69,36 @@ return [
             'queue' => env('REDIS_QUEUE', 'default'),
             'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
             'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        // 🔒 TENANT ISOLATED QUEUES - CRITICAL FOR SYSTEM STABILITY
+        'tenant_isolated' => [
+            'driver' => 'redis',
+            'connection' => 'tenant_isolated',
+            'queue' => env('TENANT_QUEUE_NAME', 'tenant_default'),
+            'retry_after' => 300, // 5 minutes max per job
+            'block_for' => 5, // Non-blocking for other tenants
+            'after_commit' => false,
+        ],
+
+        // 🚀 HIGH PRIORITY QUEUE - For critical operations
+        'critical' => [
+            'driver' => 'redis', 
+            'connection' => 'critical_operations',
+            'queue' => 'critical',
+            'retry_after' => 60,
+            'block_for' => 1,
+            'after_commit' => false,
+        ],
+
+        // 🏢 CENTRAL TENANT ISOLATED - Central operations won't affect other tenants
+        'central_isolated' => [
+            'driver' => 'redis',
+            'connection' => 'central_isolated',
+            'queue' => 'central_operations',
+            'retry_after' => 300, // 5 minutes max per job
+            'block_for' => 5, // Non-blocking for other tenants
             'after_commit' => false,
         ],
 

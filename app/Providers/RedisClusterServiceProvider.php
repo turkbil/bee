@@ -30,7 +30,7 @@ class RedisClusterServiceProvider extends ServiceProvider
             }
         });
 
-        Log::info('RedisCluster service provider booted');
+        // RedisCluster service provider booted
     }
 
     /**

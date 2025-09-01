@@ -37,11 +37,11 @@ class DatabasePoolMiddleware
                 // Request'e connection bilgisini ekle (opsiyonel debugging için)
                 $request->attributes->set('pool_connection', $connectionName);
                 
-                Log::debug('DatabasePool middleware: Connection assigned', [
-                    'tenant' => $tenantKey,
-                    'connection' => $connectionName,
-                    'route' => $request->route()?->getName(),
-                ]);
+                // Log::debug('DatabasePool middleware: Connection assigned', [
+                //     'tenant' => $tenantKey,
+                //     'connection' => $connectionName,
+                //     'route' => $request->route()?->getName(),
+                // ]);
                 
             } catch (\Exception $e) {
                 Log::error('DatabasePool middleware: Connection failed', [
@@ -62,10 +62,10 @@ class DatabasePoolMiddleware
             // Connection'ı release et (idle pool'a gönder)
             $this->poolService->releaseConnection($connectionName);
             
-            Log::debug('DatabasePool middleware: Connection released', [
-                'tenant' => $tenantKey,
-                'connection' => $connectionName,
-            ]);
+            // Log::debug('DatabasePool middleware: Connection released', [
+            //     'tenant' => $tenantKey,
+            //     'connection' => $connectionName,
+            // ]);
         }
 
         return $response;

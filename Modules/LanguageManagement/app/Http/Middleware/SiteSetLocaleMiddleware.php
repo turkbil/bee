@@ -51,9 +51,9 @@ class SiteSetLocaleMiddleware
         }
         \Cookie::queue('tenant_locale_preference', $detectedLocale, 525600);
         
-        // Dil değişmişse cache'leri temizle
+        // Dil değişmişse cache'leri temizle (THROTTLED)
         if ($previousLocale !== $detectedLocale) {
-            $this->clearLanguageRelatedCaches();
+            $this->clearLanguageRelatedCachesThrottled($previousLocale, $detectedLocale);
         }
 
         return $next($request);
@@ -187,6 +187,28 @@ class SiteSetLocaleMiddleware
         }
     }
     
+    /**
+     * Throttled cache clearing - sonsuz döngü önleme
+     */
+    private function clearLanguageRelatedCachesThrottled(string $previousLocale, string $newLocale): void
+    {
+        // Throttling key - aynı dil değişimi 5 saniye içinde sadece 1 kez
+        $throttleKey = "language_cache_clear_{$previousLocale}_to_{$newLocale}";
+        
+        if (\Cache::has($throttleKey)) {
+            \Log::debug('Language cache clear skipped (throttled)', [
+                'from' => $previousLocale,
+                'to' => $newLocale
+            ]);
+            return;
+        }
+        
+        // 5 saniye throttle
+        \Cache::put($throttleKey, true, 5);
+        
+        $this->clearLanguageRelatedCaches();
+    }
+
     /**
      * Dil değişiminde ilgili cache'leri temizle
      */

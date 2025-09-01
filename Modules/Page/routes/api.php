@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// use Modules\Page\Http\Controllers\PageController;
+use Modules\Page\App\Http\Controllers\Api\PageApiController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,5 +14,8 @@ use Illuminate\Support\Facades\Route;
  *
 */
 
-// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-// });
+Route::prefix('v1/pages')->group(function () {
+    Route::get('/', [PageApiController::class, 'index'])->name('api.pages.index');
+    Route::get('homepage', [PageApiController::class, 'homepage'])->name('api.pages.homepage');
+    Route::get('{slug}', [PageApiController::class, 'show'])->name('api.pages.show');
+});

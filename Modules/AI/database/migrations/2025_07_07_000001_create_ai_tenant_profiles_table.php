@@ -82,6 +82,7 @@ return new class extends Migration
             
             $table->boolean('is_active')->default(true);
             $table->boolean('is_completed')->default(false); // Profil tamamlandı mı?
+            $table->json('data')->nullable()->comment('Context data for AI'); // Eklenen
             
             $table->timestamps();
             

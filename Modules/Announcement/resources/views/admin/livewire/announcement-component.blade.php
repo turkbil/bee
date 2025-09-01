@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Duyuru Listesi');
+@endphp
+
 @include('announcement::admin.helper')
 <div class="card">
     <div class="card-body">

@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Kiracı Listesi');
+@endphp
+
 @include('tenantmanagement::helper')
 <div class="card">
     <div class="card-body">
@@ -167,7 +171,7 @@
                         updateModelSelectOptions(data.data.models);
                     }
                 } catch (error) {
-                    console.warn('Model bilgileri yüklenemedi:', error);
+                    // Model bilgileri yüklenemedi, sessizce devam et
                 }
             }
             
@@ -205,24 +209,32 @@
             /**
              * Seçilen model için kredi bilgisini göster
              */
-            async function showModelCreditInfo(modelName, providerId) {
+            async function showModelCreditInfo(modelId, providerId) {
                 const infoElements = [
                     document.getElementById('credit-display-edit'),
                     document.getElementById('credit-display-add')
                 ];
                 
+                if (!modelId || !providerId) {
+                    infoElements.forEach(element => {
+                        if (element) element.textContent = 'Model ve provider seçin';
+                    });
+                    return;
+                }
+                
                 try {
                     const response = await fetch('/api/ai/admin/calculate-cost', {
                         method: 'POST',
                         headers: {
-                            'Authorization': 'Bearer ' + (window.authToken || ''),
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
+                        credentials: 'same-origin', // Session tabanlı auth için
                         body: JSON.stringify({
                             provider_id: providerId,
-                            model_name: modelName,
+                            model_id: modelId,
                             input_tokens: 1000,
                             output_tokens: 1000
                         })
@@ -230,19 +242,52 @@
                     
                     if (response.ok) {
                         const data = await response.json();
-                        const costText = `${modelName}: ${data.data.total_credits} kredi (1000 input + 1000 output token için)`;
+                        const costText = `Model: ${data.data.total_credits} kredi (1000 input + 1000 output token için)`;
                         
                         infoElements.forEach(element => {
                             if (element) element.textContent = costText;
                         });
+                    } else {
+                        throw new Error('API error');
                     }
                 } catch (error) {
-                    console.warn('Kredi bilgisi yüklenemedi:', error);
+                    // Kredi bilgisi yüklenemedi, sessizce devam et
                     infoElements.forEach(element => {
                         if (element) element.textContent = 'Kredi bilgisi hesaplanamadı';
                     });
                 }
             }
+            
+            // Livewire property değişimlerini dinle
+            Livewire.on('tenant_ai_provider_model_id-updated', (value) => {
+                const providerId = @this.get('tenant_ai_provider_id');
+                if (value && providerId) {
+                    showModelCreditInfo(value, providerId);
+                }
+            });
+            
+            // Livewire eventlerini dinle
+            Livewire.on('modelSelectionChanged', (data) => {
+                if (data.modelId && data.providerId) {
+                    showModelCreditInfo(data.modelId, data.providerId);
+                }
+            });
+            
+            // Property değişim hookları (fallback)
+            @this.watch('tenant_ai_provider_model_id', (value) => {
+                const providerId = @this.get('tenant_ai_provider_id');
+                if (value && providerId) {
+                    showModelCreditInfo(value, providerId);
+                } else {
+                    const infoElements = [
+                        document.getElementById('credit-display-edit'),
+                        document.getElementById('credit-display-add')
+                    ];
+                    infoElements.forEach(element => {
+                        if (element) element.textContent = 'Model seçin';
+                    });
+                }
+            });
         });
     </script>
     @endpush
@@ -302,26 +347,26 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" wire:model.live="default_ai_provider_id">
+                                    <select class="form-select" wire:model.live="tenant_ai_provider_id">
                                         <option value="">AI Provider seçin</option>
                                         @foreach($availableAiProviders as $provider)
-                                        <option value="{{ $provider['value'] }}">{{ $provider['label'] }}</option>
+                                        <option value="{{ $provider['value'] }}" @if($tenant_ai_provider_id == $provider['value']) selected @endif>{{ $provider['label'] }}</option>
                                         @endforeach
                                     </select>
                                     <label>AI Provider (Marka)</label>
-                                    @error('default_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('tenant_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" wire:model="default_ai_model" @if(empty($availableModels)) disabled @endif>
+                                    <select class="form-select" wire:model="tenant_ai_provider_model_id" @if(empty($availableProviderModels)) disabled @endif>
                                         <option value="">Model seçin</option>
-                                        @foreach($availableModels as $model)
-                                        <option value="{{ $model['value'] }}">{{ $model['label'] }} @if($model['cost']) ({{ $model['cost'] }}) @endif</option>
+                                        @foreach($availableProviderModels as $model)
+                                        <option value="{{ $model['id'] }}" @if($tenant_ai_provider_model_id == $model['id']) selected @endif>{{ $model['label'] }}</option>
                                         @endforeach
                                     </select>
-                                    <label>AI Model @if(empty($availableModels)) (Önce provider seçin) @endif</label>
-                                    @error('default_ai_model') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <label>AI Model @if(empty($availableProviderModels)) (Önce provider seçin) @endif</label>
+                                    @error('tenant_ai_provider_model_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>
@@ -353,7 +398,7 @@
                         @endif
                         
                         <!-- Model Credit Info Display for Edit Modal -->
-                        @if(!empty($availableModels) && $default_ai_model)
+                        @if(!empty($availableProviderModels) && $tenant_ai_provider_model_id)
                         <div class="alert alert-info p-2 mt-2" id="model-credit-info-edit" style="font-size: 0.85em;">
                             <i class="fas fa-info-circle me-1"></i>
                             <span id="credit-display-edit">Seçilen model için kredi bilgisi yükleniyor...</span>
@@ -437,26 +482,26 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" wire:model.live="default_ai_provider_id">
+                                    <select class="form-select" wire:model.live="tenant_ai_provider_id">
                                         <option value="">AI Provider seçin</option>
                                         @foreach($availableAiProviders as $provider)
                                         <option value="{{ $provider['value'] }}">{{ $provider['label'] }}</option>
                                         @endforeach
                                     </select>
                                     <label>AI Provider (Marka)</label>
-                                    @error('default_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
+                                    @error('tenant_ai_provider_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" wire:model="default_ai_model" @if(empty($availableModels)) disabled @endif>
+                                    <select class="form-select" wire:model="tenant_ai_provider_model_id" @if(empty($availableProviderModels)) disabled @endif>
                                         <option value="">Model seçin</option>
-                                        @foreach($availableModels as $model)
-                                        <option value="{{ $model['value'] }}">{{ $model['label'] }} @if($model['cost']) ({{ $model['cost'] }}) @endif</option>
+                                        @foreach($availableProviderModels as $model)
+                                        <option value="{{ $model['id'] }}">{{ $model['label'] }}</option>
                                         @endforeach
                                     </select>
-                                    <label>AI Model @if(empty($availableModels)) (Önce provider seçin) @endif</label>
-                                    @error('default_ai_model') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <label>AI Model @if(empty($availableProviderModels)) (Önce provider seçin) @endif</label>
+                                    @error('tenant_ai_provider_model_id') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>
@@ -594,6 +639,7 @@
     @push('scripts')
     <script>
         document.addEventListener('livewire:initialized', () => {
+            // 🔥 Livewire ile Modal Manager entegrasyonu
             const modalEdit = document.getElementById('modal-tenant-edit');
             const modalAdd = document.getElementById('modal-tenant-add');
             const modalModule = document.getElementById('modal-module-management');
@@ -611,7 +657,7 @@
             // Modal açılırken dropdown pozisyonlarını düzelt
             modalEdit.addEventListener('shown.bs.modal', () => {
                 // AI Provider dropdown'ları için özel stil
-                const selects = modalEdit.querySelectorAll('select[wire\\:model="default_ai_provider_id"]');
+                const selects = modalEdit.querySelectorAll('select[wire\\:model="tenant_ai_provider_id"]');
                 selects.forEach(select => {
                     select.style.zIndex = '9999';
                 });
@@ -619,19 +665,37 @@
             
             modalAdd.addEventListener('shown.bs.modal', () => {
                 // AI Provider dropdown'ları için özel stil
-                const selects = modalAdd.querySelectorAll('select[wire\\:model="default_ai_provider_id"]');
+                const selects = modalAdd.querySelectorAll('select[wire\\:model="tenant_ai_provider_id"]');
                 selects.forEach(select => {
                     select.style.zIndex = '9999';
                 });
             });
             
-            Livewire.on('hideModal', ({ id }) => {
-                const modal = document.getElementById(id);
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
-            });
+            // 🔥 Livewire ile Global Modal Manager'ı entegre et
+            if (window.globalModalManager) {
+                // Global Modal Manager entegrasyonu aktif
+                
+                // Livewire modal kapatma eventi
+                Livewire.on('hideModal', ({ id }) => {
+                    window.globalModalManager.closeModal(id);
+                });
+                
+                // Livewire modal açma eventi
+                Livewire.on('showModal', ({ id }) => {
+                    window.globalModalManager.openModal(id);
+                });
+            } else {
+                // Global Modal Manager bulunamadı - fallback kullanılıyor
+                
+                // Fallback modal yönetimi
+                Livewire.on('hideModal', ({ id }) => {
+                    const modal = document.getElementById(id);
+                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                });
+            }
         });
     </script>
     @endpush

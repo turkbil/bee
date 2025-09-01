@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Sayfa Listesi');
+@endphp
+
 <div wire:id="{{ $this->getId() }}" class="page-component-wrapper">
     <div class="card">
         @include('page::admin.helper')
@@ -225,9 +229,6 @@
 
         <livewire:modals.bulk-delete-modal />
         <livewire:modals.delete-modal />
-        
-        <!-- AI Translation Modal -->
-        @include('admin.partials.global-ai-translation-modal')
         
     </div>
 </div>

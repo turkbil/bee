@@ -17,6 +17,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true)->index();
             $table->json('settings')->nullable()->comment('Menü ayarları: {"css_class": "navbar", "max_depth": 3}');
             $table->timestamps();
+            $table->softDeletes(); // Eklenen
             
             // İndeksler
             $table->index('created_at');

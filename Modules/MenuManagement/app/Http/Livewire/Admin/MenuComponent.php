@@ -7,14 +7,21 @@ namespace Modules\MenuManagement\App\Http\Livewire\Admin;
 use Livewire\Attributes\{Url, Layout, Computed};
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\MenuManagement\App\Http\Livewire\Traits\WithBulkActionsQueue;
 use Modules\MenuManagement\App\Services\MenuService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\MenuManagement\App\DataTransferObjects\MenuOperationResult;
+use Modules\MenuManagement\App\Models\Menu;
 
 #[Layout('admin.layout')]
 class MenuComponent extends Component
 {
-    use WithPagination;
+    use WithPagination, WithBulkActionsQueue;
+
+    // Bulk actions properties (WithBulkActionsQueue trait için gerekli)
+    public $selectedItems = [];
+    public $selectAll = false;
+    public $bulkActionsEnabled = false;
 
     #[Url]
     public $search = '';
@@ -37,8 +44,24 @@ class MenuComponent extends Component
     // Hibrit dil sistemi için dinamik dil listesi
     private ?array $availableSiteLanguages = null;
     
-    // Event listeners
-    protected $listeners = ['refreshMenuData' => 'refreshMenuData'];
+    // Event listeners - trait'ten gelen listeners ile merge edilecek
+    protected function getListeners()
+    {
+        $traitListeners = [];
+        if (method_exists($this, 'getTraitListeners')) {
+            $traitListeners = $this->getTraitListeners();
+        }
+        
+        return array_merge(
+            $traitListeners,
+            ['refreshMenuData' => 'refreshMenuData']
+        );
+    }
+    
+    protected function getModelClass()
+    {
+        return Menu::class;
+    }
     
     private MenuService $menuService;
     

@@ -38,6 +38,8 @@ class DatabaseSeeder extends Seeder
             // AI Credit Packages (central'da tutulur)
             $this->call(AICreditPackageSeeder::class);
             
+            // AI Provider'lar ve modelleri (ModuleSeeder'da çalışır)
+            
             // ModuleSeeder'dan önce context'i tekrar garanti altına al
             tenancy()->end();
             if (!TenantHelpers::isCentral()) {

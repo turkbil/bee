@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>{{ config('app.name') }} - @yield('title')</title>
+    <title>{{ \App\Helpers\AdminTitleHelper::generateTitle() }}</title>
     <!-- Sistem teması kontrolü - Sayfa yüklenmeden çalışır -->
     <script>
         // Disable source map requests and errors in development
@@ -191,13 +191,14 @@
         height: 2px;
         z-index: 99999;
         opacity: 0;
-        transition: opacity 0.1s ease;
+        display: none;
+        transition: opacity 0.2s ease;
         background: transparent;
     ">
         <div id="loading-progress" class="progress-bar" style="
             background-color: var(--tblr-primary, #066fd1);
             width: 0%;
-            transition: width 0.2s ease;
+            transition: width 0.3s ease;
         "></div>
     </div>
 
@@ -207,16 +208,15 @@
     @include('admin.components.navigation')
 
     <div class="page-wrapper">
-        @hasSection('pretitle')
         <div class="page-header d-print-none">
             <div class="container">
                 <div class="row g-2 align-items-center">
                     <div class="col">
                         <div class="page-pretitle">
-                  @yield('pretitle')
+                  {{ \App\Helpers\AdminTitleHelper::generatePretitle() }}
                 </div>
                 <h2 class="page-title">
-                  @yield('title')
+                  {{ \App\Helpers\AdminTitleHelper::generatePageTitle() }}
                 </h2>
               </div>
               <!-- Page title actions -->
@@ -227,7 +227,6 @@
               </div>
             </div>
         </div>
-        @endif
 
         <div class="page-body">
             <div class="container">
@@ -296,6 +295,7 @@
 @include('admin.partials.global-ai-translation-modal')
 
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
+<script src="/admin-assets/js/multi-modal-manager.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>
 <script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
 <script src="/admin-assets/libs/fslightbox/index.js" defer></script>
@@ -307,6 +307,9 @@
 {{-- SEO functionality moved to main.js and manage.js --}}
 <script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
 
+{{-- 🌍 AI Translation Modal JavaScript --}}
+<script src="/assets/js/simple-translation-modal.js?v={{ time() }}"></script>
+
 <!-- Global Loading Bar Script - Tabler Native -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -316,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Tabler Turbo benzeri loading bar sistemi
     const loader = {
         show: function() {
+            loadingBar.style.display = 'block';
             loadingBar.style.opacity = '1';
             progressBar.style.width = '10%';
         },
@@ -328,16 +332,31 @@ document.addEventListener('DOMContentLoaded', function() {
             this.setValue(1);
             setTimeout(() => {
                 loadingBar.style.opacity = '0';
-                progressBar.style.width = '0%';
-            }, 100);
+                setTimeout(() => {
+                    loadingBar.style.display = 'none';
+                    progressBar.style.width = '0%';
+                }, 400);
+            }, 200);
         }
     };
 
-    // Loading bar gösterme
+    // Loading bar gösterme - MODAL SAFE
     function showLoadingBar() {
+        // 🚫 MODAL AÇIKKEN LOADING BAR GÖSTERME
+        const activeModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
+        if (activeModals.length > 0) {
+            // Modal açık: loading bar iptal edildi
+            return;
+        }
+
         loader.show();
-        // Yavaş yavaş %90'a kadar çıkar
         setTimeout(() => loader.setValue(0.9), 200);
+        
+        // AUTO-HIDE: 2 saniye sonra otomatik gizle (modal safe)
+        setTimeout(() => {
+            // Loading bar otomatik gizleniyor (2 saniye)
+            hideLoadingBar();
+        }, 2000);
     }
 
     // Loading bar gizleme
@@ -358,11 +377,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // External linkler için loading bar gösterme
                 if (this.hostname !== window.location.hostname) return;
 
-                // Dropdown toggle'lar için loading bar gösterme
+                // Bootstrap toggle'lar için loading bar gösterme
                 if (this.getAttribute('data-bs-toggle')) return;
-
-                // Modal toggle'lar için loading bar gösterme
                 if (this.getAttribute('data-bs-target')) return;
+                if (this.getAttribute('data-bs-dismiss')) return;
+
+                // Modal içindeki linkler için loading bar gösterme
+                if (this.closest('.modal')) {
+                    // Modal içi link: loading bar iptal edildi
+                    return;
+                }
 
                 showLoadingBar();
             });
@@ -375,6 +399,11 @@ document.addEventListener('DOMContentLoaded', function() {
             element.dataset.wireLoadingAttached = 'true';
 
             element.addEventListener('click', function(e) {
+                // Modal içindeki wire:click için loading bar gösterme
+                if (this.closest('.modal')) {
+                    // Modal içi wire:click: loading bar iptal edildi
+                    return;
+                }
                 showLoadingBar();
             });
         });
@@ -382,6 +411,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Sayfa yüklendiğinde loading bar'ı %100 yap ve gizle
     window.addEventListener('load', hideLoadingBar);
+    
+    // ULTRA AGGRESSIVE FIX: 2 saniye sonra zorla gizle
+    setTimeout(() => {
+        // Loading bar zorla gizleniyor
+        if (loadingBar) {
+            loadingBar.style.display = 'none';
+            loadingBar.style.opacity = '0';
+            progressBar.style.width = '0%';
+            // Loading bar zorla gizlendi
+        }
+    }, 2000);
+    
+    // BACKUP FIX: 1 saniye sonra da kontrol et
+    setTimeout(() => {
+        if (loadingBar && (loadingBar.style.display !== 'none' || loadingBar.style.opacity !== '0')) {
+            // Loading bar hala görünür, zorla gizleniyor
+            loadingBar.style.display = 'none';
+            loadingBar.style.opacity = '0';
+            progressBar.style.width = '0%';
+        }
+    }, 1000);
 
     // Linkleri yakala
     attachLoadingToLinks();
@@ -457,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentTime - lastToastTime < 1000 &&
                 typeof lastToastMessage !== 'undefined' &&
                 lastToastMessage === currentMessage) {
-                console.log('🚫 Session toast duplicate prevented:', currentMessage);
+                // Session toast duplicate prevented: currentMessage
                 return;
             }
 
@@ -526,5 +576,48 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     </script>
 @endif
+
+{{-- 🌍 ENTERPRISE STREAMING TRANSLATION SYSTEM --}}
+<script src="{{ asset('admin-assets/js/streaming-translation.js') }}"></script>
+<script>
+    // 🎆 Enterprise-level streaming translation integration
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Enterprise Streaming Translation System Ready!');
+        
+        // ✅ Check if streaming translation is available
+        if (typeof streamingTranslation !== 'undefined') {
+            // Real-time connection status indicator
+            streamingTranslation.on('connection_established', function() {
+                console.log('✅ WebSocket connection established - Real-time translation ready');
+            });
+            
+            streamingTranslation.on('connection_failed', function() {
+                console.warn('⚠️ WebSocket connection failed - Falling back to polling mode');
+            });
+        } else {
+            console.log('📝 Streaming translation not available - Using standard translation mode');
+        }
+        
+        // Global keyboard shortcuts for power users
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Shift+T: Quick translation modal
+            if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                e.preventDefault();
+                const activeElement = document.activeElement;
+                if (activeElement && activeElement.dataset.pageId) {
+                    const language = prompt('Enter target language code (e.g., tr, en, de):');
+                    if (language && typeof streamingTranslation !== 'undefined') {
+                        streamingTranslation.startStreamingTranslation(
+                            activeElement.dataset.pageId,
+                            language,
+                            { priorityMode: 'high' }
+                        );
+                    }
+                }
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

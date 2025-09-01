@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Ayar Grup Yönetimi');
+@endphp
 @include('settingmanagement::helper')
 <form wire:submit="save">
     <div class="card">

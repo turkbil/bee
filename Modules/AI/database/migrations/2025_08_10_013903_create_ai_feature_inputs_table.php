@@ -34,6 +34,12 @@ return new class extends Migration
             $table->unique(['feature_id', 'slug']);
             $table->index(['feature_id', 'sort_order']);
             $table->index('is_primary');
+            // ADD indexes from 2025_08_10_040000_add_universal_input_system_indexes.php
+            $table->index(['feature_id', 'is_primary'], 'ai_feature_inputs_feature_primary_idx');
+            $table->index(['feature_id', 'slug'], 'ai_feature_inputs_feature_slug_idx');
+            $table->index(['group_id', 'sort_order'], 'ai_feature_inputs_group_sort_idx');
+            $table->index(['type', 'is_required'], 'ai_feature_inputs_type_required_idx');
+            $table->index(['feature_id', 'updated_at'], 'ai_feature_inputs_cache_invalidation_idx');
         });
     }
 

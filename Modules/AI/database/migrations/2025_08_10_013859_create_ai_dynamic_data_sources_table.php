@@ -24,6 +24,10 @@ return new class extends Migration
             
             $table->index('source_type');
             $table->index('is_active');
+            // ADD indexes from 2025_08_10_040000_add_universal_input_system_indexes.php
+            $table->index(['source_type', 'is_active'], 'ai_dynamic_data_sources_type_active_idx');
+            $table->index(['slug'], 'ai_dynamic_data_sources_slug_idx');
+            $table->index(['cache_ttl', 'updated_at'], 'ai_dynamic_data_sources_cache_ttl_idx');
         });
     }
 

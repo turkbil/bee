@@ -1,113 +1,77 @@
-{{-- AI Credit Warning Component Root --}}
+{{-- 🚨 AI Credit Warning Component v3.0 - Global Notification System --}}
 <div>
 @if($showWarning && !$isDismissed)
-    <!-- Modal -->
-    <div class="modal fade" id="creditWarningModal" tabindex="-1" aria-labelledby="creditWarningModalLabel" aria-hidden="true"
-         x-data="{ show: @js($showWarning && !$isDismissed) }" 
-         x-show="show"
-         x-init="if(show) { 
-            setTimeout(() => { 
-                new bootstrap.Modal(document.getElementById('creditWarningModal')).show(); 
-            }, 500); 
-         }">
-        <div class="modal-dialog modal-dialog-centered {{ $warningType === 'critical' ? 'modal-lg' : 'modal-md' }}">
-            <div class="modal-content border-{{ $warningType === 'critical' ? 'danger' : 'warning' }}">
+    {{-- Fixed Position Alert Banner (Non-intrusive for normal warnings) --}}
+    @if($warningType !== 'error')
+    <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999; width: auto; max-width: 90vw;">
+        <div class="alert {{ $this->getWarningClass() }} alert-dismissible d-flex align-items-center shadow-lg" role="alert" style="border-radius: 12px; min-width: 400px;">
+            <i class="ti {{ $this->getWarningIcon() }} fs-3 me-3"></i>
+            <div class="flex-grow-1">
+                <div class="fw-bold">💳 AI Kredi {{ $this->getCreditSummary() }}</div>
+                <div class="small">{{ $warningMessage }}</div>
+                @if($currentBalance !== null)
+                <div class="small opacity-75 mt-1">
+                    Mevcut: {{ number_format($currentBalance, 2) }} kredi
+                </div>
+                @endif
+            </div>
+            <div class="ms-3">
+                <button type="button" class="btn btn-sm btn-outline-primary me-2" wire:click="buyCredits" title="Kredi Satın Al">
+                    <i class="ti ti-plus"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="refreshCredits" title="Yenile">
+                    <i class="ti ti-refresh"></i>
+                </button>
+                <button type="button" class="btn-close ms-2" wire:click="dismissWarning" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Critical Error Modal (Intrusive for zero credits) --}}
+    @if($warningType === 'error')
+    <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.8);" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content border-danger" style="border-width: 3px;">
                 
                 <!-- Modal Header -->
-                <div class="modal-header bg-{{ $warningType === 'critical' ? 'danger' : 'warning' }} text-white">
+                <div class="modal-header bg-danger text-white">
                     <div class="d-flex align-items-center">
-                        <i class="ti {{ $this->getWarningIcon() }} fs-2 me-3"></i>
+                        <i class="ti ti-alert-triangle fs-2 me-3"></i>
                         <div>
-                            <h4 class="modal-title mb-0" id="creditWarningModalLabel">
-                                💳 AI Kredi Uyarısı
-                            </h4>
-                            <small class="opacity-75">
-                                {{ $warningData['message'] ?? 'Kredi durumunuzu kontrol edin.' }}
-                            </small>
+                            <h4 class="modal-title mb-0">🚫 AI Kredisi Tükendi!</h4>
+                            <small class="opacity-75">AI özelliklerini kullanmak için kredi gerekli</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="dismissWarning"></button>
                 </div>
 
                 <!-- Modal Body -->
                 <div class="modal-body p-4">
-                    @php $details = $this->getCreditDetails(); @endphp
-                    
                     <!-- Critical Warning Message -->
-                    @if($warningType === 'critical')
                     <div class="alert alert-danger mb-4">
                         <div class="d-flex align-items-center">
-                            <i class="fa-solid fa-triangle-exclamation fs-3 me-3"></i>
+                            <i class="ti ti-alert-triangle fs-3 me-3"></i>
                             <div>
-                                <h5 class="mb-1">🚨 KRİTİK: Sadece {{ $details['current_credits'] }} kredi kaldı!</h5>
-                                <p class="mb-0">Hemen kredi satın alın, AI özellikler çalışmayabilir.</p>
+                                <h5 class="mb-1">⛔ Kredi bakiyeniz tükendi!</h5>
+                                <p class="mb-0">{{ $warningMessage }}</p>
                             </div>
                         </div>
                     </div>
-                    @endif
 
-                    <!-- Credit Status Card -->
+                    <!-- Credit Status -->
                     <div class="card mb-4">
-                        <div class="card-body">
+                        <div class="card-body text-center">
                             <h5 class="card-title">📊 Kredi Durumu</h5>
+                            <div class="fs-1 fw-bold text-danger mb-2">{{ number_format($currentBalance, 2) }}</div>
+                            <p class="text-muted">Mevcut AI Kredisi</p>
                             
-                            <div class="row text-center">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <div class="fs-2 fw-bold text-primary">{{ $details['current_credits'] }}</div>
-                                        <small class="text-muted">Mevcut Kredi</small>
-                                    </div>
-                                </div>
-                                
-                                @if($details['warning_threshold'] > 0)
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <div class="fs-2 fw-bold text-warning">{{ $details['warning_threshold'] }}</div>
-                                        <small class="text-muted">Eşik Değeri</small>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <div class="fs-2 fw-bold text-{{ $details['percentage'] <= 20 ? 'danger' : ($details['percentage'] <= 50 ? 'warning' : 'success') }}">
-                                            {{ $details['percentage'] }}%
-                                        </div>
-                                        <small class="text-muted">Durum</small>
-                                    </div>
-                                </div>
-                                @endif
+                            <div class="progress mb-3" style="height: 8px;">
+                                <div class="progress-bar bg-danger" style="width: 0%"></div>
                             </div>
                             
-                            <!-- Progress Bar -->
-                            @if($details['warning_threshold'] > 0)
-                            <div class="mt-3">
-                                @php 
-                                    $percentage = min(100, max(0, $details['percentage']));
-                                    $progressClass = $percentage <= 20 ? 'bg-danger' : ($percentage <= 50 ? 'bg-warning' : 'bg-success');
-                                @endphp
-                                <div class="progress" style="height: 8px;">
-                                    <div class="progress-bar {{ $progressClass }}" 
-                                         role="progressbar" 
-                                         style="width: {{ $percentage }}%" 
-                                         aria-valuenow="{{ $percentage }}" 
-                                         aria-valuemin="0" 
-                                         aria-valuemax="100">
-                                    </div>
-                                </div>
-                                <div class="small text-muted mt-1">
-                                    Kredi kullanım oranı
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Recommendation -->
-                    <div class="alert alert-info">
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid fa-lightbulb me-2"></i>
-                            <div>
-                                <strong>Öneri:</strong> {{ $details['recommendation'] }}
+                            <div class="alert alert-warning">
+                                <i class="ti ti-info-circle me-2"></i>
+                                <strong>Bilgi:</strong> AI Chat, Çeviri ve diğer AI özellikleri için kredi gereklidir.
                             </div>
                         </div>
                     </div>
@@ -115,131 +79,218 @@
 
                 <!-- Modal Footer -->
                 <div class="modal-footer">
-                    <div class="w-100 d-flex justify-content-between align-items-center">
-                        <div>
-                            <button type="button" class="btn btn-outline-secondary" wire:click="refreshCredits" title="Kredi durumunu yenile">
-                                <i class="fa-solid fa-rotate-right me-1"></i>
-                                Yenile
-                            </button>
-                        </div>
-                        
-                        <div>
-                            @if($warningType === 'critical')
-                            <button type="button" class="btn btn-danger me-2" wire:click="buyCredits">
-                                <i class="fa-solid fa-shopping-cart me-1"></i>
-                                Acil Kredi Al
-                            </button>
-                            @elseif($warningType === 'low')
-                            <button type="button" class="btn btn-warning me-2" wire:click="buyCredits">
-                                <i class="fa-solid fa-plus me-1"></i>
-                                Kredi Al
-                            </button>
-                            @endif
-                            
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="dismissWarning">
-                                Bugün için kapat
-                            </button>
-                        </div>
+                    <div class="w-100 d-flex justify-content-center">
+                        <button type="button" class="btn btn-danger btn-lg me-3" wire:click="buyCredits">
+                            <i class="ti ti-shopping-cart me-2"></i>
+                            Hemen Kredi Satın Al
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" wire:click="refreshCredits">
+                            <i class="ti ti-refresh me-2"></i>
+                            Durumu Yenile
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
+
 @endif
 
-    <!-- Success Message for Refresh -->
-    <div x-data="{ showSuccess: false }" 
-         @credit-status-refreshed.window="showSuccess = true; setTimeout(() => showSuccess = false, 3000);">
-        <div x-show="showSuccess" 
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="alert alert-success alert-dismissible mb-3 position-fixed"
-             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-            ✅ Kredi durumu güncellendi!
+{{-- Success Toast for Refresh --}}
+<div x-data="{ showToast: false }" 
+     @credit-status-refreshed.window="showToast = true; setTimeout(() => showToast = false, 3000);"
+     @show-toast.window="if($event.detail[0].type === 'info') { showToast = true; setTimeout(() => showToast = false, 3000); }">
+    <div x-show="showToast" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-x-full"
+         x-transition:enter-end="opacity-100 transform translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-x-0"
+         x-transition:leave-end="opacity-0 transform translate-x-full"
+         class="position-fixed bottom-0 end-0 m-3"
+         style="z-index: 9999;">
+        <div class="alert alert-success d-flex align-items-center shadow-lg" style="border-radius: 10px; min-width: 300px;">
+            <i class="ti ti-check-circle fs-4 me-2"></i>
+            <div>
+                <strong>✅ Başarılı!</strong><br>
+                <small>Kredi durumu güncellendi</small>
+            </div>
         </div>
     </div>
+</div>
 
-</div> {{-- Root div close --}}
+</div>
 
-
+{{-- JavaScript for Enhanced Functionality --}}
 @push('script')
 <script>
-// Auto-refresh credit status every 5 minutes
-setInterval(() => {
-    @this.call('refreshCredits');
-}, 300000);
-
-// Listen for credit usage events to refresh status
-document.addEventListener('ai-credit-used', function() {
-    setTimeout(() => {
-        @this.call('refreshCredits');
-    }, 1000);
-});
-
-// Show modal for critical credit warnings (backup in case Alpine.js fails)
-@if($warningType === 'critical' && $showWarning)
 document.addEventListener('DOMContentLoaded', function() {
+    // Credit Warning Component v3.0 Enhanced Scripts
+    
+    // Auto-refresh every 2 minutes (reduced from 5 minutes for better UX)
+    setInterval(() => {
+        if (typeof @this !== 'undefined') {
+            @this.call('refreshCredits');
+        }
+    }, 120000);
+    
+    // Listen for AI operations to refresh credit status
+    document.addEventListener('ai-operation-completed', function(e) {
+        setTimeout(() => {
+            if (typeof @this !== 'undefined') {
+                @this.call('refreshCredits');
+            }
+        }, 1000);
+    });
+    
+    // Listen for credit usage events
+    document.addEventListener('ai-credit-used', function(e) {
+        setTimeout(() => {
+            if (typeof @this !== 'undefined') {
+                @this.call('refreshBalance');
+            }
+        }, 500);
+    });
+    
+    // Broadcast credit warnings to other components
+    @if($showWarning)
+    window.dispatchEvent(new CustomEvent('credit-warning-active', {
+        detail: {
+            type: '{{ $warningType }}',
+            balance: {{ $currentBalance ?? 0 }},
+            message: '{{ addslashes($warningMessage) }}'
+        }
+    }));
+    @endif
+    
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+Shift+C to refresh credits
+        if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+            e.preventDefault();
+            if (typeof @this !== 'undefined') {
+                @this.call('refreshCredits');
+            }
+        }
+    });
+    
+    // Auto-hide non-critical warnings after 10 seconds
+    @if($warningType === 'warning' && $showWarning)
     setTimeout(() => {
-        const modal = new bootstrap.Modal(document.getElementById('creditWarningModal'), {
-            backdrop: 'static',
-            keyboard: false
-        });
-        modal.show();
-    }, 1000);
+        if (typeof @this !== 'undefined') {
+            @this.call('dismissWarning');
+        }
+    }, 10000);
+    @endif
 });
-@endif
+
+// Global function to manually refresh credit status
+window.refreshAICredits = function() {
+    if (typeof Livewire !== 'undefined') {
+        Livewire.emit('refreshCreditWarning');
+    }
+};
 </script>
 @endpush
 
+{{-- Enhanced CSS Styles --}}
 @push('head')
 <style>
+/* AI Credit Warning Component v3.0 Styles */
+
+/* Enhanced alert styling */
+.alert.shadow-lg {
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Pulse animation for critical states */
+@keyframes creditWarningPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* Critical error modal animations */
 .modal-content.border-danger {
-    border-color: #dc3545 !important;
-    border-width: 3px;
-    box-shadow: 0 0.5rem 1rem rgba(220, 53, 69, 0.3);
+    animation: criticalPulse 2s infinite;
+    box-shadow: 0 0 30px rgba(220, 53, 69, 0.4);
 }
 
-.modal-content.border-warning {
-    border-color: #ffc107 !important;
-    border-width: 3px;
-    box-shadow: 0 0.5rem 1rem rgba(255, 193, 7, 0.3);
+@keyframes criticalPulse {
+    0% { 
+        box-shadow: 0 0 30px rgba(220, 53, 69, 0.4);
+        border-color: #dc3545;
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(220, 53, 69, 0.8);
+        border-color: #c82333;
+    }
+    100% { 
+        box-shadow: 0 0 30px rgba(220, 53, 69, 0.4);
+        border-color: #dc3545;
+    }
 }
 
-.modal-header.bg-danger,
-.modal-header.bg-warning {
-    border-bottom: none;
+/* Warning banner hover effects */
+.alert:hover {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
 }
 
-.modal-body .progress {
+/* Progress bar enhancements */
+.progress {
     border-radius: 10px;
-    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
-.modal-body .alert {
-    border-radius: 10px;
+/* Button enhancements */
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
 }
 
-/* Pulse animation for critical warnings */
-@if($warningType === 'critical')
-.modal-content.border-danger {
-    animation: dangerPulse 2s infinite;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .position-fixed.top-0.start-50 {
+        width: 95vw !important;
+        max-width: none !important;
+    }
+    
+    .alert {
+        min-width: auto !important;
+        font-size: 0.875rem;
+    }
+    
+    .modal-lg {
+        max-width: 95vw;
+    }
 }
 
-@keyframes dangerPulse {
-    0% {
-        box-shadow: 0 0.5rem 1rem rgba(220, 53, 69, 0.3);
+/* Dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+    .alert-warning {
+        --bs-alert-bg: rgba(255, 193, 7, 0.1);
+        --bs-alert-border-color: rgba(255, 193, 7, 0.2);
     }
-    50% {
-        box-shadow: 0 0.5rem 2rem rgba(220, 53, 69, 0.6);
-    }
-    100% {
-        box-shadow: 0 0.5rem 1rem rgba(220, 53, 69, 0.3);
+    
+    .alert-danger {
+        --bs-alert-bg: rgba(220, 53, 69, 0.1);
+        --bs-alert-border-color: rgba(220, 53, 69, 0.2);
     }
 }
-@endif
+
+/* Loading states */
+.btn[wire\:loading] {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Enhanced focus states for accessibility */
+.btn:focus,
+.btn-close:focus {
+    outline: 2px solid rgba(13, 110, 253, 0.5);
+    outline-offset: 2px;
+}
 </style>
 @endpush

@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Site Dilleri');
+@endphp
 <div>
 @include('languagemanagement::admin.helper')
 

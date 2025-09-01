@@ -1,3 +1,6 @@
+@php
+    View::share('pretitle', 'Studio Ana Sayfa');
+@endphp
 <div>
     @include('studio::admin.helper')
 

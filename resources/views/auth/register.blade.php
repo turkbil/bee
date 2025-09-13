@@ -13,11 +13,11 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Kayıt Ol</h2>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('auth.register_title') }}</h2>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ request()->getHost() }}</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Ücretsiz hesabınızı oluşturun</p>
+                        <p class="text-gray-600 dark:text-gray-400">{{ __('auth.register_subtitle') }}</p>
                     </div>
 
                     <!-- Register Form -->
@@ -26,7 +26,7 @@
                         
                         <!-- Name Field -->
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ad Soyad</label>
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('auth.name_field') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,7 +40,7 @@
                                     value="{{ old('name') }}" 
                                     required 
                                     autocomplete="name"
-                                    placeholder="Adınız ve soyadınız"
+                                    placeholder="{{ __('auth.name_placeholder') }}"
                                     class="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-gray-100 transition-colors @error('name') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                 />
                             </div>

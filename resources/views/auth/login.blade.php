@@ -13,11 +13,11 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('Login') }}</h2>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('auth.login') }}</h2>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ request()->getHost() }}</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">{{ __('Log in to your account to continue') }}</p>
+                        <p class="text-gray-600 dark:text-gray-400">{{ __('auth.login_subtitle') }}</p>
                     </div>
 
                     <!-- Status Messages -->
@@ -86,7 +86,7 @@
                                     name="password" 
                                     id="password"
                                     autocomplete="current-password"
-                                    placeholder="{{ __('Enter your password') }}"
+                                    placeholder="{{ __('auth.enter_password') }}"
                                     @input="clearError('password')"
                                     @blur="validateField('password', $event.target.value)"
                                     :class="errors.password ? 'w-full pl-10 pr-12 py-3 border border-red-500 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors' : 'w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors'"
@@ -129,7 +129,7 @@
                             </div>
                             <div>
                                 <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors">
-                                    {{ __('Forgot your password?') }}
+                                    {{ __('auth.forgot_password') }}
                                 </a>
                             </div>
                         </div>
@@ -144,8 +144,8 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span x-show="!isLoading">{{ __('Login') }}</span>
-                            <span x-show="isLoading">{{ __('Logging in...') }}</span>
+                            <span x-show="!isLoading">{{ __('auth.login') }}</span>
+                            <span x-show="isLoading">{{ __('auth.logging_in') }}</span>
                             <svg x-show="!isLoading" class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>
@@ -154,9 +154,9 @@
                         <!-- Register Link -->
                         <div class="text-center">
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                {{ __("Don't have an account?") }} 
+                                {{ __('auth.no_account') }} 
                                 <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-                                    {{ __('Register') }}
+                                    {{ __('auth.register') }}
                                 </a>
                             </p>
                         </div>
@@ -164,7 +164,7 @@
 
                     <!-- Quick Demo Login -->
                     <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">{{ __('Quick Test Login:') }}</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">{{ __('auth.quick_test_login') }}</p>
                         <div class="grid grid-cols-3 gap-2">
                             @php $host = request()->getHost(); @endphp
                             

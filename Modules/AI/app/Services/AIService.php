@@ -1362,34 +1362,39 @@ class AIService
         }
         
         // 🎯 YENİ: USER INPUT'A GÖRE FEATURE MODU TESPİTİ
-        // Eğer kullanıcı uzun içerik istiyorsa, chat panelinde bile feature modu çalışsın
-        if (isset($options['user_input'])) {
-            $userInput = mb_strtolower($options['user_input']);
-            
-            // İçerik üretim anahtar kelimeleri
-            $featureKeywords = [
-                'uzun', 'makale', 'blog', 'yazı', 'içerik', 'text', 'content',
-                'detaylı', 'kapsamlı', 'geniş', 'profesyonel',
-                'yaz', 'oluştur', 'hazırla', 'üret', 'generate',
-                'başlık', 'paragraf', 'liste', 'madde',
-                'seo', 'optimizasyon', 'anahtar kelime',
-                'rapor', 'analiz', 'özet', 'sunum'
-            ];
-            
-            // Kelime kontrolü
-            foreach ($featureKeywords as $keyword) {
-                if (str_contains($userInput, $keyword)) {
-                    // DEBUG: Feature mode override
-                    Log::info('🎯 Mode Override: Chat→Feature', [
-                        'user_input' => substr($options['user_input'], 0, 100),
-                        'trigger_keyword' => $keyword,
-                        'original_mode' => 'chat',
-                        'new_mode' => 'feature'
-                    ]);
-                    
-                    return 'feature';
+        // skip_mode_override parametresi varsa mode override'ı atla
+        if (!isset($options['skip_mode_override']) || !$options['skip_mode_override']) {
+            // Eğer kullanıcı uzun içerik istiyorsa, chat panelinde bile feature modu çalışsın
+            if (isset($options['user_input'])) {
+                $userInput = mb_strtolower($options['user_input']);
+
+                // İçerik üretim anahtar kelimeleri
+                $featureKeywords = [
+                    'uzun', 'makale', 'blog', 'yazı', 'içerik', 'text', 'content',
+                    'detaylı', 'kapsamlı', 'geniş', 'profesyonel',
+                    'yaz', 'oluştur', 'hazırla', 'üret', 'generate',
+                    'başlık', 'paragraf', 'liste', 'madde',
+                    'seo', 'optimizasyon', 'anahtar kelime',
+                    'rapor', 'analiz', 'özet', 'sunum'
+                ];
+
+                // Kelime kontrolü
+                foreach ($featureKeywords as $keyword) {
+                    if (str_contains($userInput, $keyword)) {
+                        // DEBUG: Feature mode override
+                        Log::info('🎯 Mode Override: Chat→Feature', [
+                            'user_input' => substr($options['user_input'], 0, 100),
+                            'trigger_keyword' => $keyword,
+                            'original_mode' => 'chat',
+                            'new_mode' => 'feature'
+                        ]);
+
+                        return 'feature';
+                    }
                 }
             }
+        } else {
+            Log::info('⏭️ Mode override skipped due to skip_mode_override flag');
         }
         
         // URL bazlı tespit

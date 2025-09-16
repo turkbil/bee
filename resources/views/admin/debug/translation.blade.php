@@ -581,7 +581,7 @@
                                         <i class="fas fa-trash"></i> Temizle
                                     </button>
                                     <span id="stream-status" class="ms-3">
-                                        <span class="badge bg-secondary">Durduruldu</span>
+                                        <span class="badge bg-warning">Durduruldu</span>
                                     </span>
                                 </div>
                                 
@@ -831,7 +831,7 @@ function stopLogStream() {
         eventSource.close();
         eventSource = null;
     }
-    document.getElementById('stream-status').innerHTML = '<span class="badge bg-secondary">Durduruldu</span>';
+    document.getElementById('stream-status').innerHTML = '<span class="badge bg-warning">Durduruldu</span>';
 }
 
 function clearRealTimeLogs() {

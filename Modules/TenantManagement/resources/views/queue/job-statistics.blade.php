@@ -328,7 +328,7 @@ function updateStatistics(data) {
                         <span class="text-muted">${jobType.name}</span>
                     </div>
                     <div>
-                        <span class="badge bg-secondary">${jobType.count}</span>
+                        <span class="badge bg-info">${jobType.count}</span>
                     </div>
                 </div>
             `;

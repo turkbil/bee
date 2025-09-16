@@ -13,7 +13,7 @@
                 @if($model)
                     <div class="d-flex gap-2">
                         <span class="badge bg-info">{{ ucfirst($modelType) }}</span>
-                        <span class="badge bg-secondary">ID: {{ $modelId }}</span>
+                        <span class="badge bg-dark">ID: {{ $modelId }}</span>
                     </div>
                 @endif
             </div>

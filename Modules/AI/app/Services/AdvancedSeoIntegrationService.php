@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
+use App\Services\TenantLanguageProvider;
 
 /**
  * Advanced SEO Integration Service
@@ -125,12 +126,14 @@ readonly class AdvancedSeoIntegrationService
      * @return array Comprehensive SEO analysis results
      */
     public function performRealTimeSeoAnalysis(
-        array $content, 
+        array $content,
         string $contentType = 'blog_post',
         array $options = []
     ): array {
-        $cacheKey = "seo_analysis_" . md5(serialize($content) . $contentType);
-        
+        // Dinamik cache key - tenant ve dil bağımsız
+        $tenantKey = function_exists('tenant') && tenant() ? tenant()->getTenantKey() : 'central';
+        $cacheKey = "seo_analysis_{$tenantKey}_" . md5(serialize($content) . $contentType);
+
         return Cache::remember($cacheKey, 300, function () use ($content, $contentType, $options) {
             try {
                 $analysis = [
@@ -999,7 +1002,9 @@ readonly class AdvancedSeoIntegrationService
      */
     public function getSeoDashboard(?int $tenantId = null): array
     {
-        $cacheKey = "seo_dashboard_data_" . ($tenantId ?? 'central');
+        // Dinamik tenant key
+        $tenantKey = $tenantId ?? (function_exists('tenant') && tenant() ? tenant()->getTenantKey() : 'central');
+        $cacheKey = "seo_dashboard_data_{$tenantKey}";
 
         return Cache::remember($cacheKey, 600, function () use ($tenantId) {
             try {

@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="tenant-default-locale" content="{{ get_tenant_default_locale() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{ \App\Helpers\AdminTitleHelper::generateTitle() }}</title>
@@ -154,6 +155,22 @@
 
     <style>
       @import url("https://rsms.me/inter/inter.css");
+
+      /* Tüm badge'lerin text rengini beyaz yap */
+      .badge {
+          color: white !important;
+      }
+
+      /* Badge renkleri için arkaplan rengi atamaları */
+      .badge:not([class*="bg-"]) {
+          background-color: var(--tblr-primary) !important;
+      }
+
+      /* AI recommendations gereksiz butonları gizle */
+      .ai-select-all-recommendations,
+      .ai-apply-selected-recommendations {
+          display: none !important;
+      }
     </style>
 
 </head>
@@ -618,6 +635,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 </script>
+
+<!-- AI Content Builder JS -->
+<script src="{{ asset('assets/js/ai-content-builder.js') }}"></script>
 
 </body>
 </html>

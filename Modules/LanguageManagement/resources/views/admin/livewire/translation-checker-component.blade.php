@@ -288,7 +288,7 @@
                                                             <h5 class="text-{{ $locale === 'tr' ? 'primary' : 'info' }}">
                                                                 <i class="fas fa-language me-1"></i>
                                                                 {{ strtoupper($locale) }} {{ ucfirst($context) }}
-                                                                <span class="badge bg-secondary ms-1">{{ count($result['missing'][$locale][$context]) }}</span>
+                                                                <span class="badge bg-info ms-1">{{ count($result['missing'][$locale][$context]) }}</span>
                                                             </h5>
                                                             <div class="list-group list-group-flush">
                                                                 @foreach($result['missing'][$locale][$context] as $key => $info)

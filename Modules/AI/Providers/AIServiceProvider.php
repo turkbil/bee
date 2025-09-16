@@ -64,7 +64,10 @@ class AIServiceProvider extends ServiceProvider
         
         // Universal Input System V3 - Livewire Component
         Livewire::component('ai::admin.features.universal-input-component', \Modules\AI\App\Http\Livewire\Admin\Features\UniversalInputComponent::class);
-        
+
+        // AI Content Builder Component
+        Livewire::component('ai-content-builder-component', \Modules\AI\App\Http\Livewire\ContentBuilderComponent::class);
+
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);

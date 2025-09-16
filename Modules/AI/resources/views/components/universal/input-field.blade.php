@@ -126,7 +126,7 @@ foreach ($fieldAttributes as $attr => $value) {
                     x-on:change="validateField"
                 >
                     @if(!$fieldRequired || empty($fieldValue))
-                        <option value="">{{ $field['empty_option'] ?? 'Seçiniz...' }}</option>
+                        <option value="">{{ $field['empty_option'] ?? 'Seï¿½iniz...' }}</option>
                     @endif
                     @foreach($fieldOptions as $value => $label)
                         <option value="{{ $value }}" 
@@ -243,7 +243,7 @@ foreach ($fieldAttributes as $attr => $value) {
                     <div class="alert alert-info">
                         <i class="fas fa-file me-2"></i>
                         <span x-text="selectedFileName"></span>
-                        <span class="badge bg-secondary ms-2" x-text="selectedFileSize"></span>
+                        <span class="badge bg-info ms-2" x-text="selectedFileSize"></span>
                     </div>
                 </div>
             </div>
@@ -354,7 +354,7 @@ foreach ($fieldAttributes as $attr => $value) {
             <div class="mb-3">
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Desteklenmeyen field türü: <code>{{ $fieldType }}</code>
+                    Desteklenmeyen field tï¿½rï¿½: <code>{{ $fieldType }}</code>
                 </div>
             </div>
     @endswitch
@@ -398,7 +398,7 @@ foreach ($fieldAttributes as $attr => $value) {
     margin-bottom: 0;
 }
 
-/* Floating labels için özel stiller */
+/* Floating labels iï¿½in ï¿½zel stiller */
 .form-floating > .form-control:focus ~ .form-label,
 .form-floating > .form-control:not(:placeholder-shown) ~ .form-label {
     opacity: 0.65;
@@ -454,13 +454,13 @@ document.addEventListener('alpine:init', () => {
             switch (this.type) {
                 case 'email':
                     if (value && !this.isValidEmail(value)) {
-                        this.setFieldError('Geçerli bir e-posta adresi giriniz.');
+                        this.setFieldError('Geï¿½erli bir e-posta adresi giriniz.');
                         return false;
                     }
                     break;
                 case 'url':
                     if (value && !this.isValidUrl(value)) {
-                        this.setFieldError('Geçerli bir URL giriniz.');
+                        this.setFieldError('Geï¿½erli bir URL giriniz.');
                         return false;
                     }
                     break;
@@ -549,7 +549,7 @@ document.addEventListener('alpine:init', () => {
             const value = field.value;
             
             if (field.hasAttribute('required') && !value) {
-                this.setFieldError('Bu alan1 seçmeniz gereklidir.');
+                this.setFieldError('Bu alan1 seï¿½meniz gereklidir.');
                 return false;
             }
             
@@ -594,7 +594,7 @@ document.addEventListener('alpine:init', () => {
             const isChecked = Array.from(radioGroup).some(radio => radio.checked);
             
             if (!isChecked && radioGroup[0].hasAttribute('required')) {
-                this.setFieldError('Bu seçeneklerden birini seçmelisiniz.');
+                this.setFieldError('Bu seï¿½eneklerden birini seï¿½melisiniz.');
                 return false;
             }
             
@@ -644,7 +644,7 @@ document.addEventListener('alpine:init', () => {
             const file = field.files[0];
             
             if (field.hasAttribute('required') && !file) {
-                this.setFieldError('Dosya seçmelisiniz.');
+                this.setFieldError('Dosya seï¿½melisiniz.');
                 return false;
             }
             

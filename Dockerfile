@@ -67,7 +67,45 @@ COPY resources/ resources/
 
 # No npm build process since Vite was removed for tenant compatibility
 
-# Stage 4: Production image
+# Stage 4: Development image
+FROM base AS development
+
+# Install Xdebug for development
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Install Node.js for development
+RUN apk add --no-cache nodejs npm
+
+WORKDIR /var/www/html
+
+# Copy composer files first for better layer caching
+COPY composer.json composer.lock ./
+
+# Install all dependencies (including dev)
+RUN composer install --optimize-autoloader --no-interaction
+
+# Copy application code
+COPY . .
+
+# Set development permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
+
+# Copy development configurations
+COPY docker/php-dev.ini /usr/local/etc/php/conf.d/
+COPY docker/php-fpm-dev.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/nginx-dev.conf /etc/nginx/nginx.conf
+
+ENV APP_ENV=local
+ENV APP_DEBUG=true
+ENV LOG_CHANNEL=stderr
+
+EXPOSE 80
+
+CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+
+# Stage 5: Production image
 FROM base AS production
 
 WORKDIR /var/www/html

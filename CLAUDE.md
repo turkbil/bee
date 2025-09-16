@@ -19,15 +19,6 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 
 ---
 
-## 🤖 KRİTİK AGENT PROTOKOLÜ
-
-### AGENT TEST SİSTEMİ
-1. **"test et", "test", "kontrol et", "bak"** → Agent KESIN devreye gir
-2. **Agent**: laravel.test/login → Giriş → Test sayfası → Screenshot
-3. **Laravel.log** kontrolü → Hata varsa Claude'a bildir
-4. **Sayfaya özel butonların TAMAMINI test et**
-5. **Sadece kullanıcı "test et" dediğinde çalışır**
-
 ---
 
 ## 🚨 KRİTİK KURALLAR
@@ -40,7 +31,6 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 ### 🎯 SAYFA STANDARTLARI
 - Her admin sayfasının tepesinde **helper.blade.php**
 - **Tablo yapısı**: Page modülü pattern'i ile aynı
-- **Yeni route** = Agent test etsin
 
 ### 🧪 TEST PROTOKOLÜ
 Migration/Seeder sonrası:

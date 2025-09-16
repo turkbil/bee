@@ -760,19 +760,37 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                     Route::delete('/{templateId}', [\Modules\AI\App\Http\Controllers\Admin\Template\TemplateController::class, 'deleteTemplate']);
                 });
 
-                // Translation Routes  
+                // Translation Routes
                 Route::prefix('translation')->group(function() {
                     Route::post('/translate', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'translateContent']);
                     Route::post('/bulk-translate', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'bulkTranslate']);
                     Route::get('/languages', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'getAvailableLanguages']);
                     Route::get('/fields/{module}', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'getTranslatableFields']);
                     Route::get('/mappings/{module}', [\Modules\AI\App\Http\Controllers\Admin\Translation\TranslationController::class, 'getFieldMappings']);
-                    
+
                     // Global translation routes (used by JavaScript)
                     Route::post('/estimate', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'estimateTokens']);
                     Route::post('/estimate-tokens', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'estimateTokens']);
                     Route::post('/start', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'startTranslation']);
                     Route::get('/progress/{operationId}', [\Modules\AI\App\Http\Controllers\Admin\Translation\GlobalTranslationController::class, 'getProgress']);
+                });
+
+                // SEO Analysis Routes - AI Önerileri için DİNAMİK DİL SİSTEMİ
+                Route::prefix('seo')->name('seo.')->group(function() {
+                    // SEO analizi
+                    Route::post('/analyze', [\Modules\AI\App\Http\Controllers\Admin\SeoAnalysisController::class, 'analyze'])
+                        ->middleware('module.permission:ai,view')
+                        ->name('analyze');
+
+                    // AI SEO önerileri
+                    Route::post('/recommendations', [\Modules\AI\App\Http\Controllers\Admin\SeoAnalysisController::class, 'generateRecommendations'])
+                        ->middleware('module.permission:ai,view')
+                        ->name('recommendations');
+
+                    // Dinamik dil listesi
+                    Route::get('/languages', [\Modules\AI\App\Http\Controllers\Admin\SeoAnalysisController::class, 'getAvailableLanguages'])
+                        ->middleware('module.permission:ai,view')
+                        ->name('languages');
                 });
 
                 // Analytics Routes

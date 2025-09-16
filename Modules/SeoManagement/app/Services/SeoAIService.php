@@ -61,17 +61,20 @@ class SeoAIService
                 ]
             ]);
 
+            // 0. FORM VERİSİNİ NORMALIZE ET - seoDataCache.tr.* formatından standart formata
+            $normalizedFormContent = $this->normalizeFormContent($formContent);
+
             // 1. GERÇEK ZAMANLI FORM VERİSİ ANALİZİ
-            $realTimeAnalysis = $this->performRealTimeAnalysis($formContent);
+            $realTimeAnalysis = $this->performRealTimeAnalysis($normalizedFormContent);
             
             // 2. DETAYLI SKORLAMA
-            $detailedScoring = $this->calculateDetailedScores($formContent);
-            
+            $detailedScoring = $this->calculateDetailedScores($normalizedFormContent);
+
             // 3. REKABET ANALİZİ
-            $competitiveAnalysis = $this->analyzeCompetitiveLandscape($formContent);
-            
+            $competitiveAnalysis = $this->analyzeCompetitiveLandscape($normalizedFormContent);
+
             // 4. AI DEEP ANALYSIS
-            $aiDeepAnalysis = $this->performAIDeepAnalysis($featureSlug, $formContent, $options);
+            $aiDeepAnalysis = $this->performAIDeepAnalysis($featureSlug, $normalizedFormContent, $options);
             
             // 4.1. AI SKORLARINI KULLAN - YENİ FORMAT DESTEĞİ
             if (isset($aiDeepAnalysis['parsed_response'])) {
@@ -1147,25 +1150,16 @@ class SeoAIService
         $clean = preg_replace('/```\s*$/', '', $clean);
         $clean = trim($clean);
         
-        // 5. Geçersiz UTF-8 karakter dizilerini temizle
-        $clean = filter_var($clean, FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
+        // 5. UTF-8 koruyarak sadece kontrol karakterlerini temizle
+        $clean = preg_replace('/[\x00-\x1F]/', '', $clean);
         
         // 6. İlk JSON decode denemesi
         $parsed = json_decode($clean, true);
-        
-        // 7. Eğer başarısız olursa daha agresif temizleme yap
+
+        // 7. Eğer başarısız olursa JSON tamir et
         if (is_null($parsed) && json_last_error() !== JSON_ERROR_NONE) {
-            // Sadece yazdırılabilir ASCII ve temel UTF-8 karakterleri bırak
-            $clean = preg_replace('/[^\x20-\x7E\x{00A0}-\x{FFFF}]/u', '', $clean);
+            $clean = $this->repairIncompleteJson($clean);
             $parsed = json_decode($clean, true);
-            
-            // Hala başarısız ise double decode dene
-            if (is_null($parsed) && json_last_error() !== JSON_ERROR_NONE) {
-                $decoded = json_decode($clean, true);
-                if (is_string($decoded)) {
-                    $parsed = json_decode($decoded, true);
-                }
-            }
         }
         
         Log::info('🔍 AI RAW RESPONSE DEBUG', [
@@ -1641,7 +1635,7 @@ class SeoAIService
         $promptParts = [];
         
         // CONTEXT HEADER
-        $promptParts[] = "=== 2025 SEO ANALYSIS WITH ACTIONABLE RECOMMENDATIONS ===";
+        $promptParts[] = "=== MODERN SEO ANALYSIS WITH ACTIONABLE RECOMMENDATIONS ===";
         $promptParts[] = "IMPORTANT: Provide SPECIFIC, ACTIONABLE guidance with HOW-TO instructions, not generic suggestions.";
         $promptParts[] = "";
         
@@ -1667,12 +1661,13 @@ class SeoAIService
         $promptParts[] = $baseContent;
         $promptParts[] = "";
         
-        // 2025 SEO REQUIREMENTS
-        $promptParts[] = "=== 2025 SEO REQUIREMENTS ===";
+        // MODERN SEO REQUIREMENTS
+        $promptParts[] = "=== MODERN SEO REQUIREMENTS ===";
         $promptParts[] = "🎯 TITLE OPTIMIZATION (50-60 chars):";
         $promptParts[] = "- Primary keyword at the beginning";
         $promptParts[] = "- Brand/location if relevant";
         $promptParts[] = "- Emotional trigger words";
+        $promptParts[] = "- NO year references unless in original content";
         $promptParts[] = "- Page type specific optimization";
         $promptParts[] = "";
         
@@ -1878,7 +1873,7 @@ class SeoAIService
                 'about' => 'Hakkımızda | 15 Yıllık Deneyim | Profesyonel Web Çözümleri',
                 'service' => 'Web Tasarım Hizmeti | Modern & SEO Uyumlu | Ücretsiz Analiz',
                 'portfolio' => 'Portfolio | 200+ Başarılı Proje | Web Tasarım Örnekleri',
-                'blog' => '2025 SEO Rehberi | Organik Trafik Artırma Teknikleri',
+                'blog' => 'SEO Rehberi | Organik Trafik Artırma Teknikleri',
                 'product' => 'Premium Web Paketi | Mobil Uyumlu | 7/24 Destek'
             ];
             return $examples[$pageType] ?? 'Ana Anahtar Kelime | Marka Adı | Lokasyon/Fayda';
@@ -1890,7 +1885,7 @@ class SeoAIService
                 'about' => '2008\'den beri web tasarım alanında hizmet veriyoruz. Uzman ekibimiz, modern teknolojilerle işletmenizi dijital dünyada öne çıkarır.',
                 'service' => 'Profesyonel web tasarım hizmeti. SEO uyumlu, mobil responsive, hızlı loading. 30 gün garanti. Ücretsiz analiz için iletişime geçin!',
                 'portfolio' => 'E-ticaret, kurumsal web siteleri ve mobil uygulamalar. 200+ başarılı projemizi inceleyin. Sizin projeniz bir sonraki olabilir!',
-                'blog' => '2025 SEO trendleri ve organik trafik artırma teknikleri. Uzman tavsiyelerimizle Google\'da üst sıralara çıkın. Hemen okuyun!',
+                'blog' => 'SEO trendleri ve organik trafik artırma teknikleri. Uzman tavsiyelerimizle Google\'da üst sıralara çıkın. Hemen okuyun!',
                 'product' => 'Premium web tasarım paketi: Modern tasarım, SEO optimizasyonu, 1 yıl destek dahil. Uygun fiyat, kaliteli hizmet. Sipariş verin!'
             ];
             return $examples[$pageType] ?? 'Net değer önerisi + Call-to-action + Ana faydalar + İletişim teşviki';
@@ -2233,4 +2228,115 @@ class SeoAIService
         
         return $response;
     }
+
+    /**
+     * REPAIR INCOMPLETE JSON
+     */
+    private function repairIncompleteJson(string $jsonString): string
+    {
+        // If JSON looks complete, return as is
+        if (substr_count($jsonString, '{') === substr_count($jsonString, '}')) {
+            return $jsonString;
+        }
+
+        Log::warning('Attempting to repair incomplete JSON', [
+            'original_length' => strlen($jsonString),
+            'open_braces' => substr_count($jsonString, '{'),
+            'close_braces' => substr_count($jsonString, '}'),
+            'preview' => substr($jsonString, -100)
+        ]);
+
+        // Try to close incomplete JSON structure
+        $openBraces = substr_count($jsonString, '{');
+        $closeBraces = substr_count($jsonString, '}');
+        $openBrackets = substr_count($jsonString, '[');
+        $closeBrackets = substr_count($jsonString, ']');
+
+        // Close incomplete objects and arrays
+        while ($closeBraces < $openBraces) {
+            $jsonString .= '}';
+            $closeBraces++;
+        }
+
+        while ($closeBrackets < $openBrackets) {
+            $jsonString .= ']';
+            $closeBrackets++;
+        }
+
+        Log::warning('JSON repair attempt made', [
+            'repaired_length' => strlen($jsonString),
+            'final_preview' => substr($jsonString, -100)
+        ]);
+
+        return $jsonString;
+    }
+
+    /**
+     * Form content'i normalize et - nested JavaScript formatından AI analizi için düz formata
+     */
+    private function normalizeFormContent(array $formContent): array
+    {
+        $normalized = [];
+
+        // Helper function to get nested array value
+        $getValue = function($array, $path) {
+            $keys = explode('.', $path);
+            $value = $array;
+            foreach ($keys as $key) {
+                if (!isset($value[$key])) {
+                    return null;
+                }
+                $value = $value[$key];
+            }
+            return is_string($value) ? trim($value) : $value;
+        };
+
+        // Field mappings with nested paths
+        $fieldMappings = [
+            'title' => ['multiLangInputs.tr.title', 'title'],
+            'meta_description' => ['seoDataCache.tr.seo_description', 'meta_description', 'seo_description'],
+            'body' => ['multiLangInputs.tr.body', 'body', 'content'],
+            'og_title' => ['seoDataCache.tr.og_title', 'og_title'],
+            'og_description' => ['seoDataCache.tr.og_description', 'og_description'],
+            'seo_title' => ['seoDataCache.tr.seo_title', 'seo_title'],
+            'seo_description' => ['seoDataCache.tr.seo_description', 'seo_description'],
+            'canonical_url' => ['seoDataCache.tr.canonical_url', 'canonical_url'],
+            'priority_score' => ['seoDataCache.tr.priority_score', 'priority_score'],
+            'content_type' => ['seoDataCache.tr.content_type', 'content_type'],
+        ];
+
+        // Extract values from nested structure
+        foreach ($fieldMappings as $normalizedKey => $possiblePaths) {
+            $value = null;
+
+            foreach ($possiblePaths as $path) {
+                $extractedValue = $getValue($formContent, $path);
+                if ($extractedValue !== null && !empty($extractedValue)) {
+                    $value = $extractedValue;
+                    break;
+                }
+            }
+
+            if ($value !== null) {
+                $normalized[$normalizedKey] = $value;
+            }
+        }
+
+        // Debug logging with better structure
+        \Log::info('🔧 Form Content Normalization', [
+            'input_structure' => array_keys($formContent),
+            'multiLangInputs_keys' => isset($formContent['multiLangInputs']['tr']) ? array_keys($formContent['multiLangInputs']['tr']) : 'NOT_FOUND',
+            'seoDataCache_keys' => isset($formContent['seoDataCache']['tr']) ? array_keys($formContent['seoDataCache']['tr']) : 'NOT_FOUND',
+            'normalized_fields' => array_keys($normalized),
+            'critical_fields' => [
+                'title' => $normalized['title'] ?? 'MISSING',
+                'og_title' => $normalized['og_title'] ?? 'MISSING',
+                'og_description' => $normalized['og_description'] ?? 'MISSING',
+                'body_length' => isset($normalized['body']) ? strlen($normalized['body']) : 0
+            ]
+        ]);
+
+        return $normalized;
+    }
+
 }

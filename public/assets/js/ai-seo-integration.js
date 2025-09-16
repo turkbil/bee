@@ -3,11 +3,72 @@
  * Real AI-powered SEO functionality
  */
 
+
 (function() {
     'use strict';
     
     // CSRF token for API calls
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    // Dinamik dil sistemi - tenant_languages tablosundan
+    let availableLanguages = null;
+    let defaultLanguage = null;
+
+    /**
+     * tenant_languages tablosundan dinamik dil listesini yükle
+     */
+    async function loadAvailableLanguages() {
+        if (availableLanguages !== null) {
+            return availableLanguages;
+        }
+
+        const response = await fetch('/admin/ai/seo/languages', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            availableLanguages = result.data.languages;
+            defaultLanguage = result.data.default_language;
+            console.log('✅ Dinamik dil sistemi yüklendi:', {
+                languages: availableLanguages,
+                default: defaultLanguage,
+                total: result.data.total_count
+            });
+            return availableLanguages;
+        }
+
+        throw new Error('tenant_languages tablosundan dil listesi alınamadı');
+    }
+
+    /**
+     * Mevcut sayfadaki aktif dili al (dinamik sistem ile)
+     */
+    function getCurrentLanguage() {
+        // Sayfa SEO tab'ından aktif dili al
+        const activeLanguageTab = document.querySelector('.seo-language-content[style*="display: block"]');
+        if (activeLanguageTab) {
+            return activeLanguageTab.getAttribute('data-language') || defaultLanguage;
+        }
+
+        // Page yönetim sayfasındaki dil seçicisinden al
+        const languageSelector = document.querySelector('[data-language-code]');
+        if (languageSelector) {
+            return languageSelector.getAttribute('data-language-code') || defaultLanguage;
+        }
+
+        // HTML lang attribute'undan al
+        const htmlLang = document.documentElement.lang;
+        if (htmlLang && availableLanguages?.some(lang => lang.code === htmlLang)) {
+            return htmlLang;
+        }
+
+        return defaultLanguage;
+    }
     
     function attachButtonListeners() {
         const seoButtons = document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn, .seo-generator-btn, .seo-suggestions-btn, [data-seo-feature], [data-action]');
@@ -116,11 +177,28 @@
     // Real AI API handlers
     async function handleSeoRecommendations(button) {
         console.log('🚀 SEO RECOMMENDATIONS START');
-        const language = button.getAttribute('data-language') || 'tr';
-        
+        const language = getCurrentLanguage();
+
+        // Mevcut öneriler varsa kullanıcıya sor
+        const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
+        const existingContent = section && section.querySelector('.ai-recommendations-content');
+        const hasExistingRecommendations = existingContent &&
+            existingContent.style.display !== 'none' &&
+            existingContent.innerHTML.trim() !== '';
+
+        if (hasExistingRecommendations && !window.forceRegenerateRecommendations) {
+            const confirmed = confirm('Mevcut öneriler silinecek ve yeni öneriler oluşturulacak. Emin misiniz?');
+            if (!confirmed) {
+                console.log('❌ Kullanıcı yeniden oluşturmayı iptal etti');
+                return;
+            }
+        }
+
+        // Force regenerate flag'ini temizle
+        window.forceRegenerateRecommendations = false;
+
         try {
             // Show the recommendations section
-            const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
             if (section) {
                 section.style.display = 'block';
                 
@@ -137,11 +215,23 @@
             setButtonLoading(button, 'Öneriler Üretiliyor...');
             
             const collectedData = collectFormData();
+            // DEBUG: Model ID kontrolü (Global - herhangi bir modül olabilir)
+            console.log('🔍 Model ID Debug - JavaScript:', {
+                windowCurrentModelId: window.currentModelId,
+                typeOfModelId: typeof window.currentModelId,
+                finalModelId: window.currentModelId || null
+            });
+
             const formData = {
                 feature_slug: 'seo-smart-recommendations',
                 form_content: collectedData,
-                language: language
+                language: language,
+                page_id: window.currentModelId || null,  // page_id parametresi universal olarak kullanılıyor
+                force_regenerate: window.forceRegenerateRecommendations || false  // Yeniden oluşturma zorlaması
             };
+
+            // Force regenerate flag'ini temizle
+            window.forceRegenerateRecommendations = false;
             console.log('📋 Recommendations Form data:', formData);
             
             console.log('🔗 Sending request to:', '/admin/seo/ai/recommendations');
@@ -178,6 +268,11 @@
             if (result.success) {
                 console.log('✅ Success - displaying recommendations:', result.data);
                 displayRecommendations(result.data, language);
+
+                // Cache mesajı göster
+                if (result.data.from_cache) {
+                    console.log('💾 Öneri kaydedilmiş verilerden yüklendi');
+                }
             } else {
                 console.error('❌ API Error:', result.message);
                 showRecommendationsError(result.message, language);
@@ -193,6 +288,24 @@
     
     async function handleSeoAnalysis(button) {
         console.log('🚀 SEO ANALYSIS START');
+
+        // Mevcut analiz sonuçları varsa kullanıcıya sor
+        const existingAnalysis = document.querySelector('#seoAnalysisContent .analysis-results');
+        const hasExistingAnalysis = existingAnalysis &&
+            existingAnalysis.style.display !== 'none' &&
+            existingAnalysis.innerHTML.trim() !== '';
+
+        if (hasExistingAnalysis && !window.forceRegenerateAnalysis) {
+            const confirmed = confirm('Mevcut analiz sonuçları silinecek ve yeni analiz yapılacak. Emin misiniz?');
+            if (!confirmed) {
+                console.log('❌ Kullanıcı analizi yeniden yapmayı iptal etti');
+                return;
+            }
+        }
+
+        // Force regenerate flag'ini temizle
+        window.forceRegenerateAnalysis = false;
+
         try {
             setButtonLoading(button, 'Analiz Ediliyor...');
             
@@ -1003,107 +1116,93 @@
             count.textContent = recommendations.length;
         }
         
-        // Add Apply All button and controls at the top
-        let controlsHTML = `
-            <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="applyAllRecommendations()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M5 12l2 0l10 -10l-2 -2l-10 10l0 2z"/>
-                            <path d="M19 4l2 2"/>
-                        </svg>
-                        Tümünü Uygula (#1 Seçenekleri)
-                    </button>
-                    <button type="button" class="btn btn-outline-primary btn-sm ai-apply-selected-recommendations" disabled onclick="applySelectedRecommendations(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M9 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
-                            <path d="M9 17l0 -10"/>
-                            <path d="M19 16.5c0 .667 -.167 1.167 -.5 1.5s-.833 .333 -1.5 .333s-1.167 -.167 -1.5 -.5s-.333 -.833 -.333 -1.5c0 -.667 .167 -1.167 .5 -1.5s.833 -.333 1.5 -.333s1.167 .167 1.5 .5s.333 .833 .333 1.5z"/>
-                        </svg>
-                        Seçilenleri Uygula
-                    </button>
-                </div>
-                <small class="text-muted">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-1">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/>
-                        <path d="M12 9h.01"/>
-                        <path d="M11 12h1v4h1"/>
-                    </svg>
-                    Radio butonları tek seçim, direkt tıklama da desteklenir
-                </small>
-            </div>
-        `;
+        // Gereksiz bilgilendirme metinlerini kaldırdık - direkt önerilere geçelim
+        let controlsHTML = ``;
         
-        // Generate recommendation items with alternatives
+        // Generate recommendation items with structured layout
         let recommendationsHTML = controlsHTML;
-        recommendations.forEach((rec, index) => {
-            const id = `rec_${index}`;
-            const hasAlternatives = rec.alternatives && rec.alternatives.length > 0;
-            
-            recommendationsHTML += `
-                <div class="card mb-3 ai-recommendation-item" data-recommendation='${JSON.stringify(rec)}'>
-                    <div class="card-body p-3">
-                        <div class="d-flex align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 class="mb-1">
-                                        <i class="fas ${rec.type === 'title' ? 'fa-heading' : rec.type === 'description' ? 'fa-align-left' : rec.type === 'keywords' ? 'fa-tags' : 'fa-magic'} me-2"></i>
-                                        ${rec.title || rec.field || 'SEO Önerisi'}
-                                    </h6>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="badge bg-${rec.priority === 'high' ? 'danger' : rec.priority === 'medium' ? 'warning' : 'success'}">
-                                            ${rec.priority === 'high' ? 'Yüksek' : rec.priority === 'medium' ? 'Orta' : 'Düşük'}
-                                        </span>
-                                        ${rec.impact_score ? `<small class="text-success"><i class="fas fa-chart-line me-1"></i>${rec.impact_score}%</small>` : ''}
-                                    </div>
-                                </div>
-                                <p class="text-muted mb-3">${rec.description || rec.reason || ''}</p>
-                                
-                                ${hasAlternatives ? `
-                                    <div class="alternatives-compact">
-                                        <small class="text-muted d-block mb-2">
-                                            <i class="fas fa-magic me-1"></i>${rec.alternatives.length} AI Alternatifi
-                                        </small>
-                                        <div class="alternatives-list">
-                                            <div class="btn-group${rec.alternatives.length > 3 ? '-vertical' : ''} ${rec.alternatives.length > 3 ? 'w-100' : 'w-100'}" role="group">
-                                                ${rec.alternatives.map((alt, altIndex) => `
-                                                    <input type="radio" class="btn-check alternative-radio" 
-                                                           name="alt_${rec.type}" value="${alt.id}" id="alt_${id}_${altIndex}" 
-                                                           autocomplete="off"
-                                                           onchange="updateApplyButton()" 
-                                                           onclick="applyAlternativeDirectly('${rec.field_target}', '${alt.value.replace(/'/g, "\\'")}', this)">
-                                                    <label for="alt_${id}_${altIndex}" type="button" class="btn${rec.alternatives.length > 3 ? '' : ' flex-fill'} text-start">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <div class="flex-grow-1 min-w-0">
-                                                                <div class="fw-medium small text-truncate mb-1">${alt.label}</div>
-                                                                <div class="text-muted small text-truncate" style="font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;">
-                                                                    ${alt.value.length > 50 ? alt.value.substring(0, 50) + '...' : alt.value}
-                                                                </div>
-                                                            </div>
-                                                            <span class="badge bg-azure ms-2">${alt.score}</span>
-                                                        </div>
-                                                    </label>
-                                                `).join('')}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ` : `
-                                    <div class="ai-single-suggestion p-2 bg-light rounded">
-                                        <div class="d-flex align-items-center justify-content-between mb-1">
-                                            <small class="text-muted"><i class="fas fa-robot me-1"></i>AI Önerisi</small>
-                                            <span class="badge bg-primary">${rec.impact_score || 85}%</span>
-                                        </div>
-                                        <code class="text-primary small">${rec.value || rec.suggested_value || ''}</code>
-                                    </div>
-                                `}
+
+        // Separate SEO and Social recommendations
+        const seoRecs = recommendations.filter(r => r.type.includes('seo') || r.type === 'title' || r.type === 'description');
+        const socialRecs = recommendations.filter(r => r.type.includes('og') || r.type.includes('social'));
+
+        // SEO Önerileri Section
+        if (seoRecs.length > 0) {
+            recommendationsHTML += `<div class="row mb-4">`;
+
+            seoRecs.forEach((rec, index) => {
+                const hasAlternatives = rec.alternatives && rec.alternatives.length > 0;
+
+                recommendationsHTML += `
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">${rec.title || 'SEO Önerisi'}</h3>
+                            </div>
+                            <div class="list-group list-group-flush">`;
+
+                if (hasAlternatives) {
+                    rec.alternatives.forEach((alt, altIndex) => {
+                        recommendationsHTML += `
+                            <a href="#" class="list-group-item list-group-item-action${altIndex === 0 ? ' active' : ''}"
+                               onclick="applyAlternativeDirectly('${rec.field_target}', '${alt.value.replace(/'/g, "\\'")}', this); return false;">
+                                ${alt.value}
+                            </a>`;
+                    });
+                } else {
+                    recommendationsHTML += `
+                        <a href="#" class="list-group-item list-group-item-action">
+                            ${rec.value || rec.suggested_value || ''}
+                        </a>`;
+                }
+
+                recommendationsHTML += `
                             </div>
                         </div>
-                    </div>
-                </div>`;
-        });
+                    </div>`;
+            });
+
+            recommendationsHTML += `</div>`;
+        }
+
+        // Sosyal Medya Önerileri Section
+        if (socialRecs.length > 0) {
+            recommendationsHTML += `<div class="row mb-4">`;
+
+            socialRecs.forEach((rec, index) => {
+                const hasAlternatives = rec.alternatives && rec.alternatives.length > 0;
+
+                recommendationsHTML += `
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">${rec.title || 'Sosyal Medya Önerisi'}</h3>
+                            </div>
+                            <div class="list-group list-group-flush">`;
+
+                if (hasAlternatives) {
+                    rec.alternatives.forEach((alt, altIndex) => {
+                        recommendationsHTML += `
+                            <a href="#" class="list-group-item list-group-item-action${altIndex === 0 ? ' active' : ''}"
+                               onclick="applyAlternativeDirectly('${rec.field_target}', '${alt.value.replace(/'/g, "\\'")}', this); return false;">
+                                ${alt.value}
+                            </a>`;
+                    });
+                } else {
+                    recommendationsHTML += `
+                        <a href="#" class="list-group-item list-group-item-action">
+                            ${rec.value || rec.suggested_value || ''}
+                        </a>`;
+                }
+
+                recommendationsHTML += `
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            recommendationsHTML += `</div>`;
+        }
         
         if (list) {
             list.innerHTML = recommendationsHTML;
@@ -1111,10 +1210,68 @@
         
         // Update apply button state
         updateApplyButton();
-        
+
+        // Auto-apply first recommendations
+        autoApplyFirstRecommendations(recommendations);
+
         console.log('✅ Recommendations displayed successfully');
     }
-    
+
+    // Auto-apply first recommendations - ENHANCED
+    function autoApplyFirstRecommendations(recommendations) {
+        console.log('🔄 Auto-applying first recommendations...');
+        console.log('📝 Recommendations structure:', recommendations);
+
+        if (!recommendations || recommendations.length === 0) {
+            console.warn('⚠️ No recommendations to auto-apply');
+            return;
+        }
+
+        let appliedCount = 0;
+        recommendations.forEach((rec, index) => {
+            console.log(`🔍 Processing recommendation ${index + 1}:`, rec);
+
+            if (!rec.alternatives || rec.alternatives.length === 0) {
+                console.warn(`⚠️ Recommendation ${index + 1} has no alternatives:`, rec);
+                return;
+            }
+
+            const firstAlternative = rec.alternatives[0];
+            if (!firstAlternative || !firstAlternative.value) {
+                console.warn(`⚠️ First alternative is invalid:`, firstAlternative);
+                return;
+            }
+
+            console.log(`✅ Auto-applying ${rec.type || 'unknown'}: ${rec.field_target} = "${firstAlternative.value.substring(0, 50)}..."`);
+
+            try {
+                // Apply directly to form fields
+                applyAlternativeDirectly(rec.field_target, firstAlternative.value);
+                appliedCount++;
+                console.log(`✅ Successfully applied recommendation ${index + 1}`);
+            } catch (error) {
+                console.error(`❌ Failed to apply recommendation ${index + 1}:`, error);
+            }
+        });
+
+        // Auto-enable social media customization toggle when OG fields are applied (SADECE TR için)
+        const hasOgFields = recommendations.some(rec =>
+            rec.field_target && (rec.field_target.includes('og_title') || rec.field_target.includes('og_description'))
+        );
+
+        if (hasOgFields) {
+            console.log('🔄 Enabling OG custom fields for TR language...');
+            try {
+                enableOgCustomFields('tr');
+                console.log('✅ OG custom fields enabled');
+            } catch (error) {
+                console.error('❌ Failed to enable OG custom fields:', error);
+            }
+        }
+
+        console.log(`✅ Auto-apply completed: ${appliedCount}/${recommendations.length} recommendations applied`);
+    }
+
     function showRecommendationsError(message, language) {
         const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
         if (!section) return;
@@ -1377,71 +1534,128 @@
         }
     };
     
-    // CLICK-TO-FILL functionality for SEO recommendations
+    // CLICK-TO-FILL functionality for SEO recommendations - ENHANCED
     window.applyAlternativeDirectly = function(fieldTarget, value, element) {
-        console.log('🎯 Direct apply:', fieldTarget, value);
-        
-        // Enhanced field mappings with wire:model targeting
-        const fieldMappings = {
-            'seo_title': 'input[wire\\:model="seoDataCache.tr.seo_title"]',
-            'seo_description': 'textarea[wire\\:model="seoDataCache.tr.seo_description"]', 
-            'content_type': 'select[wire\\:model="seoDataCache.tr.content_type"]',
-            'og_title': 'input[wire\\:model="seoDataCache.tr.og_title"]',
-            'og_description': 'textarea[wire\\:model="seoDataCache.tr.og_description"]',
-            'priority_score': 'input[wire\\:model="seoDataCache.tr.priority_score"]'
-        };
-        
-        const selector = fieldMappings[fieldTarget];
-        if (!selector) {
-            showError('Alan bulunamadı: ' + fieldTarget);
-            return;
+        console.log('🎯 Direct apply:', fieldTarget, value.substring(0, 50));
+        console.log('🔍 Element:', element);
+
+        // DIRECT WIRE MODEL TARGETING - Backend sends full wire:model path
+        let selector;
+
+        if (fieldTarget.includes('seoDataCache.')) {
+            // Direct wire:model targeting - escape dots and brackets
+            selector = `[wire\\:model="${fieldTarget}"]`;
+        } else {
+            // Fallback mappings for simple field names
+            const fieldMappings = {
+                'seo_title': 'input[wire\\:model="seoDataCache.tr.seo_title"]',
+                'seo_description': 'textarea[wire\\:model="seoDataCache.tr.seo_description"]',
+                'content_type': 'select[wire\\:model="seoDataCache.tr.content_type"]',
+                'og_title': 'input[wire\\:model="seoDataCache.tr.og_title"]',
+                'og_description': 'textarea[wire\\:model="seoDataCache.tr.og_description"]',
+                'priority_score': 'input[wire\\:model="seoDataCache.tr.priority_score"]'
+            };
+            selector = fieldMappings[fieldTarget];
         }
-        
+
+        if (!selector) {
+            console.error('❌ Field mapping failed for:', fieldTarget);
+            console.error('❌ Available selectors would be:', {
+                'direct': `[wire\\:model="${fieldTarget}"]`,
+                'fallback': 'Not available'
+            });
+            showError('Alan bulunamadı: ' + fieldTarget);
+            return false;
+        }
+
+        console.log('🔍 Using selector:', selector);
+
         const field = document.querySelector(selector);
         if (!field) {
-            showError('Form alanı bulunamadı: ' + selector);
-            return;
-        }
-        
-        // Special handling for content_type (select vs custom input)
-        if (fieldTarget === 'content_type') {
-            handleContentTypeSelection(value);
-        } else {
-            // Update field value
-            field.value = value;
-            
-            // Trigger Livewire update
-            field.dispatchEvent(new Event('input', { bubbles: true }));
-            field.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        
-        // Auto-enable OG custom fields if OG fields are filled
-        if (fieldTarget === 'og_title' || fieldTarget === 'og_description') {
-            enableOgCustomFields();
-        }
-        
-        // Visual feedback
-        field.style.backgroundColor = '#d4edda';
-        field.style.border = '2px solid #28a745';
-        
-        // Mark the clicked alternative as selected
-        if (element) {
-            const parent = element.closest('.ai-recommendation-item');
-            if (parent) {
-                const alternatives = parent.querySelectorAll('.form-check');
-                alternatives.forEach(alt => alt.classList.remove('bg-success', 'text-white'));
-                element.classList.add('bg-success', 'text-white');
+            console.error('❌ Field not found with selector:', selector);
+
+            // Debug: Show available SEO fields
+            const allSeoFields = document.querySelectorAll('[wire\\:model*="seo"]');
+            console.error('❌ Available SEO fields:', Array.from(allSeoFields).map(f => f.getAttribute('wire:model')));
+
+            // Try alternative selectors
+            const altSelectors = [
+                `input[wire\\:model="${fieldTarget}"]`,
+                `textarea[wire\\:model="${fieldTarget}"]`,
+                `select[wire\\:model="${fieldTarget}"]`
+            ];
+
+            for (const altSelector of altSelectors) {
+                const altField = document.querySelector(altSelector);
+                if (altField) {
+                    console.log('✅ Found field with alternative selector:', altSelector);
+                    return applyToField(altField, value, fieldTarget, element);
+                }
             }
+
+            showError('Form alanı bulunamadı: ' + selector);
+            return false;
         }
-        
-        // Reset visual feedback after 2 seconds
-        setTimeout(() => {
-            field.style.backgroundColor = '';
-            field.style.border = '';
-        }, 2000);
-        
-        showSuccess('Öneri uygulandı: ' + getFieldDisplayName(fieldTarget));
+
+        console.log('✅ Field found:', field.tagName, field.type || field.nodeName, field.getAttribute('wire:model'));
+
+        return applyToField(field, value, fieldTarget, element);
     };
+
+    // Helper function to apply value to field
+    function applyToField(field, value, fieldTarget, element) {
+        try {
+            // Special handling for content_type (select vs custom input)
+            if (fieldTarget === 'content_type' || fieldTarget.includes('content_type')) {
+                handleContentTypeSelection(value);
+            } else {
+                // Update field value
+                const oldValue = field.value;
+                field.value = value;
+
+                // Trigger Livewire update events
+                field.dispatchEvent(new Event('input', { bubbles: true }));
+                field.dispatchEvent(new Event('change', { bubbles: true }));
+
+                console.log(`✅ Field updated: "${oldValue}" → "${value}"`);
+            }
+
+            // Auto-enable OG custom fields if OG fields are filled
+            if (fieldTarget.includes('og_title') || fieldTarget.includes('og_description')) {
+                console.log('🔄 Auto-enabling OG custom fields...');
+                const language = extractLanguageFromFieldTarget(fieldTarget);
+                enableOgCustomFields(language);
+            }
+
+            // Visual feedback
+            field.style.backgroundColor = '#d4edda';
+            field.style.border = '2px solid #28a745';
+
+            // Mark the clicked alternative as selected
+            if (element) {
+                const parent = element.closest('.ai-recommendation-item');
+                if (parent) {
+                    const alternatives = parent.querySelectorAll('.form-check');
+                    alternatives.forEach(alt => alt.classList.remove('bg-success', 'text-white'));
+                    element.classList.add('bg-success', 'text-white');
+                }
+            }
+
+            // Reset visual feedback after 3 seconds
+            setTimeout(() => {
+                field.style.backgroundColor = '';
+                field.style.border = '';
+            }, 3000);
+
+            showSuccess('Öneri uygulandı: ' + getFieldDisplayName(fieldTarget));
+            return true;
+
+        } catch (error) {
+            console.error('❌ Error applying value to field:', error);
+            showError('Öneri uygulanırken hata: ' + error.message);
+            return false;
+        }
+    }
     
     // Handle content type selection (dropdown vs custom input)
     function handleContentTypeSelection(value) {
@@ -1472,20 +1686,139 @@
     }
     
     // Auto-enable OG custom fields when OG values are set
-    function enableOgCustomFields() {
-        const checkbox = document.querySelector('input[wire\\:model="seoDataCache.tr.og_custom_enabled"]');
-        if (checkbox && !checkbox.checked) {
+    function enableOgCustomFields(language = 'tr') {
+        console.log(`🔄 Enabling OG custom fields for language: ${language}`);
+
+        const checkbox = document.querySelector(`input[wire\\:model="seoDataCache.${language}.og_custom_enabled"]`);
+        if (!checkbox) {
+            console.error(`❌ OG custom checkbox not found for language: ${language}`);
+            return;
+        }
+
+        if (!checkbox.checked) {
+            console.log(`✅ Activating OG custom checkbox for ${language}...`);
             checkbox.checked = true;
+
+            // Trigger both Livewire and native change events
             checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-            
-            // Show custom fields
-            const customFields = document.getElementById('og_custom_fields_tr');
-            if (customFields) {
-                customFields.style.display = 'block';
-                customFields.style.maxHeight = 'none';
-                customFields.style.overflow = 'visible';
+            checkbox.dispatchEvent(new Event('input', { bubbles: true }));
+
+            // Call the existing toggleOgCustomFields function if available
+            if (typeof window.toggleOgCustomFields === 'function') {
+                console.log(`✅ Calling toggleOgCustomFields function for ${language}...`);
+                window.toggleOgCustomFields(checkbox, language);
+            }
+
+            // Manual field showing as fallback
+            setTimeout(() => {
+                const customFields = document.getElementById(`og_custom_fields_${language}`);
+                if (customFields) {
+                    customFields.style.display = 'block';
+                    customFields.style.maxHeight = 'none';
+                    customFields.style.overflow = 'visible';
+                    customFields.classList.remove('d-none');
+                    console.log(`✅ OG custom fields manually shown for ${language}`);
+                }
+            }, 100);
+
+            console.log(`✅ OG custom fields enabled successfully for ${language}`);
+        } else {
+            console.log(`ℹ️ OG custom fields already enabled for ${language}`);
+        }
+    }
+
+    // Get current active language
+    function getCurrentActiveLanguage() {
+        // Try to get from AI recommendations button data-language
+        const aiButton = document.querySelector('.ai-seo-recommendations-btn[data-language]');
+        if (aiButton) {
+            return aiButton.getAttribute('data-language');
+        }
+
+        // Try to get from active language button
+        const activeLanguageBtn = document.querySelector('.language-switch-btn.text-primary, .language-switch-btn.active');
+        if (activeLanguageBtn) {
+            return activeLanguageBtn.getAttribute('data-language') ||
+                   activeLanguageBtn.textContent.trim().toLowerCase();
+        }
+
+        // Try to get from visible content section
+        const activeContent = document.querySelector('.seo-language-content[style*="display: block"]');
+        if (activeContent) {
+            return activeContent.getAttribute('data-language');
+        }
+
+        // Try to get from Livewire component data (tenant languages)
+        if (window.livewire && window.Livewire.all().length > 0) {
+            const component = window.Livewire.all().find(c => c.get('currentLanguage'));
+            if (component) {
+                return component.get('currentLanguage');
             }
         }
+
+        // Try to get tenant default locale from meta tag or global config
+        const metaDefaultLocale = document.querySelector('meta[name="tenant-default-locale"]');
+        if (metaDefaultLocale) {
+            return metaDefaultLocale.getAttribute('content');
+        }
+
+        // Try from global JS tenant config if available
+        if (typeof window.tenantConfig !== 'undefined' && window.tenantConfig.default_locale) {
+            return window.tenantConfig.default_locale;
+        }
+
+        // Try from page language detection
+        const htmlLang = document.documentElement.lang;
+        if (htmlLang && htmlLang.length >= 2) {
+            return htmlLang.substring(0, 2);
+        }
+
+        // Final fallback - use tenant system default (typically 'tr')
+        return getTenantSystemDefaultLanguage();
+    }
+
+    // Get tenant system default language (integrated with tenant system)
+    function getTenantSystemDefaultLanguage() {
+        // Check if tenant default is available in global scope
+        if (typeof window.APP_TENANT_DEFAULT_LOCALE !== 'undefined') {
+            return window.APP_TENANT_DEFAULT_LOCALE;
+        }
+
+        // Check available languages to find default
+        const availableLanguages = getAvailableTenantLanguages();
+        if (availableLanguages.length > 0) {
+            // First language is usually the default in tenant system
+            return availableLanguages[0];
+        }
+
+        // Ultimate fallback
+        return 'tr';
+    }
+
+    // Get available tenant languages from DOM or component
+    function getAvailableTenantLanguages() {
+        // Try to get from Livewire component
+        if (window.Livewire && window.Livewire.all().length > 0) {
+            const component = window.Livewire.all().find(c => c.get('availableLanguages'));
+            if (component) {
+                return component.get('availableLanguages') || [];
+            }
+        }
+
+        // Try to get from language switch buttons
+        const langButtons = document.querySelectorAll('.language-switch-btn[data-language]');
+        if (langButtons.length > 0) {
+            return Array.from(langButtons).map(btn => btn.getAttribute('data-language'));
+        }
+
+        // Fallback to common tenant languages
+        return ['tr', 'en', 'ar'];
+    }
+
+    // Extract language from field target (seoDataCache.tr.og_title -> tr)
+    function extractLanguageFromFieldTarget(fieldTarget) {
+        const match = fieldTarget.match(/seoDataCache\.([a-z]{2})\./);
+        return match ? match[1] : getCurrentActiveLanguage();
     }
     
     // Get user-friendly field names
@@ -1561,24 +1894,79 @@
         showSuccess(`${checkboxes.length} öneri ${action}`);
     };
     
+    // Auto-load AI recommendations if they exist
+    async function autoLoadRecommendations() {
+        console.log('🔍 Checking for existing AI recommendations...');
+
+        // Skip if we don't have a page ID
+        if (!window.currentModelId) {
+            console.log('ℹ️ No page ID found, skipping auto-load');
+            return;
+        }
+
+        try {
+            const formData = {
+                feature_slug: 'seo-smart-recommendations',
+                form_content: {},
+                language: 'tr',
+                page_id: window.currentModelId
+            };
+
+            const response = await fetch('/admin/seo/ai/recommendations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+
+                // Only display if recommendations exist and came from cache (previously saved)
+                if (result.success && result.data && result.data.from_cache && result.data.recommendations && result.data.recommendations.length > 0) {
+                    console.log('✅ Found existing recommendations, displaying automatically...');
+
+                    // Show the recommendations section
+                    const section = document.getElementById('aiSeoRecommendationsSection_tr');
+                    if (section) {
+                        section.style.display = 'block';
+                        displayRecommendations(result.data, 'tr');
+                        console.log('✅ AI recommendations auto-loaded successfully');
+                    }
+                } else {
+                    console.log('ℹ️ No existing recommendations found or not from cache');
+                }
+            }
+        } catch (error) {
+            console.log('ℹ️ Auto-load check failed (normal for new pages):', error.message);
+        }
+    }
+
     // Initialize the system
     function init() {
         console.log('🚀 AI SEO Integration system başlatılıyor...');
-        
+
         // Immediate attachment
         attachButtonListeners();
-        
+
         // DOM ready fallback
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', attachButtonListeners);
         }
-        
+
         // Delayed fallback for dynamic content
         setTimeout(attachButtonListeners, 500);
-        
+
         // Window load fallback
         window.addEventListener('load', attachButtonListeners);
-        
+
+        // Auto-loading is now handled by PHP/Blade template
+        // setTimeout(() => {
+        //     autoLoadRecommendations();
+        // }, 1000);
+
         console.log('✅ AI SEO Integration system hazır!');
     }
     

@@ -402,7 +402,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <strong>Bellek Kullanım Trendi:</strong>
-                                        <span class="badge bg-secondary">{{ $queueData['performance']['memory_usage_trend'] ?? 'Bilinmiyor' }}</span>
+                                        <span class="badge bg-info">{{ $queueData['performance']['memory_usage_trend'] ?? 'Bilinmiyor' }}</span>
                                     </div>
                                     <div>
                                         <strong>Yeniden Deneme Oranı:</strong>
@@ -457,7 +457,7 @@
                                     </div>
                                     <div>
                                         <strong>Yük Ortalaması:</strong>
-                                        <span class="badge bg-secondary">{{ $queueData['system_resources']['load_average'] ?? '0.00' }}</span>
+                                        <span class="badge bg-info">{{ $queueData['system_resources']['load_average'] ?? '0.00' }}</span>
                                     </div>
                                 </div>
                             </div>

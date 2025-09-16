@@ -80,14 +80,30 @@ $langName =
                                 </div>
 
                                 <!-- İçerik editörü -->
-                                @include('admin.components.content-editor', [
-                                    'lang' => $lang,
-                                    'langName' => $langName,
-                                    'langData' => $langData,
-                                    'fieldName' => 'body',
-                                    'label' => __('page::admin.content'),
-                                    'placeholder' => __('page::admin.content_placeholder'),
-                                ])
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label">{{ __('page::admin.content') }}</label>
+                                        <!-- AI Content Builder Button -->
+                                        <button type="button"
+                                                onclick="Livewire.dispatch('openContentBuilder', {
+                                                    pageId: {{ $pageId ?? 'null' }},
+                                                    pageTitle: '{{ $multiLangInputs[$lang]['title'] ?? '' }}',
+                                                    targetField: 'body_{{ $lang }}'
+                                                })"
+                                                class="btn btn-sm btn-primary">
+                                            <i class="fas fa-magic me-1"></i>
+                                            AI İçerik Üret
+                                        </button>
+                                    </div>
+                                    @include('admin.components.content-editor', [
+                                        'lang' => $lang,
+                                        'langName' => $langName,
+                                        'langData' => $langData,
+                                        'fieldName' => 'body',
+                                        'label' => false,
+                                        'placeholder' => __('page::admin.content_placeholder'),
+                                    ])
+                                </div>
                             </div>
                         @endforeach
 
@@ -114,7 +130,7 @@ $langName =
                     <!-- SEO Tab -->
                     <div class="tab-pane fade" id="1" role="tabpanel">
                         <x-seomanagement::universal-seo-tab :model="$this->currentPage" :available-languages="$availableLanguages" :current-language="$currentLanguage"
-                            :seo-data-cache="$seoDataCache" :page-id="$pageId" />
+                            :seo-data-cache="$seoDataCache" :page-id="$this->pageId" />
                     </div>
 
                     <!-- Code Tab -->
@@ -140,7 +156,9 @@ $langName =
         </div>
     </form>
 
- </div>
+    <!-- AI Content Builder Component -->
+    @livewire('ai-content-builder-component')
+</div>
 
 @push('scripts')
     <script>

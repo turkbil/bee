@@ -9,10 +9,10 @@
                 @if($currentLang->flag_icon)
                     <span style="font-size: 1.2em;">{{ $currentLang->flag_icon }}</span>
                 @else
-                    <span class="badge bg-secondary text-white" style="font-size: 0.7em;">{{ strtoupper($currentLanguage) }}</span>
+                    <span class="badge bg-primary text-white" style="font-size: 0.7em;">{{ strtoupper($currentLanguage) }}</span>
                 @endif
             @else
-                <span class="badge bg-secondary text-white" style="font-size: 0.7em;">TR</span>
+                <span class="badge bg-primary text-white" style="font-size: 0.7em;">TR</span>
             @endif
         </span>
         <small class="d-none d-lg-inline ms-1 text-muted">{{ __('languagemanagement::admin.data_lang') }}</small>
@@ -28,7 +28,7 @@
                     @if($language->flag_icon)
                         {{ $language->flag_icon }}
                     @else
-                        <span class="badge bg-secondary text-white" style="font-size: 0.6em;">{{ strtoupper($language->code) }}</span>
+                        <span class="badge bg-info text-white" style="font-size: 0.6em;">{{ strtoupper($language->code) }}</span>
                     @endif
                 </span>
                 <span class="flex-fill">{{ $language->native_name ?? $language->name }}</span>

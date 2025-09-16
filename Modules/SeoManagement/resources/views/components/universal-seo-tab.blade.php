@@ -16,7 +16,7 @@
     // Eğer pageId geçilmişse Page modelini kullan, yoksa null
     $page = $pageId ? \App\Services\GlobalCacheService::getPageWithSeo($pageId) : null;
     $seoSettings = $page ? $page->seoSetting : null;
-    
+
     // Kaydedilmiş analiz sonuçları var mı kontrol et (herhangi bir analiz alanı)
     // FIX: analysis_date ve action_items varlığını da kontrol et (JSON parse hatası durumunda)
     $hasAnalysisResults = $seoSettings && (
@@ -30,6 +30,19 @@
         ($seoSettings->updated_at && $seoSettings->updated_at > now()->subHours(24))
     );
     $analysisResults = $hasAnalysisResults ? $seoSettings->analysis_results : null;
+
+    // AI Önerileri kontrolü - ai_suggestions alanında kayıtlı öneri var mı?
+    $hasAiRecommendations = false;
+    $aiRecommendations = null;
+
+    if ($seoSettings && !empty($seoSettings->ai_suggestions)) {
+        // AI önerileri var, şimdi mevcut dil için kontrol et
+        $allAiSuggestions = $seoSettings->ai_suggestions;
+        if (is_array($allAiSuggestions) && isset($allAiSuggestions[$currentLanguage])) {
+            $hasAiRecommendations = true;
+            $aiRecommendations = $allAiSuggestions[$currentLanguage];
+        }
+    }
 @endphp
 
 @foreach($availableLanguages as $lang)
@@ -90,26 +103,14 @@
 
     {{-- AI SEO RECOMMENDATIONS SECTION --}}
     @if(!$disabled)
-    <div class="ai-seo-recommendations-section" id="aiSeoRecommendationsSection_{{ $lang }}" style="display: none;">
+    <div class="ai-seo-recommendations-section" id="aiSeoRecommendationsSection_{{ $lang }}" style="display: {{ ($hasAiRecommendations && $currentLanguage === $lang) ? 'block' : 'none' }};">
         <div class="card border-success mt-3">
             <div class="card-header bg-success text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
+                <div class="d-flex justify-content-center align-items-center">
+                    <h3 class="card-title mb-0 text-center">
                         <i class="fas fa-magic me-2"></i>
                         AI SEO Önerileri
-                        <span class="badge bg-white text-success ms-2">Premium</span>
                     </h3>
-                    <div class="d-flex gap-2">
-                        <small class="opacity-75">
-                            <i class="fas fa-coins me-1"></i>
-                            ~50 token
-                        </small>
-                        <button type="button" 
-                                class="btn btn-sm btn-outline-light ai-close-recommendations"
-                                data-language="{{ $lang }}">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -127,37 +128,151 @@
                 </div>
 
                 {{-- RECOMMENDATIONS CONTENT --}}
-                <div class="ai-recommendations-content" style="display: none;">
-                    {{-- HEADER ACTIONS --}}
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h6 class="mb-1">
-                                <span class="ai-recommendations-count">4</span> 
-                                özelleştirilmiş öneri üretildi
-                            </h6>
-                            <small class="text-muted">
-                                Her öneriyi tek tek seçebilir veya tümünü uygulayabilirsiniz
-                            </small>
-                        </div>
-                        <div class="btn-group">
-                            <button type="button" 
-                                    class="btn btn-outline-success btn-sm ai-select-all-recommendations">
-                                <i class="fas fa-check-double me-1"></i>
-                                Tümünü Seç
-                            </button>
-                            <button type="button" 
-                                    class="btn btn-success btn-sm ai-apply-selected-recommendations"
-                                    disabled>
-                                <i class="fas fa-magic me-1"></i>
-                                Seçilenleri Uygula
-                            </button>
-                        </div>
-                    </div>
+                <div class="ai-recommendations-content" style="display: {{ ($hasAiRecommendations && $currentLanguage === $lang) ? 'block' : 'none' }};">
 
-                    {{-- RECOMMENDATIONS LIST --}}
-                    <div class="ai-recommendations-list">
-                        {{-- Recommendation items will be dynamically inserted here --}}
-                    </div>
+                    @if($hasAiRecommendations && $currentLanguage === $lang)
+                        @php
+                            // AI önerilerini decode et - eğer zaten array ise decode etme
+                            if (is_string($aiRecommendations)) {
+                                $recommendations = json_decode($aiRecommendations, true);
+                            } else {
+                                $recommendations = $aiRecommendations;
+                            }
+                            $recommendationsData = $recommendations['recommendations'] ?? [];
+                        @endphp
+
+                        {{-- HEADER ACTIONS --}}
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h6 class="mb-1">
+                                    <span class="ai-recommendations-count">{{ count($recommendationsData) }}</span>
+                                    özelleştirilmiş öneri yüklendi
+                                    <span class="badge bg-info ms-2">Kaydedilmiş</span>
+                                </h6>
+                                <small class="text-muted">
+                                    Öneriler otomatik olarak uygulandı. Yeni öneriler için "AI Önerileri" butonunu kullanın.
+                                </small>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn btn-outline-warning btn-sm"
+                                        onclick="if(confirm('Mevcut öneriler silinecek ve yeni öneriler oluşturulacak. Emin misiniz?')) {
+                                            window.forceRegenerateRecommendations = true;
+                                            document.querySelector('.ai-seo-recommendations-btn[data-language=&quot;{{ $lang }}&quot;]').click();
+                                        }">
+                                    <i class="fas fa-refresh me-1"></i>
+                                    Yeniden Oluştur
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- RECOMMENDATIONS LIST --}}
+                        <div class="ai-recommendations-list">
+                            @if(!empty($recommendationsData))
+                                @php
+                                    $seoRecs = collect($recommendationsData)->filter(function($rec) {
+                                        return in_array($rec['type'], ['title', 'description', 'seo_title', 'seo_description']);
+                                    });
+                                    $socialRecs = collect($recommendationsData)->filter(function($rec) {
+                                        return str_contains($rec['type'], 'og_') || str_contains($rec['type'], 'social');
+                                    });
+                                @endphp
+
+                                @if($seoRecs->count() > 0)
+                                <div class="row mb-4">
+                                    @foreach($seoRecs as $index => $rec)
+                                        <div class="col-6">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">{{ $rec['title'] ?? 'SEO Önerisi' }}</h3>
+                                                </div>
+                                                <div class="list-group list-group-flush">
+                                                    @if(isset($rec['alternatives']) && !empty($rec['alternatives']))
+                                                        @foreach($rec['alternatives'] as $altIndex => $alt)
+                                                            <a href="#" class="list-group-item list-group-item-action{{ $altIndex === 0 ? ' active' : '' }}"
+                                                               onclick="applyAlternativeDirectly('{{ $rec['field_target'] }}', '{{ addslashes($alt['value']) }}', this); return false;">
+                                                                {{ $alt['value'] }}
+                                                            </a>
+                                                        @endforeach
+                                                    @else
+                                                        <a href="#" class="list-group-item list-group-item-action">
+                                                            {{ $rec['value'] ?? $rec['suggested_value'] ?? '' }}
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @endif
+
+                                @if($socialRecs->count() > 0)
+                                <div class="row mb-4">
+                                    @foreach($socialRecs as $index => $rec)
+                                        <div class="col-6">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">{{ $rec['title'] ?? 'Sosyal Medya Önerisi' }}</h3>
+                                                </div>
+                                                <div class="list-group list-group-flush">
+                                                    @if(isset($rec['alternatives']) && !empty($rec['alternatives']))
+                                                        @foreach($rec['alternatives'] as $altIndex => $alt)
+                                                            <a href="#" class="list-group-item list-group-item-action{{ $altIndex === 0 ? ' active' : '' }}"
+                                                               onclick="applyAlternativeDirectly('{{ $rec['field_target'] }}', '{{ addslashes($alt['value']) }}', this); return false;">
+                                                                {{ $alt['value'] }}
+                                                            </a>
+                                                        @endforeach
+                                                    @else
+                                                        <a href="#" class="list-group-item list-group-item-action">
+                                                            {{ $rec['value'] ?? $rec['suggested_value'] ?? '' }}
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @endif
+                            @else
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    AI önerileri bulunamadı. Yeni öneriler oluşturmak için "AI Önerileri" butonunu kullanın.
+                                </div>
+                            @endif
+                        </div>
+
+                    @else
+                        {{-- HEADER ACTIONS --}}
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h6 class="mb-1">
+                                    <span class="ai-recommendations-count">4</span>
+                                    özelleştirilmiş öneri üretildi
+                                </h6>
+                                <small class="text-muted">
+                                    Her öneriyi tek tek seçebilir veya tümünü uygulayabilirsiniz
+                                </small>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn btn-outline-success btn-sm ai-select-all-recommendations">
+                                    <i class="fas fa-check-double me-1"></i>
+                                    Tümünü Seç
+                                </button>
+                                <button type="button"
+                                        class="btn btn-success btn-sm ai-apply-selected-recommendations"
+                                        disabled>
+                                    <i class="fas fa-magic me-1"></i>
+                                    Seçilenleri Uygula
+                                </button>
+                            </div>
+                        </div>
+
+                        {{-- RECOMMENDATIONS LIST --}}
+                        <div class="ai-recommendations-list">
+                            {{-- Recommendation items will be dynamically inserted here --}}
+                        </div>
+                    @endif
 
                     {{-- SUCCESS FEEDBACK --}}
                     <div class="ai-recommendations-success" style="display: none;">
@@ -837,21 +952,27 @@
                             
                             SEO Önceliği
                         </label>
-                        <span class="badge bg-primary priority-badge" style="position: relative;">
-                            <span class="priority-value">{{ $seoDataCache[$lang]['priority_score'] ?? 5 }}</span>/10 - <span class="priority-text">
-                                @php
-                                    $priorityValue = $seoDataCache[$lang]['priority_score'] ?? 5;
-                                    if ($priorityValue >= 1 && $priorityValue <= 3) {
-                                        echo 'Düşük';
-                                    } elseif ($priorityValue >= 4 && $priorityValue <= 6) {
-                                        echo 'Orta';
-                                    } elseif ($priorityValue >= 7 && $priorityValue <= 8) {
-                                        echo 'Yüksek';
-                                    } else {
-                                        echo 'Kritik';
-                                    }
-                                @endphp
-                            </span>
+                        @php
+                            $priorityValue = $seoDataCache[$lang]['priority_score'] ?? 5;
+                            $badgeClass = 'bg-warning'; // Default for Orta
+                            $priorityText = 'Orta';
+
+                            if ($priorityValue >= 1 && $priorityValue <= 3) {
+                                $badgeClass = 'bg-info';
+                                $priorityText = 'Düşük';
+                            } elseif ($priorityValue >= 4 && $priorityValue <= 6) {
+                                $badgeClass = 'bg-warning';
+                                $priorityText = 'Orta';
+                            } elseif ($priorityValue >= 7 && $priorityValue <= 8) {
+                                $badgeClass = 'bg-success';
+                                $priorityText = 'Yüksek';
+                            } else {
+                                $badgeClass = 'bg-danger';
+                                $priorityText = 'Kritik';
+                            }
+                        @endphp
+                        <span class="badge {{ $badgeClass }} priority-badge" style="position: relative;">
+                            <span class="priority-value">{{ $priorityValue }}</span>/10 - <span class="priority-text">{{ $priorityText }}</span>
                         </span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
@@ -970,10 +1091,20 @@
                 <div class="col-md-6 mb-3">
                     <div class="mt-3">
                         <div class="pretty p-switch">
-                            <input type="checkbox" 
+                            @php
+                                // TR dili için OG alanları doluysa otomatik checked
+                                $autoChecked = false;
+                                if ($lang === 'tr' && isset($seoDataCache[$lang])) {
+                                    $ogTitle = $seoDataCache[$lang]['og_title'] ?? '';
+                                    $ogDescription = $seoDataCache[$lang]['og_description'] ?? '';
+                                    $autoChecked = !empty(trim($ogTitle)) || !empty(trim($ogDescription));
+                                }
+                            @endphp
+                            <input type="checkbox"
                                    wire:model="seoDataCache.{{ $lang }}.og_custom_enabled"
                                    id="og_custom_{{ $lang }}"
                                    onchange="toggleOgCustomFields(this, '{{ $lang }}')"
+                                   {{ $autoChecked ? 'checked' : '' }}
                                    {{ $disabled ? 'disabled' : '' }}>
                             <div class="state">
                                 <label for="og_custom_{{ $lang }}">
@@ -997,9 +1128,9 @@
             @endif
             
             {{-- OG Custom Fields (Collapsible) --}}
-            <div class="og-custom-fields" 
-                 id="og_custom_fields_{{ $lang }}" 
-                 style="display: none; max-height: none; overflow: visible;">
+            <div class="og-custom-fields"
+                 id="og_custom_fields_{{ $lang }}"
+                 style="display: {{ $autoChecked ? 'block' : 'none' }}; max-height: none; overflow: visible;">
                 <hr class="my-3">
                 <div class="row">
                     {{-- OG Title --}}
@@ -1124,7 +1255,7 @@
 <script>
     // Component için SEO data hazırlama
     @if(!isset($seoJsInitialized))
-    window.currentPageId = {{ $pageId ?? 'null' }};
+    window.currentModelId = @if($pageId){{ $pageId }}@else null @endif;
     window.currentLanguage = '{{ $currentLanguage }}';
     
     // ULTRA PERFORMANCE: Tüm dillerin SEO verileri (ZERO API CALLS)
@@ -1189,19 +1320,28 @@
         // Update badge value
         priorityValue.textContent = value;
         
-        // Update priority text based on value
+        // Update priority text and badge color based on value
         let priorityLabel = '';
-        
+        let badgeClass = '';
+
         if (value >= 1 && value <= 3) {
             priorityLabel = 'Düşük';
+            badgeClass = 'bg-info';
         } else if (value >= 4 && value <= 6) {
             priorityLabel = 'Orta';
+            badgeClass = 'bg-warning';
         } else if (value >= 7 && value <= 8) {
             priorityLabel = 'Yüksek';
+            badgeClass = 'bg-success';
         } else if (value >= 9 && value <= 10) {
             priorityLabel = 'Kritik';
+            badgeClass = 'bg-danger';
         }
-        
+
+        // Remove all possible badge classes and add the new one
+        badge.className = badge.className.replace(/bg-(primary|secondary|success|danger|warning|info|light|dark)/g, '');
+        badge.classList.add(badgeClass);
+
         priorityText.textContent = priorityLabel;
         
         // Update examples opacity
@@ -1496,7 +1636,8 @@
         
         console.log('SEO title filled:', titleText, 'for language:', language);
     }
-    
+
+
 </script>
 
 {{-- AI SEO Integration JavaScript --}}

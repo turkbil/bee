@@ -321,8 +321,15 @@ class PageManageComponent extends Component
                        'seo_description' => $descriptions[$lang] ?? '',
                        'seo_keywords' => $keywordString,
                        'focus_keywords' => $seoSettings->focus_keywords[$lang] ?? '',
+                       'og_title' => $seoSettings->og_titles[$lang] ?? '',
+                       'og_description' => $seoSettings->og_descriptions[$lang] ?? '',
                        'canonical_url' => $seoSettings->canonical_url ?? ''
                    ];
+
+                   \Log::info("🔄 SEO cache yüklendi - {$lang}", [
+                       'og_title' => $seoSettings->og_titles[$lang] ?? 'YOK',
+                       'og_description' => $seoSettings->og_descriptions[$lang] ?? 'YOK'
+                   ]);
                }
                
                // ✅ JavaScript için allLanguagesSeoData property'sini de güncelle
@@ -338,6 +345,8 @@ class PageManageComponent extends Component
                        'seo_description' => '',
                        'seo_keywords' => '',
                        'focus_keywords' => '',
+                       'og_title' => '',
+                       'og_description' => '',
                        'canonical_url' => ''
                    ];
                }
@@ -369,6 +378,8 @@ class PageManageComponent extends Component
                'seo_title' => '',
                'seo_description' => '',
                'seo_keywords' => '',
+               'og_title' => '',
+               'og_description' => '',
                'canonical_url' => '',
                'robots_index' => true,
                'robots_follow' => true,
@@ -431,6 +442,8 @@ class PageManageComponent extends Component
            $rules["seoDataCache.{$lang}.seo_title"] = 'nullable|string';
            $rules["seoDataCache.{$lang}.seo_description"] = 'nullable|string';
            $rules["seoDataCache.{$lang}.seo_keywords"] = 'nullable|string';
+           $rules["seoDataCache.{$lang}.og_title"] = 'nullable|string';
+           $rules["seoDataCache.{$lang}.og_description"] = 'nullable|string';
            $rules["seoDataCache.{$lang}.canonical_url"] = 'nullable|url';
        }
        
@@ -591,12 +604,14 @@ class PageManageComponent extends Component
           'seoDataCache_for_current_lang' => $this->seoDataCache[$this->currentLanguage] ?? 'YOK!'
       ]);
       
-      // KRİTİK FİX: TÜM dillerin SEO verilerini kaydet
+      // KRİTİK FİX: TÜM dillerin SEO verilerini kaydet (OG alanları dahil)
       $allLanguagesSeoData = [
           'titles' => [],
           'descriptions' => [],
           'keywords' => [],
           'focus_keywords' => [],
+          'og_titles' => [],
+          'og_descriptions' => [],
           'canonical_url' => $this->seoDataCache[$this->currentLanguage]['canonical_url'] ?? ''
       ];
       
@@ -616,13 +631,20 @@ class PageManageComponent extends Component
               
               // Focus Keywords ekle
               $allLanguagesSeoData['focus_keywords'][$lang] = $this->seoDataCache[$lang]['focus_keywords'] ?? '';
+
+              // OG alanlarını ekle
+              $allLanguagesSeoData['og_titles'][$lang] = $this->seoDataCache[$lang]['og_title'] ?? '';
+              $allLanguagesSeoData['og_descriptions'][$lang] = $this->seoDataCache[$lang]['og_description'] ?? '';
           }
       }
       
       \Log::info('🔄 TÜM DİLLERİN SEO verileri hazırlandı', [
-          'allLanguagesSeoData' => $allLanguagesSeoData,
-          'tr_keywords' => $allLanguagesSeoData['keywords']['tr'] ?? 'YOK',
-          'en_keywords' => $allLanguagesSeoData['keywords']['en'] ?? 'YOK'
+          'languages_count' => count($allLanguagesSeoData['og_titles'] ?? []),
+          'og_titles_languages' => array_keys($allLanguagesSeoData['og_titles'] ?? []),
+          'og_descriptions_languages' => array_keys($allLanguagesSeoData['og_descriptions'] ?? []),
+          'current_language' => $this->currentLanguage,
+          'current_og_title' => $allLanguagesSeoData['og_titles'][$this->currentLanguage] ?? 'YOK',
+          'current_og_description' => $allLanguagesSeoData['og_descriptions'][$this->currentLanguage] ?? 'YOK'
       ]);
       
       // ✅ KRİTİK FİX: JavaScript için allLanguagesSeoData property'sini güncelle
@@ -661,9 +683,11 @@ class PageManageComponent extends Component
                   
                   $langSeoData = [
                       'title' => $allLanguagesSeoData['titles'][$lang] ?? '',
-                      'description' => $allLanguagesSeoData['descriptions'][$lang] ?? '', 
+                      'description' => $allLanguagesSeoData['descriptions'][$lang] ?? '',
                       'keywords' => implode(', ', $allLanguagesSeoData['keywords'][$lang] ?? []),
                       'focus_keywords' => $allLanguagesSeoData['focus_keywords'][$lang] ?? '',
+                      'og_title' => $allLanguagesSeoData['og_titles'][$lang] ?? '',
+                      'og_description' => $allLanguagesSeoData['og_descriptions'][$lang] ?? '',
                       'canonical_url' => $allLanguagesSeoData['canonical_url']
                   ];
                   
@@ -674,6 +698,8 @@ class PageManageComponent extends Component
                           'language' => $lang,
                           'title' => $langSeoData['title'],
                           'description' => substr($langSeoData['description'], 0, 50) . '...',
+                          'og_title' => $langSeoData['og_title'],
+                          'og_description' => substr($langSeoData['og_description'], 0, 50) . '...',
                           'keywords_count' => count($allLanguagesSeoData['keywords'][$lang] ?? []),
                           'has_data' => true
                       ]);

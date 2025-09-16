@@ -66,7 +66,7 @@ async function loadFailedJobs() {
             <tr>
                 <td><code>${job.id}</code></td>
                 <td><span class="badge bg-info">${job.connection}</span></td>
-                <td><span class="badge bg-secondary">${job.queue}</span></td>
+                <td><span class="badge bg-warning">${job.queue}</span></td>
                 <td><small>${job.payload.substring(0, 100)}...</small></td>
                 <td><small class="text-danger">${job.exception.substring(0, 150)}...</small></td>
                 <td><small>${new Date(job.failed_at).toLocaleString('tr-TR')}</small></td>

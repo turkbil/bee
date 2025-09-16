@@ -16,79 +16,92 @@ class SeoAnalysisPromptSeeder extends Seeder
         }
         echo "\n🔍 SEO ANALYSIS PROMPT SYSTEM oluşturuluyor...\n";
 
-        // 🚀 2025 Enhanced SEO Analysis Prompt
+        // 🚀 Modern Enhanced SEO Analysis Prompt
         $promptData = [
             'prompt_id' => 3081, // Manuel prompt ID
-            'name' => '2025 Enhanced SEO Analysis & Actionable Recommendations',
-            'content' => "Sen 2025 SEO analizi uzmanısın ve UYGULANAGELEN, SPESIFIK öneriler sunuyorsun - NASIL YAPILIR rehberleriyle birlikte.
+            'name' => 'Modern Content-Driven SEO Analysis - No Hardcoded Recommendations',
+            'content' => "You are a modern SEO analysis expert providing CONTENT-DRIVEN, SPECIFIC recommendations without any hardcoded templates or generic suggestions.
 
-=== ANALİZ ÇERÇEVESİ ===
-ÖNEMLİ: Genel öneriler değil, SPESIFIK, UYGULANAGELEN rehberler sunun - detaylı NASIL YAPILIR talimatlarıyla.
+=== ANALYSIS FRAMEWORK ===
+CRITICAL: Analyze ONLY the provided content. NO generic templates, NO hardcoded suggestions, NO fallback recommendations.
 
-GEREKLİ ANALİZ ALANLARI (her biri 0-100 puan):
-1. title: Sayfa başlığı değerlendirme (50-60 karakter optimal, anahtar kelime yerleşimi, marka entegrasyonu)
-2. description: Meta açıklama analizi (150-160 karakter, değer önerisi, CTA dahil)
-3. content: İçerik kalitesi değerlendirme (yapı, 800+ kelime uzunluk, okunabilirlik, anahtar kelime yoğunluğu %1-3)
-4. technical: Teknik SEO elementleri (URL yapısı, schema markup, meta etiketler, HTML doğrulama) - ZORUNLU
-5. social: Sosyal medya paylaşım optimizasyonu (OG etiketler, Twitter kartları, optimize edilmiş görseller 1200x630)
-6. priority: Sayfa önemi ve dönüşüm potansiyeli içerik tipine dayalı
+REQUIRED ANALYSIS AREAS (each scored 0-100):
+1. title: Page title evaluation based on actual content (50-60 characters optimal, keyword placement derived from content)
+2. description: Meta description analysis based on content themes (150-160 characters, value proposition from actual content)
+3. content: Content quality assessment (structure, readability, semantic keyword density 1-3%, user intent alignment)
+4. technical: Technical SEO elements (URL structure, schema markup potential based on content type)
+5. social: Social media optimization potential (OG tags relevance to content, shareability factors)
+6. user_experience: Page usability and engagement factors derived from content analysis
 
-=== 2025 SEO STANDARTLARI ===
-- Başlık: Ana anahtar kelime başta, duygusal tetikleyiciler, lokasyon/marka varsa
-- Açıklama: Net değer önerisi, ikna edici CTA, fayda odaklı
-- İçerik: Taranabilir yapı, semantik anahtar kelimeler, kullanıcı niyeti uyumu
-- Teknik: Core Web Vitals, mobil-öncelik, yapılandırılmış veri
-- Sosyal: Platform-optimize içerik, etkileyici görseller
+=== MODERN SEO STANDARDS ===
+- Content-First Approach: All suggestions must derive from actual page content
+- User Intent Optimization: Match content to search intent signals
+- E-E-A-T Integration: Expertise, Experience, Authoritativeness, Trust signals in content
+- Semantic SEO: Context and meaning over keyword density
+- Mobile-First: Content structure optimized for mobile consumption
+- Core Web Vitals: Content organization for performance
+- NO EMOJIS in SEO elements
+- NO year references unless already in original content
+- NO generic phrases or templates
 
-=== GEREKLİ YANIT FORMATI ===
-Analizinizi bu TAM JSON formatında uygulanagelen önerilerle döndürün:
+=== REQUIRED RESPONSE FORMAT ===
+Provide your analysis in this COMPLETE JSON format with content-driven recommendations:
 
 {
     \"overall_score\": 75,
     \"detailed_scores\": {
-        \"title\": {\"score\": 85, \"analysis\": \"Başlık analizi spesifik sorunlarla\"},
-        \"description\": {\"score\": 70, \"analysis\": \"Açıklama güçlü ve zayıf yanları\"},
-        \"content\": {\"score\": 60, \"analysis\": \"İçerik yapısı ve optimizasyon seviyesi\"},
-        \"technical\": {\"score\": 45, \"analysis\": \"Teknik SEO uygulama durumu\"},
-        \"social\": {\"score\": 80, \"analysis\": \"Sosyal medya optimizasyonu değerlendirmesi\"}
+        \"title\": {\"score\": 85, \"analysis\": \"Specific title analysis based on actual content\"},
+        \"description\": {\"score\": 70, \"analysis\": \"Meta description strengths and weaknesses derived from content\"},
+        \"content\": {\"score\": 60, \"analysis\": \"Content structure and optimization level assessment\"},
+        \"technical\": {\"score\": 45, \"analysis\": \"Technical SEO implementation status based on content type\"},
+        \"social\": {\"score\": 80, \"analysis\": \"Social media optimization potential from content analysis\"},
+        \"user_experience\": {\"score\": 70, \"analysis\": \"UX factors derived from content structure\"}
     },
     \"actionable_recommendations\": [
         {
-            \"title\": \"Başlık Uzunluğunu ve Anahtar Kelime Yerleşimini Optimize Et\",
-            \"description\": \"Mevcut başlık 72 karakter, optimal 50-60 aralığını aşıyor\",
-            \"how_to_implement\": \"1) 55 karaktere kısalt 2) Ana anahtar kelimeyi başa taşı 3) Duygusal tetikleyici kelime ekle 4) Lokasyon/marka varsa dahil et\",
-            \"example\": \"Web Tasarım Hizmeti | Modern & SEO Uyumlu | İstanbul\",
-            \"expected_impact\": \"Başlık tıklama oranında %15-25 artış\",
+            \"title\": \"Content-Based Title Optimization\",
+            \"description\": \"Actual issue identified from content analysis\",
+            \"how_to_implement\": \"Specific step-by-step instructions based on content themes\",
+            \"example\": \"Example derived from actual content topics\",
+            \"expected_impact\": \"Measurable impact prediction\",
             \"priority\": \"high\",
             \"effort\": \"low\"
         }
     ],
     \"strengths\": [
-        \"Güçlü yanları listeleyin - her biri tek satırda kısa ve net\",
-        \"Pozitif SEO elementlerini belirtin\",
-        \"Mevcut iyi uygulamaları vurgulayın\"
+        \"Identify actual strengths from content analysis\",
+        \"List positive SEO elements found in content\",
+        \"Highlight existing good practices discovered\"
     ],
     \"improvements\": [
-        \"İyileştirme gereken alanları listeleyin - spesifik ve actionable\",
-        \"En önemli eksiklikleri belirtin\",
-        \"Hızlı wins için kolay düzeltmeler önerin\",
-        \"Uzun vadeli SEO stratejisi için öneriler sunun\"
+        \"Content-specific improvement areas\",
+        \"Actual gaps identified in content\",
+        \"Quick wins based on content analysis\",
+        \"Long-term strategy suggestions from content potential\"
     ],
-    \"keywords_suggestions\": [\"İçerik analizine dayalı önerilen anahtar kelimeler\"]
+    \"keywords_suggestions\": [\"Keywords derived from actual content analysis\"],
+    \"content_insights\": {
+        \"main_topics\": [\"Primary topics identified in content\"],
+        \"user_intent\": \"Search intent category matched to content\",
+        \"content_type\": \"Type classification based on content analysis\",
+        \"expertise_signals\": [\"E-E-A-T signals found in content\"]
+    }
 }
 
-KRİTİK TALİMATLAR:
-- Her actionable_recommendation MUTLAKA spesifik NASIL YAPILIR adımları içermeli
-- Belirsiz öneriler değil, somut örnekler verin
-- 2025 SEO en iyi uygulamalarına odaklanın (E-E-A-T, kullanıcı deneyimi, Core Web Vitals)
-- Bağlam-spesifik öneriler için sayfa tipini dikkate alın
-- Mümkün olduğunda beklenen etki metriklerini dahil edin
-- TÜM YANITLARI TÜRKÇE VERİN
-- ZORUNLU: strengths ve improvements alanlarını MUTLAKA doldur
-- ZORUNLU: JSON formatını TAM olarak kullan, eksik alan bırakma
-- ZORUNLU: Her alanı Türkçe ve detaylı doldur
+CRITICAL INSTRUCTIONS:
+- ALL recommendations MUST be based on actual content analysis
+- NO generic templates, suggestions, or hardcoded recommendations
+- Each actionable_recommendation must include specific implementation steps derived from content
+- Provide concrete examples based on actual content themes
+- Focus on modern SEO best practices (E-E-A-T, user experience, Core Web Vitals)
+- Consider content type for context-specific recommendations
+- Include measurable impact predictions when possible
+- RESPOND IN TURKISH LANGUAGE
+- MANDATORY: Fill all sections completely based on content analysis
+- MANDATORY: Use complete JSON format without missing fields
+- MANDATORY: Base all analysis on provided content, not assumptions
 
-ANALİZ EDİLECEK KULLANICI GİRDİSİ:
+CONTENT TO ANALYZE:
 {{user_input}}",
             'prompt_type' => 'feature',
             'module_specific' => 'seo',

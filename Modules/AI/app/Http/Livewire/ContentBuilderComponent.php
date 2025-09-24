@@ -6,43 +6,43 @@ namespace Modules\AI\App\Http\Livewire;
 
 use Livewire\Component;
 use Modules\ThemeManagement\app\Services\ThemeAnalyzerService;
-use Modules\ThemeManagement\app\Services\AIContentGeneratorService;
+use Modules\AI\app\Services\Content\AIContentGeneratorService;
+use Modules\AI\App\Jobs\AIContentGenerationJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use App\Models\Tenant;
 
 /**
- * AI Content Builder Livewire Component
+ * AI Content Builder Livewire Component - GLOBAL MODAL PATTERN
+ * Pattern: AI Translation Component
  *
- * Rich editör yanında kullanılacak AI içerik üretici
+ * Artık global modal olarak çalışır, trigger button'dan açılır
  */
 class ContentBuilderComponent extends Component
 {
-    // Component durumu
-    public bool $isOpen = false;
-    public string $panelPosition = 'right'; // right veya modal
-
-    // Form inputları
-    public string $userPrompt = '';
-    public string $contentType = 'auto';
-    public string $contentLength = 'medium';
-    public string $customInstructions = '';
-    public string $selectedTemplate = '';
-
-    // Tema ve içerik bilgileri
-    public array $themePreview = [];
-    public array $availableTemplates = [];
-    public string $generatedContent = '';
-    public bool $isGenerating = false;
+    // Module context (any module can use this)
+    public string $module = 'page';
 
     // Kredi bilgileri
-    public int $creditsAvailable = 0;
-    public int $estimatedCredits = 5;
+    public ?int $creditsAvailable = null;
+    public int $estimatedCredits = 15;
 
-    // Sayfa bilgileri
-    public ?int $pageId = null;
+    // Global state tracking (for AJAX mode)
+    public bool $isGenerating = false;
+    public ?string $currentJobId = null;
     public ?string $pageTitle = null;
     public ?string $targetField = 'body';
+
+    // Theme preview data
+    public array $themePreview = [];
+
+    // Progress tracking
+    public int $progressPercentage = 0;
+    public string $progressMessage = '';
+
+    // Queue usage
+    public bool $useQueue = true;
 
     // Services
     private ?ThemeAnalyzerService $themeAnalyzer = null;
@@ -50,7 +50,9 @@ class ContentBuilderComponent extends Component
 
     protected $listeners = [
         'openContentBuilder' => 'open',
-        'closeContentBuilder' => 'close'
+        'closeContentBuilder' => 'close',
+        'contentGenerationCompleted' => 'handleContentCompleted',
+        'contentGenerationFailed' => 'handleContentFailed'
     ];
 
     // Livewire v3 için event listener
@@ -58,8 +60,37 @@ class ContentBuilderComponent extends Component
     {
         return [
             'openContentBuilder' => 'open',
-            'closeContentBuilder' => 'close'
+            'closeContentBuilder' => 'close',
+            'contentGenerationCompleted' => 'handleContentCompleted',
+            'contentGenerationFailed' => 'handleContentFailed'
         ];
+    }
+
+    /**
+     * AI Content alma method'u (Global modal'dan çağrılır)
+     */
+    public function receiveAIContent(array $data): void
+    {
+        $content = $data['content'] ?? '';
+        $targetField = $data['targetField'] ?? 'body';
+
+        Log::info('🎯 AI Content alındı (Livewire)', [
+            'targetField' => $targetField,
+            'contentLength' => strlen($content),
+            'module' => $this->module
+        ]);
+
+        // Content'i editöre gönder
+        $this->dispatch('replaceContentInEditor', [
+            'field' => $targetField,
+            'content' => $content
+        ]);
+
+        // Success toast
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => '✅ AI içerik başarıyla editöre eklendi!'
+        ]);
     }
 
     public function boot()
@@ -67,15 +98,11 @@ class ContentBuilderComponent extends Component
         $this->initializeServices();
     }
 
-    public function mount(?int $pageId = null, ?string $pageTitle = null, ?string $targetField = 'body')
+    public function mount(?string $module = 'page', ?string $targetField = 'body')
     {
-        $this->pageId = $pageId;
-        $this->pageTitle = $pageTitle;
-        $this->targetField = $targetField;
+        $this->module = $module ?: 'page';
+        $this->targetField = $targetField ?: 'body';
 
-        $this->initializeServices();
-        $this->loadThemePreview();
-        $this->loadTemplates();
         $this->loadCredits();
     }
 
@@ -85,7 +112,7 @@ class ContentBuilderComponent extends Component
             $this->themeAnalyzer = new ThemeAnalyzerService();
         }
         if (!$this->contentGenerator) {
-            $this->contentGenerator = new AIContentGeneratorService();
+            $this->contentGenerator = app(AIContentGeneratorService::class);
         }
     }
 
@@ -105,10 +132,7 @@ class ContentBuilderComponent extends Component
         }
     }
 
-    private function loadTemplates(): void
-    {
-        $this->availableTemplates = $this->contentGenerator->getTemplates();
-    }
+    // Template sistemi kaldırıldı - Dinamik tema analizi kullanılıyor
 
     private function loadCredits(): void
     {
@@ -153,23 +177,12 @@ class ContentBuilderComponent extends Component
         $this->dispatch('content-builder-closed');
     }
 
-    public function selectTemplate(string $templateKey): void
-    {
-        $this->selectedTemplate = $templateKey;
-        $this->contentType = $templateKey;
-
-        // Şablon seçildiğinde tahmini krediyi güncelle
-        if (isset($this->availableTemplates[$templateKey])) {
-            $this->estimatedCredits = $this->availableTemplates[$templateKey]['credits'];
-        }
-    }
+    // Template sistemi kaldırıldı
 
     public function updatePrompt(): void
     {
-        // Prompt değiştiğinde içerik tipini otomatik tespit et
-        if (empty($this->selectedTemplate) && $this->contentType === 'auto') {
-            $this->detectContentType();
-        }
+        // Content type otomatik tespit (her zaman)
+        $this->detectContentType();
 
         // Tahmini krediyi güncelle
         $this->updateEstimatedCredits();
@@ -199,34 +212,20 @@ class ContentBuilderComponent extends Component
 
     private function updateEstimatedCredits(): void
     {
-        $baseCredits = 5;
-
-        // Uzunluğa göre ayarla
-        $lengthMultiplier = match($this->contentLength) {
-            'short' => 0.7,
-            'long' => 1.5,
-            default => 1.0
-        };
-
-        // İçerik tipine göre ayarla
-        if (in_array($this->contentType, ['pricing', 'team', 'features'])) {
-            $baseCredits = 10;
-        } elseif (in_array($this->contentType, ['hero', 'cta'])) {
-            $baseCredits = 3;
-        }
-
-        $this->estimatedCredits = (int) ceil($baseCredits * $lengthMultiplier);
+        // Hep uzun sayfa üreteceğiz - sabit kredi
+        $this->estimatedCredits = 15; // Ultra uzun sayfa için sabit kredi
     }
 
     public function generateContent(): void
     {
-        Log::info('🚀 ContentBuilderComponent::generateContent başladı', [
+        Log::info('🚀 ContentBuilderComponent::generateContent başladı (QUEUE)', [
             'userPrompt' => $this->userPrompt,
             'contentType' => $this->contentType,
             'pageTitle' => $this->pageTitle,
             'targetField' => $this->targetField,
             'creditsAvailable' => $this->creditsAvailable,
-            'estimatedCredits' => $this->estimatedCredits
+            'estimatedCredits' => $this->estimatedCredits,
+            'useQueue' => $this->useQueue
         ]);
 
         // Validasyon
@@ -242,9 +241,26 @@ class ContentBuilderComponent extends Component
             return;
         }
 
+        // Queue sistemi kullan
+        if ($this->useQueue) {
+            $this->generateContentWithQueue();
+        } else {
+            $this->generateContentSync();
+        }
+    }
+
+    /**
+     * Queue ile async içerik üretimi
+     */
+    private function generateContentWithQueue(): void
+    {
         $this->isGenerating = true;
+        $this->progressPercentage = 0;
+        $this->progressMessage = 'İşlem queue\'ya ekleniyor...';
         $this->generatedContent = '';
-        Log::info('🔄 İçerik üretimi başlatıldı...');
+
+        // Unique session ID oluştur
+        $this->currentSessionId = 'ai_content_' . Str::uuid()->toString();
 
         try {
             // Parametreleri hazırla
@@ -257,79 +273,76 @@ class ContentBuilderComponent extends Component
                 'page_title' => $this->pageTitle
             ];
 
-            Log::info('📄 Parametreler hazırlandı', $params);
-
-            // Şablon kullanılıyorsa
-            if (!empty($this->selectedTemplate)) {
-                Log::info('🎭 Şablon kullanılarak üretiliyor', ['template' => $this->selectedTemplate]);
-                $result = $this->contentGenerator->generateFromTemplate($this->selectedTemplate, $params);
-            } else {
-                Log::info('🤖 Doğrudan AI ile üretiliyor');
-                $result = $this->contentGenerator->generateContent($params);
-            }
-
-            Log::info('📦 Service\'ten dönen sonuç', [
-                'success' => $result['success'] ?? false,
-                'has_content' => isset($result['content']) && !empty($result['content']),
-                'content_length' => isset($result['content']) ? strlen($result['content']) : 0,
-                'credits_used' => $result['credits_used'] ?? 0,
-                'error' => $result['error'] ?? null
+            Log::info('📄 Queue parametreleri hazırlandı', [
+                'session_id' => $this->currentSessionId,
+                'params' => $params
             ]);
 
+            // Job'u queue'ya ekle
+            AIContentGenerationJob::dispatch(
+                $params,
+                $this->currentSessionId,
+                'ContentBuilder'
+            )->onQueue('ai-content');
+
+            $this->progressPercentage = 5;
+            $this->progressMessage = 'İşlem queue\'ya eklendi, işleniyor...';
+
+            Log::info('✅ AI Content Generation Job queue\'ya eklendi', [
+                'session_id' => $this->currentSessionId
+            ]);
+
+            // Progress tracking başlat
+            $this->startProgressTracking();
+
+            $this->dispatch('show-toast',
+                type: 'info',
+                message: 'İçerik üretimi başlatıldı. Lütfen bekleyin...'
+            );
+
+        } catch (\Exception $e) {
+            Log::error('❌ Queue job dispatch error', [
+                'message' => $e->getMessage(),
+                'session_id' => $this->currentSessionId
+            ]);
+
+            $this->handleGenerationError($e->getMessage());
+        }
+    }
+
+    /**
+     * Senkron içerik üretimi (fallback)
+     */
+    private function generateContentSync(): void
+    {
+        $this->isGenerating = true;
+        $this->generatedContent = '';
+        Log::info('🔄 Senkron içerik üretimi başlatıldı...');
+
+        try {
+            // Parametreleri hazırla
+            $params = [
+                'tenant_id' => tenant('id') ?? 1,
+                'prompt' => $this->userPrompt ?: $this->getDefaultPrompt(),
+                'content_type' => $this->contentType,
+                'length' => $this->contentLength,
+                'custom_instructions' => $this->customInstructions,
+                'page_title' => $this->pageTitle
+            ];
+
+            // Dinamik tema analizi ile üret
+            $result = $this->contentGenerator->generateContent($params);
+
             if ($result['success']) {
-                $this->generatedContent = $result['content'];
-                $this->creditsAvailable -= $result['credits_used'];
-
-                Log::info('🎆 İçerik başarıyla üretildi', [
-                    'generatedContentLength' => strlen($this->generatedContent),
-                    'first_500_chars' => substr($this->generatedContent, 0, 500),
-                    'targetField' => $this->targetField
-                ]);
-
-                // İçeriği doğrudan editöre ekle - ESKİ İÇERİĞİ SİL
-                Log::info('📝 Editöre içerik gönderiliyor...', [
-                    'field' => $this->targetField,
-                    'contentLength' => strlen($this->generatedContent)
-                ]);
-
-                $this->dispatch('replaceContentInEditor',
-                    field: $this->targetField,
-                    content: $this->generatedContent
-                );
-
-                Log::info('✅ replaceContentInEditor event\'i dispatch edildi');
-
-                // Başarı mesajı göster
-                $this->dispatch('show-toast',
-                    type: 'success',
-                    message: 'İçerik üretildi ve editöre eklendi! Eski içerik silindi.'
-                );
-
-                // Formu temizle
-                $this->generatedContent = '';
-                $this->userPrompt = '';
-                $this->estimatedCredits = 5;
-
-                Log::info('🎉 İşlem tamamlandı, form temizlendi');
+                $this->handleSuccessfulGeneration($result);
             } else {
                 throw new \Exception($result['error'] ?? 'İçerik üretimi başarısız');
             }
 
         } catch (\Exception $e) {
-            Log::error('❌ Content generation error', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            $this->dispatch('show-toast',
-                type: 'error',
-                message: 'İçerik üretilirken hata oluştu: ' . $e->getMessage()
-            );
+            $this->handleGenerationError($e->getMessage());
         } finally {
             $this->isGenerating = false;
-            Log::info('🎬 generateContent metodu tamamlandı');
         }
     }
 
@@ -384,11 +397,16 @@ class ContentBuilderComponent extends Component
     {
         $this->userPrompt = '';
         $this->contentType = 'auto';
-        $this->contentLength = 'medium';
+        $this->contentLength = 'ultra_long'; // Hep uzun!
         $this->customInstructions = '';
         $this->selectedTemplate = '';
         $this->generatedContent = '';
-        $this->estimatedCredits = 5;
+        $this->estimatedCredits = 15; // Ultra uzun için sabit
+
+        // Queue tracking reset
+        $this->currentSessionId = null;
+        $this->progressPercentage = 0;
+        $this->progressMessage = '';
     }
 
     public function toggleAdvancedSettings(): void
@@ -396,13 +414,230 @@ class ContentBuilderComponent extends Component
         $this->dispatch('toggle-advanced-settings');
     }
 
+    /**
+     * Progress tracking başlat
+     */
+    private function startProgressTracking(): void
+    {
+        if (!$this->currentSessionId) {
+            return;
+        }
+
+        // JavaScript'te polling başlat
+        $this->dispatch('startProgressTracking', [
+            'sessionId' => $this->currentSessionId,
+            'interval' => 2000 // 2 saniye
+        ]);
+    }
+
+    /**
+     * Progress güncelleme (JS polling'den çağrılır)
+     */
+    public function checkProgress(): void
+    {
+        if (!$this->currentSessionId) {
+            return;
+        }
+
+        $progressKey = "ai_content_progress_{$this->currentSessionId}";
+        $progress = Cache::get($progressKey);
+
+        if ($progress) {
+            $this->progressPercentage = $progress['percentage'] ?? 0;
+            $this->progressMessage = $progress['message'] ?? '';
+
+            // İşlem tamamlandıysa sonucu kontrol et
+            if ($this->progressPercentage >= 100) {
+                $this->checkResult();
+            }
+        }
+
+        // Hata durumunu kontrol et
+        $errorKey = "ai_content_error_{$this->currentSessionId}";
+        $error = Cache::get($errorKey);
+
+        if ($error) {
+            $this->handleGenerationError($error['error'] ?? 'Bilinmeyen hata');
+        }
+    }
+
+    /**
+     * Sonucu kontrol et ve al
+     */
+    private function checkResult(): void
+    {
+        if (!$this->currentSessionId) {
+            return;
+        }
+
+        $resultKey = "ai_content_result_{$this->currentSessionId}";
+        $result = Cache::get($resultKey);
+
+        if ($result && $result['success']) {
+            $this->handleSuccessfulGeneration($result);
+
+            // Cache'i temizle
+            Cache::forget($resultKey);
+            Cache::forget("ai_content_progress_{$this->currentSessionId}");
+        }
+    }
+
+    /**
+     * Başarılı içerik üretimi işle
+     */
+    private function handleSuccessfulGeneration(array $result): void
+    {
+        $this->generatedContent = $result['content'];
+        $this->creditsAvailable -= $result['credits_used'] ?? 15;
+
+        Log::info('🎆 İçerik başarıyla üretildi (Queue)', [
+            'session_id' => $this->currentSessionId,
+            'content_length' => strlen($this->generatedContent),
+            'credits_used' => $result['credits_used'],
+            'targetField' => $this->targetField
+        ]);
+
+        // İçeriği doğrudan editöre ekle
+        $this->dispatch('replaceContentInEditor',
+            field: $this->targetField,
+            content: $this->generatedContent
+        );
+
+        // Başarı mesajı göster
+        $this->dispatch('show-toast',
+            type: 'success',
+            message: 'İçerik başarıyla üretildi ve editöre eklendi!'
+        );
+
+        // Formu temizle
+        $this->resetAfterSuccess();
+    }
+
+    /**
+     * Hata durumunu işle
+     */
+    private function handleGenerationError(string $errorMessage): void
+    {
+        Log::error('❌ Content generation error handled', [
+            'session_id' => $this->currentSessionId,
+            'error' => $errorMessage
+        ]);
+
+        $this->isGenerating = false;
+        $this->progressPercentage = 0;
+        $this->progressMessage = '';
+
+        $this->dispatch('show-toast',
+            type: 'error',
+            message: 'İçerik üretilirken hata oluştu: ' . $errorMessage
+        );
+
+        // Progress tracking'i durdur
+        $this->dispatch('stopProgressTracking');
+
+        // Cache'leri temizle
+        if ($this->currentSessionId) {
+            Cache::forget("ai_content_progress_{$this->currentSessionId}");
+            Cache::forget("ai_content_error_{$this->currentSessionId}");
+            Cache::forget("ai_content_result_{$this->currentSessionId}");
+        }
+    }
+
+    /**
+     * Başarılı işlem sonrası temizlik
+     */
+    private function resetAfterSuccess(): void
+    {
+        $this->generatedContent = '';
+        $this->userPrompt = '';
+        $this->isGenerating = false;
+        $this->progressPercentage = 0;
+        $this->progressMessage = '';
+
+        // Progress tracking'i durdur
+        $this->dispatch('stopProgressTracking');
+
+        // Session'ı temizle
+        $this->currentSessionId = null;
+
+        Log::info('🎉 İşlem tamamlandı, form temizlendi (Queue)');
+    }
+
+    /**
+     * Event handler: İçerik üretimi tamamlandı
+     */
+    public function handleContentCompleted($data): void
+    {
+        if ($data['session_id'] === $this->currentSessionId) {
+            $this->checkResult();
+        }
+    }
+
+    /**
+     * Event handler: İçerik üretimi başarısız
+     */
+    public function handleContentFailed($data): void
+    {
+        if ($data['session_id'] === $this->currentSessionId) {
+            $this->handleGenerationError($data['error'] ?? 'Bilinmeyen hata');
+        }
+    }
+
+    /**
+     * Manual progress check (JS polling için)
+     */
+    public function pollProgress(): array
+    {
+        if (!$this->currentSessionId) {
+            return ['status' => 'no_session'];
+        }
+
+        $progressKey = "ai_content_progress_{$this->currentSessionId}";
+        $progress = Cache::get($progressKey);
+
+        $errorKey = "ai_content_error_{$this->currentSessionId}";
+        $error = Cache::get($errorKey);
+
+        if ($error) {
+            return [
+                'status' => 'error',
+                'error' => $error['error'] ?? 'Bilinmeyen hata'
+            ];
+        }
+
+        if ($progress) {
+            return [
+                'status' => 'processing',
+                'percentage' => $progress['percentage'] ?? 0,
+                'message' => $progress['message'] ?? ''
+            ];
+        }
+
+        return ['status' => 'waiting'];
+    }
+
+    /**
+     * Queue kullanımını toggle et
+     */
+    public function toggleQueue(): void
+    {
+        $this->useQueue = !$this->useQueue;
+
+        $this->dispatch('show-toast',
+            type: 'info',
+            message: $this->useQueue ? 'Queue sistemi aktif' : 'Senkron işlem aktif'
+        );
+    }
+
     public function render()
     {
         return view('ai::livewire.content-builder-component', [
             'themePreview' => $this->themePreview,
-            'templates' => $this->availableTemplates,
             'creditsAvailable' => $this->creditsAvailable,
-            'estimatedCredits' => $this->estimatedCredits
+            'estimatedCredits' => $this->estimatedCredits,
+            'progressPercentage' => $this->progressPercentage,
+            'progressMessage' => $this->progressMessage,
+            'useQueue' => $this->useQueue
         ]);
     }
 }

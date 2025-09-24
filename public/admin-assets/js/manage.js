@@ -10,17 +10,28 @@ window.allLanguagesSeoData = {};
 window.cleanModalBackdrop = function() {
     console.log('🔒 NURU: Modal backdrop temizleme işlemi başlıyor...');
     
-    // TÜM BACKDROP'LARI BUL VE SİL
-    const backdrops = document.querySelectorAll('.modal-backdrop, #aiTranslationModalBackdrop, #translation-modal-backdrop, [id*="backdrop"], [class*="backdrop"]');
+    // TÜM BACKDROP'LARI BUL VE SİL - ULTRA AGGRESSIVE
+    const backdrops = document.querySelectorAll(
+        '.modal-backdrop, ' +
+        '#aiTranslationModalBackdrop, ' +
+        '#translation-modal-backdrop, ' +
+        '[id*="backdrop"], ' +
+        '[class*="backdrop"], ' +
+        'div[style*="background-color: rgba"], ' +
+        'div[style*="position: fixed"][style*="z-index"]'
+    );
+
     backdrops.forEach((backdrop, index) => {
         console.log(`🗑️ NURU: Backdrop ${index + 1} siliniyor:`, backdrop.id || backdrop.className);
         backdrop.remove();
     });
-    
-    // BODY CLASS VE STYLE TEMİZLE
+
+    // BODY CLASS VE STYLE TEMİZLE - ULTRA RESET
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
+    document.body.style.marginRight = '';
+    document.body.style.pointerEvents = '';
     
     // MODAL CONTAINER'LARI TEMİZLE
     const modalContainers = document.querySelectorAll('.modal[style*="display: block"]');
@@ -31,6 +42,16 @@ window.cleanModalBackdrop = function() {
     });
     
     console.log('✅ NURU: Modal backdrop temizleme tamamlandı');
+};
+
+// EMERGENCY GLOBAL CLEANUP - Console'dan çağrılabilir
+window.emergencyCleanupBackdrop = function() {
+    console.log('🚨 EMERGENCY: Manual backdrop cleanup çağrıldı!');
+    window.cleanModalBackdrop();
+    // Extra cleanup
+    setTimeout(() => {
+        window.cleanModalBackdrop();
+    }, 500);
 };
 
 // BOOTSTRAP MODAL EVENT'LERİNE HOOK ET

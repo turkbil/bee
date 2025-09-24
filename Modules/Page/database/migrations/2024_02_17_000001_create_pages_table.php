@@ -13,8 +13,8 @@ return new class extends Migration
             $table->json('title')->comment('Çoklu dil başlık: {"tr": "Başlık", "en": "Title"}');
             $table->json('slug')->comment('Çoklu dil slug: {"tr": "baslik", "en": "title"}');
             $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "İçerik", "en": "Content"}');
-            $table->json('css')->nullable()->comment('Çoklu dil CSS: {\"tr\": \"CSS kodu\", \"en\": \"CSS code\"}');
-            $table->json('js')->nullable()->comment('Çoklu dil JS: {\"tr\": \"JS kodu\", \"en\": \"JS code\"}');
+            $table->text('css')->nullable()->comment('CSS kodu - tüm dillerde ortak');
+            $table->text('js')->nullable()->comment('JavaScript kodu - tüm dillerde ortak');
             // NOT: Eski string formatındaki veriler convert_pages_body_to_json.php ile JSON'a dönüştürülür
             $table->json('seo')->nullable()->comment('SEO verileri: {"tr": {"meta_title": "Başlık", "meta_description": "Açıklama", "keywords": [], "og_image": "image.jpg"}}');
             $table->boolean('is_active')->default(true)->index();

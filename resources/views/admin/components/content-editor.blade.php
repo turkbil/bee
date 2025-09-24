@@ -32,12 +32,31 @@
 @endphp
 
 <div class="mb-3">
-    <label class="form-label">
-        {{ $label }}
-        @if($isRequired) 
-            <span class="required-star">★</span>
-        @endif
-    </label>
+    <div class="d-flex justify-content-between align-items-center">
+        <label class="form-label">
+            {{ $label }}
+            @if($isRequired)
+                <span class="required-star">★</span>
+            @endif
+        </label>
+
+        {{-- 🚀 GLOBAL AI CONTENT BUTTON - Tüm modüllerde çalışır --}}
+        <button type="button"
+                class="btn btn-primary ai-content-btn mb-2"
+                onclick="openAIContentModal({
+                    module: '{{ request()->segment(2) ?? 'page' }}',
+                    targetComponent: window.receiveGeneratedContent || null,
+                    editorId: '{{ $editorId }}',
+                    fieldName: '{{ $fieldName }}',
+                    lang: '{{ $lang }}'
+                })"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="AI ile otomatik içerik üret">
+            <i class="fas fa-magic me-2"></i>
+            AI İçerik Üret
+        </button>
+    </div>
     
     <div wire:ignore>
         {{-- HugeRTE Editor Textarea --}}

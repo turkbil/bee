@@ -91,7 +91,10 @@ return new class extends Migration
                 $table->index(['prompt_type', 'complexity_level']);
                 $table->index(['usage_count', 'avg_quality_score']);
                 $table->index(['expert_persona', 'is_active']); // Expert persona filtreleme için
-                $table->fullText(['name', 'description', 'personality_traits']); // Full text search genişletildi
+                // 🧪 TEST FIX: SQLite full text search desteği yok, sadece MySQL/PostgreSQL için
+                if (config('database.default') !== 'sqlite') {
+                    $table->fullText(['name', 'description', 'personality_traits']); // Full text search genişletildi
+                }
             });
         });
     }

@@ -85,7 +85,7 @@ return [
      * This class is responsible for generating a hash for a request. This hash
      * is used to look up a cached response.
      */
-    'hasher' => \App\Services\AuthAwareHasher::class,
+    'hasher' => \Spatie\ResponseCache\Hasher\DefaultHasher::class,
     
     /*
      * Enable role-based cache variation (experimental)

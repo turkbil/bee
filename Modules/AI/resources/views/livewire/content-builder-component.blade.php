@@ -1,161 +1,33 @@
+{{-- AI Content Builder - NEW GLOBAL MODAL PATTERN (Like AI Translation) --}}
 <div>
-    <!-- AI Content Builder Modal -->
-    <div class="modal fade {{ $isOpen ? 'show' : '' }}"
-         tabindex="-1"
-         style="{{ $isOpen ? 'display: block;' : 'display: none;' }}"
-         aria-labelledby="aiContentBuilderLabel"
-         aria-hidden="{{ $isOpen ? 'false' : 'true' }}">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <!-- Header -->
-                <div class="modal-header bg-primary text-white">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-magic fs-4 me-2"></i>
-                        <h5 class="modal-title mb-0" id="aiContentBuilderLabel">AI İçerik Üretici</h5>
-                    </div>
-                    <button type="button" wire:click="close" class="btn-close btn-close-white" aria-label="Close"></button>
-                </div>
+    {{-- Trigger Button --}}
+    <button type="button"
+            class="btn btn-primary"
+            onclick="openAIContentModal({
+                module: '{{ $module ?? 'page' }}',
+                targetComponent: window.receiveGeneratedContent || null
+            })">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M8 8m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+            <path d="M6 21v-2a4 4 0 0 1 4 -4h2.5" />
+            <path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M19.001 15.5v1.5" />
+        </svg>
+        🚀 AI İçerik Üret
+    </button>
 
-        <!-- Tema Bilgisi -->
-        <div class="bg-light p-3 border-bottom">
-            <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">Tema: {{ $themePreview['theme_name'] ?? 'Default' }}</small>
-                <div class="d-flex gap-1">
-                    <span class="badge rounded-circle" style="width: 20px; height: 20px; background-color: {{ $themePreview['primary_color'] ?? '#3B82F6' }}"></span>
-                    <span class="badge rounded-circle" style="width: 20px; height: 20px; background-color: {{ $themePreview['secondary_color'] ?? '#6B7280' }}"></span>
-                </div>
-            </div>
+    {{-- Credit Display --}}
+    @if($creditsAvailable !== null)
+        <div class="mt-2">
+            <small class="text-muted">
+                Mevcut Kredi: <strong class="text-primary">{{ number_format($creditsAvailable) }}</strong>
+                | Tahmini Kullanım: <strong class="text-warning">15</strong>
+            </small>
         </div>
-
-                <!-- Content -->
-                <div class="modal-body">
-
-            <!-- Prompt Input -->
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="fas fa-edit me-1"></i>
-                    Ne oluşturmak istersiniz?
-                </label>
-                <textarea
-                    wire:model.lazy="userPrompt"
-                    wire:keyup.debounce.500ms="updatePrompt"
-                    class="form-control"
-                    rows="4"
-                    placeholder="Örn: Hero section, 3 kolonlu özellikler, fiyatlandırma tablosu..."
-                    {{ $isGenerating ? 'disabled' : '' }}></textarea>
-                <small class="form-text text-muted">Boş bırakırsanız sayfa başlığına göre içerik üretilir</small>
-            </div>
-
-
-            <!-- İçerik Uzunluğu -->
-            <div class="mb-3">
-                <label class="form-label fw-semibold">İçerik Uzunluğu</label>
-                <div class="btn-group w-100" role="group">
-                    <button type="button"
-                            wire:click="$set('contentLength', 'short')"
-                            class="btn {{ $contentLength === 'short' ? 'btn-primary' : 'btn-outline-primary' }}"
-                            {{ $isGenerating ? 'disabled' : '' }}>
-                        Kısa
-                    </button>
-                    <button type="button"
-                            wire:click="$set('contentLength', 'medium')"
-                            class="btn {{ $contentLength === 'medium' ? 'btn-primary' : 'btn-outline-primary' }}"
-                            {{ $isGenerating ? 'disabled' : '' }}>
-                        Orta
-                    </button>
-                    <button type="button"
-                            wire:click="$set('contentLength', 'long')"
-                            class="btn {{ $contentLength === 'long' ? 'btn-primary' : 'btn-outline-primary' }}"
-                            {{ $isGenerating ? 'disabled' : '' }}>
-                        Uzun
-                    </button>
-                </div>
-            </div>
-
-            <!-- Gelişmiş Ayarlar -->
-            <div class="mb-3">
-                <div class="accordion" id="advancedSettings">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseAdvanced" aria-expanded="false">
-                                <i class="fas fa-cog me-2"></i>
-                                Gelişmiş Ayarlar
-                            </button>
-                        </h2>
-                        <div id="collapseAdvanced" class="accordion-collapse collapse" data-bs-parent="#advancedSettings">
-                            <div class="accordion-body">
-                                <textarea
-                                    wire:model="customInstructions"
-                                    class="form-control"
-                                    rows="3"
-                                    placeholder="Özel talimatlar... (opsiyonel)"
-                                    {{ $isGenerating ? 'disabled' : '' }}></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Önizleme Alanı -->
-            @if($generatedContent)
-                <div class="card mb-3">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Üretilen İçerik</span>
-                        <button type="button" wire:click="regenerate" class="btn btn-sm btn-link text-primary p-0">
-                            <i class="fas fa-redo me-1"></i>
-                            Yeniden Üret
-                        </button>
-                    </div>
-                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                        {!! $generatedContent !!}
-                    </div>
-                </div>
-            @endif
-            <!-- Kredi Bilgisi -->
-            <div class="alert alert-info d-flex justify-content-between align-items-center mb-3">
-                <span>
-                    <i class="fas fa-coins me-1"></i>
-                    Kredi: <strong>{{ $creditsAvailable }}</strong>
-                </span>
-                <span class="text-muted">
-                    Tahmini: -{{ $estimatedCredits }}
-                </span>
-            </div>
-
-            <!-- Uyarı Mesajı -->
-            <div class="alert alert-warning d-flex align-items-center mb-3">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                <div>
-                    <strong>Önemli:</strong> İçerik üretildiğinde otomatik olarak editöre eklenecek ve
-                    <span class="text-danger fw-bold">mevcut içerik silinecektir!</span>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="d-grid gap-2">
-                <button type="button"
-                        onclick="startAIGeneration()"
-                        class="btn btn-primary btn-lg"
-                        id="generateButton"
-                        {{ $creditsAvailable < $estimatedCredits ? 'disabled' : '' }}>
-                    <i class="fas fa-wand-magic-sparkles me-2"></i>
-                    İçerik Oluştur ve Editöre Ekle
-                </button>
-
-                <button type="button" wire:click="close" class="btn btn-outline-secondary">
-                    Kapat
-                </button>
-            </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Backdrop -->
-    @if($isOpen)
-        <div class="modal-backdrop fade show" wire:click="close"></div>
     @endif
+
+    {{-- Content Receiver - Global function kullanılır --}}
 </div>
 
 @push('scripts')

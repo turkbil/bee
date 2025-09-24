@@ -29,11 +29,11 @@ return [
 'default_theme_cannot_be_deleted' => 'Default theme cannot be deleted',
 'themes' => 'Themes',
 'menu' => 'Menu',
-'header_section' => 'TODO: Add translation for \'header_section\'',
-'search_box' => 'TODO: Add translation for \'search_box\'',
-'middle_loading' => 'TODO: Add translation for \'middle_loading\'',
-'right_side' => 'TODO: Add translation for \'right_side\'',
-'page_count_selection' => 'TODO: Add translation for \'page_count_selection\'',
-'theme_cards' => 'TODO: Add translation for \'theme_cards\'',
-'pagination' => 'TODO: Add translation for \'pagination\''
+'header_section' => 'Header Section',
+'search_box' => 'Search Box',
+'middle_loading' => 'Middle Loading',
+'right_side' => 'Right Side',
+'page_count_selection' => 'Page Count Selection',
+'theme_cards' => 'Theme Cards',
+'pagination' => 'Pagination'
 ];

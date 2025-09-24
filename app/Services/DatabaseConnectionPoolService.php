@@ -117,13 +117,33 @@ class DatabaseConnectionPoolService
         $databaseName = $tenant->tenancy_db_name ?? "tenant_{$tenantKey}";
         
         $baseConfig = config('database.connections.mysql');
-        $tenantConfig = array_merge($baseConfig, [
-            'database' => $databaseName,
-            'options' => array_merge($baseConfig['options'] ?? [], [
-                \PDO::ATTR_PERSISTENT => true,
+
+        // PDO options'ı sıfırdan oluştur
+        $tenantOptions = [];
+
+        // Sadece güvenli ve gerekli PDO option'larını ekle
+        if (extension_loaded('pdo_mysql')) {
+            $tenantOptions = [
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET SESSION sql_mode="TRADITIONAL"',
+                \PDO::ATTR_TIMEOUT => 30,
+                \PDO::ATTR_EMULATE_PREPARES => false,
                 \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-            ]),
-        ]);
+                \PDO::ATTR_PERSISTENT => false,
+            ];
+
+            // SSL CA varsa ekle
+            $sslCa = env('MYSQL_ATTR_SSL_CA');
+            if ($sslCa) {
+                $tenantOptions[\PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+            }
+        }
+
+        // BaseConfig'den options hariç diğer ayarları al
+        $tenantConfig = $baseConfig;
+        unset($tenantConfig['options']); // Mevcut options'ı tamamen kaldır
+
+        $tenantConfig['database'] = $databaseName;
+        $tenantConfig['options'] = $tenantOptions;
         
         Config::set("database.connections.{$connectionName}", $tenantConfig);
         

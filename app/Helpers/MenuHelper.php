@@ -92,9 +92,8 @@ if (!function_exists('getDefaultMenu')) {
             $locale = $locale ?? app()->getLocale();
             $cacheKey = "menu.default.{$locale}";
             
-            // Cache devre dışı - direkt veri döndür
-            // return Cache::remember($cacheKey, now()->addHours(24), function() use ($locale) {
-            return (function() use ($locale) {
+            // Cache aktif - Navigation performance için kritik
+            return Cache::remember($cacheKey, now()->addHours(24), function() use ($locale) {
                 $menu = Menu::with(['rootItems' => function($query) {
                     $query->where('is_active', true)->orderBy('sort_order');
                 }, 'rootItems.activeChildren' => function($query) {
@@ -154,7 +153,7 @@ if (!function_exists('getDefaultMenu')) {
                         return $menuItem;
                     })->toArray()
                 ];
-            })();
+            });
         } catch (\Exception $e) {
             \Log::error('MenuHelper getDefaultMenu error: ' . $e->getMessage());
             return null;

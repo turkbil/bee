@@ -273,6 +273,501 @@ readonly class ProviderOptimizationService
     }
 
     /**
+     * 🎯 Smart Content Provider Selection - YENI ÖZELLIK
+     * Content tipine, uzunluğa ve PDF boyutuna göre en optimal provider seçer
+     */
+    public function getOptimalContentProvider(
+        array $contentParams = []
+    ): array {
+        $startTime = microtime(true);
+
+        // Content parametrelerini analiz et
+        $contentType = $contentParams['content_type'] ?? 'page';
+        $length = $contentParams['length'] ?? 'medium';
+        $pdfSize = $contentParams['pdf_size'] ?? 0;
+        $hasFileAnalysis = !empty($contentParams['file_analysis']);
+        $tenantId = $contentParams['tenant_id'] ?? null;
+
+        // 🎨 DESIGN OVERRIDE - TASARIM İÇİN MUTLAK CLAUDE 4 SONNET ZORUNLU!
+        $isDesignTask = $this->isDesignRelatedTask($contentParams);
+
+        // Provider öncelik matrisi - content tipine göre
+        $providerMatrix = [
+            'design_mandatory' => [
+                'claude_3_5_sonnet' => 1.0,  // 🎨 TASARIM İÇİN MUTLAK ZORUNLU!
+                'claude_4_sonnet' => 1.0,    // 🎨 EN İYİ TASARIM MODELİ!
+                'openai_gpt4o' => 0.0,       // ❌ TASARIMDA YASAK
+                'openai_gpt4o_mini' => 0.0,  // ❌ TASARIMDA YASAK
+                'claude_3_haiku' => 0.0,     // ❌ TASARIMDA YASAK
+            ],
+            'short_content' => [
+                'openai_gpt4o_mini' => 0.9,  // En ucuz, kısa içerik için perfect
+                'claude_3_haiku' => 0.8,     // Hızlı ve ucuz
+                'openai_gpt4o' => 0.3,       // Pahalı, gereksiz
+                'claude_3_5_sonnet' => 0.2,  // Overkill
+            ],
+            'medium_content' => [
+                'openai_gpt4o' => 0.9,       // Balanced performance
+                'claude_3_5_sonnet' => 0.8,  // High quality
+                'openai_gpt4o_mini' => 0.6,  // Budget option
+                'claude_3_haiku' => 0.4,     // May lack detail
+            ],
+            'long_content' => [
+                'claude_3_5_sonnet' => 0.95, // Best for detailed content
+                'openai_gpt4o' => 0.85,      // Good alternative
+                'claude_3_haiku' => 0.2,     // Not suitable
+                'openai_gpt4o_mini' => 0.1,  // Too limited
+            ],
+            'pdf_heavy' => [
+                'claude_3_5_sonnet' => 0.95, // Best PDF understanding
+                'openai_gpt4o' => 0.8,       // Good PDF handling
+                'openai_gpt4o_mini' => 0.3,  // Limited context
+                'claude_3_haiku' => 0.2,     // Basic only
+            ],
+        ];
+
+        // 🎨 TASARIM OVERRIDE - Design task kontrolü
+        if ($isDesignTask) {
+            $category = 'design_mandatory';
+        } else {
+            // Content category belirleme
+            $category = $this->determineContentCategory($contentType, $length, $pdfSize, $hasFileAnalysis);
+        }
+
+        // Provider skorları al
+        $providerScores = $providerMatrix[$category] ?? $providerMatrix['medium_content'];
+
+        // Aktif provider'ları al ve real-time metrikleri ekle
+        $providers = AIProvider::where('is_active', true)->get();
+        $finalScores = [];
+
+        foreach ($providers as $provider) {
+            $baseScore = $providerScores[$provider->name] ?? 0.5;
+
+            // Real-time metrics ekle
+            $metrics = $this->calculateProviderMetrics($provider);
+            $performanceScore = $this->calculateMultiDimensionalScore($metrics, 0, []);
+
+            // Cost factor - tenant budget kontrolü
+            $costFactor = $this->calculateCostFactor($provider, $tenantId);
+
+            // Final score hesapla
+            $finalScore = ($baseScore * 0.6) + ($performanceScore * 0.3) + ($costFactor * 0.1);
+
+            $finalScores[] = [
+                'provider_id' => $provider->id,
+                'provider_name' => $provider->name,
+                'display_name' => $provider->display_name,
+                'final_score' => $finalScore,
+                'base_score' => $baseScore,
+                'performance_score' => $performanceScore,
+                'cost_factor' => $costFactor,
+                'metrics' => $metrics,
+                'category' => $category,
+                'reasoning' => $this->generateContentProviderReasoning($provider->name, $category, $finalScore),
+            ];
+        }
+
+        // En yüksek skora göre sırala
+        usort($finalScores, fn($a, $b) => $b['final_score'] <=> $a['final_score']);
+
+        $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+        Log::info('🎯 Content Provider Selection completed', [
+            'category' => $category,
+            'selected_provider' => $finalScores[0]['provider_name'] ?? 'none',
+            'duration_ms' => $duration,
+            'providers_evaluated' => count($finalScores),
+        ]);
+
+        return [
+            'recommended_provider' => $finalScores[0] ?? null,
+            'alternatives' => array_slice($finalScores, 1, 2),
+            'category' => $category,
+            'content_params' => $contentParams,
+            'evaluation_duration_ms' => $duration,
+            'analysis_timestamp' => now()->toISOString(),
+        ];
+    }
+
+    /**
+     * 🎨 Tasarım ile ilgili task algılaması - CLAUDE 4 SONNET ZORUNLU!
+     */
+    private function isDesignRelatedTask(array $contentParams): bool
+    {
+        $contentType = $contentParams['content_type'] ?? '';
+        $feature = $contentParams['feature'] ?? '';
+        $prompt = $contentParams['prompt'] ?? '';
+        $context = $contentParams['context'] ?? '';
+
+        // Tasarım anahtar kelimeleri
+        $designKeywords = [
+            // UI/UX terimleri
+            'tasarım', 'design', 'ui', 'ux', 'arayüz', 'interface',
+            'layout', 'mizanpaj', 'görsel', 'visual', 'style', 'stil',
+
+            // HTML/CSS terimleri
+            'html', 'css', 'tailwind', 'bootstrap', 'responsive',
+            'mobile', 'grid', 'flexbox', 'component', 'bileşen',
+
+            // Page types
+            'landing', 'homepage', 'anasayfa', 'portfolio', 'galeri',
+            'showcase', 'vitrin', 'demo', 'template', 'tema',
+
+            // Content creation
+            'sayfa', 'page', 'website', 'site', 'web', 'frontend',
+            'modern', 'professional', 'elegant', 'sleek', 'clean',
+
+            // Design elements
+            'hero', 'header', 'footer', 'sidebar', 'card', 'kart',
+            'button', 'buton', 'form', 'modal', 'navbar', 'menu',
+            'slider', 'carousel', 'gallery', 'section', 'bölüm'
+        ];
+
+        // Content type kontrolü
+        $designContentTypes = [
+            'page', 'landing_page', 'portfolio', 'website', 'homepage',
+            'template', 'theme', 'layout', 'component', 'ui_element'
+        ];
+
+        if (in_array($contentType, $designContentTypes)) {
+            return true;
+        }
+
+        // Feature kontrolü
+        $designFeatures = [
+            'page_generator', 'website_builder', 'template_creator',
+            'ui_generator', 'layout_maker', 'design_assistant'
+        ];
+
+        if (in_array($feature, $designFeatures)) {
+            return true;
+        }
+
+        // Anahtar kelime kontrolü (prompt ve context'te)
+        $searchText = strtolower($prompt . ' ' . $context . ' ' . $contentType . ' ' . $feature);
+
+        foreach ($designKeywords as $keyword) {
+            if (strpos($searchText, strtolower($keyword)) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Content category belirleyici
+     */
+    private function determineContentCategory(string $contentType, string $length, int $pdfSize, bool $hasFileAnalysis): string
+    {
+        // PDF heavy content kontrolü
+        if ($pdfSize > 50000 || $hasFileAnalysis) { // 50KB+ PDF
+            return 'pdf_heavy';
+        }
+
+        // Length-based classification
+        if (in_array($length, ['short', 'brief'])) {
+            return 'short_content';
+        }
+
+        if (in_array($length, ['ultra_long', 'unlimited']) || $contentType === 'landing_page') {
+            return 'long_content';
+        }
+
+        return 'medium_content';
+    }
+
+    /**
+     * Content provider reasoning generator
+     */
+    private function generateContentProviderReasoning(string $providerName, string $category, float $score): string
+    {
+        $reasons = [
+            'openai_gpt4o_mini' => [
+                'short_content' => 'En uygun maliyet, kısa içerik için yeterli kalite',
+                'medium_content' => 'Orta düzey içerik için budget-friendly seçenek',
+                'long_content' => 'Uzun içerik için sınırlı, token limiti düşük',
+                'pdf_heavy' => 'PDF analizi için sınırlı context window',
+                'design_mandatory' => '❌ TASARIM İÇİN UYGUN DEĞİL - Yetersiz yaratıcılık',
+            ],
+            'claude_3_5_sonnet' => [
+                'short_content' => 'Kısa içerik için fazla güçlü ama mükemmel kalite',
+                'medium_content' => 'Dengeli performans ve yüksek kalite',
+                'long_content' => 'En ideal seçim: 8K token, detaylı analiz',
+                'pdf_heavy' => 'PDF analizi için en güçlü model',
+                'design_mandatory' => '🎨 TASARIM MASTERİ - Mükemmel UI/UX, HTML/CSS/Tailwind uzmanlığı',
+            ],
+            'claude_4_sonnet' => [
+                'short_content' => 'Üstün kalite, kısa içerik için overkill',
+                'medium_content' => 'Premium kalite ve yaratıcılık',
+                'long_content' => 'En üst düzey performans',
+                'pdf_heavy' => 'Ultra gelişmiş PDF analizi',
+                'design_mandatory' => '🏆 EN İYİ TASARIM MODELİ - Sektör bazlı otomatik tema, ultra yaratıcı',
+            ],
+            'openai_gpt4o' => [
+                'short_content' => 'Kısa içerik için pahalı ama güvenilir',
+                'medium_content' => 'Çok iyi denge: kalite/maliyet',
+                'long_content' => 'İyi performans, Claude alternatifi',
+                'pdf_heavy' => 'PDF işleme konusunda güçlü',
+                'design_mandatory' => '❌ TASARIM İÇİN UYGUN DEĞİL - Kısıtlı tasarım becerisi',
+            ],
+            'claude_3_haiku' => [
+                'short_content' => 'Hızlı ve ucuz, temel içerik için uygun',
+                'medium_content' => 'Sınırlı detay, basit içerik için',
+                'long_content' => 'Uzun içerik için yetersiz',
+                'pdf_heavy' => 'PDF analizi için çok temel',
+                'design_mandatory' => '❌ TASARIM İÇİN UYGUN DEĞİL - Yetersiz yaratıcılık',
+            ],
+        ];
+
+        $baseReason = $reasons[$providerName][$category] ?? 'Genel kullanım için uygun';
+        $scoreText = $score > 0.8 ? 'Excellent' : ($score > 0.6 ? 'Good' : 'Fair');
+
+        // Design task için özel açıklama
+        if ($category === 'design_mandatory') {
+            $designNote = $this->getDesignCapabilityNote($providerName);
+            return "{$baseReason} {$designNote} (Score: {$scoreText})";
+        }
+
+        return "{$baseReason} (Score: {$scoreText})";
+    }
+
+    /**
+     * 🎨 Provider'ın tasarım yetenekleri hakkında detay
+     */
+    private function getDesignCapabilityNote(string $providerName): string
+    {
+        $designCapabilities = [
+            'claude_4_sonnet' => '✨ Sektör analizi + otomatik tema seçimi + ultra modern design patterns',
+            'claude_3_5_sonnet' => '🎯 Professional UI/UX + responsive design + Tailwind mastery',
+            'openai_gpt4o' => '⚠️ Temel HTML/CSS, yaratıcılık kısıtlı',
+            'openai_gpt4o_mini' => '❌ Tasarım konusunda çok zayıf',
+            'claude_3_haiku' => '❌ Tasarım için uygun değil',
+        ];
+
+        return $designCapabilities[$providerName] ?? '';
+    }
+
+    /**
+     * Cost factor calculator with tenant budget awareness
+     */
+    private function calculateCostFactor(AIProvider $provider, ?int $tenantId): float
+    {
+        if (!$tenantId) {
+            return 0.5; // Neutral if no tenant
+        }
+
+        // Tenant'ın son 30 günlük harcamasını kontrol et
+        $monthlyUsage = AICreditUsage::where('tenant_id', $tenantId)
+            ->where('created_at', '>=', Carbon::now()->subDays(30))
+            ->sum('tokens_used');
+
+        // Provider'ın ortalama token maliyeti
+        $avgCost = $this->getProviderAverageCost($provider);
+
+        // Budget awareness: düşük harcama = cost-conscious
+        if ($monthlyUsage < 10000) {
+            return $avgCost < 0.5 ? 0.9 : 0.2; // Prefer cheap providers
+        } elseif ($monthlyUsage > 100000) {
+            return 0.8; // High usage, less cost sensitive
+        }
+
+        return 0.5; // Medium usage, balanced approach
+    }
+
+    /**
+     * Provider average cost getter
+     */
+    private function getProviderAverageCost(AIProvider $provider): float
+    {
+        // Cost değerleri (normalized 0-1, düşük=ucuz)
+        $costMapping = [
+            'openai_gpt4o_mini' => 0.1,   // En ucuz
+            'claude_3_haiku' => 0.2,      // Ucuz
+            'openai_gpt4o' => 0.7,        // Orta-pahalı
+            'claude_3_5_sonnet' => 0.8,   // Pahalı ama değer
+        ];
+
+        return $costMapping[$provider->name] ?? 0.5;
+    }
+
+    /**
+     * 🚀 DYNAMIC TOKEN OPTIMIZATION - Content bazlı akıllı token hesaplama
+     */
+    public function optimizeTokenUsage(array $contentParams): array
+    {
+        $contentType = $contentParams['content_type'] ?? 'page';
+        $length = $contentParams['length'] ?? 'medium';
+        $pdfSize = $contentParams['pdf_size'] ?? 0;
+        $hasFileAnalysis = !empty($contentParams['file_analysis']);
+        $providerName = $contentParams['provider_name'] ?? 'claude_3_5_sonnet';
+
+        // 📊 PROVIDER SPESIFIC TOKEN LIMITS
+        $providerLimits = [
+            'claude_3_5_sonnet' => ['max' => 8192, 'optimal_range' => [2000, 6000]],
+            'claude_4_sonnet' => ['max' => 8192, 'optimal_range' => [3000, 7000]],
+            'claude_3_haiku' => ['max' => 4096, 'optimal_range' => [1000, 3000]],
+            'openai_gpt4o' => ['max' => 4096, 'optimal_range' => [1500, 3500]],
+            'openai_gpt4o_mini' => ['max' => 16384, 'optimal_range' => [1000, 4000]],
+        ];
+
+        // 🎯 CONTENT TYPE BASED TOKEN MULTIPLIERS
+        $contentMultipliers = [
+            'design_mandatory' => 1.5,  // Tasarım için daha fazla token
+            'pdf_heavy' => 1.8,         // PDF analizi için çok daha fazla
+            'long_content' => 1.4,      // Uzun içerik için
+            'medium_content' => 1.0,    // Normal
+            'short_content' => 0.6,     // Kısa içerik için az
+        ];
+
+        // 📏 LENGTH BASED ADJUSTMENTS
+        $lengthAdjustments = [
+            'unlimited' => 2.0,     // Sınırsız = Maximum token
+            'ultra_long' => 1.6,    // Ultra uzun
+            'long' => 1.3,          // Uzun
+            'medium' => 1.0,        // Normal
+            'short' => 0.7,         // Kısa
+            'brief' => 0.5,         // Çok kısa
+        ];
+
+        // 📄 PDF SIZE IMPACT
+        $pdfMultiplier = 1.0;
+        if ($pdfSize > 100000) {
+            $pdfMultiplier = 2.0;   // Büyük PDF = 2x token
+        } elseif ($pdfSize > 50000) {
+            $pdfMultiplier = 1.5;   // Orta PDF = 1.5x token
+        } elseif ($pdfSize > 10000) {
+            $pdfMultiplier = 1.2;   // Küçük PDF = 1.2x token
+        }
+
+        // Content category belirle
+        $category = $this->determineContentCategory($contentType, $length, $pdfSize, $hasFileAnalysis);
+        if ($this->isDesignRelatedTask($contentParams)) {
+            $category = 'design_mandatory';
+        }
+
+        // Provider limitleri al
+        $limits = $providerLimits[$providerName] ?? $providerLimits['claude_3_5_sonnet'];
+
+        // Base token hesapla (optimal range'in ortası)
+        $baseTokens = ($limits['optimal_range'][0] + $limits['optimal_range'][1]) / 2;
+
+        // Multiplier'ları uygula
+        $contentMultiplier = $contentMultipliers[$category] ?? 1.0;
+        $lengthMultiplier = $lengthAdjustments[$length] ?? 1.0;
+
+        // Final token hesapla
+        $optimizedTokens = $baseTokens * $contentMultiplier * $lengthMultiplier * $pdfMultiplier;
+
+        // Provider limitlerini kontrol et
+        $finalTokens = min($optimizedTokens, $limits['max']);
+        $finalTokens = max($finalTokens, 500); // Minimum 500 token
+
+        // Token efficiency score hesapla
+        $efficiencyScore = $this->calculateTokenEfficiency($finalTokens, $limits['max'], $category);
+
+        Log::info('🚀 Dynamic Token Optimization', [
+            'provider' => $providerName,
+            'category' => $category,
+            'base_tokens' => $baseTokens,
+            'content_multiplier' => $contentMultiplier,
+            'length_multiplier' => $lengthMultiplier,
+            'pdf_multiplier' => $pdfMultiplier,
+            'calculated_tokens' => $optimizedTokens,
+            'final_tokens' => $finalTokens,
+            'efficiency_score' => $efficiencyScore,
+            'provider_max' => $limits['max']
+        ]);
+
+        return [
+            'optimized_tokens' => (int) $finalTokens,
+            'provider_max' => $limits['max'],
+            'base_calculation' => (int) $baseTokens,
+            'applied_multipliers' => [
+                'content' => $contentMultiplier,
+                'length' => $lengthMultiplier,
+                'pdf' => $pdfMultiplier,
+            ],
+            'efficiency_score' => $efficiencyScore,
+            'category' => $category,
+            'reasoning' => $this->generateTokenOptimizationReasoning($category, $finalTokens, $limits['max']),
+            'cost_estimate' => $this->estimateTokenCost($finalTokens, $providerName),
+        ];
+    }
+
+    /**
+     * Token efficiency score calculator
+     */
+    private function calculateTokenEfficiency(float $tokens, int $maxTokens, string $category): float
+    {
+        // Token kullanım oranı
+        $usageRatio = $tokens / $maxTokens;
+
+        // Category'ye göre ideal usage ratio
+        $idealRatios = [
+            'design_mandatory' => 0.75,  // Tasarım için yüksek token kullanımı ideal
+            'pdf_heavy' => 0.80,         // PDF için çok yüksek
+            'long_content' => 0.70,      // Uzun içerik için yüksek
+            'medium_content' => 0.50,    // Orta için dengeli
+            'short_content' => 0.30,     // Kısa için düşük
+        ];
+
+        $idealRatio = $idealRatios[$category] ?? 0.50;
+
+        // Ideal'e yakınlık score'u (1.0 = perfect)
+        $deviation = abs($usageRatio - $idealRatio);
+        $efficiency = max(0, 1 - ($deviation * 2)); // 2x penalty for deviation
+
+        return round($efficiency, 3);
+    }
+
+    /**
+     * Token optimization reasoning generator
+     */
+    private function generateTokenOptimizationReasoning(string $category, float $finalTokens, int $maxTokens): string
+    {
+        $usagePercentage = round(($finalTokens / $maxTokens) * 100, 1);
+
+        $categoryReasons = [
+            'design_mandatory' => "🎨 Tasarım içeriği için optimize edildi",
+            'pdf_heavy' => "📄 PDF analizi için genişletildi",
+            'long_content' => "📝 Uzun içerik için artırıldı",
+            'medium_content' => "⚖️ Dengeli içerik için optimize edildi",
+            'short_content' => "⚡ Kısa içerik için minimumda tutuldu",
+        ];
+
+        $reason = $categoryReasons[$category] ?? "🔧 Genel optimizasyon uygulandı";
+
+        return "{$reason} - {$usagePercentage}% token kullanımı ({$finalTokens}/{$maxTokens})";
+    }
+
+    /**
+     * Token cost estimator
+     */
+    private function estimateTokenCost(float $tokens, string $providerName): array
+    {
+        // Provider'a göre token maliyetleri ($/1K token - approximate)
+        $tokenCosts = [
+            'claude_3_5_sonnet' => 0.003,   // $3 per 1K tokens
+            'claude_4_sonnet' => 0.003,     // Aynı fiyat
+            'claude_3_haiku' => 0.00025,    // $0.25 per 1K tokens
+            'openai_gpt4o' => 0.01,         // $10 per 1K tokens
+            'openai_gpt4o_mini' => 0.00015, // $0.15 per 1K tokens
+        ];
+
+        $costPer1K = $tokenCosts[$providerName] ?? 0.003;
+        $estimatedCost = ($tokens / 1000) * $costPer1K;
+
+        return [
+            'tokens' => $tokens,
+            'cost_per_1k' => $costPer1K,
+            'estimated_cost_usd' => round($estimatedCost, 6),
+            'estimated_cost_credits' => round($estimatedCost * 100, 2), // Convert to credit system
+        ];
+    }
+
+    /**
      * 🎯 Intelligent load balancing across providers
      */
     public function getLoadBalancedProvider(

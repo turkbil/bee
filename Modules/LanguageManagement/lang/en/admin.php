@@ -37,12 +37,12 @@ return [
 'url_structure_settings' => 'URL Structure Settings',
 'view_all' => 'View All',
 'title' => 'Language Management',
-'data_language_changed' => 'TODO: Add translation for \'data_language_changed\'',
-'tenant_language_changed' => 'TODO: Add translation for \'tenant_language_changed\'',
-'data_language' => 'TODO: Add translation for \'data_language\'',
-'change_data_language' => 'TODO: Add translation for \'change_data_language\'',
-'data_lang' => 'TODO: Add translation for \'data_lang\'',
-'no_data_languages' => 'TODO: Add translation for \'no_data_languages\'',
+'data_language_changed' => 'Data language changed',
+'tenant_language_changed' => 'Tenant language changed',
+'data_language' => 'Data Language',
+'change_data_language' => 'Change Data Language',
+'data_lang' => 'Data Lang',
+'no_data_languages' => 'No data languages available',
 
     // Translation Checker
     'translation_checker' => 'Translation Checker System',

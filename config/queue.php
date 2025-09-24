@@ -92,6 +92,16 @@ return [
             'after_commit' => false,
         ],
 
+        // 🤖 AI CONTENT GENERATION QUEUE - HIGH PRIORITY - NEVER BLOCKED
+        'ai-content' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'ai-content',
+            'retry_after' => 600, // 10 minutes - AI operations can take time
+            'block_for' => 2,      // Faster processing
+            'after_commit' => false,
+        ],
+
         // 🏢 CENTRAL TENANT ISOLATED - Central operations won't affect other tenants
         'central_isolated' => [
             'driver' => 'redis',
@@ -100,6 +110,16 @@ return [
             'retry_after' => 300, // 5 minutes max per job
             'block_for' => 5, // Non-blocking for other tenants
             'after_commit' => false,
+        ],
+
+        // 🗑️ CLEANUP QUEUE - LOW PRIORITY - NEVER SLOWS DOWN AI
+        'cleanup' => [
+            'driver' => 'database',  // Database queue - won't block Redis
+            'connection' => env('DB_QUEUE_CONNECTION'),
+            'table' => 'jobs',
+            'queue' => 'cleanup',
+            'retry_after' => 300,  // 5 minutes max
+            'after_commit' => true,  // Wait for transaction commit
         ],
 
     ],

@@ -374,9 +374,9 @@ class TranslationCheckerComponent extends Component
         }
         
         // Manuel çeviri gerektiğini belirt
-        return $locale === 'tr' 
-            ? "TODO: '{$key}' çevirisini ekleyin"
-            : "TODO: Add translation for '{$key}'";
+        return $locale === 'tr'
+            ? "Eksik çeviri: '{$key}'"
+            : "Missing translation: '{$key}'";
     }
 
     private function createTranslationFile($filePath)
@@ -387,7 +387,7 @@ class TranslationCheckerComponent extends Component
             File::makeDirectory($directory, 0755, true);
         }
         
-        $content = "<?php\n\nreturn [\n    // TODO: Çevirileri ekleyin\n];\n";
+        $content = "<?php\n\nreturn [\n    // Çeviriler buraya eklenecek\n];\n";
         File::put($filePath, $content);
     }
 

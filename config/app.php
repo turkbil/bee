@@ -123,4 +123,18 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Asset Versioning (Cache Busting)
+    |--------------------------------------------------------------------------
+    |
+    | Asset versioning for cache busting in production environments.
+    | Tenant-safe asset management.
+    |
+    */
+
+    'asset_url' => env('ASSET_URL'),
+    'asset_version' => env('ASSET_VERSION', '1.0.0'),
+    'enable_asset_versioning' => env('ENABLE_ASSET_VERSIONING', true),
+
 ];

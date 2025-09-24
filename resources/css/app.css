@@ -1,0 +1,272 @@
+/**
+ * TENANT-SAFE TAILWIND CSS
+ * Bu dosya tenant sistemde sorun çıkarmayacak şekilde yapılandırıldı
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Custom tenant-safe utilities
+ */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans antialiased;
+    }
+}
+
+@layer components {
+    /* Tenant-aware navigation */
+    .tenant-nav {
+        @apply bg-white shadow-sm border-b border-gray-200;
+    }
+
+    .tenant-nav-item {
+        @apply px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-200;
+    }
+
+    .tenant-nav-item.active {
+        @apply text-blue-600 bg-blue-50;
+    }
+
+    /* Mobile responsive components */
+    .mobile-container {
+        @apply px-4 sm:px-6 lg:px-8;
+    }
+
+    .mobile-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
+    }
+
+    /* Form components */
+    .form-group {
+        @apply mb-4;
+    }
+
+    .form-control {
+        @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm;
+    }
+
+    .form-control:invalid {
+        @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+    }
+
+    /* Button variants */
+    .btn-outline {
+        @apply border-2 border-current bg-transparent hover:bg-current hover:text-white transition-colors duration-200;
+    }
+
+    /* Card variants */
+    .card-hover {
+        @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+    }
+
+    /* Status indicators */
+    .status-badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    .status-active {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .status-inactive {
+        @apply bg-gray-100 text-gray-800;
+    }
+
+    .status-pending {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    .status-error {
+        @apply bg-red-100 text-red-800;
+    }
+}
+
+@layer utilities {
+    /* Responsive text utilities */
+    .text-responsive-xs {
+        @apply text-xs sm:text-sm;
+    }
+
+    .text-responsive-sm {
+        @apply text-sm sm:text-base;
+    }
+
+    .text-responsive-base {
+        @apply text-base sm:text-lg;
+    }
+
+    .text-responsive-lg {
+        @apply text-lg sm:text-xl;
+    }
+
+    .text-responsive-xl {
+        @apply text-xl sm:text-2xl;
+    }
+
+    /* Spacing utilities for mobile */
+    .space-mobile {
+        @apply space-y-4 sm:space-y-6 lg:space-y-8;
+    }
+
+    .padding-mobile {
+        @apply p-4 sm:p-6 lg:p-8;
+    }
+
+    .margin-mobile {
+        @apply m-4 sm:m-6 lg:m-8;
+    }
+
+    /* Flexbox utilities */
+    .flex-mobile-col {
+        @apply flex flex-col sm:flex-row;
+    }
+
+    .flex-mobile-wrap {
+        @apply flex flex-wrap;
+    }
+
+    /* Grid utilities */
+    .grid-mobile-1 {
+        @apply grid grid-cols-1 sm:grid-cols-2;
+    }
+
+    .grid-mobile-2 {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+    }
+
+    .grid-mobile-3 {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4;
+    }
+
+    /* Hide/show utilities for mobile */
+    .mobile-only {
+        @apply block sm:hidden;
+    }
+
+    .desktop-only {
+        @apply hidden sm:block;
+    }
+
+    .tablet-up {
+        @apply hidden md:block;
+    }
+
+    .mobile-up {
+        @apply block;
+    }
+
+    /* Z-index utilities */
+    .z-mobile-menu {
+        z-index: 1000;
+    }
+
+    .z-mobile-overlay {
+        z-index: 999;
+    }
+
+    .z-dropdown {
+        z-index: 1001;
+    }
+
+    .z-modal {
+        z-index: 1050;
+    }
+
+    .z-tooltip {
+        z-index: 1070;
+    }
+
+    /* Tenant-safe animations */
+    .fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .slide-down {
+        animation: slideDown 0.3s ease-out;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dark mode support (tenant-aware) */
+@media (prefers-color-scheme: dark) {
+    .dark-mode-auto {
+        @apply bg-gray-900 text-white;
+    }
+
+    .dark-mode-auto .card {
+        @apply bg-gray-800 border-gray-700;
+    }
+
+    .dark-mode-auto .form-control {
+        @apply bg-gray-800 border-gray-600 text-white placeholder-gray-400;
+    }
+
+    .dark-mode-auto .btn-primary {
+        @apply bg-blue-500 hover:bg-blue-600;
+    }
+}
+
+/* Print styles */
+@media print {
+    .print-hidden {
+        @apply hidden;
+    }
+
+    .print-visible {
+        @apply block;
+    }
+
+    body {
+        @apply text-black bg-white;
+    }
+
+    .card {
+        @apply border border-gray-400 shadow-none;
+    }
+
+    .btn {
+        @apply border border-gray-400 shadow-none;
+    }
+}

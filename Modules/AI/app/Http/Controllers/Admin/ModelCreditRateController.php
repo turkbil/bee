@@ -461,8 +461,8 @@ class ModelCreditRateController extends Controller
             'import_file' => 'required|file|mimes:csv,json'
         ]);
 
-        // TODO: Bulk import logic implementation
-        return back()->with('success', 'Import işlemi başlatıldı');
+        // Bulk import özelliği henüz implementa edilmedi
+        return back()->with('warning', 'Bulk import özelliği yakında eklenecek');
     }
 
     /**

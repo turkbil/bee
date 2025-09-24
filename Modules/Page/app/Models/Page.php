@@ -6,10 +6,11 @@ use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Page extends BaseModel implements TranslatableEntity
 {
-    use Sluggable, HasTranslations, HasSeo;
+    use Sluggable, HasTranslations, HasSeo, HasFactory;
 
     protected $primaryKey = 'page_id';
 
@@ -241,5 +242,13 @@ class Page extends BaseModel implements TranslatableEntity
     {
         return 'page_id';
     }
-    
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory()
+    {
+        return \Database\Factories\PageFactory::new();
+    }
+
 }

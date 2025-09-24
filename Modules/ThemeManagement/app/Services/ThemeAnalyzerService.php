@@ -69,7 +69,9 @@ class ThemeAnalyzerService
             'framework' => $theme->framework ?? 'tailwind',
             'has_dark_mode' => $this->hasDarkMode($theme),
             'responsive' => true,
-            'rtl_support' => false
+            'rtl_support' => false,
+            'js_patterns' => $this->extractJavaScriptPatterns($theme),
+            'css_methodology' => $this->detectCSSMethodology($theme)
         ];
     }
 
@@ -492,6 +494,239 @@ class ThemeAnalyzerService
             'has_dark_mode' => $analysis['theme_info']['has_dark_mode'],
             'components_available' => array_keys(array_filter($analysis['components'])),
             'quick_summary' => $this->generateQuickSummary($analysis)
+        ];
+    }
+
+    /**
+     * JavaScript pattern'lerini çıkar
+     */
+    private function extractJavaScriptPatterns(Theme $theme): array
+    {
+        $patterns = [
+            'animations' => [],
+            'interactions' => [],
+            'libraries' => [],
+            'custom_functions' => [],
+            'event_handlers' => []
+        ];
+
+        $jsFiles = $this->getThemeJSFiles($theme);
+
+        foreach ($jsFiles as $file) {
+            if (File::exists($file)) {
+                $content = File::get($file);
+
+                // Animation patterns
+                if (preg_match_all('/(animate|transition|transform)\([^\)]*\)/i', $content, $animations)) {
+                    $patterns['animations'] = array_merge($patterns['animations'], $animations[0]);
+                }
+
+                // Event handlers
+                if (preg_match_all('/\.(on|addEventListener)\([^\)]*\)/i', $content, $events)) {
+                    $patterns['event_handlers'] = array_merge($patterns['event_handlers'], $events[0]);
+                }
+
+                // Library usage
+                if (Str::contains($content, 'Alpine')) $patterns['libraries'][] = 'Alpine.js';
+                if (Str::contains($content, 'jQuery')) $patterns['libraries'][] = 'jQuery';
+                if (Str::contains($content, 'gsap')) $patterns['libraries'][] = 'GSAP';
+                if (Str::contains($content, 'AOS')) $patterns['libraries'][] = 'AOS';
+                if (Str::contains($content, 'Swiper')) $patterns['libraries'][] = 'Swiper';
+
+                // Custom functions
+                if (preg_match_all('/function\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/i', $content, $functions)) {
+                    $patterns['custom_functions'] = array_merge($patterns['custom_functions'], $functions[1]);
+                }
+
+                // Modern JS patterns
+                if (Str::contains($content, '=>')) $patterns['modern_js'] = true;
+                if (Str::contains($content, 'const ')) $patterns['es6'] = true;
+                if (Str::contains($content, 'async ')) $patterns['async_await'] = true;
+            }
+        }
+
+        // Unique values
+        $patterns['animations'] = array_unique($patterns['animations']);
+        $patterns['event_handlers'] = array_unique($patterns['event_handlers']);
+        $patterns['libraries'] = array_unique($patterns['libraries']);
+        $patterns['custom_functions'] = array_unique($patterns['custom_functions']);
+
+        return $patterns;
+    }
+
+    /**
+     * CSS metodolojisini tespit et
+     */
+    private function detectCSSMethodology(Theme $theme): array
+    {
+        $methodology = [
+            'bem' => false,
+            'atomic' => false,
+            'utility_first' => false,
+            'component_based' => false,
+            'naming_convention' => 'unknown'
+        ];
+
+        $cssFiles = $this->getThemeCSSFiles($theme);
+
+        foreach ($cssFiles as $file) {
+            if (File::exists($file)) {
+                $content = File::get($file);
+
+                // BEM methodology
+                if (preg_match('/\.[a-z-]+(__[a-z-]+)?(--[a-z-]+)?/i', $content)) {
+                    $methodology['bem'] = true;
+                    $methodology['naming_convention'] = 'bem';
+                }
+
+                // Utility classes (Tailwind style)
+                if (preg_match('/(p|m|w|h|bg|text|flex|grid)-\d+/', $content)) {
+                    $methodology['utility_first'] = true;
+                    $methodology['atomic'] = true;
+                }
+
+                // Component-based
+                if (preg_match('/\.(card|button|modal|nav|header|footer)\s*{/', $content)) {
+                    $methodology['component_based'] = true;
+                }
+            }
+        }
+
+        return $methodology;
+    }
+
+    /**
+     * Tema JS dosyalarını al
+     */
+    private function getThemeJSFiles(Theme $theme): array
+    {
+        $files = [];
+
+        // Public JS
+        $publicPath = public_path('js');
+        if (File::exists($publicPath)) {
+            $files = array_merge($files, File::glob($publicPath . '/*.js'));
+        }
+
+        // Theme specific JS
+        $themePath = resource_path("views/themes/{$theme->theme_name}/assets/js");
+        if (File::exists($themePath)) {
+            $files = array_merge($files, File::glob($themePath . '/*.js'));
+        }
+
+        // Compiled JS
+        $files[] = public_path('build/assets/app.js');
+
+        return $files;
+    }
+
+    /**
+     * Tema dosyalarından component pattern'lerini çıkar
+     */
+    public function extractComponentPatterns(Theme $theme): array
+    {
+        $patterns = [
+            'button_styles' => [],
+            'card_structures' => [],
+            'form_layouts' => [],
+            'navigation_types' => [],
+            'content_containers' => [],
+            'common_classes' => []
+        ];
+
+        $files = array_merge(
+            $this->getThemeViewFiles($theme),
+            $this->getThemeCSSFiles($theme)
+        );
+
+        foreach ($files as $file) {
+            if (File::exists($file)) {
+                $content = File::get($file);
+
+                // Button patterns
+                if (preg_match_all('/<button[^>]*class="([^"]*)"/i', $content, $buttons)) {
+                    $patterns['button_styles'] = array_merge($patterns['button_styles'], $buttons[1]);
+                }
+
+                // Card patterns
+                if (preg_match_all('/class="[^"]*card[^"]*"/i', $content, $cards)) {
+                    $patterns['card_structures'] = array_merge($patterns['card_structures'], $cards[0]);
+                }
+
+                // Form patterns
+                if (preg_match_all('/<form[^>]*class="([^"]*)"/i', $content, $forms)) {
+                    $patterns['form_layouts'] = array_merge($patterns['form_layouts'], $forms[1]);
+                }
+
+                // Container patterns
+                if (preg_match_all('/class="[^"]*container[^"]*"/i', $content, $containers)) {
+                    $patterns['content_containers'] = array_merge($patterns['content_containers'], $containers[0]);
+                }
+
+                // Common utility classes
+                if (preg_match_all('/class="([^"]*)"/i', $content, $allClasses)) {
+                    foreach ($allClasses[1] as $classString) {
+                        $classes = explode(' ', $classString);
+                        $patterns['common_classes'] = array_merge($patterns['common_classes'], $classes);
+                    }
+                }
+            }
+        }
+
+        // Unique and filter
+        foreach ($patterns as $key => $value) {
+            if (is_array($value)) {
+                $patterns[$key] = array_unique(array_filter($value));
+            }
+        }
+
+        return $patterns;
+    }
+
+    /**
+     * Tema için AI context oluştur
+     */
+    public function buildAIContext(int $tenantId): array
+    {
+        $analysis = $this->analyzeTheme($tenantId);
+        $tenant = Tenant::find($tenantId);
+        $theme = Theme::find($tenant->theme_id);
+        $componentPatterns = $this->extractComponentPatterns($theme);
+
+        return [
+            'theme_info' => $analysis['theme_info'],
+            'color_system' => [
+                'primary' => $analysis['color_palette']['primary'],
+                'secondary' => $analysis['color_palette']['secondary'],
+                'accent' => $analysis['color_palette']['accent'] ?? '#10B981',
+                'variables' => $analysis['color_palette']['variables'] ?? [],
+                'tailwind_colors' => $analysis['color_palette']['tailwind'] ?? []
+            ],
+            'typography_system' => [
+                'fonts' => $analysis['typography']['fonts'],
+                'size_scale' => $analysis['typography']['sizes'],
+                'weight_scale' => $analysis['typography']['weights'],
+                'line_heights' => $analysis['typography']['line_heights']
+            ],
+            'spacing_system' => [
+                'padding_scale' => $analysis['spacing']['padding'],
+                'margin_scale' => $analysis['spacing']['margin'],
+                'container_width' => $analysis['spacing']['container_width'],
+                'section_spacing' => $analysis['spacing']['section_spacing']
+            ],
+            'component_patterns' => $componentPatterns,
+            'javascript_patterns' => $analysis['theme_info']['js_patterns'],
+            'css_methodology' => $analysis['theme_info']['css_methodology'],
+            'framework_specifics' => [
+                'type' => $analysis['framework'],
+                'dark_mode' => $analysis['theme_info']['has_dark_mode'],
+                'responsive' => $analysis['theme_info']['responsive']
+            ],
+            'custom_features' => [
+                'animations' => $analysis['custom_css']['animations'] ?? [],
+                'transitions' => $analysis['custom_css']['transitions'] ?? [],
+                'root_variables' => $analysis['custom_css']['root_vars'] ?? ''
+            ]
         ];
     }
 

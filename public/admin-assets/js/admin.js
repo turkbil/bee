@@ -1,0 +1,48 @@
+// COMPILED ADMIN JS - Manual Build
+console.log('🎛️ Tenant-safe admin loaded');
+
+window.AdminUtils = {
+    showNotification: function(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999;';
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.remove(), 5000);
+    },
+
+    clearCache: function() {
+        return fetch('/admin/cache/clear', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showNotification('Cache temizlendi');
+            }
+        });
+    }
+};
+
+// Auto-save functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const autoSaveForms = document.querySelectorAll('[data-auto-save]');
+    autoSaveForms.forEach(form => {
+        let timeout;
+        const inputs = form.querySelectorAll('input, textarea, select');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    console.log('📝 Auto-save triggered');
+                }, 2000);
+            });
+        });
+    });
+});

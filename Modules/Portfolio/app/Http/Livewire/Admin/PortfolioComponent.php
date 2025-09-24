@@ -119,7 +119,8 @@ class PortfolioComponent extends Component
             $query = $baseQuery->orderBy('portfolios.' . $this->sortField, $this->sortDirection);
         }
     
-        $portfolios = $query->paginate($this->perPage);
+        // 🚀 PERFORMANCE FIX: Eager loading ile N+1 query sorununu çöz
+        $portfolios = $query->with(['category', 'seoSetting'])->paginate($this->perPage);
     
         $categories = PortfolioCategory::where('is_active', true)
             ->orderBy('title')

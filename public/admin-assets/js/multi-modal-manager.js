@@ -98,11 +98,17 @@ class MultiModalManager {
     closeTopModal() {
         const topModal = document.querySelector('.modal.show:last-of-type');
         if (topModal) {
-            const bsModal = bootstrap.Modal.getInstance(topModal);
-            if (bsModal) {
-                bsModal.hide();
+            // Bootstrap güvenli kontrol
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                const bsModal = bootstrap.Modal.getInstance(topModal);
+                if (bsModal) {
+                    bsModal.hide();
+                } else {
+                    // Custom modal close
+                    topModal.style.display = 'none';
+                }
             } else {
-                // Custom modal close
+                // Bootstrap yüklenmemişse manuel kapat
                 topModal.style.display = 'none';
                 topModal.classList.remove('show');
             }
@@ -111,13 +117,20 @@ class MultiModalManager {
 
     closeAllModals() {
         console.log('🧹 Closing all modals...');
-        
+
         const modals = document.querySelectorAll('.modal.show');
         modals.forEach(modal => {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) {
-                bsModal.hide();
+            // Bootstrap güvenli kontrol
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                const bsModal = bootstrap.Modal.getInstance(modal);
+                if (bsModal) {
+                    bsModal.hide();
+                } else {
+                    modal.style.display = 'none';
+                    modal.classList.remove('show');
+                }
             } else {
+                // Bootstrap yüklenmemişse manuel kapat
                 modal.style.display = 'none';
                 modal.classList.remove('show');
             }
@@ -128,15 +141,28 @@ class MultiModalManager {
 
     cleanup() {
         console.log('🧹 Modal cleanup started...');
-        
-        // Remove all backdrops
-        const backdrops = document.querySelectorAll('.modal-backdrop');
-        backdrops.forEach(backdrop => backdrop.remove());
 
-        // Reset body classes
+        // Ultra güçlü backdrop temizleme
+        const backdrops = document.querySelectorAll('.modal-backdrop, [class*="backdrop"], [id*="backdrop"]');
+        backdrops.forEach(backdrop => {
+            console.log('🗑️ Backdrop removing:', backdrop.className);
+            backdrop.remove();
+        });
+
+        // Body state reset
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
+        document.body.style.marginRight = '';
+
+        // Modal containers cleanup
+        const openModals = document.querySelectorAll('.modal.show, .modal[style*="display: block"]');
+        openModals.forEach(modal => {
+            if (!modal.classList.contains('show')) {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        });
 
         // Clear active modals
         this.activeModals.clear();

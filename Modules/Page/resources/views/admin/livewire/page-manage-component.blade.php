@@ -79,31 +79,15 @@ $langName =
                                     </div>
                                 </div>
 
-                                <!-- İçerik editörü -->
-                                <div class="mb-3">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <label class="form-label">{{ __('page::admin.content') }}</label>
-                                        <!-- AI Content Builder Button -->
-                                        <button type="button"
-                                                onclick="Livewire.dispatch('openContentBuilder', {
-                                                    pageId: {{ $pageId ?? 'null' }},
-                                                    pageTitle: '{{ $multiLangInputs[$lang]['title'] ?? '' }}',
-                                                    targetField: 'body_{{ $lang }}'
-                                                })"
-                                                class="btn btn-sm btn-primary">
-                                            <i class="fas fa-magic me-1"></i>
-                                            AI İçerik Üret
-                                        </button>
-                                    </div>
-                                    @include('admin.components.content-editor', [
-                                        'lang' => $lang,
-                                        'langName' => $langName,
-                                        'langData' => $langData,
-                                        'fieldName' => 'body',
-                                        'label' => false,
-                                        'placeholder' => __('page::admin.content_placeholder'),
+                                {{-- İçerik editörü - AI button artık global component'te --}}
+                                @include('admin.components.content-editor', [
+                                    'lang' => $lang,
+                                    'langName' => $langName,
+                                    'langData' => $langData,
+                                    'fieldName' => 'body',
+                                    'label' => __('page::admin.content'),
+                                    'placeholder' => __('page::admin.content_placeholder'),
                                     ])
-                                </div>
                             </div>
                         @endforeach
 
@@ -156,15 +140,239 @@ $langName =
         </div>
     </form>
 
-    <!-- AI Content Builder Component -->
-    @livewire('ai-content-builder-component')
-</div>
 
-@push('scripts')
+    {{-- Global AI Content Modal --}}
+    @include('admin.partials.global-ai-content-modal')
+
+    @push('scripts')
     <script>
         window.currentPageId = {{ $jsVariables['currentPageId'] ?? 'null' }};
         window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
-        
+
+        // TinyMCE Content Update Helper Function
+        window.updateTinyMCEContent = function(content, targetField = 'body') {
+            try {
+                const currentLang = window.currentLanguage || 'tr';
+                const editorId = `multiLangInputs.${currentLang}.${targetField}`;
+
+                console.log('🎯 updateTinyMCEContent çağırıldı:', {
+                    editorId,
+                    currentLang,
+                    targetField,
+                    contentLength: content ? content.length : 0
+                });
+
+                // 🔍 DEBUG: DOM yapısını analiz et
+                console.log('🔍 DOM DEBUG:', {
+                    hugerte_exists: typeof hugerte !== 'undefined',
+                    tinyMCE_exists: typeof tinyMCE !== 'undefined',
+                    current_language: currentLang,
+                    target_field: targetField
+                });
+
+                // HugeRTE/TinyMCE editor'ları tara
+                if (typeof hugerte !== 'undefined') {
+                    console.log('🔍 HugeRTE Debug:', {
+                        hugerte: hugerte,
+                        hugerte_editors: hugerte.editors || 'editors property not found',
+                        hugerte_activeEditor: hugerte.activeEditor || 'activeEditor not found'
+                    });
+
+                    // HugeRTE editör bulma (multiple approach)
+                    let targetEditor = null;
+
+                    // Method 1: hugerte.editors array
+                    if (hugerte.editors && Array.isArray(hugerte.editors)) {
+                        targetEditor = hugerte.editors.find(ed =>
+                            ed.id && (ed.id.includes(targetField) || ed.id.includes(currentLang))
+                        );
+                    }
+
+                    // Method 2: hugerte.activeEditor
+                    if (!targetEditor && hugerte.activeEditor) {
+                        targetEditor = hugerte.activeEditor;
+                    }
+
+                    // Method 3: hugerte.get() method
+                    if (!targetEditor && typeof hugerte.get === 'function') {
+                        const allEditors = hugerte.get();
+                        if (allEditors && allEditors.length > 0) {
+                            targetEditor = allEditors.find(ed =>
+                                ed.id && (ed.id.includes(targetField) || ed.id.includes(currentLang))
+                            ) || allEditors[0]; // Son çare olarak ilk editörü al
+                        }
+                    }
+
+                    if (targetEditor && targetEditor.setContent) {
+                        console.log('✅ HugeRTE editor bulundu:', targetEditor.id);
+                        targetEditor.setContent(content);
+
+                        // Livewire sync
+                        const textareaElement = document.getElementById(targetEditor.id);
+                        if (textareaElement) {
+                            textareaElement.value = content;
+                            textareaElement.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+
+                        // Hidden input sync
+                        const hiddenInput = document.getElementById(`hidden_${targetField}_${currentLang}`);
+                        if (hiddenInput) {
+                            hiddenInput.value = content;
+                            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+
+                        console.log('✅ HugeRTE content güncellendi!');
+                        return true;
+                    }
+                }
+
+                // TinyMCE fallback
+                if (typeof tinyMCE !== 'undefined' && tinyMCE.editors) {
+                    console.log('🔍 TinyMCE Fallback:', Object.keys(tinyMCE.editors));
+                    const editorKeys = Object.keys(tinyMCE.editors);
+                    const matchingKey = editorKeys.find(key =>
+                        key.includes(targetField) || key.includes(currentLang)
+                    );
+
+                    if (matchingKey) {
+                        const editor = tinyMCE.editors[matchingKey];
+                        if (editor && editor.setContent) {
+                            editor.setContent(content);
+                            console.log('✅ TinyMCE content güncellendi!');
+                            return true;
+                        }
+                    }
+                }
+
+                // Son çare: Direkt textarea selector'ları dene
+                console.log('🔍 Manual textarea search başlatılıyor...');
+
+                // Multiple textarea selector attempts
+                const textareaSelectors = [
+                    `textarea[wire\\:model*="${targetField}"]`,
+                    `textarea[wire\\:model*="${currentLang}.${targetField}"]`,
+                    `textarea[wire\\:model*="multiLangInputs.${currentLang}.${targetField}"]`,
+                    `textarea.hugerte-editor`,
+                    `textarea[id*="${targetField}"]`,
+                    `textarea[id*="${currentLang}"]`,
+                    `textarea[name*="${targetField}"]`
+                ];
+
+                let textarea = null;
+                for (const selector of textareaSelectors) {
+                    textarea = document.querySelector(selector);
+                    if (textarea) {
+                        console.log('✅ Textarea bulundu:', selector);
+                        break;
+                    }
+                }
+
+                if (textarea) {
+                    textarea.value = content;
+                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+
+                    // Hidden input'u da güncelle
+                    const hiddenInput = document.getElementById(`hidden_${targetField}_${currentLang}`);
+                    if (hiddenInput) {
+                        hiddenInput.value = content;
+                        hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+
+                    console.log('✅ Textarea direkt güncellendi');
+                    return true;
+                }
+
+                // Ultra debug: Tüm textarea'ları listele
+                const allTextareas = document.querySelectorAll('textarea');
+                console.log('🔍 Mevcut tüm textarea\'lar:', Array.from(allTextareas).map(ta => ({
+                    id: ta.id,
+                    name: ta.name,
+                    wireModel: ta.getAttribute('wire:model'),
+                    classes: ta.className
+                })));
+
+                console.error('❌ Hiçbir editor/textarea bulunamadı');
+                return false;
+            } catch (e) {
+                console.error('❌ updateTinyMCEContent error:', e);
+                return false;
+            }
+        };
+
+        // GLOBAL receiveGeneratedContent function - Conflict önlemek için null check
+        if (typeof window.receiveGeneratedContent === 'undefined') {
+            window.receiveGeneratedContent = function(content, targetField = 'body') {
+                try {
+                    console.log('🎯 AI Content received:', {
+                        content: content ? content.substring(0, 100) + '...' : 'empty',
+                        targetField
+                    });
+
+                    // ÖNCE TinyMCE editörünü direkt güncelle (anında görünüm için)
+                    window.updateTinyMCEContent(content, targetField);
+
+                    // SONRA Livewire component'i güncelle (database save için)
+                    if (window.Livewire) {
+                        // İlk yöntem: Livewire 3.x
+                        if (window.Livewire.getByName) {
+                            try {
+                                const pageComponent = window.Livewire.getByName('page-manage-component')[0];
+                                if (pageComponent && pageComponent.call) {
+                                    console.log('✅ PageManageComponent bulundu (v3), receiveGeneratedContent çağırılıyor...');
+                                    pageComponent.call('receiveGeneratedContent', content, targetField);
+                                    return;
+                                }
+                            } catch (e) {
+                                console.warn('⚠️ Livewire v3 method failed:', e);
+                            }
+                        }
+
+                        // İkinci yöntem: Livewire 2.x
+                        if (window.Livewire.all) {
+                            try {
+                                const pageComponent = window.Livewire.all().find(component => {
+                                    return component &&
+                                           component.__instance &&
+                                           component.__instance.fingerprint &&
+                                           component.__instance.fingerprint.name === 'page-manage-component';
+                                });
+
+                                if (pageComponent && pageComponent.call) {
+                                    console.log('✅ PageManageComponent bulundu (v2), receiveGeneratedContent çağırılıyor...');
+                                    pageComponent.call('receiveGeneratedContent', content, targetField);
+                                    return;
+                                }
+                            } catch (e) {
+                                console.warn('⚠️ Livewire v2 method failed:', e);
+                            }
+                        }
+
+                        // Üçüncü yöntem: Direct wire:id kullanma
+                        const wireElement = document.querySelector('[wire\\:id]');
+                        if (wireElement && wireElement.__livewire) {
+                            try {
+                                console.log('✅ Wire element bulundu, receiveGeneratedContent çağırılıyor...');
+                                wireElement.__livewire.call('receiveGeneratedContent', content, targetField);
+                                return;
+                            } catch (e) {
+                                console.warn('⚠️ Wire element method failed:', e);
+                            }
+                        }
+
+                        console.error('❌ PageManageComponent hiçbir yöntemle bulunamadı');
+                    } else {
+                        console.error('❌ Livewire henüz yüklenmemiş');
+                    }
+                } catch (e) {
+                    console.error('❌ receiveGeneratedContent error:', e);
+                }
+            };
+            console.log('✅ Global receiveGeneratedContent function tanımlandı');
+        } else {
+            console.warn('⚠️ receiveGeneratedContent zaten tanımlı, duplicate önlendi');
+        }
+
         // Debug: currentPageId değerini logla
         console.log('🔍 Page ID Debug:', {
             currentPageId: window.currentPageId,
@@ -182,25 +390,9 @@ $langName =
                 Livewire.components.getByName('page-manage-component')[0].$refresh();
             });
             
-            // TinyMCE editör refresh event'ini dinle
-            Livewire.on('refresh-editors', () => {
-                console.log('📝 TinyMCE editörleri yenileniyor...');
-                setTimeout(() => {
-                    // TinyMCE editörlerini yeniden başlat
-                    if (typeof tinymce !== 'undefined') {
-                        tinymce.editors.forEach(editor => {
-                            if (editor && editor.id) {
-                                try {
-                                    editor.setContent(editor.getContent());
-                                    console.log(`✅ TinyMCE editor yenilendi: ${editor.id}`);
-                                } catch (e) {
-                                    console.warn(`⚠️ TinyMCE editor yenileme hatası: ${editor.id}`, e);
-                                }
-                            }
-                        });
-                    }
-                }, 500); // Kısa gecikme ekle
-            });
+            // ✅ TinyMCE editör refresh event'i artık gerekli değil
+            // AI content direkt olarak TinyMCE'ye yazılıyor
         });
     </script>
-@endpush
+    @endpush
+</div>

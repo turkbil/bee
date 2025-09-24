@@ -465,7 +465,7 @@ class DebugDashboardController extends Controller
             'total_credits' => $totalCredits, // KREDİ KULLANIMI
             'input_tokens' => $totalInputTokens,
             'output_tokens' => $totalOutputTokens,
-            'error_rate' => 0, // TODO: Metadata'dan success field'ını kontrol et
+            'error_rate' => $totalConversations > 0 ? round((collect($allConversations)->where('status', 'failed')->count() / $totalConversations) * 100, 2) : 0,
             'provider_stats' => $providerStats
         ];
     }

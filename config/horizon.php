@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'middleware' => ['web', 'auth', 'admin'],
+    'middleware' => env('APP_ENV') === 'production' ? ['web', 'auth', 'admin'] : ['web'],
 
     /*
     |--------------------------------------------------------------------------
@@ -183,15 +183,15 @@ return [
         // AI Translation & Processing Queue
         'ai-supervisor' => [
             'connection' => 'redis',
-            'queue' => ['translation', 'ai', 'critical'],
+            'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'critical'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 3,
+            'maxProcesses' => 5, // 🚀 Development için artırıldı
             'maxTime' => 1800,
             'maxJobs' => 50,
             'memory' => 512,
             'tries' => 3,
-            'timeout' => 300,
+            'timeout' => 600, // 10 dakika AI işlemleri için
             'nice' => 0,
         ],
         
@@ -201,7 +201,7 @@ return [
             'queue' => ['tenant_isolated', 'default'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 2,
+            'maxProcesses' => 4, // 🚀 Development için artırıldı
             'maxTime' => 3600,
             'maxJobs' => 200,
             'memory' => 256,
@@ -229,10 +229,14 @@ return [
     'environments' => [
         'production' => [
             'ai-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis'],
                 'maxProcesses' => 8,
                 'balanceMaxShift' => 2,
                 'balanceCooldown' => 3,
                 'memory' => 1024,
+                'timeout' => 600, // 10 minutes for AI operations
+                'tries' => 2,
             ],
             'tenant-supervisor' => [
                 'maxProcesses' => 6,
@@ -248,7 +252,11 @@ return [
 
         'local' => [
             'ai-supervisor' => [
+                'connection' => 'redis',
+                'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis'],
                 'maxProcesses' => 2,
+                'timeout' => 600,
+                'tries' => 2,
             ],
             'tenant-supervisor' => [
                 'maxProcesses' => 1,

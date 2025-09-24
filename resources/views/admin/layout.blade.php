@@ -311,6 +311,11 @@
 {{-- 🌍 Global AI Translation Modal - Available in all modules --}}
 @include('admin.partials.global-ai-translation-modal')
 
+{{-- 🚀 Global AI Content Generation Modal - Available in all modules --}}
+@include('admin.partials.global-ai-content-modal')
+
+{{-- jQuery Library --}}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/multi-modal-manager.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>
@@ -502,7 +507,28 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="{{ asset('admin-assets/js/ai-widget.js') }}?v={{ time() }}"></script>
 {{-- Global AI Translation System JS --}}
 <script src="{{ asset('assets/js/ai-translation-system-v2.js') }}?v={{ time() }}"></script>
+
 @endif
+
+{{-- Global AI Content Generation System JS - ALWAYS LOAD (Global System) --}}
+<script src="{{ asset('assets/js/ai-content-system.js') }}?v={{ time() }}"></script>
+
+{{-- Global AI Content System Initialization --}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Global AI Content System'i başlat
+    if (window.AIContentGenerationSystem) {
+        window.aiContentSystem = new window.AIContentGenerationSystem({
+            module: 'global', // Global kullanım
+            baseUrl: '/admin'
+        });
+
+        console.log('🚀 Global AI Content System başlatıldı');
+    } else {
+        console.error('❌ AIContentGenerationSystem class not found');
+    }
+});
+</script>
 
 <!-- CORE SYSTEM SCRIPTS - DO NOT REMOVE OR MODIFY -->
 <!-- Bu script tüm temalarda ve admin panelde zorunludur / This script is mandatory everywhere -->

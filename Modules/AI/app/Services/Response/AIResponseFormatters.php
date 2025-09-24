@@ -262,23 +262,44 @@ class AIResponseFormatters
     }
 
     /**
-     * İçerik üretimi response formatı
+     * İçerik üretimi response formatı - PDF PREMIUM LANDING ENHANCED
      */
     public function formatContentGenerationResponse(string $response, AIFeature $feature, string $helperName): array
     {
-        // Blog, makale vb. için özel format
+        Log::info('🎨 Content Generation Formatter Enhanced', [
+            'feature' => $feature->slug,
+            'helper' => $helperName,
+            'response_length' => strlen($response)
+        ]);
+
+        // PDF içerik üretimi mi?
+        $isPdfContent = $this->isPdfContentGeneration($feature, $helperName);
+
+        if ($isPdfContent) {
+            return $this->formatPremiumPdfContent($response, $feature, $helperName);
+        }
+
+        // Normal content generation
         $contentData = $this->parsers->parseContentResponse($response);
 
+        // Smart formatter ile content'i işle
+        try {
+            $formattedResponse = $this->smartFormatter->format($helperName, $response, $feature);
+        } catch (\Exception $e) {
+            Log::warning('Content Smart Formatter failed', ['error' => $e->getMessage()]);
+            $formattedResponse = $response;
+        }
+
         $html = "<div class='content-generation-result'>";
-        
+
         // Başlık varsa
         if ($contentData['title'] ?? false) {
             $html .= "<h3 class='content-title mb-3'>" . htmlspecialchars($contentData['title']) . "</h3>";
         }
 
-        // İçerik
+        // İçerik - Smart formatter çıktısı kullan
         $html .= "<div class='content-body'>";
-        $html .= $contentData['content'] ?? $response;
+        $html .= $formattedResponse;
         $html .= "</div>";
 
         // Meta bilgiler
@@ -298,8 +319,165 @@ class AIResponseFormatters
             'response' => $html,
             'content_data' => $contentData,
             'feature' => $feature->title,
-            'type' => 'content_generation'
+            'type' => 'content_generation',
+            'enhanced' => true
         ];
+    }
+
+    /**
+     * Premium PDF Content formatı
+     */
+    private function formatPremiumPdfContent(string $response, AIFeature $feature, string $helperName): array
+    {
+        Log::info('🚀 PDF Premium Content Generation', [
+            'feature' => $feature->slug,
+            'helper' => $helperName
+        ]);
+
+        // Smart formatter'dan premium landing formatını al
+        try {
+            $premiumHtml = $this->smartFormatter->format($helperName, $response, $feature);
+        } catch (\Exception $e) {
+            Log::error('Premium PDF Formatter failed', ['error' => $e->getMessage()]);
+            // Fallback: manuel premium format
+            $premiumHtml = $this->buildFallbackPremiumLanding($response, $feature);
+        }
+
+        // PDF meta bilgileri ekle
+        $pdfMeta = $this->extractPdfMetaInfo($response);
+
+        $html = "<div class='pdf-premium-content-wrapper'>";
+
+        // Premium content indicator
+        $html .= "<div class='premium-indicator mb-4'>";
+        $html .= "<span class='badge bg-gradient-premium text-white px-3 py-2'>";
+        $html .= "🚀 ULTRA PREMIUM LANDING GENERATED";
+        $html .= "</span>";
+        $html .= "</div>";
+
+        // Premium formatted content
+        $html .= $premiumHtml;
+
+        // PDF Analysis meta
+        if ($pdfMeta) {
+            $html .= "<div class='pdf-analysis-meta mt-6 p-4 bg-light rounded'>";
+            $html .= "<h6 class='text-muted mb-3'>📋 PDF Analiz Detayları</h6>";
+            $html .= "<div class='row'>";
+
+            if ($pdfMeta['sector'] ?? false) {
+                $html .= "<div class='col-md-3'>";
+                $html .= "<small class='text-muted'>Sektör:</small><br>";
+                $html .= "<strong>" . ucfirst($pdfMeta['sector']) . "</strong>";
+                $html .= "</div>";
+            }
+
+            if ($pdfMeta['content_type'] ?? false) {
+                $html .= "<div class='col-md-3'>";
+                $html .= "<small class='text-muted'>İçerik Tipi:</small><br>";
+                $html .= "<strong>" . $pdfMeta['content_type'] . "</strong>";
+                $html .= "</div>";
+            }
+
+            $html .= "<div class='col-md-3'>";
+            $html .= "<small class='text-muted'>Generated:</small><br>";
+            $html .= "<strong>" . ($pdfMeta['generated_at'] ?? now()->format('H:i')) . "</strong>";
+            $html .= "</div>";
+
+            $html .= "</div>";
+            $html .= "</div>";
+        }
+
+        $html .= "</div>";
+
+        return [
+            'success' => true,
+            'response' => $html,
+            'feature' => $feature->title,
+            'type' => 'pdf_premium_landing',
+            'pdf_meta' => $pdfMeta,
+            'enhanced' => true,
+            'premium' => true,
+            'word_buffer_config' => [
+                'enabled' => true,
+                'delay_between_words' => 100,
+                'animation_duration' => 4000,
+                'container_selector' => '.pdf-premium-content-wrapper',
+                'premium_mode' => true
+            ]
+        ];
+    }
+
+    /**
+     * PDF content generation tespiti
+     */
+    private function isPdfContentGeneration(AIFeature $feature, string $helperName): bool
+    {
+        $pdfIndicators = [
+            'pdf', 'file', 'document', 'upload', 'analysis',
+            'landing', 'premium', 'content-generation'
+        ];
+
+        foreach ($pdfIndicators as $indicator) {
+            if (stripos($feature->slug, $indicator) !== false ||
+                stripos($helperName, $indicator) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * PDF meta bilgilerini çıkar
+     */
+    private function extractPdfMetaInfo(string $response): array
+    {
+        $meta = [
+            'sector' => 'general',
+            'content_type' => 'landing_page',
+            'generated_at' => now()->format('H:i')
+        ];
+
+        // Sektör tespiti
+        $sectorPatterns = [
+            'endüstriyel|forklift|transpalet|makine' => 'industrial',
+            'teknoloji|yazılım|software|ai' => 'technology',
+            'sağlık|doktor|hastane|tıp' => 'healthcare',
+            'finans|banka|kredi|yatırım' => 'finance'
+        ];
+
+        foreach ($sectorPatterns as $pattern => $sector) {
+            if (preg_match("/$pattern/ui", $response)) {
+                $meta['sector'] = $sector;
+                break;
+            }
+        }
+
+        // İçerik tipi tespiti
+        if (preg_match('/landing|sayfa|page/ui', $response)) {
+            $meta['content_type'] = 'Premium Landing Page';
+        } elseif (preg_match('/katalog|broşür|tanıtım/ui', $response)) {
+            $meta['content_type'] = 'Katalog & Broşür';
+        }
+
+        return $meta;
+    }
+
+    /**
+     * Fallback premium landing builder
+     */
+    private function buildFallbackPremiumLanding(string $response, AIFeature $feature): string
+    {
+        $html = "<div class='fallback-premium-landing'>";
+        $html .= "<div class='alert alert-warning mb-4'>";
+        $html .= "⚠️ Smart Formatter devre dışı - Fallback premium format kullanılıyor";
+        $html .= "</div>";
+        $html .= "<div class='premium-content'>";
+        $html .= nl2br(htmlspecialchars($response));
+        $html .= "</div>";
+        $html .= "</div>";
+
+        return $html;
     }
 
     /**

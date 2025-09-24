@@ -1,7 +1,7 @@
 <div>
-    <textarea id="html-content" style="display:none;">{!! $content !!}</textarea>
-    <textarea id="css-content" style="display:none;">{!! $css !!}</textarea>
-    <textarea id="js-content" style="display:none;">{!! $js !!}</textarea>
+    <textarea id="html-content" style="display:none;">{{ $content }}</textarea>
+    <textarea id="css-content" style="display:none;">{{ $css }}</textarea>
+    <textarea id="js-content" style="display:none;">{{ $js }}</textarea>
     
     <div class="editor-main">
         <div class="panel__left">

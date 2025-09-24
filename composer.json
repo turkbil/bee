@@ -13,6 +13,8 @@
         "cviebrock/eloquent-sluggable": "^12.0",
         "cyrildewit/eloquent-viewable": "^7.0",
         "ezyang/htmlpurifier": "^4.18",
+        "guzzlehttp/guzzle": "^7.9",
+        "illuminate/redis": "*",
         "intervention/image": "^3.11",
         "laravel/breeze": "^2.3",
         "laravel/framework": "^12.0",
@@ -26,8 +28,11 @@
         "livewire/volt": "^1.6",
         "nesbot/carbon": "^3.8",
         "nwidart/laravel-modules": "^11.1",
+        "openai-php/client": "^0.16.1",
         "opis/json-schema": "^2.4",
         "predis/predis": "^2.3",
+        "psr/simple-cache": "^3.0",
+        "smalot/pdfparser": "^2.12",
         "spatie/image-optimizer": "^1.8",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-health": "^1.34",
@@ -39,6 +44,7 @@
         "spatie/schema-org": "*",
         "stancl/tenancy": "^3.8",
         "symfony/dom-crawler": "^7.3",
+        "thiagoalessio/tesseract_ocr": "^2.13",
         "wire-elements/modal": "^2.0"
     },
     "require-dev": {

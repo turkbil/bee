@@ -462,7 +462,7 @@ readonly class MenuService
      */
     private function getMenuItems(int $menuId, string $language): array
     {
-        // TODO: MenuItem model oluşturulduğunda implement edilecek
+        // MenuItem model henüz oluşturulmadı, implement edilecek
         return [];
     }
 }

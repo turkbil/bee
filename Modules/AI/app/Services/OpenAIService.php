@@ -98,7 +98,7 @@ class OpenAIService
     /**
      * GERÇEK STREAMING completion generation
      */
-    public function generateCompletionStream($messages, ?callable $streamCallback = null)
+    public function generateCompletionStream($messages, ?callable $streamCallback = null, $options = [])
     {
         $apiStartTime = microtime(true);
         Log::info('🚀 OpenAI API çağrısı başlatılıyor', [
@@ -136,13 +136,20 @@ class OpenAIService
             $payload = [
                 'model' => $this->model,
                 'messages' => $messages,
-                'max_tokens' => 800,
-                'temperature' => 0.7,
+                'max_tokens' => $options['max_tokens'] ?? 16000, // Dinamik token limit
+                'temperature' => $options['temperature'] ?? 0.7,
                 'stream' => true, // ✨ STREAMING AÇIK!
                 'stream_options' => [
                     'include_usage' => true // Token usage bilgisi için
                 ]
             ];
+
+            Log::info('🎯 OpenAI Request Payload', [
+                'model' => $payload['model'],
+                'max_tokens' => $payload['max_tokens'],
+                'temperature' => $payload['temperature'],
+                'messages_count' => count($payload['messages'])
+            ]);
 
             // ✨ STREAMING HTTP REQUEST
             $fullResponse = '';
@@ -250,15 +257,15 @@ class OpenAIService
     /**
      * AIService uyumlu ask metodu
      */
-    public function ask($messages, $stream = false)
+    public function ask($messages, $stream = false, $options = [])
     {
         // Streaming varsa generateCompletionStream kullan
         if ($stream) {
-            return $this->generateCompletionStream($messages);
+            return $this->generateCompletionStream($messages, null, $options);
         }
 
         // Normal request - tam response döndür (token bilgileri ile)
-        return $this->generateCompletionStream($messages);
+        return $this->generateCompletionStream($messages, null, $options);
     }
 
     /**

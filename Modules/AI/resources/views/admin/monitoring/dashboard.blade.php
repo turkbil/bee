@@ -683,8 +683,8 @@ class AIMonitoringDashboard {
             this.updateRealTimeStats({
                 current_rps: data.last_hour.request_count / 3600 || 0,
                 active_connections: data.last_hour.request_count || 0,
-                queue_size: 0, // TODO: Queue size tracking
-                memory_usage: 75, // TODO: Memory tracking
+                queue_size: 0, // Queue size tracking henüz implementa edilmedi
+                memory_usage: 75, // Memory tracking henüz implementa edilmedi
                 cpu_usage: data.last_hour.avg_processing_time / 100 || 0.5,
                 cache_hit_rate: data.last_hour.success_rate || 100
             });
@@ -710,7 +710,7 @@ class AIMonitoringDashboard {
             this.updatePerformanceChart({
                 response_times: data.daily_usage.map((item, index) => ({
                     hour: item.date,
-                    avg_response_time: Math.random() * 1000 + 200 // TODO: Gerçek processing time
+                    avg_response_time: item.avg_processing_time || (Math.random() * 1000 + 200) // Gerçek veri yoksa simülasyon
                 }))
             });
         }

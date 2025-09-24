@@ -29,11 +29,11 @@ return [
 'default_theme_cannot_be_deleted' => 'Varsayılan tema silinemez',
 'themes' => 'Temalar',
 'menu' => 'Menü',
-'header_section' => 'TODO: \'header_section\' çevirisini ekleyin',
-'search_box' => 'TODO: \'search_box\' çevirisini ekleyin',
-'middle_loading' => 'TODO: \'middle_loading\' çevirisini ekleyin',
-'right_side' => 'TODO: \'right_side\' çevirisini ekleyin',
-'page_count_selection' => 'TODO: \'page_count_selection\' çevirisini ekleyin',
-'theme_cards' => 'TODO: \'theme_cards\' çevirisini ekleyin',
-'pagination' => 'TODO: \'pagination\' çevirisini ekleyin'
+'header_section' => 'Başlık Bölümü',
+'search_box' => 'Arama Kutusu',
+'middle_loading' => 'Orta Yükleniyor',
+'right_side' => 'Sağ Taraf',
+'page_count_selection' => 'Sayfa Sayısı Seçimi',
+'theme_cards' => 'Tema Kartları',
+'pagination' => 'Sayfalama'
 ];

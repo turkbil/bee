@@ -1,12 +1,81 @@
-{{-- 
+{{--
     A1'deki Page manage SEO tab'ından AYNEN kopyalanan universal component
     Kullanım: <x-seomanagement::universal-seo-tab :model="$model" :available-languages="$availableLanguages" :current-language="$currentLanguage" :seo-data-cache="$seoDataCache" />
 --}}
 
+<style>
+.hover-card {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.hover-card:hover {
+    background-color: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.2);
+}
+
+.hover-element {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.hover-element:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.accordion-button {
+    transition: all 0.2s ease;
+}
+
+.accordion-button:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.list-group-item.active {
+    border-left: none !important;
+    border-left-width: 0 !important;
+}
+
+.list-group-item.list-group-item-action.active {
+    border-left: none !important;
+    border-left-width: 0 !important;
+}
+
+.accordion-item {
+    transition: all 0.2s ease;
+}
+
+.accordion-item:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.accordion-header button {
+    transition: all 0.2s ease;
+}
+
+.accordion-header button:hover {
+    background-color: rgba(0,0,0,0.05) !important;
+}
+
+.accordion-collapse.show {
+    background-color: rgba(0,123,255,0.02);
+}
+
+.accordion-header .accordion-button:not(.collapsed) {
+    background-color: rgba(0,123,255,0.15) !important;
+    color: #0d6efd !important;
+    border-color: rgba(0,123,255,0.2) !important;
+}
+
+.accordion-header .accordion-button:not(.collapsed):hover {
+    background-color: rgba(0,123,255,0.25) !important;
+}
+</style>
+
 @props([
     'model' => null,
     'availableLanguages' => [],
-    'currentLanguage' => 'tr',
+    'currentLanguage' => app()->getLocale(),
     'seoDataCache' => [],
     'pageId' => null,
     'disabled' => false // Önizleme için disable özelliği
@@ -30,6 +99,10 @@
         ($seoSettings->updated_at && $seoSettings->updated_at > now()->subHours(24))
     );
     $analysisResults = $hasAnalysisResults ? $seoSettings->analysis_results : null;
+
+    // AI Skorları - AI-only sistem için gerekli
+    $savedOverallScore = $seoSettings->overall_score ?? null;
+    $savedAnalysisResults = $seoSettings->analysis_results ?? null;
 
     // AI Önerileri kontrolü - ai_suggestions alanında kayıtlı öneri var mı?
     $hasAiRecommendations = false;
@@ -92,7 +165,7 @@
                             </button>
                         </div>
                         <div class="mt-1">
-                            <small class="text-white opacity-75">AI ile SEO verilerinizi optimize edin</small>
+                            <small class="text-white ">AI ile SEO verilerinizi optimize edin</small>
                         </div>
                     </div>
                 </div>
@@ -103,24 +176,36 @@
 
     {{-- AI SEO RECOMMENDATIONS SECTION --}}
     @if(!$disabled)
-    <div class="ai-seo-recommendations-section" id="aiSeoRecommendationsSection_{{ $lang }}" style="display: {{ ($hasAiRecommendations && $currentLanguage === $lang) ? 'block' : 'none' }};">
-        <div class="card border-success mt-3">
-            <div class="card-header bg-success text-white">
-                <div class="d-flex justify-content-center align-items-center">
-                    <h3 class="card-title mb-0 text-center">
+    <div class="ai-seo-recommendations-section mt-4" id="aiSeoRecommendationsSection_{{ $lang }}" style="display: {{ ($hasAiRecommendations && $currentLanguage === $lang) ? 'block' : 'none' }};">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-light border p-3 rounded-3 mb-3 position-relative">
+                    <h3 class="mb-0">
                         <i class="fas fa-magic me-2"></i>
                         AI SEO Önerileri
                     </h3>
+                    @if(!$disabled)
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm position-absolute"
+                            style="right: 1rem; top: 50%; transform: translateY(-50%);"
+                            wire:click="clearAiRecommendations"
+                            onclick="return confirm('AI önerileri silinecek. Emin misiniz?')"
+                            title="AI önerilerini sıfırla">
+                        <i class="fas fa-trash-alt me-1"></i>
+                        Sıfırla
+                    </button>
+                    @endif
                 </div>
             </div>
-            <div class="card-body">
+        </div>
+        <div>
                 {{-- LOADING STATE --}}
                 <div class="ai-recommendations-loading" style="display: none;">
                     <div class="d-flex align-items-center justify-content-center py-4">
                         <div class="spinner-border text-success me-3" role="status"></div>
                         <div>
                             <h6 class="mb-1">AI öneriler üretiliyor...</h6>
-                            <small class="text-muted">
+                            <small>
                                 Sayfanız analiz ediliyor ve özelleştirilmiş öneriler hazırlanıyor.
                             </small>
                         </div>
@@ -141,30 +226,6 @@
                             $recommendationsData = $recommendations['recommendations'] ?? [];
                         @endphp
 
-                        {{-- HEADER ACTIONS --}}
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div>
-                                <h6 class="mb-1">
-                                    <span class="ai-recommendations-count">{{ count($recommendationsData) }}</span>
-                                    özelleştirilmiş öneri yüklendi
-                                    <span class="badge bg-info ms-2">Kaydedilmiş</span>
-                                </h6>
-                                <small class="text-muted">
-                                    Öneriler otomatik olarak uygulandı. Yeni öneriler için "AI Önerileri" butonunu kullanın.
-                                </small>
-                            </div>
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn btn-outline-warning btn-sm"
-                                        onclick="if(confirm('Mevcut öneriler silinecek ve yeni öneriler oluşturulacak. Emin misiniz?')) {
-                                            window.forceRegenerateRecommendations = true;
-                                            document.querySelector('.ai-seo-recommendations-btn[data-language=&quot;{{ $lang }}&quot;]').click();
-                                        }">
-                                    <i class="fas fa-refresh me-1"></i>
-                                    Yeniden Oluştur
-                                </button>
-                            </div>
-                        </div>
 
                         {{-- RECOMMENDATIONS LIST --}}
                         <div class="ai-recommendations-list">
@@ -242,31 +303,6 @@
                         </div>
 
                     @else
-                        {{-- HEADER ACTIONS --}}
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div>
-                                <h6 class="mb-1">
-                                    <span class="ai-recommendations-count">4</span>
-                                    özelleştirilmiş öneri üretildi
-                                </h6>
-                                <small class="text-muted">
-                                    Her öneriyi tek tek seçebilir veya tümünü uygulayabilirsiniz
-                                </small>
-                            </div>
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn btn-outline-success btn-sm ai-select-all-recommendations">
-                                    <i class="fas fa-check-double me-1"></i>
-                                    Tümünü Seç
-                                </button>
-                                <button type="button"
-                                        class="btn btn-success btn-sm ai-apply-selected-recommendations"
-                                        disabled>
-                                    <i class="fas fa-magic me-1"></i>
-                                    Seçilenleri Uygula
-                                </button>
-                            </div>
-                        </div>
 
                         {{-- RECOMMENDATIONS LIST --}}
                         <div class="ai-recommendations-list">
@@ -294,541 +330,560 @@
                         </button>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
     @endif
 
-    {{-- KAYDEDILMIŞ ANALIZ SONUÇLARI --}}
-    @if($hasAnalysisResults)
-    <div class="card mt-3">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title mb-0">
-                <i class="fas fa-chart-line me-2"></i>
-                Kapsamlı SEO Analizi
-                <small class="ms-2 opacity-75">{{ $seoSettings->analysis_date ? \Carbon\Carbon::parse($seoSettings->analysis_date)->diffForHumans() : 'Yakın zamanda' }}</small>
-            </h3>
-            @if(!$disabled)
-            <button type="button" 
-                    class="btn btn-outline-danger btn-sm"
-                    wire:click="clearSeoAnalysis"
-                    onclick="return confirm('SEO analizi verileri silinecek. Emin misiniz?')"
-                    title="SEO analizi verilerini sıfırla">
-                <i class="fas fa-trash-alt me-1"></i>
-                Verileri Sıfırla
-            </button>
-            @endif
+    {{-- 📊 CANLI SEO ANALİZİ - GLOBAL STANDART --}}
+    <div class="mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-light border p-3 rounded-3 mb-3 position-relative">
+                    <h3 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        SEO Analiz Raporu
+                    </h3>
+                    @if(isset($seoSettings->analysis_date))
+                        <small class="position-absolute text-muted" style="right: 1rem; top: 50%; transform: translateY(-50%);">
+                            {{ \Carbon\Carbon::parse($seoSettings->analysis_date)->diffForHumans() }}
+                        </small>
+                    @endif
+                </div>
+            </div>
         </div>
-        <div class="card-body">
+        <div>
             @php
-                $analysisData = $analysisResults;
-                $overallScore = $analysisData['overall_score'] ?? $seoSettings->overall_score ?? null;
-                $detailedScores = $analysisData['detailed_scores'] ?? null;
+                // ========================================
+                // CANLI VERİ OKUMA SİSTEMİ - FORM VERİLERİ
+                // ========================================
+
+                // Main Tab Verileri (Anlık form verilerinden)
+                $pageTitle = '';
+                $pageSlug = '';
+                $pageBody = '';
+
+                if(is_array($model->title ?? null)) {
+                    $pageTitle = collect($model->title)->get($lang, '');
+                } else {
+                    $pageTitle = $model->title ?? '';
+                }
+
+                if(is_array($model->slug ?? null)) {
+                    $pageSlug = collect($model->slug)->get($lang, '');
+                } else {
+                    $pageSlug = $model->slug ?? '';
+                }
+
+                if(is_array($model->body ?? null)) {
+                    $pageBody = collect($model->body)->get($lang, '');
+                } else {
+                    $pageBody = $model->body ?? '';
+                }
+
+                // SEO Tab Verileri (Anlık cache verilerinden)
+                $metaTitle = $seoDataCache[$lang]['seo_title'] ?? '';
+                $metaDescription = $seoDataCache[$lang]['seo_description'] ?? '';
+                $ogTitle = $seoDataCache[$lang]['og_title'] ?? '';
+                $ogDescription = $seoDataCache[$lang]['og_description'] ?? '';
+                $ogImage = $seoDataCache[$lang]['og_image'] ?? '';
+                $authorName = $seoDataCache[$lang]['author_name'] ?? '';
+
+                // ========================================
+                // AI-ONLY SEO ANALİZ SİSTEMİ - FALLBACK YOK
+                // ========================================
+
+                // Default boş değerler - AI verisi yoksa boş gösterilecek
+                $titleToAnalyze = !empty($metaTitle) ? $metaTitle : $pageTitle;
+                $titleLength = strlen($titleToAnalyze);
+                $descLength = strlen($metaDescription);
+                $wordCount = str_word_count(strip_tags($pageBody));
+                $charCount = strlen(strip_tags($pageBody));
+                $hasH1 = strpos($pageBody, '<h1') !== false;
+                $hasH2 = strpos($pageBody, '<h2') !== false;
+                $linkCount = substr_count($pageBody, '<a');
+
+                $titleScore = 0;
+                $titleStatus = 'secondary';
+                $titleMessage = 'AI analizi bekleniyor';
+
+                $descScore = 0;
+                $descStatus = 'secondary';
+                $descMessage = 'AI analizi bekleniyor';
+
+                $contentScore = 0;
+                $contentStatus = 'secondary';
+                $contentMessage = 'AI analizi bekleniyor';
+
+                $socialScore = 0;
+                $socialStatus = 'secondary';
+                $socialMessage = 'AI analizi bekleniyor';
+
+                $overallScore = 0;
+                $overallStatus = 'secondary';
+                $overallMessage = 'AI analizi bekleniyor';
+
+                // SADECE AI VERİLERİ KULLAN - FALLBACK YOK
+                $hasAiData = isset($savedOverallScore) && $savedOverallScore && isset($savedAnalysisResults);
+
+                if ($hasAiData) {
+                    // AI verilerini kullan
+                    $overallScore = $savedOverallScore;
+                    $overallStatus = $savedOverallScore >= 80 ? 'success' : ($savedOverallScore >= 60 ? 'warning' : 'danger');
+                    $overallMessage = $savedOverallScore >= 80 ? 'Mükemmel' : ($savedOverallScore >= 60 ? 'İyi' : 'Geliştirilebilir');
+
+                    // AI detailed scores kullan
+                    if (isset($savedAnalysisResults['detailed_scores'])) {
+                        $aiDetailedScores = $savedAnalysisResults['detailed_scores'];
+                        $titleScore = $aiDetailedScores['title']['score'] ?? 0;
+                        $descScore = $aiDetailedScores['description']['score'] ?? 0;
+                        $contentScore = $aiDetailedScores['content']['score'] ?? 0;
+                        $socialScore = $aiDetailedScores['social']['score'] ?? 0;
+
+                        // AI statusları
+                        $titleStatus = $titleScore >= 80 ? 'success' : ($titleScore >= 60 ? 'warning' : 'danger');
+                        $descStatus = $descScore >= 80 ? 'success' : ($descScore >= 60 ? 'warning' : 'danger');
+                        $contentStatus = $contentScore >= 80 ? 'success' : ($contentScore >= 60 ? 'warning' : 'danger');
+                        $socialStatus = $socialScore >= 80 ? 'success' : ($socialScore >= 60 ? 'warning' : 'danger');
+                    } else {
+                        // AI detailed scores yoksa sıfır
+                        $titleScore = $descScore = $contentScore = $socialScore = 0;
+                        $titleStatus = $descStatus = $contentStatus = $socialStatus = 'secondary';
+                    }
+
+                    $aiStrengths = $savedAnalysisResults['strengths'] ?? [];
+                    $aiImprovements = $savedAnalysisResults['improvements'] ?? [];
+                    $aiActionItems = $savedAnalysisResults['action_items'] ?? [];
+                }
             @endphp
-            @if($overallScore)
-            <!-- GENEL SKOR -->
+
+            {{-- GENEL DURUM ÖZETİ --}}
             <div class="row mb-4">
-                <div class="col-auto">
-                    <div class="avatar avatar-xl {{ $overallScore >= 80 ? 'bg-success' : ($overallScore >= 60 ? 'bg-warning' : 'bg-danger') }} text-white" style="font-size: 1.5rem; font-weight: bold;">
-                        {{ $overallScore }}
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="avatar avatar-xl bg-{{ $overallStatus }} text-white mb-2">
+                            {{ $overallScore }}
+                        </div>
+                        <h5>Genel SEO Skoru</h5>
+                        <p>{{ $overallMessage }}</p>
                     </div>
                 </div>
-                <div class="col">
-                    <h4>Genel SEO Skoru</h4>
-                    <p class="text-secondary">{{ $overallScore >= 80 ? 'Mükemmel' : ($overallScore >= 60 ? 'İyi' : 'Geliştirilebilir') }}</p>
-                </div>
-            </div>
-            
-            <!-- SKOR DETAYLARI -->
-            @if($detailedScores)
-            <div class="row g-3 mb-4">
-                @foreach($detailedScores as $category => $details)
-                    @if(isset($details['score']))
-                    @php $score = $details['score']; @endphp
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card card-sm">
-                            <div class="card-body p-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-fill">
-                                        <div class="font-weight-medium">{{ strtoupper(str_replace('_', ' ', $category)) }}</div>
-                                        <div class="progress progress-sm">
-                                            <div class="progress-bar bg-{{ $score >= 80 ? 'success' : ($score >= 60 ? 'warning' : 'danger') }}" style="width: {{ $score }}%"></div>
-                                        </div>
+                <div class="col-md-9">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="card border-{{ $titleStatus }} hover-card">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-heading fa-2x mb-2"></i>
+                                    <h6>Meta Title</h6>
+                                    <div class="progress mb-1">
+                                        <div class="progress-bar bg-{{ $titleStatus }}" style="width: {{ $titleScore }}%"></div>
                                     </div>
-                                    <div class="ms-2 text-{{ $score >= 80 ? 'success' : ($score >= 60 ? 'warning' : 'danger') }}">{{ $score }}/100</div>
+                                    <div>{{ $titleScore }}/100</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @endif
-                @endforeach
-            </div>
-            @endif
-            @endif
-            
-            @php
-                // VERİLERİ HEM JSON'DAN HEM DB ALANLARDAN OKU (FALLBACK)
-                $strengths = $analysisData['strengths'] ?? ($seoSettings->strengths ?? null);
-                $improvements = $analysisData['improvements'] ?? ($seoSettings->improvements ?? null);
-                $actionItems = $analysisData['action_items'] ?? ($seoSettings->action_items ?? null);
-                
-                // HEP TAM LİSTE GÖSTER - KESME YOK
-                $displayLimit = null;
-            @endphp
-            <!-- OLUMLU YANLAR -->
-            @if($strengths)
-            <div class="mb-4">
-                <h5 class="text-success"><i class="fas fa-check-circle me-2"></i>Güçlü Yanlar</h5>
-                <div class="list-group list-group-flush">
-                    @if(is_array($strengths))
-                    @foreach($strengths as $strength)
-                    <div class="list-group-item border-0 px-0 py-2">
-                        <i class="fas fa-plus-circle text-success me-2"></i>{{ is_array($strength) ? ($strength['text'] ?? $strength['title'] ?? $strength['description'] ?? json_encode($strength)) : $strength }}
-                    </div>
-                    @endforeach
-                    @endif
-                </div>
-            </div>
-            @endif
-            
-            <!-- İYİLEŞTİRME ÖNERİLERİ -->
-            @if($improvements)
-            <div class="mb-4">
-                <h5 class="text-warning"><i class="fas fa-exclamation-triangle me-2"></i>İyileştirme Alanları</h5>
-                <div class="list-group list-group-flush">
-                    @if(is_array($improvements))
-                    @foreach($improvements as $improvement)
-                    <div class="list-group-item border-0 px-0 py-2">
-                        <i class="fas fa-arrow-up text-warning me-2"></i>{{ is_array($improvement) ? ($improvement['text'] ?? $improvement['title'] ?? $improvement['description'] ?? json_encode($improvement)) : $improvement }}
-                    </div>
-                    @endforeach
-                    @endif
-                </div>
-            </div>
-            @endif
-            
-            <!-- EYLEM ÖNERİLERİ -->
-            @if($actionItems)
-            <div>
-                <h5 class="text-primary"><i class="fas fa-tasks me-2"></i>Öncelikli Eylemler</h5>
-                <div class="list-group list-group-flush">
-                    @if(is_array($actionItems))
-                    @foreach($actionItems as $index => $item)
-                    <div class="list-group-item border-0 px-0 py-2">
-                        <span class="badge bg-primary me-2">{{ $index + 1 }}</span>
-                        <strong>{{ is_array($item) ? ($item['task'] ?? $item['text'] ?? $item['title'] ?? $item['description'] ?? 'Eylem tanımı bulunamadı') : $item }}</strong>
-                        @if(is_array($item) && isset($item['urgency']))
-                        <span class="badge bg-danger ms-2">{{ $item['urgency'] }}</span>
-                        @endif
-                        @if(is_array($item) && isset($item['area']))
-                        <br><small class="text-muted">Alan: {{ $item['area'] }}</small>
-                        @endif
-                        @if(is_array($item) && isset($item['expected_impact']))
-                        <small class="text-muted"> • Etki: {{ $item['expected_impact'] }}</small>
-                        @endif
-                    </div>
-                    @endforeach
-                    @endif
-                </div>
-            </div>
-            @endif
-        </div>
-    </div>
-    @endif
-
-    {{-- TABLER STYLE SEO ACCORDION --}}
-    @if($hasAnalysisResults)
-    <div class="card mt-3">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title mb-0">
-                <i class="fas fa-chart-line me-2"></i>
-                Detaylı SEO Analizi
-            </h3>
-        </div>
-        <div class="card-body">            
-            <!-- ACCORDION ANALIZ SEKSIYONLARI -->
-            <div class="accordion" id="seoAnalysisAccordion">
-                
-                <!-- 1. TITLE ANALIZI -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#titleAnalysis" aria-expanded="false">
-                            <i class="fas fa-heading me-2"></i>
-                            Meta Title Analizi
-                            @php
-                                $titles = $seoSettings->titles ?? [];
-                                $currentMetaTitle = $titles[$lang] ?? '';
-                                $displayTitle = !empty($currentMetaTitle) ? $currentMetaTitle : '';
-                                $titleLength = strlen($displayTitle);
-                                $isEmpty = empty($displayTitle);
-                                
-                                // Title score hesapla
-                                $titleScore = 0;
-                                if (!$isEmpty) {
-                                    $titleScore += 40; // Var olması için 40 puan
-                                    if ($titleLength >= 30 && $titleLength <= 60) {
-                                        $titleScore += 40; // İdeal uzunluk için 40 puan
-                                    } elseif ($titleLength >= 20) {
-                                        $titleScore += 20; // Kabul edilebilir uzunluk için 20 puan
-                                    }
-                                    if ($titleLength >= 40 && $titleLength <= 55) {
-                                        $titleScore += 20; // Perfect uzunluk için bonus 20 puan
-                                    }
-                                }
-                                $titleBadgeClass = $titleScore >= 80 ? 'success' : ($titleScore >= 50 ? 'warning' : 'danger');
-                            @endphp
-                            <span class="badge bg-{{ $titleBadgeClass }} ms-2">{{ $titleScore }}/100</span>
-                        </button>
-                    </h2>
-                    <div id="titleAnalysis" class="accordion-collapse collapse" data-bs-parent="#seoAnalysisAccordion">
-                        <div class="accordion-body">
-                            @php
-                                // JSON titles verilerinden meta title al
-                                $titles = $seoSettings->titles ?? [];
-                                $currentMetaTitle = $titles[$lang] ?? '';
-                                $pageTitle = '';
-                                
-                                // Page title varsa JSON body'den al
-                                if(is_array($model->body ?? null)) {
-                                    $bodyContent = collect($model->body)->get($lang, '');
-                                } else {
-                                    $bodyContent = $model->body ?? '';
-                                }
-                                
-                                // H1 tag'ından page title çıkar
-                                if (preg_match('/<h1[^>]*>(.*?)<\/h1>/i', $bodyContent, $matches)) {
-                                    $pageTitle = strip_tags($matches[1]);
-                                }
-                                
-                                // Eğer H1 yoksa model title kullan
-                                if (empty($pageTitle)) {
-                                    if(is_array($model->title ?? null)) {
-                                        $pageTitle = collect($model->title)->get($lang, '');
-                                    } else {
-                                        $pageTitle = $model->title ?? '';
-                                    }
-                                }
-                                
-                                $displayTitle = !empty($currentMetaTitle) ? $currentMetaTitle : $pageTitle;
-                                $titleLength = strlen($displayTitle);
-                                $isFallback = empty($currentMetaTitle) && !empty($pageTitle);
-                                $isEmpty = empty($displayTitle);
-                            @endphp
-                            <div class="alert alert-{{ $isEmpty ? 'danger' : ($isFallback ? 'warning' : 'success') }}">
-                                <h6><i class="fas fa-info-circle"></i> Mevcut Durum:</h6>
-                                <ul class="mb-2">
-                                    <li><strong>Meta Title:</strong> 
-                                        @if($isEmpty)
-                                            <code class="text-danger">Boş - Meta title yok</code> ❌
-                                        @elseif($isFallback)
-                                            <code class="text-warning">Otomatik - Sayfa başlığından alındı</code> ⚠️
-                                        @else
-                                            <code class="text-success">Özel meta title mevcut</code> ✅
-                                        @endif
-                                    </li>
-                                    <li><strong>Kullanılan Başlık:</strong> <code>"{{ $displayTitle }}"</code></li>
-                                    <li><strong>Kaynak:</strong> 
-                                        <span class="badge bg-{{ $isEmpty ? 'danger' : ($isFallback ? 'warning' : 'success') }}">
-                                            @if($isEmpty) Boş @elseif($isFallback) Sayfa Başlığı @else Meta Title @endif
-                                        </span>
-                                    </li>
-                                    <li><strong>Uzunluk:</strong> {{ $titleLength }} karakter
-                                        @if($titleLength > 60)
-                                            <span class="text-danger">(Çok uzun - kesilecek)</span>
-                                        @elseif($titleLength < 30)
-                                            <span class="text-warning">(Kısa - geliştirilebilir)</span>
-                                        @else
-                                            <span class="text-success">(İdeal uzunluk)</span>
-                                        @endif
-                                    </li>
-                                </ul>
-                            </div>
-                            
-                            <div class="alert alert-info">
-                                <h6><i class="fas fa-lightbulb"></i> Acil Öneriler:</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <strong>🎯 Özel Meta Title Yazın:</strong>
-                                        <div class="bg-light p-2 rounded mt-1">
-                                            <code>"Profesyonel Web Tasarım Hizmetleri | Türk Bilişim"</code>
-                                            <small class="text-muted d-block">55 karakter - ideal!</small>
-                                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-{{ $descStatus }} hover-card">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-align-left fa-2x mb-2"></i>
+                                    <h6>Meta Description</h6>
+                                    <div class="progress mb-1">
+                                        <div class="progress-bar bg-{{ $descStatus }}" style="width: {{ $descScore }}%"></div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <strong>📏 Uzunluk Kuralları:</strong>
-                                        <ul class="small mb-0 mt-1">
-                                            <li>✅ 50-60 karakter ideal</li>
-                                            <li>⚠️ 70+ karakter kesilir</li>
-                                            <li>❌ 30- karakter çok kısa</li>
-                                        </ul>
-                                    </div>
+                                    <div>{{ $descScore }}/100</div>
                                 </div>
                             </div>
-                            
-                            <div class="alert alert-light border">
-                                <strong>🚀 Hızlı Düzeltme:</strong>
-                                <p class="mb-3">Meta title alanına aşağıdakilerden birini kullan:</p>
-                                <div class="d-flex flex-column gap-2">
-                                    <button type="button" class="btn btn-outline-primary btn-sm text-start d-flex align-items-center gap-2" 
-                                            onclick="fillSeoTitle('{{ $lang }}', 'Profesyonel Web Tasarım ve Dijital Çözümler | Türk Bilişim')">
-                                        <i class="fas fa-copy"></i>
-                                        <span>"Profesyonel Web Tasarım ve Dijital Çözümler | Türk Bilişim"</span>
-                                        <small class="text-muted ms-auto">55 karakter</small>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm text-start d-flex align-items-center gap-2" 
-                                            onclick="fillSeoTitle('{{ $lang }}', 'Web Tasarım, E-Ticaret ve SEO Hizmetleri | Türk Bilişim')">
-                                        <i class="fas fa-copy"></i>
-                                        <span>"Web Tasarım, E-Ticaret ve SEO Hizmetleri | Türk Bilişim"</span>
-                                        <small class="text-muted ms-auto">52 karakter</small>
-                                    </button>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-{{ $contentStatus }} hover-card">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-file-alt fa-2x mb-2"></i>
+                                    <h6>İçerik Kalitesi</h6>
+                                    <div class="progress mb-1">
+                                        <div class="progress-bar bg-{{ $contentStatus }}" style="width: {{ $contentScore }}%"></div>
+                                    </div>
+                                    <div>{{ $contentScore }}/100</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-{{ $socialStatus }} hover-card">
+                                <div class="card-body text-center p-3">
+                                    <i class="fas fa-share-alt fa-2x mb-2"></i>
+                                    <h6>Sosyal Medya</h6>
+                                    <div class="progress mb-1">
+                                        <div class="progress-bar bg-{{ $socialStatus }}" style="width: {{ $socialScore }}%"></div>
+                                    </div>
+                                    <div>{{ $socialScore }}/100</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- 2. DESCRIPTION ANALIZI -->
+            {{-- DETAYLI ANALİZ ACCORDİON --}}
+            <div class="accordion mt-4" id="realTimeSeoAccordion">
+
+                {{-- 1. META ETİKET ANALİZİ --}}
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#descAnalysis" aria-expanded="false">
-                            <i class="fas fa-align-left me-2"></i>
-                            Meta Description Analizi
-                            @php
-                                $descriptions = $seoSettings->descriptions ?? [];
-                                $currentMetaDescription = $descriptions[$lang] ?? '';
-                                $descLength = strlen($currentMetaDescription);
-                                $hasDescription = !empty($currentMetaDescription);
-                                
-                                // Description score hesapla
-                                $descScore = 0;
-                                if ($hasDescription) {
-                                    $descScore += 50; // Var olması için 50 puan
-                                    if ($descLength >= 120 && $descLength <= 160) {
-                                        $descScore += 50; // İdeal uzunluk için 50 puan
-                                    } elseif ($descLength >= 80 && $descLength < 180) {
-                                        $descScore += 30; // Kabul edilebilir uzunluk için 30 puan
-                                    } elseif ($descLength >= 50) {
-                                        $descScore += 10; // En az bir şey yazılmış için 10 puan
-                                    }
-                                }
-                                $descBadgeClass = $descScore >= 80 ? 'success' : ($descScore >= 50 ? 'warning' : 'danger');
-                            @endphp
-                            <span class="badge bg-{{ $descBadgeClass }} ms-2">{{ $descScore }}/100</span>
+                        <button class="accordion-button collapsed position-relative" type="button" data-bs-toggle="collapse" data-bs-target="#metaAnalysis" aria-expanded="false">
+                            <i class="fas fa-tags me-2"></i>
+                            Meta Etiket Analizi
+                            <span class="badge bg-{{ $titleStatus }} position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%);">{{ round(($titleScore + $descScore) / 2) }}/100</span>
                         </button>
                     </h2>
-                    <div id="descAnalysis" class="accordion-collapse collapse" data-bs-parent="#seoAnalysisAccordion">
-                        <div class="accordion-body">
-                            @php
-                                // JSON descriptions verilerinden meta description al
-                                $descriptions = $seoSettings->descriptions ?? [];
-                                $currentMetaDescription = $descriptions[$lang] ?? '';
-                                $descLength = strlen($currentMetaDescription);
-                                $hasDescription = !empty($currentMetaDescription);
-                            @endphp
-                            <div class="alert alert-{{ $hasDescription ? 'success' : 'warning' }}">
-                                @if($hasDescription)
-                                    <h6><i class="fas fa-check"></i> Mevcut Durum:</h6>
-                                    <ul class="mb-2">
-                                        <li><strong>Meta Açıklama:</strong> <code class="text-success">Mevcut</code> ✅</li>
-                                        <li><strong>İçerik:</strong> "{{ Str::limit($currentMetaDescription, 100) }}"</li>
-                                        <li><strong>Uzunluk:</strong> {{ $descLength }} karakter
-                                            @if($descLength > 160)
-                                                <span class="text-danger">(Çok uzun - kesilecek)</span>
-                                            @elseif($descLength < 120)
-                                                <span class="text-warning">(Kısa - daha detaylı olabilir)</span>
-                                            @else
-                                                <span class="text-success">(İdeal uzunluk)</span>
-                                            @endif
-                                        </li>
-                                    </ul>
-                                    @if($descLength >= 120 && $descLength <= 160)
-                                    <div class="alert alert-success p-2">
-                                        <strong>Güçlü Yanlar:</strong>
-                                        <ul class="mb-0 small">
-                                            <li>✅ Meta açıklama mevcut ve içerik sunuyor</li>
-                                            <li>✅ Uzunluk uygun ({{ $descLength }} karakter)</li>
-                                        </ul>
-                                    </div>
+                    <div id="metaAnalysis" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                        <div class="accordion-body pt-4">
+
+                            <div class="mb-4">
+                                <h5 class="mb-3">Meta Title</h5>
+                                <div class="p-3 rounded border">
+                                    @if(empty($titleToAnalyze))
+                                        <p class="mb-1">Başlık bulunamadı</p>
+                                    @else
+                                        <p class="mb-1">"{{ $titleToAnalyze }}"</p>
                                     @endif
-                                @else
-                                    <h6><i class="fas fa-exclamation-triangle"></i> Eksik Meta Açıklama:</h6>
-                                    <ul class="mb-2">
-                                        <li><strong>Meta Description:</strong> <code class="text-danger">Boş - Meta açıklama yok</code> ❌</li>
-                                        <li><strong>SEO Etkisi:</strong> Arama sonuçlarında görünüm azalır</li>
-                                        <li><strong>Önerilen Uzunluk:</strong> 120-160 karakter arası</li>
-                                    </ul>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>{{ $titleLength }} karakter</span>
+                                        @if(!empty($metaTitle))
+                                            <span class="badge bg-success">Meta Title</span>
+                                        @elseif(!empty($pageTitle))
+                                            <span class="badge bg-warning">Sayfa Başlığı</span>
+                                        @else
+                                            <span class="badge bg-danger">Yok</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @if($titleScore < 80)
+                                <p class="mb-0 mt-2">
+                                    @if(empty($metaTitle))
+                                        SEO tab'ında meta title alanını doldurun
+                                    @elseif($titleLength < 30)
+                                        Başlığı genişletin (en az 30 karakter)
+                                    @elseif($titleLength > 60)
+                                        Başlığı kısaltın (maksimum 60 karakter)
+                                    @endif
+                                </p>
                                 @endif
                             </div>
-                            
-                            <div class="alert alert-info">
-                                <h6><i class="fas fa-arrow-up"></i> İyileştirme Önerileri:</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <strong>🎯 Call-to-Action ekleyin:</strong>
-                                        <p class="small">"Hemen başlayın", "Ücretsiz teklif alın"</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <strong>🔑 Ana anahtar kelime:</strong>
-                                        <p class="small">Açıklamada 1-2 kez geçsin</p>
-                                    </div>
+
+                            <div>
+                                <h5 class="mb-3">Meta Description</h5>
+                                <div class="p-3 rounded border">
+                                    @if(empty($metaDescription))
+                                        <p class="mb-1">Meta açıklama yok</p>
+                                    @else
+                                        <p class="mb-1">"{{ Str::limit($metaDescription, 100) }}"</p>
+                                    @endif
+                                    <span>{{ $descLength }} karakter</span>
                                 </div>
+                                @if($descScore < 80)
+                                <p class="mb-0 mt-2">
+                                    @if(empty($metaDescription))
+                                        SEO tab'ında meta açıklama alanını doldurun
+                                    @elseif($descLength < 120)
+                                        Açıklamayı genişletin (120-160 karakter arası ideal)
+                                    @elseif($descLength > 160)
+                                        Açıklamayı kısaltın (maksimum 160 karakter)
+                                    @endif
+                                </p>
+                                @endif
                             </div>
+
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. SOCIAL MEDIA ANALIZI -->
+                {{-- 2. İÇERİK KALİTE ANALİZİ --}}
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#socialAnalysis" aria-expanded="false">
-                            <i class="fab fa-facebook-f me-2"></i>
-                            Sosyal Medya Analizi
-                            <span class="badge bg-light text-dark ms-2">60/100</span>
-                        </button>
-                    </h2>
-                    <div id="socialAnalysis" class="accordion-collapse collapse" data-bs-parent="#seoAnalysisAccordion">
-                        <div class="accordion-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6><i class="fas fa-list-check"></i> OG Tag Durumu:</h6>
-                                    <ul class="list-unstyled">
-                                        <li>{{ empty($seoDataCache[$lang]['og_title']) ? '❌' : '✅' }} <code>og:title</code> - {{ empty($seoDataCache[$lang]['og_title']) ? 'eksik' : 'mevcut' }}</li>
-                                        <li>{{ empty($seoDataCache[$lang]['og_description']) ? '❌' : '✅' }} <code>og:description</code> - {{ empty($seoDataCache[$lang]['og_description']) ? 'eksik' : 'mevcut' }}</li>
-                                        <li>{{ empty($seoDataCache[$lang]['og_image']) ? '❌' : '✅' }} <code>og:image</code> - {{ empty($seoDataCache[$lang]['og_image']) ? 'eksik' : 'mevcut' }}</li>
-                                        <li>✅ <code>og:url</code> - mevcut</li>
-                                        <li>{{ empty($seoDataCache[$lang]['content_type']) ? '❌' : '✅' }} <code>og:type</code> - {{ empty($seoDataCache[$lang]['content_type']) ? 'eksik' : $seoDataCache[$lang]['content_type'] }}</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6><i class="fas fa-rocket"></i> Acil Eylemler:</h6>
-                                    <div class="d-flex flex-column gap-2">
-                                        <span class="text-muted" style="cursor: pointer;" onclick="scrollToElement('og_image_file_{{ $lang }}')">
-                                            🖼️ 1200x630px görsel ekle
-                                        </span>
-                                        <span class="text-muted" style="cursor: pointer;" onclick="scrollToElement('og_custom_{{ $lang }}')">
-                                            📝 OG title & description yaz
-                                        </span>
-                                        <span class="text-muted" style="cursor: pointer;">
-                                            🐦 Twitter Card ekle
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. CONTENT ANALIZI -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contentAnalysis" aria-expanded="false">
+                        <button class="accordion-button collapsed position-relative" type="button" data-bs-toggle="collapse" data-bs-target="#contentQualityAnalysis" aria-expanded="false">
                             <i class="fas fa-file-alt me-2"></i>
-                            İçerik Kalitesi Analizi
-                            <span class="badge bg-light text-dark ms-2">70/100</span>
+                            İçerik Kalite Analizi
+                            <span class="badge bg-{{ $contentStatus }} position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%);">{{ $contentScore }}/100</span>
                         </button>
                     </h2>
-                    <div id="contentAnalysis" class="accordion-collapse collapse" data-bs-parent="#seoAnalysisAccordion">
-                        <div class="accordion-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6>📊 İçerik İstatistikleri:</h6>
-                                    @php
-                                        $bodyContent = '';
-                                        if(is_array($model->body ?? null)) {
-                                            $bodyContent = collect($model->body)->get($lang, '');
-                                        } else {
-                                            $bodyContent = $model->body ?? '';
-                                        }
-                                        $wordCount = str_word_count(strip_tags($bodyContent));
-                                        $charCount = strlen(strip_tags($bodyContent));
-                                    @endphp
-                                    <ul class="list-unstyled">
-                                        <li>📝 Kelime sayısı: <strong>{{ $wordCount }} kelime</strong> 
-                                            <span class="badge bg-light text-dark">
-                                                {{ $wordCount >= 300 ? 'İyi' : ($wordCount >= 150 ? 'Orta' : 'Az') }}
-                                            </span>
-                                        </li>
-                                        <li>📏 Karakter: {{ $charCount }}</li>
-                                        <li>🏷️ H1 etiketi: <span class="text-{{ strpos($bodyContent, '<h1') !== false ? 'success' : 'danger' }}">{{ strpos($bodyContent, '<h1') !== false ? '✅ Mevcut' : '❌ Yok' }}</span></li>
-                                        <li>🏷️ H2 etiketi: <span class="text-{{ strpos($bodyContent, '<h2') !== false ? 'success' : 'danger' }}">{{ strpos($bodyContent, '<h2') !== false ? '✅ Mevcut' : '❌ Yok' }}</span></li>
-                                        <li>🔗 İç linkler: {{ substr_count($bodyContent, '<a') }} adet</li>
-                                    </ul>
+                    <div id="contentQualityAnalysis" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                        <div class="accordion-body pt-4">
+
+                            <div class="mb-4">
+                                <h5 class="mb-3">İçerik İstatistikleri</h5>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="p-3 rounded border text-center hover-element">
+                                            <div class="h4 mb-1">{{ $wordCount }}</div>
+                                            <div>Kelime</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 rounded border text-center hover-element">
+                                            <div class="h4 mb-1">{{ $charCount }}</div>
+                                            <div>Karakter</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <h6>🎯 İyileştirmeler:</h6>
-                                    <div class="alert alert-warning p-2">
-                                        <strong>Acil:</strong>
-                                        <ul class="small mb-0">
-                                            @if($wordCount < 300)
-                                            <li>En az 300 kelime yazın (şu an: {{ $wordCount }})</li>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="mb-3">Yapısal Öğeler</h5>
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                        <span>H1 Ana Başlık</span>
+                                        @if($hasH1)
+                                            <span class="badge bg-success">Mevcut</span>
+                                        @else
+                                            <span class="badge bg-danger">Yok</span>
+                                        @endif
+                                    </div>
+                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                        <span>H2 Alt Başlıklar</span>
+                                        @if($hasH2)
+                                            <span class="badge bg-success">Mevcut</span>
+                                        @else
+                                            <span class="badge bg-danger">Yok</span>
+                                        @endif
+                                    </div>
+                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                        <span>İç Linkler</span>
+                                        <span class="badge bg-{{ $linkCount > 0 ? 'success' : 'secondary' }}">{{ $linkCount }} adet</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if($contentScore < 80)
+                            <div>
+                                <h5 class="mb-3">Öneriler</h5>
+                                <div class="p-3 rounded border">
+                                    @if($wordCount < 300)
+                                        <p class="mb-2">• İçeriği en az 300 kelimeye çıkarın (şu an: {{ $wordCount }})</p>
+                                    @endif
+                                    @if(!$hasH1)
+                                        <p class="mb-2">• Ana tab'ta başlık alanını doldurun veya içeriğe H1 ekleyin</p>
+                                    @endif
+                                    @if(!$hasH2)
+                                        <p class="mb-2">• İçeriğe 2-3 alt başlık (H2) ekleyin</p>
+                                    @endif
+                                    @if($linkCount == 0)
+                                        <p class="mb-0">• İlgili sayfalara bağlantı ekleyin</p>
+                                    @endif
+                                </div>
+                            </div>
+                            @else
+                            <div class="p-3 rounded border text-center">
+                                <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                                <p class="text-success mb-0">İçerik yapısı uygun!</p>
+                            </div>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+
+                {{-- 3. SOSYAL MEDYA HAZIRLIĞI --}}
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed position-relative" type="button" data-bs-toggle="collapse" data-bs-target="#socialMediaAnalysis" aria-expanded="false">
+                            <i class="fas fa-share-alt me-2"></i>
+                            Sosyal Medya Hazırlığı
+                            <span class="badge bg-{{ $socialStatus }} position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%);">{{ $socialScore }}/100</span>
+                        </button>
+                    </h2>
+                    <div id="socialMediaAnalysis" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                        <div class="accordion-body pt-4">
+
+                            <div class="mb-4">
+                                <h5 class="mb-3">OpenGraph Durumu</h5>
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>og:title</strong>
+                                            <div>
+                                                {{ !empty($ogTitle) ? 'Özel başlık' : (!empty($metaTitle) ? 'Meta title kullanılıyor' : 'Yok') }}
+                                            </div>
+                                        </div>
+                                        @if(!empty($ogTitle) || !empty($metaTitle))
+                                            <span class="badge bg-success">Mevcut</span>
+                                        @else
+                                            <span class="badge bg-danger">Yok</span>
+                                        @endif
+                                    </div>
+                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>og:description</strong>
+                                            <div>
+                                                {{ !empty($ogDescription) ? 'Özel açıklama' : (!empty($metaDescription) ? 'Meta description kullanılıyor' : 'Yok') }}
+                                            </div>
+                                        </div>
+                                        @if(!empty($ogDescription) || !empty($metaDescription))
+                                            <span class="badge bg-success">Mevcut</span>
+                                        @else
+                                            <span class="badge bg-danger">Yok</span>
+                                        @endif
+                                    </div>
+                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>og:image</strong>
+                                            <div>1200x630px önerilen</div>
+                                        </div>
+                                        @if(!empty($ogImage))
+                                            <span class="badge bg-success">Mevcut</span>
+                                        @else
+                                            <span class="badge bg-danger">Yok</span>
+                                        @endif
+                                    </div>
+                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Yazar Bilgisi</strong>
+                                            <div>{{ !empty($authorName) ? $authorName : 'Belirtilmemiş' }}</div>
+                                        </div>
+                                        @if(!empty($authorName))
+                                            <span class="badge bg-success">Mevcut</span>
+                                        @else
+                                            <span class="badge bg-danger">Yok</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if($socialScore < 70)
+                            <div>
+                                <h5 class="mb-3">Öneriler</h5>
+                                <div class="p-3 rounded border">
+                                    @if(empty($ogImage))
+                                        <p class="mb-2">• 1200x630px sosyal medya görseli ekleyin</p>
+                                    @endif
+                                    @if(empty($ogTitle) && empty($metaTitle))
+                                        <p class="mb-2">• Meta title veya OG title ekleyin</p>
+                                    @endif
+                                    @if(empty($ogDescription) && empty($metaDescription))
+                                        <p class="mb-2">• Meta description veya OG description ekleyin</p>
+                                    @endif
+                                    @if(empty($authorName))
+                                        <p class="mb-0">• SEO tab'ından yazar adı ekleyin</p>
+                                    @endif
+                                </div>
+                            </div>
+                            @else
+                            <div class="p-3 rounded border text-center">
+                                <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                                <p class="text-success mb-0">Sosyal medya paylaşıma hazır!</p>
+                            </div>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+
+                {{-- 4. ÖNCELİKLİ EYLEM PLANI --}}
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed position-relative" type="button" data-bs-toggle="collapse" data-bs-target="#actionPlan" aria-expanded="false">
+                            <i class="fas fa-bullseye me-2"></i>
+                            Öncelikli Eylem Planı
+                            <span class="badge bg-primary position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%);">{{ ($titleScore < 80) + ($descScore < 80) + ($contentScore < 80) + ($socialScore < 70) }} eylem</span>
+                        </button>
+                    </h2>
+                    <div id="actionPlan" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                        <div class="accordion-body pt-4">
+
+                            <h5 class="mb-3">Yapılacaklar Listesi</h5>
+                            <div class="p-3 rounded border">
+                                @if($titleScore < 80)
+                                    <div class="mb-3 pb-3 border-bottom">
+                                        <h6 class="mb-2">
+                                            <span class="badge bg-danger me-2">KRİTİK</span>
+                                            Meta Title {{ empty($metaTitle) ? 'ekle' : 'iyileştir' }}
+                                        </h6>
+                                        <ul class="mb-0">
+                                            @if(empty($metaTitle))
+                                                <li>SEO tab'ında meta title alanını doldurun</li>
+                                            @elseif($titleLength < 30)
+                                                <li>En az 30 karakter olmalı (şu an: {{ $titleLength }})</li>
+                                            @elseif($titleLength > 60)
+                                                <li>Maksimum 60 karakter olmalı (şu an: {{ $titleLength }})</li>
                                             @endif
-                                            @if(strpos($bodyContent, '<h1') === false)
-                                            <li>H1 başlığı ekleyin</li>
-                                            @endif
-                                            @if(strpos($bodyContent, '<h2') === false)
-                                            <li>2-3 H2 alt başlık kullanın</li>
-                                            @endif
-                                            <li>Paragrafları bölerek düzenleyin</li>
                                         </ul>
                                     </div>
-                                </div>
+                                @endif
+
+                                @if($contentScore < 80)
+                                    <div class="mb-3 pb-3 border-bottom">
+                                        <h6 class="mb-2">
+                                            <span class="badge bg-{{ $wordCount < 300 ? 'danger' : 'warning' }} me-2">{{ $wordCount < 300 ? 'KRİTİK' : 'YÜKSEK' }}</span>
+                                            İçeriği geliştir
+                                        </h6>
+                                        <ul class="mb-0">
+                                            @if($wordCount < 300)
+                                                <li>En az 300 kelime yazın (şu an: {{ $wordCount }})</li>
+                                            @endif
+                                            @if(!$hasH1)
+                                                <li>H1 başlığı ekleyin</li>
+                                            @endif
+                                            @if(!$hasH2)
+                                                <li>H2 alt başlıkları ekleyin</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                @if($descScore < 80)
+                                    <div class="mb-3 pb-3 border-bottom">
+                                        <h6 class="mb-2">
+                                            <span class="badge bg-{{ empty($metaDescription) ? 'danger' : 'warning' }} me-2">{{ empty($metaDescription) ? 'KRİTİK' : 'YÜKSEK' }}</span>
+                                            Meta Description {{ empty($metaDescription) ? 'ekle' : 'iyileştir' }}
+                                        </h6>
+                                        <ul class="mb-0">
+                                            @if(empty($metaDescription))
+                                                <li>SEO tab'ında meta açıklama alanını doldurun</li>
+                                            @elseif($descLength < 120)
+                                                <li>En az 120 karakter olmalı (şu an: {{ $descLength }})</li>
+                                            @elseif($descLength > 160)
+                                                <li>Maksimum 160 karakter olmalı (şu an: {{ $descLength }})</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                @if($socialScore < 70)
+                                    <div class="mb-3 pb-3 border-bottom">
+                                        <h6 class="mb-2">
+                                            <span class="badge bg-warning me-2">YÜKSEK</span>
+                                            Sosyal medya optimizasyonu
+                                        </h6>
+                                        <ul class="mb-0">
+                                            @if(empty($ogImage))
+                                                <li>1200x630px görsel ekleyin</li>
+                                            @endif
+                                            @if(empty($authorName))
+                                                <li>Yazar bilgisi ekleyin</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                @if($overallScore >= 80)
+                                    <div class="text-center">
+                                        <i class="fas fa-trophy text-success fa-2x mb-2"></i>
+                                        <h6 class="text-success">Tebrikler! SEO optimizasyonu tamamlandı.</h6>
+                                    </div>
+                                @endif
                             </div>
+
                         </div>
                     </div>
                 </div>
 
-                <!-- 5. TEKNIK SEO ANALIZI -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#technicalAnalysis" aria-expanded="false">
-                            <i class="fas fa-cogs me-2"></i>
-                            Teknik SEO Analizi
-                            <span class="badge bg-light text-dark ms-2">50/100</span>
-                        </button>
-                    </h2>
-                    <div id="technicalAnalysis" class="accordion-collapse collapse" data-bs-parent="#seoAnalysisAccordion">
-                        <div class="accordion-body">
-                            <div class="alert alert-light border">
-                                <h6>🚨 Kritik Eksiklikler:</h6>
-                                <ul class="mb-2">
-                                    <li>{{ empty($seoDataCache[$lang]['schema_markup']) ? '❌' : '✅' }} Schema markup {{ empty($seoDataCache[$lang]['schema_markup']) ? 'yok' : 'mevcut' }}</li>
-                                    <li>❌ Alt etiketleri kontrol edilmeli</li>
-                                    <li>{{ empty($seoDataCache[$lang]['canonical_url']) ? '❌' : '✅' }} Canonical URL {{ empty($seoDataCache[$lang]['canonical_url']) ? 'belirlenmemiş' : 'mevcut' }}</li>
-                                    <li>🔍 XML sitemap durumu kontrol edilmeli</li>
-                                </ul>
-                                <span class="text-muted">
-                                    🔧 Manuel düzeltme gerekli
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-            <!-- ÖZET EYLEM PLANI -->
-            <div class="mt-4">
-                <div class="alert alert-primary">
-                    <h5><i class="fas fa-bullseye"></i> Öncelikli Eylem Planı</h5>
-                    <ol class="mb-0">
-                        <li><strong>Meta title {{ empty($seoDataCache[$lang]['seo_title']) ? 'ekle' : 'iyileştir' }}</strong> <span class="badge bg-light text-dark">KRİTİK</span></li>
-                        <li><strong>İçeriği {{ $wordCount < 300 ? ($wordCount . ' kelimeden 300+\'e çıkar') : 'yapılandır' }}</strong> <span class="badge bg-light text-dark">{{ $wordCount < 300 ? 'KRİTİK' : 'YÜKSEK' }}</span></li>
-                        <li><strong>{{ strpos($bodyContent, '<h1') === false ? 'H1 başlığı koy' : 'H1 başlığını optimize et' }}</strong> <span class="badge bg-light text-dark">KRİTİK</span></li>
-                        <li><strong>OG image {{ empty($seoDataCache[$lang]['og_image']) ? 'ekle' : 'optimize et' }}</strong> <span class="badge bg-light text-dark">YÜKSEK</span></li>
-                        <li><strong>Schema markup ekle</strong> <span class="badge bg-light text-dark">ORTA</span></li>
-                    </ol>
-                </div>
             </div>
         </div>
     </div>
-    @endif
 
     {{-- TEMEL SEO ALANLARI --}}
     <div class="card border-primary mb-4">
         <div class="card-header bg-primary text-white">
             <h6 class="mb-0">
-                Temel SEO Ayarları ({{ strtoupper($lang) }})
-                <small class="opacity-75 ms-2">Mutlaka doldurulması gerekenler</small>
+                Temel SEO Ayarları
+                <small class=" ms-2">Mutlaka doldurulması gerekenler</small>
             </h6>
         </div>
         <div class="card-body">
@@ -844,13 +899,16 @@
                                    maxlength="60"
                                    {{ $disabled ? 'disabled' : '' }}>
                             <label>
-                                {{ __('page::admin.seo_title') }} ({{ strtoupper($lang) }})
-                                <span class="character-counter float-end" id="title_counter_{{ $lang }}">
-                                    <small class="text-muted">0/60</small>
-                                </span>
+                                {{ __('page::admin.seo_title') }}
                             </label>
+                            {{-- Character counter - sağ üst köşe --}}
+                            <span class="character-counter position-absolute"
+                                  id="title_counter_{{ $lang }}"
+                                  style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                <small >0/60</small>
+                            </span>
                             <div class="form-text">
-                                <small class="text-muted">
+                                <small >
                                     {{ __('page::admin.seo_title_help') }}
                                 </small>
                             </div>
@@ -873,13 +931,16 @@
                                       maxlength="160"
                                       {{ $disabled ? 'disabled' : '' }}></textarea>
                             <label>
-                                {{ __('page::admin.seo_description') }} ({{ strtoupper($lang) }})
-                                <span class="character-counter float-end" id="description_counter_{{ $lang }}">
-                                    <small class="text-muted">0/160</small>
-                                </span>
+                                {{ __('page::admin.seo_description') }}
                             </label>
+                            {{-- Character counter - sağ üst köşe --}}
+                            <span class="character-counter position-absolute"
+                                  id="description_counter_{{ $lang }}"
+                                  style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                <small >0/160</small>
+                            </span>
                             <div class="form-text">
-                                <small class="text-muted">
+                                <small >
                                     {{ __('page::admin.seo_description_help') }}
                                 </small>
                             </div>
@@ -913,10 +974,10 @@
                         </select>
                         <label>
                             İçerik Türü
-                            <small class="text-muted ms-2">Schema.org + OpenGraph</small>
+                            <small class="ms-2">Schema.org + OpenGraph</small>
                         </label>
                         <div class="form-text">
-                            <small class="text-muted">
+                            <small >
                                 Hem sosyal medya hem arama motorları için kullanılır
                             </small>
                         </div>
@@ -934,10 +995,10 @@
                                    {{ $disabled ? 'disabled' : '' }}>
                             <label>
                                 Özel İçerik Türü
-                                <small class="text-muted ms-2">Manuel giriş</small>
+                                <small class="ms-2">Manuel giriş</small>
                             </label>
                             <div class="form-text">
-                                <small class="text-muted">
+                                <small >
                                     Schema.org'dan geçerli bir tür girin (Recipe, Book, Course...)
                                 </small>
                             </div>
@@ -976,8 +1037,8 @@
                         </span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted small fw-bold">1</span>
-                        <span class="text-muted small">Düşük</span>
+                        <span class="small fw-bold">1</span>
+                        <span class="small">Düşük</span>
                         <input type="range" 
                                wire:model="seoDataCache.{{ $lang }}.priority_score"
                                class="form-range flex-grow-1 mx-2"
@@ -987,11 +1048,11 @@
                                value="{{ $seoDataCache[$lang]['priority_score'] ?? 5 }}"
                                oninput="onManualPriorityChange(this, '{{ $lang }}')"
                                {{ $disabled ? 'disabled' : '' }}>
-                        <span class="text-muted small">Kritik</span>
-                        <span class="text-muted small fw-bold">10</span>
+                        <span class="small">Kritik</span>
+                        <span class="small fw-bold">10</span>
                     </div>
                     <div class="form-text mt-2 priority-examples">
-                        <small class="text-muted">
+                        <small >
                             
                             <span class="priority-example" data-range="1-3" style="opacity: 0.4;"><strong>1-3:</strong> Blog yazıları, arşiv</span> &nbsp;•&nbsp; 
                             <span class="priority-example" data-range="4-6" style="opacity: 1;"><strong>4-6:</strong> Ürün sayfaları</span> &nbsp;•&nbsp; 
@@ -1007,7 +1068,7 @@
 
     {{-- SOSYAL MEDYA & PAYLAŞIM SECTİON --}}
     <hr class="my-4">
-    <h6 class="text-muted mb-3">
+    <h6 class="mb-3">
         Sosyal Medya & Schema Ayarları
     </h6>
 
@@ -1016,7 +1077,7 @@
         <div class="card-header bg-success text-white" style="--tblr-success: #28a745 !important; --tblr-success-rgb: 40, 167, 69 !important; border-radius: 0.25rem 0.25rem 0px 0px !important;">
             <h6 class="mb-0">
                 Sosyal Medya Paylaşım Ayarları
-                <small class="opacity-75 ms-2">Facebook, LinkedIn, WhatsApp için</small>
+                <small class=" ms-2">Facebook, LinkedIn, WhatsApp için</small>
             </h6>
         </div>
         <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
@@ -1026,7 +1087,7 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">
                         Sosyal Medya Resmi
-                        <small class="text-muted ms-2">1200x630 önerilen</small>
+                        <small class="ms-2">1200x630 önerilen</small>
                     </label>
                     
                     {{-- Media Preview --}}
@@ -1081,7 +1142,7 @@
                     </div>
                     
                     <div class="form-text mt-2">
-                        <small class="text-muted">
+                        <small >
                             Facebook, LinkedIn, WhatsApp paylaşımlarında görünür
                         </small>
                     </div>
@@ -1113,7 +1174,7 @@
                             </div>
                         </div>
                         <div class="form-text mt-2">
-                            <small class="text-muted">
+                            <small >
                                 Kapalıysa yukarıdaki SEO verilerini kullanır (otomatik sistem)
                             </small>
                         </div>
@@ -1123,7 +1184,7 @@
             @else
             <div class="alert alert-info">
                 
-                <strong>Bilgi:</strong> Sosyal medya ayarları tüm diller için ortaktır. Ana dil ({{ strtoupper($availableLanguages[0] ?? 'tr') }}) sekmesinden düzenleyebilirsiniz.
+                <strong>Bilgi:</strong> Sosyal medya ayarları tüm diller için ortaktır.
             </div>
             @endif
             
@@ -1135,8 +1196,8 @@
                 <div class="row">
                     {{-- OG Title --}}
                     <div class="col-md-6 mb-3">
-                        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
-                            <input type="text" 
+                        <div class="form-floating position-relative" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+                            <input type="text"
                                    wire:model="seoDataCache.{{ $lang }}.og_title"
                                    class="form-control seo-no-enter"
                                    placeholder="Facebook/LinkedIn'de görünecek özel başlık"
@@ -1145,10 +1206,16 @@
                                    {{ $disabled ? 'disabled' : '' }}>
                             <label>
                                 Sosyal Medya Başlığı
-                                <small class="text-muted ms-2">Maksimum 60 karakter</small>
+                                <small class="ms-2">Maksimum 60 karakter</small>
                             </label>
+                            {{-- Character counter - sağ üst köşe --}}
+                            <span class="character-counter position-absolute"
+                                  id="og_title_counter_{{ $lang }}"
+                                  style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                <small >0/60</small>
+                            </span>
                             <div class="form-text">
-                                <small class="text-muted">
+                                <small >
                                     Sosyal medya paylaşımlarında görünecek başlık
                                 </small>
                             </div>
@@ -1157,7 +1224,7 @@
 
                     {{-- OG Description --}}
                     <div class="col-md-6 mb-3">
-                        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+                        <div class="form-floating position-relative" style="border-radius: 0.25rem !important; overflow: hidden !important;">
                             <textarea wire:model="seoDataCache.{{ $lang }}.og_description"
                                       class="form-control seo-no-enter"
                                       placeholder="Facebook/LinkedIn'de görünecek özel açıklama"
@@ -1166,10 +1233,16 @@
                                       {{ $disabled ? 'disabled' : '' }}></textarea>
                             <label>
                                 Sosyal Medya Açıklaması
-                                <small class="text-muted ms-2">Maksimum 155 karakter</small>
+                                <small class="ms-2">Maksimum 155 karakter</small>
                             </label>
+                            {{-- Character counter - sağ üst köşe --}}
+                            <span class="character-counter position-absolute"
+                                  id="og_description_counter_{{ $lang }}"
+                                  style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                <small >0/155</small>
+                            </span>
                             <div class="form-text">
-                                <small class="text-muted">
+                                <small >
                                     Sosyal medyada görünecek çekici açıklama
                                 </small>
                             </div>
@@ -1187,7 +1260,7 @@
         <div class="card-header bg-info text-white">
             <h6 class="mb-0">
                 İçerik Bilgileri
-                <small class="opacity-75 ms-2">Yazar ve içerik metadata</small>
+                <small class=" ms-2">Yazar ve içerik metadata</small>
             </h6>
         </div>
         <div class="card-body">
@@ -1206,10 +1279,10 @@
                                {{ $disabled ? 'disabled' : '' }}>
                         <label>
                             Yazar Adı
-                            <small class="text-muted ms-2">İçerik yazarı</small>
+                            <small class="ms-2">İçerik yazarı</small>
                         </label>
                         <div class="form-text">
-                            <small class="text-muted">
+                            <small >
                                 Bu içeriği yazan kişinin adı (schema.org author)
                             </small>
                         </div>
@@ -1226,10 +1299,10 @@
                                {{ $disabled ? 'disabled' : '' }}>
                         <label>
                             Yazar Profil URL'si
-                            <small class="text-muted ms-2">Yazarın profil sayfası</small>
+                            <small class="ms-2">Yazarın profil sayfası</small>
                         </label>
                         <div class="form-text">
-                            <small class="text-muted">
+                            <small >
                                 Yazarın profil sayfası veya kişisel web sitesi
                             </small>
                         </div>
@@ -1240,7 +1313,7 @@
             @else
             <div class="alert alert-info">
                 
-                <strong>Bilgi:</strong> İçerik bilgileri tüm diller için ortaktır. Ana dil ({{ strtoupper($availableLanguages[0] ?? 'tr') }}) sekmesinden düzenleyebilirsiniz.
+                <strong>Bilgi:</strong> İçerik bilgileri tüm diller için ortaktır.
             </div>
             @endif
         </div>
@@ -1251,6 +1324,28 @@
 @endforeach
 
 @if(!$disabled)
+{{-- Mobile Responsive CSS --}}
+<style>
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem !important;
+    }
+    .card-header {
+        padding: 0.75rem 1rem !important;
+    }
+    .ai-seo-toolbar .card-body {
+        padding: 0.75rem !important;
+    }
+    .accordion-body {
+        padding: 1rem !important;
+    }
+    .col-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+</style>
+
 {{-- SEO JavaScript initialization --}}
 <script>
     // Component için SEO data hazırlama
@@ -1524,7 +1619,7 @@
                 } else if (length >= maxLength * 0.7) {
                     small.className = 'text-success';
                 } else {
-                    small.className = 'text-muted';
+                    small.className = '';
                 }
             }
         }

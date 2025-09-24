@@ -561,7 +561,7 @@ Route::middleware(['admin', 'tenant'])->prefix('admin/ai/central-fallback')->nam
 });
 
 // Universal Entity mapping endpoint for translation system
-Route::middleware(['web', 'tenant'])->get('/admin/api/entity-mapping', function () {
+Route::middleware(['web', 'auth', 'tenant'])->get('/admin/api/entity-mapping', function () {
     try {
         $mapping = \App\Services\TranslationModuleRegistry::getEntityMapping();
         $stats = \App\Services\TranslationModuleRegistry::getStats();
@@ -612,6 +612,11 @@ Route::middleware(["admin", "tenant"])->prefix("admin/page/modal-test")->name("a
     Route::get("/3", [App\Http\Controllers\Admin\ModalTestController::class, "test3"])->name("test3");
     Route::get("/4", [App\Http\Controllers\Admin\ModalTestController::class, "test4"])->name("test4");
     Route::get("/5", [App\Http\Controllers\Admin\ModalTestController::class, "test5"])->name("test5");
+});
+
+// AI MODAL DESIGN TEST ROUTES - Yeni modal tasarım alternatifleri
+Route::middleware(["admin", "tenant"])->prefix("admin/page")->name("admin.page.")->group(function () {
+    Route::get("/test", [App\Http\Controllers\Admin\AIModalTestController::class, "index"])->name("test");
 });
 
 

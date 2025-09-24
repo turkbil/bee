@@ -28,7 +28,7 @@ class SmartResponseFormatter
         'kod-uret' => 'strict',
         'sql-sorgu' => 'strict',
         'regex-olustur' => 'strict',
-        
+
         // FLEXIBLE - Karma format
         'blog-yazisi-jeneratoru' => 'flexible',
         'hizli-seo-analizi' => 'flexible',
@@ -36,12 +36,18 @@ class SmartResponseFormatter
         'icerik-optimizasyon' => 'flexible',
         'meta-etiket-olustur' => 'flexible',
         'anahtar-kelime-analiz' => 'flexible',
-        
+
         // ADAPTIVE - Serbest format
         'yaratici-yazi' => 'adaptive',
         'hikaye-yaz' => 'adaptive',
         'icerik-uret' => 'adaptive',
         'yaratici-fikir' => 'adaptive',
+
+        // PREMIUM_LANDING - PDF için özel ultra premium format
+        'pdf-content-generation' => 'premium_landing',
+        'pdf-landing-generator' => 'premium_landing',
+        'file-content-analysis' => 'premium_landing',
+        'premium-landing-builder' => 'premium_landing',
     ];
 
     /**
@@ -92,6 +98,8 @@ class SmartResponseFormatter
                     return $this->applyFlexibleFormat($input, $output, $feature);
                 case 'adaptive':
                     return $this->applyAdaptiveFormat($output, $feature);
+                case 'premium_landing':
+                    return $this->applyPremiumLandingFormat($input, $output, $feature);
                 default:
                     return $this->applyFlexibleFormat($input, $output, $feature);
             }
@@ -481,16 +489,78 @@ class SmartResponseFormatter
     }
 
     /**
+     * Premium Landing Format - PDF için ultra premium format
+     */
+    private function applyPremiumLandingFormat(string $input, string $output, AIFeature $feature): string
+    {
+        Log::info('🚀 Premium Landing format applied', [
+            'feature' => $feature->slug,
+            'input_length' => strlen($input),
+            'output_length' => strlen($output)
+        ]);
+
+        // Premium landing HTML yapısı oluştur
+        $sectorInfo = $this->extractSectorFromOutput($output);
+        $colorScheme = $this->getSectorColorScheme($sectorInfo);
+
+        $html = "<div class='premium-landing-wrapper' data-sector='{$sectorInfo}'>";
+
+        // Hero Section
+        $heroContent = $this->extractHeroContent($output);
+        if ($heroContent) {
+            $html .= "<section class='hero-section bg-gradient-to-br {$colorScheme['gradient']} text-white py-16 px-8 rounded-xl mb-8'>";
+            $html .= "<div class='hero-content max-w-4xl mx-auto text-center'>";
+            $html .= "<h1 class='text-4xl md:text-6xl font-bold mb-6 leading-tight'>{$heroContent['title']}</h1>";
+            $html .= "<p class='text-xl md:text-2xl opacity-90 mb-8 leading-relaxed'>{$heroContent['subtitle']}</p>";
+            $html .= "</div>";
+            $html .= "</section>";
+        }
+
+        // Features Grid
+        $features = $this->extractFeatures($output);
+        if ($features) {
+            $html .= "<section class='features-grid grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12'>";
+            foreach ($features as $feature) {
+                $html .= "<div class='feature-card bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:shadow-2xl transition-all duration-300'>";
+                $html .= "<div class='feature-icon text-4xl mb-4'>{$this->getSectorIcon($sectorInfo)}</div>";
+                $html .= "<h3 class='text-xl font-semibold mb-3 text-{$colorScheme['accent']}'>{$feature['title']}</h3>";
+                $html .= "<p class='text-gray-600 leading-relaxed'>{$feature['description']}</p>";
+                $html .= "</div>";
+            }
+            $html .= "</section>";
+        }
+
+        // Stats Section
+        $stats = $this->extractStats($output);
+        if ($stats) {
+            $html .= "<section class='stats-section bg-gradient-to-r {$colorScheme['stats_bg']} rounded-2xl p-8 mb-12'>";
+            $html .= "<div class='stats-grid grid grid-cols-2 md:grid-cols-4 gap-8 text-center'>";
+            foreach ($stats as $stat) {
+                $html .= "<div class='stat-item'>";
+                $html .= "<div class='stat-number text-3xl font-bold text-{$colorScheme['stat_text']} mb-2'>{$stat['number']}</div>";
+                $html .= "<div class='stat-label text-sm opacity-80'>{$stat['label']}</div>";
+                $html .= "</div>";
+            }
+            $html .= "</div>";
+            $html .= "</section>";
+        }
+
+        $html .= "</div>";
+
+        return $html;
+    }
+
+    /**
      * Yaratıcı format geliştir
      */
     private function enhanceCreativeFormat(string $content): string
     {
         // Liste formatını kaldır ama içeriği koru
         $enhanced = $this->removeListing($content);
-        
+
         // DISABLED: Emoji ekle (çeviri sorunları nedeniyle devre dışı)
         // $enhanced = $this->addCreativeEmojis($enhanced);
-        
+
         return $enhanced;
     }
 
@@ -594,5 +664,208 @@ class SmartResponseFormatter
     {
         // Basit yanıt olarak bırak
         return $this->removeListing($content);
+    }
+
+    /**
+     * Premium Landing Helper Metodları
+     */
+    private function extractSectorFromOutput(string $output): string
+    {
+        // AI output'undan sektör bilgisini çıkar
+        $sectorPatterns = [
+            'endüstriyel|forklift|transpalet|makine|üretim|fabrika|imalat' => 'industrial',
+            'teknoloji|yazılım|software|ai|bilgisayar|kod|dijital' => 'technology',
+            'sağlık|doktor|hastane|tıp|medikal|ilaç' => 'healthcare',
+            'finans|banka|kredi|yatırım|sigorta|borsa' => 'finance',
+            'eğitim|okul|üniversite|kurs|öğretim|akademi' => 'education',
+            'otomotiv|araba|araç|motor|lastik|garage' => 'automotive',
+            'inşaat|yapı|beton|çimento|konut|emlak' => 'construction',
+            'gıda|restoran|yemek|içecek|aşçı|mutfak' => 'food'
+        ];
+
+        foreach ($sectorPatterns as $pattern => $sector) {
+            if (preg_match("/$pattern/ui", $output)) {
+                return $sector;
+            }
+        }
+
+        return 'general';
+    }
+
+    private function getSectorColorScheme(string $sector): array
+    {
+        $colorSchemes = [
+            'industrial' => [
+                'gradient' => 'from-orange-500 via-amber-500 to-yellow-600',
+                'accent' => 'orange-600',
+                'stats_bg' => 'from-orange-100 to-amber-100',
+                'stat_text' => 'orange-700'
+            ],
+            'technology' => [
+                'gradient' => 'from-blue-600 via-cyan-500 to-indigo-600',
+                'accent' => 'blue-600',
+                'stats_bg' => 'from-blue-100 to-cyan-100',
+                'stat_text' => 'blue-700'
+            ],
+            'healthcare' => [
+                'gradient' => 'from-green-500 via-emerald-500 to-teal-600',
+                'accent' => 'green-600',
+                'stats_bg' => 'from-green-100 to-emerald-100',
+                'stat_text' => 'green-700'
+            ],
+            'finance' => [
+                'gradient' => 'from-emerald-600 via-green-500 to-lime-600',
+                'accent' => 'emerald-600',
+                'stats_bg' => 'from-emerald-100 to-green-100',
+                'stat_text' => 'emerald-700'
+            ],
+            'education' => [
+                'gradient' => 'from-purple-500 via-violet-500 to-indigo-600',
+                'accent' => 'purple-600',
+                'stats_bg' => 'from-purple-100 to-violet-100',
+                'stat_text' => 'purple-700'
+            ],
+            'automotive' => [
+                'gradient' => 'from-red-500 via-rose-500 to-pink-600',
+                'accent' => 'red-600',
+                'stats_bg' => 'from-red-100 to-rose-100',
+                'stat_text' => 'red-700'
+            ],
+            'construction' => [
+                'gradient' => 'from-yellow-500 via-amber-500 to-orange-600',
+                'accent' => 'yellow-600',
+                'stats_bg' => 'from-yellow-100 to-amber-100',
+                'stat_text' => 'yellow-700'
+            ],
+            'food' => [
+                'gradient' => 'from-pink-500 via-rose-500 to-red-600',
+                'accent' => 'pink-600',
+                'stats_bg' => 'from-pink-100 to-rose-100',
+                'stat_text' => 'pink-700'
+            ],
+            'general' => [
+                'gradient' => 'from-gray-600 via-slate-500 to-zinc-600',
+                'accent' => 'gray-600',
+                'stats_bg' => 'from-gray-100 to-slate-100',
+                'stat_text' => 'gray-700'
+            ]
+        ];
+
+        return $colorSchemes[$sector] ?? $colorSchemes['general'];
+    }
+
+    private function getSectorIcon(string $sector): string
+    {
+        $icons = [
+            'industrial' => '🏭',
+            'technology' => '💻',
+            'healthcare' => '🏥',
+            'finance' => '💰',
+            'education' => '🎓',
+            'automotive' => '🚗',
+            'construction' => '🏗️',
+            'food' => '🍽️',
+            'general' => '🏢'
+        ];
+
+        return $icons[$sector] ?? $icons['general'];
+    }
+
+    private function extractHeroContent(string $output): ?array
+    {
+        // AI output'undan hero başlık ve alt başlık çıkar
+        $lines = explode("\n", $output);
+        $title = '';
+        $subtitle = '';
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+
+            // İlk anlamlı uzun satır başlık olabilir
+            if (empty($title) && strlen($line) > 20 && strlen($line) < 100) {
+                $title = strip_tags($line);
+                continue;
+            }
+
+            // İkinci anlamlı satır alt başlık olabilir
+            if (!empty($title) && empty($subtitle) && strlen($line) > 30 && strlen($line) < 200) {
+                $subtitle = strip_tags($line);
+                break;
+            }
+        }
+
+        if ($title) {
+            return ['title' => $title, 'subtitle' => $subtitle]; // Subtitle yoksa null
+        }
+
+        return null;
+    }
+
+    private function extractFeatures(string $output): array
+    {
+        // AI output'undan özellik listesi çıkar
+        $features = [];
+        $lines = explode("\n", $output);
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            // Liste öğelerini yakala
+            if (preg_match('/^\s*[-\*\•]\s*(.+)/', $line, $matches) ||
+                preg_match('/^\s*\d+[\.\)]\s*(.+)/', $line, $matches)) {
+
+                $featureText = trim($matches[1]);
+                if (strlen($featureText) > 10) {
+                    $features[] = [
+                        'title' => $this->extractFeatureTitle($featureText),
+                        'description' => $this->extractFeatureDescription($featureText)
+                    ];
+                }
+            }
+        }
+
+        return array_slice($features, 0, 6); // Max 6 özellik
+    }
+
+    private function extractFeatureTitle(string $text): string
+    {
+        // İlk cümleyi başlık olarak al
+        $sentences = explode('.', $text);
+        return trim($sentences[0]);
+    }
+
+    private function extractFeatureDescription(string $text): string
+    {
+        // İkinci cümleden itibaren açıklama
+        $sentences = explode('.', $text);
+        if (count($sentences) > 1) {
+            array_shift($sentences); // İlk cümleyi çıkar
+            return trim(implode('.', $sentences));
+        }
+        return $text;
+    }
+
+    private function extractStats(string $output): array
+    {
+        // AI output'undan istatistik sayıları çıkar
+        $stats = [];
+
+        // Sayı pattern'leri ara
+        if (preg_match_all('/(\d+)([+%]?)\s*(yıl|deneyim|proje|müşteri|ürün|hizmet|başarı)/ui', $output, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $stats[] = [
+                    'number' => $match[1] . $match[2],
+                    'label' => ucfirst($match[3])
+                ];
+            }
+        }
+
+        // Eğer PDF'te stat bulamazsa BOŞ DÖNDER - uydurma!
+        if (empty($stats)) {
+            return []; // PDF'te olmayan veri uydurulmaz
+        }
+
+        return array_slice($stats, 0, 4); // Max 4 stat
     }
 }

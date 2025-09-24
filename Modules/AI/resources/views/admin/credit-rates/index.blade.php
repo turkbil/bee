@@ -347,7 +347,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Auto-refresh statistics every 30 seconds
     setInterval(function() {
-        // TODO: AJAX call to refresh statistics
+        // Sayfa istatistiklerini yenile (30 saniyede bir)
+        if (document.querySelector('.statistics-container')) {
+            window.location.reload();
+        }
     }, 30000);
 });
 </script>

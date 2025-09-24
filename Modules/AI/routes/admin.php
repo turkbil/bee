@@ -283,7 +283,7 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                         'monthly_usage_formatted' => format_credit($monthlyUsage),
                         'daily_usage' => $dailyUsage,
                         'daily_usage_formatted' => format_credit($dailyUsage),
-                        'monthly_limit' => 0, // TODO: Limit sistemi eklenecek
+                        'monthly_limit' => 0, // Limit sistemi henüz implementa edilmedi
                         'monthly_limit_formatted' => '0',
                         'usage_percentage' => 0
                     ];

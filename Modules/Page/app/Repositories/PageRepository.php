@@ -134,7 +134,8 @@ readonly class PageRepository implements PageRepositoryInterface
             $query->orderBy($sortField, $sortDirection);
         }
         
-        return $query->paginate($perPage);
+        // 🚀 PERFORMANCE FIX: Eager loading ile N+1 query sorununu çöz
+        return $query->with(['seoSetting'])->paginate($perPage);
     }
     
     public function search(string $term, array $locales = []): Collection

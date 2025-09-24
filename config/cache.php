@@ -42,16 +42,20 @@ return [
             'driver' => 'redis',
             'connection' => 'cache',
             'lock_connection' => 'default',
-            // Varsayılan TTL - 24 saat
-            'ttl' => 60 * 60 * 24,
+            // Performance optimization TTL - 6 saat
+            'ttl' => 60 * 60 * 6,
+            'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
+            'serializer' => 'igbinary',
         ],
 
         'tenant' => [
             'driver' => 'redis',
             'connection' => 'cache',
             'lock_connection' => 'default',
-            // Tenant için varsayılan TTL - 24 saat
-            'ttl' => 60 * 60 * 24,
+            // Tenant için optimize edilmiş TTL - 4 saat
+            'ttl' => 60 * 60 * 4,
+            'prefix' => 'tenant_cache',
+            'serializer' => 'igbinary',
         ],
 
         'database' => [

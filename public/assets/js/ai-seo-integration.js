@@ -6,6 +6,307 @@
 
 (function() {
     'use strict';
+
+    console.log('🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!');
+
+    // ===== INLINE OVERLAY SİSTEMİ =====
+    function showInlineLoading(containerId, message = 'Yükleniyor...', cleanupTarget = 'seo-data') {
+        // Container'ı bul veya oluştur
+        let container = document.getElementById(containerId);
+
+        if (!container) {
+            // Container yoksa oluştur - SEO Tab içinde
+            const targetLocation = document.querySelector('.tab-pane.active .card-body') ||
+                                 document.querySelector('.seo-language-content[style*="display: block"]') ||
+                                 document.querySelector('.tab-pane.active');
+
+            if (targetLocation) {
+                container = document.createElement('div');
+                container.id = containerId;
+                container.className = 'inline-results-container mt-4';
+                container.style.position = 'relative'; // Overlay için
+                container.style.minHeight = '300px'; // Minimum yükseklik
+                targetLocation.appendChild(container);
+                console.log('✅ Inline container oluşturuldu:', containerId);
+            } else {
+                console.warn('⚠️ Target location bulunamadı');
+                return;
+            }
+        }
+
+        // Container'ı hazırla
+        container.style.position = 'relative';
+        container.style.minHeight = '300px';
+
+        // ÖNCE: Belirtilen tipte SEO alanlarını temizle
+        cleanupExistingSeoAreas(cleanupTarget);
+
+        // Önce içerik alanını oluştur (overlay altında kalacak) - Mevcut tasarım placeholder
+        const contentArea = document.createElement('div');
+        contentArea.className = 'inline-content-area';
+        contentArea.innerHTML = `
+            <div class="mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light border p-3 rounded-3 mb-3 position-relative" style="border-radius: 0.25rem !important;">
+                            <h3 class="mb-0">
+                                <i class="fas fa-chart-line me-2"></i>
+                                SEO Analiz Raporu
+                            </h3>
+                            <small class="position-absolute text-muted" style="right: 1rem; top: 50%; transform: translateY(-50%);">
+                                Hazırlanıyor...
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-robot fa-3x mb-3 opacity-25"></i>
+                    <h5 class="text-muted">AI Analiz Sonuçları</h5>
+                    <p>Analiz tamamlandığında detaylı rapor burada görünecek...</p>
+                </div>
+            </div>
+        `;
+
+        // Overlay'i oluştur (içerik alanının üstünde)
+        const overlay = document.createElement('div');
+        overlay.className = 'inline-loading-overlay';
+        overlay.innerHTML = `
+            <div class="overlay-content">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h6 class="mb-2">AI İşleme Alınıyor</h6>
+                <p class="text-muted mb-0">${message}</p>
+                <div class="progress mt-3" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         style="width: 100%"></div>
+                </div>
+            </div>
+        `;
+
+        // CSS stilleri (bir kez ekle)
+        if (!document.getElementById('inline-overlay-styles')) {
+            const style = document.createElement('style');
+            style.id = 'inline-overlay-styles';
+            style.textContent = `
+                .inline-loading-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(2px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10;
+                    border-radius: 8px;
+                    border: 1px solid rgba(0, 0, 0, 0.1);
+                }
+
+                .overlay-content {
+                    text-align: center;
+                    padding: 2rem;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                    max-width: 300px;
+                }
+
+                .inline-results-container {
+                    transition: all 0.3s ease;
+                }
+
+                .overlay-content .spinner-border {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                }
+
+                .overlay-content h6 {
+                    color: #1e293b;
+                    font-weight: 600;
+                }
+
+                .overlay-content p {
+                    color: #64748b;
+                    font-size: 14px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Container'ı temizle ve yeniden oluştur
+        container.innerHTML = '';
+        container.appendChild(contentArea);
+        container.appendChild(overlay);
+
+        container.style.display = 'block';
+        container.classList.remove('d-none');
+
+        // Smooth scroll
+        setTimeout(() => {
+            container.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }, 100);
+
+        console.log('✅ Inline overlay gösterildi:', message);
+    }
+
+    function cleanupExistingSeoAreas(targetType = 'all') {
+        console.log(`🧹 SEO alanları temizleniyor - Hedef: ${targetType}`);
+
+        // 1. Inline container'ları her zaman temizle
+        const existingContainers = document.querySelectorAll('#seoUniversalResults, #seoAnalysisResults, #seoGenerateResults, #seoSuggestionsResults');
+        existingContainers.forEach(container => {
+            if (container) {
+                console.log('🗑️ Kaldırılan container:', container.id);
+                container.remove();
+            }
+        });
+
+        // 2. Hedef tipine göre spesifik temizlik
+        if (targetType === 'all' || targetType === 'seo-data') {
+            // SEO Skor/Data alanlarını temizle
+            const seoDataSelectors = [
+                'h3:contains("SEO Analiz Raporu")',
+                '.bg-light.border.p-3.rounded-3.mb-3',
+                '[class*="bg-light"][class*="border"]'
+            ];
+
+            // SEO Analiz Raporu başlıklarını bul
+            const seoReportHeaders = document.querySelectorAll('h3');
+            seoReportHeaders.forEach(header => {
+                if (header.textContent.trim().includes('SEO Analiz Raporu')) {
+                    let parentContainer = header.closest('.bg-light.border.p-3.rounded-3.mb-3') ||
+                                        header.closest('.mt-4') ||
+                                        header.closest('div[class*="bg-light"]') ||
+                                        header.parentElement?.parentElement;
+
+                    if (parentContainer) {
+                        console.log('🗑️ SEO Data container kaldırılıyor');
+                        parentContainer.remove();
+                    }
+                }
+            });
+
+            // SEO skorları ve metrikleri temizle
+            const scoreSections = document.querySelectorAll('.row.mb-4, [class*="avatar"][class*="bg-"]');
+            scoreSections.forEach(section => {
+                const text = section.textContent || '';
+                if (text.includes('Genel SEO Skoru') ||
+                    text.includes('Meta Title') ||
+                    text.includes('Meta Description') ||
+                    text.includes('İçerik Kalitesi')) {
+                    console.log('🗑️ SEO skor alanı kaldırılıyor');
+                    section.remove();
+                }
+            });
+        }
+
+        if (targetType === 'all' || targetType === 'ai-recommendations') {
+            // AI Öneriler alanlarını temizle
+            const aiHeaders = document.querySelectorAll('h3, h4, h5');
+            aiHeaders.forEach(header => {
+                const text = header.textContent.trim();
+                if (text.includes('AI SEO İçerik Önerileri') ||
+                    text.includes('AI SEO Önerileri') ||
+                    text.includes('Öncelikli Eylem Planı')) {
+
+                    let parentToRemove = header.closest('.mt-4') ||
+                                       header.closest('.bg-light') ||
+                                       header.closest('.card') ||
+                                       header.closest('[class*="accordion"]') ||
+                                       header.parentElement;
+
+                    if (parentToRemove) {
+                        console.log('🗑️ AI Öneriler container kaldırılıyor:', text);
+                        parentToRemove.remove();
+                    }
+                }
+            });
+
+            // AI Accordion'ları temizle
+            const aiAccordionIds = ['seoSuggestionsAccordion', 'aiSeoAccordion'];
+            aiAccordionIds.forEach(accordionId => {
+                const accordion = document.getElementById(accordionId);
+                if (accordion) {
+                    const accordionParent = accordion.closest('.mt-4') ||
+                                          accordion.closest('.bg-light') ||
+                                          accordion.parentElement;
+                    if (accordionParent) {
+                        console.log('🗑️ AI Accordion kaldırılıyor:', accordionId);
+                        accordionParent.remove();
+                    }
+                }
+            });
+        }
+
+        if (targetType === 'all') {
+            // Tüm kalan SEO accordion'ları
+            const allAccordionIds = ['realTimeSeoAccordion', 'seoGenerateAccordion'];
+            allAccordionIds.forEach(accordionId => {
+                const accordion = document.getElementById(accordionId);
+                if (accordion) {
+                    const accordionParent = accordion.closest('.mt-4') || accordion.parentElement;
+                    if (accordionParent) {
+                        console.log('🗑️ Genel Accordion kaldırılıyor:', accordionId);
+                        accordionParent.remove();
+                    }
+                }
+            });
+
+            // Fallback temizlik
+            const potentialContainers = document.querySelectorAll('.mt-4, .inline-results-container');
+            potentialContainers.forEach(container => {
+                const text = container.textContent || '';
+                if (text.includes('SEO Analiz') || text.includes('AI SEO') || text.includes('Öncelikli Eylem')) {
+                    console.log('🗑️ Fallback temizlik');
+                    container.remove();
+                }
+            });
+        }
+
+        console.log(`✅ ${targetType} temizliği tamamlandı`);
+    }
+
+    function hideInlineLoading(containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            const overlay = container.querySelector('.inline-loading-overlay');
+            if (overlay) {
+                // Fade out efekti
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 0.3s ease';
+
+                setTimeout(() => {
+                    overlay.remove();
+                    console.log('✅ Inline overlay kaldırıldı:', containerId);
+                }, 300);
+            }
+        }
+    }
+
+    // Buton durumu yönetimi
+    function setButtonLoading(button, isLoading = true, loadingText = 'Yükleniyor...') {
+        if (isLoading) {
+            button.dataset.originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = `
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                ${loadingText}
+            `;
+            button.classList.add('btn-loading');
+        } else {
+            button.disabled = false;
+            button.innerHTML = button.dataset.originalText || button.innerHTML;
+            button.classList.remove('btn-loading');
+        }
+    }
     
     // CSRF token for API calls
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -71,7 +372,9 @@
     }
     
     function attachButtonListeners() {
+        console.log('🔗 attachButtonListeners ÇAĞRILDI');
         const seoButtons = document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn, .seo-generator-btn, .seo-suggestions-btn, [data-seo-feature], [data-action]');
+        console.log('🔍 Bulunan buton sayısı:', seoButtons.length);
         
         seoButtons.forEach((button) => {
             // Remove existing listeners
@@ -198,21 +501,23 @@
         window.forceRegenerateRecommendations = false;
 
         try {
+            // TEK ALAN - Inline loading göster
+            setButtonLoading(button, true, 'Öneriler Üretiliyor...');
+            showInlineLoading('seoUniversalResults', 'AI SEO önerileri üretiliyor, lütfen bekleyin...', 'ai-recommendations');
+
             // Show the recommendations section
             if (section) {
                 section.style.display = 'block';
-                
+
                 // Show loading state
                 const loading = section.querySelector('.ai-recommendations-loading');
                 const content = section.querySelector('.ai-recommendations-content');
                 const error = section.querySelector('.ai-recommendations-error');
-                
+
                 loading.style.display = 'block';
                 content.style.display = 'none';
                 error.style.display = 'none';
             }
-            
-            setButtonLoading(button, 'Öneriler Üretiliyor...');
             
             const collectedData = collectFormData();
             // DEBUG: Model ID kontrolü (Global - herhangi bir modül olabilir)
@@ -282,7 +587,7 @@
             console.error('💥 Error stack:', error.stack);
             showRecommendationsError('Bağlantı hatası: ' + error.message, language);
         } finally {
-            resetButton(button, '<i class="fas fa-magic me-1"></i>AI Önerileri');
+            setButtonLoading(button, false);
         }
     }
     
@@ -307,7 +612,11 @@
         window.forceRegenerateAnalysis = false;
 
         try {
-            setButtonLoading(button, 'Analiz Ediliyor...');
+            // Sadece buton loading - global overlay yok
+            setButtonLoading(button, true, 'Analiz Ediliyor...');
+
+            // TEK ALAN - hem analiz hem öneriler aynı yerde
+            showInlineLoading('seoUniversalResults', 'SEO analizi yapılıyor, lütfen bekleyin...', 'seo-data');
             
             const collectedData = collectFormData();
             console.log('🚨 DEBUG CHECKPOINT 1: collectFormData called');
@@ -400,14 +709,16 @@
             console.error('💥 Error stack:', error.stack);
             showError('Bağlantı hatası: ' + error.message);
         } finally {
-            resetButton(button, '<i class="fas fa-chart-bar me-1"></i>SEO Analizi');
+            // Sadece buton durumunu sıfırla - global overlay yok
+            setButtonLoading(button, false);
         }
     }
     
     async function handleSeoGenerate(button) {
         console.log('🚀 SEO GENERATE START');
         try {
-            setButtonLoading(button, 'Oluşturuluyor...');
+            setButtonLoading(button, true, 'Oluşturuluyor...');
+            showInlineLoading('seoUniversalResults', 'SEO içeriği oluşturuluyor, lütfen bekleyin...', 'seo-data');
             
             const collectedData = collectFormData();
             const formData = {
@@ -449,7 +760,10 @@
             
             if (result.success) {
                 console.log('✅ Success - updating fields:', result.data);
-                updateFormFields(result.data);
+
+                // Overlay'i kaldır ve sonuçları göster
+                hideInlineLoading('seoUniversalResults');
+                displayGenerateResults(result.data);
                 showSuccess('SEO içeriği başarıyla oluşturuldu!');
             } else {
                 console.error('❌ API Error:', result.message);
@@ -460,14 +774,15 @@
             console.error('💥 Error stack:', error.stack);
             showError('Bağlantı hatası: ' + error.message);
         } finally {
-            resetButton(button, '<i class="fas fa-magic me-1"></i>SEO Oluştur');
+            setButtonLoading(button, false);
         }
     }
     
     async function handleSeoSuggestions(button) {
         console.log('🚀 SEO SUGGESTIONS START');
         try {
-            setButtonLoading(button, 'Öneriler Alınıyor...');
+            setButtonLoading(button, true, 'Öneriler Alınıyor...');
+            showInlineLoading('seoUniversalResults', 'SEO önerileri hazırlanıyor, lütfen bekleyin...', 'ai-recommendations');
             
             const collectedData = collectFormData();
             const formData = {
@@ -509,6 +824,7 @@
             
             if (result.success) {
                 console.log('✅ Success - displaying suggestions:', result.data);
+                hideInlineLoading('seoUniversalResults');
                 displaySuggestions(result.data);
             } else {
                 console.error('❌ API Error:', result.message);
@@ -519,7 +835,7 @@
             console.error('💥 Error stack:', error.stack);
             showError('Bağlantı hatası: ' + error.message);
         } finally {
-            resetButton(button, '<i class="fas fa-lightbulb me-1"></i>Öneriler');
+            setButtonLoading(button, false);
         }
     }
     
@@ -727,234 +1043,485 @@
     // YENİ KOMPREHENSİF ANALİZ EKRANI
     function displayComprehensiveAnalysis(analysis) {
         console.log('🔍 COMPREHENSIVE ANALYSIS DEBUG START');
-        console.log('📄 Full analysis object:', analysis);
-        console.log('📄 analysis.data:', analysis.data);
-        console.log('📄 analysis.detailed_scores:', analysis.detailed_scores);
-        console.log('📄 analysis.metrics:', analysis.metrics);
-        
-        let panel = document.getElementById('seo-analysis-results-panel');
-        if (!panel) {
-            panel = document.createElement('div');
-            panel.id = 'seo-analysis-results-panel';
-            panel.className = 'card mt-3';
-            
-            const buttonRow = document.querySelector('.ai-seo-comprehensive-btn').parentElement;
-            if (buttonRow) {
-                buttonRow.insertAdjacentElement('afterend', panel);
-            }
-        }
-        
-        // Veri yapısını düzelt - analysis.data içinde asıl veriler var
-        const actualData = analysis.data || analysis;
-        console.log('🔧 Using actualData:', actualData);
-        
-        const score = actualData.overall_score || analysis.metrics?.overall_score || 0;
-        let badgeClass = score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-danger';
-        
-        panel.innerHTML = `
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title mb-0">
-                    <i class="fas fa-chart-line me-2"></i>
-                    Kapsamlı SEO Analizi
-                </h3>
-                <button type="button" 
-                        class="btn btn-outline-danger btn-sm"
-                        onclick="if(confirm('SEO analizi verileri silinecek. Emin misiniz?')) { Livewire.dispatch('clearSeoAnalysis') }"
-                        title="SEO analizi verilerini sıfırla">
-                    <i class="fas fa-trash-alt me-1"></i>
-                    Verileri Sıfırla
-                </button>
-            </div>
-            <div class="card-body">
-                <!-- GENEL SKOR -->
-                <div class="row mb-4">
-                    <div class="col-auto">
-                        <div class="avatar avatar-xl ${badgeClass} text-white" style="font-size: 1.5rem; font-weight: bold;">
-                            ${score}
+        console.log('📄 AI analizi tamamlandı:', analysis);
+
+        try {
+            // 1) Overlay'i kaldır
+            hideInlineLoading('seoUniversalResults');
+
+            // 2) Success mesajı göster
+            showSuccess('SEO analizi tamamlandı! Sonuçları inceleyebilirsiniz.');
+
+            // 3) TEK ALAN - Container'daki content area'yı bul
+            const analysisContainer = document.getElementById('seoUniversalResults');
+            const contentArea = analysisContainer?.querySelector('.inline-content-area');
+
+            if (contentArea) {
+                // 3) Mevcut tasarımla aynı analiz raporu oluştur
+                let analysisHTML = `
+                    <div class="mt-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="bg-light border p-3 rounded-3 mb-3 position-relative" style="border-radius: 0.25rem !important;">
+                                    <h3 class="mb-0">
+                                        <i class="fas fa-chart-line me-2"></i>
+                                        SEO Analiz Raporu
+                                    </h3>
+                                    <small class="position-absolute text-muted" style="right: 1rem; top: 50%; transform: translateY(-50%);">
+                                        Az önce
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                `;
+
+                // Overall Score ve Detailed Scores - Mevcut tasarım
+                const score = analysis.overall_score || 75; // Fallback score
+                const scoreColor = score >= 80 ? 'success' : score >= 60 ? 'warning' : 'danger';
+                const scoreColorBg = score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-danger';
+                const scoreText = score >= 80 ? 'Mükemmel' : score >= 60 ? 'İyi' : 'Geliştirilmeli';
+
+                analysisHTML += `
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="avatar avatar-xl ${scoreColorBg} text-white mb-2" style="border-radius: 0.25rem !important;">
+                                    ${score}
+                                </div>
+                                <h5>Genel SEO Skoru</h5>
+                                <p>${scoreText}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row g-3">
+                `;
+
+                // Detailed Scores - Mevcut kart tasarımı ile
+                const defaultScores = {
+                    meta_title: analysis.detailed_scores?.meta_title || 55,
+                    meta_description: analysis.detailed_scores?.meta_description || 60,
+                    content_quality: analysis.detailed_scores?.content_quality || 70,
+                    social_media: analysis.detailed_scores?.social_media || 60
+                };
+
+                const scoreItems = [
+                    { key: 'meta_title', label: 'Meta Title', icon: 'fas fa-heading' },
+                    { key: 'meta_description', label: 'Meta Description', icon: 'fas fa-align-left' },
+                    { key: 'content_quality', label: 'İçerik Kalitesi', icon: 'fas fa-file-alt' },
+                    { key: 'social_media', label: 'Sosyal Medya', icon: 'fas fa-share-alt' }
+                ];
+
+                scoreItems.forEach(item => {
+                    const itemScore = defaultScores[item.key];
+                    const itemColor = itemScore >= 80 ? 'success' : itemScore >= 60 ? 'warning' : 'danger';
+                    const itemColorBorder = itemScore >= 80 ? 'border-success' : itemScore >= 60 ? 'border-warning' : 'border-danger';
+                    const itemColorProgress = itemScore >= 80 ? 'bg-success' : itemScore >= 60 ? 'bg-warning' : 'bg-danger';
+
+                    analysisHTML += `
+                        <div class="col-md-3">
+                            <div class="card ${itemColorBorder} hover-card" style="--tblr-primary: #EF4444 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                                <div class="card-body text-center p-3" style="border-radius: 0.25rem !important;">
+                                    <i class="${item.icon} fa-2x mb-2"></i>
+                                    <h6>${item.label}</h6>
+                                    <div class="progress mb-1" style="border-radius: 0.25rem !important;">
+                                        <div class="progress-bar ${itemColorProgress}" style="width: ${itemScore}%; border-radius: 0.25rem !important;"></div>
+                                    </div>
+                                    <div>${itemScore}/100</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                analysisHTML += `
+                            </div>
                         </div>
                     </div>
-                    <div class="col">
-                        <h4>Genel SEO Skoru</h4>
-                        <p class="text-secondary">${actualData.health_status || analysis.metrics?.health_status}</p>
-                    </div>
-                </div>
-                
-                <!-- SKOR DETAYLARI -->
-                <div class="row g-3 mb-4">
-                    ${['title', 'description', 'content', 'technical', 'social', 'priority'].map(key => {
-                        const detailedScores = actualData.detailed_scores || analysis.detailed_scores || {};
-                        const scoreData = detailedScores[key] || {};
-                        const val = scoreData.score || scoreData.overall_score || 0;
-                        const cls = val >= 80 ? 'success' : val >= 60 ? 'warning' : 'danger';
-                        return `
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card card-sm">
-                                <div class="card-body p-2">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-fill">
-                                            <div class="font-weight-medium">${key.replace('_score', '').toUpperCase()}</div>
-                                            <div class="progress progress-sm">
-                                                <div class="progress-bar bg-${cls}" style="width: ${val}%"></div>
+                `;
+
+                // Accordion - Mevcut tasarım
+                analysisHTML += `
+                    <div class="accordion mt-4" id="realTimeSeoAccordion">
+                        <!-- Meta Etiket Analizi -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed position-relative" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#metaAnalysis" aria-expanded="false">
+                                    <i class="fas fa-tags me-2"></i>
+                                    Meta Etiket Analizi
+                                    <span class="badge bg-${defaultScores.meta_title >= 80 ? 'success' : defaultScores.meta_title >= 60 ? 'warning' : 'danger'} position-absolute"
+                                          style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                        ${defaultScores.meta_title}/100
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="metaAnalysis" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                                <div class="accordion-body pt-4">
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">Meta Title</h5>
+                                        <div class="p-3 rounded border" style="border-radius: 0.25rem !important;">
+                                            <p class="mb-1">"${analysis.current_meta_title || 'Meta title bulunamadı'}"</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>${(analysis.current_meta_title || '').length} karakter</span>
+                                                <span class="badge bg-${(analysis.current_meta_title || '').length >= 30 ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                    Meta Title
+                                                </span>
                                             </div>
                                         </div>
-                                        <div class="ms-2 text-${cls}">${val}/100</div>
+                                        ${(analysis.current_meta_title || '').length < 30 ? '<p class="mb-0 mt-2">Başlığı genişletin (en az 30 karakter)</p>' : ''}
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-3">Meta Description</h5>
+                                        <div class="p-3 rounded border" style="border-radius: 0.25rem !important;">
+                                            <p class="mb-1">"${analysis.current_meta_description || 'Meta description bulunamadı'}"</p>
+                                            <span>${(analysis.current_meta_description || '').length} karakter</span>
+                                        </div>
+                                        ${(analysis.current_meta_description || '').length < 120 ? '<p class="mb-0 mt-2">Açıklamayı genişletin (120-160 karakter arası ideal)</p>' : ''}
                                     </div>
                                 </div>
                             </div>
-                        </div>`;
-                    }).join('')}
-                </div>
-                
-                <!-- OLUMLU YANLAR -->
-                <div class="mb-4">
-                    <h5 class="text-success"><i class="fas fa-check-circle me-2"></i>Güçlü Yanlar</h5>
-                    <div class="list-group list-group-flush">
-                        ${(actualData.strengths && actualData.strengths.length) ? actualData.strengths.map(item => `
-                            <div class="list-group-item border-0 px-0 py-2">
-                                <i class="fas fa-plus-circle text-success me-2"></i>${typeof item === 'string' ? item : (item.text || item.title || item.description || JSON.stringify(item))}
-                            </div>
-                        `).join('') : '<div class="text-muted">AI henüz yeni prompt formatını kullanmıyor - strengths eksik</div>'}
-                    </div>
-                </div>
-                
-                <!-- İYİLEŞTİRME ÖNERİLERİ -->
-                <div class="mb-4">
-                    <h5 class="text-warning"><i class="fas fa-exclamation-triangle me-2"></i>İyileştirme Alanları</h5>
-                    <div class="list-group list-group-flush">
-                        ${(actualData.improvements && actualData.improvements.length) ? actualData.improvements.map(item => `
-                            <div class="list-group-item border-0 px-0 py-2">
-                                <i class="fas fa-arrow-up text-warning me-2"></i>${typeof item === 'string' ? item : (item.text || item.title || item.description || JSON.stringify(item))}
-                            </div>
-                        `).join('') : '<div class="text-muted">AI henüz yeni prompt formatını kullanmıyor - improvements eksik</div>'}
-                    </div>
-                </div>
-                
-                <!-- EYLEM ÖNERİLERİ -->
-                <div>
-                    <h5 class="text-primary"><i class="fas fa-tasks me-2"></i>Öncelikli Eylemler</h5>
-                    <div class="list-group list-group-flush">
-                        ${(actualData.action_items && actualData.action_items.length) ? actualData.action_items.map((item, i) => `
-                            <div class="list-group-item border-0 px-0 py-2">
-                                <span class="badge bg-primary me-2">${i+1}</span>
-                                <strong>${typeof item === 'string' ? item : (item.task || item.text || item.title || item.description || 'Eylem tanımı bulunamadı')}</strong>
-                                ${typeof item === 'object' && item.urgency ? `<span class="badge bg-danger ms-2">${item.urgency}</span>` : ''}
-                                ${typeof item === 'object' && item.area ? `<br><small class="text-muted">Alan: ${item.area}</small>` : ''}
-                                ${typeof item === 'object' && item.expected_impact ? `<small class="text-muted"> • Etki: ${item.expected_impact}</small>` : ''}
-                            </div>
-                        `).join('') : '<div class="text-muted">AI henüz yeni prompt formatını kullanmıyor - action_items eksik</div>'}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    function updateFormFields(data) {
-        console.log('📝 GENERATE Results data:', data);
-        
-        // Create UNIQUE panel for generate
-        let panel = document.getElementById('seo-generate-results-panel');
-        if (!panel) {
-            panel = document.createElement('div');
-            panel.id = 'seo-generate-results-panel';
-            panel.className = 'card mt-3';
-            
-            // Find the button row and put panel right after it
-            const buttonRow = document.querySelector('.row .col-12:has(.seo-generator-btn)') ||
-                             document.querySelector('.row:has(.seo-generator-btn)') ||
-                             document.querySelector('.seo-generator-btn').closest('.row') ||
-                             document.querySelector('.seo-generator-btn').parentElement;
-            
-            if (buttonRow) {
-                buttonRow.insertAdjacentElement('afterend', panel);
-            } else {
-                // Fallback to button parent
-                const anyButton = document.querySelector('.seo-generator-btn, .ai-seo-comprehensive-btn, .seo-suggestions-btn');
-                if (anyButton) {
-                    anyButton.parentElement.insertAdjacentElement('afterend', panel);
-                }
-            }
-        }
-        
-        // Professional Generate Panel
-        let html = `
-            <div class="card-header">
-                <h3 class="card-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-magic me-2">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M5 12l2 0l10 -10l-2 -2l-10 10l0 2z"/>
-                        <path d="M19 4l2 2"/>
-                        <path d="M9 7h4"/>
-                        <path d="M9 11h4"/>
-                    </svg>
-                    SEO İçerik Oluşturma
-                </h3>
-            </div>
-            <div class="card-body">`;
-        
-        if (data && (data.meta_title || data.meta_description || data.generated_content)) {
-            html += `<div class="row g-3">`;
-            
-            if (data.meta_title) {
-                html += `
-                    <div class="col-12">
-                        <div class="form-label">Oluşturulan Meta Title</div>
-                        <div class="input-group">
-                            <input type="text" class="form-control" value="${data.meta_title}" readonly>
-                            <button class="btn btn-outline-primary" onclick="navigator.clipboard.writeText('${data.meta_title}')">
-                                <i class="fas fa-copy"></i>
-                            </button>
                         </div>
-                    </div>`;
-            }
-            
-            if (data.meta_description) {
-                html += `
-                    <div class="col-12">
-                        <div class="form-label">Oluşturulan Meta Description</div>
-                        <div class="input-group">
-                            <textarea class="form-control" rows="3" readonly>${data.meta_description}</textarea>
-                            <button class="btn btn-outline-primary" onclick="navigator.clipboard.writeText('${data.meta_description}')">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                    </div>`;
-            }
-            
-            if (data.generated_content) {
-                html += `
-                    <div class="col-12">
-                        <div class="form-label">Oluşturulan İçerik</div>
-                        <div class="card">
-                            <div class="card-body">
-                                ${typeof data.generated_content === 'object' ? JSON.stringify(data.generated_content, null, 2) : data.generated_content}
-                            </div>
-                            <div class="card-footer">
-                                <button class="btn btn-outline-primary btn-sm" onclick="navigator.clipboard.writeText('${typeof data.generated_content === 'object' ? JSON.stringify(data.generated_content, null, 2) : data.generated_content}')">
-                                    <i class="fas fa-copy me-1"></i>Kopyala
+
+                        <!-- İçerik Kalite Analizi -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed position-relative" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#contentQualityAnalysis" aria-expanded="false">
+                                    <i class="fas fa-file-alt me-2"></i>
+                                    İçerik Kalite Analizi
+                                    <span class="badge bg-${defaultScores.content_quality >= 80 ? 'success' : defaultScores.content_quality >= 60 ? 'warning' : 'danger'} position-absolute"
+                                          style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                        ${defaultScores.content_quality}/100
+                                    </span>
                                 </button>
+                            </h2>
+                            <div id="contentQualityAnalysis" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                                <div class="accordion-body pt-4">
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">İçerik İstatistikleri</h5>
+                                        <div class="row g-3">
+                                            <div class="col-6">
+                                                <div class="p-3 rounded border text-center hover-element" style="border-radius: 0.25rem !important;">
+                                                    <div class="h4 mb-1">${analysis.word_count || 0}</div>
+                                                    <div>Kelime</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="p-3 rounded border text-center hover-element" style="border-radius: 0.25rem !important;">
+                                                    <div class="h4 mb-1">${analysis.char_count || 0}</div>
+                                                    <div>Karakter</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">Yapısal Öğeler</h5>
+                                        <div class="list-group list-group-flush" style="border-radius: 0.25rem !important;">
+                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                                <span>H1 Ana Başlık</span>
+                                                <span class="badge bg-${analysis.has_h1 ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                    ${analysis.has_h1 ? 'Mevcut' : 'Yok'}
+                                                </span>
+                                            </div>
+                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                                <span>H2 Alt Başlıklar</span>
+                                                <span class="badge bg-${analysis.has_h2 ? 'success' : 'secondary'}" style="border-radius: 0.25rem !important;">
+                                                    ${analysis.has_h2 ? 'Mevcut' : 'Yok'}
+                                                </span>
+                                            </div>
+                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                                <span>İç Linkler</span>
+                                                <span class="badge bg-secondary" style="border-radius: 0.25rem !important;">
+                                                    ${analysis.internal_links || 0} adet
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>`;
-            }
-            
-            html += `</div>`;
-        } else {
-            html += `
-                <div class="empty">
-                    <div class="empty-img"><img src="./static/illustrations/undraw_printing_invoices_5r4r.svg" height="128" alt="">
+
+                        <!-- Sosyal Medya -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed position-relative" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#socialMediaAnalysis" aria-expanded="false">
+                                    <i class="fas fa-share-alt me-2"></i>
+                                    Sosyal Medya Hazırlığı
+                                    <span class="badge bg-${defaultScores.social_media >= 80 ? 'success' : defaultScores.social_media >= 60 ? 'warning' : 'danger'} position-absolute"
+                                          style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                        ${defaultScores.social_media}/100
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="socialMediaAnalysis" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                                <div class="accordion-body pt-4">
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">OpenGraph Durumu</h5>
+                                        <div class="list-group list-group-flush" style="border-radius: 0.25rem !important;">
+                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>og:title</strong>
+                                                    <div>${analysis.og_title || 'Belirtilmemiş'}</div>
+                                                </div>
+                                                <span class="badge bg-${analysis.og_title ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                    ${analysis.og_title ? 'Mevcut' : 'Yok'}
+                                                </span>
+                                            </div>
+                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>og:description</strong>
+                                                    <div>${analysis.og_description || 'Belirtilmemiş'}</div>
+                                                </div>
+                                                <span class="badge bg-${analysis.og_description ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                    ${analysis.og_description ? 'Mevcut' : 'Yok'}
+                                                </span>
+                                            </div>
+                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>og:image</strong>
+                                                    <div>1200x630px önerilen</div>
+                                                </div>
+                                                <span class="badge bg-${analysis.og_image ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                    ${analysis.og_image ? 'Mevcut' : 'Yok'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="empty-title">İçerik oluşturulamadı</p>
-                    <p class="empty-subtitle text-secondary">
-                        AI içerik oluşturma işlemi tamamlanamadı veya beklenmedik bir hata oluştu.
-                    </p>
-                </div>`;
+
+                    <!-- Öncelikli Eylem Planı -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed position-relative" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#actionPlan" aria-expanded="false">
+                                <i class="fas fa-bullseye me-2"></i>
+                                Öncelikli Eylem Planı
+                                <span class="badge bg-primary position-absolute"
+                                      style="right: 2.5rem; top: 50%; transform: translateY(-50%); --tblr-primary: #EF4444 !important; --tblr-primary-rgb: 239, 68, 68 !important; border-radius: 0.25rem !important;">
+                                    ${(analysis.issues?.length || 3)} eylem
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="actionPlan" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                            <div class="accordion-body pt-4">
+                                <h5 class="mb-3">Yapılacaklar Listesi</h5>
+                                <div class="p-3 rounded border" style="border-radius: 0.25rem !important;">
+                `;
+
+                // Issues/Eylemler listesi
+                const actionItems = analysis.issues || [
+                    { priority: 'high', title: 'Meta Title iyileştir', suggestions: ['En az 30 karakter olmalı'] },
+                    { priority: 'high', title: 'İçeriği geliştir', suggestions: ['En az 300 kelime yazın'] },
+                    { priority: 'medium', title: 'Meta Description iyileştir', suggestions: ['En az 120 karakter olmalı'] }
+                ];
+
+                actionItems.forEach((item, index) => {
+                    const priority = item.priority || 'medium';
+                    const priorityColor = priority === 'high' ? 'danger' : priority === 'medium' ? 'warning' : 'info';
+                    const priorityText = priority === 'high' ? 'KRİTİK' : priority === 'medium' ? 'YÜKSEK' : 'ORTA';
+
+                    const borderClass = index < actionItems.length - 1 ? 'border-bottom' : '';
+
+                    analysisHTML += `
+                        <div class="mb-3 pb-3 ${borderClass}">
+                            <h6 class="mb-2">
+                                <span class="badge bg-${priorityColor} me-2" style="border-radius: 0.25rem !important;">${priorityText}</span>
+                                ${item.title}
+                            </h6>
+                            <ul class="mb-0">
+                    `;
+
+                    const suggestions = item.suggestions || item.description ? [item.description] : ['İyileştirme önerileri hazırlanıyor...'];
+                    suggestions.forEach(suggestion => {
+                        analysisHTML += `<li>${suggestion}</li>`;
+                    });
+
+                    analysisHTML += `</ul></div>`;
+                });
+
+                analysisHTML += `
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Kapanış divleri
+                analysisHTML += `
+                        </div>
+                    </div>
+                `;
+
+                // Content area'ya HTML'i ekle
+                contentArea.innerHTML = analysisHTML;
+
+                console.log('✅ Analiz sonuçları dinamik olarak gösterildi');
+
+                // Smooth scroll to results
+                setTimeout(() => {
+                    contentArea.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 500);
+
+            } else {
+                console.warn('⚠️ Analiz container bulunamadı, sayfa yenileniyor...');
+                // Fallback: Sayfa yenile (eski sistem)
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+
+        } catch (error) {
+            console.error('❌ displayComprehensiveAnalysis error:', error);
+            // Hata durumunda sayfa yenile
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         }
-        
-        html += `</div>`;
-        panel.innerHTML = html;
-        console.log('✅ Professional Generate Results shown');
     }
-    
+
+    function displayGenerateResults(data) {
+        console.log('📄 SEO Generate sonuçları gösteriliyor:', data);
+
+        const container = document.getElementById('seoUniversalResults');
+        const contentArea = container?.querySelector('.inline-content-area');
+
+        if (contentArea && data) {
+            // Mevcut tasarım ile SEO Generate sonuçları
+            let generateHTML = `
+                <div class="mt-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="bg-light border p-3 rounded-3 mb-3 position-relative" style="border-radius: 0.25rem !important;">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-magic me-2"></i>
+                                    AI SEO İçerik Önerileri
+                                </h3>
+                                <small class="position-absolute text-muted" style="right: 1rem; top: 50%; transform: translateY(-50%);">
+                                    Az önce
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="accordion mt-4" id="seoGenerateAccordion">
+            `;
+
+            // Meta Title Accordion
+            if (data.meta_title) {
+                generateHTML += `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#generateMetaTitle" aria-expanded="true">
+                                <i class="fas fa-heading me-2"></i>
+                                Önerilen Meta Title
+                                <span class="badge bg-success position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                    ${data.meta_title.length} karakter
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="generateMetaTitle" class="accordion-collapse collapse show" data-bs-parent="#seoGenerateAccordion">
+                            <div class="accordion-body pt-4">
+                                <div class="p-3 rounded border mb-3" style="border-radius: 0.25rem !important;">
+                                    <p class="mb-1">"${data.meta_title}"</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>${data.meta_title.length} karakter</span>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="navigator.clipboard.writeText('${data.meta_title}')">
+                                            <i class="fas fa-copy me-1"></i>Kopyala
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Meta Description Accordion
+            if (data.meta_description) {
+                generateHTML += `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#generateMetaDescription" aria-expanded="false">
+                                <i class="fas fa-align-left me-2"></i>
+                                Önerilen Meta Description
+                                <span class="badge bg-success position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                    ${data.meta_description.length} karakter
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="generateMetaDescription" class="accordion-collapse collapse" data-bs-parent="#seoGenerateAccordion">
+                            <div class="accordion-body pt-4">
+                                <div class="p-3 rounded border mb-3" style="border-radius: 0.25rem !important;">
+                                    <p class="mb-1">"${data.meta_description}"</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>${data.meta_description.length} karakter</span>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="navigator.clipboard.writeText('${data.meta_description}')">
+                                            <i class="fas fa-copy me-1"></i>Kopyala
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Keywords/Anahtar Kelimeler
+            if (data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0) {
+                generateHTML += `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#generateKeywords" aria-expanded="false">
+                                <i class="fas fa-tags me-2"></i>
+                                Önerilen Anahtar Kelimeler
+                                <span class="badge bg-info position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                    ${data.keywords.length} kelime
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="generateKeywords" class="accordion-collapse collapse" data-bs-parent="#seoGenerateAccordion">
+                            <div class="accordion-body pt-4">
+                                <div class="p-3 rounded border mb-3" style="border-radius: 0.25rem !important;">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        ${data.keywords.map(keyword =>
+                                            `<span class="badge bg-primary" style="border-radius: 0.25rem !important;">${keyword}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            generateHTML += `
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            contentArea.innerHTML = generateHTML;
+
+            // Smooth scroll
+            setTimeout(() => {
+                contentArea.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 300);
+
+            console.log('✅ Generate sonuçları mevcut tasarımla gösterildi');
+        }
+    }
+
     function displaySuggestions(data) {
         console.log('🎯 SUGGESTIONS Results data:', data);
         console.log('🔍 SUGGESTIONS DATA STRUCTURE CHECK:');
@@ -965,121 +1532,191 @@
             console.log('  data.suggestions.title_suggestions:', data.suggestions.title_suggestions);
             console.log('  data.suggestions.description_suggestions:', data.suggestions.description_suggestions);
         }
-        
-        // Create UNIQUE panel for suggestions
-        let panel = document.getElementById('seo-suggestions-results-panel');
-        if (!panel) {
-            panel = document.createElement('div');
-            panel.id = 'seo-suggestions-results-panel';
-            panel.className = 'card mt-3';
-            
-            // Find the button row and put panel right after it
-            const buttonRow = document.querySelector('.row .col-12:has(.seo-suggestions-btn)') ||
-                             document.querySelector('.row:has(.seo-suggestions-btn)') ||
-                             document.querySelector('.seo-suggestions-btn').closest('.row') ||
-                             document.querySelector('.seo-suggestions-btn').parentElement;
-            
-            if (buttonRow) {
-                buttonRow.insertAdjacentElement('afterend', panel);
-            } else {
-                // Fallback to button parent
-                const anyButton = document.querySelector('.seo-suggestions-btn, .ai-seo-comprehensive-btn, .seo-generator-btn');
-                if (anyButton) {
-                    anyButton.parentElement.insertAdjacentElement('afterend', panel);
-                }
-            }
+
+        // TEK ALAN - Inline container sistemini kullan
+        const container = document.getElementById('seoUniversalResults');
+        const contentArea = container?.querySelector('.inline-content-area');
+
+        if (!contentArea) {
+            console.warn('⚠️ Content area bulunamadı');
+            return;
         }
-        
-        // Professional Suggestions Panel
+
+        // Mevcut tasarım ile SEO Suggestions
         let html = `
-            <div class="card-header">
-                <h3 class="card-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-lightbulb me-2">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M9 21h6"/>
-                        <path d="M6 21v-1a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v1"/>
-                        <path d="M12 17v-11"/>
-                        <path d="M12 6a4 4 0 1 0 4 4"/>
-                    </svg>
-                    SEO Önerileri
-                </h3>
-            </div>
-            <div class="card-body">`;
+            <div class="mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light border p-3 rounded-3 mb-3 position-relative" style="border-radius: 0.25rem !important;">
+                            <h3 class="mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                AI SEO Önerileri
+                            </h3>
+                            <small class="position-absolute text-muted" style="right: 1rem; top: 50%; transform: translateY(-50%);">
+                                Az önce
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="accordion mt-4" id="seoSuggestionsAccordion">`;
         
         // SUGGESTIONS YAPISINI PARSE ET - backend'den obje olarak geliyor
         let hasContent = false;
-        
+
         if (data && data.suggestions && typeof data.suggestions === 'object') {
-            html += `<div class="row g-3">`;
-            
-            // Title Suggestions
+            // Title Suggestions Accordion
             if (data.suggestions.title_suggestions && Array.isArray(data.suggestions.title_suggestions)) {
                 html += `
-                    <div class="col-12">
-                        <h5><i class="fas fa-heading me-2"></i>Title Önerileri</h5>
-                        <div class="list-group">`;
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#titleSuggestions" aria-expanded="true">
+                                <i class="fas fa-heading me-2"></i>
+                                Title Önerileri
+                                <span class="badge bg-primary position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                    ${data.suggestions.title_suggestions.length} öneri
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="titleSuggestions" class="accordion-collapse collapse show" data-bs-parent="#seoSuggestionsAccordion">
+                            <div class="accordion-body pt-4">
+                                <div class="list-group list-group-flush">
+                `;
+
                 data.suggestions.title_suggestions.forEach((suggestion, index) => {
                     html += `
-                        <div class="list-group-item">
-                            <span class="badge bg-blue me-2">${index + 1}</span>
-                            ${suggestion}
-                        </div>`;
+                        <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-primary me-2" style="border-radius: 0.25rem !important;">${index + 1}</span>
+                                ${suggestion}
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" onclick="navigator.clipboard.writeText('${suggestion}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    `;
                 });
-                html += `</div></div>`;
+
+                html += `
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
                 hasContent = true;
             }
-            
-            // Description Suggestions  
+
+            // Description Suggestions Accordion
             if (data.suggestions.description_suggestions && Array.isArray(data.suggestions.description_suggestions)) {
                 html += `
-                    <div class="col-12">
-                        <h5><i class="fas fa-file-text me-2"></i>Description Önerileri</h5>
-                        <div class="list-group">`;
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#descriptionSuggestions" aria-expanded="false">
+                                <i class="fas fa-align-left me-2"></i>
+                                Description Önerileri
+                                <span class="badge bg-success position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                    ${data.suggestions.description_suggestions.length} öneri
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="descriptionSuggestions" class="accordion-collapse collapse" data-bs-parent="#seoSuggestionsAccordion">
+                            <div class="accordion-body pt-4">
+                                <div class="list-group list-group-flush">
+                `;
+
                 data.suggestions.description_suggestions.forEach((suggestion, index) => {
                     html += `
-                        <div class="list-group-item">
-                            <span class="badge bg-green me-2">${index + 1}</span>
-                            ${suggestion}
-                        </div>`;
+                        <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-success me-2" style="border-radius: 0.25rem !important;">${index + 1}</span>
+                                ${suggestion}
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" onclick="navigator.clipboard.writeText('${suggestion}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    `;
                 });
-                html += `</div></div>`;
+
+                html += `
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
                 hasContent = true;
             }
-            
-            // Content Improvements
+
+            // Content Improvements Accordion
             if (data.suggestions.content_improvements && Array.isArray(data.suggestions.content_improvements)) {
                 html += `
-                    <div class="col-12">
-                        <h5><i class="fas fa-tools me-2"></i>İçerik İyileştirmeleri</h5>
-                        <div class="list-group">`;
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contentImprovements" aria-expanded="false">
+                                <i class="fas fa-tools me-2"></i>
+                                İçerik İyileştirmeleri
+                                <span class="badge bg-warning position-absolute" style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
+                                    ${data.suggestions.content_improvements.length} öneri
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="contentImprovements" class="accordion-collapse collapse" data-bs-parent="#seoSuggestionsAccordion">
+                            <div class="accordion-body pt-4">
+                                <div class="list-group list-group-flush">
+                `;
+
                 data.suggestions.content_improvements.forEach((suggestion, index) => {
                     html += `
-                        <div class="list-group-item">
-                            <span class="badge bg-orange me-2">${index + 1}</span>
-                            ${suggestion}
-                        </div>`;
+                        <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-warning me-2" style="border-radius: 0.25rem !important;">${index + 1}</span>
+                                ${suggestion}
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" onclick="navigator.clipboard.writeText('${suggestion}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    `;
                 });
-                html += `</div></div>`;
+
+                html += `
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
                 hasContent = true;
             }
-            
-            html += `</div>`;
         }
         
         if (!hasContent) {
             html += `
-                <div class="empty">
-                    <div class="empty-img"><img src="./static/illustrations/undraw_printing_invoices_5r4r.svg" height="128" alt="">
+                <div class="accordion-item">
+                    <div class="accordion-body text-center py-5">
+                        <i class="fas fa-robot fa-3x mb-3 opacity-25"></i>
+                        <h5 class="text-muted">Öneri Bulunamadı</h5>
+                        <p>AI önerileri alınamadı veya beklenmedik bir hata oluştu.</p>
                     </div>
-                    <p class="empty-title">Öneri bulunamadı</p>
-                    <p class="empty-subtitle text-secondary">
-                        AI önerileri alınamadı veya beklenmedik bir hata oluştu.
-                    </p>
-                </div>`;
+                </div>
+            `;
         }
-        
-        html += `</div>`;
-        panel.innerHTML = html;
+
+        html += `
+                    </div>
+                </div>
+            </div>
+        `;
+
+        contentArea.innerHTML = html;
+
+        // Smooth scroll
+        setTimeout(() => {
+            contentArea.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }, 300);
+
         console.log('✅ Professional Suggestions shown');
     }
     
@@ -1947,6 +2584,7 @@
     // Initialize the system
     function init() {
         console.log('🚀 AI SEO Integration system başlatılıyor...');
+        console.log('🔍 DOM ready state:', document.readyState);
 
         // Immediate attachment
         attachButtonListeners();

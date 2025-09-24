@@ -12,10 +12,7 @@ use App\Services\DynamicRouteService;
 // Admin routes
 require __DIR__.'/admin/web.php';
 
-// Simple test route
-Route::get('/test', function () {
-    return 'Laravel is working!';
-});
+// 🧹 Test route'ları arşivlendi
 
 
 // Health check endpoint for Docker containers
@@ -24,10 +21,13 @@ Route::get('/health', [App\Http\Controllers\HealthController::class, 'check'])->
 // System health check endpoint for AI translation system
 Route::get('/health/system', [App\Http\Controllers\HealthController::class, 'systemHealth'])->name('health.system');
 
+// Metrics endpoint (empty response for monitoring tools)
+Route::get('/metrics', function () {
+    return response('', 204);
+})->name('metrics');
+
 // Test SEO component
-Route::get('/test-seo', function() {
-    return view('test-seo');
-});
+// 🧹 SEO test route arşivlendi
 
 // Ana sayfa route'ları - Çoklu dil desteği ile
 Route::middleware(['site', 'page.tracker'])->group(function () {
@@ -93,12 +93,8 @@ Route::get('/dashboard', function () {
 // Auth route'ları
 require __DIR__.'/auth.php';
 
-// Test route'ları - dinamik route'lardan ÖNCE olmalı
-require __DIR__.'/test.php';
-require __DIR__.'/test-schema.php';
-
-// Debug route'ları
-require __DIR__.'/debug.php';
+// 🧹 Test ve debug route'ları development tamamlandıktan sonra arşivlendi
+// Test route dosyaları: archive/removed-controllers/ klasöründe
 
 
 // Site dil değiştirme route'u - Laravel Native Localization

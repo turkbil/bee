@@ -3,9 +3,12 @@ namespace Modules\Page\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Modules\AI\app\Traits\HasAIContentGeneration;
+use Modules\AI\app\Contracts\AIContentGeneratable;
 use Modules\Page\App\Models\Page;
 use App\Services\GlobalSeoService;
 use App\Services\GlobalTabService;
+use Illuminate\Support\Facades\Log;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -13,9 +16,9 @@ use Livewire\Attributes\Computed;
 use App\Helpers\SlugHelper;
 
 #[Layout('admin.layout')]
-class PageManageComponent extends Component
+class PageManageComponent extends Component implements AIContentGeneratable
 {
-   use WithFileUploads;
+   use WithFileUploads, HasAIContentGeneration;
 
    public $pageId;
    public $currentLanguage;
@@ -42,7 +45,10 @@ class PageManageComponent extends Component
    public $tabCompletionStatus = [];
    
    public $studioEnabled = false;
-   
+
+   // SEO image files
+   public $seoImageFiles = [];
+
    // 🚨 PERFORMANCE FIX: Cached page with SEO
    protected $cachedPageWithSeo = null;
    
@@ -239,6 +245,27 @@ class PageManageComponent extends Component
    }
    
    /**
+    * Ana dili belirle (mecburi olan dil)
+    */
+   protected function getMainLanguage()
+   {
+       // Önce is_main_language=true olan dili bul
+       $mainLang = TenantLanguage::where('is_active', true)
+           ->where('is_main_language', true)
+           ->value('code');
+
+       // Yoksa is_default=true olan dili bul
+       if (!$mainLang) {
+           $mainLang = TenantLanguage::where('is_active', true)
+               ->where('is_default', true)
+               ->value('code');
+       }
+
+       // Hiçbiri yoksa fallback olarak tr
+       return $mainLang ?? 'tr';
+   }
+
+   /**
     * Site dillerini yükle
     */
    protected function loadAvailableLanguages()
@@ -427,9 +454,10 @@ class PageManageComponent extends Component
            'inputs.is_homepage' => 'boolean',
        ];
        
-       // Çoklu dil alanları
+       // Çoklu dil alanları - ana dil mecburi, diğerleri opsiyonel
+       $mainLanguage = $this->getMainLanguage();
        foreach ($this->availableLanguages as $lang) {
-           $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+           $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
        }
        
@@ -565,7 +593,21 @@ class PageManageComponent extends Component
           $multiLangData[$field] = [];
           foreach ($this->availableLanguages as $lang) {
               $value = $this->multiLangInputs[$lang][$field] ?? '';
-              
+
+              // HTML body güvenlik kontrolü
+              if ($field === 'body' && !empty(trim($value))) {
+                  $htmlValidation = \App\Services\SecurityValidationService::validateHtml($value);
+                  if (!$htmlValidation['valid']) {
+                      $this->dispatch('toast', [
+                          'title' => __('admin.error'),
+                          'message' => "HTML Güvenlik Hatası ({$lang}): " . implode(', ', $htmlValidation['errors']),
+                          'type' => 'error',
+                      ]);
+                      return;
+                  }
+                  $value = $htmlValidation['clean_code'];
+              }
+
               // Slug işleme - SlugHelper kullan
               if ($field === 'slug') {
                   if (empty($value) && !empty($this->multiLangInputs[$lang]['title'])) {
@@ -713,7 +755,42 @@ class PageManageComponent extends Component
           $this->dispatch('parentFormSaving');
       }
       
-      $data = array_merge($this->inputs, $multiLangData);
+      // CSS/JS güvenlik kontrolü
+      $safeInputs = $this->inputs;
+
+      // CSS güvenlik doğrulaması
+      if (!empty(trim($this->inputs['css']))) {
+          $cssValidation = \App\Services\SecurityValidationService::validateCss($this->inputs['css']);
+          if (!$cssValidation['valid']) {
+              $this->dispatch('toast', [
+                  'title' => __('admin.error'),
+                  'message' => 'CSS Güvenlik Hatası: ' . implode(', ', $cssValidation['errors']),
+                  'type' => 'error',
+              ]);
+              return;
+          }
+          $safeInputs['css'] = $cssValidation['clean_code'];
+      } else {
+          $safeInputs['css'] = '';
+      }
+
+      // JS güvenlik doğrulaması
+      if (!empty(trim($this->inputs['js']))) {
+          $jsValidation = \App\Services\SecurityValidationService::validateJs($this->inputs['js']);
+          if (!$jsValidation['valid']) {
+              $this->dispatch('toast', [
+                  'title' => __('admin.error'),
+                  'message' => 'JavaScript Güvenlik Hatası: ' . implode(', ', $jsValidation['errors']),
+                  'type' => 'error',
+              ]);
+              return;
+          }
+          $safeInputs['js'] = $jsValidation['clean_code'];
+      } else {
+          $safeInputs['js'] = '';
+      }
+
+      $data = array_merge($safeInputs, $multiLangData);
 
       // 🚨 PERFORMANCE FIX: Cached page kullan
       $currentPage = $this->pageId ? $this->getCachedPageWithSeo() : null;
@@ -1638,5 +1715,278 @@ class PageManageComponent extends Component
                'currentLanguage' => $this->currentLanguage ?? 'tr'
            ]
        ]);
+   }
+
+   // =================================
+   // GLOBAL AI CONTENT GENERATION TRAIT IMPLEMENTATION
+   // =================================
+
+   /**
+    * Entity tipini al - Page modülü override
+    */
+   public function getEntityType(): string
+   {
+       return 'page';
+   }
+
+   /**
+    * Hedef alanları al - Page modülü override
+    */
+   public function getTargetFields(array $params): array
+   {
+       // Page modülü için özel alanlar
+       $pageFields = [
+           'title' => 'string',
+           'body' => 'html',
+           'excerpt' => 'text',
+           'meta_title' => 'string',
+           'meta_description' => 'text'
+       ];
+
+       // Params'dan belirli alan varsa onu kullan
+       if (isset($params['target_field'])) {
+           return [$params['target_field'] => $pageFields[$params['target_field']] ?? 'html'];
+       }
+
+       return $pageFields;
+   }
+
+   /**
+    * Modül talimatlarını al - Page modülü override
+    */
+   public function getModuleInstructions(): string
+   {
+       return 'Sayfa içerikleri üretimi. SEO uyumlu, kullanıcı dostu ve kapsamlı sayfa içerikleri oluştur. HTML yapısına dikkat et ve tema ile uyumlu tasarım kullan.';
+   }
+
+   /**
+    * Page modülü için AI content generation
+    */
+   public function generatePageAIContent(string $prompt, string $targetField = 'body'): array
+   {
+       $params = [
+           'prompt' => $prompt,
+           'target_field' => $targetField,
+           'content_type' => 'page',
+           'length' => 'ultra_long',
+           'page_title' => $this->pageTitle,
+           'tenant_id' => tenant('id'),
+           'specific_requirements' => 'Sayfa içeriği olarak tasarla. SEO dostu ve kullanıcı deneyimi odaklı olsun.'
+       ];
+
+       return $this->generateAIContent($params);
+   }
+
+   /**
+    * Post-process AI content for Page module
+    */
+   protected function postProcessAIContent(array $result, array $params): array
+   {
+       if ($result['success'] && isset($result['content'])) {
+           $targetField = $params['target_field'] ?? 'body';
+
+           // Format content for specific field
+           $result['content'] = $this->formatContentForModule($result['content'], $targetField);
+
+           // Page-specific validation
+           if (!$this->validatePageContent($result['content'], $targetField)) {
+               $result['success'] = false;
+               $result['error'] = 'Üretilen içerik sayfa standartlarına uygun değil';
+           }
+       }
+
+       return $result;
+   }
+
+   /**
+    * Page content validation
+    */
+   private function validatePageContent(string $content, string $fieldType): bool
+   {
+       // Page modülü için özel validation
+       if (!$this->validateAIContent($content, $fieldType)) {
+           return false;
+       }
+
+       // Page-specific checks
+       if ($fieldType === 'body') {
+           // Body için minimum length kontrolü
+           if (strlen(strip_tags($content)) < 100) {
+               return false;
+           }
+
+           // Section tag kontrolü
+           if (!preg_match('/<section[^>]*>/', $content)) {
+               return false;
+           }
+       }
+
+       return true;
+   }
+
+   /**
+    * Livewire method for AI content generation (frontend use)
+    */
+   public function generateAIContentForField(string $prompt, string $targetField = 'body')
+   {
+       try {
+           Log::info('🚀 Page AI Content Generation başlatıldı', [
+               'page_id' => $this->pageId,
+               'target_field' => $targetField,
+               'prompt_length' => strlen($prompt)
+           ]);
+
+           $result = $this->generatePageAIContent($prompt, $targetField);
+
+           if ($result['success']) {
+               // Content'i ilgili field'a ata
+               if ($targetField === 'body') {
+                   $this->multiLangInputs[$this->currentLanguage]['body'] = $result['content'];
+               } elseif ($targetField === 'title') {
+                   $this->multiLangInputs[$this->currentLanguage]['title'] = $result['content'];
+               }
+
+               $this->dispatch('toast', [
+                   'title' => 'AI İçerik Üretildi',
+                   'message' => 'İçerik başarıyla üretildi ve alana eklendi',
+                   'type' => 'success'
+               ]);
+
+               Log::info('✅ Page AI Content Generation başarılı', [
+                   'page_id' => $this->pageId,
+                   'target_field' => $targetField,
+                   'content_length' => strlen($result['content'])
+               ]);
+
+           } else {
+               $this->dispatch('toast', [
+                   'title' => 'AI İçerik Hatası',
+                   'message' => $result['error'] ?? 'İçerik üretilemedi',
+                   'type' => 'error'
+               ]);
+
+               Log::error('❌ Page AI Content Generation hatası', [
+                   'page_id' => $this->pageId,
+                   'error' => $result['error'] ?? 'unknown'
+               ]);
+           }
+
+       } catch (\Exception $e) {
+           $this->dispatch('toast', [
+               'title' => 'Sistem Hatası',
+               'message' => 'AI içerik üretimi sırasında hata oluştu',
+               'type' => 'error'
+           ]);
+
+           Log::error('❌ Page AI Content Generation exception', [
+               'page_id' => $this->pageId,
+               'error' => $e->getMessage()
+           ]);
+       }
+   }
+
+   /**
+    * AI Content Generation callback - JavaScript'ten çağrılır
+    */
+   public function receiveGeneratedContent($content, $targetField = 'body')
+   {
+       try {
+           Log::info('🎯 receiveGeneratedContent DEBUG', [
+               'currentLanguage' => $this->currentLanguage,
+               'targetField' => $targetField,
+               'availableLanguages' => array_keys($this->multiLangInputs ?? []),
+               'hasTargetField' => isset($this->multiLangInputs[$this->currentLanguage][$targetField])
+           ]);
+
+           // Content'i aktif dildeki field'a set et
+           if (isset($this->multiLangInputs[$this->currentLanguage][$targetField])) {
+               $this->multiLangInputs[$this->currentLanguage][$targetField] = $content;
+
+               // Database'e hemen kaydet
+               $this->save();
+
+               // Toast göster
+               $this->dispatch('toast', [
+                   'title' => 'AI İçerik Oluşturuldu!',
+                   'message' => "İçerik '{$targetField}' alanına başarıyla eklendi ve kaydedildi",
+                   'type' => 'success'
+               ]);
+
+               // ✅ TinyMCE artık direkt JavaScript'te güncelleniyor
+
+               Log::info('✅ AI Content received and applied', [
+                   'page_id' => $this->pageId,
+                   'language' => $this->currentLanguage,
+                   'field' => $targetField,
+                   'content_length' => strlen($content)
+               ]);
+           }
+
+       } catch (\Exception $e) {
+           Log::error('❌ receiveGeneratedContent error', [
+               'page_id' => $this->pageId,
+               'error' => $e->getMessage()
+           ]);
+       }
+   }
+
+   /**
+    * AI Önerilerini Sıfırla
+    */
+   public function clearAiRecommendations()
+   {
+       if (!$this->pageId) {
+           $this->dispatch('toast', [
+               'title' => 'Uyarı',
+               'message' => 'Önce sayfayı kaydedin',
+               'type' => 'warning'
+           ]);
+           return;
+       }
+
+       try {
+           $page = $this->getCachedPageWithSeo() ?? Page::findOrFail($this->pageId);
+           $seoSettings = $page->seoSetting;
+
+           if ($seoSettings) {
+               $seoSettings->update([
+                   'ai_recommendations' => null,
+                   'ai_recommendations_date' => null
+               ]);
+
+               $this->clearCachedPage();
+
+               $this->dispatch('toast', [
+                   'title' => 'Başarılı',
+                   'message' => 'AI önerileri sıfırlandı',
+                   'type' => 'success'
+               ]);
+
+               \Log::info('✅ AI önerileri sıfırlandı', [
+                   'page_id' => $this->pageId,
+                   'cleared_fields' => ['ai_recommendations', 'ai_recommendations_date']
+               ]);
+
+           } else {
+               $this->dispatch('toast', [
+                   'title' => 'Bilgi',
+                   'message' => 'Silinecek AI önerisi bulunamadı',
+                   'type' => 'info'
+               ]);
+           }
+
+       } catch (\Exception $e) {
+           \Log::error('❌ AI önerileri sıfırlama hatası', [
+               'page_id' => $this->pageId,
+               'error' => $e->getMessage(),
+               'trace' => $e->getTraceAsString()
+           ]);
+
+           $this->dispatch('toast', [
+               'title' => 'Hata',
+               'message' => 'AI önerileri sıfırlanırken bir hata oluştu',
+               'type' => 'error'
+           ]);
+       }
    }
 }

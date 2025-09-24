@@ -31,6 +31,9 @@ return [
     |
     */
 
+    // Lokal testler için sahte üretim modu
+    'fake_mode' => env('AI_FAKE_MODE', false),
+
     'providers' => [
         'deepseek' => [
             'driver' => 'deepseek',
@@ -43,9 +46,27 @@ return [
             'timeout' => (int) env('DEEPSEEK_TIMEOUT', 300),
         ],
 
+        'openai' => [
+            'driver' => 'openai',
+            'api_key' => env('OPENAI_API_KEY'),
+            'api_url' => env('OPENAI_API_URL', 'https://api.openai.com/v1'),
+            'model' => env('OPENAI_MODEL', 'gpt-4o'),
+            'temperature' => (float) env('OPENAI_TEMPERATURE', 0.7),
+            'max_tokens' => (int) env('OPENAI_MAX_TOKENS', 2000),
+            'timeout' => (int) env('OPENAI_TIMEOUT', 300),
+        ],
+
+        'anthropic' => [
+            'driver' => 'anthropic',
+            'api_key' => env('ANTHROPIC_API_KEY'),
+            'api_url' => env('ANTHROPIC_API_URL', 'https://api.anthropic.com'),
+            'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-4-20250514'),
+            'temperature' => (float) env('ANTHROPIC_TEMPERATURE', 0.7),
+            'max_tokens' => (int) env('ANTHROPIC_MAX_TOKENS', 2000),
+            'timeout' => (int) env('ANTHROPIC_TIMEOUT', 300),
+        ],
+
         // Gelecekte eklenebilecek provider'lar
-        // 'openai' => [...],
-        // 'claude' => [...],
         // 'gemini' => [...],
     ],
 

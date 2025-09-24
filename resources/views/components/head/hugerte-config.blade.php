@@ -137,7 +137,13 @@
         
         // Apply initial theme
         options = applyDarkModeStyles(options, isDarkMode);
-        
+
+        // DOM standards mode kontrolü
+        if (document.compatMode !== 'CSS1Compat') {
+            console.error('HugeRTE: Document not in standards mode. Current mode:', document.compatMode);
+            return;
+        }
+
         hugerte.init(options);
         
         // Tema değişimini dinle ve editörü güncelle

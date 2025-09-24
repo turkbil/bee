@@ -609,7 +609,7 @@ class RealTimeMetricsService
                 $cacheKey = "system_alert_{$alert['metric']}_{$alert['type']}";
                 Cache::put($cacheKey, $alert, 300); // 5 dakika cache
                 
-                // TODO: Email/Slack notification can be added here
+                // Email/Slack bildirim sistemi henüz implementa edilmedi
                 // $this->sendEmailAlert($alert);
                 // $this->sendSlackAlert($alert);
             }

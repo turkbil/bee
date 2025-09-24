@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function exportResults() {
-        // TODO: Export functionality
+        // Export özelliği henüz implementa edilmedi
         alert('Export özelliği yakında eklenecek');
     }
     

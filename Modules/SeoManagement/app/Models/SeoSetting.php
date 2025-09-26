@@ -27,14 +27,14 @@ class SeoSetting extends Model
         'content_length', 'keyword_density', 'readability_score',
         'page_speed_insights', 'last_crawled', 'ai_suggestions',
         'status', 'priority_score',
-        // AI SEO Analysis Results
-        'analysis_results', 'analysis_date', 'overall_score',
-        'detailed_scores', 'strengths', 'improvements', 'action_items'
+        // AI SEO Analysis Results (optimized - removed redundant columns)
+        'analysis_results', 'analysis_date',
+        'strengths', 'improvements', 'action_items'
     ];
 
     protected $casts = [
         'titles' => 'array',
-        'descriptions' => 'array', 
+        'descriptions' => 'array',
         'og_titles' => 'array',
         'og_descriptions' => 'array',
         'robots_meta' => 'array',
@@ -44,10 +44,9 @@ class SeoSetting extends Model
         'ai_suggestions' => 'array',
         'last_analyzed' => 'datetime',
         'last_crawled' => 'datetime',
-        // AI SEO Analysis Results casts
+        // AI SEO Analysis Results casts (optimized - removed redundant columns)
         'analysis_results' => 'array',
         'analysis_date' => 'datetime',
-        'detailed_scores' => 'array',
         'strengths' => 'array',
         'improvements' => 'array',
         'action_items' => 'array'

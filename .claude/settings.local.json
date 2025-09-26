@@ -138,7 +138,9 @@
       "WebFetch(domain:code.jquery.com)",
       "WebFetch(domain:127.0.0.1)",
       "WebFetch(domain:localhost)",
-      "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_qHcl0n/**)"
+      "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_qHcl0n/**)",
+      "WebFetch(domain:livewire.laravel.com)",
+      "Read(///**)"
     ],
     "deny": [],
     "ask": [],

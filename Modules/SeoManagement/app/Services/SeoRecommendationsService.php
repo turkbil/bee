@@ -59,14 +59,36 @@ class SeoRecommendationsService
             // Build AI prompt for 2025 SEO standards
             $aiPrompt = $this->buildModernSeoPrompt($pageAnalysis, $language);
 
-            // Call AI service
-            $aiResponse = $this->aiService->askFeature($featureSlug, $aiPrompt, [
-                'language' => $language,
-                'user_id' => $options['user_id'] ?? null,
-                'stream' => false,
-                'temperature' => 0.7,
-                'max_tokens' => 3000
-            ]);
+            // Call AI service with optimized parameters for timeout fix
+            try {
+                // Set execution timeout
+                set_time_limit(60);
+
+                $aiResponse = $this->aiService->askFeature($featureSlug, $aiPrompt, [
+                    'language' => $language,
+                    'user_id' => $options['user_id'] ?? null,
+                    'stream' => false,
+                    'temperature' => 0.5,  // More deterministic
+                    'max_tokens' => 800,   // Reduced for faster response
+                    'timeout' => 30        // Explicit timeout
+                ]);
+
+                Log::info('AI Response received', [
+                    'feature_slug' => $featureSlug,
+                    'response_length' => strlen(is_string($aiResponse) ? $aiResponse : json_encode($aiResponse)),
+                    'type' => gettype($aiResponse)
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('AI Service Error', [
+                    'feature_slug' => $featureSlug,
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+
+                // Return fallback recommendations
+                return $this->getFallbackRecommendations($language, $pageAnalysis);
+            }
 
             // Process AI response
             $aiResponseText = $this->extractResponseText($aiResponse);
@@ -427,6 +449,45 @@ class SeoRecommendationsService
         ]);
 
         return '';
+    }
+
+    /**
+     * Get fallback recommendations when AI fails
+     */
+    private function getFallbackRecommendations(string $language, array $pageAnalysis): array
+    {
+        Log::info('Using fallback recommendations due to AI failure');
+
+        $title = $pageAnalysis['title'] ?: '';
+        $description = $pageAnalysis['meta_description'] ?: '';
+
+        $recommendations = [
+            [
+                'type' => 'title',
+                'alternatives' => [
+                    ['id' => 1, 'value' => $title ?: 'Optimized Title', 'score' => 80],
+                    ['id' => 2, 'value' => $title . ' - Enhanced', 'score' => 75],
+                    ['id' => 3, 'value' => $title . ' Guide', 'score' => 70]
+                ]
+            ],
+            [
+                'type' => 'description',
+                'alternatives' => [
+                    ['id' => 1, 'value' => $description ?: 'Optimized meta description', 'score' => 80],
+                    ['id' => 2, 'value' => $description . ' Learn more here.', 'score' => 75],
+                    ['id' => 3, 'value' => 'Detailed guide: ' . $description, 'score' => 70]
+                ]
+            ]
+        ];
+
+        return [
+            'success' => true,
+            'data' => [
+                'recommendations' => $recommendations,
+                'from_cache' => false,
+                'fallback' => true
+            ]
+        ];
     }
 
 }

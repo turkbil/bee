@@ -43,7 +43,7 @@ class SeoAIService
     /**
      * KAPSAMLI SEO ANALİZİ - 2025 ENHANCED WITH PAGE TYPE INTELLIGENCE
      */
-    public function analyzeSEO(string $featureSlug, array $formContent, array $options = []): array
+    public function analyzeSEO(string $featureSlug, array $formContent, string $language = 'tr', array $options = []): array
     {
         try {
             // 🚀 SAYFA TİPİ VE CONTEXT ANALİZİ
@@ -620,14 +620,15 @@ class SeoAIService
             $userInputContent = $this->formatFormContentForAI($formContent);
             
             // 🚀 2025 ENHANCED PROMPT - DETAYLI REHBERLİK İÇİN
-            $enhancedPrompt = $this->buildEnhancedSeoPrompt($userInputContent, $pageContext);
+            $enhancedPrompt = $this->buildEnhancedSeoPrompt($userInputContent, $pageContext, $language);
             
             $aiResult = $this->universalAIService->processFormRequest(
                 featureId: $feature->id,
                 userInputs: [
                     'primary_input' => $enhancedPrompt,
                     'form_data' => $formContent,
-                    'page_context' => $pageContext
+                    'page_context' => $pageContext,
+                    'language' => $language
                 ],
                 options: array_merge([
                     'model_type' => 'advanced_seo_analysis_2025',
@@ -1630,13 +1631,26 @@ class SeoAIService
     /**
      * 🚀 2025 ENHANCED SEO PROMPT BUILDER - DETAYLI REHBERLİK İÇİN
      */
-    private function buildEnhancedSeoPrompt(string $baseContent, array $pageContext): string
+    private function buildEnhancedSeoPrompt(string $baseContent, array $pageContext, string $language = 'tr'): string
     {
         $promptParts = [];
         
         // CONTEXT HEADER
         $promptParts[] = "=== MODERN SEO ANALYSIS WITH ACTIONABLE RECOMMENDATIONS ===";
         $promptParts[] = "IMPORTANT: Provide SPECIFIC, ACTIONABLE guidance with HOW-TO instructions, not generic suggestions.";
+
+        // Language mapping for AI prompts
+        $languageInstructions = [
+            'tr' => 'TÜM CEVAPLARI TÜRKÇE VER! Analiz ve önerilerinizi Türkçe dil kurallarına uygun yazın.',
+            'en' => 'RESPOND IN ENGLISH! Write all analysis and recommendations in English.',
+            'ar' => 'أجب باللغة العربية! اكتب جميع التحليلات والتوصيات باللغة العربية.',
+            'de' => 'ANTWORTE AUF DEUTSCH! Schreibe alle Analysen und Empfehlungen auf Deutsch.',
+            'fr' => 'RÉPONDEZ EN FRANÇAIS! Rédigez toutes les analyses et recommandations en français.',
+            'es' => 'RESPONDE EN ESPAÑOL! Escribe todos los análisis y recomendaciones en español.'
+        ];
+
+        $languageInstruction = $languageInstructions[$language] ?? $languageInstructions['tr'];
+        $promptParts[] = $languageInstruction;
         $promptParts[] = "";
         
         // SAYFA TİPİ CONTEXT
@@ -1988,10 +2002,18 @@ class SeoAIService
     public function generateSeoRecommendations(string $featureSlug, array $formContent, string $language = 'tr', array $options = []): array
     {
         try {
+            set_time_limit(60);
+
+            $sanitizedKeywords = $this->summarizeKeywords($formContent['keywords'] ?? '');
+
             Log::info('SEO Recommendations Generation Started', [
                 'feature_slug' => $featureSlug,
                 'language' => $language,
-                'user_id' => $options['user_id'] ?? null
+                'user_id' => $options['user_id'] ?? null,
+                'title_length' => mb_strlen($formContent['title'] ?? ''),
+                'description_length' => mb_strlen($formContent['description'] ?? ''),
+                'content_length' => mb_strlen($formContent['content'] ?? ''),
+                'keywords_preview' => $sanitizedKeywords,
             ]);
 
             // Form içeriğini analiz et
@@ -2016,18 +2038,44 @@ class SeoAIService
             $aiPrompt = $this->buildRecommendationsPrompt($formContent, $language, $pageContext);
             
             // AI servisini çağır
-            $aiResponse = $this->universalAIService->processFeatureRequest([
-                'feature_slug' => $featureSlug,
-                'prompt' => $aiPrompt,
-                'form_content' => $formContent,
-                'language' => $language,
-                'context' => $pageContext
-            ]);
+            try {
+                $aiResponse = $this->universalAIService->processFeatureRequest([
+                    'feature_slug' => $featureSlug,
+                    'prompt' => $aiPrompt,
+                    'form_content' => $formContent,
+                    'language' => $language,
+                    'context' => $pageContext,
+                    'options' => [
+                        'max_tokens' => 800,
+                        'temperature' => 0.5,
+                        'timeout' => 30,
+                    ],
+                ]);
+            } catch (\Throwable $throwable) {
+                Log::error('Universal AI service call failed', [
+                    'feature_slug' => $featureSlug,
+                    'language' => $language,
+                    'error' => $throwable->getMessage(),
+                ]);
 
-            if (!$aiResponse['success']) {
                 return [
                     'success' => false,
-                    'error' => 'AI servisi hatası: ' . ($aiResponse['error'] ?? 'Bilinmeyen hata')
+                    'error' => 'AI servisi şu anda yanıt vermiyor. Varsayılan öneriler gösteriliyor.',
+                    'recommendations' => $this->getFallbackRecommendations($language),
+                ];
+            }
+
+            if (!$aiResponse['success']) {
+                Log::warning('Universal AI service returned unsuccessful response', [
+                    'feature_slug' => $featureSlug,
+                    'language' => $language,
+                    'error' => $aiResponse['error'] ?? null,
+                ]);
+
+                return [
+                    'success' => false,
+                    'error' => 'AI servisi hatası. Varsayılan öneriler gösteriliyor.',
+                    'recommendations' => $this->getFallbackRecommendations($language),
                 ];
             }
 
@@ -2056,9 +2104,31 @@ class SeoAIService
 
             return [
                 'success' => false,
-                'error' => 'Öneri üretimi hatası: ' . $e->getMessage()
+                'error' => 'AI önerileri üretilemedi. Varsayılan öneriler gösteriliyor.',
+                'recommendations' => $this->getFallbackRecommendations($language),
             ];
         }
+    }
+
+    private function summarizeKeywords(string|array $keywords): string
+    {
+        if (is_array($keywords)) {
+            $keywords = implode(', ', $keywords);
+        }
+
+        $keywords = trim($keywords);
+
+        if ($keywords === '') {
+            return '';
+        }
+
+        $summary = mb_substr($keywords, 0, 120);
+
+        if (mb_strlen($keywords) > 120) {
+            $summary .= '...';
+        }
+
+        return $summary;
     }
 
     /**
@@ -2108,8 +2178,21 @@ class SeoAIService
         $prompt .= '  ]' . "\n";
         $prompt .= "}\n\n";
         
+        // Language mapping for AI prompts
+        $languageInstructions = [
+            'tr' => 'Türkçe dil kurallarına uygun öneriler ver',
+            'en' => 'Provide recommendations in English',
+            'ar' => 'قدم التوصيات باللغة العربية',
+            'de' => 'Geben Sie Empfehlungen auf Deutsch',
+            'fr' => 'Fournissez des recommandations en français',
+            'es' => 'Proporciona recomendaciones en español'
+        ];
+
+        $languageInstruction = $languageInstructions[$language] ?? $languageInstructions['tr'];
+
         $prompt .= "KURALLAR:\n";
-        $prompt .= "- Türkçe dil kurallarına uygun öneriler ver\n";
+        $prompt .= "- {$languageInstruction}\n";
+        $prompt .= "- Tüm cevapları {$language} dilinde ver\n";
         $prompt .= "- priority: high, medium, low\n";
         $prompt .= "- type: title, description, keywords, content\n";
         $prompt .= "- field_target: hangi form alanına uygulanacak\n";

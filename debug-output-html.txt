@@ -1,0 +1,393 @@
+<div class="seo-language-content" data-language="tr" style="display: block;">
+
+
+            <!--[if BLOCK]><![endif]-->                <div class="ai-seo-toolbar mb-4">
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        <button type="button" class="btn btn-primary ai-seo-comprehensive-btn" data-seo-feature="seo-comprehensive-audit" data-language="tr" style="z-index: 9999; position: relative;">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Verileri Yenile
+                        </button>
+
+                        <button type="button" class="btn btn-primary ai-seo-recommendations-btn" data-seo-feature="seo-smart-recommendations" data-language="tr" style="z-index: 9999; position: relative;">
+                            <i class="fas fa-magic me-1"></i>
+                            AI Önerileri
+                        </button>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">AI ile SEO verilerinizi optimize edin</small>
+                        <button wire:click="testPropertyUpdate" class="btn btn-sm btn-outline-secondary ms-2" data-wire-loading-attached="true">🧪
+                            Test</button>
+                    </div>
+                </div>
+
+
+                <!--[if BLOCK]><![endif]-->                    <div class="ai-results-container mb-4" wire:key="ai-results-tr">
+
+
+                    </div>
+                <!--[if ENDBLOCK]><![endif]-->
+
+            <!--[if ENDBLOCK]><![endif]-->
+
+
+            <!--[if BLOCK]><![endif]-->                <div class="mt-4">
+
+                    <!--[if BLOCK]><![endif]-->                        <div class="text-center p-4 mb-4 bg-light rounded" wire:key="modern-analysis-loader-tr">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">AI analizi yapılıyor...</span>
+                            </div>
+                            <h5 class="mt-3 mb-1">🤖 AI SEO Analizi Devam Ediyor</h5>
+                            <p class="text-muted">Sayfanız detaylı olarak analiz ediliyor, lütfen bekleyiniz...</p>
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+
+
+            <!--[if BLOCK]><![endif]-->                <div class="mt-4">
+
+                    <!--[if BLOCK]><![endif]-->
+                        <div class="ai-seo-recommendations-section" id="aiSeoRecommendationsSection_tr">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="bg-light border p-3 rounded-3 mb-3 position-relative">
+                                        <h3 class="mb-0">
+                                            <i class="fas fa-magic me-2"></i>
+                                            AI SEO Önerileri
+                                                                                        <!--[if BLOCK]><![endif]-->                                                <!--[if BLOCK]><![endif]-->                                                    <span class="badge bg-secondary ms-2">📊 Kaydedilmiş</span>
+                                                <!--[if ENDBLOCK]><![endif]-->
+                                            <!--[if ENDBLOCK]><![endif]-->
+                                        </h3>
+                                        <!--[if BLOCK]><![endif]-->                                            <button type="button" class="btn btn-outline-danger btn-sm position-absolute" style="right: 1rem; top: 50%; transform: translateY(-50%);" wire:click="clearAiRecommendations" onclick="return confirm('AI önerileri silinecek. Emin misiniz?')" title="AI önerilerini sıfırla" data-wire-loading-attached="true">
+                                                <i class="fas fa-trash-alt me-1"></i>
+                                                Sıfırla
+                                            </button>
+                                        <!--[if ENDBLOCK]><![endif]-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+
+                                <!--[if BLOCK]><![endif]-->                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Henüz AI önerisi bulunmuyor. "AI Önerileri" butonunu kullanarak yeni öneriler oluşturun.
+                                    </div>
+                                <!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        <!--[if ENDBLOCK]><![endif]-->
+                    </div>
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+
+
+
+
+            <div class="card border-primary mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        Temel SEO Ayarları
+                        <small class=" ms-2">Mutlaka doldurulması gerekenler</small>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <div class="position-relative">
+                                <div class="form-floating">
+                                    <input type="text" wire:model="seoDataCache.tr.seo_title" class="form-control seo-no-enter " placeholder="Google'da gözükecek başlık" maxlength="60">
+                                    <label>
+                                        Meta Başlık
+                                    </label>
+
+                                    <span class="character-counter position-absolute" id="title_counter_tr" style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                        <small>0/60</small>
+                                    </span>
+                                    <div class="form-text">
+                                        <small>
+                                            Google arama sonuçlarında gözüken başlık. Tıklanmak isteyecek şekilde yazın.
+                                        </small>
+                                    </div>
+                                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+                            <div class="position-relative">
+                                <div class="form-floating">
+                                    <textarea wire:model="seoDataCache.tr.seo_description" class="form-control seo-no-enter " placeholder="Google'da başlığın altında gözükecek açıklama" style="height: 100px; resize: vertical;" maxlength="160"></textarea>
+                                    <label>
+                                        Meta Açıklama
+                                    </label>
+
+                                    <span class="character-counter position-absolute" id="description_counter_tr" style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                        <small>0/160</small>
+                                    </span>
+                                    <div class="form-text">
+                                        <small>
+                                            Google'da başlığın altında gözüken açıklama. İnsanı tıklamaya teşvik etmeli.
+                                        </small>
+                                    </div>
+                                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <select wire:model="seoDataCache.tr.content_type" class="form-select" onchange="toggleCustomContentType(this, 'tr')">
+                                    <option value="website">Website/WebPage (Genel Site)</option>
+                                    <option value="article">Article (Makale/Blog)</option>
+                                    <option value="product">Product (Ürün)</option>
+                                    <option value="organization">Organization (Organizasyon)</option>
+                                    <option value="local_business">LocalBusiness (Yerel İşletme)</option>
+                                    <option value="event">Event (Etkinlik)</option>
+                                    <option value="person">Person (Kişi)</option>
+                                    <option value="video">Video (Film/Video)</option>
+                                    <option value="music">Music (Müzik)</option>
+                                    <option value="faq">FAQ (Sıkça Sorulan Sorular)</option>
+                                    <option value="custom">Diğer (Manuel Giriş)</option>
+                                </select>
+                                <label>
+                                    İçerik Türü
+                                    <small class="ms-2">Schema.org + OpenGraph</small>
+                                </label>
+                                <div class="form-text">
+                                    <small>
+                                        Hem sosyal medya hem arama motorları için kullanılır
+                                    </small>
+                                </div>
+                            </div>
+
+
+                            <div class="mt-3" id="custom_content_type_tr" style="display: none;">
+                                <div class="form-floating">
+                                    <input type="text" wire:model="seoDataCache.tr.content_type_custom" class="form-control seo-no-enter" placeholder="Örn: Recipe, Book, Course...">
+                                    <label>
+                                        Özel İçerik Türü
+                                        <small class="ms-2">Manuel giriş</small>
+                                    </label>
+                                    <div class="form-text">
+                                        <small>
+                                            Schema.org'dan geçerli bir tür girin (Recipe, Book, Course...)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 mb-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label mb-0">
+
+                                    SEO Önceliği
+                                </label>
+                                                                <span class="badge bg-warning priority-badge" style="position: relative;">
+                                    <span class="priority-value">5</span>/10 - <span class="priority-text">Orta</span>
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="small fw-bold">1</span>
+                                <span class="small">Düşük</span>
+                                <input type="range" wire:model="seoDataCache.tr.priority_score" class="form-range flex-grow-1 mx-2" min="1" max="10" step="1" value="5" oninput="onManualPriorityChange(this, 'tr')">
+                                <span class="small">Kritik</span>
+                                <span class="small fw-bold">10</span>
+                            </div>
+                            <div class="form-text mt-2 priority-examples">
+                                <small>
+
+                                    <span class="priority-example" data-range="1-3" style="opacity: 0.4;"><strong>1-3:</strong> Blog yazıları, arşiv</span>
+                                    &nbsp;•&nbsp;
+                                    <span class="priority-example" data-range="4-6" style="opacity: 1;"><strong>4-6:</strong> Ürün sayfaları</span> &nbsp;•&nbsp;
+                                    <span class="priority-example" data-range="7-8" style="opacity: 0.4;"><strong>7-8:</strong> Önemli kategoriler</span>
+                                    &nbsp;•&nbsp;
+                                    <span class="priority-example" data-range="9-10" style="opacity: 0.4;"><strong>9-10:</strong> Ana sayfa, kampanyalar</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <hr class="my-4">
+            <h6 class="mb-3">
+                Sosyal Medya &amp; Schema Ayarları
+            </h6>
+
+
+            <div class="card border-success mb-4" style="--tblr-success: #28a745 !important; --tblr-success-rgb: 40, 167, 69 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                <div class="card-header bg-success text-white" style="--tblr-success: #28a745 !important; --tblr-success-rgb: 40, 167, 69 !important; border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                    <h6 class="mb-0">
+                        Sosyal Medya Paylaşım Ayarları
+                        <small class=" ms-2">Facebook, LinkedIn, WhatsApp için</small>
+                    </h6>
+                </div>
+                <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                    <!--[if BLOCK]><![endif]-->                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Sosyal Medya Resmi
+                                    <small class="ms-2">1200x630 önerilen</small>
+                                </label>
+
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm flex-fill" onclick="document.getElementById('og_image_file_tr').click()">
+
+                                        Resim Seç
+                                    </button>
+
+                                    <input type="url" wire:model="seoDataCache.tr.og_image_url" class="form-control form-control-sm" placeholder="Veya URL girin" style="flex: 2;">
+                                </div>
+
+
+                                <input type="file" id="og_image_file_tr" wire:model="seoImageFiles.og_image" class="d-none" accept="image/jpeg,image/jpg,image/png,image/webp">
+
+
+                                <div class="progress mt-2" wire:loading="" wire:target="seoImageFiles.og_image" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width: 100%"></div>
+                                </div>
+
+                                <div class="form-text mt-2">
+                                    <small>
+                                        Facebook, LinkedIn, WhatsApp paylaşımlarında görünür
+                                    </small>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+                                <div class="mt-3">
+                                    <div class="pretty p-switch">
+                                                                                <input type="checkbox" wire:model="seoDataCache.tr.og_custom_enabled" id="og_custom_tr" onchange="toggleOgCustomFields(this, 'tr')">
+                                        <div class="state">
+                                            <label for="og_custom_tr">
+                                                Ayarları özelleştirmek istiyorum
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <small>
+                                            Kapalıysa yukarıdaki SEO verilerini kullanır (otomatik sistem)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+
+
+                    <div class="og-custom-fields" id="og_custom_fields_tr" style="display: none; max-height: none; overflow: visible;">
+                        <hr class="my-3">
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating position-relative" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+                                    <input type="text" wire:model="seoDataCache.tr.og_title" class="form-control seo-no-enter" placeholder="Facebook/LinkedIn'de görünecek özel başlık" maxlength="60" style="border-radius: 0.25rem !important;">
+                                    <label>
+                                        Sosyal Medya Başlığı
+                                        <small class="ms-2">Maksimum 60 karakter</small>
+                                    </label>
+
+                                    <span class="character-counter position-absolute" id="og_title_counter_tr" style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                        <small>0/60</small>
+                                    </span>
+                                    <div class="form-text">
+                                        <small>
+                                            Sosyal medya paylaşımlarında görünecek başlık
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating position-relative" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+                                    <textarea wire:model="seoDataCache.tr.og_description" class="form-control seo-no-enter" placeholder="Facebook/LinkedIn'de görünecek özel açıklama" style="height: 100px; resize: vertical; border-radius: 0.25rem !important;" maxlength="155"></textarea>
+                                    <label>
+                                        Sosyal Medya Açıklaması
+                                        <small class="ms-2">Maksimum 155 karakter</small>
+                                    </label>
+
+                                    <span class="character-counter position-absolute" id="og_description_counter_tr" style="top: 8px; right: 12px; z-index: 5; font-size: 11px;">
+                                        <small>0/155</small>
+                                    </span>
+                                    <div class="form-text">
+                                        <small>
+                                            Sosyal medyada görünecek çekici açıklama
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card border-info mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        İçerik Bilgileri
+                        <small class=" ms-2">Yazar ve içerik metadata</small>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <!--[if BLOCK]><![endif]-->                        <div class="row">
+
+
+
+
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" wire:model="seoDataCache.tr.author_name" class="form-control seo-no-enter" placeholder="Nurullah Okatan">
+                                    <label>
+                                        Yazar Adı
+                                        <small class="ms-2">İçerik yazarı</small>
+                                    </label>
+                                    <div class="form-text">
+                                        <small>
+                                            Bu içeriği yazan kişinin adı (schema.org author)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="url" wire:model="seoDataCache.tr.author_url" class="form-control seo-no-enter" placeholder="https://example.com/author/nurullah-okatan">
+                                    <label>
+                                        Yazar Profil URL'si
+                                        <small class="ms-2">Yazarın profil sayfası</small>
+                                    </label>
+                                    <div class="form-text">
+                                        <small>
+                                            Yazarın profil sayfası veya kişisel web sitesi
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            </div>
+
+
+        </div>

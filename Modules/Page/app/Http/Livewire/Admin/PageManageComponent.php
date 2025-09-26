@@ -13,16 +13,17 @@ use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use App\Helpers\SlugHelper;
+use Modules\SeoManagement\app\Http\Livewire\Traits\HandlesUniversalSeo;
+use Modules\SeoManagement\app\Models\SeoSetting;
 
 #[Layout('admin.layout')]
 class PageManageComponent extends Component implements AIContentGeneratable
 {
-   use WithFileUploads, HasAIContentGeneration;
+   use WithFileUploads, HasAIContentGeneration, HandlesUniversalSeo;
 
    public $pageId;
-   public $currentLanguage;
-   public $availableLanguages = [];
    public $activeTab;
    
    // Çoklu dil inputs
@@ -37,8 +38,6 @@ class PageManageComponent extends Component implements AIContentGeneratable
    ];
    
    // ✅ SEO system now handled by Universal SEO Tab component
-   public $seoDataCache = [];
-   public $allLanguagesSeoData = [];
    
    // Konfigürasyon verileri
    public $tabConfig = [];
@@ -48,6 +47,16 @@ class PageManageComponent extends Component implements AIContentGeneratable
 
    // SEO image files
    public $seoImageFiles = [];
+
+   // AI results state (static from DB vs runtime dynamic)
+   public $staticAiAnalysis = [];
+   public $staticAiRecommendations = [];
+   public $dynamicAiAnalysis = [];
+   public $dynamicAiRecommendations = [];
+   public $analysisLoaders = [];
+   public $recommendationLoaders = [];
+   public $analysisErrors = [];
+   public $recommendationErrors = [];
 
    // 🚨 PERFORMANCE FIX: Cached page with SEO
    protected $cachedPageWithSeo = null;
@@ -79,9 +88,19 @@ class PageManageComponent extends Component implements AIContentGeneratable
        'simple-test' => 'handleSimpleTest',
        'handleJavaScriptLanguageSync' => 'handleJavaScriptLanguageSync',
        'debug-test' => 'handleDebugTest',
+       'seo-data-updated' => 'updateSeoData',
+       // AI events now use #[On] attributes
+       'setAnalysisLoader' => 'setAnalysisLoader',
+       'setRecommendationsLoader' => 'setRecommendationsLoader',
        'set-js-language' => 'setJavaScriptLanguage',
        'set-continue-mode' => 'setContinueMode',
-       'translate-content' => 'translateContent'
+       'translate-content' => 'translateContent',
+       'ai-analysis-loading' => 'handleAnalysisLoading',
+       'ai-analysis-completed' => 'handleAnalysisCompleted',
+       'ai-analysis-failed' => 'handleAnalysisFailed',
+       'ai-recommendations-loading' => 'handleRecommendationsLoading',
+       'ai-recommendations-completed' => 'handleRecommendationsCompleted',
+       'ai-recommendations-failed' => 'handleRecommendationsFailed'
    ];
 
    /**
@@ -226,10 +245,10 @@ class PageManageComponent extends Component implements AIContentGeneratable
        } else {
            $this->initializeEmptyInputs();
        }
-       
+
        // Studio modül kontrolü
        $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
-       
+
        // Tab completion durumunu hesapla
        $this->updateTabCompletionStatus();
    }
@@ -270,34 +289,54 @@ class PageManageComponent extends Component implements AIContentGeneratable
     */
    protected function loadAvailableLanguages()
    {
-       // İsteğe göre: Önce aktif+visible, sonra aktif+invisible - sadece is_visible=true olanlar
-       $this->availableLanguages = TenantLanguage::where('is_active', true)
-           ->where('is_visible', true)
-           ->orderBy('sort_order')
-           ->pluck('code')
-           ->toArray();
-           
-       // Fallback sistem helper'ından
-       if (empty($this->availableLanguages)) {
-           $this->availableLanguages = ['tr'];
+       $languages = $this->resolveAvailableLanguages(
+           TenantLanguage::where('is_active', true)
+               ->where('is_visible', true)
+               ->orderBy('sort_order')
+               ->pluck('code')
+               ->toArray()
+       );
+
+       $preferred = $this->determinePreferredLanguageCandidate($languages);
+
+       $this->initializeUniversalSeoState($languages, $preferred, $this->seoDataCache);
+   }
+
+   protected function determinePreferredLanguageCandidate(array $languages): ?string
+   {
+       if (empty($languages)) {
+           return null;
        }
-       
-       // 🎯 KRİTİK: Her durumda mevcut kullanıcı dilini koru
-       // Önce session'dan kontrol et, yoksa ilk aktif dil
+
        if (session('page_continue_mode') && session('js_saved_language')) {
-           // Kaydet ve Devam Et durumu
-           $this->currentLanguage = session('js_saved_language');
+           $language = session('js_saved_language');
            session()->forget(['page_continue_mode', 'js_saved_language']);
-           \Log::info('🔄 Kaydet ve Devam Et - dil korundu:', ['language' => $this->currentLanguage]);
-       } elseif (session('js_current_language') && in_array(session('js_current_language'), $this->availableLanguages)) {
-           // Normal kaydet - mevcut JS dilini koru
-           $this->currentLanguage = session('js_current_language');
-           \Log::info('🔄 Normal kaydet - JS dili korundu:', ['language' => $this->currentLanguage]);
-       } else {
-           // İlk yükleme - dinamik default dil
-           $defaultLanguage = session('site_default_language', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
-           $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
+           if ($language && in_array($language, $languages, true)) {
+               \Log::info('🔄 Kaydet ve Devam Et - dil korundu', ['language' => $language]);
+               return $language;
+           }
        }
+
+       $sessionLanguage = session('js_current_language');
+       if ($sessionLanguage && in_array($sessionLanguage, $languages, true)) {
+           \Log::info('🔄 Normal kaydet - JS dili korundu', ['language' => $sessionLanguage]);
+           return $sessionLanguage;
+       }
+
+       $defaultLanguage = session('site_default_language');
+       if ($defaultLanguage && in_array($defaultLanguage, $languages, true)) {
+           return $defaultLanguage;
+       }
+
+       try {
+           $tenantDefault = \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
+           if ($tenantDefault && in_array($tenantDefault, $languages, true)) {
+               return $tenantDefault;
+           }
+       } catch (\Throwable $exception) {
+       }
+
+       return $languages[0] ?? null;
    }
 
    /**
@@ -328,6 +367,10 @@ class PageManageComponent extends Component implements AIContentGeneratable
            // 🚨 PERFORMANCE FIX: Cached page kullan
            $cachedPage = $this->getCachedPageWithSeo();
            $seoSettings = $cachedPage ? $cachedPage->seoSetting : null;
+
+           $this->hydrateStaticAiResults($seoSettings);
+           $this->resetAiDynamicState($this->availableLanguages, true);
+
            if ($seoSettings) {
                $titles = $seoSettings->titles ?? [];
                $descriptions = $seoSettings->descriptions ?? [];
@@ -353,10 +396,6 @@ class PageManageComponent extends Component implements AIContentGeneratable
                        'canonical_url' => $seoSettings->canonical_url ?? ''
                    ];
 
-                   \Log::info("🔄 SEO cache yüklendi - {$lang}", [
-                       'og_title' => $seoSettings->og_titles[$lang] ?? 'YOK',
-                       'og_description' => $seoSettings->og_descriptions[$lang] ?? 'YOK'
-                   ]);
                }
                
                // ✅ JavaScript için allLanguagesSeoData property'sini de güncelle
@@ -377,12 +416,203 @@ class PageManageComponent extends Component implements AIContentGeneratable
                        'canonical_url' => ''
                    ];
                }
-               
-               // JavaScript için de boş data
-               $this->allLanguagesSeoData = $this->seoDataCache;
+           }
+
+           // JavaScript için de boş data
+           $this->allLanguagesSeoData = $this->seoDataCache;
+        }
+    }
+
+    protected function hydrateStaticAiResults(?SeoSetting $seoSettings): void
+    {
+       $analysisSource = $seoSettings?->analysis_results ?? [];
+       $recommendationSource = $seoSettings?->ai_suggestions ?? [];
+
+       // Debug logs removed - issue fixed
+
+       $languages = $this->availableLanguages;
+       if (empty($languages)) {
+           $languages = [$this->currentLanguage ?? config('app.locale', 'tr')];
+       }
+
+       $staticAnalysis = [];
+       $staticRecommendations = [];
+
+       foreach ($languages as $language) {
+           $staticAnalysis[$language] = $this->extractLanguageScopedData($analysisSource, $language);
+           $staticRecommendations[$language] = $this->extractLanguageScopedData($recommendationSource, $language);
+
+           // Debug extraction logs removed
+       }
+
+       $this->staticAiAnalysis = $staticAnalysis;
+       $this->staticAiRecommendations = $staticRecommendations;
+
+       // Debug result logs removed
+   }
+
+   protected function extractLanguageScopedData($data, string $language): array
+   {
+       if (empty($data)) {
+           return [];
+       }
+
+       if (is_string($data)) {
+           $decoded = json_decode($data, true);
+           if (json_last_error() === JSON_ERROR_NONE) {
+               $data = $decoded;
+           } else {
+               return [];
            }
        }
-       
+
+       if (!is_array($data)) {
+           return [];
+       }
+
+       if (array_key_exists($language, $data) && is_array($data[$language])) {
+           // Debug extraction logs removed
+           return $data[$language];
+       }
+
+       if ($this->looksLikeLanguageMap($data)) {
+           return [];
+       }
+
+       return $data;
+   }
+
+   protected function looksLikeLanguageMap(array $data): bool
+   {
+       if ($data === []) {
+           return false;
+       }
+
+       $keys = array_keys($data);
+
+       foreach ($keys as $key) {
+           if (!is_string($key)) {
+               return false;
+           }
+
+           if (!preg_match('/^[a-z]{2}(?:-[a-z]{2})?$/i', $key)) {
+               return false;
+           }
+       }
+
+       return true;
+   }
+
+   protected function resetAiDynamicState(array $languages, bool $force = false): void
+   {
+       if (empty($languages)) {
+           $languages = [$this->currentLanguage ?? config('app.locale', 'tr')];
+       }
+
+       foreach ($languages as $language) {
+           if ($force || !array_key_exists($language, $this->analysisLoaders)) {
+               $this->analysisLoaders[$language] = false;
+           }
+
+           if ($force || !array_key_exists($language, $this->recommendationLoaders)) {
+               $this->recommendationLoaders[$language] = false;
+           }
+
+           if ($force || !array_key_exists($language, $this->analysisErrors)) {
+               $this->analysisErrors[$language] = null;
+           }
+
+           if ($force || !array_key_exists($language, $this->recommendationErrors)) {
+               $this->recommendationErrors[$language] = null;
+           }
+
+           if ($force || !array_key_exists($language, $this->dynamicAiAnalysis)) {
+               $this->dynamicAiAnalysis[$language] = [];
+           }
+
+           if ($force || !array_key_exists($language, $this->dynamicAiRecommendations)) {
+               $this->dynamicAiRecommendations[$language] = [];
+           }
+       }
+   }
+
+   protected function ensureAiStateForLanguage(string $language): void
+   {
+       if (!in_array($language, $this->availableLanguages, true)) {
+           $language = $this->currentLanguage ?? config('app.locale', 'tr');
+       }
+
+       $this->resetAiDynamicState([$language]);
+   }
+
+   protected function normaliseAiLanguage(?string $language): string
+   {
+       if ($language && in_array($language, $this->availableLanguages, true)) {
+           return $language;
+       }
+
+       return $this->currentLanguage ?? ($this->availableLanguages[0] ?? config('app.locale', 'tr'));
+   }
+
+   public function handleAnalysisLoading(array $payload = []): void
+   {
+       $language = $this->normaliseAiLanguage($payload['language'] ?? null);
+       $this->ensureAiStateForLanguage($language);
+
+       $this->analysisLoaders[$language] = true;
+       $this->analysisErrors[$language] = null;
+       $this->dynamicAiAnalysis[$language] = [];
+   }
+
+   public function handleAnalysisCompleted(array $payload = []): void
+   {
+       $language = $this->normaliseAiLanguage($payload['language'] ?? null);
+       $this->ensureAiStateForLanguage($language);
+
+       $this->analysisLoaders[$language] = false;
+       $this->analysisErrors[$language] = null;
+       $this->dynamicAiAnalysis[$language] = $this->extractLanguageScopedData($payload['data'] ?? [], $language);
+   }
+
+   public function handleAnalysisFailed(array $payload = []): void
+   {
+       $language = $this->normaliseAiLanguage($payload['language'] ?? null);
+       $this->ensureAiStateForLanguage($language);
+
+       $this->analysisLoaders[$language] = false;
+       $this->dynamicAiAnalysis[$language] = [];
+       $this->analysisErrors[$language] = $payload['message'] ?? 'AI analizi sırasında bir hata oluştu.';
+   }
+
+   public function handleRecommendationsLoading(array $payload = []): void
+   {
+       $language = $this->normaliseAiLanguage($payload['language'] ?? null);
+       $this->ensureAiStateForLanguage($language);
+
+       $this->recommendationLoaders[$language] = true;
+       $this->recommendationErrors[$language] = null;
+       $this->dynamicAiRecommendations[$language] = [];
+   }
+
+   public function handleRecommendationsCompleted(array $payload = []): void
+   {
+       $language = $this->normaliseAiLanguage($payload['language'] ?? null);
+       $this->ensureAiStateForLanguage($language);
+
+       $this->recommendationLoaders[$language] = false;
+       $this->recommendationErrors[$language] = null;
+       $this->dynamicAiRecommendations[$language] = $this->extractLanguageScopedData($payload['data'] ?? [], $language);
+   }
+
+   public function handleRecommendationsFailed(array $payload = []): void
+   {
+       $language = $this->normaliseAiLanguage($payload['language'] ?? null);
+       $this->ensureAiStateForLanguage($language);
+
+       $this->recommendationLoaders[$language] = false;
+       $this->dynamicAiRecommendations[$language] = [];
+       $this->recommendationErrors[$language] = $payload['message'] ?? 'AI önerileri alınamadı.';
+
        // Tab ve SEO konfigürasyonları
        $this->tabCompletionStatus = $formData['tabCompletion'];
        $this->seoLimits = $formData['seoLimits'];
@@ -515,7 +745,8 @@ class PageManageComponent extends Component implements AIContentGeneratable
        if (in_array($language, $this->availableLanguages)) {
            $oldLanguage = $this->currentLanguage;
            $this->currentLanguage = $language;
-           
+           $this->ensureAiStateForLanguage($language);
+
            // Session'a kaydet - save sonrası dil koruması için
            session(['page_manage_language' => $language]);
            
@@ -937,15 +1168,6 @@ class PageManageComponent extends Component implements AIContentGeneratable
        $this->seoSlug = $this->multiLangInputs[$this->currentLanguage]['slug'] ?? '';
    }
    
-   /**
-    * SEO Listener - Child component events
-    */
-   protected function getListeners()
-   {
-       return [
-           'seo-data-updated' => 'updateSeoData',
-       ];
-   }
    
    /**
     * SEO verilerini güncelle
@@ -1585,7 +1807,7 @@ class PageManageComponent extends Component implements AIContentGeneratable
                $seoSettings->update([
                    'analysis_results' => null,
                    'analysis_date' => null,
-                   'overall_score' => null,
+                   // overall_score removed - data in analysis_results
                    'strengths' => null,
                    'improvements' => null,
                    'action_items' => null
@@ -1601,7 +1823,7 @@ class PageManageComponent extends Component implements AIContentGeneratable
                
                \Log::info('✅ SEO analizi verileri sıfırlandı', [
                    'page_id' => $this->pageId,
-                   'cleared_fields' => ['analysis_results', 'analysis_date', 'overall_score', 'strengths', 'improvements', 'action_items']
+                   'cleared_fields' => ['analysis_results', 'analysis_date', 'strengths', 'improvements', 'action_items']
                ]);
                
            } else {
@@ -1956,6 +2178,14 @@ class PageManageComponent extends Component implements AIContentGeneratable
 
                $this->clearCachedPage();
 
+               $language = $this->currentLanguage ?? ($this->availableLanguages[0] ?? config('app.locale', 'tr'));
+               if ($language) {
+                   $this->staticAiRecommendations[$language] = [];
+                   $this->dynamicAiRecommendations[$language] = [];
+                   $this->recommendationErrors[$language] = null;
+                   $this->recommendationLoaders[$language] = false;
+               }
+
                $this->dispatch('toast', [
                    'title' => 'Başarılı',
                    'message' => 'AI önerileri sıfırlandı',
@@ -1989,4 +2219,384 @@ class PageManageComponent extends Component implements AIContentGeneratable
            ]);
        }
    }
+
+   /**
+    * AI Analysis Loading State Handler
+    */
+   public function setAnalysisLoader(...$params)
+   {
+       // Livewire 3.x dispatch ile gelen parametreleri parse et
+       $data = $params[0] ?? [];
+
+       $loading = is_array($data) ? ($data['loading'] ?? false) : $data;
+       $language = is_array($data) ? ($data['language'] ?? $this->currentLanguage) : $this->currentLanguage;
+
+       $this->analysisLoaders[$language] = $loading;
+   }
+
+   /**
+    * AI Recommendations Loading State Handler
+    */
+   public function setRecommendationsLoader(...$params)
+   {
+       // Livewire 3.x dispatch ile gelen parametreleri parse et
+       $data = $params[0] ?? [];
+
+       $loading = is_array($data) ? ($data['loading'] ?? false) : $data;
+       $language = is_array($data) ? ($data['language'] ?? $this->currentLanguage) : $this->currentLanguage;
+
+       $this->recommendationLoaders[$language] = $loading;
+   }
+
+   /**
+    * Handle AI Analysis Completed Event
+    */
+   #[On('aiAnalysisCompleted')]
+   public function aiAnalysisCompleted($analysisData = null, $language = null)
+   {
+       // Default language
+       if (!$language) {
+           $language = $this->currentLanguage;
+       }
+
+       \Log::info('🔥 LIVEWIRE: aiAnalysisCompleted çağrıldı!', [
+           'analysisData_type' => gettype($analysisData),
+           'analysisData_dump' => $analysisData,
+           'analysisData_success' => isset($analysisData['success']) ? $analysisData['success'] : 'no_success_key',
+           'analysisData_keys' => is_array($analysisData) ? array_keys($analysisData) : 'not_array',
+           'language' => $language
+       ]);
+
+       // Null check
+       if ($analysisData === null) {
+           \Log::warning('🔥 LIVEWIRE: aiAnalysisCompleted - analysisData is null!');
+           return;
+       }
+
+       // Extract data from result object
+       $actualData = isset($analysisData['data']) ? $analysisData['data'] : $analysisData;
+
+       \Log::info('🔥 LIVEWIRE: Final Data:', [
+           'language' => $language,
+           'analysisData_keys' => is_array($analysisData) ? array_keys($analysisData) : 'not_array',
+           'actualData_keys' => is_array($actualData) ? array_keys($actualData) : 'not_array'
+       ]);
+
+       // Statik veriyi temizle, dinamik veriyi set et
+       $this->staticAiAnalysis[$language] = [];
+       $this->dynamicAiAnalysis[$language] = $actualData;
+       $this->analysisLoaders[$language] = false;
+       $this->analysisErrors[$language] = '';
+
+       \Log::info('🔥 LIVEWIRE: Property\'ler güncellendi:', [
+           'staticAiAnalysis' => count($this->staticAiAnalysis),
+           'dynamicAiAnalysis' => count($this->dynamicAiAnalysis),
+           'current_language_dynamic' => isset($this->dynamicAiAnalysis[$language]) ? 'SET' : 'NOT_SET'
+       ]);
+
+       // Veritabanına kaydet (opsiyonel)
+       $this->saveAiAnalysisToDatabase($analysisData);
+
+       $this->dispatch('toast', [
+           'title' => 'Başarılı',
+           'message' => 'SEO analizi tamamlandı',
+           'type' => 'success'
+       ]);
+
+       \Log::info('🔥 LIVEWIRE: aiAnalysisCompleted tamamlandı!');
+   }
+
+
+   /**
+    * Handle AI Recommendations Completed Event
+    */
+   #[On('aiRecommendationsCompleted')]
+   public function aiRecommendationsCompleted($recommendationsData = null, $language = null)
+   {
+       // Default language
+       if (!$language) {
+           $language = $this->currentLanguage;
+       }
+
+       \Log::info('🔥 LIVEWIRE: aiRecommendationsCompleted çağrıldı!', [
+           'recommendationsData_type' => gettype($recommendationsData),
+           'recommendationsData_success' => isset($recommendationsData['success']) ? $recommendationsData['success'] : 'no_success_key',
+           'recommendationsData_keys' => is_array($recommendationsData) ? array_keys($recommendationsData) : 'not_array',
+           'language' => $language
+       ]);
+
+       // Null check
+       if ($recommendationsData === null) {
+           \Log::warning('🔥 LIVEWIRE: aiRecommendationsCompleted - recommendationsData is null!');
+           return;
+       }
+
+       // Extract data from result object
+       $actualData = isset($recommendationsData['data']) ? $recommendationsData['data'] : $recommendationsData;
+
+       \Log::info('🔥 LIVEWIRE: Recommendations Final Data:', [
+           'language' => $language,
+           'recommendationsData_keys' => is_array($recommendationsData) ? array_keys($recommendationsData) : 'not_array',
+           'actualData_keys' => is_array($actualData) ? array_keys($actualData) : 'not_array'
+       ]);
+
+       // Statik veriyi temizle, dinamik veriyi set et
+       $this->staticAiRecommendations[$language] = [];
+       $this->dynamicAiRecommendations[$language] = $actualData;
+       $this->recommendationLoaders[$language] = false;
+       $this->recommendationErrors[$language] = '';
+
+       // Veritabanına kaydet (opsiyonel)
+       $this->saveAiRecommendationsToDatabase($recommendationsData);
+
+       $this->dispatch('toast', [
+           'title' => 'Başarılı',
+           'message' => 'AI önerileri alındı',
+           'type' => 'success'
+       ]);
+   }
+
+   /**
+    * Save AI Analysis to Database
+    */
+   private function saveAiAnalysisToDatabase($data)
+   {
+       if (!$this->pageId) {
+           \Log::warning('🔥 saveAiAnalysisToDatabase: pageId yok!');
+           return;
+       }
+
+       \Log::info('🔥 saveAiAnalysisToDatabase başladı (SEO_SETTINGS VERSION)', [
+           'pageId' => $this->pageId,
+           'currentLanguage' => $this->currentLanguage,
+           'data_type' => gettype($data)
+       ]);
+
+       try {
+           // SEO Settings tablosuna kaydet - pages'a değil!
+           $seoSetting = \Modules\SeoManagement\app\Models\SeoSetting::where('seoable_type', 'Modules\Page\App\Models\Page')
+               ->where('seoable_id', $this->pageId)
+               ->first();
+
+           if (!$seoSetting) {
+               \Log::info('🔥 SeoSetting bulunamadı, yenisi oluşturuluyor');
+               $seoSetting = \Modules\SeoManagement\app\Models\SeoSetting::create([
+                   'seoable_type' => 'Modules\Page\App\Models\Page',
+                   'seoable_id' => $this->pageId
+               ]);
+           }
+
+           \Log::info('🔥 SeoSetting bulundu/oluşturuldu', ['id' => $seoSetting->id]);
+
+           // AI Analysis'i doğru kolonlara kaydet
+           $updateData = [];
+
+           // Strengths
+           if (isset($data['strengths'])) {
+               $existingStrengths = $seoSetting->strengths ?? [];
+               $existingStrengths[$this->currentLanguage] = $data['strengths'];
+               $updateData['strengths'] = $existingStrengths;
+           }
+
+           // Improvements
+           if (isset($data['improvements'])) {
+               $existingImprovements = $seoSetting->improvements ?? [];
+               $existingImprovements[$this->currentLanguage] = $data['improvements'];
+               $updateData['improvements'] = $existingImprovements;
+           }
+
+           // Action Items
+           if (isset($data['action_items'])) {
+               $existingActionItems = $seoSetting->action_items ?? [];
+               $existingActionItems[$this->currentLanguage] = $data['action_items'];
+               $updateData['action_items'] = $existingActionItems;
+           }
+
+           // Note: overall_score and detailed_scores are now stored in analysis_results
+           // No separate columns needed - data will be extracted from analysis_results when needed
+
+           // Analysis Results (tüm data)
+           $existingAnalysis = $seoSetting->analysis_results ?? [];
+           $existingAnalysis[$this->currentLanguage] = array_merge($data, [
+               'generated_at' => now()->toISOString()
+           ]);
+           $updateData['analysis_results'] = $existingAnalysis;
+           $updateData['analysis_date'] = now();
+
+           $result = $seoSetting->update($updateData);
+
+           \Log::info('🔥 SEO Settings AI Analysis updated', [
+               'success' => $result,
+               'updated_keys' => array_keys($updateData)
+           ]);
+
+       } catch (\Exception $e) {
+           \Log::error('❌ AI analysis kaydetme hatası (SEO_SETTINGS)', [
+               'page_id' => $this->pageId,
+               'error' => $e->getMessage(),
+               'trace' => $e->getTraceAsString()
+           ]);
+       }
+   }
+
+   /**
+    * Save AI Recommendations to Database
+    */
+   private function saveAiRecommendationsToDatabase($data)
+   {
+       if (!$this->pageId) {
+           \Log::warning('🔥 saveAiRecommendationsToDatabase: pageId yok!');
+           return;
+       }
+
+       \Log::info('🔥 saveAiRecommendationsToDatabase başladı (SEO_SETTINGS VERSION)', [
+           'pageId' => $this->pageId,
+           'currentLanguage' => $this->currentLanguage,
+           'data_type' => gettype($data),
+           'data_keys' => is_array($data) ? array_keys($data) : 'not_array'
+       ]);
+
+       try {
+           // SEO Settings tablosuna kaydet - pages'a değil!
+           $seoSetting = \Modules\SeoManagement\app\Models\SeoSetting::where('seoable_type', 'Modules\Page\App\Models\Page')
+               ->where('seoable_id', $this->pageId)
+               ->first();
+
+           if (!$seoSetting) {
+               \Log::info('🔥 SeoSetting bulunamadı, yenisi oluşturuluyor');
+               $seoSetting = \Modules\SeoManagement\app\Models\SeoSetting::create([
+                   'seoable_type' => 'Modules\Page\App\Models\Page',
+                   'seoable_id' => $this->pageId
+               ]);
+           }
+
+           \Log::info('🔥 SeoSetting bulundu/oluşturuldu', ['id' => $seoSetting->id]);
+
+           // AI Suggestions kolonuna kaydet (multilingual format)
+           $existingData = $seoSetting->ai_suggestions ?? [];
+           $existingData[$this->currentLanguage] = array_merge($data, [
+               'generated_at' => now()->toISOString()
+           ]);
+
+           $result = $seoSetting->update([
+               'ai_suggestions' => $existingData,
+               'analysis_date' => now()
+           ]);
+
+           \Log::info('🔥 SEO Settings AI Recommendations updated', [
+               'success' => $result,
+               'updated_keys' => ['ai_suggestions', 'analysis_date']
+           ]);
+
+       } catch (\Exception $e) {
+           \Log::error('❌ AI recommendations kaydetme hatası (SEO_SETTINGS)', [
+               'page_id' => $this->pageId,
+               'error' => $e->getMessage(),
+               'trace' => $e->getTraceAsString()
+           ]);
+       }
+   }
+
+   /**
+    * Load Static AI Results from SEO Settings Database
+    */
+   private function loadStaticAiResults()
+   {
+       if (!$this->pageId) {
+           \Log::warning('🔥 loadStaticAiResults: pageId yok!');
+           return;
+       }
+
+       \Log::info('🔥 loadStaticAiResults başladı (SEO_SETTINGS VERSION)', ['pageId' => $this->pageId]);
+
+       try {
+           // SEO Settings tablosundan yükle
+           $seoSetting = \Modules\SeoManagement\app\Models\SeoSetting::where('seoable_type', 'Modules\Page\App\Models\Page')
+               ->where('seoable_id', $this->pageId)
+               ->first();
+
+           if (!$seoSetting) {
+               \Log::info('🔥 SeoSetting bulunamadı, static AI data yok');
+               return;
+           }
+
+           \Log::info('🔥 SeoSetting bulundu', [
+               'seo_id' => $seoSetting->id,
+               'has_analysis_results' => !is_null($seoSetting->analysis_results),
+               'has_ai_suggestions' => !is_null($seoSetting->ai_suggestions),
+               'has_strengths' => !is_null($seoSetting->strengths),
+               'has_improvements' => !is_null($seoSetting->improvements)
+           ]);
+
+           // AI Analysis yükle - seo_settings.analysis_results, strengths, improvements, action_items
+           foreach ($this->availableLanguages as $lang) {
+               $analysisData = [];
+
+               // analysis_results'tan temel data
+               if ($seoSetting->analysis_results && isset($seoSetting->analysis_results[$lang])) {
+                   $analysisData = $seoSetting->analysis_results[$lang];
+               }
+
+               // strengths ekle
+               if ($seoSetting->strengths && isset($seoSetting->strengths[$lang])) {
+                   $analysisData['strengths'] = $seoSetting->strengths[$lang];
+               }
+
+               // improvements ekle
+               if ($seoSetting->improvements && isset($seoSetting->improvements[$lang])) {
+                   $analysisData['improvements'] = $seoSetting->improvements[$lang];
+               }
+
+               // action_items ekle
+               if ($seoSetting->action_items && isset($seoSetting->action_items[$lang])) {
+                   $analysisData['action_items'] = $seoSetting->action_items[$lang];
+               }
+
+               // metrics data analysis_results içinde zaten var
+               // detailed_scores ve overall_score kolonları kaldırıldı - gereksiz duplikasyon
+
+               $this->staticAiAnalysis[$lang] = $analysisData;
+           }
+
+           // AI Recommendations yükle - seo_settings.ai_suggestions
+           foreach ($this->availableLanguages as $lang) {
+               $this->staticAiRecommendations[$lang] = $seoSetting->ai_suggestions[$lang] ?? [];
+           }
+
+           \Log::info('🔥 loadStaticAiResults tamamlandı (SEO_SETTINGS)', [
+               'staticAiAnalysis_langs' => array_keys($this->staticAiAnalysis),
+               'staticAiRecommendations_langs' => array_keys($this->staticAiRecommendations)
+           ]);
+
+       } catch (\Exception $e) {
+           \Log::error('❌ Static AI results yükleme hatası (SEO_SETTINGS)', [
+               'page_id' => $this->pageId,
+               'error' => $e->getMessage(),
+               'trace' => $e->getTraceAsString()
+           ]);
+       }
+   }
+
+   /**
+    * Dil değiştiğinde AI sonuçlarını güncelle
+    */
+   public function updatedCurrentLanguage()
+   {
+       // Mevcut parent logic
+       if (method_exists(parent::class, 'updatedCurrentLanguage')) {
+           parent::updatedCurrentLanguage();
+       }
+
+       // Dinamik sonuçları temizle (farklı dil için geçersiz)
+       $this->dynamicAiAnalysis = [];
+       $this->dynamicAiRecommendations = [];
+
+       // Loading state'leri temizle
+       $this->analysisLoaders = [];
+       $this->recommendationLoaders = [];
+       $this->analysisErrors = [];
+       $this->recommendationErrors = [];
+   }
+
+
 }

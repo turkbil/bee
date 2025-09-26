@@ -9,16 +9,59 @@
 
     console.log('🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!');
 
-    // ===== INLINE OVERLAY SİSTEMİ =====
-    function showInlineLoading(containerId, message = 'Yükleniyor...', cleanupTarget = 'seo-data') {
+    // Livewire DOM error handling
+    window.addEventListener('error', (event) => {
+        if (event.message && event.message.includes('before')) {
+            console.warn('🔧 AI-SEO Livewire DOM error suppressed:', event.message);
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+        if (event.reason && event.reason.toString().includes('before')) {
+            console.warn('🔧 AI-SEO Livewire DOM promise rejection suppressed:', event.reason);
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    // ===== OVERLAY HELPER FUNCTIONS =====
+    function getOverlayTitle(cleanupTarget) {
+        switch (cleanupTarget) {
+            case 'seo-data':
+                return 'AI SEO Analizi';
+            case 'ai-recommendations':
+                return 'AI SEO Önerileri';
+            default:
+                return 'AI SEO İşlemleri';
+        }
+    }
+
+    function getOverlaySubtitle(cleanupTarget) {
+        switch (cleanupTarget) {
+            case 'seo-data':
+                return 'Gelişmiş yapay zeka teknolojisi ile SEO verileriniz analiz ediliyor';
+            case 'ai-recommendations':
+                return 'Kişiselleştirilmiş SEO önerileri yapay zeka tarafından oluşturuluyor';
+            default:
+                return 'AI ile SEO işlemleriniz gerçekleştiriliyor';
+        }
+    }
+
+    // ===== INLINE OVERLAY SİSTEMİ REMOVED - YENİ showInlineLoadingOverlay KULLANILIYOR =====
+    /*function showInlineLoading(containerId, message = 'Yükleniyor...', cleanupTarget = 'seo-data') {
         // Container'ı bul veya oluştur
         let container = document.getElementById(containerId);
 
         if (!container) {
-            // Container yoksa oluştur - SEO Tab içinde
-            const targetLocation = document.querySelector('.tab-pane.active .card-body') ||
-                                 document.querySelector('.seo-language-content[style*="display: block"]') ||
-                                 document.querySelector('.tab-pane.active');
+            // Container yoksa oluştur - TOOLBAR'IN HEMEN ALTINA
+            const toolbar = document.querySelector('.ai-seo-toolbar');
+            const targetLocation = toolbar ? toolbar.parentElement : (
+                document.querySelector('.seo-language-content[style*="display: block"]') ||
+                document.querySelector('.tab-pane.active .card-body') ||
+                document.querySelector('.tab-pane.active')
+            );
 
             if (targetLocation) {
                 container = document.createElement('div');
@@ -26,8 +69,15 @@
                 container.className = 'inline-results-container mt-4';
                 container.style.position = 'relative'; // Overlay için
                 container.style.minHeight = '300px'; // Minimum yükseklik
-                targetLocation.appendChild(container);
-                console.log('✅ Inline container oluşturuldu:', containerId);
+
+                // TOOLBAR'IN HEMEN ALTINA EKLE
+                if (toolbar) {
+                    toolbar.insertAdjacentElement('afterend', container);
+                    console.log('✅ Container toolbar altına eklendi:', containerId);
+                } else {
+                    targetLocation.appendChild(container);
+                    console.log('✅ Container fallback location\'a eklendi:', containerId);
+                }
             } else {
                 console.warn('⚠️ Target location bulunamadı');
                 return;
@@ -67,19 +117,39 @@
             </div>
         `;
 
-        // Overlay'i oluştur (içerik alanının üstünde)
+        // AI MODAL TARZI INLINE OVERLAY
         const overlay = document.createElement('div');
         overlay.className = 'inline-loading-overlay';
         overlay.innerHTML = `
             <div class="overlay-content">
-                <div class="spinner-border text-primary mb-3" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                <!-- AI İşlem Başlık -->
+                <div class="mb-4 text-center">
+                    <h4 class="fw-normal mb-2">🤖 ${getOverlayTitle(cleanupTarget)}</h4>
+                    <p class="text-muted mb-0">${getOverlaySubtitle(cleanupTarget)}</p>
                 </div>
-                <h6 class="mb-2">AI İşleme Alınıyor</h6>
-                <p class="text-muted mb-0">${message}</p>
-                <div class="progress mt-3" style="height: 4px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated"
-                         style="width: 100%"></div>
+
+                <!-- Progress Bar - Modal ile aynı -->
+                <div class="mb-3">
+                    <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar progress-bar-indeterminate bg-primary progress-bar-animated" style="width: 100%"></div>
+                    </div>
+                    <small class="d-block text-center text-muted">${message}</small>
+                </div>
+
+                <!-- İşleme Durumu -->
+                <div class="d-flex align-items-center justify-content-center">
+                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span class="text-muted">Lütfen bekleyin...</span>
+                </div>
+
+                <!-- Bilgi Mesajı -->
+                <div class="alert alert-info py-2 mt-3" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small><strong>Bilgi:</strong> Analiz tamamlandığında sonuçlar bu alanda görüntülenecektir.</small>
+                    </div>
                 </div>
             </div>
         `;
@@ -95,23 +165,46 @@
                     left: 0;
                     right: 0;
                     bottom: 0;
-                    background: rgba(255, 255, 255, 0.95);
-                    backdrop-filter: blur(2px);
+                    background: rgba(255, 255, 255, 0.98);
+                    backdrop-filter: blur(6px);
+                    z-index: 1000;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    z-index: 10;
+                    min-height: 400px;
                     border-radius: 8px;
-                    border: 1px solid rgba(0, 0, 0, 0.1);
                 }
 
                 .overlay-content {
-                    text-align: center;
-                    padding: 2rem;
                     background: white;
-                    border-radius: 12px;
+                    padding: 2rem;
+                    border-radius: 0.5rem;
                     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                    max-width: 300px;
+                    border: 1px solid rgba(0, 0, 0, 0.05);
+                    max-width: 500px;
+                    width: 90%;
+                }
+
+                .overlay-content .progress {
+                    background-color: rgba(32, 107, 196, 0.1);
+                }
+
+                .overlay-content .progress-bar-indeterminate {
+                    background: linear-gradient(45deg,
+                        rgba(32, 107, 196, 0.5) 25%,
+                        transparent 25%,
+                        transparent 50%,
+                        rgba(32, 107, 196, 0.5) 50%,
+                        rgba(32, 107, 196, 0.5) 75%,
+                        transparent 75%
+                    );
+                    background-size: 20px 20px;
+                    animation: progress-indeterminate 1s linear infinite;
+                }
+
+                @keyframes progress-indeterminate {
+                    0% { background-position: 0 0; }
+                    100% { background-position: 20px 0; }
                 }
 
                 .inline-results-container {
@@ -153,30 +246,33 @@
         }, 100);
 
         console.log('✅ Inline overlay gösterildi:', message);
-    }
+    }*/
 
     function cleanupExistingSeoAreas(targetType = 'all') {
         console.log(`🧹 SEO alanları temizleniyor - Hedef: ${targetType}`);
 
-        // 1. Inline container'ları her zaman temizle
-        const existingContainers = document.querySelectorAll('#seoUniversalResults, #seoAnalysisResults, #seoGenerateResults, #seoSuggestionsResults');
-        existingContainers.forEach(container => {
-            if (container) {
-                console.log('🗑️ Kaldırılan container:', container.id);
-                container.remove();
+        // 1. Target type'a göre sadece ilgili container'ı temizle (PARALEL ÇALIŞMA İÇİN)
+        if (targetType === 'all' || targetType === 'seo-data' || targetType === 'analysis') {
+            const analysisContainer = document.getElementById('seoUniversalResults');
+            if (analysisContainer) {
+                analysisContainer.innerHTML = '';
+                console.log('🧹 seoUniversalResults içeriği temizlendi (container korundu)');
             }
-        });
+        }
+
+        if (targetType === 'all' || targetType === 'ai-recommendations' || targetType === 'recommendations') {
+            const recommendationsContainer = document.getElementById('aiRecommendationsContainer');
+            if (recommendationsContainer) {
+                recommendationsContainer.innerHTML = '';
+                console.log('🧹 aiRecommendationsContainer içeriği temizlendi (container korundu)');
+            }
+        }
 
         // 2. Hedef tipine göre spesifik temizlik
         if (targetType === 'all' || targetType === 'seo-data') {
-            // SEO Skor/Data alanlarını temizle
-            const seoDataSelectors = [
-                'h3:contains("SEO Analiz Raporu")',
-                '.bg-light.border.p-3.rounded-3.mb-3',
-                '[class*="bg-light"][class*="border"]'
-            ];
+            // SADECE ANALİZ SONUÇLARINI temizle, FORM ALANLARI KORUNACAK
 
-            // SEO Analiz Raporu başlıklarını bul
+            // 1. SEO Analiz Raporu başlık alanları
             const seoReportHeaders = document.querySelectorAll('h3');
             seoReportHeaders.forEach(header => {
                 if (header.textContent.trim().includes('SEO Analiz Raporu')) {
@@ -192,16 +288,46 @@
                 }
             });
 
-            // SEO skorları ve metrikleri temizle
-            const scoreSections = document.querySelectorAll('.row.mb-4, [class*="avatar"][class*="bg-"]');
+            // 2. SEO SKORLARINI temizle - ama form alanlarına dokunma
+            const scoreSections = document.querySelectorAll('.row.mb-4');
             scoreSections.forEach(section => {
                 const text = section.textContent || '';
-                if (text.includes('Genel SEO Skoru') ||
-                    text.includes('Meta Title') ||
-                    text.includes('Meta Description') ||
-                    text.includes('İçerik Kalitesi')) {
-                    console.log('🗑️ SEO skor alanı kaldırılıyor');
+                // SADECE skor gösteren alanları temizle, form içermeyenleri
+                if ((text.includes('Genel SEO Skoru') ||
+                     text.includes('/100') ||
+                     text.includes('İyi') ||
+                     text.includes('Orta') ||
+                     text.includes('Kötü')) &&
+                    !section.querySelector('input') &&
+                    !section.querySelector('select') &&
+                    !section.querySelector('textarea') &&
+                    !section.querySelector('button[type="button"]') &&
+                    !section.querySelector('.form-floating') &&
+                    !section.querySelector('.form-control')) {
+                    console.log('🗑️ SEO skor alanı kaldırılıyor (form korunuyor)');
                     section.remove();
+                }
+            });
+
+            // 3. ANALİZ ACCORDION'LARINI temizle - SADECE analiz olanları
+            const analysisAccordionIds = ['realTimeSeoAccordion', 'metaAnalysis', 'contentQualityAnalysis', 'socialMediaAnalysis', 'actionPlan'];
+            analysisAccordionIds.forEach(accordionId => {
+                const accordionElement = document.getElementById(accordionId);
+                if (accordionElement) {
+                    // Accordion'un parent container'ını bul ama FORM ALANLARINI KONTROL ET
+                    const accordionParent = accordionElement.closest('.mt-4');
+                    if (accordionParent &&
+                        !accordionParent.querySelector('input') &&
+                        !accordionParent.querySelector('textarea') &&
+                        !accordionParent.querySelector('select') &&
+                        !accordionParent.querySelector('.form-floating')) {
+                        console.log('🗑️ Analiz Accordion kaldırılıyor (form korunuyor):', accordionId);
+                        accordionParent.remove();
+                    } else if (accordionElement && !accordionElement.querySelector('.form-control')) {
+                        // Sadece accordion'u sil, parent'ını değil
+                        console.log('🗑️ Sadece accordion kaldırılıyor:', accordionId);
+                        accordionElement.remove();
+                    }
                 }
             });
         }
@@ -272,26 +398,51 @@
         console.log(`✅ ${targetType} temizliği tamamlandı`);
     }
 
-    function hideInlineLoading(containerId) {
-        const container = document.getElementById(containerId);
-        if (container) {
-            const overlay = container.querySelector('.inline-loading-overlay');
-            if (overlay) {
-                // Fade out efekti
-                overlay.style.opacity = '0';
-                overlay.style.transition = 'opacity 0.3s ease';
 
-                setTimeout(() => {
-                    overlay.remove();
-                    console.log('✅ Inline overlay kaldırıldı:', containerId);
-                }, 300);
-            }
+    function showInlineError(message) {
+        const container = document.getElementById('seoUniversalResults');
+        if (!container) {
+            console.warn('⚠️ Container bulunamadı, error gösterilemiyor');
+            return;
         }
+
+        // Loading'i gizle
+        hideInlineLoading('seoUniversalResults');
+
+        // Error HTML'i
+        const errorHTML = `
+            <div class="mt-4">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Hata Oluştu
+                    </h4>
+                    <p>${message}</p>
+                    <hr>
+                    <p class="mb-0">
+                        <button class="btn btn-outline-danger btn-sm" onclick="location.reload()">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            Sayfayı Yenile
+                        </button>
+                    </p>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = errorHTML;
+        console.log('❌ Inline error gösterildi:', message);
     }
 
     // Buton durumu yönetimi
     function setButtonLoading(button, isLoading = true, loadingText = 'Yükleniyor...') {
         if (isLoading) {
+            console.log('🔍 setButtonLoading DEBUG:', {
+                currentHTML: button.innerHTML,
+                currentText: button.textContent.trim(),
+                loadingText: loadingText,
+                isLoading: isLoading
+            });
+
             button.dataset.originalText = button.innerHTML;
             button.disabled = true;
             button.innerHTML = `
@@ -302,8 +453,28 @@
             `;
             button.classList.add('btn-loading');
         } else {
+            console.log('🔍 setButtonLoading RESET DEBUG:', {
+                storedOriginalText: button.dataset.originalText,
+                currentHTML: button.innerHTML,
+                willResetTo: button.dataset.originalText || button.innerHTML
+            });
+
             button.disabled = false;
-            button.innerHTML = button.dataset.originalText || button.innerHTML;
+
+            // DEBUG: Neden "true" yazdığını anlayalım
+            if (button.dataset.originalText) {
+                console.log('✅ Using stored originalText:', button.dataset.originalText);
+                button.innerHTML = button.dataset.originalText;
+            } else {
+                console.warn('⚠️ No originalText found, keeping current HTML');
+                // Fallback: Butonun class'ından orijinal text'i tahmin et
+                if (button.classList.contains('ai-seo-comprehensive-btn')) {
+                    button.innerHTML = `<i class="fas fa-chart-bar me-1"></i>Verileri Yenile`;
+                } else if (button.classList.contains('ai-seo-recommendations-btn')) {
+                    button.innerHTML = `<i class="fas fa-lightbulb me-1"></i>AI Önerileri`;
+                }
+            }
+
             button.classList.remove('btn-loading');
         }
     }
@@ -377,6 +548,13 @@
         console.log('🔍 Bulunan buton sayısı:', seoButtons.length);
         
         seoButtons.forEach((button) => {
+            // 🔍 DEBUG: Buton orijinal text'ini logla
+            console.log('🔍 Buton DEBUG:', {
+                classes: button.className,
+                originalHTML: button.innerHTML,
+                originalText: button.textContent.trim()
+            });
+
             // Remove existing listeners
             const newButton = button.cloneNode(true);
             button.parentNode.replaceChild(newButton, button);
@@ -480,44 +658,25 @@
     // Real AI API handlers
     async function handleSeoRecommendations(button) {
         console.log('🚀 SEO RECOMMENDATIONS START');
-        const language = getCurrentLanguage();
+        const language = button.getAttribute('data-language') || getCurrentActiveLanguage();
 
-        // Mevcut öneriler varsa kullanıcıya sor
-        const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
-        const existingContent = section && section.querySelector('.ai-recommendations-content');
-        const hasExistingRecommendations = existingContent &&
-            existingContent.style.display !== 'none' &&
-            existingContent.innerHTML.trim() !== '';
-
-        if (hasExistingRecommendations && !window.forceRegenerateRecommendations) {
-            const confirmed = confirm('Mevcut öneriler silinecek ve yeni öneriler oluşturulacak. Emin misiniz?');
-            if (!confirmed) {
-                console.log('❌ Kullanıcı yeniden oluşturmayı iptal etti');
-                return;
-            }
-        }
-
-        // Force regenerate flag'ini temizle
-        window.forceRegenerateRecommendations = false;
+        // DİREKT YENİLE - Confirm dialog yok
+        console.log('🔄 AI Önerileri direkt yenileniyor (alert yok)');
 
         try {
-            // TEK ALAN - Inline loading göster
-            setButtonLoading(button, true, 'Öneriler Üretiliyor...');
-            showInlineLoading('seoUniversalResults', 'AI SEO önerileri üretiliyor, lütfen bekleyin...', 'ai-recommendations');
-
-            // Show the recommendations section
-            if (section) {
-                section.style.display = 'block';
-
-                // Show loading state
-                const loading = section.querySelector('.ai-recommendations-loading');
-                const content = section.querySelector('.ai-recommendations-content');
-                const error = section.querySelector('.ai-recommendations-error');
-
-                loading.style.display = 'block';
-                content.style.display = 'none';
-                error.style.display = 'none';
+            // Livewire loading state aktif et
+            if (typeof Livewire !== 'undefined') {
+                console.log('🚀 Dispatching setRecommendationsLoader:', {loading: true, language: language});
+                Livewire.dispatch('setRecommendationsLoader', {loading: true, language: language});
+                console.log('✅ setRecommendationsLoader dispatched');
+            } else {
+                console.warn('⚠️ Livewire not available for loader');
             }
+
+            // TEK ALAN - Inline loading göster
+            setButtonLoading(button, true, 'Oluşturuluyor...');
+
+            // YENİ SİSTEM: Inline loading zaten gösteriliyor
             
             const collectedData = collectFormData();
             // DEBUG: Model ID kontrolü (Global - herhangi bir modül olabilir)
@@ -532,7 +691,7 @@
                 form_content: collectedData,
                 language: language,
                 page_id: window.currentModelId || null,  // page_id parametresi universal olarak kullanılıyor
-                force_regenerate: window.forceRegenerateRecommendations || false  // Yeniden oluşturma zorlaması
+                force_regenerate: true  // Her zaman yeni veri al (test için)
             };
 
             // Force regenerate flag'ini temizle
@@ -572,7 +731,38 @@
             
             if (result.success) {
                 console.log('✅ Success - displaying recommendations:', result.data);
-                displayRecommendations(result.data, language);
+
+                // MANUAL AUTO-APPLY - DIRECT CALL
+                console.log('🎯 MANUAL AUTO-APPLY: Başlatılıyor...');
+                setTimeout(() => {
+                    if (window.autoApplyFirstAlternatives && result.data) {
+                        console.log('🚀 MANUAL: autoApplyFirstAlternatives çağrılıyor:', result.data);
+                        window.autoApplyFirstAlternatives(result.data);
+                        console.log('✅ MANUAL: autoApplyFirstAlternatives tamamlandı');
+                    } else {
+                        console.error('❌ MANUAL: autoApplyFirstAlternatives function bulunamadı veya data yok');
+                        console.error('❌ Function exists:', typeof window.autoApplyFirstAlternatives);
+                        console.error('❌ Data exists:', !!result.data);
+                    }
+                }, 1000);
+
+                // Livewire'a sonucu gönder
+                if (typeof Livewire !== 'undefined') {
+                    console.log('🚀 Dispatching aiRecommendationsCompleted with FULL result:', result);
+                    console.log('🚀 result.data:', result.data);
+                    console.log('🚀 Language:', language);
+                    // Livewire 3.x format: dispatch with object parameters and #[On] attribute
+                    Livewire.dispatch('aiRecommendationsCompleted', {
+                        recommendationsData: result,
+                        language: language
+                    });
+                    console.log('✅ aiRecommendationsCompleted dispatched successfully');
+                } else {
+                    console.warn('⚠️ Livewire not available, using fallback');
+                    // Fallback: Eski display sistemi
+                    hideInlineLoading('aiRecommendationsContainer');
+                    displayRecommendations(result.data, language);
+                }
 
                 // Cache mesajı göster
                 if (result.data.from_cache) {
@@ -580,12 +770,20 @@
                 }
             } else {
                 console.error('❌ API Error:', result.message);
-                showRecommendationsError(result.message, language);
+                hideInlineLoading('aiRecommendationsContainer');
+                showInlineError('Öneri alınırken hata: ' + result.message);
             }
         } catch (error) {
             console.error('💥 RECOMMENDATIONS ERROR:', error);
             console.error('💥 Error stack:', error.stack);
-            showRecommendationsError('Bağlantı hatası: ' + error.message, language);
+
+            // Livewire error handler
+            if (typeof Livewire !== 'undefined') {
+                Livewire.dispatch('setRecommendationsLoader', {loading: false, language: language});
+            }
+
+            hideInlineLoading('aiRecommendationsContainer');
+            showInlineError('Bağlantı hatası: ' + error.message);
         } finally {
             setButtonLoading(button, false);
         }
@@ -594,36 +792,27 @@
     async function handleSeoAnalysis(button) {
         console.log('🚀 SEO ANALYSIS START');
 
-        // Mevcut analiz sonuçları varsa kullanıcıya sor
-        const existingAnalysis = document.querySelector('#seoAnalysisContent .analysis-results');
-        const hasExistingAnalysis = existingAnalysis &&
-            existingAnalysis.style.display !== 'none' &&
-            existingAnalysis.innerHTML.trim() !== '';
-
-        if (hasExistingAnalysis && !window.forceRegenerateAnalysis) {
-            const confirmed = confirm('Mevcut analiz sonuçları silinecek ve yeni analiz yapılacak. Emin misiniz?');
-            if (!confirmed) {
-                console.log('❌ Kullanıcı analizi yeniden yapmayı iptal etti');
-                return;
-            }
-        }
-
-        // Force regenerate flag'ini temizle
-        window.forceRegenerateAnalysis = false;
+        // DİREKT ANALİZ - Confirm dialog yok
+        console.log('🔄 SEO Analizi direkt başlatılıyor (alert yok)');
 
         try {
-            // Sadece buton loading - global overlay yok
-            setButtonLoading(button, true, 'Analiz Ediliyor...');
+            const language = button.getAttribute('data-language') || getCurrentActiveLanguage();
 
-            // TEK ALAN - hem analiz hem öneriler aynı yerde
-            showInlineLoading('seoUniversalResults', 'SEO analizi yapılıyor, lütfen bekleyin...', 'seo-data');
+            // Livewire loading state aktif et
+            if (typeof Livewire !== 'undefined') {
+                Livewire.dispatch('setAnalysisLoader', {loading: true, language: language});
+            }
+
+            // Sadece buton loading - global overlay yok
+            setButtonLoading(button, true, 'Oluşturuluyor...');
             
             const collectedData = collectFormData();
             console.log('🚨 DEBUG CHECKPOINT 1: collectFormData called');
             const formData = {
                 feature_slug: 'seo-comprehensive-audit',
                 form_content: collectedData,
-                language: collectedData.language || 'tr'
+                language: collectedData.language || 'tr',
+                force_regenerate: true  // Her zaman yeni veri al (test için)
             };
             console.log('📋 Form data:', formData);
             console.log('🚨 DEBUG CHECKPOINT 2: collected data keys:', Object.keys(collectedData));
@@ -665,41 +854,23 @@
                 // FULL RESPONSE'u kaydet - detailed_scores root level'de!
                 window.lastSeoResponse = result;
                 console.log('💾 SAVED TO WINDOW:', window.lastSeoResponse);
-                displayComprehensiveAnalysis(result.data);
-                
-                // Blade accordion'unu da görünür hale getir - real-time
-                setTimeout(() => {
-                    // Force göster - PHP @if koşulunu JavaScript ile aşalım
-                    const accordionSection = document.getElementById('seoAnalysisAccordion');
-                    if (accordionSection) {
-                        // Accordion'un kendisini göster
-                        accordionSection.style.display = 'block';
-                        accordionSection.classList.remove('d-none');
-                        
-                        // Parent card'ı da force göster (@if($hasAnalysisResults) için)
-                        let parent = accordionSection.parentElement;
-                        while (parent && parent !== document.body) {
-                            if (parent.classList.contains('card') || parent.classList.contains('mt-3')) {
-                                parent.style.display = 'block';
-                                parent.classList.remove('d-none');
-                                console.log('✅ Parent container görünür yapıldı:', parent.className);
-                            }
-                            parent = parent.parentElement;
-                        }
-                        
-                        // En üstteki card container'ı spesifik olarak bul ve göster
-                        const cardContainer = accordionSection.closest('.card.mt-3');
-                        if (cardContainer) {
-                            cardContainer.style.display = 'block';
-                            cardContainer.classList.remove('d-none');
-                            console.log('✅ Card container force gösterildi');
-                        }
-                        
-                        console.log('✅ Blade accordion real-time gösterildi');
-                    } else {
-                        console.warn('⚠️ seoAnalysisAccordion bulunamadı - accordion henüz DOM\'a eklenmemiş olabilir');
-                    }
-                }, 500);
+
+                // Livewire'a sonucu gönder
+                if (typeof Livewire !== 'undefined') {
+                    console.log('🚀 Dispatching aiAnalysisCompleted with FULL result:', result);
+                    console.log('🚀 result.data:', result.data);
+                    console.log('🚀 Language:', language);
+                    // Livewire 3.x dispatch - object parameter format with #[On] attribute
+                    Livewire.dispatch('aiAnalysisCompleted', {
+                        analysisData: result,
+                        language: language
+                    });
+                    console.log('✅ aiAnalysisCompleted dispatched successfully');
+                } else {
+                    console.warn('⚠️ Livewire not available, using fallback');
+                    // Fallback: Eski display sistemi
+                    displayComprehensiveAnalysis(result.data);
+                }
             } else {
                 console.error('❌ API Error:', result.message);
                 showError('Analiz sırasında hata: ' + result.message);
@@ -707,6 +878,12 @@
         } catch (error) {
             console.error('💥 FULL ERROR:', error);
             console.error('💥 Error stack:', error.stack);
+
+            // Livewire error handler
+            if (typeof Livewire !== 'undefined') {
+                Livewire.dispatch('setAnalysisLoader', {loading: false, language: language});
+            }
+
             showError('Bağlantı hatası: ' + error.message);
         } finally {
             // Sadece buton durumunu sıfırla - global overlay yok
@@ -781,8 +958,8 @@
     async function handleSeoSuggestions(button) {
         console.log('🚀 SEO SUGGESTIONS START');
         try {
-            setButtonLoading(button, true, 'Öneriler Alınıyor...');
-            showInlineLoading('seoUniversalResults', 'SEO önerileri hazırlanıyor, lütfen bekleyin...', 'ai-recommendations');
+            setButtonLoading(button, true, 'Oluşturuluyor...');
+            showInlineLoading('aiRecommendationsContainer', 'SEO önerileri hazırlanıyor, lütfen bekleyin...', 'ai-recommendations');
             
             const collectedData = collectFormData();
             const formData = {
@@ -824,15 +1001,17 @@
             
             if (result.success) {
                 console.log('✅ Success - displaying suggestions:', result.data);
-                hideInlineLoading('seoUniversalResults');
+                hideInlineLoading('aiRecommendationsContainer');
                 displaySuggestions(result.data);
             } else {
                 console.error('❌ API Error:', result.message);
+                hideInlineLoading('aiRecommendationsContainer');
                 showError('Öneri alınırken hata: ' + result.message);
             }
         } catch (error) {
             console.error('💥 FULL ERROR:', error);
             console.error('💥 Error stack:', error.stack);
+            hideInlineLoading('aiRecommendationsContainer');
             showError('Bağlantı hatası: ' + error.message);
         } finally {
             setButtonLoading(button, false);
@@ -1030,15 +1209,6 @@
         };
     }
     
-    function setButtonLoading(button, text) {
-        button.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i>${text}`;
-        button.disabled = true;
-    }
-    
-    function resetButton(button, originalHtml) {
-        button.innerHTML = originalHtml;
-        button.disabled = false;
-    }
     
     // YENİ KOMPREHENSİF ANALİZ EKRANI
     function displayComprehensiveAnalysis(analysis) {
@@ -1140,9 +1310,9 @@
                     </div>
                 `;
 
-                // Accordion - Mevcut tasarım
+                // Accordions - mevcut yapıyı koru
                 analysisHTML += `
-                    <div class="accordion mt-4" id="realTimeSeoAccordion">
+                    <div class="accordion" id="realTimeSeoAccordion">
                         <!-- Meta Etiket Analizi -->
                         <div class="accordion-item">
                             <h2 class="accordion-header">
@@ -1209,119 +1379,112 @@
                                             </div>
                                             <div class="col-6">
                                                 <div class="p-3 rounded border text-center hover-element" style="border-radius: 0.25rem !important;">
-                                                    <div class="h4 mb-1">${analysis.char_count || 0}</div>
-                                                    <div>Karakter</div>
+                                                    <div class="h4 mb-1">${analysis.reading_time || '1 dk'}</div>
+                                                    <div>Okuma Süresi</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-4">
-                                        <h5 class="mb-3">Yapısal Öğeler</h5>
-                                        <div class="list-group list-group-flush" style="border-radius: 0.25rem !important;">
-                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                <span>H1 Ana Başlık</span>
-                                                <span class="badge bg-${analysis.has_h1 ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
-                                                    ${analysis.has_h1 ? 'Mevcut' : 'Yok'}
-                                                </span>
-                                            </div>
-                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                <span>H2 Alt Başlıklar</span>
-                                                <span class="badge bg-${analysis.has_h2 ? 'success' : 'secondary'}" style="border-radius: 0.25rem !important;">
-                                                    ${analysis.has_h2 ? 'Mevcut' : 'Yok'}
-                                                </span>
-                                            </div>
-                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                <span>İç Linkler</span>
-                                                <span class="badge bg-secondary" style="border-radius: 0.25rem !important;">
-                                                    ${analysis.internal_links || 0} adet
-                                                </span>
-                                            </div>
-                                        </div>
+                                    <div>
+                                        <h5 class="mb-3">Başlık Yapısı</h5>
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2">
+                                                <span class="badge bg-${analysis.has_h1 ? 'success' : 'danger'} me-2" style="border-radius: 0.25rem !important;">${analysis.has_h1 ? 'Var' : 'Yok'}</span>
+                                                H1 Başlığı
+                                            </li>
+                                            <li>
+                                                <span class="badge bg-${analysis.has_h2 ? 'success' : 'warning'} me-2" style="border-radius: 0.25rem !important;">${analysis.has_h2 ? 'Yeterli' : 'Az'}</span>
+                                                H2 Başlıkları
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Sosyal Medya -->
+                        <!-- Sosyal Medya ve Yapısal Veri -->
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed position-relative" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#socialMediaAnalysis" aria-expanded="false">
-                                    <i class="fas fa-share-alt me-2"></i>
-                                    Sosyal Medya Hazırlığı
+                                        data-bs-toggle="collapse" data-bs-target="#socialAndSchema" aria-expanded="false">
+                                    <i class="fas fa-share-nodes me-2"></i>
+                                    Sosyal Medya ve Yapısal Veri
                                     <span class="badge bg-${defaultScores.social_media >= 80 ? 'success' : defaultScores.social_media >= 60 ? 'warning' : 'danger'} position-absolute"
                                           style="right: 2.5rem; top: 50%; transform: translateY(-50%); border-radius: 0.25rem !important;">
                                         ${defaultScores.social_media}/100
                                     </span>
                                 </button>
                             </h2>
-                            <div id="socialMediaAnalysis" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                            <div id="socialAndSchema" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
                                 <div class="accordion-body pt-4">
-                                    <div class="mb-4">
-                                        <h5 class="mb-3">OpenGraph Durumu</h5>
-                                        <div class="list-group list-group-flush" style="border-radius: 0.25rem !important;">
-                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <strong>og:title</strong>
-                                                    <div>${analysis.og_title || 'Belirtilmemiş'}</div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <h5 class="mb-3">Open Graph Etiketleri</h5>
+                                            <div class="p-3 rounded border" style="border-radius: 0.25rem !important;">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span>OG Title</span>
+                                                    <span class="badge bg-${analysis.og_title ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                        ${analysis.og_title ? 'Hazır' : 'Eksik'}
+                                                    </span>
                                                 </div>
-                                                <span class="badge bg-${analysis.og_title ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
-                                                    ${analysis.og_title ? 'Mevcut' : 'Yok'}
-                                                </span>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>OG Description</span>
+                                                    <span class="badge bg-${analysis.og_description ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                        ${analysis.og_description ? 'Hazır' : 'Eksik'}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <strong>og:description</strong>
-                                                    <div>${analysis.og_description || 'Belirtilmemiş'}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h5 class="mb-3">Schema İşaretlemeleri</h5>
+                                            <div class="p-3 rounded border" style="border-radius: 0.25rem !important;">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span>Schema</span>
+                                                    <span class="badge bg-${analysis.has_schema ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
+                                                        ${analysis.has_schema ? 'Var' : 'Yok'}
+                                                    </span>
                                                 </div>
-                                                <span class="badge bg-${analysis.og_description ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
-                                                    ${analysis.og_description ? 'Mevcut' : 'Yok'}
-                                                </span>
-                                            </div>
-                                            <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <strong>og:image</strong>
-                                                    <div>1200x630px önerilen</div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span>Rich Snippets</span>
+                                                    <span class="badge bg-${analysis.rich_snippets ? 'success' : 'warning'}" style="border-radius: 0.25rem !important;">
+                                                        ${analysis.rich_snippets ? 'Aktif' : 'Eksik'}
+                                                    </span>
                                                 </div>
-                                                <span class="badge bg-${analysis.og_image ? 'success' : 'danger'}" style="border-radius: 0.25rem !important;">
-                                                    ${analysis.og_image ? 'Mevcut' : 'Yok'}
-                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Öncelikli Eylem Planı -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed position-relative" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#actionPlan" aria-expanded="false">
-                                <i class="fas fa-bullseye me-2"></i>
-                                Öncelikli Eylem Planı
-                                <span class="badge bg-primary position-absolute"
-                                      style="right: 2.5rem; top: 50%; transform: translateY(-50%); --tblr-primary: #EF4444 !important; --tblr-primary-rgb: 239, 68, 68 !important; border-radius: 0.25rem !important;">
-                                    ${(analysis.issues?.length || 3)} eylem
-                                </span>
-                            </button>
-                        </h2>
-                        <div id="actionPlan" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
-                            <div class="accordion-body pt-4">
-                                <h5 class="mb-3">Yapılacaklar Listesi</h5>
-                                <div class="p-3 rounded border" style="border-radius: 0.25rem !important;">
+                        <!-- Öncelikli Eylem Planı -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed position-relative" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#actionPlan" aria-expanded="false">
+                                    <i class="fas fa-bullseye me-2"></i>
+                                    Öncelikli Eylem Planı
+                                    <span class="badge bg-primary position-absolute"
+                                          style="right: 2.5rem; top: 50%; transform: translateY(-50%); --tblr-primary: #EF4444 !important; --tblr-primary-rgb: 239, 68, 68 !important; border-radius: 0.25rem !important;">
+                                        ${(analysis.issues?.length || 3)} eylem
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="actionPlan" class="accordion-collapse collapse" data-bs-parent="#realTimeSeoAccordion">
+                                <div class="accordion-body pt-4">
+                                    <h5 class="mb-3">Yapılacaklar Listesi</h5>
+                                    <div class="p-3 rounded border" style="border-radius: 0.25rem !important;">
                 `;
 
-                // Issues/Eylemler listesi
-                const actionItems = analysis.issues || [
+                const actionItems = Array.isArray(analysis.issues) && analysis.issues.length > 0 ? analysis.issues : [
                     { priority: 'high', title: 'Meta Title iyileştir', suggestions: ['En az 30 karakter olmalı'] },
                     { priority: 'high', title: 'İçeriği geliştir', suggestions: ['En az 300 kelime yazın'] },
                     { priority: 'medium', title: 'Meta Description iyileştir', suggestions: ['En az 120 karakter olmalı'] }
                 ];
 
                 actionItems.forEach((item, index) => {
-                    const priority = item.priority || 'medium';
+                    const priorityRaw = item?.priority ?? 'medium';
+                    const priority = typeof priorityRaw === 'string' ? priorityRaw.toLowerCase() : String(priorityRaw).toLowerCase();
                     const priorityColor = priority === 'high' ? 'danger' : priority === 'medium' ? 'warning' : 'info';
                     const priorityText = priority === 'high' ? 'KRİTİK' : priority === 'medium' ? 'YÜKSEK' : 'ORTA';
 
@@ -1331,13 +1494,18 @@
                         <div class="mb-3 pb-3 ${borderClass}">
                             <h6 class="mb-2">
                                 <span class="badge bg-${priorityColor} me-2" style="border-radius: 0.25rem !important;">${priorityText}</span>
-                                ${item.title}
+                                ${item.title || 'SEO İyileştirmesi'}
                             </h6>
                             <ul class="mb-0">
                     `;
 
-                    const suggestions = item.suggestions || item.description ? [item.description] : ['İyileştirme önerileri hazırlanıyor...'];
-                    suggestions.forEach(suggestion => {
+                    const suggestionsSource = Array.isArray(item.suggestions) && item.suggestions.length
+                        ? item.suggestions
+                        : item.description
+                            ? [item.description]
+                            : ['İyileştirme önerileri hazırlanıyor...'];
+
+                    suggestionsSource.forEach(suggestion => {
                         analysisHTML += `<li>${suggestion}</li>`;
                     });
 
@@ -1345,6 +1513,7 @@
                 });
 
                 analysisHTML += `
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1372,7 +1541,6 @@
 
             } else {
                 console.warn('⚠️ Analiz container bulunamadı, sayfa yenileniyor...');
-                // Fallback: Sayfa yenile (eski sistem)
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
@@ -1380,7 +1548,6 @@
 
         } catch (error) {
             console.error('❌ displayComprehensiveAnalysis error:', error);
-            // Hata durumunda sayfa yenile
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
@@ -1533,14 +1700,16 @@
             console.log('  data.suggestions.description_suggestions:', data.suggestions.description_suggestions);
         }
 
-        // TEK ALAN - Inline container sistemini kullan
-        const container = document.getElementById('seoUniversalResults');
-        const contentArea = container?.querySelector('.inline-content-area');
-
-        if (!contentArea) {
-            console.warn('⚠️ Content area bulunamadı');
+        // AI ÖNERİLERİ - Container'ı temizle ve kullan
+        const container = document.getElementById('aiRecommendationsContainer');
+        if (!container) {
+            console.warn('⚠️ aiRecommendationsContainer bulunamadı');
             return;
         }
+
+        // ÖNCEKİ İÇERİĞİ TEMİZLE
+        container.innerHTML = '';
+        console.log('🧹 AI önerileri container temizlendi');
 
         // Mevcut tasarım ile SEO Suggestions
         let html = `
@@ -1707,11 +1876,11 @@
             </div>
         `;
 
-        contentArea.innerHTML = html;
+        container.innerHTML = html;
 
         // Smooth scroll
         setTimeout(() => {
-            contentArea.scrollIntoView({
+            container.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });
@@ -1731,33 +1900,63 @@
     // AI RECOMMENDATIONS HELPER FUNCTIONS
     function displayRecommendations(data, language) {
         console.log('🎯 RECOMMENDATIONS Results data:', data);
-        
-        const section = document.getElementById(`aiSeoRecommendationsSection_${language}`);
-        if (!section) return;
-        
-        const loading = section.querySelector('.ai-recommendations-loading');
-        const content = section.querySelector('.ai-recommendations-content');
-        const list = section.querySelector('.ai-recommendations-list');
-        const count = section.querySelector('.ai-recommendations-count');
-        
-        // Hide loading, show content
-        loading.style.display = 'none';
-        content.style.display = 'block';
+
+        // AI ÖNERİLERİ - aiRecommendationsContainer kullan
+        let container = document.getElementById('aiRecommendationsContainer');
+        if (!container) {
+            console.warn('⚠️ aiRecommendationsContainer container bulunamadı');
+            // Container oluştur - TOOLBAR'IN ALTINA
+            const toolbar = document.querySelector('.ai-seo-toolbar');
+            const targetLocation = toolbar ? toolbar.parentElement : (
+                document.querySelector('.seo-language-content[style*="display: block"]') ||
+                document.querySelector('.tab-pane.active')
+            );
+
+            if (targetLocation) {
+                const newContainer = document.createElement('div');
+                newContainer.id = 'seoUniversalResults';
+                newContainer.className = 'inline-results-container mt-4';
+
+                // TOOLBAR'IN HEMEN ALTINA EKLE
+                if (toolbar) {
+                    toolbar.insertAdjacentElement('afterend', newContainer);
+                    console.log('✅ Recommendations container toolbar altına eklendi');
+                } else {
+                    targetLocation.appendChild(newContainer);
+                    console.log('✅ Recommendations container fallback location\'a eklendi');
+                }
+
+                // YENİ CONTAINER REFERANSINI AL
+                container = newContainer;
+            } else {
+                return;
+            }
+        }
+
+        // Loading'i gizle
+        hideInlineLoading('seoUniversalResults');
         
         // Parse recommendations data
         const recommendations = data.recommendations || [];
         console.log('📝 Parsed recommendations:', recommendations);
-        
-        // Update count
-        if (count) {
-            count.textContent = recommendations.length;
-        }
-        
-        // Gereksiz bilgilendirme metinlerini kaldırdık - direkt önerilere geçelim
-        let controlsHTML = ``;
-        
-        // Generate recommendation items with structured layout
-        let recommendationsHTML = controlsHTML;
+
+        // YENİ INLINE SİSTEM HTML - SEO ANALİZİ FORMATI
+        let fullHTML = `
+            <div class="mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light border p-3 rounded-3 mb-3 position-relative" style="border-radius: 0.25rem !important;">
+                            <h3 class="mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                AI SEO Önerileri
+                            </h3>
+                            <small class="position-absolute text-muted" style="right: 1rem; top: 50%; transform: translateY(-50%);">
+                                Az önce
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div>`;
 
         // Separate SEO and Social recommendations
         const seoRecs = recommendations.filter(r => r.type.includes('seo') || r.type === 'title' || r.type === 'description');
@@ -1765,12 +1964,12 @@
 
         // SEO Önerileri Section
         if (seoRecs.length > 0) {
-            recommendationsHTML += `<div class="row mb-4">`;
+            fullHTML += `<div class="row mb-4">`;
 
             seoRecs.forEach((rec, index) => {
                 const hasAlternatives = rec.alternatives && rec.alternatives.length > 0;
 
-                recommendationsHTML += `
+                fullHTML += `
                     <div class="col-6">
                         <div class="card">
                             <div class="card-header">
@@ -1780,36 +1979,36 @@
 
                 if (hasAlternatives) {
                     rec.alternatives.forEach((alt, altIndex) => {
-                        recommendationsHTML += `
+                        fullHTML += `
                             <a href="#" class="list-group-item list-group-item-action${altIndex === 0 ? ' active' : ''}"
                                onclick="applyAlternativeDirectly('${rec.field_target}', '${alt.value.replace(/'/g, "\\'")}', this); return false;">
                                 ${alt.value}
                             </a>`;
                     });
                 } else {
-                    recommendationsHTML += `
+                    fullHTML += `
                         <a href="#" class="list-group-item list-group-item-action">
                             ${rec.value || rec.suggested_value || ''}
                         </a>`;
                 }
 
-                recommendationsHTML += `
+                fullHTML += `
                             </div>
                         </div>
                     </div>`;
             });
 
-            recommendationsHTML += `</div>`;
+            fullHTML += `</div>`;
         }
 
         // Sosyal Medya Önerileri Section
         if (socialRecs.length > 0) {
-            recommendationsHTML += `<div class="row mb-4">`;
+            fullHTML += `<div class="row mb-4">`;
 
             socialRecs.forEach((rec, index) => {
                 const hasAlternatives = rec.alternatives && rec.alternatives.length > 0;
 
-                recommendationsHTML += `
+                fullHTML += `
                     <div class="col-6">
                         <div class="card">
                             <div class="card-header">
@@ -1819,39 +2018,48 @@
 
                 if (hasAlternatives) {
                     rec.alternatives.forEach((alt, altIndex) => {
-                        recommendationsHTML += `
+                        fullHTML += `
                             <a href="#" class="list-group-item list-group-item-action${altIndex === 0 ? ' active' : ''}"
                                onclick="applyAlternativeDirectly('${rec.field_target}', '${alt.value.replace(/'/g, "\\'")}', this); return false;">
                                 ${alt.value}
                             </a>`;
                     });
                 } else {
-                    recommendationsHTML += `
+                    fullHTML += `
                         <a href="#" class="list-group-item list-group-item-action">
                             ${rec.value || rec.suggested_value || ''}
                         </a>`;
                 }
 
-                recommendationsHTML += `
+                fullHTML += `
                             </div>
                         </div>
                     </div>`;
             });
 
-            recommendationsHTML += `</div>`;
+            fullHTML += `</div>`;
         }
-        
-        if (list) {
-            list.innerHTML = recommendationsHTML;
-        }
-        
-        // Update apply button state
-        updateApplyButton();
+
+        // HTML'i kapat
+        fullHTML += `
+                </div>
+            </div>`;
+
+        // YENİ SİSTEM: Inline container'a yazdır (sayfa yenileme YOK)
+        container.innerHTML = fullHTML;
 
         // Auto-apply first recommendations
         autoApplyFirstRecommendations(recommendations);
 
-        console.log('✅ Recommendations displayed successfully');
+        console.log('✅ Recommendations displayed successfully in inline system');
+
+        // Smooth scroll
+        setTimeout(() => {
+            container.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }, 100);
     }
 
     // Auto-apply first recommendations - ENHANCED
@@ -2605,10 +2813,203 @@
         //     autoLoadRecommendations();
         // }, 1000);
 
+        // ===== AUTO-APPLY EVENT LISTENER =====
+        // AI Recommendations tamamlandığında otomatik uygula
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('aiRecommendationsCompleted', (event) => {
+                console.log('🎯 aiRecommendationsCompleted event alındı, otomatik uygulama başlatılıyor');
+                console.log('🔍 Event data:', event);
+
+                // Event data'yı farklı yollarla extract etmeye çalış
+                let recommendationsData = null;
+
+                // Method 1: Direct access
+                if (event.recommendationsData) {
+                    recommendationsData = event.recommendationsData;
+                    console.log('✅ Found via event.recommendationsData');
+                }
+                // Method 2: Array access
+                else if (Array.isArray(event) && event[0]?.recommendationsData) {
+                    recommendationsData = event[0].recommendationsData;
+                    console.log('✅ Found via event[0].recommendationsData');
+                }
+                // Method 3: Direct array access
+                else if (Array.isArray(event) && event[0]) {
+                    recommendationsData = event[0];
+                    console.log('✅ Using event[0] directly');
+                }
+                // Method 4: Direct event
+                else if (event && typeof event === 'object') {
+                    recommendationsData = event;
+                    console.log('✅ Using event directly');
+                }
+
+                console.log('🔍 Final recommendationsData:', recommendationsData);
+
+                if (recommendationsData && (recommendationsData.data || recommendationsData.recommendations)) {
+                    // Extract the actual data
+                    const actualData = recommendationsData.data || recommendationsData;
+                    console.log('🔍 Actual data to use:', actualData);
+
+                    // Kısa delay ile otomatik uygula (UI render'ının bitmesini bekle)
+                    setTimeout(() => {
+                        window.autoApplyFirstAlternatives(actualData);
+                    }, 500);
+                } else {
+                    console.warn('❌ aiRecommendationsCompleted event\'inde recommendationsData bulunamadı');
+                    console.warn('❌ Event structure:', Object.keys(event || {}));
+                }
+            });
+        });
+
         console.log('✅ AI SEO Integration system hazır!');
+
+        // 🔥 DEBUG: Overlay sistem test fonksiyonu ekle
+        window.testAIOverlay = function(type = 'seo-data') {
+            console.log(`🧪 TEST: AI Overlay sistemi test ediliyor - Type: ${type}`);
+            showInlineLoadingOverlay(type);
+
+            // 3 saniye sonra overlay'i kapat
+            setTimeout(() => {
+                hideInlineLoading('seoUniversalResults');
+                console.log('✅ TEST: Overlay kapatıldı');
+            }, 3000);
+        };
+        console.log('🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!');
     }
-    
+
+    // AI MODAL-STYLE INLINE OVERLAY SYSTEM
+    function showInlineLoadingOverlay(cleanupTarget) {
+        console.log(`🎯 showInlineLoadingOverlay çağırıldı - Target: ${cleanupTarget}`);
+
+        // Container'ı bul - artık her zaman orada olmalı
+        const container = document.getElementById('seoUniversalResults');
+        if (!container) {
+            console.error('❌ seoUniversalResults container bulunamadı! Blade template\'te olmalı.');
+            return;
+        }
+
+        // Önce eski içerikleri temizle
+        cleanupExistingSeoAreas(cleanupTarget);
+
+        // AI Modal tarzında overlay oluştur
+        const overlay = document.createElement('div');
+        overlay.className = 'inline-overlay-wrapper';
+        overlay.innerHTML = `
+            <div class="card mt-3" style="border: 1px solid #e6e7e9; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+                <div class="card-body text-center py-5">
+                    <div class="overlay-content">
+                        <div class="mb-4 text-center">
+                            <h4 class="fw-normal mb-2">🤖 ${getOverlayTitle(cleanupTarget)}</h4>
+                            <p class="text-muted mb-0">${getOverlaySubtitle(cleanupTarget)}</p>
+                        </div>
+                        <div class="progress mb-2" style="height: 6px;">
+                            <div class="progress-bar progress-bar-indeterminate bg-primary progress-bar-animated"></div>
+                        </div>
+                        <div class="text-center text-muted small">
+                            <i class="fas fa-cog fa-spin me-2"></i>İşleniyor...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(overlay);
+        console.log('✅ AI Modal-style inline overlay gösterildi');
+    }
+
+    function showInlineLoadingOverlayRecommendations() {
+        console.log(`🎯 showInlineLoadingOverlayRecommendations çağırıldı`);
+
+        // Container'ı bul - artık her zaman orada olmalı
+        const container = document.getElementById('aiRecommendationsContainer');
+        if (!container) {
+            console.error('❌ aiRecommendationsContainer bulunamadı! Blade template\'te olmalı.');
+            return;
+        }
+
+        // Önce eski içerikleri temizle
+        cleanupExistingSeoAreas('ai-recommendations');
+
+        // AI Modal tarzında overlay oluştur
+        const overlay = document.createElement('div');
+        overlay.className = 'inline-overlay-wrapper';
+        overlay.innerHTML = `
+            <div class="card mt-3" style="border: 1px solid #e6e7e9; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
+                <div class="card-body text-center py-5">
+                    <div class="overlay-content">
+                        <div class="mb-4 text-center">
+                            <h4 class="fw-normal mb-2">🤖 AI SEO Önerileri</h4>
+                            <p class="text-muted mb-0">Kişiselleştirilmiş SEO önerileri yapay zeka tarafından oluşturuluyor</p>
+                        </div>
+                        <div class="progress mb-2" style="height: 6px;">
+                            <div class="progress-bar progress-bar-indeterminate bg-primary progress-bar-animated"></div>
+                        </div>
+                        <div class="text-center text-muted small">
+                            <i class="fas fa-cog fa-spin me-2"></i>İşleniyor...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(overlay);
+        console.log('✅ AI Recommendations Modal-style inline overlay gösterildi');
+    }
+
+    function hideInlineLoading(containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            // Sadece overlay wrapper'ı kaldır, container'ı bırak
+            const overlay = container.querySelector('.inline-overlay-wrapper');
+            if (overlay) {
+                overlay.remove();
+                console.log('✅ Inline loading overlay kaldırıldı');
+            }
+        }
+    }
+
+    // ===== AUTO-APPLY FIRST ALTERNATIVES FUNCTION =====
+    window.autoApplyFirstAlternatives = function(recommendations) {
+        console.log('🎯 Auto-applying first alternatives for each recommendation type');
+
+        if (!recommendations || !recommendations.recommendations || !Array.isArray(recommendations.recommendations)) {
+            console.warn('❌ No valid recommendations data for auto-apply');
+            return;
+        }
+
+        let appliedCount = 0;
+        recommendations.recommendations.forEach((recommendation) => {
+            // Her recommendation için ilk alternatifi al
+            if (recommendation.alternatives && Array.isArray(recommendation.alternatives) && recommendation.alternatives.length > 0) {
+                const firstAlternative = recommendation.alternatives[0];
+                const fieldTarget = recommendation.field_target;
+
+                if (fieldTarget && firstAlternative && firstAlternative.value) {
+                    console.log(`📝 Auto-applying: ${fieldTarget} = "${firstAlternative.value}"`);
+
+                    // applyAlternativeDirectly fonksiyonunu kullan
+                    const success = applyAlternativeDirectly(fieldTarget, firstAlternative.value);
+                    if (success) {
+                        appliedCount++;
+
+                        // OG alanlarına veri yazıldığında toggle'ı otomatik aç
+                        if (fieldTarget && (fieldTarget.includes('og_') || fieldTarget.includes('social'))) {
+                            const language = extractLanguageFromFieldTarget(fieldTarget);
+                            console.log(`🎯 OG field detected (${fieldTarget}), enabling custom fields for ${language}`);
+                            enableOgCustomFields(language);
+                        }
+                    }
+                }
+            }
+        });
+
+        if (appliedCount > 0) {
+            showSuccess(`✨ ${appliedCount} AI önerisi otomatik olarak uygulandı! Dilediğiniz alternatife tıklayarak değiştirebilirsiniz.`);
+        }
+    }
+
     // Start the system
     init();
-    
+
 })();

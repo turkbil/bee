@@ -1,12 +1,12 @@
-@php
-    View::share('pretitle', $pageId ? 'Sayfa Düzenleme' : 'Yeni Sayfa Ekleme');
-@endphp
-
 <div>
+    @php
+        View::share('pretitle', $pageId ? 'Sayfa Düzenleme' : 'Yeni Sayfa Ekleme');
+    @endphp
+
     @include('page::admin.helper')
-    @include('admin.partials.error_message')
 
     <form method="post" wire:submit.prevent="save">
+        @include('admin.partials.error_message')
         <div class="card">
             
             <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="page_active_tab">
@@ -114,7 +114,11 @@ $langName =
                     <!-- SEO Tab -->
                     <div class="tab-pane fade" id="1" role="tabpanel">
                         <x-seomanagement::universal-seo-tab :model="$this->currentPage" :available-languages="$availableLanguages" :current-language="$currentLanguage"
-                            :seo-data-cache="$seoDataCache" :page-id="$this->pageId" />
+                            :seo-data-cache="$seoDataCache" :page-id="$this->pageId"
+                            :static-ai-analysis="$staticAiAnalysis" :dynamic-ai-analysis="$dynamicAiAnalysis"
+                            :static-ai-recommendations="$staticAiRecommendations" :dynamic-ai-recommendations="$dynamicAiRecommendations"
+                            :analysis-loaders="$analysisLoaders" :recommendation-loaders="$recommendationLoaders"
+                            :analysis-errors="$analysisErrors" :recommendation-errors="$recommendationErrors" />
                     </div>
 
                     <!-- Code Tab -->
@@ -141,10 +145,7 @@ $langName =
     </form>
 
 
-    {{-- Global AI Content Modal --}}
-    @include('admin.partials.global-ai-content-modal')
-
-    @push('scripts')
+@push('scripts')
     <script>
         window.currentPageId = {{ $jsVariables['currentPageId'] ?? 'null' }};
         window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
@@ -384,15 +385,23 @@ $langName =
 
         // 🔥 ÇEVİRİ SONRASI REFRESH EVENT LİSTENER
         document.addEventListener('livewire:initialized', () => {
-            // Component refresh event'ini dinle
-            Livewire.on('refreshComponent', () => {
-                console.log('🔄 Çeviri tamamlandı - component yenileniyor...');
-                Livewire.components.getByName('page-manage-component')[0].$refresh();
+            // Component refresh event'ini dinle - SADECE ÇEVİRİ İÇİN
+            Livewire.on('refreshComponent', (data) => {
+                // Eğer SEO işlemi değilse sadece o zaman refresh yap
+                if (!data || !data.source || data.source !== 'seo-analysis') {
+                    console.log('🔄 Çeviri tamamlandı - component yenileniyor...', data);
+                    Livewire.components.getByName('page-manage-component')[0].$refresh();
+                } else {
+                    console.log('⚠️ SEO analizi - component refresh atlandı');
+                }
             });
             
             // ✅ TinyMCE editör refresh event'i artık gerekli değil
             // AI content direkt olarak TinyMCE'ye yazılıyor
         });
     </script>
-    @endpush
-</div>
+@endpush
+
+@push('modals')
+    @include('admin.partials.global-ai-content-modal')
+@endpush

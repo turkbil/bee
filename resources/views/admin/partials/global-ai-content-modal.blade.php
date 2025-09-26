@@ -21,19 +21,24 @@
                         <label class="form-label mb-2">Dosya (İsteğe Bağlı)</label>
                         <div class="border border-dashed rounded p-3 text-center bg-light position-relative d-flex align-items-center justify-content-center"
                              style="cursor: pointer; min-height: 80px;"
-                             onclick="document.getElementById('aiModalFileInput').click()"
-                             ondrop="handleAIModalDrop(event)"
-                             ondragover="handleAIModalDragOver(event)"
-                             ondragenter="handleAIModalDragEnter(event)"
-                             ondragleave="handleAIModalDragLeave(event)">
+                             x-data="fileUploader()"
+                             @drop.prevent="handleDrop($event)"
+                             @dragover.prevent
+                             @dragenter.prevent
+                             @click="$refs.fileInput.click()">
 
-                            <input type="file" id="aiModalFileInput" class="d-none" accept=".pdf,.jpg,.jpeg,.png,.webp" multiple>
+                            <input type="file" x-ref="fileInput" class="d-none" accept=".pdf,.jpg,.jpeg,.png,.webp" multiple
+                                   @change="handleFiles($event.target.files)">
 
                             <div class="d-flex align-items-center justify-content-center">
                                 <i class="fas fa-cloud-upload-alt me-2 fs-5"></i>
                                 <span>Dosya seç veya sürükle</span>
                             </div>
                         </div>
+
+                        <!-- File Upload Info Area -->
+                        <div class="file-upload-info mt-2"></div>
+
                         <small>PDF, JPG, PNG, WEBP - Max 10MB</small>
                     </div>
 
@@ -333,61 +338,124 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Alpine.js File Uploader Component
-function fileUploader() {
+// Alpine.js File Uploader Component - Sync with main JS
+window.fileUploader = function() {
   return {
     files: [],
-    hasFiles: false,
     uploading: false,
     uploadProgress: 0,
 
-    handleFiles(fileList) {
-      if (fileList && fileList.length > 0) {
-        this.files = Array.from(fileList);
-        this.hasFiles = true;
+    get hasFiles() {
+      return this.files.length > 0;
+    },
 
-        // AI sistem'e dosyaları gönder
-        if (window.aiContentSystem && window.aiContentSystem.handleFileUpload) {
-          window.aiContentSystem.handleFileUpload(this.files);
+    handleFiles(fileList) {
+      console.log('📁 Modal Files selected:', fileList ? fileList.length : 0);
+
+      if (fileList && fileList.length > 0) {
+        this.files = Array.from(fileList).filter(file => {
+          const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+          const isValid = validTypes.includes(file.type);
+          if (!isValid) {
+            console.warn('⚠️ Modal Invalid file type:', file.type);
+            // Kullanıcıya hata göster
+            const fileInfo = document.querySelector('.file-upload-info');
+            if (fileInfo) {
+              fileInfo.innerHTML = `
+                <div class="alert alert-danger">
+                  <i class="ti ti-x"></i>
+                  Desteklenmeyen dosya türü: ${file.name}.
+                  Sadece PDF, JPG, PNG ve WebP dosyaları kabul edilir.
+                </div>`;
+            }
+          }
+          return isValid;
+        });
+
+        console.log('✅ Modal Valid files:', this.files.length);
+
+        if (this.files.length > 0) {
+          this.showUploadingInfo();
+          this.uploadFiles();
         }
       }
     },
 
     handleDrop(event) {
-      const dt = event.dataTransfer;
-      const files = dt.files;
+      const files = Array.from(event.dataTransfer.files);
       this.handleFiles(files);
     },
 
-    removeFile(file) {
-      const index = this.files.indexOf(file);
-      if (index > -1) {
-        this.files.splice(index, 1);
-      }
-      this.hasFiles = this.files.length > 0;
-
-      // Eğer dosya kalmadıysa state'i reset et
-      if (!this.hasFiles) {
-        this.reset();
+    showUploadingInfo() {
+      const fileInfo = document.querySelector('.file-upload-info');
+      if (fileInfo) {
+        fileInfo.innerHTML = `
+          <div class="alert alert-info">
+            <div class="d-flex align-items-center">
+              <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+              <strong>Dosya yükleniyor...</strong>
+            </div>
+          </div>`;
       }
     },
 
-    reset() {
-      this.files = [];
-      this.hasFiles = false;
-      this.uploading = false;
+    async uploadFiles() {
+      this.uploading = true;
       this.uploadProgress = 0;
 
-      // Input'u da temizle
-      const input = this.$refs.fileInput;
-      if (input) {
-        input.value = '';
+      try {
+        // Upload progress simulation
+        const progressInterval = setInterval(() => {
+          if (this.uploadProgress < 90) {
+            this.uploadProgress += 10;
+          }
+        }, 200);
+
+        console.log('🚀 Modal Starting file upload to AI system...');
+
+        // AI sistem'e dosyaları gönder
+        if (window.aiContentSystem && window.aiContentSystem.handleFileUpload) {
+          const result = await window.aiContentSystem.handleFileUpload(this.files);
+
+          clearInterval(progressInterval);
+          this.uploadProgress = 100;
+
+          setTimeout(() => {
+            this.uploading = false;
+          }, 500);
+
+          console.log('✅ Modal File upload completed');
+        }
+      } catch (error) {
+        this.uploading = false;
+        this.uploadProgress = 0;
+        console.error('❌ Modal Upload failed:', error);
+      }
+    },
+
+    removeFile(fileToRemove) {
+      console.log('🗑️ Modal Removing file:', fileToRemove.name);
+      this.files = this.files.filter(file => file !== fileToRemove);
+
+      if (this.files.length === 0) {
+        // AI sistem'den de temizle
+        if (window.aiContentSystem) {
+          console.log('🧹 Modal Tüm dosyalar silindi, analysis results temizleniyor');
+          window.aiContentSystem.analysisResults = {};
+          window.aiPdfAnalysisResults = {};
+        }
+
+        // File info alanını da temizle
+        const fileInfo = document.querySelector('.file-upload-info');
+        if (fileInfo) {
+          fileInfo.innerHTML = '';
+        }
       }
     },
 
     getFileIcon(type) {
-      if (type.includes('pdf')) return '📄';
-      if (type.includes('image')) return '🖼️';
+      if (type === 'application/pdf') return '📄';
+      if (type.startsWith('image/')) return '🖼️';
       return '📎';
     },
 
@@ -396,7 +464,7 @@ function fileUploader() {
       const k = 1024;
       const sizes = ['Bytes', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
   }
 }

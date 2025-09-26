@@ -34,13 +34,15 @@ class SeoAIController extends Controller
     {
         $validated = $request->validate([
             'feature_slug' => 'required|string',
-            'form_content' => 'required|array'
+            'form_content' => 'required|array',
+            'language' => 'required|string'
         ]);
 
         try {
             Log::info('SEO AI Controller Request', [
                 'feature_slug' => $validated['feature_slug'],
                 'form_content_keys' => array_keys($validated['form_content']),
+                'language' => $validated['language'],
                 'user_id' => Auth::id()
             ]);
 
@@ -48,6 +50,7 @@ class SeoAIController extends Controller
             $result = $this->seoAIService->analyzeSEO(
                 featureSlug: $validated['feature_slug'],
                 formContent: $validated['form_content'],
+                language: $validated['language'],
                 options: [
                     'user_id' => Auth::id(),
                     'tenant_context' => true

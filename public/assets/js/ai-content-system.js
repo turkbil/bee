@@ -18,11 +18,15 @@ class AIContentGenerationSystem {
         this.jobId = null;
         this.progressInterval = null;
         this.startTime = null;
+
         this.isGenerating = false;
 
         // 🆕 File Upload Properties
         this.uploadedFiles = [];
         this.analysisResults = {};
+
+        // Setup error handling
+        this.setupLivewireErrorHandling();
 
         this.init();
     }
@@ -175,10 +179,14 @@ class AIContentGenerationSystem {
         // File analysis varsa onu da kontrol et
         const hasFileAnalysis = this.analysisResults && Object.keys(this.analysisResults).length > 0;
 
-        // 🚨 ZORUNLU KONTROL: En az biri dolu olmalı - yazı alanı VEYA dosya
+        // 🔍 ENHANCED: PDF yüklenmiş ama analiz devam ediyor mu?
+        const hasUploadedFiles = document.querySelector('.file-upload-info .alert') !== null;
+        const isAnalysisInProgress = this.analysisId && !hasFileAnalysis;
+
+        // 🚨 ZORUNLU KONTROL: En az biri dolu olmalı - yazı alanı VEYA dosya VEYA analiz devam ediyor
         const hasContentTopic = contentTopic && contentTopic.length > 0;
 
-        if (!hasContentTopic && !hasFileAnalysis) {
+        if (!hasContentTopic && !hasFileAnalysis && !hasUploadedFiles) {
             console.warn('⚠️ Hem yazı alanı hem dosya alanı boş!');
             this.showInlineWarning('Lütfen içerik konusu yazın veya dosya yükleyin!');
             // BUTON DISABLE OLMAYACAK - sadece uyarı ver ve devam et
@@ -1626,6 +1634,29 @@ RESULT: PDF'deki HER bilgiyi kullanarak, sektörüne uygun renklerle, modern des
             console.log('🔓 AI Content overlay removed');
         }
     }
+
+    /**
+     * Livewire DOM error handling setup
+     */
+    setupLivewireErrorHandling() {
+        // Global error handler for Livewire morphing issues
+        window.addEventListener('error', (event) => {
+            if (event.message && event.message.includes('before')) {
+                console.warn('🔧 Livewire DOM error suppressed:', event.message);
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        // Catch unhandled promise rejections
+        window.addEventListener('unhandledrejection', (event) => {
+            if (event.reason && event.reason.toString().includes('before')) {
+                console.warn('🔧 Livewire DOM promise rejection suppressed:', event.reason);
+                event.preventDefault();
+                return false;
+            }
+        });
+    }
 }
 
 // Auto-initialize when DOM is ready
@@ -1856,6 +1887,8 @@ AIContentGenerationSystem.prototype.showPdfCreditWarning = function() {
     }
 };
 
+// Removed duplicate setupLivewireErrorHandling prototype - now part of class
+
 /**
  * Global AI Content Modal açma fonksiyonu
  * Page component'lerinden çağrılabilir
@@ -1886,6 +1919,16 @@ window.fileUploader = function() {
                 const isValid = validTypes.includes(file.type);
                 if (!isValid) {
                     console.warn('⚠️ Invalid file type:', file.type);
+                    // Kullanıcıya hata göster
+                    const fileInfo = document.querySelector('.file-upload-info');
+                    if (fileInfo) {
+                        fileInfo.innerHTML = `
+                            <div class="alert alert-danger">
+                                <i class="ti ti-x"></i>
+                                Desteklenmeyen dosya türü: ${file.name}.
+                                Sadece PDF, JPG, PNG ve WebP dosyaları kabul edilir.
+                            </div>`;
+                    }
                 }
                 return isValid;
             });
@@ -1893,7 +1936,32 @@ window.fileUploader = function() {
             console.log('✅ Valid files:', this.files.length);
 
             if (this.files.length > 0) {
+                // Dosya yükleme bilgisini hemen göster
+                this.showUploadingInfo();
                 this.uploadFiles();
+            } else if (files.length > 0) {
+                // Hiç geçerli dosya yoksa ama dosya seçilmişse hata göster
+                const fileInfo = document.querySelector('.file-upload-info');
+                if (fileInfo) {
+                    fileInfo.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="ti ti-x"></i>
+                            Lütfen geçerli bir dosya türü seçin (PDF, JPG, PNG, WebP).
+                        </div>`;
+                }
+            }
+        },
+
+        showUploadingInfo() {
+            const fileInfo = document.querySelector('.file-upload-info');
+            if (fileInfo) {
+                fileInfo.innerHTML = `
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                            <strong>Dosya yükleniyor...</strong>
+                        </div>
+                    </div>`;
             }
         },
 

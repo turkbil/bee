@@ -11,15 +11,14 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use App\Helpers\SlugHelper;
+use Modules\SeoManagement\app\Http\Livewire\Traits\HandlesUniversalSeo;
 
 #[Layout('admin.layout')]
 class AnnouncementManageComponent extends Component
 {
-   use WithFileUploads;
+   use WithFileUploads, HandlesUniversalSeo;
 
    public $announcementId;
-   public $currentLanguage;
-   public $availableLanguages = [];
    public $activeTab;
    
    // Çoklu dil inputs
@@ -34,14 +33,8 @@ class AnnouncementManageComponent extends Component
    public $seo_title = '';
    public $seo_description = '';
    public $seo_keywords = '';
-   public $canonical_url = '';
-  
-  // SEO Cache - Tüm dillerin SEO verileri (Performance Optimization)
-  public $seoDataCache = [];
-  
-  // JavaScript için tüm dillerin SEO verileri (Blade exposure)
-  public $allLanguagesSeoData = [];
-   
+  public $canonical_url = '';
+ 
    // Konfigürasyon verileri
    public $tabConfig = [];
    public $seoConfig = [];
@@ -171,32 +164,53 @@ class AnnouncementManageComponent extends Component
     */
    protected function loadAvailableLanguages()
    {
-       $this->availableLanguages = TenantLanguage::where('is_active', true)
-           ->orderBy('sort_order')
-           ->pluck('code')
-           ->toArray();
-           
-       // Fallback sistem helper'ından
-       if (empty($this->availableLanguages)) {
-           $this->availableLanguages = ['tr'];
+       $languages = $this->resolveAvailableLanguages(
+           TenantLanguage::where('is_active', true)
+               ->orderBy('sort_order')
+               ->pluck('code')
+               ->toArray()
+       );
+
+       $preferred = $this->determineAnnouncementPreferredLanguage($languages);
+
+       $this->initializeUniversalSeoState($languages, $preferred, $this->seoDataCache);
+   }
+
+   protected function determineAnnouncementPreferredLanguage(array $languages): ?string
+   {
+       if (empty($languages)) {
+           return null;
        }
-       
-       // 🎯 KRİTİK: Her durumda mevcut kullanıcı dilini koru
-       // Önce session'dan kontrol et, yoksa ilk aktif dil
+
        if (session('announcement_continue_mode') && session('js_saved_language')) {
-           // Kaydet ve Devam Et durumu
-           $this->currentLanguage = session('js_saved_language');
+           $language = session('js_saved_language');
            session()->forget(['announcement_continue_mode', 'js_saved_language']);
-           \Log::info('🔄 Kaydet ve Devam Et - dil korundu:', ['language' => $this->currentLanguage]);
-       } elseif (session('js_current_language') && in_array(session('js_current_language'), $this->availableLanguages)) {
-           // Normal kaydet - mevcut JS dilini koru
-           $this->currentLanguage = session('js_current_language');
-           \Log::info('🔄 Normal kaydet - JS dili korundu:', ['language' => $this->currentLanguage]);
-       } else {
-           // İlk yükleme - dinamik default dil
-           $defaultLanguage = session('site_default_language', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
-           $this->currentLanguage = in_array($defaultLanguage, $this->availableLanguages) ? $defaultLanguage : \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
+           if ($language && in_array($language, $languages, true)) {
+               \Log::info('🔄 Announcement devam modu - dil korundu', ['language' => $language]);
+               return $language;
+           }
        }
+
+       $sessionLanguage = session('js_current_language');
+       if ($sessionLanguage && in_array($sessionLanguage, $languages, true)) {
+           \Log::info('🔄 Announcement normal kaydet - dil korundu', ['language' => $sessionLanguage]);
+           return $sessionLanguage;
+       }
+
+       $defaultLanguage = session('site_default_language');
+       if ($defaultLanguage && in_array($defaultLanguage, $languages, true)) {
+           return $defaultLanguage;
+       }
+
+       try {
+           $tenantDefault = \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
+           if ($tenantDefault && in_array($tenantDefault, $languages, true)) {
+               return $tenantDefault;
+           }
+       } catch (\Throwable $exception) {
+       }
+
+       return $languages[0] ?? null;
    }
 
    /**

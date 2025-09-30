@@ -19,22 +19,28 @@ use Modules\Studio\App\Repositories\SettingsRepository;
 use Modules\Studio\App\Support\BlockManager;
 use Modules\Studio\App\Support\StudioHelper;
 use Modules\Studio\App\Http\Livewire\Admin\StudioComponent;
+use Nwidart\Modules\Traits\PathNamespace;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class StudioServiceProvider extends ServiceProvider
 {
-    protected string $moduleName = 'Studio';
-    protected string $moduleNameLower = 'studio';
+    use PathNamespace;
+
+    protected string $name = 'Studio';
+    protected string $nameLower = 'studio';
 
     /**
      * Boot the application events.
      */
     public function boot(): void
     {
+        $this->registerCommands();
+        $this->registerCommandSchedules();
+        $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->registerCommands();
-        $this->registerTranslations();
-        $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
+        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
         
         // Varlıkları otomatik yayınlama işlemi kaldırıldı
         // $this->publishAssets();
@@ -63,9 +69,6 @@ class StudioServiceProvider extends ServiceProvider
         });
         
         // Olay sağlayıcılarını kaydet
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(RouteServiceProvider::class);
-        
         // WidgetManagement modülünü kontrol et ve bağımlılık oluştur
         if (class_exists('Modules\WidgetManagement\Providers\WidgetManagementServiceProvider')) {
             // WidgetManagement modülü yüklü, servisleri kullan
@@ -90,6 +93,9 @@ class StudioServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->register(EventServiceProvider::class);
+        $this->app->register(RouteServiceProvider::class);
+
         // Servisleri kaydet
         $this->app->singleton('studio.asset', function ($app) {
             return new AssetService();
@@ -146,13 +152,23 @@ class StudioServiceProvider extends ServiceProvider
      */
     protected function registerConfig(): void
     {
-        $this->publishes([
-            module_path($this->moduleName, 'config/studio.php') => config_path('studio.php'),
-        ], 'studio-config');
+        $relativeConfigPath = config('modules.paths.generator.config.path');
+        $configPath = module_path($this->name, $relativeConfigPath);
 
-        $this->mergeConfigFrom(
-            module_path($this->moduleName, 'config/studio.php'), 'studio'
-        );
+        if (is_dir($configPath)) {
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath));
+
+            foreach ($iterator as $file) {
+                if ($file->isFile() && $file->getExtension() === 'php') {
+                    $relativePath = str_replace($configPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                    $configKey = $this->nameLower . '.' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $relativePath);
+                    $key = ($relativePath === 'config.php') ? $this->nameLower : $configKey;
+
+                    $this->publishes([$file->getPathname() => config_path($relativePath)], $configPath);
+                    $this->mergeConfigFrom($file->getPathname(), $key);
+                }
+            }
+        }
     }
 
     /**
@@ -160,14 +176,14 @@ class StudioServiceProvider extends ServiceProvider
      */
     public function registerViews(): void
     {
-        $viewPath = resource_path('views/modules/studio');
-        $sourcePath = module_path($this->moduleName, 'resources/views');
+        $viewPath = resource_path('views/modules/' . $this->nameLower);
+        $sourcePath = module_path($this->name, 'resources/views');
 
         $this->publishes([
             $sourcePath => $viewPath
-        ], ['views', 'studio-views']);
+        ], ['views', $this->nameLower . '-module-views']);
 
-        $this->loadViewsFrom(array_merge([$sourcePath], $this->getPublishableViewPaths()), 'studio');
+        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
     }
 
     /**
@@ -176,26 +192,37 @@ class StudioServiceProvider extends ServiceProvider
     public function registerTranslations(): void
     {
         // Ana dil dosyaları - modül klasöründen yükle
-        $moduleLangPath = module_path($this->moduleName, 'lang');
+        $moduleLangPath = module_path($this->name, 'lang');
         if (is_dir($moduleLangPath)) {
-            $this->loadTranslationsFrom($moduleLangPath, $this->moduleNameLower);
+            $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($moduleLangPath);
         }
-        
+
         // Resource'daki dil dosyaları (varsa)
-        $resourceLangPath = resource_path('lang/modules/' . $this->moduleNameLower);
+        $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
         if (is_dir($resourceLangPath)) {
-            $this->loadTranslationsFrom($resourceLangPath, $this->moduleNameLower);
+            $this->loadTranslationsFrom($resourceLangPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($resourceLangPath);
         }
     }
 
     /**
-     * Register commands.
+     * Register commands in the format of Command::class
      */
     protected function registerCommands(): void
     {
-        // İleride eklenebilir
+        // $this->commands([]);
+    }
+
+    /**
+     * Register command Schedules.
+     */
+    protected function registerCommandSchedules(): void
+    {
+        // $this->app->booted(function () {
+        //     $schedule = $this->app->make(Schedule::class);
+        //     $schedule->command('inspire')->hourly();
+        // });
     }
 
     /**
@@ -216,9 +243,9 @@ class StudioServiceProvider extends ServiceProvider
     private function getPublishableViewPaths(): array
     {
         $paths = [];
-        foreach (Config::get('view.paths') as $path) {
-            if (is_dir($path . '/modules/studio')) {
-                $paths[] = $path . '/modules/studio';
+        foreach (config('view.paths') as $path) {
+            if (is_dir($path . '/modules/' . $this->nameLower)) {
+                $paths[] = $path . '/modules/' . $this->nameLower;
             }
         }
         return $paths;

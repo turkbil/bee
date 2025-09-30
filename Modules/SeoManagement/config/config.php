@@ -239,22 +239,10 @@ return [
         */
         'multilingual' => [
             'enabled' => true,
-            'default_language' => function() {
-                // Dinamik default dil
-                try {
-                    return \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
-                } catch (\Exception $e) {
-                    return 'tr'; // Fallback
-                }
-            },
-            'supported_languages' => function() {
-                // Dinamik desteklenen diller
-                try {
-                    return \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
-                } catch (\Exception $e) {
-                    return ['tr', 'en']; // Fallback
-                }
-            },
+            // Production ortamında closure kullanılamaz, runtime'da TenantLanguageProvider kullanılacak
+            'default_language' => 'tr',
+            'supported_languages' => ['tr', 'en'],
+            'use_tenant_provider' => true, // Runtime'da TenantLanguageProvider kullan
             'field_suffix' => '_multilang'
         ],
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\TenantManagement\App\Providers;
+namespace Modules\TenantManagement\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -8,8 +8,6 @@ use Livewire\Livewire;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Modules\TenantManagement\App\Providers\EventServiceProvider;
-use Modules\TenantManagement\App\Providers\RouteServiceProvider;
 
 class TenantManagementServiceProvider extends ServiceProvider
 {
@@ -30,7 +28,12 @@ class TenantManagementServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-        
+
+        // Load routes
+        $this->loadRoutesFrom(module_path($this->name, 'routes/web.php'));
+        $this->loadRoutesFrom(module_path($this->name, 'routes/admin.php'));
+        $this->loadRoutesFrom(module_path($this->name, 'routes/api.php'));
+
         // Livewire component registration - moved to end of boot method
         $this->app->booted(function () {
             $this->registerLivewireComponents();
@@ -42,9 +45,6 @@ class TenantManagementServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(RouteServiceProvider::class);
-        
         // Service bindings
         $this->app->singleton(\Modules\TenantManagement\App\Services\RealTimeAutoScalingService::class);
         $this->app->singleton(\App\Services\DatabaseConnectionPoolService::class);
@@ -74,14 +74,18 @@ class TenantManagementServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $langPath = resource_path('lang/modules/'.$this->nameLower);
+        // Ana dil dosyaları - modül klasöründen yükle
+        $moduleLangPath = module_path($this->name, 'lang');
+        if (is_dir($moduleLangPath)) {
+            $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($moduleLangPath);
+        }
 
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->nameLower);
-            $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
+        // Resource'daki dil dosyaları (varsa)
+        $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
+        if (is_dir($resourceLangPath)) {
+            $this->loadTranslationsFrom($resourceLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($resourceLangPath);
         }
     }
 

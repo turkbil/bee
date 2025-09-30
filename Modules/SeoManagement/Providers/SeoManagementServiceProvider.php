@@ -1,8 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Modules\SeoManagement\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Nwidart\Modules\Traits\PathNamespace;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class SeoManagementServiceProvider extends ServiceProvider
 {
@@ -23,6 +30,20 @@ class SeoManagementServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+
+        // Route'ları yükle
+        $this->loadRoutesFrom(module_path($this->name, 'routes/web.php'));
+
+        // Livewire components
+        $this->registerLivewireComponents();
+    }
+
+    /**
+     * Register Livewire components
+     */
+    protected function registerLivewireComponents(): void
+    {
+        Livewire::component('seomanagement::universal-seo-tab', \Modules\SeoManagement\App\Http\Livewire\Admin\UniversalSeoTabComponent::class);
     }
 
     /**
@@ -30,21 +51,11 @@ class SeoManagementServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->register(RouteServiceProvider::class);
-        
-        // Repository Pattern bindings
+        // Register SEO Service Interface
         $this->app->bind(
-            \Modules\SeoManagement\App\Contracts\SeoRepositoryInterface::class,
-            \Modules\SeoManagement\App\Repositories\SeoRepository::class
-        );
-        
-        // Service Layer bindings
-        $this->app->bind(
-            \Modules\SeoManagement\App\Contracts\SeoServiceInterface::class,
+            \Modules\SeoManagement\App\Services\Interfaces\SeoServiceInterface::class,
             \Modules\SeoManagement\App\Services\SeoService::class
         );
-        
-        $this->app->singleton(\Modules\SeoManagement\App\Services\SeoService::class);
     }
 
     /**
@@ -71,11 +82,18 @@ class SeoManagementServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $langPath = module_path($this->name, 'lang');
+        // Ana dil dosyaları - modül klasöründen yükle
+        $moduleLangPath = module_path($this->name, 'lang');
+        if (is_dir($moduleLangPath)) {
+            $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($moduleLangPath);
+        }
 
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->nameLower);
-            $this->loadJsonTranslationsFrom($langPath);
+        // Resource'daki dil dosyaları (varsa)
+        $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
+        if (is_dir($resourceLangPath)) {
+            $this->loadTranslationsFrom($resourceLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($resourceLangPath);
         }
     }
 
@@ -84,12 +102,23 @@ class SeoManagementServiceProvider extends ServiceProvider
      */
     protected function registerConfig(): void
     {
-        $this->publishes([
-            module_path($this->name, 'config/config.php') => config_path($this->nameLower . '.php'),
-        ], 'config');
-        $this->mergeConfigFrom(
-            module_path($this->name, 'config/config.php'), $this->nameLower
-        );
+        $relativeConfigPath = config('modules.paths.generator.config.path');
+        $configPath = module_path($this->name, $relativeConfigPath);
+
+        if (is_dir($configPath)) {
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath));
+
+            foreach ($iterator as $file) {
+                if ($file->isFile() && $file->getExtension() === 'php') {
+                    $relativePath = str_replace($configPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                    $configKey = $this->nameLower . '.' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $relativePath);
+                    $key = ($relativePath === 'config.php') ? $this->nameLower : $configKey;
+
+                    $this->publishes([$file->getPathname() => config_path($relativePath)], 'config');
+                    $this->mergeConfigFrom($file->getPathname(), $key);
+                }
+            }
+        }
     }
 
     /**
@@ -97,14 +126,15 @@ class SeoManagementServiceProvider extends ServiceProvider
      */
     public function registerViews(): void
     {
-        $viewPath = resource_path('views/modules/' . $this->nameLower);
+        $viewPath = resource_path('views/modules/'.$this->nameLower);
         $sourcePath = module_path($this->name, 'resources/views');
 
-        $this->publishes([
-            $sourcePath => $viewPath
-        ], ['views', $this->nameLower . '-module-views']);
+        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower.'-module-views']);
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
+
+        $componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
+        Blade::componentNamespace($componentNamespace, $this->nameLower);
     }
 
     /**
@@ -119,8 +149,8 @@ class SeoManagementServiceProvider extends ServiceProvider
     {
         $paths = [];
         foreach (config('view.paths') as $path) {
-            if (is_dir($path . '/modules/' . $this->nameLower)) {
-                $paths[] = $path . '/modules/' . $this->nameLower;
+            if (is_dir($path.'/modules/'.$this->nameLower)) {
+                $paths[] = $path.'/modules/'.$this->nameLower;
             }
         }
 

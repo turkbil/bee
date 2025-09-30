@@ -94,6 +94,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
                 content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; }',
                 setup: function (editor) {
+                    // 🔒 MODAL MODE PROTECTION - HugeRTE editörün modal sırasında HTML mode'a geçmesini engelle
+                    let isModalOpen = false;
+                    let currentMode = 'design'; // Default mode
+
+                    // Modal event listener'ları
+                    document.addEventListener('show.bs.modal', function(e) {
+                        if (e.target && e.target.id === 'aiContentModal') {
+                            isModalOpen = true;
+                            currentMode = editor.mode ? editor.mode.get() : 'design';
+                            console.log('🔒 Modal açılıyor, editör mode korunuyor:', currentMode);
+
+                            // Design mode'da kilitle
+                            if (editor.mode && currentMode !== 'design') {
+                                editor.mode.set('design');
+                                console.log('🔧 Editör design mode\'a zorlandı');
+                            }
+                        }
+                    });
+
+                    document.addEventListener('hide.bs.modal', function(e) {
+                        if (e.target && e.target.id === 'aiContentModal') {
+                            console.log('🔓 Modal kapanıyor, editör mode restore ediliyor');
+
+                            // 150ms delay ile restore et (modal animasyonu için)
+                            setTimeout(() => {
+                                if (editor.mode) {
+                                    editor.mode.set('design'); // Her zaman design mode'da bırak
+                                    console.log('✅ Editör design mode\'da restore edildi');
+                                }
+                                isModalOpen = false;
+                            }, 150);
+                        }
+                    });
+
+                    // Mode değişiklik koruması
+                    editor.on('init', function() {
+                        if (editor.mode) {
+                            // Mode değişikliğini engelle modal açıkken
+                            const originalSetMode = editor.mode.set;
+                            editor.mode.set = function(mode) {
+                                if (isModalOpen && mode === 'code') {
+                                    console.log('🚫 Modal açık, HTML mode geçişi engellendi');
+                                    return;
+                                }
+                                return originalSetMode.call(this, mode);
+                            };
+                        }
+                    });
+
+                    // Content sync
                     editor.on('change keyup input', function () {
                         const content = editor.getContent();
                         const hiddenInput = document.getElementById('hidden_{{ $fieldName }}_{{ $lang }}');

@@ -3,7 +3,7 @@
     "alias": "seomanagement",
     "description": "",
     "keywords": [],
-    "priority": 0,
+    "priority": 100,
     "providers": [
         "Modules\\SeoManagement\\Providers\\SeoManagementServiceProvider"
     ],

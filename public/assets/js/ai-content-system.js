@@ -104,39 +104,27 @@ class AIContentGenerationSystem {
             cancelBtn.addEventListener('click', () => this.closeModal());
         }
 
-        // Modal events
+        // Modal events - Enhanced editor state preservation
         if (this.modal) {
             this.modal.addEventListener('show.bs.modal', () => {
+                console.log('📖 AI Content modal açılıyor');
+
+                // HugeRTE editörün mevcut durumunu kaydet
+                this.preserveEditorState();
+            });
+
+            this.modal.addEventListener('shown.bs.modal', () => {
                 console.log('📖 AI Content modal açıldı');
+
+                // Modal tamamen açıldıktan sonra editör durumunu kontrol et
+                this.ensureEditorStability();
             });
 
-            this.modal.addEventListener('hidden.bs.modal', () => {
-                this.resetModal();
-                // ÖNEMLI: analysisResults'u temizleme! PDF analizi bir sonraki açılışta kullanılabilir olmalı
-                // this.analysisResults = {}; // DEVRE DIŞI BIRAKILIYOR
-                console.log('📖 AI Content modal kapandı, PDF analizi korundu');
-            });
-
-            // Modal kapatılmadan ÖNCE focus'u düzelt
             this.modal.addEventListener('hide.bs.modal', () => {
-                // Ultra agresif focus management
-                const activeEl = document.activeElement;
-                if (activeEl && (
-                    activeEl.id === 'cancelButton' ||
-                    activeEl.closest('#aiContentModal') ||
-                    activeEl.closest('.modal')
-                )) {
-                    // Focus'u body'ye taşı
-                    document.body.focus();
+                console.log('📖 AI Content modal kapanıyor');
 
-                    // Backup: Focus'u modal dışındaki ilk focusable element'e taşı
-                    setTimeout(() => {
-                        const focusable = document.querySelector('input:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])');
-                        if (focusable && !focusable.closest('.modal')) {
-                            focusable.focus();
-                        }
-                    }, 50);
-                }
+                // Modal kapanmadan önce editör durumunu hazırla
+                this.prepareEditorForModalClose();
 
                 // Backdrop temizleme - global function kullan
                 if (typeof window.cleanModalBackdrop === 'function') {
@@ -144,6 +132,17 @@ class AIContentGenerationSystem {
                         window.cleanModalBackdrop();
                     }, 100);
                 }
+            });
+
+            this.modal.addEventListener('hidden.bs.modal', () => {
+                console.log('📖 AI Content modal kapandı');
+
+                // Modal tamamen kapandıktan sonra editörü restore et
+                this.restoreEditorState();
+                this.resetModal();
+                // ÖNEMLI: analysisResults'u temizleme! PDF analizi bir sonraki açılışta kullanılabilir olmalı
+                // this.analysisResults = {}; // DEVRE DIŞI BIRAKILIYOR
+                console.log('📖 PDF analizi korundu');
             });
         }
 
@@ -2162,5 +2161,153 @@ window.receiveGeneratedContent = function(content, targetConfig = {}) {
     } catch (error) {
         console.error('❌ receiveGeneratedContent hatası:', error);
         console.log('Generated Content (error fallback):', content);
+    }
+};
+
+/**
+ * 🛡️ HUGERTE EDITOR STATE PRESERVATION METHODS
+ * HugeRTE editörün modal işlemleri sırasında state'ini korur
+ */
+
+// HugeRTE editör state'ini koruma için kullanılan objeler
+AIContentGenerationSystem.prototype.editorStateBackup = {};
+AIContentGenerationSystem.prototype.editorFocusBackup = null;
+
+/**
+ * Modal açılmadan önce editör durumunu kaydet
+ */
+AIContentGenerationSystem.prototype.preserveEditorState = function() {
+    console.log('🛡️ HugeRTE editör durumu korunuyor...');
+
+    try {
+        if (typeof hugerte !== 'undefined') {
+            // Aktif editörü kaydet
+            if (hugerte.activeEditor) {
+                this.editorFocusBackup = hugerte.activeEditor.id;
+                console.log('📝 Aktif editör kaydedildi:', this.editorFocusBackup);
+            }
+
+            // Tüm editör instance'larının durumunu kaydet
+            Object.keys(hugerte.editors || {}).forEach(editorId => {
+                const editor = hugerte.editors[editorId];
+                if (editor) {
+                    this.editorStateBackup[editorId] = {
+                        mode: editor.mode?.get() || 'design',
+                        content: editor.getContent(),
+                        isHidden: editor.isHidden(),
+                        isDirty: editor.isDirty()
+                    };
+
+                    // Editörü design mode'da zorla tut
+                    if (editor.mode && editor.mode.set) {
+                        editor.mode.set('design');
+                    }
+
+                    console.log(`💾 Editör durumu kaydedildi: ${editorId}`, this.editorStateBackup[editorId]);
+                }
+            });
+        }
+    } catch (error) {
+        console.warn('⚠️ Editör durumu kaydetme hatası:', error);
+    }
+};
+
+/**
+ * Modal açıldıktan sonra editör kararlılığını sağla
+ */
+AIContentGenerationSystem.prototype.ensureEditorStability = function() {
+    console.log('🔒 HugeRTE editör kararlılığı kontrol ediliyor...');
+
+    try {
+        if (typeof hugerte !== 'undefined') {
+            // Tüm editörlerin design mode'da olduğundan emin ol
+            Object.keys(hugerte.editors || {}).forEach(editorId => {
+                const editor = hugerte.editors[editorId];
+                if (editor && editor.mode) {
+                    // Eğer HTML mode'daysa, design mode'a geç
+                    if (editor.mode.get() === 'code') {
+                        editor.mode.set('design');
+                        console.log(`🔧 Editör design mode'a geçirildi: ${editorId}`);
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.warn('⚠️ Editör kararlılık kontrolü hatası:', error);
+    }
+};
+
+/**
+ * Modal kapanmadan önce editörü hazırla
+ */
+AIContentGenerationSystem.prototype.prepareEditorForModalClose = function() {
+    console.log('🎯 HugeRTE editör modal kapanış için hazırlanıyor...');
+
+    try {
+        if (typeof hugerte !== 'undefined') {
+            // Focus'u köreltmek için aktif editörden focus'u kaldır
+            if (hugerte.activeEditor) {
+                hugerte.activeEditor.contentAreaContainer.blur();
+                hugerte.activeEditor.contentWindow.blur();
+            }
+
+            // Tüm editörlerden event listener'ları geçici olarak kaldır
+            Object.keys(hugerte.editors || {}).forEach(editorId => {
+                const editor = hugerte.editors[editorId];
+                if (editor) {
+                    // Design mode'da kalmayı garantile
+                    if (editor.mode && editor.mode.set) {
+                        editor.mode.set('design');
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.warn('⚠️ Editör kapanış hazırlığı hatası:', error);
+    }
+};
+
+/**
+ * Modal kapandıktan sonra editör durumunu restore et
+ */
+AIContentGenerationSystem.prototype.restoreEditorState = function() {
+    console.log('🔄 HugeRTE editör durumu restore ediliyor...');
+
+    try {
+        if (typeof hugerte !== 'undefined') {
+            // Kısa bir delay ile editör durumunu restore et
+            setTimeout(() => {
+                // Kaydedilen editör durumlarını restore et
+                Object.keys(this.editorStateBackup).forEach(editorId => {
+                    const editor = hugerte.editors[editorId];
+                    const backup = this.editorStateBackup[editorId];
+
+                    if (editor && backup) {
+                        // Mode'u restore et (ancak design mode'da kalsın)
+                        if (editor.mode && backup.mode === 'design') {
+                            editor.mode.set('design');
+                        }
+
+                        console.log(`🔄 Editör durumu restore edildi: ${editorId}`);
+                    }
+                });
+
+                // Aktif editörü restore et
+                if (this.editorFocusBackup && hugerte.get(this.editorFocusBackup)) {
+                    const editor = hugerte.get(this.editorFocusBackup);
+                    if (editor) {
+                        editor.focus();
+                        console.log('🎯 Aktif editör focus restore edildi:', this.editorFocusBackup);
+                    }
+                }
+
+                // Backup'ları temizle
+                this.editorStateBackup = {};
+                this.editorFocusBackup = null;
+
+            }, 150); // 150ms delay - modal animasyonunun tamamlanması için
+        }
+    } catch (error) {
+        console.warn('⚠️ Editör durumu restore hatası:', error);
     }
 };

@@ -38,7 +38,11 @@ class AnnouncementServiceProvider extends ServiceProvider
         
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
-        $this->loadViewsFrom(module_path('Announcement', 'resources/views/front/themes'), 'announcement-themes');
+        // Front themes klasörü için kontrol ekle
+        $frontThemesPath = module_path('Announcement', 'resources/views/front/themes');
+        if (is_dir($frontThemesPath)) {
+            $this->loadViewsFrom($frontThemesPath, 'announcement-themes');
+        }
         $this->loadViewsFrom(module_path('Announcement', 'resources/views'), 'announcement');
 
         Livewire::component('announcement-component', AnnouncementComponent::class);
@@ -140,10 +144,13 @@ class AnnouncementServiceProvider extends ServiceProvider
         // Tema klasörlerinin yapılandırması - YENİ YAPI
         $themeSourcePath = module_path('Announcement', 'resources/views/front/themes');
         $themeViewPath = resource_path('views/themes/modules/announcement');
-        
-        $this->publishes([
-            $themeSourcePath => $themeViewPath,
-        ], ['views', 'announcement-module-theme-views']);
+
+        // Sadece klasör varsa publish et
+        if (is_dir($themeSourcePath)) {
+            $this->publishes([
+                $themeSourcePath => $themeViewPath,
+            ], ['views', 'announcement-module-theme-views']);
+        }
     
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'announcement');
     }

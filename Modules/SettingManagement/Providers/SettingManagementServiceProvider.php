@@ -37,7 +37,7 @@ class SettingManagementServiceProvider extends ServiceProvider
         $this->registerViews();
         
         // Helpers klasörü varsa otomatik yükle
-        $helpersPath = module_path($this->name, 'App/Helpers');
+        $helpersPath = module_path($this->name, 'app/Helpers');
         if (is_dir($helpersPath)) {
             $files = glob($helpersPath . '/*.php');
             foreach ($files as $file) {

@@ -22,6 +22,16 @@ Route::middleware(['admin', 'tenant'])
                 Route::post('/set-editing-language', function () {
                     return response()->json(['status' => 'success']);
                 })->name('set-editing-language');
+
+                // Client-side language session update (no loading bar)
+                Route::post('/manage/update-language-session', function (\Illuminate\Http\Request $request) {
+                    $language = $request->input('language');
+                    if ($language && in_array($language, config('app.available_languages', ['tr', 'en', 'ar']))) {
+                        session(['page_manage_language' => $language]);
+                        return response()->json(['status' => 'success', 'language' => $language]);
+                    }
+                    return response()->json(['status' => 'error'], 400);
+                })->name('manage.update-language-session');
                 
                 // Universal SEO Management System kullanılıyor
                 // Eski seo-data route'u kaldırıldı

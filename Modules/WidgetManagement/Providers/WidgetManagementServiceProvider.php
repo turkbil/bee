@@ -66,9 +66,6 @@ class WidgetManagementServiceProvider extends ServiceProvider
         Livewire::component('module-widget-list-component', ModuleWidgetListComponent::class);
         Livewire::component('widget-form-builder-component', WidgetFormBuilderComponent::class);
         
-        Livewire::component('modules.widget-management.app.http.livewire.widget-code-editor-component', WidgetCodeEditorComponent::class);
-        Livewire::component('modules.widget-management.app.http.livewire.widget-manage-component', WidgetManageComponent::class);
-        
         $this->registerBladeDirectives();
         $this->loadHelperFile();
     }
@@ -125,7 +122,7 @@ class WidgetManagementServiceProvider extends ServiceProvider
     protected function loadHelperFile(): void
     {
         $helperPath = module_path($this->name, 'app/Helpers/WidgetHelper.php');
-        
+
         if (file_exists($helperPath)) {
             require_once $helperPath;
         }

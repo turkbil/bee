@@ -98,6 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
     setupSeoEnterPrevention();
     initializeTabSystem();
     setupSlugNormalization();
+
+    // İlk yüklemede dil içeriğini ayarla
+    if (window.currentLanguage && window.switchLanguageContent) {
+        setTimeout(() => {
+            window.switchLanguageContent(window.currentLanguage);
+            console.log('🎯 İlk yükleme - dil içeriği ayarlandı:', window.currentLanguage);
+        }, 100);
+    }
     
     // console.log(`✅ ${pageName} sayfası hazır!`);
 });
@@ -124,9 +132,7 @@ function setupLanguageSwitching() {
         const language = $(this).data('language');
         const nativeName = $(this).data('native-name');
         
-        console.log('🚨 === TETİKLENME ANALİZİ BAŞLIYOR ===');
-        console.log('🌍 Dil değiştirildi:', language);
-        console.log('🔍 Tıklanan element:', this);
+        // Language switching triggered
         console.log('📍 Element data-language:', $(this).data('language'));
         console.log('📍 Element data-native-name:', $(this).data('native-name'));
         
@@ -137,7 +143,7 @@ function setupLanguageSwitching() {
             return false;
         }
         
-        console.log('✅ Element doğrulama başarılı - language-switch-btn');
+        // Element validation successful
         
         // *** ELEMENT TİPİ TESPİTİ ***
         console.log('🔍 Element tag name:', this.tagName);
@@ -274,6 +280,15 @@ function setupLanguageSwitching() {
         if (livewireExists && hasWireClick) {
             console.log('🚨 LIVEWIRE TETİKLENECEK - wire:click mevcut');
             console.log('⚠️ jQuery işlemi iptal ediliyor, Livewire devralıyor');
+
+            // 📋 TAB STATE'İ GÜVENCE ALTINA AL
+            const storageKey = 'page_active_tab';
+            const currentActiveTab = $('.nav-tabs .nav-link.active').attr('href');
+            if (currentActiveTab) {
+                localStorage.setItem(storageKey, currentActiveTab);
+                console.log('💾 Livewire dil değişimi öncesi tab kaydedildi:', currentActiveTab);
+            }
+
             return; // Let Livewire handle this
         }
         
@@ -288,123 +303,135 @@ function setupLanguageSwitching() {
             return;
         }
         
-        console.log('🚨 JQUERY TETİKLENİYOR - Manuel language switching');
-        
         // *** JQUERY İLE LANGUAGE CONTENT DEĞİŞİMİ ***
-        console.log('🔄 Language content değiştirme işlemi başlıyor...');
-        
-        // Önce tüm elementleri gizle ve durumlarını logla
-        console.log('👁️ Tüm language content elementleri gizleniyor...');
+
+        // Önce tüm elementleri gizle
         allLanguageContents.each(function(index) {
-            const beforeHide = $(this).is(':visible');
             // KRİTİK: Hide için de force et
             $(this).hide().css('display', 'none');
-            const afterHide = $(this).is(':visible');
-            console.log(`  📦 Element ${index} (${$(this).data('language')}): ${beforeHide} → ${afterHide}`);
         });
-        
+
         // KRİTİK FİX: Aktif tab kontrolü
         const currentActiveTab = $('.nav-tabs .nav-link.active').attr('href');
         const isSeoTabActive = currentActiveTab === '#1';
-        console.log('🔍 Aktif tab kontrol - SEO tab aktif mi?', isSeoTabActive, 'activeTab:', currentActiveTab);
-        
-        // Hedef dili göster ve durumunu logla
-        console.log('👁️ Hedef dil content elementleri gösteriliyor...');
+        const isCodeTabActive = currentActiveTab === '#2';
         targetLanguageContent.each(function(index) {
             const beforeShow = $(this).is(':visible');
             const isBasicContent = $(this).hasClass('language-content');
             const isSeoContent = $(this).hasClass('seo-language-content');
-            
+
             // KRİTİK KARAR: Tab durumuna göre gösterme mantığı
             let shouldShow = false;
-            
+
             if (isSeoTabActive) {
                 // SEO tab aktifse: Hem basic hem SEO content'leri göster
                 shouldShow = true;
-                console.log(`  🎯 SEO Tab Aktif - Her tür content gösterilecek: ${isBasicContent ? 'Basic' : 'SEO'}`);
+            } else if (isCodeTabActive) {
+                // Code tab aktifse: Hiçbir language content gösterme (Code ortak)
+                shouldShow = false;
             } else {
-                // Diğer tab'lar aktifse: Sadece o tab'ın content'leri
-                shouldShow = isBasicContent; // Sadece basic content'leri göster
-                console.log(`  🎯 Normal Tab - Sadece basic content: ${shouldShow}`);
+                // Diğer tab'lar aktifse: Sadece basic content'leri göster
+                shouldShow = isBasicContent;
             }
-            
+
             if (shouldShow) {
                 // KRİTİK FİX: TÜM elementler için CSS display force et
-                $(this).css('display', 'block').removeClass('d-none').show();
-                
-                // AĞIR FİX: jQuery .show() çalışmıyorsa manuel force et
+                $(this).css({
+                    'display': 'block',
+                    'visibility': 'visible'
+                }).removeClass('d-none').show();
+
+                // ULTRA FİX: Multiple DOM manipulation methods
                 if (!$(this).is(':visible')) {
+                    // Method 1: setProperty with important
                     $(this)[0].style.setProperty('display', 'block', 'important');
-                    console.log(`  🔨 AĞIR FİX: Manuel display:block!important - ${isBasicContent ? 'Basic' : 'SEO'}`);
+                    $(this)[0].style.setProperty('visibility', 'visible', 'important');
+
+                    // Method 2: CSS class override
+                    $(this).addClass('force-visible');
+
+                    // Method 3: Inline style override
+                    $(this).attr('style', 'display: block !important; visibility: visible !important;');
+
+                    console.log(`  🔨 ULTRA FİX: Multiple override methods - ${isBasicContent ? 'Basic' : 'SEO'}`);
                 }
-                
+
+                // SEO content için özel fix
                 if (!isMenuManagement && isSeoContent) {
+                    // Parent container check
+                    const parentContainer = $(this).closest('.tab-pane');
+                    if (parentContainer.length) {
+                        parentContainer.addClass('show active');
+                        console.log(`  🔧 SEO parent container aktivasyon edildi`);
+                    }
                     console.log(`  🔧 SEO element için display:block force edildi`);
                 }
             }
-            
+
             const afterShow = $(this).is(':visible');
-            console.log(`  🎯 Hedef element ${index} (${$(this).data('language')}): ${beforeShow} → ${afterShow} [${isBasicContent ? 'Basic' : 'SEO'}]`);
+            // Element visibility updated
         });
         
         // Final durum kontrolü
-        console.log('🔍 Final durum kontrolü:');
-        allLanguageContents.each(function(index) {
-            const isVisible = $(this).is(':visible');
-            const dataLang = $(this).data('language');
-            const shouldBeVisible = dataLang === language;
-            const status = isVisible === shouldBeVisible ? '✅' : '❌';
-            console.log(`  ${status} Element ${index} (${dataLang}): görünür=${isVisible}, olması gereken=${shouldBeVisible}`);
-        });
-        
-        console.log('✅ Language content güncellendi:', language);
-        
         // Update global variables
         window.currentLanguage = language;
-        console.log('✅ Global currentLanguage güncellendi:', window.currentLanguage);
         
-        // *** LIVEWIRE COMPONENT ÇAĞRISI - SERVER VERI GÜNCELLEMESİ ***
-        if (livewireExists) {
-            console.log('🚀 Livewire component switchLanguage çağrılıyor...');
-            try {
-                // Livewire 3.x için component metodunu direkt çağır
-                const component = Livewire.getByName('page-manage-component')[0];
-                if (component) {
-                    component.switchLanguage(language);
-                    console.log('✅ Livewire component switchLanguage başarılı:', language);
-                } else {
-                    // Fallback: find component by any method
-                    const allComponents = Livewire.all();
-                    const pageComponent = allComponents.find(comp => 
-                        comp.name === 'page-manage-component' || 
-                        comp.fingerprint?.name === 'page-manage-component'
-                    );
-                    
-                    if (pageComponent) {
-                        pageComponent.switchLanguage(language);
-                        console.log('✅ Livewire component switchLanguage fallback başarılı:', language);
-                    } else {
-                        console.error('❌ Page manage component bulunamadı');
-                    }
-                }
-            } catch (error) {
-                console.error('❌ Livewire component çağrı hatası:', error);
-            }
-        } else {
-            console.log('⚠️ Livewire yok - sadece jQuery çalıştı');
-        }
+        // *** LIVEWIRE ÇAĞRISI KALDIRILDI - PURE JQUERY SİSTEM ***
+        // Livewire morph'ları tab içeriğini bozuyordu, sadece client-side yapıyoruz
+        // AdminLanguageSwitcher ve PageManageComponent çağrıları devre dışı
+        console.log('✅ Pure jQuery dil değişimi - Livewire render YOK');
         
-        console.log('🚨 === TETİKLENME ANALİZİ BİTTİ ===');
+        // Language switching completed
     });
 }
 
 // ===== SAVE AND CONTINUE SYSTEM =====
 function setupSaveAndContinueSystem() {
+    // ✅ Debounce flag - çift tıklama önleme
+    let isSaving = false;
+
     document.addEventListener('click', function(e) {
         const saveButton = e.target.closest('.save-button');
-        
+
         if (saveButton) {
+            // ✅ Eğer kaydetme işlemi devam ediyorsa engelle
+            if (isSaving) {
+                console.log('⏸️ Kaydetme zaten devam ediyor - atlandı');
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+
+            // 🔥 MONACO SYNC - Save öncesi editör değerlerini textarea'lara aktar
+            if (window.cssEditor) {
+                const cssTextarea = document.getElementById('css-textarea');
+                if (cssTextarea) {
+                    const currentValue = window.cssEditor.getValue();
+                    cssTextarea.value = currentValue;
+                    cssTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    console.log('🔄 CSS Editor sync edildi:', currentValue.length, 'karakter');
+                }
+            }
+
+            if (window.jsEditor) {
+                const jsTextarea = document.getElementById('js-textarea');
+                if (jsTextarea) {
+                    const currentValue = window.jsEditor.getValue();
+                    jsTextarea.value = currentValue;
+                    jsTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    console.log('🔄 JS Editor sync edildi:', currentValue.length, 'karakter');
+                }
+            }
+
+            // ✅ Kaydetme flag'ini set et
+            isSaving = true;
             console.log('💾 Save button tıklandı');
+
+            // ✅ 2 saniye sonra flag'i sıfırla
+            setTimeout(() => {
+                isSaving = false;
+                console.log('✅ Save debounce reset edildi');
+            }, 2000);
             
             // Get active language - DETAYLI DEBUG
             const activeLanguageBtn = document.querySelector('.language-switch-btn.text-primary');
@@ -711,7 +738,8 @@ const MultiLangFormSwitcher = {
         const languageContents = document.querySelectorAll('.language-content, .seo-language-content');
         languageContents.forEach(content => {
             content.style.display = 'block';
-            content.classList.remove('d-none');
+            content.style.visibility = '';
+            content.classList.remove('d-none', 'force-visible');
         });
         
         // Tek dil durumu için global language ayarla
@@ -744,13 +772,33 @@ const MultiLangFormSwitcher = {
             }
         });
         
-        // Update content visibility
+        // Update content visibility - TEMEL BİLGİLER TAB
         const languageContents = document.querySelectorAll('.language-content');
         languageContents.forEach(content => {
             if (content.getAttribute('data-language') === language) {
                 content.style.display = 'block';
+                content.style.visibility = '';
+                content.classList.remove('d-none', 'force-visible');
             } else {
                 content.style.display = 'none';
+                content.style.visibility = '';
+                content.classList.add('d-none');
+                content.classList.remove('force-visible');
+            }
+        });
+
+        // Update content visibility - SEO TAB
+        const seoLanguageContents = document.querySelectorAll('.seo-language-content');
+        seoLanguageContents.forEach(content => {
+            if (content.getAttribute('data-language') === language) {
+                content.style.display = 'block';
+                content.style.visibility = '';
+                content.classList.remove('d-none', 'force-visible');
+            } else {
+                content.style.display = 'none';
+                content.style.visibility = '';
+                content.classList.add('d-none');
+                content.classList.remove('force-visible');
             }
         });
         
@@ -848,13 +896,27 @@ document.addEventListener('DOMContentLoaded', function() {
         wireElements.forEach(element => {
             if (element.dataset.wireLoadingAttached) return;
             element.dataset.wireLoadingAttached = 'true';
-            
+
             element.addEventListener('click', function(e) {
                 // Modal içindeki wire:click için loading bar gösterme
                 if (this.closest('.modal')) {
                     console.log('🚫 MANAGE.JS MODAL İÇİ WIRE:CLICK: Loading bar iptal edildi');
                     return;
                 }
+
+                // Language switcher için loading bar gösterme
+                if (this.classList.contains('language-switch-btn')) {
+                    console.log('🚫 MANAGE.JS LANGUAGE SWITCH: Loading bar iptal edildi');
+                    return;
+                }
+
+                // AI SEO butonları için loading bar gösterme (kendi loading sistemleri var)
+                if (this.classList.contains('ai-seo-comprehensive-btn') ||
+                    this.classList.contains('ai-seo-recommendations-btn')) {
+                    console.log('🚫 MANAGE.JS AI SEO BUTTON: Loading bar iptal edildi');
+                    return;
+                }
+
                 showLoadingBar();
             });
         });
@@ -886,13 +948,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     attachLoadingToLinks();
     
-    // Livewire integration
+    // Livewire integration with selective loading bar
     if (typeof Livewire !== 'undefined') {
-        Livewire.hook('message.sent', () => {
+        Livewire.hook('message.sent', (message) => {
+            // Language switching ve AI işlemleri için loading bar gösterme
+            const payload = message?.payload || {};
+            const method = payload?.method;
+
+            // Language switching işlemlerini tespit et
+            if (method === 'switchLanguage') {
+                console.log('🚫 LIVEWIRE LANGUAGE SWITCH: Loading bar iptal edildi');
+                return;
+            }
+
+            // AI işlemleri için loading bar gösterme (kendi overlayları var)
+            if (method && (method.includes('ai') || method.includes('seo'))) {
+                console.log('🚫 LIVEWIRE AI/SEO: Loading bar iptal edildi');
+                return;
+            }
+
             showLoadingBar();
         });
-        
-        Livewire.hook('message.processed', () => {
+
+        Livewire.hook('message.processed', (message) => {
+            const payload = message?.message?.payload || {};
+            const method = payload?.method;
+
+            // Aynı kontroller message.processed için de
+            if (method === 'switchLanguage' ||
+                (method && (method.includes('ai') || method.includes('seo')))) {
+                return; // Loading bar zaten gösterilmedi, gizlemeye gerek yok
+            }
+
             hideLoadingBar();
         });
     }
@@ -934,26 +1021,87 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== LIVEWIRE UPDATE HANDLERS =====
 document.addEventListener('livewire:updated', function() {
     if (window.location.pathname.includes('/manage')) {
+        console.log('🔄 LIVEWIRE UPDATE TETİKLENDİ');
+
         // 🚨 KRITIK: Mevcut tab ve dil durumunu kaydet
         const currentActiveTab = $('.nav-tabs .nav-link.active').attr('href');
         const currentActiveLanguage = $('.language-switch-btn.text-primary').data('language');
-        
+
         console.log('💾 Livewire update öncesi durum:', {
             tab: currentActiveTab,
             language: currentActiveLanguage
         });
-        
-        setTimeout(function() {
-            setupSeoCharacterCounters();
-            setupSeoEnterPrevention();
-            MultiLangFormSwitcher.init();
-            
-            // 🔄 Language switching sistemini yeniden kur
-            setupLanguageSwitching();
-            
-            // 🎯 NURULLAH'IN YENİ KURALI: Livewire update sonrası geçici state restore
-            if (window.tempSavedLanguage || window.tempSavedTab) {
-                console.log('🔄 Livewire güncellemesi sonrası GEÇİCİ state restore ediliyor...');
+
+        // 📋 TAB STATE'İ KAYDET
+        const storageKey = 'page_active_tab';
+        if (currentActiveTab) {
+            localStorage.setItem(storageKey, currentActiveTab);
+            console.log('💾 Tab state localStorage\'a kaydedildi:', currentActiveTab);
+        }
+
+        // 🔥 KRİTİK: Aktif dili de window.tempSavedLanguage'e kaydet
+        if (currentActiveLanguage) {
+            window.tempSavedLanguage = currentActiveLanguage;
+            console.log('💾 Aktif dil window.tempSavedLanguage\'e kaydedildi:', currentActiveLanguage);
+        }
+
+        // INSTANT: Core systems restore - NO setTimeout for rapid saves
+        // 🔄 CORE SYSTEMS RESTORE
+        setupSeoCharacterCounters();
+        setupSeoEnterPrevention();
+        MultiLangFormSwitcher.init();
+
+        // 🔄 Language switching sistemini yeniden kur
+        setupLanguageSwitching();
+
+        // 🎯 UNIFIED TAB RESTORE SYSTEM
+        console.log('🔄 Tab restore sistemi başlatılıyor...');
+
+        // Method 1: Global tab restore function
+        if (typeof window.forceTabRestore === 'function') {
+            console.log('✅ Global forceTabRestore çağrılıyor');
+            window.forceTabRestore();
+        } else {
+                // Method 2: Manual tab restore
+                console.log('🔄 Manual tab restore başlatılıyor');
+                const savedTab = localStorage.getItem(storageKey);
+                if (savedTab) {
+                    console.log('📋 Kaydedilmiş tab bulundu:', savedTab);
+
+                    const targetTab = document.querySelector(`[href="${savedTab}"]`);
+                    const targetPane = document.getElementById(savedTab.replace('#', ''));
+
+                    if (targetTab && targetPane) {
+                        // Tüm tab'ları deaktif et
+                        document.querySelectorAll('.nav-link').forEach(tab => {
+                            tab.classList.remove('active');
+                            tab.setAttribute('aria-selected', 'false');
+                        });
+                        document.querySelectorAll('.tab-pane').forEach(pane => {
+                            pane.classList.remove('show', 'active');
+                        });
+
+                        // Hedef tab'ı aktif et
+                        targetTab.classList.add('active');
+                        targetTab.setAttribute('aria-selected', 'true');
+                        targetPane.classList.add('show', 'active');
+
+                        console.log('✅ Manual tab restore tamamlandı:', savedTab);
+                    }
+            }
+        }
+
+        // 🎯 NURULLAH'IN YENİ KURALI: Livewire update sonrası geçici state restore
+        console.log('🔍 RESTORE CHECK:', {
+            hasTempLanguage: !!window.tempSavedLanguage,
+            hasTempTab: !!window.tempSavedTab,
+            tempLanguage: window.tempSavedLanguage,
+            tempTab: window.tempSavedTab,
+            currentLanguage: window.currentLanguage
+        });
+
+        if (window.tempSavedLanguage || window.tempSavedTab) {
+                console.log('✅ GEÇİCİ state bulundu - restore başlıyor...');
                 console.log('  - Kaydedilen dil:', window.tempSavedLanguage || 'yok');
                 console.log('  - Kaydedilen tab:', window.tempSavedTab || 'yok');
                 
@@ -969,14 +1117,12 @@ document.addEventListener('livewire:updated', function() {
                         console.log('🚨 DİL BUTTON CLICK TETİKLENİYOR:', window.tempSavedLanguage);
                         targetLangBtn.click();
                         console.log('✅ Geçici dil restore edildi:', window.tempSavedLanguage);
-                        
-                        // Click sonrası kontrol
-                        setTimeout(function() {
-                            const currentActiveLang = $('.language-switch-btn.text-primary').data('language');
-                            console.log('🔍 Click sonrası aktif dil:', currentActiveLang);
-                            console.log('🔍 Beklenen dil:', window.tempSavedLanguage);
-                            console.log('🔍 Restore başarılı mı?', currentActiveLang === window.tempSavedLanguage ? '✅' : '❌');
-                        }, 50);
+
+                        // INSTANT: Force dil içerik görünürlüğünü güncelle - NO setTimeout
+                        if (window.switchLanguageContent) {
+                            console.log('🔥 FORCE switchLanguageContent çağrılıyor:', window.tempSavedLanguage);
+                            window.switchLanguageContent(window.tempSavedLanguage);
+                        }
                     } else {
                         console.log('❌ Hedef dil button bulunamadı:', window.tempSavedLanguage);
                         // Tüm mevcut button'ları listele
@@ -1070,10 +1216,29 @@ document.addEventListener('livewire:updated', function() {
                 // 🚨 IMPORTANT: window.tempSavedLanguage ve window.tempSavedTab'ı SİLME
                 // Kaydet ve Devam Et ile çalışmaya devam ediyoruz
             } else {
-                // State yoksa sadece dil button'ları için event'leri yeniden bağla
-                console.log('📌 State yoksa mevcut durum korunacak');
+                // State yoksa da mevcut dili force restore et
+                console.log('⚠️ Temp state YOK - fallback restore başlıyor');
+                console.log('  - window.currentLanguage:', window.currentLanguage);
+                console.log('  - window.switchLanguageContent var mı:', !!window.switchLanguageContent);
+
+                // Eğer hiç dil yoksa, button'dan al
+                if (!window.currentLanguage) {
+                    const activeLangBtn = $('.language-switch-btn.text-primary');
+                    if (activeLangBtn.length) {
+                        window.currentLanguage = activeLangBtn.data('language');
+                        console.log('  - Button\'dan dil alındı:', window.currentLanguage);
+                    }
+                }
+
+                // INSTANT: Fallback restore - NO setTimeout
+                if (window.currentLanguage && window.switchLanguageContent) {
+                    console.log('🔥 FALLBACK RESTORE ÇALIŞIYOR:', window.currentLanguage);
+                    window.switchLanguageContent(window.currentLanguage);
+                    console.log('✅ FALLBACK RESTORE TAMAMLANDI');
+                } else {
+                    console.error('❌ FALLBACK RESTORE BAŞARISIZ - Dil veya fonksiyon eksik!');
+                }
             }
-        }, 100);
     }
 });
 
@@ -1229,10 +1394,21 @@ function setupSeoEnterPrevention() {
     const seoInputs = document.querySelectorAll('.seo-no-enter');
     
     console.log('🔍 Bulunan seo-no-enter input sayısı:', seoInputs.length);
-    
+
     seoInputs.forEach((input, index) => {
-        console.log(`  Input ${index}: ${input.tagName} - name: ${input.name || 'yok'} - placeholder: ${input.placeholder || 'yok'}`);
-        
+        const wireModel = input.getAttribute('wire:model') || input.getAttribute('wire:model.live') || input.getAttribute('wire:model.defer');
+        const currentValue = input.value || input.textContent || '';
+
+        console.log(`  Input ${index}:`, {
+            tag: input.tagName,
+            name: input.name || 'yok',
+            placeholder: input.placeholder || 'yok',
+            wireModel: wireModel || '❌ YOK',
+            value: currentValue ? currentValue.substring(0, 50) + '...' : '🔴 BOŞ',
+            hasValue: !!currentValue,
+            id: input.id || 'no-id'
+        });
+
         // Enter tuşu event listener'ı ekle
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.keyCode === 13) {
@@ -1307,3 +1483,120 @@ function loadDataForLanguageExceptCode(language) {
     // SEO tab preserves Code tab
     // Language contents are managed by show/hide, Code tab is not affected
 }
+
+// DİL İÇERİK GÖRÜNÜRLÜĞÜ FONKSİYONU - Global olarak expose ediyoruz
+window.switchLanguageContent = function(language) {
+    console.log('🎯 DİL İÇERİK DEĞİŞTİRME:', language);
+
+    // TEMEL BİLGİLER TAB - language-content divleri
+    document.querySelectorAll('.language-content').forEach(content => {
+        const contentLang = content.getAttribute('data-language');
+        if (contentLang === language) {
+            // GÖRÜNÜR YAP - Tüm blokları temizle
+            content.style.display = 'block';
+            content.style.visibility = 'visible';
+            content.style.opacity = '1';
+            content.style.height = 'auto';
+            content.classList.remove('d-none');
+            console.log('👁️ TEMEL BİLGİLER görünür:', contentLang);
+        } else {
+            // GİZLE - Agresif gizleme
+            content.style.display = 'none';
+            content.style.visibility = 'hidden';
+            content.style.opacity = '0';
+            content.style.height = '0';
+            content.classList.add('d-none');
+            console.log('👻 TEMEL BİLGİLER gizli:', contentLang);
+        }
+    });
+
+    // SEO TAB - seo-language-content divleri
+    document.querySelectorAll('.seo-language-content').forEach(content => {
+        const contentLang = content.getAttribute('data-language');
+        if (contentLang === language) {
+            // GÖRÜNÜR YAP - Tüm blokları temizle
+            content.style.display = 'block';
+            content.style.visibility = 'visible';
+            content.style.opacity = '1';
+            content.style.height = 'auto';
+            content.classList.remove('d-none');
+            console.log('👁️ SEO CONTENT görünür:', contentLang);
+        } else {
+            // GİZLE - Agresif gizleme
+            content.style.display = 'none';
+            content.style.visibility = 'hidden';
+            content.style.opacity = '0';
+            content.style.height = '0';
+            content.classList.add('d-none');
+            console.log('👻 SEO CONTENT gizli:', contentLang);
+        }
+    });
+
+    // DİL BUTONU GÜNCELLEMESİ
+    document.querySelectorAll('.language-switch-btn').forEach(btn => {
+        const btnLang = btn.getAttribute('data-language');
+        if (btnLang === language) {
+            btn.classList.add('text-primary');
+            btn.classList.remove('text-muted');
+            btn.style.borderBottom = '2px solid var(--primary-color) !important';
+        } else {
+            btn.classList.remove('text-primary');
+            btn.classList.add('text-muted');
+            btn.style.borderBottom = '2px solid transparent';
+        }
+    });
+
+    console.log('✅ Dil içerik görünürlük güncellendi:', language);
+};
+
+// 🚀 PURE CLIENT-SIDE LANGUAGE SWITCHING (NO LIVEWIRE)
+window.clientSideLanguageSwitch = function(language) {
+    console.log('🎯 PURE CLIENT-SIDE Language Switch:', language);
+
+    // Dil içerik görünürlüğünü güncelle
+    switchLanguageContent(language);
+
+    // Global language variable'ı güncelle
+    window.currentLanguage = language;
+
+    // Session'a da kaydet (AJAX ile - background)
+    fetch('/admin/page/manage/update-language-session', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ language: language })
+    }).catch(e => console.warn('⚠️ Session update failed:', e));
+
+    console.log('✅ Pure client-side dil değiştirme tamamlandı');
+};
+
+// 🚀 CLIENT-SIDE LANGUAGE SWITCHING EVENT LISTENER (Fallback)
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for Livewire to be ready
+    document.addEventListener('livewire:initialized', () => {
+        console.log('🎯 Livewire initialized - Client-side language switch listener hazır');
+
+        Livewire.on('client-language-switched', (event) => {
+            console.log('🎯 Client-side language switch event alındı:', event);
+
+            const language = event.language || event[0]?.language;
+            const oldLanguage = event.oldLanguage || event[0]?.oldLanguage;
+
+            if (language) {
+                console.log('🔄 Client-side dil değiştirme başlıyor:', oldLanguage, '→', language);
+
+                // Mevcut jQuery switchLanguage fonksiyonunu kullan (render yok)
+                switchLanguageContent(language);
+
+                // Global language variable'ı güncelle
+                window.currentLanguage = language;
+
+                console.log('✅ Client-side dil değiştirme tamamlandı');
+            } else {
+                console.warn('⚠️ Language parametresi bulunamadı:', event);
+            }
+        });
+    });
+});

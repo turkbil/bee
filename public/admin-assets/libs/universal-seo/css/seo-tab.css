@@ -1,0 +1,116 @@
+/**
+ * UNIVERSAL SEO TAB STYLES
+ * Pattern: A1 CMS Universal System
+ *
+ * Tüm modüller için ortak SEO Tab CSS
+ * Auto-loaded for manage pages
+ */
+
+/* A1 PATTERN STYLES */
+.hover-card {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.hover-card:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.hover-element {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.hover-element:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.accordion-button {
+    transition: all 0.2s ease;
+}
+.accordion-button:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.list-group-item.active {
+    border-left: none !important;
+    border-left-width: 0 !important;
+}
+
+.list-group-item.list-group-item-action.active {
+    border-left: none !important;
+    border-left-width: 0 !important;
+}
+
+.accordion-item {
+    transition: all 0.2s ease;
+}
+.accordion-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.accordion-header button {
+    transition: all 0.2s ease;
+}
+.accordion-header button:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.accordion-collapse.show {
+    background-color: rgba(0, 123, 255, 0.02);
+}
+
+.accordion-header .accordion-button:not(.collapsed) {
+    background-color: rgba(0, 123, 255, 0.15) !important;
+    color: #0d6efd !important;
+    border-color: rgba(0, 123, 255, 0.2) !important;
+}
+.accordion-header .accordion-button:not(.collapsed):hover {
+    background-color: rgba(0, 123, 255, 0.25) !important;
+}
+
+/* SEO TAB SPECIFIC STYLES */
+.character-counter {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.priority-badge {
+    transition: all 0.3s ease;
+}
+
+.seo-no-enter {
+    /* Custom styling for SEO fields */
+}
+
+/* AI TOOLBAR STYLES */
+.ai-seo-toolbar {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(13, 110, 253, 0.02) 100%);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.ai-seo-recommendations-btn {
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+    transition: all 0.3s ease;
+}
+
+.ai-seo-recommendations-btn:hover {
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+    transform: translateY(-1px);
+}
+
+/* SEO LANGUAGE CONTENT */
+.seo-language-content {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

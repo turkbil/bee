@@ -22,50 +22,26 @@ class SecurityValidationService
     ];
 
     /**
-     * Zararlı JS pattern'leri
+     * Zararlı JS pattern'leri - SADECE GERÇEK TEHLİKELİ PATTERN'LER
+     * Modern framework ve editor'ler için safe patterns hariç tutuldu
      */
     private static $dangerousJsPatterns = [
-        '/eval\s*\(/i',                        // eval() fonksiyonu
-        '/Function\s*\(/i',                    // Function() constructor
+        '/eval\s*\(\s*["\'][^"\']*["\']\s*\)/i', // eval() ile string execution
+        '/new\s+Function\s*\(/i',              // new Function() constructor
         '/setTimeout\s*\(\s*["\'][^"\']*["\'].*\)/i', // setTimeout string kod
         '/setInterval\s*\(\s*["\'][^"\']*["\'].*\)/i', // setInterval string kod
-        '/document\.write/i',                  // document.write
-        '/document\.writeln/i',                // document.writeln
-        '/innerHTML\s*=/i',                    // innerHTML assignment
-        '/outerHTML\s*=/i',                    // outerHTML assignment
-        '/insertAdjacentHTML/i',               // insertAdjacentHTML
+        '/document\.write\s*\([^)]*<script/i', // document.write ile script injection
         '/execScript/i',                       // execScript (IE)
-        '/createContextualFragment/i',         // createContextualFragment
         '/javascript\s*:/i',                   // javascript: protokol
         '/vbscript\s*:/i',                     // vbscript: protokol
-        '/data\s*:\s*text\/html/i',           // data:text/html
-        '/window\s*\[\s*["\'][^"\']*["\']\s*\]/i', // window["eval"] vs.
-        '/this\s*\[\s*["\'][^"\']*["\']\s*\]/i',   // this["eval"] vs.
-        '/globalThis/i',                       // globalThis erişimi
-        '/constructor\s*\.\s*constructor/i',   // constructor.constructor
-        '/__proto__/i',                        // __proto__ manipulation
-        '/prototype\s*\[/i',                   // prototype pollution
-        '/XMLHttpRequest/i',                   // XHR
-        '/fetch\s*\(/i',                       // fetch API
-        '/WebSocket/i',                        // WebSocket
-        '/import\s*\(/i',                      // dynamic import
-        '/require\s*\(/i',                     // require (Node.js)
-        '/process\s*\./i',                     // process object
-        '/Buffer\s*\./i',                      // Buffer object
-        '/fs\s*\./i',                          // file system
-        '/child_process/i',                    // child_process
-        '/cluster/i',                          // cluster module
-        '/crypto\s*\./i',                      // crypto module (sensitive)
-        '/os\s*\./i',                          // os module
-        '/path\s*\./i',                        // path module
-        '/url\s*\./i',                         // url module
-        '/querystring\s*\./i',                 // querystring module
-        '/util\s*\./i',                        // util module
-        '/events\s*\./i',                      // events module
-        '/stream\s*\./i',                      // stream module
-        '/net\s*\./i',                         // net module
-        '/http\s*\./i',                        // http module
-        '/https\s*\./i',                       // https module
+        '/data\s*:\s*text\/html[^,]*,.*<script/i', // data:text/html ile script
+        '/window\s*\[\s*["\']eval["\']\s*\]/i', // window["eval"] obfuscation
+        '/this\s*\[\s*["\']eval["\']\s*\]/i',   // this["eval"] obfuscation
+        '/constructor\s*\.\s*constructor\s*\(/i', // constructor.constructor() trick
+        '/__proto__\s*\[/i',                   // __proto__ manipulation
+        '/prototype\s*\[\s*["\']constructor["\']\s*\]/i', // prototype pollution
+        '/process\s*\.\s*exit/i',              // process exit (Node.js)
+        '/child_process/i',                    // child_process module
     ];
 
     /**

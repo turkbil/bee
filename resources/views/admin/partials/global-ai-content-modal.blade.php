@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header border-0 pb-2">
                 <h4 class="modal-title fw-normal" id="aiContentModalLabel">🤖 AI İçerik Üretici</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeContentModal()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="safeCloseContentModal()"></button>
             </div>
             <div class="modal-body p-4">
 
@@ -52,7 +52,7 @@
 
                     <!-- Action Buttons - Above Accordion -->
                     <div class="d-flex justify-content-end gap-2 mb-3">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" onclick="closeContentModal()">Kapat</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" onclick="safeCloseContentModal()">Kapat</button>
                         <button type="button" id="startGeneration" class="btn btn-primary">
                             <i class="fas fa-magic me-2"></i>İçerik Üret
                             <span id="buttonSpinner" class="spinner-border spinner-border-sm ms-1" style="display: none;" role="status" aria-hidden="true"></span>
@@ -309,6 +309,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   var modalEl = document.getElementById('aiContentModal');
   if (!modalEl || !window.bootstrap) return;
+
+  // Modal açıldığında
   modalEl.addEventListener('shown.bs.modal', function () {
     var tips = [].slice.call(modalEl.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tips.forEach(function (el) {
@@ -316,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Modal kapandığında file uploader'ı reset et
+  // Modal kapandığında file uploader'ı reset et ve editör durumunu koru
   modalEl.addEventListener('hidden.bs.modal', function () {
     // Alpine.js file uploader'ı reset et
     const fileUploaderEl = document.querySelector('[x-data*="fileUploader"]');
@@ -335,6 +337,20 @@ document.addEventListener('DOMContentLoaded', function () {
     if (fileInput) {
       fileInput.value = '';
     }
+
+    // HugeRTE editör durumunu ekstra kontrol et
+    setTimeout(() => {
+      if (typeof hugerte !== 'undefined') {
+        Object.keys(hugerte.editors || {}).forEach(editorId => {
+          const editor = hugerte.editors[editorId];
+          if (editor && editor.mode && editor.mode.get() === 'code') {
+            // Eğer HTML mode'daysa, design mode'a zorla geç
+            editor.mode.set('design');
+            console.log('🔧 Modal kapanış sonrası editör design mode\'a zorlandı:', editorId);
+          }
+        });
+      }
+    }, 100);
   });
 });
 
@@ -466,6 +482,30 @@ window.fileUploader = function() {
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
+  }
+}
+
+// Enhanced modal close function with editor state protection
+window.safeCloseContentModal = function() {
+  console.log('🚪 Safe close modal çağırıldı');
+
+  // HugeRTE editörleri koruma moduna al
+  if (typeof hugerte !== 'undefined') {
+    Object.keys(hugerte.editors || {}).forEach(editorId => {
+      const editor = hugerte.editors[editorId];
+      if (editor && editor.mode) {
+        // Design mode'a zorla geç
+        if (editor.mode.get() === 'code') {
+          editor.mode.set('design');
+          console.log('🔧 Modal kapatılmadan önce editör design mode\'a geçirildi:', editorId);
+        }
+      }
+    });
+  }
+
+  // Normal modal kapatma işlemini çağır
+  if (window.closeContentModal) {
+    window.closeContentModal();
   }
 }
 </script>

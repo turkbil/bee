@@ -8,7 +8,7 @@
     <form method="post" wire:submit.prevent="save">
         @include('admin.partials.error_message')
         <div class="card">
-            
+
             <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="page_active_tab">
                 {{-- Studio Edit Button --}}
                 @if ($studioEnabled && $pageId)
@@ -22,24 +22,29 @@
 
                 <x-manage.language.switcher :current-language="$currentLanguage" />
             </x-tab-system>
+
             <div class="card-body">
                 <div class="tab-content" id="contentTabContent">
-                    <!-- Temel Bilgiler Tab -->
-                    <div class="tab-pane fade show active" id="0" role="tabpanel">
+
+                    <!-- TEMEL BİLGİLER TAB - NO FADE for instant switching -->
+                    <div class="tab-pane" id="0" role="tabpanel">
                         @foreach ($availableLanguages as $lang)
                             @php
                                 $langData = $multiLangInputs[$lang] ?? [];
                                 // Tenant languages'den dil ismini al
-$tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where(
-    'is_active',
-    true,
-)->get();
-$langName =
-    $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
+                                $tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where(
+                                    'is_active',
+                                    true,
+                                )->get();
+                                $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
                             @endphp
 
                             <div class="language-content" data-language="{{ $lang }}"
-                                style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
+                                style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};
+                                       visibility: {{ $currentLanguage === $lang ? 'visible' : 'hidden' }};
+                                       opacity: {{ $currentLanguage === $lang ? '1' : '0' }};
+                                       height: {{ $currentLanguage === $lang ? 'auto' : '0' }};"
+                                class="{{ $currentLanguage === $lang ? '' : 'd-none' }}">
 
                                 <!-- Başlık ve Slug alanları -->
                                 <div class="row mb-3">
@@ -50,7 +55,7 @@ $langName =
                                                 placeholder="{{ __('page::admin.title_field') }}">
                                             <label>
                                                 {{ __('page::admin.title_field') }}
-                                                @if ($lang === session('site_default_language', 'tr'))
+                                                @if ($lang === get_tenant_default_locale())
                                                     <span class="required-star">★</span>
                                                 @endif
                                             </label>
@@ -93,7 +98,6 @@ $langName =
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
-
                         <!-- Aktif/Pasif - sadece bir kere -->
                         <div class="mb-3">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
@@ -111,29 +115,30 @@ $langName =
                         </div>
                     </div>
 
-                    <!-- SEO Tab -->
-                    <div class="tab-pane fade" id="1" role="tabpanel">
-                        <x-seomanagement::universal-seo-tab :model="$this->currentPage" :available-languages="$availableLanguages" :current-language="$currentLanguage"
-                            :seo-data-cache="$seoDataCache" :page-id="$this->pageId"
-                            :static-ai-analysis="$staticAiAnalysis" :dynamic-ai-analysis="$dynamicAiAnalysis"
-                            :static-ai-recommendations="$staticAiRecommendations" :dynamic-ai-recommendations="$dynamicAiRecommendations"
-                            :analysis-loaders="$analysisLoaders" :recommendation-loaders="$recommendationLoaders"
-                            :analysis-errors="$analysisErrors" :recommendation-errors="$recommendationErrors" />
+                    <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
+                    <div class="tab-pane" id="1" role="tabpanel" wire:ignore.self>
+                        <livewire:seomanagement::universal-seo-tab
+                            :model-id="$pageId"
+                            model-type="page"
+                            model-class="Modules\Page\App\Models\Page"
+                        />
                     </div>
 
-                    <!-- Code Tab -->
-                    <div class="tab-pane fade" id="2" role="tabpanel">
-                        <div class="form-floating mb-3">
-                            <textarea wire:model="inputs.css" class="form-control" data-bs-toggle="autosize"
-                                placeholder="{{ __('admin.css_code') }}"></textarea>
-                            <label>{{ __('admin.css') }}</label>
-                        </div>
+                    <!-- CODE TAB - NO FADE for instant switching -->
+                    <div class="tab-pane" id="2" role="tabpanel" wire:ignore.self>
+                        <x-editor.monaco
+                            type="css"
+                            label="CSS"
+                            wire-model="inputs.css"
+                            :value="$inputs['css'] ?? ''"
+                        />
 
-                        <div class="form-floating mb-3">
-                            <textarea wire:model="inputs.js" class="form-control" data-bs-toggle="autosize"
-                                placeholder="{{ __('admin.js_code') }}"></textarea>
-                            <label>{{ __('admin.javascript') }}</label>
-                        </div>
+                        <x-editor.monaco
+                            type="js"
+                            label="JavaScript"
+                            wire-model="inputs.js"
+                            :value="$inputs['js'] ?? ''"
+                        />
                     </div>
 
                 </div>
@@ -146,262 +151,23 @@ $langName =
 
 
 @push('scripts')
+    {{-- 🎯 MODEL & MODULE SETUP --}}
     <script>
-        window.currentPageId = {{ $jsVariables['currentPageId'] ?? 'null' }};
+        window.currentModelId = {{ $pageId ?? 'null' }};
+        window.currentModuleName = 'page';
         window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
-
-        // TinyMCE Content Update Helper Function
-        window.updateTinyMCEContent = function(content, targetField = 'body') {
-            try {
-                const currentLang = window.currentLanguage || 'tr';
-                const editorId = `multiLangInputs.${currentLang}.${targetField}`;
-
-                console.log('🎯 updateTinyMCEContent çağırıldı:', {
-                    editorId,
-                    currentLang,
-                    targetField,
-                    contentLength: content ? content.length : 0
-                });
-
-                // 🔍 DEBUG: DOM yapısını analiz et
-                console.log('🔍 DOM DEBUG:', {
-                    hugerte_exists: typeof hugerte !== 'undefined',
-                    tinyMCE_exists: typeof tinyMCE !== 'undefined',
-                    current_language: currentLang,
-                    target_field: targetField
-                });
-
-                // HugeRTE/TinyMCE editor'ları tara
-                if (typeof hugerte !== 'undefined') {
-                    console.log('🔍 HugeRTE Debug:', {
-                        hugerte: hugerte,
-                        hugerte_editors: hugerte.editors || 'editors property not found',
-                        hugerte_activeEditor: hugerte.activeEditor || 'activeEditor not found'
-                    });
-
-                    // HugeRTE editör bulma (multiple approach)
-                    let targetEditor = null;
-
-                    // Method 1: hugerte.editors array
-                    if (hugerte.editors && Array.isArray(hugerte.editors)) {
-                        targetEditor = hugerte.editors.find(ed =>
-                            ed.id && (ed.id.includes(targetField) || ed.id.includes(currentLang))
-                        );
-                    }
-
-                    // Method 2: hugerte.activeEditor
-                    if (!targetEditor && hugerte.activeEditor) {
-                        targetEditor = hugerte.activeEditor;
-                    }
-
-                    // Method 3: hugerte.get() method
-                    if (!targetEditor && typeof hugerte.get === 'function') {
-                        const allEditors = hugerte.get();
-                        if (allEditors && allEditors.length > 0) {
-                            targetEditor = allEditors.find(ed =>
-                                ed.id && (ed.id.includes(targetField) || ed.id.includes(currentLang))
-                            ) || allEditors[0]; // Son çare olarak ilk editörü al
-                        }
-                    }
-
-                    if (targetEditor && targetEditor.setContent) {
-                        console.log('✅ HugeRTE editor bulundu:', targetEditor.id);
-                        targetEditor.setContent(content);
-
-                        // Livewire sync
-                        const textareaElement = document.getElementById(targetEditor.id);
-                        if (textareaElement) {
-                            textareaElement.value = content;
-                            textareaElement.dispatchEvent(new Event('input', { bubbles: true }));
-                        }
-
-                        // Hidden input sync
-                        const hiddenInput = document.getElementById(`hidden_${targetField}_${currentLang}`);
-                        if (hiddenInput) {
-                            hiddenInput.value = content;
-                            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
-                        }
-
-                        console.log('✅ HugeRTE content güncellendi!');
-                        return true;
-                    }
-                }
-
-                // TinyMCE fallback
-                if (typeof tinyMCE !== 'undefined' && tinyMCE.editors) {
-                    console.log('🔍 TinyMCE Fallback:', Object.keys(tinyMCE.editors));
-                    const editorKeys = Object.keys(tinyMCE.editors);
-                    const matchingKey = editorKeys.find(key =>
-                        key.includes(targetField) || key.includes(currentLang)
-                    );
-
-                    if (matchingKey) {
-                        const editor = tinyMCE.editors[matchingKey];
-                        if (editor && editor.setContent) {
-                            editor.setContent(content);
-                            console.log('✅ TinyMCE content güncellendi!');
-                            return true;
-                        }
-                    }
-                }
-
-                // Son çare: Direkt textarea selector'ları dene
-                console.log('🔍 Manual textarea search başlatılıyor...');
-
-                // Multiple textarea selector attempts
-                const textareaSelectors = [
-                    `textarea[wire\\:model*="${targetField}"]`,
-                    `textarea[wire\\:model*="${currentLang}.${targetField}"]`,
-                    `textarea[wire\\:model*="multiLangInputs.${currentLang}.${targetField}"]`,
-                    `textarea.hugerte-editor`,
-                    `textarea[id*="${targetField}"]`,
-                    `textarea[id*="${currentLang}"]`,
-                    `textarea[name*="${targetField}"]`
-                ];
-
-                let textarea = null;
-                for (const selector of textareaSelectors) {
-                    textarea = document.querySelector(selector);
-                    if (textarea) {
-                        console.log('✅ Textarea bulundu:', selector);
-                        break;
-                    }
-                }
-
-                if (textarea) {
-                    textarea.value = content;
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
-
-                    // Hidden input'u da güncelle
-                    const hiddenInput = document.getElementById(`hidden_${targetField}_${currentLang}`);
-                    if (hiddenInput) {
-                        hiddenInput.value = content;
-                        hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
-
-                    console.log('✅ Textarea direkt güncellendi');
-                    return true;
-                }
-
-                // Ultra debug: Tüm textarea'ları listele
-                const allTextareas = document.querySelectorAll('textarea');
-                console.log('🔍 Mevcut tüm textarea\'lar:', Array.from(allTextareas).map(ta => ({
-                    id: ta.id,
-                    name: ta.name,
-                    wireModel: ta.getAttribute('wire:model'),
-                    classes: ta.className
-                })));
-
-                console.error('❌ Hiçbir editor/textarea bulunamadı');
-                return false;
-            } catch (e) {
-                console.error('❌ updateTinyMCEContent error:', e);
-                return false;
-            }
-        };
-
-        // GLOBAL receiveGeneratedContent function - Conflict önlemek için null check
-        if (typeof window.receiveGeneratedContent === 'undefined') {
-            window.receiveGeneratedContent = function(content, targetField = 'body') {
-                try {
-                    console.log('🎯 AI Content received:', {
-                        content: content ? content.substring(0, 100) + '...' : 'empty',
-                        targetField
-                    });
-
-                    // ÖNCE TinyMCE editörünü direkt güncelle (anında görünüm için)
-                    window.updateTinyMCEContent(content, targetField);
-
-                    // SONRA Livewire component'i güncelle (database save için)
-                    if (window.Livewire) {
-                        // İlk yöntem: Livewire 3.x
-                        if (window.Livewire.getByName) {
-                            try {
-                                const pageComponent = window.Livewire.getByName('page-manage-component')[0];
-                                if (pageComponent && pageComponent.call) {
-                                    console.log('✅ PageManageComponent bulundu (v3), receiveGeneratedContent çağırılıyor...');
-                                    pageComponent.call('receiveGeneratedContent', content, targetField);
-                                    return;
-                                }
-                            } catch (e) {
-                                console.warn('⚠️ Livewire v3 method failed:', e);
-                            }
-                        }
-
-                        // İkinci yöntem: Livewire 2.x
-                        if (window.Livewire.all) {
-                            try {
-                                const pageComponent = window.Livewire.all().find(component => {
-                                    return component &&
-                                           component.__instance &&
-                                           component.__instance.fingerprint &&
-                                           component.__instance.fingerprint.name === 'page-manage-component';
-                                });
-
-                                if (pageComponent && pageComponent.call) {
-                                    console.log('✅ PageManageComponent bulundu (v2), receiveGeneratedContent çağırılıyor...');
-                                    pageComponent.call('receiveGeneratedContent', content, targetField);
-                                    return;
-                                }
-                            } catch (e) {
-                                console.warn('⚠️ Livewire v2 method failed:', e);
-                            }
-                        }
-
-                        // Üçüncü yöntem: Direct wire:id kullanma
-                        const wireElement = document.querySelector('[wire\\:id]');
-                        if (wireElement && wireElement.__livewire) {
-                            try {
-                                console.log('✅ Wire element bulundu, receiveGeneratedContent çağırılıyor...');
-                                wireElement.__livewire.call('receiveGeneratedContent', content, targetField);
-                                return;
-                            } catch (e) {
-                                console.warn('⚠️ Wire element method failed:', e);
-                            }
-                        }
-
-                        console.error('❌ PageManageComponent hiçbir yöntemle bulunamadı');
-                    } else {
-                        console.error('❌ Livewire henüz yüklenmemiş');
-                    }
-                } catch (e) {
-                    console.error('❌ receiveGeneratedContent error:', e);
-                }
-            };
-            console.log('✅ Global receiveGeneratedContent function tanımlandı');
-        } else {
-            console.warn('⚠️ receiveGeneratedContent zaten tanımlı, duplicate önlendi');
-        }
-
-        // Debug: currentPageId değerini logla
-        console.log('🔍 Page ID Debug:', {
-            currentPageId: window.currentPageId,
-            pageIdFromJsVars: {{ $jsVariables['currentPageId'] ?? 'null' }},
-            pageIdFromLivewire: {{ $pageId ?? 'null' }}
-        });
-        
-        
-
-        // 🔥 ÇEVİRİ SONRASI REFRESH EVENT LİSTENER
-        document.addEventListener('livewire:initialized', () => {
-            // Component refresh event'ini dinle - SADECE ÇEVİRİ İÇİN
-            Livewire.on('refreshComponent', (data) => {
-                // Eğer SEO işlemi değilse sadece o zaman refresh yap
-                if (!data || !data.source || data.source !== 'seo-analysis') {
-                    console.log('🔄 Çeviri tamamlandı - component yenileniyor...', data);
-                    Livewire.components.getByName('page-manage-component')[0].$refresh();
-                } else {
-                    console.log('⚠️ SEO analizi - component refresh atlandı');
-                }
-            });
-            
-            // ✅ TinyMCE editör refresh event'i artık gerekli değil
-            // AI content direkt olarak TinyMCE'ye yazılıyor
-        });
     </script>
-@endpush
 
-@push('modals')
-    @include('admin.partials.global-ai-content-modal')
+    {{-- 🌍 UNIVERSAL SYSTEMS --}}
+    @include('languagemanagement::admin.components.universal-language-scripts', [
+        'currentLanguage' => $currentLanguage,
+        'availableLanguages' => $availableLanguages
+    ])
+
+    @include('seomanagement::admin.components.universal-seo-scripts', [
+        'availableLanguages' => $availableLanguages
+    ])
+
+    @include('ai::admin.components.universal-ai-content-scripts')
 @endpush
+</div>

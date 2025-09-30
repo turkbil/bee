@@ -657,7 +657,7 @@
                                 <div class="text-center py-5">
                                     <div class="mb-4">
                                         <i class="fas fa-robot fa-3x text-info mb-3"></i>
-                                        <h4 class="text-info">AI SEO Analizi</h4>
+                                        <h4 class="text-info">SEO Özelliği</h4>
                                         <p class="text-muted">Bu özellik yakında kullanıma açılacak!</p>
                                     </div>
 

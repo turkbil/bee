@@ -101,10 +101,11 @@ class AppServiceProvider extends ServiceProvider
         // Register Blade Components
         $this->registerBladeComponents();
         
-        // HTTPS kullanıyorsanız bu ayarı aktif edin
-        if(env('APP_ENV') !== 'local') {
-            URL::forceScheme('https');
-        }
+        // HTTPS zorlaması kaldırıldı - APP_URL'ye göre otomatik ayarlanır
+        // Production'da gerekirse şu şekilde aktif edilebilir:
+        // if(config('app.env') === 'production') {
+        //     URL::forceScheme('https');
+        // }
         
         // Tenant için Redis önbellek yapılandırması
         if (TenantHelpers::isTenant()) {
@@ -192,10 +193,13 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('admin.ai-token-packages-component', \App\Http\Livewire\Admin\AITokenPackagesComponent::class);
         Livewire::component('admin.ai-token-purchases-component', \App\Http\Livewire\Admin\AITokenPurchasesComponent::class);
         Livewire::component('admin.ai-token-usage-stats-component', \App\Http\Livewire\Admin\AITokenUsageStatsComponent::class);
-        
+
         // Cache Clear Button Component
         Livewire::component('admin.cache-clear-buttons', \App\Http\Livewire\Admin\CacheClearButtons::class);
-        
+
+        // UNIVERSAL COMPONENTS - A1 CMS Pattern
+        Livewire::component('universal-tab-system', \App\Http\Livewire\Components\UniversalTabSystemComponent::class);
+
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('ai-token-packages', \App\Http\Livewire\Admin\AITokenPackagesComponent::class);
         Livewire::component('ai-token-purchases', \App\Http\Livewire\Admin\AITokenPurchasesComponent::class);

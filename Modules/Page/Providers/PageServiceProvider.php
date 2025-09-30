@@ -37,7 +37,11 @@ class PageServiceProvider extends ServiceProvider
         
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
-        $this->loadViewsFrom(module_path('Page', 'resources/views/front/themes'), 'page-themes');
+        // Front themes klasörü için kontrol ekle
+        $frontThemesPath = module_path('Page', 'resources/views/front/themes');
+        if (is_dir($frontThemesPath)) {
+            $this->loadViewsFrom($frontThemesPath, 'page-themes');
+        }
         $this->loadViewsFrom(module_path('Page', 'resources/views'), 'page');
 
         Livewire::component('page-component', PageComponent::class);
@@ -142,10 +146,13 @@ class PageServiceProvider extends ServiceProvider
         // Tema klasörlerinin yapılandırması - YENİ YAPI
         $themeSourcePath = module_path('Page', 'resources/views/front/themes');
         $themeViewPath = resource_path('views/themes/modules/page');
-        
-        $this->publishes([
-            $themeSourcePath => $themeViewPath,
-        ], ['views', 'page-module-theme-views']);
+
+        // Sadece klasör varsa publish et
+        if (is_dir($themeSourcePath)) {
+            $this->publishes([
+                $themeSourcePath => $themeViewPath,
+            ], ['views', 'page-module-theme-views']);
+        }
     
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'page');
     }

@@ -25,8 +25,10 @@
                     @foreach ($tenantLanguages as $lang)
                         <button class="btn btn-link p-2 language-switch-btn {{ $currentLanguage === $lang->code ? 'text-primary' : 'text-muted' }}"
                                 style="border: none; border-radius: 0; {{ $currentLanguage === $lang->code ? 'border-bottom: 2px solid var(--primary-color) !important;' : 'border-bottom: 2px solid transparent;' }}"
-                                data-language="{{ $lang->code }}" 
-                                data-native-name="{{ $lang->native_name }}">
+                                data-language="{{ $lang->code }}"
+                                data-native-name="{{ $lang->native_name }}"
+                                onclick="window.clientSideLanguageSwitch('{{ $lang->code }}')"
+                                {{ $currentLanguage === $lang->code ? 'disabled' : '' }}>
                             {{ strtoupper($lang->code) }}
                         </button>
                     @endforeach
@@ -77,6 +79,7 @@
                         <a href="#" class="dropdown-item language-switch-btn {{ $currentLanguage === $lang->code ? 'active' : '' }} d-flex align-items-center justify-content-between"
                            data-language="{{ $lang->code }}"
                            data-native-name="{{ $lang->native_name }}"
+                           onclick="window.clientSideLanguageSwitch('{{ $lang->code }}'); return false;"
                            {{ $currentLanguage === $lang->code ? 'disabled' : '' }}
                            style="{{ $currentLanguage === $lang->code ? 'background-color: var(--tblr-active-bg, #e9ecef) !important; color: var(--tblr-body-color, #1a1a1a) !important;' : '' }}">
                             <div class="d-flex align-items-center">

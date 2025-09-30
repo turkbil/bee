@@ -90,6 +90,7 @@
     <link rel="stylesheet" href="/admin-assets/libs/choices/choices.min.css">
     <link rel="stylesheet" href="/admin-assets/css/choices-custom.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/main.css?v={{ time() }}" />
+    <link rel="stylesheet" href="/admin-assets/css/language-content-fix.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/ai-response-templates.css?v={{ time() }}" />
@@ -321,7 +322,8 @@
 <script src="/admin-assets/js/tabler.min.js"></script>
 <script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
 <script src="/admin-assets/libs/fslightbox/index.js" defer></script>
-<script src="/admin-assets/libs/choices/choices.min.js" defer></script>
+{{-- Choices.js removed - AMD conflict with Monaco Editor --}}
+{{-- <script src="/admin-assets/libs/choices/choices.min.js" defer></script> --}}
 <script src="/admin-assets/libs/apexcharts/dist/apexcharts.min.js"></script>
 <script src="/admin-assets/js/translations.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/theme.js?v={{ time() }}"></script>
@@ -513,19 +515,40 @@ document.addEventListener('DOMContentLoaded', function() {
 {{-- Global AI Content Generation System JS - ALWAYS LOAD (Global System) --}}
 <script src="{{ asset('assets/js/ai-content-system.js') }}?v={{ time() }}"></script>
 
+{{-- Global AI SEO Integration System JS - ALWAYS LOAD --}}
+<script src="{{ asset('assets/js/ai-seo-integration.js') }}?v={{ time() }}"></script>
+
 {{-- Global AI Content System Initialization --}}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Global AI Content System'i başlat
+// 🚀 AI CONTENT SYSTEM LOADER WITH RETRY MECHANISM
+function initializeAIContentSystem() {
     if (window.AIContentGenerationSystem) {
         window.aiContentSystem = new window.AIContentGenerationSystem({
-            module: 'global', // Global kullanım
+            module: 'global',
             baseUrl: '/admin'
         });
-
         console.log('🚀 Global AI Content System başlatıldı');
-    } else {
-        console.error('❌ AIContentGenerationSystem class not found');
+        return true;
+    }
+    return false;
+}
+
+// DOM ready'de dene
+document.addEventListener('DOMContentLoaded', function() {
+    if (!initializeAIContentSystem()) {
+        // Eğer yüklenmediyse, script'ler yüklendikten sonra tekrar dene
+        setTimeout(() => {
+            if (!initializeAIContentSystem()) {
+                console.log('ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal');
+            }
+        }, 1000);
+    }
+});
+
+// Window load'da son deneme
+window.addEventListener('load', function() {
+    if (!window.aiContentSystem) {
+        initializeAIContentSystem();
     }
 });
 </script>
@@ -562,6 +585,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @if (request()->routeIs('admin.*.manage*') || request()->routeIs('admin.menumanagement.index'))
     <x-head.hugerte-config />
+
+    {{-- Monaco Editor Universal System - Auto-load for manage pages --}}
+    <link rel="stylesheet" href="/admin-assets/libs/monaco-custom/css/monaco-editor.css?v={{ time() }}">
+    <script src="/admin-assets/libs/monaco-custom/js/monaco-editor-universal.js?v={{ time() }}"></script>
+
+    {{-- Universal SEO Tab System - Auto-load for manage pages --}}
+    <link rel="stylesheet" href="{{ asset('admin-assets/libs/universal-seo/css/seo-tab.css') }}?v={{ time() }}">
+
+    {{-- Universal Systems - Auto-load for manage pages --}}
+    <script src="{{ asset('admin-assets/libs/universal-seo/js/universal-seo-functions.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('admin-assets/libs/universal-language/js/universal-language-functions.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('admin-assets/libs/universal-ai/js/universal-ai-content-functions.js') }}?v={{ time() }}"></script>
 
     {{-- Tenant default language for manage.js --}}
     <script>

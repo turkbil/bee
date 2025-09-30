@@ -1829,16 +1829,11 @@ class SeoAnalysisService
             // AI ile dinamik başlık üretimi
             $prompt = $this->buildTitlePrompt($content, $seoData, $locale);
             
-            if (false && function_exists('ai_execute_feature')) {
-                // AI Feature sistemi geçici olarak devre dışı (500 error nedeniyle)
-                // Bu kısım credit sistem sorunu düzeldikten sonra aktifleştirilebilir
-                        'locale' => $locale,
-                        'response_type' => gettype($aiResponse)
-                    ]);
-                    
-                    return $suggestedTitle;
-                }
-            }
+            // AI Feature sistemi geçici olarak devre dışı (500 error nedeniyle)
+            // Bu kısım credit sistem sorunu düzeldikten sonra aktifleştirilebilir
+            // if (function_exists('ai_execute_feature')) {
+            //     // AI kodları burada olacak
+            // }
             
             // Fallback: Mevcut başlık varsa döndür
             $currentTitle = $seoData['title'] ?? '';

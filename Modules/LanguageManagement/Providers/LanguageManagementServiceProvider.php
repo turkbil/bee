@@ -53,7 +53,7 @@ class LanguageManagementServiceProvider extends ServiceProvider
         // Middleware kaydet
         $this->app['router']->aliasMiddleware('set.locale', SetLocaleMiddleware::class);
         $this->app['router']->aliasMiddleware('central.domain', CentralDomainOnly::class);
-        
+
         // Helper fonksiyonları yükle
         require_once module_path($this->name, 'app/Helpers/language_helpers.php');
     }
@@ -151,6 +151,9 @@ class LanguageManagementServiceProvider extends ServiceProvider
         Livewire::component('languagemanagement::admin.translation-checker', TranslationCheckerComponent::class);
         Livewire::component('languagemanagement::language-switcher', LanguageSwitcher::class);
         Livewire::component('languagemanagement::admin-language-switcher', AdminLanguageSwitcher::class);
+
+        // UNIVERSAL COMPONENTS - A1 CMS Pattern
+        Livewire::component('languagemanagement::universal-language-switcher', \Modules\LanguageManagement\App\Http\Livewire\Admin\UniversalLanguageSwitcherComponent::class);
     }
 
     /**

@@ -587,24 +587,15 @@ $(document).ready(function() {
     // Initialize Choices.js for blog settings (if blog feature is being edited)
     @if($feature->id == 201)
     if (typeof Choices !== 'undefined') {
-        // Initialize Choices.js for writing tone
+        // Native select styling (Choices.js removed due to AMD conflict)
         const writingToneSelect = document.getElementById('writingTone');
         if (writingToneSelect) {
-            new Choices(writingToneSelect, {
-                searchEnabled: true,
-                placeholder: true,
-                placeholderValue: 'Yazım tonu seçin...'
-            });
+            writingToneSelect.classList.add('form-select');
         }
 
-        // Initialize Choices.js for target audience
         const targetAudienceSelect = document.getElementById('targetAudience');
         if (targetAudienceSelect) {
-            new Choices(targetAudienceSelect, {
-                searchEnabled: true,
-                placeholder: true,
-                placeholderValue: 'Hedef kitle seçin...'
-            });
+            targetAudienceSelect.classList.add('form-select');
         }
     }
     @endif

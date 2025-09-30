@@ -180,24 +180,20 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-
+{{-- Choices.js removed due to AMD conflict with Monaco Editor --}}
 <script>
-// Choices.js dropdown'ları initialize et
+// Native select styling (Choices.js removed)
 document.addEventListener('DOMContentLoaded', function() {
-    // Yazı Tonu dropdown
-    const writingToneSelect = new Choices('#writingTone', {
-        searchEnabled: false,
-        itemSelectText: '',
-    });
+    // Native select'lere Bootstrap class'ı ekle
+    const writingToneSelect = document.getElementById('writingTone');
+    if (writingToneSelect) {
+        writingToneSelect.classList.add('form-select');
+    }
 
-    // Hedef Kitle dropdown  
-    const targetAudienceSelect = new Choices('#targetAudience', {
-        searchEnabled: true,
-        searchPlaceholderValue: 'Hedef kitle ara...',
-        itemSelectText: '',
-    });
+    const targetAudienceSelect = document.getElementById('targetAudience');
+    if (targetAudienceSelect) {
+        targetAudienceSelect.classList.add('form-select');
+    }
 });
 </script>
 <script>

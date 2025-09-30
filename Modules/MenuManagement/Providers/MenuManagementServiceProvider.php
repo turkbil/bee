@@ -41,7 +41,11 @@ class MenuManagementServiceProvider extends ServiceProvider
         
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
-        $this->loadViewsFrom(module_path('MenuManagement', 'resources/views/front/themes'), 'menumanagement-themes');
+        // Front themes klasörü için kontrol ekle
+        $frontThemesPath = module_path('MenuManagement', 'resources/views/front/themes');
+        if (is_dir($frontThemesPath)) {
+            $this->loadViewsFrom($frontThemesPath, 'menumanagement-themes');
+        }
         $this->loadViewsFrom(module_path('MenuManagement', 'resources/views'), 'menumanagement');
 
         Livewire::component('menu-component', MenuComponent::class);
@@ -116,12 +120,12 @@ class MenuManagementServiceProvider extends ServiceProvider
     public function registerTranslations(): void
     {
         // Ana dil dosyaları - modül klasöründen yükle
-        $moduleLangPath = module_path($this->name, 'resources/lang');
+        $moduleLangPath = module_path($this->name, 'lang');
         if (is_dir($moduleLangPath)) {
             $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($moduleLangPath);
         }
-        
+
         // Resource'daki dil dosyaları (varsa)
         $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
         if (is_dir($resourceLangPath)) {
@@ -166,10 +170,13 @@ class MenuManagementServiceProvider extends ServiceProvider
         // Tema klasörlerinin yapılandırması - YENİ YAPI
         $themeSourcePath = module_path('MenuManagement', 'resources/views/front/themes');
         $themeViewPath = resource_path('views/themes/modules/menumanagement');
-        
-        $this->publishes([
-            $themeSourcePath => $themeViewPath,
-        ], ['views', 'menumanagement-module-theme-views']);
+
+        // Sadece klasör varsa publish et
+        if (is_dir($themeSourcePath)) {
+            $this->publishes([
+                $themeSourcePath => $themeViewPath,
+            ], ['views', 'menumanagement-module-theme-views']);
+        }
     
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'menumanagement');
     }

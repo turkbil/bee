@@ -8,6 +8,19 @@
     'use strict';
 
     console.log('🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!');
+    console.log('🚀 AI SEO INTEGRATION SYSTEM LOADING...');
+    console.log('📍 File Path: assets/js/ai-seo-integration.js');
+    console.log('⏰ Load Time:', new Date().toISOString());
+
+    // Global debug check
+    window.aiSeoDebug = function() {
+        console.log('🧪 AI SEO Integration System Status');
+        console.log('✅ JavaScript file loaded successfully');
+        console.log('🔍 Button count:', document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn').length);
+        return 'AI SEO Integration is active';
+    };
+
+    console.log('🎯 Global debug function window.aiSeoDebug() ready!');
 
     // Livewire DOM error handling
     window.addEventListener('error', (event) => {
@@ -29,8 +42,6 @@
     // ===== OVERLAY HELPER FUNCTIONS =====
     function getOverlayTitle(cleanupTarget) {
         switch (cleanupTarget) {
-            case 'seo-data':
-                return 'AI SEO Analizi';
             case 'ai-recommendations':
                 return 'AI SEO Önerileri';
             default:
@@ -40,8 +51,6 @@
 
     function getOverlaySubtitle(cleanupTarget) {
         switch (cleanupTarget) {
-            case 'seo-data':
-                return 'Gelişmiş yapay zeka teknolojisi ile SEO verileriniz analiz ediliyor';
             case 'ai-recommendations':
                 return 'Kişiselleştirilmiş SEO önerileri yapay zeka tarafından oluşturuluyor';
             default:
@@ -249,10 +258,10 @@
     }*/
 
     function cleanupExistingSeoAreas(targetType = 'all') {
-        console.log(`🧹 SEO alanları temizleniyor - Hedef: ${targetType}`);
+        console.log('🧹 SEO alanları temizleniyor - Hedef: ' + targetType);
 
         // 1. Target type'a göre sadece ilgili container'ı temizle (PARALEL ÇALIŞMA İÇİN)
-        if (targetType === 'all' || targetType === 'seo-data' || targetType === 'analysis') {
+        if (targetType === 'all' || targetType === 'analysis') {
             const analysisContainer = document.getElementById('seoUniversalResults');
             if (analysisContainer) {
                 analysisContainer.innerHTML = '';
@@ -269,7 +278,7 @@
         }
 
         // 2. Hedef tipine göre spesifik temizlik
-        if (targetType === 'all' || targetType === 'seo-data') {
+        if (targetType === 'all') {
             // SADECE ANALİZ SONUÇLARINI temizle, FORM ALANLARI KORUNACAK
 
             // 1. SEO Analiz Raporu başlık alanları
@@ -395,7 +404,7 @@
             });
         }
 
-        console.log(`✅ ${targetType} temizliği tamamlandı`);
+        console.log('✅ ' + targetType + ' temizliği tamamlandı');
     }
 
 
@@ -542,11 +551,18 @@
         return defaultLanguage;
     }
     
+    let listenersAttached = false;
+
     function attachButtonListeners() {
+        if (listenersAttached) {
+            console.log('🔒 attachButtonListeners SKIP - already attached');
+            return;
+        }
+
         console.log('🔗 attachButtonListeners ÇAĞRILDI');
         const seoButtons = document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn, .seo-generator-btn, .seo-suggestions-btn, [data-seo-feature], [data-action]');
         console.log('🔍 Bulunan buton sayısı:', seoButtons.length);
-        
+
         seoButtons.forEach((button) => {
             // 🔍 DEBUG: Buton orijinal text'ini logla
             console.log('🔍 Buton DEBUG:', {
@@ -558,42 +574,41 @@
             // Remove existing listeners
             const newButton = button.cloneNode(true);
             button.parentNode.replaceChild(newButton, button);
-            
+
             newButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                
-                // Check button type and handle accordingly
-                if (this.classList.contains('ai-seo-comprehensive-btn') || 
-                    this.getAttribute('data-seo-feature') === 'seo-comprehensive-audit') {
-                    handleSeoAnalysis(this);
-                    return;
-                }
-                
-                if (this.classList.contains('seo-generator-btn') || 
+
+                // AI SEO Analysis removed - only recommendations allowed
+
+                if (this.classList.contains('seo-generator-btn') ||
                     this.getAttribute('data-action') === 'generate-seo') {
                     handleSeoGenerate(this);
                     return;
                 }
-                
-                if (this.classList.contains('ai-seo-recommendations-btn') || 
+
+                if (this.classList.contains('ai-seo-recommendations-btn') ||
                     this.getAttribute('data-seo-feature') === 'seo-smart-recommendations') {
                     handleSeoRecommendations(this);
                     return;
                 }
-                
-                if (this.classList.contains('seo-suggestions-btn') || 
+
+                if (this.classList.contains('seo-suggestions-btn') ||
                     this.getAttribute('data-action') === 'get-suggestions') {
                     handleSeoSuggestions(this);
                     return;
                 }
             });
         });
-        
+
         // AI Recommendations section handlers
         attachRecommendationHandlers();
+
+        // Mark listeners as attached to prevent infinite loop
+        listenersAttached = true;
+        console.log('✅ Button listeners attached successfully');
     }
-    
+
     function attachRecommendationHandlers() {
         // Close recommendations
         document.querySelectorAll('.ai-close-recommendations').forEach(button => {
@@ -608,7 +623,7 @@
                 }
             });
         });
-        
+
         // Select all recommendations
         document.querySelectorAll('.ai-select-all-recommendations').forEach(button => {
             const newButton = button.cloneNode(true);
@@ -617,20 +632,20 @@
                 e.preventDefault();
                 const checkboxes = document.querySelectorAll('.ai-recommendation-checkbox');
                 const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                
+
                 checkboxes.forEach(cb => {
                     cb.checked = !allChecked;
                 });
-                
+
                 updateApplyButton();
-                
+
                 // Update button text
-                this.innerHTML = allChecked ? 
-                    '<i class="fas fa-check-double me-1"></i>Tümünü Seç' : 
+                this.innerHTML = allChecked ?
+                    '<i class="fas fa-check-double me-1"></i>Tümünü Seç' :
                     '<i class="fas fa-square me-1"></i>Seçimi Kaldır';
             });
         });
-        
+
         // Apply selected recommendations
         document.querySelectorAll('.ai-apply-selected-recommendations').forEach(button => {
             const newButton = button.cloneNode(true);
@@ -640,7 +655,7 @@
                 applySelectedRecommendations(this);
             });
         });
-        
+
         // Retry recommendations
         document.querySelectorAll('.ai-retry-recommendations').forEach(button => {
             const newButton = button.cloneNode(true);
@@ -654,7 +669,98 @@
             });
         });
     }
-    
+
+    // 🎨 RENDER RECOMMENDATIONS HTML - Blade template ile aynı format
+    function renderRecommendationsHTML(data, language) {
+        console.log('🎨 Rendering recommendations HTML:', data);
+
+        // recommendations array'ini çıkar
+        const recommendations = data.recommendations || [];
+
+        if (!recommendations || recommendations.length === 0) {
+            return `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    AI önerileri bulunamadı. Yeni öneriler oluşturmak için "AI Önerileri" butonunu kullanın.
+                </div>
+            `;
+        }
+
+        // SEO ve Social media önerilerini ayır
+        const seoRecs = recommendations.filter(rec => ['title', 'description'].includes(rec.type));
+        const socialRecs = recommendations.filter(rec => ['og_title', 'og_description'].includes(rec.type));
+
+        let html = '';
+
+        // SEO RECOMMENDATIONS
+        if (seoRecs.length > 0) {
+            html += '<div class="row mb-4">';
+            seoRecs.forEach(rec => {
+                const title = rec.type === 'title' ? 'SEO Başlığı' : 'SEO Açıklaması';
+                html += `
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">${title}</h3>
+                            </div>
+                            <div class="list-group list-group-flush">`;
+
+                if (rec.alternatives && rec.alternatives.length > 0) {
+                    rec.alternatives.forEach((alt, index) => {
+                        const activeClass = index === 0 ? ' active' : '';
+                        const escapedValue = (alt.value || '').replace(/'/g, "\\'");
+                        html += `
+                            <a href="#" class="list-group-item list-group-item-action${activeClass}"
+                               onclick="applyAlternativeDirectly('${rec.field_target}', '${escapedValue}', this); return false;">
+                                ${alt.value}
+                            </a>`;
+                    });
+                }
+
+                html += `
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            html += '</div>';
+        }
+
+        // SOCIAL MEDIA RECOMMENDATIONS
+        if (socialRecs.length > 0) {
+            html += '<div class="row mb-4">';
+            socialRecs.forEach(rec => {
+                const title = rec.type === 'og_title' ? 'Sosyal Medya Başlığı' : 'Sosyal Medya Açıklaması';
+                html += `
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">${title}</h3>
+                            </div>
+                            <div class="list-group list-group-flush">`;
+
+                if (rec.alternatives && rec.alternatives.length > 0) {
+                    rec.alternatives.forEach((alt, index) => {
+                        const activeClass = index === 0 ? ' active' : '';
+                        const escapedValue = (alt.value || '').replace(/'/g, "\\'");
+                        html += `
+                            <a href="#" class="list-group-item list-group-item-action${activeClass}"
+                               onclick="applyAlternativeDirectly('${rec.field_target}', '${escapedValue}', this); return false;">
+                                ${alt.value}
+                            </a>`;
+                    });
+                }
+
+                html += `
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            html += '</div>';
+        }
+
+        return html;
+    }
+
     // Real AI API handlers
     async function handleSeoRecommendations(button) {
         console.log('🚀 SEO RECOMMENDATIONS START');
@@ -664,17 +770,42 @@
         console.log('🔄 AI Önerileri direkt yenileniyor (alert yok)');
 
         try {
-            // Livewire loading state aktif et
-            if (typeof Livewire !== 'undefined') {
-                console.log('🚀 Dispatching setRecommendationsLoader:', {loading: true, language: language});
-                Livewire.dispatch('setRecommendationsLoader', {loading: true, language: language});
-                console.log('✅ setRecommendationsLoader dispatched');
-            } else {
-                console.warn('⚠️ Livewire not available for loader');
-            }
+            // 🚨 BUTON DISABLE: İşlem bitene kadar devre dışı
+            button.disabled = true;
+            console.log('🔒 Buton disable edildi');
 
-            // TEK ALAN - Inline loading göster
-            setButtonLoading(button, true, 'Oluşturuluyor...');
+            // 🎯 SADECE AI ÖNERİLERİ ALANINDA LOADER GÖSTER
+            // Unique container ID kullan
+            const containerId = `ai-recommendations-container-${language}`;
+            const activeLanguageContent = document.querySelector(`.seo-language-content[data-language="${language}"]`);
+
+            if (activeLanguageContent) {
+                // Loader ekle (eğer yoksa)
+                let loaderDiv = activeLanguageContent.querySelector('.ai-recommendations-loader');
+                if (!loaderDiv) {
+                    loaderDiv = document.createElement('div');
+                    loaderDiv.className = 'ai-recommendations-loader text-center p-4 mb-4 bg-light rounded';
+                    loaderDiv.innerHTML = `
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">AI önerileri üretiliyor...</span>
+                        </div>
+                        <h5 class="mt-3 mb-1">🤖 AI Önerileri Hazırlanıyor</h5>
+                        <p class="text-muted">Sayfanız analiz ediliyor ve özelleştirilmiş öneriler üretiliyor...</p>
+                    `;
+
+                    // ✅ LOADER BUTONUN HEMEN ALTINA EKLE
+                    const aiToolbar = activeLanguageContent.querySelector('.ai-seo-toolbar');
+                    if (aiToolbar) {
+                        aiToolbar.insertAdjacentElement('afterend', loaderDiv);
+                        console.log('📍 Loader butonun hemen altına eklendi');
+                    } else {
+                        activeLanguageContent.insertBefore(loaderDiv, activeLanguageContent.firstChild);
+                        console.log('📍 Toolbar bulunamadı - loader language content başına eklendi');
+                    }
+                }
+                loaderDiv.style.display = 'block';
+                console.log('✅ Loader gösterildi');
+            }
 
             // YENİ SİSTEM: Inline loading zaten gösteriliyor
             
@@ -687,11 +818,12 @@
             });
 
             const formData = {
-                feature_slug: 'seo-smart-recommendations',
+                feature_slug: 'seo-smart-recommendations', // Keep original for now
                 form_content: collectedData,
                 language: language,
                 page_id: window.currentModelId || null,  // page_id parametresi universal olarak kullanılıyor
-                force_regenerate: true  // Her zaman yeni veri al (test için)
+                force_regenerate: true,  // Her zaman yeni veri al (test için)
+                include_all_fields: true // Request all fields: title, description, and social media
             };
 
             // Force regenerate flag'ini temizle
@@ -732,36 +864,81 @@
             if (result.success) {
                 console.log('✅ Success - displaying recommendations:', result.data);
 
-                // MANUAL AUTO-APPLY - DIRECT CALL
-                console.log('🎯 MANUAL AUTO-APPLY: Başlatılıyor...');
-                setTimeout(() => {
-                    if (window.autoApplyFirstAlternatives && result.data) {
-                        console.log('🚀 MANUAL: autoApplyFirstAlternatives çağrılıyor:', result.data);
-                        window.autoApplyFirstAlternatives(result.data);
-                        console.log('✅ MANUAL: autoApplyFirstAlternatives tamamlandı');
-                    } else {
-                        console.error('❌ MANUAL: autoApplyFirstAlternatives function bulunamadı veya data yok');
-                        console.error('❌ Function exists:', typeof window.autoApplyFirstAlternatives);
-                        console.error('❌ Data exists:', !!result.data);
-                    }
-                }, 1000);
-
-                // Livewire'a sonucu gönder
-                if (typeof Livewire !== 'undefined') {
-                    console.log('🚀 Dispatching aiRecommendationsCompleted with FULL result:', result);
-                    console.log('🚀 result.data:', result.data);
-                    console.log('🚀 Language:', language);
-                    // Livewire 3.x format: dispatch with object parameters and #[On] attribute
-                    Livewire.dispatch('aiRecommendationsCompleted', {
-                        recommendationsData: result,
-                        language: language
+                // 🎯 DİREKT DOM RENDER - Livewire kullanmıyoruz
+                const activeLanguageContent = document.querySelector(`.seo-language-content[data-language="${language}"]`);
+                if (activeLanguageContent) {
+                    // 🗑️ ESKİ VERİTABANI STATIK HTML'İNİ SİL (Blade'den gelen .mt-3 container'lar)
+                    const oldStaticContainers = activeLanguageContent.querySelectorAll('.mt-3:not(.ai-generated-recommendations)');
+                    console.log(`🗑️ Eski statik container sayısı: ${oldStaticContainers.length}`);
+                    oldStaticContainers.forEach((oldContainer, index) => {
+                        console.log(`🗑️ Eski container ${index} siliniyor...`);
+                        oldContainer.remove();
                     });
-                    console.log('✅ aiRecommendationsCompleted dispatched successfully');
-                } else {
-                    console.warn('⚠️ Livewire not available, using fallback');
-                    // Fallback: Eski display sistemi
-                    hideInlineLoading('aiRecommendationsContainer');
-                    displayRecommendations(result.data, language);
+
+                    // Mevcut recommendations container'ı bul (UNIQUE ID kullan)
+                    const containerId = `ai-recommendations-container-${language}`;
+                    let recommendationsContainer = document.getElementById(containerId);
+
+                    // Eğer yoksa oluştur
+                    if (!recommendationsContainer) {
+                        recommendationsContainer = document.createElement('div');
+                        recommendationsContainer.id = containerId;
+                        recommendationsContainer.className = 'mt-3 ai-generated-recommendations';
+                        // TEMEL SEO BİLGİLERİ'nden önce ekle
+                        const seoBasicCard = activeLanguageContent.querySelector('.card.mb-4');
+                        if (seoBasicCard) {
+                            seoBasicCard.insertAdjacentElement('beforebegin', recommendationsContainer);
+                        } else {
+                            // Eğer card bulunamazsa, language content'in başına ekle
+                            activeLanguageContent.insertBefore(recommendationsContainer, activeLanguageContent.firstChild);
+                        }
+                        console.log(`✅ Yeni AI container oluşturuldu: ${containerId}`);
+                    } else {
+                        console.log(`✅ Mevcut AI container kullanılıyor: ${containerId}`);
+                    }
+
+                    // Yeni HTML'i render et
+                    console.log('🎨 Render başlıyor - result.data:', result.data);
+                    const newHTML = renderRecommendationsHTML(result.data, language);
+                    console.log('🎨 Render edilen HTML uzunluğu:', newHTML.length);
+                    console.log('🎨 Render edilen HTML preview:', newHTML.substring(0, 200));
+
+                    recommendationsContainer.innerHTML = newHTML;
+
+                    // ✅ CONTAINER STİLLERİNİ DÜZELT: cssText ile tüm inline stilleri override et
+                    recommendationsContainer.style.cssText = 'opacity: 1 !important; pointer-events: auto !important;';
+                    console.log('✅ Container stilleri düzeltildi (cssText ile override edildi)');
+
+                    // 🎯 Unique ID sayesinde sadece bu container etkileniyor - eski Blade HTML'i bozulmuyor
+                    console.log(`✅ Sadece AI container güncellendi: ${containerId}`);
+
+                    // Loader'ı gizle (container düzeltildikten SONRA)
+                    const loaderDiv = activeLanguageContent.querySelector('.ai-recommendations-loader');
+                    if (loaderDiv) {
+                        loaderDiv.style.display = 'none';
+                        console.log('✅ Loader gizlendi');
+                    }
+
+                    console.log('✅ DOM direkt güncellendi - Livewire kullanılmadı');
+                    console.log('📍 Container innerHTML uzunluğu:', recommendationsContainer.innerHTML.length);
+                    console.log('📍 Container görünür mü?', window.getComputedStyle(recommendationsContainer).display);
+
+                    // ✅ BUTON ENABLE: İşlem başarılı, butonu aktif et
+                    // Butonu yeniden bul (DOM güncellenmiş olabilir)
+                    const refreshedButton = document.querySelector(`.ai-seo-recommendations-btn[data-language="${language}"]`);
+                    if (refreshedButton) {
+                        refreshedButton.disabled = false;
+                        console.log('🔓 Buton enable edildi (success) - refreshed button');
+                    } else {
+                        button.disabled = false;
+                        console.log('🔓 Buton enable edildi (success) - original button');
+                    }
+
+                    // 🎯 TEMPLATE-BASED AUTO-APPLY: Template'deki 1. sıra önerilerini uygula
+                    setTimeout(() => {
+                        console.log('🎯 AUTO-APPLY: 1. sıra öneriler uygulanacak');
+                        applyFirstAlternativesFromTemplate();
+                    }, 300);
                 }
 
                 // Cache mesajı göster
@@ -770,26 +947,64 @@
                 }
             } else {
                 console.error('❌ API Error:', result.message);
-                hideInlineLoading('aiRecommendationsContainer');
+
+                // ✅ BUTON ENABLE: Hata durumunda butonu aktif et
+                button.disabled = false;
+                console.log('🔓 Buton enable edildi (error)');
+
+                // Loader'ı gizle ve içeriği geri getir
+                const activeLanguageContent = document.querySelector(`.seo-language-content[data-language="${language}"]`);
+                if (activeLanguageContent) {
+                    const loaderDiv = activeLanguageContent.querySelector('.ai-recommendations-loader');
+                    if (loaderDiv) loaderDiv.style.display = 'none';
+                    const recommendationsContainer = activeLanguageContent.querySelector('.mt-3');
+                    if (recommendationsContainer) {
+                        recommendationsContainer.style.opacity = '1';
+                        recommendationsContainer.style.pointerEvents = 'auto';
+                    }
+                }
                 showInlineError('Öneri alınırken hata: ' + result.message);
             }
         } catch (error) {
             console.error('💥 RECOMMENDATIONS ERROR:', error);
             console.error('💥 Error stack:', error.stack);
 
-            // Livewire error handler
-            if (typeof Livewire !== 'undefined') {
-                Livewire.dispatch('setRecommendationsLoader', {loading: false, language: language});
+            // ✅ BUTON ENABLE: Hata durumunda butonu aktif et
+            button.disabled = false;
+            console.log('🔓 Buton enable edildi (catch)');
+
+            // Loader'ı gizle ve içeriği geri getir
+            const activeLanguageContent = document.querySelector(`.seo-language-content[data-language="${language}"]`);
+            if (activeLanguageContent) {
+                const loaderDiv = activeLanguageContent.querySelector('.ai-recommendations-loader');
+                if (loaderDiv) loaderDiv.style.display = 'none';
+                const recommendationsContainer = activeLanguageContent.querySelector('.mt-3');
+                if (recommendationsContainer) {
+                    recommendationsContainer.style.opacity = '1';
+                    recommendationsContainer.style.pointerEvents = 'auto';
+                }
             }
 
-            hideInlineLoading('aiRecommendationsContainer');
             showInlineError('Bağlantı hatası: ' + error.message);
         } finally {
-            setButtonLoading(button, false);
+            // 🔓 BUTON ENABLE: Güvenlik için finally'de de enable et
+            // Butonu yeniden bul (DOM güncellenmiş olabilir)
+            const finalButton = document.querySelector(`.ai-seo-recommendations-btn[data-language="${language}"]`);
+            if (finalButton) {
+                finalButton.disabled = false;
+                console.log('🔓 Buton enable edildi (finally) - refreshed button');
+            } else {
+                button.disabled = false;
+                console.log('🔓 Buton enable edildi (finally) - original button');
+            }
         }
     }
     
-    async function handleSeoAnalysis(button) {
+    // handleSeoAnalysis function removed - AI SEO Analysis no longer supported
+    function handleSeoAnalysis_REMOVED(button) {
+        console.log('❌ This function is disabled');
+        return;
+        /*
         console.log('🚀 SEO ANALYSIS START');
 
         // DİREKT ANALİZ - Confirm dialog yok
@@ -809,7 +1024,7 @@
             const collectedData = collectFormData();
             console.log('🚨 DEBUG CHECKPOINT 1: collectFormData called');
             const formData = {
-                feature_slug: 'seo-comprehensive-audit',
+                feature_slug: 'seo-smart-recommendations',
                 form_content: collectedData,
                 language: collectedData.language || 'tr',
                 force_regenerate: true  // Her zaman yeni veri al (test için)
@@ -818,7 +1033,7 @@
             console.log('🚨 DEBUG CHECKPOINT 2: collected data keys:', Object.keys(collectedData));
             
             console.log('🔗 Sending request to:', '/admin/seo/ai/analyze');
-            const response = await fetch('/admin/seo/ai/analyze', {
+            // REMOVED - this function should not be called
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -889,13 +1104,14 @@
             // Sadece buton durumunu sıfırla - global overlay yok
             setButtonLoading(button, false);
         }
+        */
     }
     
     async function handleSeoGenerate(button) {
         console.log('🚀 SEO GENERATE START');
         try {
             setButtonLoading(button, true, 'Oluşturuluyor...');
-            showInlineLoading('seoUniversalResults', 'SEO içeriği oluşturuluyor, lütfen bekleyin...', 'seo-data');
+            showInlineLoading('seoUniversalResults', 'SEO içeriği oluşturuluyor, lütfen bekleyin...', 'ai-recommendations');
             
             const collectedData = collectFormData();
             const formData = {
@@ -1958,9 +2174,16 @@
                 </div>
                 <div>`;
 
-        // Separate SEO and Social recommendations
-        const seoRecs = recommendations.filter(r => r.type.includes('seo') || r.type === 'title' || r.type === 'description');
-        const socialRecs = recommendations.filter(r => r.type.includes('og') || r.type.includes('social'));
+        // Separate SEO and Social recommendations - FIXED LOGIC
+        const seoRecs = recommendations.filter(r => r.type === 'title' || r.type === 'description');
+        const socialRecs = recommendations.filter(r => r.type === 'og_title' || r.type === 'og_description');
+
+        console.log('🔍 Filtering recommendations:', {
+            total: recommendations.length,
+            seoRecs: seoRecs.length,
+            socialRecs: socialRecs.length,
+            allTypes: recommendations.map(r => r.type)
+        });
 
         // SEO Önerileri Section
         if (seoRecs.length > 0) {
@@ -2074,7 +2297,7 @@
 
         let appliedCount = 0;
         recommendations.forEach((rec, index) => {
-            console.log(`🔍 Processing recommendation ${index + 1}:`, rec);
+            console.log('🔍 Processing recommendation ' + (index + 1) + ':', rec);
 
             if (!rec.alternatives || rec.alternatives.length === 0) {
                 console.warn(`⚠️ Recommendation ${index + 1} has no alternatives:`, rec);
@@ -2087,13 +2310,13 @@
                 return;
             }
 
-            console.log(`✅ Auto-applying ${rec.type || 'unknown'}: ${rec.field_target} = "${firstAlternative.value.substring(0, 50)}..."`);
+            console.log('✅ Auto-applying ' + (rec.type || 'unknown') + ': ' + rec.field_target + ' = "' + firstAlternative.value.substring(0, 50) + '..."');
 
             try {
                 // Apply directly to form fields
                 applyAlternativeDirectly(rec.field_target, firstAlternative.value);
                 appliedCount++;
-                console.log(`✅ Successfully applied recommendation ${index + 1}`);
+                console.log('✅ Successfully applied recommendation ' + (index + 1));
             } catch (error) {
                 console.error(`❌ Failed to apply recommendation ${index + 1}:`, error);
             }
@@ -2114,7 +2337,7 @@
             }
         }
 
-        console.log(`✅ Auto-apply completed: ${appliedCount}/${recommendations.length} recommendations applied`);
+        console.log('✅ Auto-apply completed: ' + appliedCount + '/' + recommendations.length + ' recommendations applied');
     }
 
     function showRecommendationsError(message, language) {
@@ -2388,8 +2611,12 @@
         let selector;
 
         if (fieldTarget.includes('seoDataCache.')) {
-            // Direct wire:model targeting - escape dots and brackets
-            selector = `[wire\\:model="${fieldTarget}"]`;
+            // Direct wire:model targeting - properly escape dots for CSS selectors
+            const escapedFieldTarget = fieldTarget.replace(/\./g, '\\\\.');
+            selector = `[wire\\:model="${escapedFieldTarget}"]`;
+            console.log('🔧 Original field target:', fieldTarget);
+            console.log('🔧 Escaped field target:', escapedFieldTarget);
+            console.log('🔧 Final selector:', selector);
         } else {
             // Fallback mappings for simple field names
             const fieldMappings = {
@@ -2534,9 +2761,25 @@
     function enableOgCustomFields(language = 'tr') {
         console.log(`🔄 Enabling OG custom fields for language: ${language}`);
 
-        const checkbox = document.querySelector(`input[wire\\:model="seoDataCache.${language}.og_custom_enabled"]`);
+        // Multiple selector fallbacks for checkbox
+        const selectors = [
+            `input[wire\\:model="seoDataCache.${language}.og_custom_enabled"]`,
+            `input[wire\\:model\\.defer="seoDataCache.${language}.og_custom_enabled"]`,
+            `input[id="og_custom_${language}"]`,
+            `#og_custom_${language}`
+        ];
+
+        let checkbox = null;
+        for (const selector of selectors) {
+            checkbox = document.querySelector(selector);
+            if (checkbox) {
+                console.log(`✅ OG checkbox found with selector: ${selector}`);
+                break;
+            }
+        }
+
         if (!checkbox) {
-            console.error(`❌ OG custom checkbox not found for language: ${language}`);
+            console.error(`❌ OG custom checkbox not found for language: ${language}. Tried selectors:`, selectors);
             return;
         }
 
@@ -2808,6 +3051,65 @@
         // Window load fallback
         window.addEventListener('load', attachButtonListeners);
 
+        // ===== A1 PATTERN: AUTO-APPLY EVENT LISTENER =====
+        // AI Recommendations tamamlandığında otomatik uygula
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('aiRecommendationsCompleted', (event) => {
+                console.log('🎯 aiRecommendationsCompleted event alındı, otomatik uygulama başlatılıyor');
+                console.log('🔍 Event data:', event);
+
+                // Event data'yı farklı yollarla extract etmeye çalış
+                let recommendationsData = null;
+
+                // Method 1: Direct access
+                if (event.recommendationsData) {
+                    recommendationsData = event.recommendationsData;
+                    console.log('✅ Found via event.recommendationsData');
+                }
+                // Method 2: Array access
+                else if (Array.isArray(event) && event[0]?.recommendationsData) {
+                    recommendationsData = event[0].recommendationsData;
+                    console.log('✅ Found via event[0].recommendationsData');
+                }
+                // Method 3: Direct array access
+                else if (Array.isArray(event) && event[0]) {
+                    recommendationsData = event[0];
+                    console.log('✅ Using event[0] directly');
+                }
+                // Method 4: Direct event
+                else if (event && typeof event === 'object') {
+                    recommendationsData = event;
+                    console.log('✅ Using event directly');
+                }
+
+                console.log('🔍 Final recommendationsData:', recommendationsData);
+
+                if (recommendationsData && (recommendationsData.data || recommendationsData.recommendations)) {
+                    // Extract the actual data
+                    const actualData = recommendationsData.data || recommendationsData;
+                    console.log('🔍 Actual data to use:', actualData);
+
+                    // Kısa delay ile otomatik uygula (UI render'ının bitmesini bekle)
+                    setTimeout(() => {
+                        window.autoApplyFirstAlternatives(actualData);
+                    }, 500);
+                } else {
+                    console.warn('❌ aiRecommendationsCompleted event\'inde recommendationsData bulunamadı');
+                }
+            });
+
+            // Language changed events için re-attach
+            Livewire.on('refreshTabs', () => {
+                console.log('🔄 refreshTabs event - re-attaching button listeners');
+                setTimeout(attachButtonListeners, 100);
+            });
+
+            Livewire.on('tabsRefreshed', () => {
+                console.log('🔄 tabsRefreshed event - re-attaching button listeners');
+                setTimeout(attachButtonListeners, 100);
+            });
+        });
+
         // Auto-loading is now handled by PHP/Blade template
         // setTimeout(() => {
         //     autoLoadRecommendations();
@@ -2865,7 +3167,7 @@
         console.log('✅ AI SEO Integration system hazır!');
 
         // 🔥 DEBUG: Overlay sistem test fonksiyonu ekle
-        window.testAIOverlay = function(type = 'seo-data') {
+        window.testAIOverlay = function(type = 'ai-recommendations') {
             console.log(`🧪 TEST: AI Overlay sistemi test ediliyor - Type: ${type}`);
             showInlineLoadingOverlay(type);
 
@@ -2876,6 +3178,35 @@
             }, 3000);
         };
         console.log('🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!');
+
+        // DEBUG: Test Button Click Functionality
+        window.testButtonClicks = function() {
+            console.log('🧪 TEST: AI Button Click Functionality');
+            const buttons = document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn');
+            console.log('🔍 Found buttons:', buttons.length);
+
+            buttons.forEach((btn, index) => {
+                console.log(`🔍 Button ${index + 1}:`, {
+                    classes: btn.className,
+                    text: btn.textContent.trim(),
+                    hasClickEvent: btn.onclick !== null,
+                    dataAttributes: {
+                        language: btn.getAttribute('data-language'),
+                        seoFeature: btn.getAttribute('data-seo-feature')
+                    }
+                });
+            });
+
+            return { buttonCount: buttons.length, buttons: Array.from(buttons) };
+        };
+
+        // DEBUG: Force re-attach button listeners
+        window.forceReattachButtons = function() {
+            console.log('🔄 FORCE: Re-attaching button listeners');
+            attachButtonListeners();
+        };
+
+        console.log('🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!');
     }
 
     // AI MODAL-STYLE INLINE OVERLAY SYSTEM
@@ -2989,8 +3320,8 @@
                     console.log(`📝 Auto-applying: ${fieldTarget} = "${firstAlternative.value}"`);
 
                     // applyAlternativeDirectly fonksiyonunu kullan
-                    const success = applyAlternativeDirectly(fieldTarget, firstAlternative.value);
-                    if (success) {
+                    if (window.applyAlternativeDirectly) {
+                        window.applyAlternativeDirectly(fieldTarget, firstAlternative.value);
                         appliedCount++;
 
                         // OG alanlarına veri yazıldığında toggle'ı otomatik aç
@@ -2999,6 +3330,8 @@
                             console.log(`🎯 OG field detected (${fieldTarget}), enabling custom fields for ${language}`);
                             enableOgCustomFields(language);
                         }
+                    } else {
+                        console.error('❌ window.applyAlternativeDirectly function not found');
                     }
                 }
             }
@@ -3008,6 +3341,76 @@
             showSuccess(`✨ ${appliedCount} AI önerisi otomatik olarak uygulandı! Dilediğiniz alternatife tıklayarak değiştirebilirsiniz.`);
         }
     }
+
+    // 🎯 TEMPLATE-BASED AUTO-APPLY: DOM'dan 1. sıra önerilerini al ve uygula
+    window.applyFirstAlternativesFromTemplate = function() {
+        console.log('🔍 Template-based auto-apply başlıyor...');
+
+        // Template'deki .active olan list-group-item'leri bul
+        const activeItems = document.querySelectorAll('.list-group-item.active[onclick]');
+        console.log('🔍 Bulunan aktif öneri sayısı: ' + activeItems.length);
+
+        let appliedCount = 0;
+
+        activeItems.forEach((item, index) => {
+            const onclickAttr = item.getAttribute('onclick');
+            console.log('📝 Item ' + (index + 1) + ' onclick:', onclickAttr);
+
+            // onclick'ten field ve value'yu parse et
+            // Format: applyAlternativeDirectly('seoDataCache.tr.seo_title', 'Hikayemizi ve Bizi Tanıyın', this);
+            const match = onclickAttr.match(/applyAlternativeDirectly\('([^']+)',\s*'([^']+)'/);
+
+            if (match) {
+                const fieldTarget = match[1];
+                const value = match[2];
+
+                console.log('✅ Parse başarılı: ' + fieldTarget + ' = "' + value + '"');
+
+                // applyAlternativeDirectly fonksiyonunu çağır
+                if (window.applyAlternativeDirectly) {
+                    window.applyAlternativeDirectly(fieldTarget, value);
+                    appliedCount++;
+                    console.log('📝 Uygulandı: ' + fieldTarget);
+
+                    // OG alanları dolduysa checkbox'ı otomatik işaretle
+                    if (fieldTarget.includes('.og_title') || fieldTarget.includes('.og_description')) {
+                        const lang = fieldTarget.split('.')[1]; // seoDataCache.tr.og_title -> tr
+
+                        // Biraz bekle ve checkbox'ı kontrol et (DOM güncellenmesi için)
+                        setTimeout(() => {
+                            // Önce switch'in varlığını kontrol et ve yoksa oluştur
+                            if (window.checkAndEnableSocialMedia) {
+                                window.checkAndEnableSocialMedia(lang);
+                            } else {
+                                // Fallback
+                                const checkbox = document.getElementById(`og_custom_${lang}`);
+                                const fieldsContainer = document.getElementById(`og_custom_fields_${lang}`);
+                                if (checkbox && !checkbox.checked) {
+                                    checkbox.checked = true;
+                                    checkbox.dispatchEvent(new Event('change'));
+                                    if (fieldsContainer) {
+                                        fieldsContainer.style.display = 'block';
+                                    }
+                                    console.log('✅ Social media checkbox otomatik işaretlendi (fallback):', lang);
+                                }
+                            }
+                        }, 500); // Timeout'u artırdık DOM'un tamamen güncellenmesi için
+                    }
+                } else {
+                    console.error('❌ window.applyAlternativeDirectly function not found');
+                }
+            } else {
+                console.error('❌ onclick parse edilemedi:', onclickAttr);
+            }
+        });
+
+        if (appliedCount > 0) {
+            console.log('✅ Template-based auto-apply tamamlandı: ' + appliedCount + ' öneri uygulandı');
+            showSuccess(`✨ ${appliedCount} AI önerisi otomatik olarak uygulandı! Dilediğiniz alternatife tıklayarak değiştirebilirsiniz.`);
+        } else {
+            console.warn('⚠️ Hiçbir öneri uygulanamadı');
+        }
+    };
 
     // Start the system
     init();

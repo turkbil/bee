@@ -40,7 +40,11 @@ class PortfolioServiceProvider extends ServiceProvider
         
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
-        $this->loadViewsFrom(module_path('Portfolio', 'resources/views/front/themes'), 'portfolio-themes');
+        // Front themes klasörü için kontrol ekle
+        $frontThemesPath = module_path('Portfolio', 'resources/views/front/themes');
+        if (is_dir($frontThemesPath)) {
+            $this->loadViewsFrom($frontThemesPath, 'portfolio-themes');
+        }
         $this->loadViewsFrom(module_path('Portfolio', 'resources/views'), 'portfolio');
 
         Livewire::component('portfolio-component', PortfolioComponent::class);
@@ -141,10 +145,13 @@ class PortfolioServiceProvider extends ServiceProvider
         // Tema klasörlerinin yapılandırması - YENİ YAPI
         $themeSourcePath = module_path('Portfolio', 'resources/views/front/themes');
         $themeViewPath = resource_path('views/themes/modules/portfolio');
-        
-        $this->publishes([
-            $themeSourcePath => $themeViewPath,
-        ], ['views', 'portfolio-module-theme-views']);
+
+        // Sadece klasör varsa publish et
+        if (is_dir($themeSourcePath)) {
+            $this->publishes([
+                $themeSourcePath => $themeViewPath,
+            ], ['views', 'portfolio-module-theme-views']);
+        }
     
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'portfolio');
     }

@@ -12,5 +12,6 @@
     "AI": true,
     "LanguageManagement": true,
     "SeoManagement": true,
-    "MenuManagement": true
+    "MenuManagement": true,
+    "MediaManagement": true
 }

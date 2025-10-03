@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// use Modules\Announcement\Http\Controllers\AnnouncementController;
+use Modules\Announcement\App\Http\Controllers\Api\AnnouncementApiController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,5 +14,7 @@ use Illuminate\Support\Facades\Route;
  *
 */
 
-// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-// });
+Route::prefix('v1/announcements')->group(function () {
+    Route::get('/', [AnnouncementApiController::class, 'index'])->name('api.announcements.index');
+    Route::get('{slug}', [AnnouncementApiController::class, 'show'])->name('api.announcements.show');
+});

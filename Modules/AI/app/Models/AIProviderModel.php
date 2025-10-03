@@ -27,6 +27,7 @@ class AIProviderModel extends Model
         'credit_per_1k_output_tokens',
         'base_cost_usd',
         'markup_percentage',
+        'operation_rates', // YENİ - Hybrid sistem
         'is_active',
         'is_default',
         'sort_order',
@@ -37,6 +38,7 @@ class AIProviderModel extends Model
         'credit_per_1k_output_tokens' => 'decimal:4',
         'base_cost_usd' => 'decimal:6',
         'markup_percentage' => 'decimal:2',
+        'operation_rates' => 'array', // YENİ - JSON cast
         'is_active' => 'boolean',
         'is_default' => 'boolean',
         'sort_order' => 'integer',

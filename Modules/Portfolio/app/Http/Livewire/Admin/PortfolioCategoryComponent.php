@@ -1,339 +1,247 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Modules\Portfolio\App\Http\Livewire\Admin;
 
+use Livewire\Attributes\{Url, Layout, Computed};
 use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
-use Livewire\Attributes\On;
-use Illuminate\Support\Str;
+use Modules\Portfolio\App\Services\PortfolioCategoryService;
+use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Portfolio\App\Models\PortfolioCategory;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class PortfolioCategoryComponent extends Component
 {
     use WithPagination;
 
-    public $title = '';
-    public $newCategoryTitle = '';
-    public $categories = [];
-    public $maxPortfoliosCount = 0; 
+    #[Url]
+    public $search = '';
 
-    protected $rules = [
-        'title' => 'required|min:3|max:255',
+    #[Url]
+    public $perPage = 15;
+
+    #[Url]
+    public $sortField = 'category_id';
+
+    #[Url]
+    public $sortDirection = 'desc';
+
+    // Bulk actions properties
+    public $selectedItems = [];
+    public $selectAll = false;
+    public $bulkActionsEnabled = false;
+
+    // Inline editing
+    public $editingTitleId = null;
+    public $newTitle = '';
+
+    // Hibrit dil sistemi için dinamik dil listesi
+    private ?array $availableSiteLanguages = null;
+
+    // Event listeners
+    protected $listeners = [
+        'refreshCategoryData' => 'refreshCategoryData',
     ];
 
-    protected $messages = [
-        'title.required' => 'portfolio::admin.category_title_required',
-        'title.min' => 'portfolio::admin.category_title_min',
-        'title.max' => 'portfolio::admin.category_title_max',
-    ];
+    private PortfolioCategoryService $categoryService;
 
-    public function mount()
+    public function boot(PortfolioCategoryService $categoryService): void
     {
-        $this->loadCategories();
+        $this->categoryService = $categoryService;
     }
 
-    #[On('refreshPage')] 
-    public function loadCategories()
+    public function refreshCategoryData()
     {
-        $this->categories = PortfolioCategory::orderBy('order')
-            ->withCount('portfolios')
-            ->get();
+        // Cache'leri temizle
+        $this->availableSiteLanguages = null;
+        $this->categoryService->clearCache();
 
-        $this->maxPortfoliosCount = $this->categories->max('portfolios_count') ?? 1; 
+        // Component'i yeniden render et
+        $this->render();
     }
 
-    public function toggleActive($id)
+    protected function getModelClass()
     {
-        $category = PortfolioCategory::findOrFail($id);
-        $category->is_active = !$category->is_active;
-        $category->save();
-
-        log_activity(
-            $category,
-            $category->is_active ? 'aktif edildi' : 'pasif edildi'
-        );
-
-        $this->dispatch('toast', [
-            'title' => __('admin.success'), 
-            'message' => __('admin.category_status_changed', ['status' => $category->is_active ? __('admin.active') : __('admin.inactive')]),
-            'type' => 'success'
-        ]);
-
-        $this->loadCategories();
+        return \Modules\Portfolio\App\Models\PortfolioCategory::class;
     }
 
-    public function delete($id)
+    #[Computed]
+    public function availableSiteLanguages(): array
     {
-        $category = PortfolioCategory::findOrFail($id);
-        
-        if ($category->portfolios()->count() > 0) {
-            $this->dispatch('toast', [
-                'title' => __('admin.warning'),
-                'message' => __('admin.category_has_items'),
-                'type' => 'warning'
-            ]);
-            return;
-        }
-        
-        $category->delete();
-
-        log_activity(
-            $category,
-            'silindi'
-        );
-
-        $this->dispatch('toast', [
-            'title' => __('admin.success'),
-            'message' => __('admin.category_deleted'),
-            'type' => 'success'
-        ]);
-
-        $this->loadCategories();
+        return $this->availableSiteLanguages ??= TenantLanguage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->pluck('code')
+            ->toArray();
     }
 
-    public function quickAdd()
+    #[Computed]
+    public function adminLocale(): string
     {
-        try {
-            $this->validate();
-            
-            $maxOrder = PortfolioCategory::max('order') ?? 0;
-            
-            // Varsayılan dili al
-            $defaultLang = $this->siteLocale();
-            
-            // JSON formatında title ve slug oluştur
-            $titleJson = [$defaultLang => $this->title];
-            $slugJson = [$defaultLang => Str::slug($this->title)];
-            
-            $category = PortfolioCategory::create([
-                'title' => $titleJson,
-                'slug' => $slugJson,
-                'order' => $maxOrder + 1,
-                'is_active' => true,
-            ]);
-            
-            if (!$category) {
-                throw new \Exception('Kategori eklenirken bir hata oluştu.');
-            }
-
-            log_activity($category, 'oluşturuldu');
-
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('admin.category_created'),
-                'type' => 'success',
-            ]);
-            
-            $this->reset('title');
-            $this->loadCategories();
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->dispatch('toast', [
-                'title' => __('admin.error'),
-                'message' => __('admin.form_error'),
-                'type' => 'error',
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => __('admin.error'),
-                'message' => __('admin.category_create_error'),
-                'type' => 'error',
-            ]);
-        }
+        return session('admin_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
 
-    #[On('updateOrder')] 
-    public function updateOrder($list)
-    {
-        if (!is_array($list)) {
-            return;
-        }
-
-        foreach ($list as $item) {
-            if (!isset($item['value'], $item['order'])) {
-                continue;
-            }
-
-            PortfolioCategory::where('portfolio_category_id', $item['value'])
-                ->update(['order' => $item['order']]);
-        }
-
-        // Sıralama işlemi log'u
-        if (function_exists('log_activity')) {
-            activity()
-                ->causedBy(auth()->user())
-                ->inLog('PortfolioCategory')
-                ->withProperties(['kategori_sayisi' => count($list)])
-                ->log('Portfolio kategorileri sıralandı');
-        }
-
-        $this->loadCategories();
-        
-        $this->dispatch('toast', [
-            'title' => __('admin.success'),
-            'message' => __('admin.order_updated'),
-            'type' => 'success',
-        ]);
-    }
-
+    #[Computed]
     public function siteLocale(): string
     {
-        $tenant = tenant();
-        $defaultLang = $tenant?->tenant_default_locale ?? 'tr';
-        
-        return $defaultLang;
+        // Query string'den data_lang_changed parametresini kontrol et
+        $dataLangChanged = request()->get('data_lang_changed');
+
+        // Eğer query string'de dil değişim parametresi varsa onu kullan
+        if ($dataLangChanged && in_array($dataLangChanged, $this->availableSiteLanguages)) {
+            // Session'ı da güncelle
+            session(['tenant_locale' => $dataLangChanged]);
+            session()->save();
+
+            return $dataLangChanged;
+        }
+
+        // 1. Kullanıcının kendi tenant_locale tercihi
+        if (auth()->check() && auth()->user()->tenant_locale) {
+            $userLocale = auth()->user()->tenant_locale;
+
+            // Session'ı da güncelle
+            if (session('tenant_locale') !== $userLocale) {
+                session(['tenant_locale' => $userLocale]);
+            }
+
+            return $userLocale;
+        }
+
+        // 2. Session fallback
+        return session('tenant_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
     }
 
-    public function render()
+    public function updatedPerPage()
     {
-        return view('portfolio::admin.livewire.portfolio-category-component');
+        $this->perPage = (int) $this->perPage;
+        $this->resetPage();
     }
 
-    public function queueTranslation($categoryId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
+    public function updatedSearch()
     {
-        try {
-            \Log::info("🚀 PORTFOLIO CATEGORY QUEUE Translation başlatıldı", [
-                'category_id' => $categoryId,
-                'source' => $sourceLanguage,
-                'targets' => $targetLanguages
-            ]);
+        $this->resetPage();
+    }
 
-            // Job'ı kuyruğa ekle
-            \Modules\AI\app\Jobs\TranslateEntityJob::dispatch(
-                'portfolio_category',
-                $categoryId,
-                $sourceLanguage,
-                $targetLanguages,
-                $overwriteExisting
-            );
-
-            $this->dispatch('translationQueued', 'Portfolio Category çeviri işlemi başlatıldı!');
-            
-        } catch (\Exception $e) {
-            \Log::error('❌ Portfolio Category queue translation hatası', [
-                'category_id' => $categoryId,
-                'error' => $e->getMessage()
-            ]);
-            
-            $this->dispatch('translationError', 'Portfolio Category çeviri kuyruğu hatası: ' . $e->getMessage());
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField     = $field;
+            $this->sortDirection = 'asc';
         }
     }
 
-    public function translateFromModal(int $categoryId, string $sourceLanguage, array $targetLanguages): void
+    public function toggleActive(int $id): void
     {
         try {
-            \Log::info('🌍 Portfolio Category Translation modal çeviri başlatıldı', [
-                'category_id' => $categoryId,
-                'source_language' => $sourceLanguage,
-                'target_languages' => $targetLanguages,
-                'user_id' => auth()->id()
+            $result = $this->categoryService->toggleCategoryStatus($id);
+
+            $this->dispatch('toast', [
+                'title' => $result['success'] ? __('admin.success') : __('admin.' . $result['type']),
+                'message' => $result['message'],
+                'type' => $result['type'],
             ]);
 
-            // Category'yi bul
-            $category = PortfolioCategory::find($categoryId);
-            if (!$category) {
-                $this->dispatch('translationError', 'Portfolio Category bulunamadı');
+            if ($result['success'] && $result['meta']) {
+                log_activity(
+                    $result['data'],
+                    $result['meta']['new_status'] ? 'etkinleştirildi' : 'devre-dışı'
+                );
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
+    // Inline editing methods
+    public function startEditingTitle($id, $currentTitle)
+    {
+        $this->editingTitleId = $id;
+        $this->newTitle = $currentTitle;
+    }
+
+    public function updateTitleInline()
+    {
+        if (!$this->editingTitleId) {
+            return;
+        }
+
+        $category = PortfolioCategory::where('category_id', $this->editingTitleId)->first();
+
+        if ($category) {
+            $validator = \Illuminate\Support\Facades\Validator::make(
+                ['name' => $this->newTitle],
+                ['name' => 'required|string|max:191']
+            );
+
+            if ($validator->fails()) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('admin.title_validation_error'),
+                    'type' => 'error',
+                ]);
                 return;
             }
 
-            // Her hedef dil için çeviri yap
-            $translatedCount = 0;
-            $errors = [];
+            $currentSiteLocale = $this->siteLocale;
 
-            foreach ($targetLanguages as $targetLanguage) {
-                try {
-                    // Kaynak dil verilerini al
-                    $sourceTitle = $category->getTranslated('title', $sourceLanguage);
-
-                    if (empty($sourceTitle)) {
-                        $errors[] = "Kaynak dil ({$sourceLanguage}) verileri bulunamadı";
-                        continue;
-                    }
-
-                    $translatedData = [];
-
-                    // Title çevir
-                    if (!empty($sourceTitle)) {
-                        $translatedTitle = app(\Modules\AI\App\Services\AIService::class)->translateText(
-                            $sourceTitle,
-                            $sourceLanguage,
-                            $targetLanguage,
-                            ['context' => 'portfolio_category_title', 'source' => 'translation_modal']
-                        );
-                        $translatedData['title'] = $translatedTitle;
-                    }
-
-                    // Slug oluştur
-                    if (!empty($translatedData['title'])) {
-                        $translatedData['slug'] = \App\Helpers\SlugHelper::generateFromTitle(
-                            PortfolioCategory::class,
-                            $translatedData['title'],
-                            $targetLanguage,
-                            'slug',
-                            'portfolio_category_id',
-                            $categoryId
-                        );
-                    }
-
-                    // Çevrilmiş verileri kaydet
-                    if (!empty($translatedData)) {
-                        foreach ($translatedData as $field => $value) {
-                            $currentData = $category->{$field} ?? [];
-                            $currentData[$targetLanguage] = $value;
-                            $category->{$field} = $currentData;
-                        }
-                        $category->save();
-                        $translatedCount++;
-
-                        \Log::info('✅ Portfolio Category çevirisi tamamlandı', [
-                            'category_id' => $categoryId,
-                            'target_language' => $targetLanguage,
-                            'fields' => array_keys($translatedData)
-                        ]);
-                    }
-
-                } catch (\Exception $e) {
-                    $errors[] = "Çeviri hatası ({$targetLanguage}): " . $e->getMessage();
-                    \Log::error('❌ Portfolio Category çeviri hatası', [
-                        'category_id' => $categoryId,
-                        'target_language' => $targetLanguage,
-                        'error' => $e->getMessage()
-                    ]);
-                }
+            // Mevcut başlık değerini kontrol et
+            $currentTitle = $category->getTranslated('name', $currentSiteLocale);
+            if ($currentTitle === $this->newTitle) {
+                $this->editingTitleId = null;
+                $this->newTitle = '';
+                return;
             }
 
-            // Session ID oluştur ve döndür
-            $sessionId = 'translation_' . uniqid();
-            
-            // Başarı mesajı
-            if ($translatedCount > 0) {
-                $message = "{$translatedCount} dil için Portfolio Category çeviri tamamlandı";
-                if (!empty($errors)) {
-                    $message .= ". " . count($errors) . " hata oluştu";
-                }
-                
-                $this->dispatch('translationQueued', [
-                    'sessionId' => $sessionId,
-                    'success' => true,
-                    'message' => $message,
-                    'translatedCount' => $translatedCount,
-                    'errors' => $errors
-                ]);
-                
-                // Kategorileri yeniden yükle
-                $this->loadCategories();
-            } else {
-                $this->dispatch('translationError', 'Hiçbir Portfolio Category çeviri yapılamadı: ' . implode(', ', $errors));
-            }
+            // JSON name güncelle
+            $names = is_array($category->name) ? $category->name : [];
+            $oldTitle = $names[$currentSiteLocale] ?? '';
+            $names[$currentSiteLocale] = \Illuminate\Support\Str::limit($this->newTitle, 191, '');
+            $category->name = $names;
+            $category->save();
 
-        } catch (\Exception $e) {
-            \Log::error('❌ Portfolio Category Translation modal genel hatası', [
-                'category_id' => $categoryId,
-                'error' => $e->getMessage()
+            log_activity(
+                $category,
+                __('admin.title_updated'),
+                ['old' => $oldTitle, 'new' => $names[$currentSiteLocale], 'locale' => $currentSiteLocale]
+            );
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('admin.title_updated_successfully'),
+                'type' => 'success',
             ]);
-            
-            $this->dispatch('translationError', 'Portfolio Category çeviri işlemi başarısız: ' . $e->getMessage());
         }
+
+        $this->editingTitleId = null;
+        $this->newTitle = '';
+        $this->dispatch('refresh');
+    }
+
+    public function render(): \Illuminate\Contracts\View\View
+    {
+        $filters = [
+            'search' => $this->search,
+            'locales' => $this->availableSiteLanguages,
+            'sortField' => $this->sortField,
+            'sortDirection' => $this->sortDirection,
+            'currentLocale' => $this->siteLocale
+        ];
+
+        $categories = $this->categoryService->getPaginatedCategories($filters, $this->perPage);
+
+        return view('portfolio::admin.livewire.category-component', [
+            'categories' => $categories,
+            'currentSiteLocale' => $this->siteLocale,
+            'siteLanguages' => $this->availableSiteLanguages,
+        ]);
     }
 }

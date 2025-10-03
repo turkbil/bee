@@ -14,8 +14,11 @@ trait HasTranslations
     
     /**
      * Belirli dilde çeviriyi al (fallback ile)
+     * @param string $field Alan adı
+     * @param string|null $locale Dil kodu
+     * @param bool $useFallback Fallback kullanılsın mı? (varsayılan: true)
      */
-    public function getTranslated(string $field, ?string $locale = null): ?string
+    public function getTranslated(string $field, ?string $locale = null, bool $useFallback = true): ?string
     {
         $locale = $locale ?: App::getLocale() ?: 'tr';
         
@@ -58,8 +61,12 @@ trait HasTranslations
             $value = $translations[$locale];
             return is_string($value) ? $value : (string) $value;
         }
-        
-        
+
+        // Fallback kullanılmasın denildiyse, boş dil için null döndür
+        if (!$useFallback) {
+            return $translations[$locale] ?? null;
+        }
+
         // Fallback yazı sistemi - çevirisi olmayan dillerde fallback dildeki YAZIYI göster
         return $this->getFallbackTranslation($translations, $locale);
     }

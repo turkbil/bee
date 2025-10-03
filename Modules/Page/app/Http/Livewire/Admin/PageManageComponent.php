@@ -7,30 +7,11 @@ use Livewire\WithFileUploads;
 use Modules\AI\app\Traits\HasAIContentGeneration;
 use Modules\AI\app\Contracts\AIContentGeneratable;
 use Modules\Page\App\Models\Page;
-use Modules\Page\App\Models\PageTranslation;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use App\Helpers\SlugHelper;
-use App\Services\GlobalTabService;
-use Modules\LanguageManagement\App\Models\TenantLanguage;
 
-/**
- * PAGE MANAGE COMPONENT - REFACTORED VERSION
- * Pattern: A1 CMS Universal System
- *
- * Universal Component'leri kullanarak refactor edilmiş clean version
- * Sadece Page CRUD işlemlerini yönetir, ortak özellikler universal component'lerde
- *
- * @method void dispatch(string $event, mixed ...$params)
- * @method mixed validate(array $rules = [], array $messages = [], array $attributes = [])
- * @method void reset(...$properties)
- * @method void skipRender()
- * @method void fill(array $values)
- * @method void validateOnly(string $field, array $rules = null, array $messages = [], array $attributes = [])
- * @property-read \Illuminate\Contracts\Auth\Authenticatable|null $user
- */
 #[Layout('admin.layout')]
 class PageManageComponent extends Component implements AIContentGeneratable
 {
@@ -54,6 +35,7 @@ class PageManageComponent extends Component implements AIContentGeneratable
     // Universal Component Data
     public $currentLanguage;
     public $availableLanguages = [];
+    public $languageNames = []; // Dil adları (native_name)
     public $activeTab;
     public $tabConfig = [];
     public $tabCompletionStatus = [];
@@ -78,7 +60,6 @@ class PageManageComponent extends Component implements AIContentGeneratable
     protected $listeners = [
         'refreshComponent' => '$refresh',
         'languageChanged' => 'handleLanguageChange',
-        'tabSwitched' => 'handleTabSwitch',
         'translation-completed' => 'handleTranslationCompleted',
         'ai-content-generated' => 'handleAIContentGenerated',
     ];
@@ -86,10 +67,8 @@ class PageManageComponent extends Component implements AIContentGeneratable
     // Dependency Injection Boot
     public function boot()
     {
-        // PageService'i initialize et
-        if (class_exists(\Modules\Page\App\Services\PageService::class)) {
-            $this->pageService = app(\Modules\Page\App\Services\PageService::class);
-        }
+        // PageService'i initialize et (her zaman var)
+        $this->pageService = app(\Modules\Page\App\Services\PageService::class);
 
         // Layout sections
         view()->share('pretitle', __('page::admin.page_management'));
@@ -130,11 +109,13 @@ class PageManageComponent extends Component implements AIContentGeneratable
      */
     protected function initializeUniversalComponents()
     {
-        // Dil bilgileri - UniversalLanguageSwitcher'dan gelecek
-        $this->availableLanguages = array_column(available_tenant_languages(), 'code');
+        // Dil bilgileri - LanguageManagement modülünden (cached helper)
+        $languages = available_tenant_languages();
+        $this->availableLanguages = array_column($languages, 'code');
+        $this->languageNames = array_column($languages, 'native_name', 'code');
         $this->currentLanguage = get_tenant_default_locale();
 
-        // Tab bilgileri - UniversalTabSystem'den gelecek
+        // Tab bilgileri - Blade'de kullanılıyor
         $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('page');
         $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('page');
     }
@@ -153,36 +134,6 @@ class PageManageComponent extends Component implements AIContentGeneratable
         }
     }
 
-    /**
-     * Dil değişikliğini handle et - JavaScript'ten çağrılabilir
-     */
-    public function handleLanguageSwitch($language)
-    {
-        if (is_array($language)) {
-            $language = $language['language'] ?? $language[0] ?? 'tr';
-        }
-
-        $this->currentLanguage = $language;
-
-        Log::info('🎯 PageManage - Dil değişti (handleLanguageSwitch)', [
-            'new_language' => $language
-        ]);
-
-        // NOT: Event dispatch KALDIRILDI - Pure jQuery ile client-side yapıyoruz
-        // Livewire morph'ları gereksiz yere tab içeriğini bozuyor
-    }
-
-    /**
-     * Tab değişikliğini handle et (UniversalTabSystem'den)
-     */
-    public function handleTabSwitch($data)
-    {
-        $this->activeTab = $data['newTab'] ?? $this->activeTab;
-
-        Log::info('📑 PageManage - Tab değişti', [
-            'new_tab' => $this->activeTab
-        ]);
-    }
 
     /**
      * Çeviri tamamlandığında (UniversalAIContent'ten)
@@ -255,27 +206,21 @@ class PageManageComponent extends Component implements AIContentGeneratable
      */
     protected function loadPageData($id)
     {
-        // PageService varsa kullan, yoksa doğrudan veritabanından çek
-        if ($this->pageService) {
-            $formData = $this->pageService->preparePageForForm($id, $this->currentLanguage);
-            $page = $formData['page'] ?? null;
-            $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
-        } else {
-            // Fallback: doğrudan veritabanından çek
-            $page = Page::query()->find($id);
-            $this->tabCompletionStatus = [];
-        }
+        // PageService her zaman var, fallback gereksiz
+        $formData = $this->pageService->preparePageForForm($id, $this->currentLanguage);
+        $page = $formData['page'] ?? null;
+        $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
         if ($page) {
             // Dil-neutral alanlar
             $this->inputs = $page->only(['css', 'js', 'is_active', 'is_homepage']);
 
-            // Çoklu dil alanları
+            // Çoklu dil alanları - FALLBACK KAPALI (kullanıcı tüm dilleri boşaltabilsin)
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
-                    'title' => $page->getTranslated('title', $lang) ?? '',
-                    'body' => $page->getTranslated('body', $lang) ?? '',
-                    'slug' => $page->getTranslated('slug', $lang) ?? '',
+                    'title' => $page->getTranslated('title', $lang, false) ?? '',
+                    'body' => $page->getTranslated('body', $lang, false) ?? '',
+                    'slug' => $page->getTranslated('slug', $lang, false) ?? '',
                 ];
             }
 
@@ -294,9 +239,6 @@ class PageManageComponent extends Component implements AIContentGeneratable
                 'body' => '',
                 'slug' => '',
             ];
-
-            // SEO boş başlat
-            $this->seoDataCache[$lang] = $this->getEmptySeoData();
         }
     }
 
@@ -313,25 +255,11 @@ class PageManageComponent extends Component implements AIContentGeneratable
 
     /**
      * Ana dili belirle (mecburi olan dil)
+     * LanguageManagement modülünden helper kullan
      */
     protected function getMainLanguage()
     {
-        // Önce is_main_language=true olan dili bul
-        $mainLang = \Modules\LanguageManagement\App\Models\TenantLanguage::query()
-            ->where('is_active', true)
-            ->where('is_main_language', true)
-            ->value('code');
-
-        // Yoksa is_default=true olan dili bul
-        if (!$mainLang) {
-            $mainLang = \Modules\LanguageManagement\App\Models\TenantLanguage::query()
-                ->where('is_active', true)
-                ->where('is_default', true)
-                ->value('code');
-        }
-
-        // Hiçbiri yoksa fallback olarak tr
-        return $mainLang ?? 'tr';
+        return get_tenant_default_locale();
     }
 
     protected function rules()
@@ -370,6 +298,94 @@ class PageManageComponent extends Component implements AIContentGeneratable
         return array_merge($this->messages, $slugMessages);
     }
 
+    /**
+     * İçeriği validate et ve sanitize et (HTML, CSS, JS)
+     */
+    protected function validateAndSanitizeContent(): array
+    {
+        $validated = [];
+        $errors = [];
+
+        // HTML body validation (her dil için)
+        foreach ($this->availableLanguages as $lang) {
+            $body = $this->multiLangInputs[$lang]['body'] ?? '';
+            if (!empty(trim($body))) {
+                $result = \App\Services\SecurityValidationService::validateHtml($body);
+                if (!$result['valid']) {
+                    $errors[] = "HTML ({$lang}): " . implode(', ', $result['errors']);
+                } else {
+                    $validated['body'][$lang] = $result['clean_code'];
+                }
+            }
+        }
+
+        // CSS validation
+        if (!empty(trim($this->inputs['css']))) {
+            $result = \App\Services\SecurityValidationService::validateCss($this->inputs['css']);
+            if (!$result['valid']) {
+                $errors[] = 'CSS: ' . implode(', ', $result['errors']);
+            } else {
+                $validated['css'] = $result['clean_code'];
+            }
+        }
+
+        // JS validation
+        if (!empty(trim($this->inputs['js']))) {
+            $result = \App\Services\SecurityValidationService::validateJs($this->inputs['js']);
+            if (!$result['valid']) {
+                $errors[] = 'JavaScript: ' . implode(', ', $result['errors']);
+            } else {
+                $validated['js'] = $result['clean_code'];
+            }
+        }
+
+        return [
+            'valid' => empty($errors),
+            'data' => $validated,
+            'errors' => $errors
+        ];
+    }
+
+    /**
+     * Çoklu dil verilerini hazırla (title, slug, body)
+     */
+    protected function prepareMultiLangData(array $validatedContent = []): array
+    {
+        $multiLangData = [];
+
+        // Title verilerini topla
+        $multiLangData['title'] = [];
+        foreach ($this->availableLanguages as $lang) {
+            $title = $this->multiLangInputs[$lang]['title'] ?? '';
+            if (!empty($title)) {
+                $multiLangData['title'][$lang] = $title;
+            }
+        }
+
+        // Slug verilerini işle - SlugHelper toplu işlem
+        $slugInputs = [];
+        $titleInputs = [];
+        foreach ($this->availableLanguages as $lang) {
+            $slugInputs[$lang] = $this->multiLangInputs[$lang]['slug'] ?? '';
+            $titleInputs[$lang] = $this->multiLangInputs[$lang]['title'] ?? '';
+        }
+
+        $multiLangData['slug'] = SlugHelper::processMultiLanguageSlugs(
+            Page::class,
+            $slugInputs,
+            $titleInputs,
+            'slug',
+            $this->pageId
+        );
+
+        // Body verilerini ekle (validated'dan)
+        if (!empty($validatedContent['body'])) {
+            $multiLangData['body'] = $validatedContent['body'];
+        }
+
+        return $multiLangData;
+    }
+
     public function save($redirect = false, $resetForm = false)
     {
         // TinyMCE içeriğini senkronize et
@@ -390,96 +406,44 @@ class PageManageComponent extends Component implements AIContentGeneratable
             ]);
 
             $this->dispatch('toast', [
-                'title' => 'Validation Hatası',
+                'title' => 'Doğrulama Hatası',
                 'message' => $e->getMessage(),
                 'type' => 'error'
             ]);
+
+            // Tab restore tetikle - validation hatası sonrası tab görünür kalsın
+            $this->dispatch('restore-active-tab');
+
             return;
         }
 
-        // JSON formatında çoklu dil verilerini hazırla
-        $multiLangData = [];
-        foreach (['title', 'slug', 'body'] as $field) {
-            $multiLangData[$field] = [];
-            foreach ($this->availableLanguages as $lang) {
-                $value = $this->multiLangInputs[$lang][$field] ?? '';
+        // İçerik güvenlik validasyonu (HTML/CSS/JS)
+        $validation = $this->validateAndSanitizeContent();
+        if (!$validation['valid']) {
+            $this->dispatch('toast', [
+                'title' => 'İçerik Doğrulama Hatası',
+                'message' => implode("\n", $validation['errors']),
+                'type' => 'error'
+            ]);
 
-                // HTML body güvenlik kontrolü
-                if ($field === 'body' && !empty(trim($value))) {
-                    $htmlValidation = \App\Services\SecurityValidationService::validateHtml($value);
-                    if (!$htmlValidation['valid']) {
-                        $this->dispatch('toast', [
-                            'title' => __('admin.error'),
-                            'message' => "HTML Güvenlik Hatası ({$lang}): " . implode(', ', $htmlValidation['errors']),
-                            'type' => 'error',
-                        ]);
-                        return;
-                    }
-                    $value = $htmlValidation['clean_code'];
-                }
+            // Tab restore tetikle
+            $this->dispatch('restore-active-tab');
 
-                // Slug işleme - SlugHelper kullan
-                if ($field === 'slug') {
-                    if (empty($value) && !empty($this->multiLangInputs[$lang]['title'])) {
-                        // Boş slug'lar için title'dan oluştur
-                        $value = SlugHelper::generateFromTitle(
-                            Page::class,
-                            $this->multiLangInputs[$lang]['title'],
-                            $lang,
-                            'slug',
-                            'page_id',
-                            $this->pageId
-                        );
-                    } elseif (!empty($value)) {
-                        // Dolu slug'lar için unique kontrolü yap
-                        $value = SlugHelper::generateUniqueSlug(
-                            Page::class,
-                            $value,
-                            $lang,
-                            'slug',
-                            'page_id',
-                            $this->pageId
-                        );
-                    }
-                }
-
-                if (!empty($value)) {
-                    $multiLangData[$field][$lang] = $value;
-                }
-            }
+            return;
         }
 
-        // CSS/JS güvenlik kontrolü
-        $safeInputs = $this->inputs;
+        // Çoklu dil verilerini hazırla (title, slug, body)
+        $multiLangData = $this->prepareMultiLangData($validation['data']);
 
-        // CSS güvenlik doğrulaması
-        if (!empty(trim($this->inputs['css']))) {
-            $cssValidation = \App\Services\SecurityValidationService::validateCss($this->inputs['css']);
-            if (!$cssValidation['valid']) {
-                $this->dispatch('toast', [
-                    'title' => __('admin.error'),
-                    'message' => 'CSS Güvenlik Hatası: ' . implode(', ', $cssValidation['errors']),
-                    'type' => 'error',
-                ]);
-                return;
-            }
-            $safeInputs['css'] = $cssValidation['clean_code'];
+        // Safe inputs - CSS ve JS validasyondan geldi
+        $safeInputs = $this->inputs;
+        if (isset($validation['data']['css'])) {
+            $safeInputs['css'] = $validation['data']['css'];
         } else {
             $safeInputs['css'] = '';
         }
-
-        // JS güvenlik doğrulaması
-        if (!empty(trim($this->inputs['js']))) {
-            $jsValidation = \App\Services\SecurityValidationService::validateJs($this->inputs['js']);
-            if (!$jsValidation['valid']) {
-                $this->dispatch('toast', [
-                    'title' => __('admin.error'),
-                    'message' => 'JavaScript Güvenlik Hatası: ' . implode(', ', $jsValidation['errors']),
-                    'type' => 'error',
-                ]);
-                return;
-            }
-            $safeInputs['js'] = $jsValidation['clean_code'];
+        if (isset($validation['data']['js'])) {
+            $safeInputs['js'] = $validation['data']['js'];
         } else {
             $safeInputs['js'] = '';
         }
@@ -519,7 +483,7 @@ class PageManageComponent extends Component implements AIContentGeneratable
         } else {
             $page = Page::query()->create($data);
             $this->pageId = $page->page_id;
-            log_activity($page, 'oluşturuldu');
+            log_activity($page, 'eklendi');
 
             $toast = [
                 'title' => __('admin.success'),
@@ -592,6 +556,6 @@ class PageManageComponent extends Component implements AIContentGeneratable
 
     public function getModuleInstructions(): string
     {
-        return 'Sayfa içerikleri üretimi. SEO uyumlu, kullanıcı dostu ve kapsamlı sayfa içerikleri oluştur.';
+        return __('page::admin.ai_content_instructions');
     }
 }

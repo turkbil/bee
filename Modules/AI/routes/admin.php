@@ -329,40 +329,72 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                             return response()->json($stats);
                         })->name('api.statistics');
                         
-                        // API: Kullanım verisi
+                        // API: Kullanım verisi (HYBRID SİSTEM ENTEGRE)
                         Route::get('/api/usage-data', function() {
                             $providerUsage = \Modules\AI\App\Models\AICreditUsage::selectRaw('provider_name as provider, SUM(credits_used) as credits')
                                 ->groupBy('provider_name')
                                 ->whereNotNull('provider_name')
                                 ->get();
-                                
+
                             $featureUsage = \Modules\AI\App\Models\AICreditUsage::selectRaw('feature_slug as feature, SUM(credits_used) as credits')
                                 ->groupBy('feature_slug')
                                 ->whereNotNull('feature_slug')
                                 ->orderByDesc('credits')
                                 ->limit(10)
                                 ->get();
-                                
+
+                            // Operation type bazlı kullanım (HYBRID SİSTEM)
+                            $operationUsage = \Modules\AI\App\Models\AICreditUsage::selectRaw('usage_type, SUM(credits_used) as credits, COUNT(*) as count')
+                                ->whereNotNull('usage_type')
+                                ->groupBy('usage_type')
+                                ->orderByDesc('credits')
+                                ->get()
+                                ->map(function($item) {
+                                    $operationLabels = [
+                                        'chat' => 'Chat',
+                                        'seo_recommendations' => 'SEO Önerileri',
+                                        'translation' => 'Çeviri',
+                                        'content_generation' => 'İçerik Üretimi',
+                                        'pdf_analysis' => 'PDF Analizi'
+                                    ];
+                                    return [
+                                        'operation' => $operationLabels[$item->usage_type] ?? $item->usage_type,
+                                        'credits' => round($item->credits, 2),
+                                        'count' => $item->count,
+                                        'cost_tl' => round($item->credits * 4, 2)
+                                    ];
+                                });
+
                             $detailedUsage = \Modules\AI\App\Models\AICreditUsage::with(['tenant'])
                                 ->latest('used_at')
                                 ->limit(20)
                                 ->get()
                                 ->map(function($usage) {
+                                    $metadata = $usage->metadata ?? [];
+                                    $inputTokens = $metadata['input_tokens'] ?? 0;
+                                    $outputTokens = $metadata['output_tokens'] ?? 0;
+                                    $totalCostTL = $metadata['total_cost_tl'] ?? ($usage->credits_used * 4);
+
                                     return [
                                         'date' => $usage->used_at->format('d.m.Y H:i'),
                                         'tenant' => $usage->tenant->title ?? 'N/A',
                                         'provider' => $usage->provider_name ?? 'N/A',
+                                        'model' => $usage->model ?? 'N/A',
+                                        'operation_type' => $usage->usage_type ?? 'N/A',
                                         'feature' => $usage->feature_slug ?? 'N/A',
-                                        'input_tokens' => number_format($usage->input_tokens),
-                                        'output_tokens' => number_format($usage->output_tokens),
+                                        'description' => $usage->description ?? 'N/A',
+                                        'input_tokens' => number_format($inputTokens),
+                                        'output_tokens' => number_format($outputTokens),
                                         'total_credits' => format_credit($usage->credits_used, false),
-                                        'cost' => format_credit_detailed($usage->credit_cost)
+                                        'cost_tl' => number_format($totalCostTL, 2) . '₺',
+                                        'is_pro_service' => $metadata['is_pro_service'] ?? false
                                     ];
                                 });
-                            
+
                             return response()->json([
                                 'provider_usage' => $providerUsage,
                                 'feature_usage' => $featureUsage,
+                                'operation_usage' => $operationUsage,
                                 'detailed_usage' => $detailedUsage
                             ]);
                         })->name('api.usage-data');

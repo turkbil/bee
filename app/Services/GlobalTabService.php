@@ -42,13 +42,14 @@ class GlobalTabService
      */
     public static function getAllTabs(string $module = 'default'): array
     {
-        $config = self::getTabConfig($module);
-        
+        // Direkt modül config'inden tabs al
+        $tabs = config("{$module}.tabs", null);
+
         // Modül-specific tab'lar varsa onları kullan
-        if (!empty($config['tabs'])) {
-            return $config['tabs'];
+        if (!empty($tabs)) {
+            return $tabs;
         }
-        
+
         // Varsayılan tab yapısı (Page modülü pattern'i)
         return [
             [

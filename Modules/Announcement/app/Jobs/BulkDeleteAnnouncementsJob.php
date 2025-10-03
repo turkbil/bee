@@ -12,16 +12,17 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Modules\Announcement\App\Models\Announcement;
+use Modules\Announcement\App\Services\AnnouncementService;
 use Throwable;
 
 /**
  * 🗑️ Bulk Announcement Delete Queue Job
- * 
+ *
  * Announcement modülünün bulk silme işlemleri için queue job:
- * - Toplu duyuru silme işlemleri için optimize edilmiş
+ * - Toplu sayfa silme işlemleri için optimize edilmiş
  * - Progress tracking ile durum takibi
  * - Cache temizleme ve activity log
- * - Page modülünden kopya alınmış template
+ * - Ana template job - diğer modüller bu pattern'i alacak
  */
 class BulkDeleteAnnouncementsJob implements ShouldQueue
 {
@@ -32,13 +33,13 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
     public int $maxExceptions = 3;
 
     /**
-     * @param array $announcementIds Silinecek duyuru ID'leri
+     * @param array $pageIds Silinecek sayfa ID'leri
      * @param string $tenantId Tenant ID (multi-tenant sistem için)
      * @param string $userId İşlemi yapan kullanıcı ID'si
      * @param array $options Ek seçenekler (force_delete, etc.)
      */
     public function __construct(
-        public array $announcementIds,
+        public array $pageIds,
         public string $tenantId,
         public string $userId,
         public array $options = []
@@ -49,7 +50,7 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
     /**
      * Job execution
      */
-    public function handle(): void
+    public function handle(AnnouncementService $pageService): void
     {
         $startTime = microtime(true);
         $processedCount = 0;
@@ -57,63 +58,65 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
         $errors = [];
 
         try {
-            Log::info('🗑️ BULK ANNOUNCEMENT DELETE STARTED', [
-                'announcement_ids' => $this->announcementIds,
+            Log::info('🗑️ BULK PAGE DELETE STARTED', [
+                'announcement_ids' => $this->pageIds,
                 'tenant_id' => $this->tenantId,
                 'user_id' => $this->userId,
-                'total_count' => count($this->announcementIds)
+                'total_count' => count($this->pageIds)
             ]);
 
             // Progress tracking için cache key
-            $progressKey = "bulk_delete_announcements_{$this->tenantId}_{$this->userId}";
-            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'starting');
+            $progressKey = "bulk_delete_pages_{$this->tenantId}_{$this->userId}";
+            $this->updateProgress($progressKey, 0, count($this->pageIds), 'starting');
 
-            // Her duyuru için silme işlemi
-            foreach ($this->announcementIds as $index => $announcementId) {
+            // Her sayfa için silme işlemi
+            foreach ($this->pageIds as $index => $pageId) {
                 try {
-                    // Duyuru var mı kontrol et
-                    $announcement = Announcement::find($announcementId);
+                    // Sayfa var mı kontrol et
+                    $announcement = Announcement::find($pageId);
                     if (!$announcement) {
-                        Log::warning("Duyuru bulunamadı: {$announcementId}");
+                        Log::warning("Sayfa bulunamadı: {$pageId}");
                         continue;
                     }
 
-                    // Önemli duyuru kontrolü - önemli duyurular için uyarı
-                    if (isset($announcement->is_important) && $announcement->is_important) {
-                        Log::warning("Önemli duyuru siliniyor: {$announcement->title}");
+                    // Homepage kontrolü - ana sayfa silinemesin
+                        $errors[] = "Ana sayfa silinemez: {$announcement->title}";
+                        $errorCount++;
+                        continue;
                     }
 
                     // Silme işlemi
                     $forceDelete = $this->options['force_delete'] ?? false;
-                    
+
                     if ($forceDelete) {
                         $announcement->forceDelete();
+                        log_activity($announcement, 'kalıcı-silindi');
                     } else {
                         $announcement->delete();
+                        log_activity($announcement, 'silindi');
                     }
 
                     $processedCount++;
-                    
+
                     // Progress güncelle
-                    $progress = (int) (($index + 1) / count($this->announcementIds) * 100);
-                    $this->updateProgress($progressKey, $progress, count($this->announcementIds), 'processing', [
+                    $progress = (int) (($index + 1) / count($this->pageIds) * 100);
+                    $this->updateProgress($progressKey, $progress, count($this->pageIds), 'processing', [
                         'processed' => $processedCount,
                         'errors' => $errorCount,
-                        'current_announcement' => $announcement->title
+                        'current_page' => $announcement->title
                     ]);
 
-                    Log::info("✅ Duyuru silindi", [
-                        'id' => $announcementId,
+                    Log::info("✅ Sayfa silindi", [
+                        'id' => $pageId,
                         'title' => $announcement->title,
                         'force_delete' => $forceDelete
                     ]);
-
                 } catch (\Exception $e) {
                     $errorCount++;
-                    $errors[] = "Duyuru silme hatası (ID: {$announcementId}): " . $e->getMessage();
-                    
-                    Log::error("❌ Duyuru silme hatası", [
-                        'announcement_id' => $announcementId,
+                    $errors[] = "Sayfa silme hatası (ID: {$pageId}): " . $e->getMessage();
+
+                    Log::error("❌ Sayfa silme hatası", [
+                        'announcement_id' => $pageId,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
@@ -121,30 +124,29 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
             }
 
             // Cache temizleme
-            $this->clearAnnouncementCaches();
+            $this->clearPageCaches();
 
             // Final progress
             $duration = round(microtime(true) - $startTime, 2);
-            $this->updateProgress($progressKey, 100, count($this->announcementIds), 'completed', [
+            $this->updateProgress($progressKey, 100, count($this->pageIds), 'completed', [
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration,
                 'error_messages' => $errors
             ]);
 
-            Log::info('✅ BULK ANNOUNCEMENT DELETE COMPLETED', [
-                'total_announcements' => count($this->announcementIds),
+            Log::info('✅ BULK PAGE DELETE COMPLETED', [
+                'total_pages' => count($this->pageIds),
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration . 's'
             ]);
-
         } catch (\Exception $e) {
-            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
+            $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
                 'error' => $e->getMessage()
             ]);
 
-            Log::error('💥 BULK ANNOUNCEMENT DELETE FAILED', [
+            Log::error('💥 BULK PAGE DELETE FAILED', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -170,27 +172,27 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
     /**
      * Cache temizleme
      */
-    private function clearAnnouncementCaches(): void
+    private function clearPageCaches(): void
     {
         try {
             // Announcement cache'leri temizle
-            Cache::forget('announcements_list');
-            Cache::forget('announcements_active');
-            Cache::forget('announcements_recent');
-            
+            Cache::forget('pages_list');
+            Cache::forget('pages_menu_cache');
+            Cache::forget('pages_sitemap_cache');
+
             // Pattern-based cache temizleme
             $patterns = [
-                'announcement_*',
-                'announcements_*',
-                'recent_announcements_*'
+                'page_*',
+                'pages_*',
+                'sitemap_*',
+                'menu_*'
             ];
-            
+
             foreach ($patterns as $pattern) {
-                Cache::tags(['announcements'])->flush();
+                Cache::tags(['pages'])->flush();
             }
 
             Log::info('🗑️ Announcement caches cleared after bulk delete');
-            
         } catch (\Exception $e) {
             Log::error('Cache temizleme hatası: ' . $e->getMessage());
         }
@@ -201,8 +203,8 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        Log::error('💥 BULK ANNOUNCEMENT DELETE JOB FAILED', [
-            'announcement_ids' => $this->announcementIds,
+        Log::error('💥 BULK PAGE DELETE JOB FAILED', [
+            'announcement_ids' => $this->pageIds,
             'tenant_id' => $this->tenantId,
             'user_id' => $this->userId,
             'error' => $exception?->getMessage(),
@@ -210,8 +212,8 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
         ]);
 
         // Progress'i failed olarak işaretle
-        $progressKey = "bulk_delete_announcements_{$this->tenantId}_{$this->userId}";
-        $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
+        $progressKey = "bulk_delete_pages_{$this->tenantId}_{$this->userId}";
+        $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
             'error' => $exception?->getMessage()
         ]);
     }

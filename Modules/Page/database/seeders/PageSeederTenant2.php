@@ -9,35 +9,74 @@ use Modules\MenuManagement\App\Models\Menu;
 use Modules\MenuManagement\App\Models\MenuItem;
 
 /**
- * Page Seeder for Tenant2 - E-TİCARET & DİJİTAL ÇÖZÜMLER
- * Theme: Modern E-Commerce Platform
- * Languages: tr, en
+ * Page Seeder for Tenant 2 - Digital Agency
+ *
+ * Creates modern digital agency website pages.
+ * Focus: Digital marketing, web design, e-commerce solutions
+ *
+ * Languages: Turkish (tr), English (en)
+ * Theme: Digital Agency / E-Commerce Platform
+ *
+ * Features:
+ * - Modern purple/pink gradient designs
+ * - Service-focused content
+ * - Blog integration ready
+ * - SEO-optimized pages
+ *
+ * @package Modules\Page\Database\Seeders
  */
 class PageSeederTenant2 extends Seeder
 {
+    /**
+     * Pages created counter
+     */
+    private int $pagesCreated = 0;
+
+    /**
+     * Run the tenant 2 database seeds
+     */
     public function run(): void
     {
-        $this->command->info('Creating TENANT2 E-Commerce pages (tr, en)...');
-        
-        // Duplicate kontrolü
+        $this->command->info('🚀 Starting Tenant 2 Page Seeding...');
+        $this->command->newLine();
+
+        // Duplicate check
         $existingCount = Page::count();
         if ($existingCount > 0) {
-            $this->command->info("E-Commerce pages already exist in TENANT2 database ({$existingCount} pages), skipping seeder...");
+            $this->command->warn("⚠️  Pages already exist ({$existingCount} pages)");
+            $this->command->info('💡 Skipping seeder to prevent duplicates');
             return;
         }
-        
-        // Mevcut sayfaları sil (sadece boşsa)
+
+        // Clean slate
+        $this->command->info('🧹 Cleaning existing data...');
         Page::truncate();
-        
+
+        // Create pages
+        $this->command->info('📝 Creating pages...');
         $this->createHomepage();
         $this->createAboutPage();
         $this->createProductsPage();
         $this->createBlogPage();
         $this->createContactPage();
+
+        // Create additional development pages
+        $this->command->newLine();
+        $this->command->info('🔨 Creating additional pages for development...');
+        $this->createDevelopmentPages();
+
+        // Summary
+        $this->command->newLine();
+        $this->showSummary();
     }
     
+    /**
+     * Create homepage for digital agency
+     */
     private function createHomepage(): void
     {
+        $this->command->info('  → Homepage (Digital Agency)');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Dijital Ajans - Ana Sayfa', 
@@ -102,10 +141,17 @@ class PageSeederTenant2 extends Seeder
             'Profesyonel dijital pazarlama ve web tasarım hizmetleriyle işletmenizi online dünyada zirveye taşıyoruz.',
             'We take your business to the top of the online world with professional digital marketing and web design services.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create about us page
+     */
     private function createAboutPage(): void
     {
+        $this->command->info('  → About Us');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Hakkımızda',
@@ -176,10 +222,17 @@ class PageSeederTenant2 extends Seeder
             '2015 yılından beri dijital pazarlama ve web tasarım alanında hizmet veren deneyimli ekibimizle müşterilerimizin dijital varlığını güçlendiriyoruz.',
             'We have been strengthening our customers\' digital presence with our experienced team serving in digital marketing and web design since 2015.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create services/products page
+     */
     private function createProductsPage(): void
     {
+        $this->command->info('  → Services');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Hizmetlerimiz',
@@ -272,10 +325,17 @@ class PageSeederTenant2 extends Seeder
             'Web tasarım, sosyal medya, SEO, Google Ads ve e-ticaret hizmetlerimiz hakkında detaylı bilgi alın.',
             'Get detailed information about our web design, social media, SEO, Google Ads and e-commerce services.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create blog page
+     */
     private function createBlogPage(): void
     {
+        $this->command->info('  → Blog');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Blog',
@@ -346,10 +406,17 @@ class PageSeederTenant2 extends Seeder
             'Dijital pazarlama, web tasarım ve teknoloji dünyasından en güncel haberleri ve ipuçlarını takip edin.',
             'Follow the latest news and tips from the world of digital marketing, web design and technology.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create contact page
+     */
     private function createContactPage(): void
     {
+        $this->command->info('  → Contact');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'İletişim',
@@ -468,8 +535,14 @@ class PageSeederTenant2 extends Seeder
             'Projeniz hakkında bizimle iletişime geçin, size özel dijital pazarlama çözümleri sunalım.',
             'Contact us about your project and let us offer you customized digital marketing solutions.'
         );
+
+        $this->pagesCreated++;
     }
 
+    /**
+     * Create SEO settings for a page
+     * Supports 2 languages (tr, en)
+     */
     private function createSeoSetting($page, $titleTr, $titleEn, $descriptionTr, $descriptionEn): void
     {
         // Eğer bu sayfa için zaten SEO ayarı varsa oluşturma
@@ -500,221 +573,50 @@ class PageSeederTenant2 extends Seeder
             'seo_score' => rand(80, 95),
         ]);
     }
-    
-    private function createServicesPage(): void
-    {
-        $page = Page::create([
-            'title' => [
-                'tr' => 'E-Ticaret Çözümleri',
-                'en' => 'E-Commerce Solutions'
-            ],
-            'slug' => [
-                'tr' => 'e-ticaret-cozumleri',
-                'en' => 'ecommerce-solutions'
-            ],
-            'body' => [
-                'tr' => '<div class="container mx-auto px-4 py-16">
-                    <div class="text-center mb-16">
-                        <h1 class="text-5xl font-bold text-gray-800 mb-6">E-Ticaret Çözümleri</h1>
-                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">Online satış kanalınızı kurmak ve büyütmek için ihtiyacınız olan tüm hizmetler</p>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
-                            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-6">
-                                <span class="text-2xl">🛍️</span>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-4">Online Mağaza Kurulumu</h3>
-                            <p class="text-gray-600">Sıfırdan e-ticaret sitenizi kurar, ürün kataloğu ve ödeme sistemlerini entegre ederiz.</p>
-                        </div>
-                        
-                        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
-                            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6">
-                                <span class="text-2xl">💳</span>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-4">Ödeme Sistemi Entegrasyonu</h3>
-                            <p class="text-gray-600">Güvenli ödeme yöntemlerini sitenize entegre ederek müşterilerinizin güvenle alışveriş yapmasını sağlarız.</p>
-                        </div>
-                        
-                        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
-                            <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mb-6">
-                                <span class="text-2xl">📊</span>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-4">Envanter Yönetimi</h3>
-                            <p class="text-gray-600">Stok takibi, ürün yönetimi ve sipariş süreçlerinizi otomatikleştiren sistemler kuruyoruz.</p>
-                        </div>
-                    </div>
-                </div>',
-                'en' => '<div class="container mx-auto px-4 py-16">
-                    <div class="text-center mb-16">
-                        <h1 class="text-5xl font-bold text-gray-800 mb-6">E-Commerce Solutions</h1>
-                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">All the services you need to set up and grow your online sales channel</p>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
-                            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-6">
-                                <span class="text-2xl">🛍️</span>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-4">Online Store Setup</h3>
-                            <p class="text-gray-600">We build your e-commerce site from scratch and integrate product catalogs and payment systems.</p>
-                        </div>
-                        
-                        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
-                            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6">
-                                <span class="text-2xl">💳</span>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-4">Payment System Integration</h3>
-                            <p class="text-gray-600">We integrate secure payment methods to ensure your customers shop with confidence.</p>
-                        </div>
-                        
-                        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
-                            <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mb-6">
-                                <span class="text-2xl">📊</span>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-4">Inventory Management</h3>
-                            <p class="text-gray-600">We set up systems that automate your stock tracking, product management and order processes.</p>
-                        </div>
-                    </div>
-                </div>'
-            ],
-            'is_homepage' => false,
-            'is_active' => true,
-        ]);
 
-        $this->createSeoSetting(
-            $page,
-            'E-Ticaret Çözümleri - ShopMax',
-            'E-Commerce Solutions - ShopMax',
-            'Online satış kanalınızı kurmak ve büyütmek için ihtiyacınız olan tüm e-ticaret hizmetleri.',
-            'All the services you need to set up and grow your online sales channel.'
-        );
-    }
-    
-    private function createPrivacyPage(): void
+    /**
+     * Create additional pages for development/testing
+     */
+    private function createDevelopmentPages(): void
     {
-        $page = Page::create([
-            'title' => [
-                'tr' => 'Gizlilik Politikası',
-                'en' => 'Privacy Policy'
-            ],
-            'slug' => [
-                'tr' => 'gizlilik-politikasi',
-                'en' => 'privacy-policy'
-            ],
-            'body' => [
-                'tr' => '<div class="container mx-auto px-4 py-16">
-                    <div class="max-w-4xl mx-auto prose prose-lg">
-                        <p>ShopMax olarak müşterilerimizin gizliliğini korumaya büyük önem veriyoruz. Bu gizlilik politikası, kişisel verilerinizin nasıl toplandığını, kullanıldığını ve korunduğunu açıklamaktadır.</p>
-                        
-                        <h2>Toplanan Bilgiler</h2>
-                        <p>Alışveriş deneyiminizi geliştirmek için aşağıdaki bilgileri toplayabiliriz:</p>
-                        <ul>
-                            <li>Ad, soyad ve iletişim bilgileri</li>
-                            <li>Teslimat adresi bilgileri</li>
-                            <li>Ödeme bilgileri (güvenli şekilde işlenir)</li>
-                            <li>Sipariş geçmişi ve tercihler</li>
-                        </ul>
-                        
-                        <h2>Veri Güvenliği</h2>
-                        <p>Kişisel verilerinizi korumak için endüstri standardı güvenlik önlemleri alıyoruz. Verileriniz SSL şifreleme ile korunur ve güvenli sunucularda saklanır.</p>
-                    </div>
-                </div>',
-                'en' => '<div class="container mx-auto px-4 py-16">
-                    <div class="max-w-4xl mx-auto prose prose-lg">
-                        <p>At ShopMax, we place great importance on protecting the privacy of our customers. This privacy policy explains how your personal data is collected, used and protected.</p>
-                        
-                        <h2>Information Collected</h2>
-                        <p>We may collect the following information to improve your shopping experience:</p>
-                        <ul>
-                            <li>Name, surname and contact information</li>
-                            <li>Delivery address information</li>
-                            <li>Payment information (processed securely)</li>
-                            <li>Order history and preferences</li>
-                        </ul>
-                        
-                        <h2>Data Security</h2>
-                        <p>We take industry-standard security measures to protect your personal data. Your data is protected with SSL encryption and stored on secure servers.</p>
-                    </div>
-                </div>'
-            ],
-            'is_homepage' => false,
-            'is_active' => true,
-        ]);
+        $count = 8;
 
-        $this->createSeoSetting(
-            $page,
-            'Gizlilik Politikası - ShopMax',
-            'Privacy Policy - ShopMax',
-            'ShopMax gizlilik politikası - Kişisel verilerinizin nasıl korunduğu hakkında bilgi.',
-            'ShopMax privacy policy - Learn how your personal data is protected.'
-        );
+        Page::factory()
+            ->simple()
+            ->count($count)
+            ->create();
+
+        $this->command->info("  ✓ Created {$count} random pages for testing");
+        $this->pagesCreated += $count;
     }
-    
-    private function createTermsPage(): void
+
+    /**
+     * Show seeding summary
+     */
+    private function showSummary(): void
     {
-        $page = Page::create([
-            'title' => [
-                'tr' => 'Kullanım Şartları',
-                'en' => 'Terms of Service'
-            ],
-            'slug' => [
-                'tr' => 'kullanim-sartlari',
-                'en' => 'terms-of-service'
-            ],
-            'body' => [
-                'tr' => '<div class="container mx-auto px-4 py-16">
-                    <div class="max-w-4xl mx-auto prose prose-lg">
-                        <p>ShopMax platformunu kullanarak aşağıdaki şart ve koşulları kabul etmiş sayılırsınız.</p>
-                        
-                        <h2>Genel Şartlar</h2>
-                        <ul>
-                            <li>Sitemizi kullanmak için 18 yaşından büyük olmalısınız</li>
-                            <li>Doğru ve güncel bilgiler sağlamalısınız</li>
-                            <li>Hesabınızın güvenliğinden sorumlusunuz</li>
-                        </ul>
-                        
-                        <h2>Sipariş ve Ödeme</h2>
-                        <ul>
-                            <li>Tüm fiyatlar KDV dahildir</li>
-                            <li>Ödeme onaylandıktan sonra sipariş kesinleşir</li>
-                            <li>500 TL üzeri siparişlerde kargo ücretsizdir</li>
-                        </ul>
-                    </div>
-                </div>',
-                'en' => '<div class="container mx-auto px-4 py-16">
-                    <div class="max-w-4xl mx-auto prose prose-lg">
-                        <p>By using the ShopMax platform, you are deemed to have accepted the following terms and conditions.</p>
-                        
-                        <h2>General Terms</h2>
-                        <ul>
-                            <li>You must be over 18 years old to use our site</li>
-                            <li>You must provide accurate and up-to-date information</li>
-                            <li>You are responsible for the security of your account</li>
-                        </ul>
-                        
-                        <h2>Order and Payment</h2>
-                        <ul>
-                            <li>All prices include VAT</li>
-                            <li>Order is confirmed after payment approval</li>
-                            <li>Free shipping for orders over 500 TL</li>
-                        </ul>
-                    </div>
-                </div>'
-            ],
-            'is_homepage' => false,
-            'is_active' => true,
-        ]);
-
-        $this->createSeoSetting(
-            $page,
-            'Kullanım Şartları - ShopMax',
-            'Terms of Service - ShopMax',
-            'ShopMax kullanım şartları ve koşulları.',
-            'ShopMax terms and conditions.'
+        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->command->info('✅ TENANT 2 DATABASE SEEDING COMPLETED');
+        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->command->table(
+            ['Metric', 'Value'],
+            [
+                ['Total Pages Created', $this->pagesCreated],
+                ['Languages Supported', 'Turkish, English'],
+                ['Theme', 'Digital Agency / E-Commerce'],
+                ['Homepage', '1 (Digital Agency themed)'],
+                ['Standard Pages', '4 (About, Services, Blog, Contact)'],
+                ['Development Pages', ($this->pagesCreated - 5)],
+                ['SEO Settings', 'Auto-generated for all pages'],
+            ]
         );
+        $this->command->newLine();
     }
-    
+
+    /**
+     * Create main navigation menu - NOT USED IN THIS SEEDER
+     * Menu creation handled by MenuManagement module seeder
+     */
     private function createMainMenu(): void
     {
         $menu = Menu::create([
@@ -788,6 +690,6 @@ class PageSeederTenant2 extends Seeder
             'is_active' => true,
         ]);
 
-        $this->command->info('✅ Tenant2 E-Commerce menu created');
+        $this->command->info('  ✓ Menu created (deprecated - use MenuManagement seeder instead)');
     }
 }

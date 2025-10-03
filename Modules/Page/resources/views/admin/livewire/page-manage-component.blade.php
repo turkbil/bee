@@ -1,6 +1,6 @@
 <div>
     @php
-        View::share('pretitle', $pageId ? 'Sayfa Düzenleme' : 'Yeni Sayfa Ekleme');
+        View::share('pretitle', $pageId ? __('page::admin.edit_page_pretitle') : __('page::admin.new_page_pretitle'));
     @endphp
 
     @include('page::admin.helper')
@@ -27,24 +27,15 @@
                 <div class="tab-content" id="contentTabContent">
 
                     <!-- TEMEL BİLGİLER TAB - NO FADE for instant switching -->
-                    <div class="tab-pane" id="0" role="tabpanel">
+                    <div class="tab-pane show active" id="0" role="tabpanel">
                         @foreach ($availableLanguages as $lang)
                             @php
                                 $langData = $multiLangInputs[$lang] ?? [];
-                                // Tenant languages'den dil ismini al
-                                $tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where(
-                                    'is_active',
-                                    true,
-                                )->get();
-                                $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
+                                $langName = $languageNames[$lang] ?? strtoupper($lang);
                             @endphp
 
                             <div class="language-content" data-language="{{ $lang }}"
-                                style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};
-                                       visibility: {{ $currentLanguage === $lang ? 'visible' : 'hidden' }};
-                                       opacity: {{ $currentLanguage === $lang ? '1' : '0' }};
-                                       height: {{ $currentLanguage === $lang ? 'auto' : '0' }};"
-                                class="{{ $currentLanguage === $lang ? '' : 'd-none' }}">
+                                style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
                                 <!-- Başlık ve Slug alanları -->
                                 <div class="row mb-3">
@@ -116,7 +107,7 @@
                     </div>
 
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
-                    <div class="tab-pane" id="1" role="tabpanel" wire:ignore.self>
+                    <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab
                             :model-id="$pageId"
                             model-type="page"
@@ -156,6 +147,22 @@
         window.currentModelId = {{ $pageId ?? 'null' }};
         window.currentModuleName = 'page';
         window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
+
+        // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
+        document.addEventListener('DOMContentLoaded', function() {
+            Livewire.on('restore-active-tab', () => {
+                console.log('🔄 Tab restore tetiklendi (validation error)');
+
+                // forceTabRestore fonksiyonu tab-system.blade.php'de tanımlı
+                if (typeof window.forceTabRestore === 'function') {
+                    setTimeout(() => {
+                        window.forceTabRestore();
+                    }, 100);
+                } else {
+                    console.warn('⚠️ forceTabRestore fonksiyonu bulunamadı');
+                }
+            });
+        });
     </script>
 
     {{-- 🌍 UNIVERSAL SYSTEMS --}}

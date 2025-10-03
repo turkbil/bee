@@ -90,10 +90,19 @@ class BulkUpdatePagesJob implements ShouldQueue
                         continue;
                     }
 
-                    // Homepage kontrolü - ana sayfa slug değişmesin
-                    if ($page->is_homepage && isset($filteredUpdateData['slug'])) {
-                        unset($filteredUpdateData['slug']);
-                        Log::warning("Ana sayfa slug'ı değiştirilemez: {$page->title}");
+                    // Homepage kontrolü - ana sayfa koruması
+                    if ($page->is_homepage) {
+                        // Slug değiştirilemez
+                        if (isset($filteredUpdateData['slug'])) {
+                            unset($filteredUpdateData['slug']);
+                            Log::warning("Ana sayfa slug'ı değiştirilemez: {$page->title}");
+                        }
+
+                        // Pasif edilemez
+                        if (isset($filteredUpdateData['is_active']) && $filteredUpdateData['is_active'] === false) {
+                            unset($filteredUpdateData['is_active']);
+                            Log::warning("Ana sayfa pasif edilemez: {$page->title}");
+                        }
                     }
 
                     // Özel validasyonlar
@@ -102,19 +111,8 @@ class BulkUpdatePagesJob implements ShouldQueue
                     }
 
                     // Güncelleme işlemi
-                    $oldData = $page->toArray();
                     $page->update($filteredUpdateData);
-                    
-                    // Activity log
-                    activity()
-                        ->performedOn($page)
-                        ->causedBy(auth()->id())
-                        ->withProperties([
-                            'old' => $oldData,
-                            'new' => $filteredUpdateData,
-                            'bulk_operation' => true
-                        ])
-                        ->log('bulk_updated');
+                    log_activity($page, 'toplu-güncellendi');
 
                     $processedCount++;
                     

@@ -5,13 +5,13 @@ namespace Modules\Announcement\App\Http\Livewire\Traits;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * 🚀 Queue-Based Bulk Actions Trait - Announcement Module
- * 
+ * 🚀 Queue-Based Bulk Actions Trait
+ *
  * Announcement modülü için queue-based bulk işlemler:
  * - Bulk delete (queue)
- * - Bulk update (queue) 
+ * - Bulk update (queue)
  * - Progress tracking
- * - Page modülünden kopya alınmış template
+ * - Ana template trait - diğer modüller bu pattern'i alacak
  */
 trait WithBulkActionsQueue
 {
@@ -46,7 +46,7 @@ trait WithBulkActionsQueue
         if ($value) {
             $modelClass = $this->getModelClass();
             $primaryKey = (new $modelClass)->getKeyName();
-            
+
             $this->selectedItems = $modelClass::query()
                 ->where(function ($query) {
                     $query->where('title', 'like', '%' . $this->search . '%')
@@ -60,7 +60,7 @@ trait WithBulkActionsQueue
         } else {
             $this->selectedItems = [];
         }
-        
+
         $this->bulkActionsEnabled = count($this->selectedItems) > 0;
     }
 
@@ -80,19 +80,19 @@ trait WithBulkActionsQueue
 
     public function removeFromSelected($itemId)
     {
-        $this->selectedItems = array_filter($this->selectedItems, function($id) use ($itemId) {
+        $this->selectedItems = array_filter($this->selectedItems, function ($id) use ($itemId) {
             return $id != $itemId;
         });
-        
+
         $this->bulkActionsEnabled = count($this->selectedItems) > 0;
-        
+
         if (count($this->selectedItems) === 0) {
             $this->selectAll = false;
         }
     }
 
     /**
-     * 🗑️ Queue-based bulk delete - Announcement specific
+     * 🗑️ Queue-based bulk delete
      */
     public function bulkDelete()
     {
@@ -109,39 +109,38 @@ trait WithBulkActionsQueue
             // Queue job ile bulk delete
             $tenantId = tenant('id') ?? 'central';
             $userId = (string) auth()->id();
-            
+
             \Modules\Announcement\App\Jobs\BulkDeleteAnnouncementsJob::dispatch(
                 $this->selectedItems,
                 $tenantId,
                 $userId,
                 ['force_delete' => false]
             );
-            
+
             $count = count($this->selectedItems);
             $this->selectedItems = [];
             $this->selectAll = false;
             $this->bulkActionsEnabled = false;
-            
+
             // Progress tracking başlat
             $this->bulkProgressVisible = true;
             $this->bulkProgress = [
                 'operation' => 'delete',
                 'count' => $count,
-                'progress_key' => "bulk_delete_announcements_{$tenantId}_{$userId}",
+                'progress_key' => "bulk_delete_pages_{$tenantId}_{$userId}",
                 'started_at' => now()->toISOString()
             ];
-            
+
             $this->dispatch('toast', [
                 'title' => 'Queue İşlemi Başlatıldı',
-                'message' => "{$count} duyuru silme işlemi kuyruğa eklendi",
+                'message' => "{$count} sayfa silme işlemi kuyruğa eklendi",
                 'type' => 'success'
             ]);
-            
+
             // Progress check timer başlat
             $this->dispatch('startBulkProgressCheck', [
                 'progress_key' => $this->bulkProgress['progress_key']
             ]);
-            
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
@@ -152,7 +151,7 @@ trait WithBulkActionsQueue
     }
 
     /**
-     * ✏️ Queue-based bulk update - Announcement specific
+     * ✏️ Queue-based bulk update
      */
     public function bulkUpdate($updateData)
     {
@@ -169,7 +168,7 @@ trait WithBulkActionsQueue
             // Queue job ile bulk update
             $tenantId = tenant('id') ?? 'central';
             $userId = (string) auth()->id();
-            
+
             \Modules\Announcement\App\Jobs\BulkUpdateAnnouncementsJob::dispatch(
                 $this->selectedItems,
                 $updateData,
@@ -177,32 +176,31 @@ trait WithBulkActionsQueue
                 $userId,
                 ['validate' => true]
             );
-            
+
             $count = count($this->selectedItems);
             $this->selectedItems = [];
             $this->selectAll = false;
             $this->bulkActionsEnabled = false;
-            
+
             // Progress tracking başlat
             $this->bulkProgressVisible = true;
             $this->bulkProgress = [
                 'operation' => 'update',
                 'count' => $count,
-                'progress_key' => "bulk_update_announcements_{$tenantId}_{$userId}",
+                'progress_key' => "bulk_update_pages_{$tenantId}_{$userId}",
                 'started_at' => now()->toISOString()
             ];
-            
+
             $this->dispatch('toast', [
                 'title' => 'Queue İşlemi Başlatıldı',
-                'message' => "{$count} duyuru güncelleme işlemi kuyruğa eklendi",
+                'message' => "{$count} sayfa güncelleme işlemi kuyruğa eklendi",
                 'type' => 'success'
             ]);
-            
+
             // Progress check timer başlat
             $this->dispatch('startBulkProgressCheck', [
                 'progress_key' => $this->bulkProgress['progress_key']
             ]);
-            
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
@@ -221,60 +219,6 @@ trait WithBulkActionsQueue
     }
 
     /**
-     * 🔥 Bulk toggle important status (Announcement specific)
-     */
-    public function bulkToggleImportant($status)
-    {
-        $this->bulkUpdate(['is_important' => $status]);
-    }
-
-    /**
-     * ⭐ Bulk toggle featured status (Announcement specific)
-     */
-    public function bulkToggleFeatured($status)
-    {
-        $this->bulkUpdate(['is_featured' => $status]);
-    }
-
-    /**
-     * 🎯 Bulk update announcement type (Announcement specific)
-     */
-    public function bulkUpdateType($type)
-    {
-        $allowedTypes = ['info', 'warning', 'success', 'danger', 'maintenance'];
-        
-        if (!in_array($type, $allowedTypes)) {
-            $this->dispatch('toast', [
-                'title' => 'Hata',
-                'message' => 'Geçersiz duyuru tipi',
-                'type' => 'error'
-            ]);
-            return;
-        }
-        
-        $this->bulkUpdate(['type' => $type]);
-    }
-
-    /**
-     * 👥 Bulk update target audience (Announcement specific)
-     */
-    public function bulkUpdateAudience($audience)
-    {
-        $allowedAudiences = ['admin', 'user', 'all'];
-        
-        if (!in_array($audience, $allowedAudiences)) {
-            $this->dispatch('toast', [
-                'title' => 'Hata',
-                'message' => 'Geçersiz hedef kitle',
-                'type' => 'error'
-            ]);
-            return;
-        }
-        
-        $this->bulkUpdate(['target_audience' => $audience]);
-    }
-
-    /**
      * 📊 Progress tracking kontrolü
      */
     public function checkBulkProgress()
@@ -285,7 +229,7 @@ trait WithBulkActionsQueue
 
         try {
             $progress = Cache::get($this->bulkProgress['progress_key']);
-            
+
             if (!$progress) {
                 return;
             }
@@ -298,35 +242,33 @@ trait WithBulkActionsQueue
             // İşlem tamamlandıysa veya hata olduysa
             if (in_array($progress['status'], ['completed', 'failed'])) {
                 $this->bulkProgressVisible = false;
-                
+
                 if ($progress['status'] === 'completed') {
                     $processed = $progress['data']['processed'] ?? 0;
                     $errors = $progress['data']['errors'] ?? 0;
                     $duration = $progress['data']['duration'] ?? 0;
-                    
+
                     $this->dispatch('toast', [
                         'title' => '✅ İşlem Tamamlandı',
                         'message' => "İşlenen: {$processed}, Hata: {$errors}, Süre: {$duration}s",
                         'type' => 'success'
                     ]);
-                    
+
                     // Sayfa refresh
                     $this->dispatch('$refresh');
-                    
                 } else {
                     $error = $progress['data']['error'] ?? 'Bilinmeyen hata';
-                    
+
                     $this->dispatch('toast', [
                         'title' => '❌ İşlem Başarısız',
                         'message' => $error,
                         'type' => 'error'
                     ]);
                 }
-                
+
                 // Cache temizle
                 Cache::forget($this->bulkProgress['progress_key']);
             }
-            
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Progress Hatası',
@@ -346,6 +288,54 @@ trait WithBulkActionsQueue
     }
 
     /**
+     * 🌐 Queue-based manual translation
+     */
+    public function translateContent($data, ?int $pageId = null): void
+    {
+        if (!$pageId) {
+            $this->dispatch('toast', [
+                'title' => 'Çeviri Hatası',
+                'message' => 'Sayfa ID bulunamadı',
+                'type' => 'error'
+            ]);
+            return;
+        }
+
+        try {
+            // Progress key oluştur
+            $progressKey = "page_translation_progress_{$pageId}_" . uniqid();
+
+            // Translation job dispatch et
+            $job = \Modules\Announcement\App\Jobs\TranslateAnnouncementContentJob::dispatch($data, $pageId);
+
+            $this->dispatch('toast', [
+                'title' => 'Çeviri İşlemi Başlatıldı',
+                'message' => 'Çeviri işlemi kuyruğa eklendi ve başlatıldı',
+                'type' => 'success'
+            ]);
+
+            // Progress tracking başlat
+            $this->dispatch('translation-queued', [
+                'announcement_id' => $pageId,
+                'progress_key' => $progressKey,
+                'success' => true,
+                'message' => 'Çeviri işlemi başlatıldı!'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('❌ Queue translation hatası', [
+                'announcement_id' => $pageId,
+                'error' => $e->getMessage()
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Çeviri Hatası',
+                'message' => 'Çeviri kuyruğu hatası: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
      * Bulk delete confirmation
      */
     public function confirmBulkDelete()
@@ -360,7 +350,7 @@ trait WithBulkActionsQueue
         }
 
         $module = strtolower(class_basename($this->getModelClass()));
-        
+
         $this->dispatch('showBulkDeleteModal', [
             'module' => $module,
             'selectedItems' => $this->selectedItems

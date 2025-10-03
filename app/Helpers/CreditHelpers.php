@@ -73,20 +73,52 @@ if (!function_exists('ai_use_credits')) {
                 return false;
             }
             
-            // Credit kullanımını kaydet
+            // Credit kullanımını kaydet - DETAYLI LOGLAMA
+            $inputTokens = $metadata['input_tokens'] ?? 0;
+            $outputTokens = $metadata['output_tokens'] ?? 0;
+            $totalTokens = $inputTokens + $outputTokens;
+
+            // Pro hizmet tespiti
+            $operationType = $metadata['operation_type'] ?? null;
+            $isProService = in_array($operationType, ['seo_recommendations', 'content_generation', 'pdf_analysis', 'translation']);
+
+            // Maliyet hesaplama (1 kredi = 4₺)
+            $costPerCredit = 4.0;
+            $totalCost = $creditAmount * $costPerCredit;
+
             AICreditUsage::create([
                 'tenant_id' => $tenant->id,
-                'user_id' => auth()->id() ?: 1, // Default user ID 1 for system usage
+                'user_id' => auth()->id() ?: 1,
                 'credits_used' => $creditAmount,
-                'input_tokens' => $metadata['input_tokens'] ?? 0,
-                'output_tokens' => $metadata['output_tokens'] ?? 0,
                 'credit_cost' => $creditAmount,
-                'usage_type' => $metadata['usage_type'] ?? 'ai_general',
-                'description' => $metadata['description'] ?? 'AI credit usage',
+                'usage_type' => $operationType ?? ($metadata['usage_type'] ?? 'ai_general'),
+                'description' => ai_generate_usage_description($metadata, $creditAmount, $totalCost),
                 'reference_id' => $metadata['reference_id'] ?? null,
                 'provider_name' => $metadata['provider_name'] ?? ai_get_active_provider_name(),
+                'model' => $metadata['model_name'] ?? $metadata['model'] ?? null,
                 'feature_slug' => $metadata['feature_slug'] ?? null,
-                'metadata' => $metadata,
+                'metadata' => array_merge($metadata, [
+                    // Token bilgileri
+                    'input_tokens' => $inputTokens,
+                    'output_tokens' => $outputTokens,
+                    'total_tokens' => $totalTokens,
+
+                    // Kredi hesaplama detayları
+                    'credit_calculation_method' => $metadata['credit_calculation_method'] ?? 'standard',
+                    'operation_type' => $operationType,
+                    'is_pro_service' => $isProService,
+
+                    // Maliyet bilgileri
+                    'cost_per_credit' => $costPerCredit,
+                    'total_cost_tl' => $totalCost,
+
+                    // Bağlam bilgileri (varsa)
+                    'word_count' => $metadata['word_count'] ?? null,
+                    'page_count' => $metadata['page_count'] ?? null,
+
+                    // Zaman damgası
+                    'logged_at' => now()->toISOString()
+                ]),
                 'used_at' => $metadata['used_at'] ?? now()
             ]);
             
@@ -866,23 +898,51 @@ if (!function_exists('format_credit_currency')) {
 
 if (!function_exists('ai_calculate_model_credits')) {
     /**
-     * Model bazlı kredi hesaplama - YENI SİSTEM
-     * 
+     * Model bazlı kredi hesaplama - HYBRID SİSTEM
+     *
      * @param int $inputTokens Input token sayısı
-     * @param int $outputTokens Output token sayısı  
+     * @param int $outputTokens Output token sayısı
      * @param string $provider Provider adı
      * @param string $model Model adı
+     * @param string|null $operationType İşlem türü (chat, seo_recommendations, translation, content_generation, pdf_analysis)
+     * @param string|null $featureSlug Feature slug (ai_features tablosundan)
+     * @param array $context Ek bağlam (word_count, page_count, etc.)
      * @return float Hesaplanan kredi miktarı
      */
-    function ai_calculate_model_credits(int $inputTokens, int $outputTokens, string $provider, string $model): float
-    {
+    function ai_calculate_model_credits(
+        int $inputTokens,
+        int $outputTokens,
+        string $provider,
+        string $model,
+        ?string $operationType = null,
+        ?string $featureSlug = null,
+        array $context = []
+    ): float {
         try {
             $calculator = app(\Modules\AI\App\Services\CreditCalculatorService::class);
+
+            // Hybrid sistem: operationType veya featureSlug varsa context-aware hesaplama
+            if ($operationType || $featureSlug) {
+                return $calculator->calculateCreditsWithContext(
+                    $provider,
+                    $model,
+                    $inputTokens,
+                    $outputTokens,
+                    $operationType,
+                    $featureSlug,
+                    $context
+                );
+            }
+
+            // Eski sistem fallback
             return $calculator->calculateCreditsForModel($provider, $model, $inputTokens, $outputTokens);
+
         } catch (\Exception $e) {
             Log::error('ai_calculate_model_credits error', [
                 'provider' => $provider,
                 'model' => $model,
+                'operation_type' => $operationType,
+                'feature_slug' => $featureSlug,
                 'error' => $e->getMessage()
             ]);
             return ($inputTokens + $outputTokens) / 1000 * 1.0; // Fallback
@@ -990,26 +1050,42 @@ if (!function_exists('ai_set_base_token_rate')) {
 
 if (!function_exists('ai_use_credits_with_model')) {
     /**
-     * Model bilgisi ile kredi kullanım kaydı - YENI SİSTEM
-     * 
+     * Model bilgisi ile kredi kullanım kaydı - HYBRID SİSTEM
+     *
      * @param int $inputTokens Input token sayısı
      * @param int $outputTokens Output token sayısı
      * @param string $provider Provider adı
      * @param string $model Model adı
-     * @param array $metadata Ek metadata
+     * @param array $metadata Ek metadata (operation_type, feature_slug, word_count, page_count, etc.)
      * @return float Kullanılan kredi miktarı (0.0 = başarısız)
      */
     function ai_use_credits_with_model(
-        int $inputTokens, 
-        int $outputTokens, 
-        string $provider, 
-        string $model, 
+        int $inputTokens,
+        int $outputTokens,
+        string $provider,
+        string $model,
         array $metadata = []
     ): float {
         try {
-            // Model bazlı kredi hesapla
-            $credits = ai_calculate_model_credits($inputTokens, $outputTokens, $provider, $model);
-            
+            // Metadata'dan operation_type ve feature_slug çıkar
+            $operationType = $metadata['operation_type'] ?? null;
+            $featureSlug = $metadata['feature_slug'] ?? null;
+            $context = [
+                'word_count' => $metadata['word_count'] ?? null,
+                'page_count' => $metadata['page_count'] ?? null,
+            ];
+
+            // Model bazlı kredi hesapla (hybrid sistem)
+            $credits = ai_calculate_model_credits(
+                $inputTokens,
+                $outputTokens,
+                $provider,
+                $model,
+                $operationType,
+                $featureSlug,
+                $context
+            );
+
             // Metadata'yı güçlendir
             $enrichedMetadata = array_merge($metadata, [
                 'provider_name' => $provider,
@@ -1017,20 +1093,23 @@ if (!function_exists('ai_use_credits_with_model')) {
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
                 'total_tokens' => $inputTokens + $outputTokens,
-                'credit_calculation_method' => 'model_based',
-                'calculated_credits' => $credits
+                'credit_calculation_method' => $operationType || $featureSlug ? 'hybrid_context_aware' : 'model_based',
+                'calculated_credits' => $credits,
+                'operation_type' => $operationType,
+                'feature_slug' => $featureSlug
             ]);
-            
+
             // Kredi kullan
             $success = ai_use_credits($credits, null, $enrichedMetadata);
             return $success ? $credits : 0.0;
-            
+
         } catch (\Exception $e) {
             Log::error('ai_use_credits_with_model error', [
                 'provider' => $provider,
                 'model' => $model,
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
+                'metadata' => $metadata,
                 'error' => $e->getMessage()
             ]);
             return 0.0;
@@ -1063,6 +1142,61 @@ if (!function_exists('ai_compare_model_costs')) {
                 'generated_at' => now()->toISOString()
             ];
         }
+    }
+}
+
+if (!function_exists('ai_generate_usage_description')) {
+    /**
+     * AI kullanımı için detaylı açıklama oluştur
+     *
+     * @param array $metadata İşlem metadata'sı
+     * @param float $creditAmount Kullanılan kredi
+     * @param float $totalCost Toplam maliyet (TL)
+     * @return string Detaylı açıklama
+     */
+    function ai_generate_usage_description(array $metadata, float $creditAmount, float $totalCost): string
+    {
+        $operationType = $metadata['operation_type'] ?? 'general';
+        $provider = $metadata['provider_name'] ?? 'AI';
+        $model = $metadata['model_name'] ?? $metadata['model'] ?? 'Unknown';
+
+        // Operation type'a göre özel açıklamalar
+        $descriptions = [
+            'chat' => function($m) use ($creditAmount, $totalCost) {
+                $tokens = ($m['input_tokens'] ?? 0) + ($m['output_tokens'] ?? 0);
+                return "Chat mesajı ({$tokens} token, {$creditAmount} kredi, {$totalCost}₺)";
+            },
+
+            'seo_recommendations' => function($m) use ($creditAmount, $totalCost) {
+                return "SEO önerileri oluşturuldu ({$creditAmount} kredi, {$totalCost}₺)";
+            },
+
+            'translation' => function($m) use ($creditAmount, $totalCost) {
+                $wordCount = $m['word_count'] ?? 'bilinmeyen';
+                $from = $m['from_lang'] ?? '?';
+                $to = $m['to_lang'] ?? '?';
+                return "Çeviri: {$from} → {$to} ({$wordCount} kelime, {$creditAmount} kredi, {$totalCost}₺)";
+            },
+
+            'content_generation' => function($m) use ($creditAmount, $totalCost) {
+                $wordCount = $m['word_count'] ?? 'bilinmeyen';
+                return "İçerik üretimi ({$wordCount} kelime, {$creditAmount} kredi, {$totalCost}₺)";
+            },
+
+            'pdf_analysis' => function($m) use ($creditAmount, $totalCost) {
+                $pageCount = $m['page_count'] ?? 'bilinmeyen';
+                return "PDF analizi ({$pageCount} sayfa, {$creditAmount} kredi, {$totalCost}₺)";
+            },
+        ];
+
+        // İlgili description varsa kullan
+        if (isset($descriptions[$operationType])) {
+            return $descriptions[$operationType]($metadata);
+        }
+
+        // Varsayılan description
+        $tokens = ($metadata['input_tokens'] ?? 0) + ($metadata['output_tokens'] ?? 0);
+        return "{$provider} {$model} kullanımı ({$tokens} token, {$creditAmount} kredi, {$totalCost}₺)";
     }
 }
 

@@ -88,11 +88,13 @@ class BulkDeletePagesJob implements ShouldQueue
 
                     // Silme işlemi
                     $forceDelete = $this->options['force_delete'] ?? false;
-                    
+
                     if ($forceDelete) {
                         $page->forceDelete();
+                        log_activity($page, 'kalıcı-silindi');
                     } else {
                         $page->delete();
+                        log_activity($page, 'silindi');
                     }
 
                     $processedCount++;

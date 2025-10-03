@@ -76,7 +76,9 @@ class PageServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\Page\App\Console\WarmPageCacheCommand::class,
+        ]);
     }
 
     /**

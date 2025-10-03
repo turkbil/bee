@@ -90,7 +90,6 @@
     <link rel="stylesheet" href="/admin-assets/libs/choices/choices.min.css">
     <link rel="stylesheet" href="/admin-assets/css/choices-custom.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/main.css?v={{ time() }}" />
-    <link rel="stylesheet" href="/admin-assets/css/language-content-fix.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/ai-response-templates.css?v={{ time() }}" />
@@ -499,7 +498,72 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+{{-- Alpine.js x-cloak style (prevents flash of unstyled content) --}}
+<style>
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
+
 @livewireScripts
+
+{{-- 🎨 Alpine.js Global Store Configuration - After Livewire (uses bundled Alpine) --}}
+<script>
+document.addEventListener('livewire:init', () => {
+    // Livewire'ın bundled Alpine.js'ini kullan
+    if (typeof Alpine !== 'undefined') {
+        // 🌐 Global state management
+        Alpine.store('app', {
+            // Bulk actions state
+            bulkConfirmDelete: false,
+            bulkConfirmTimeout: null,
+
+            // Inline edit state
+            inlineEditDirty: false,
+
+            // Upload state
+            uploadProgress: 0,
+            isUploading: false,
+
+            // UI state
+            showBulkBar: false,
+            isDragging: false,
+
+            // Methods
+            resetBulkConfirm() {
+                this.bulkConfirmDelete = false;
+                if (this.bulkConfirmTimeout) {
+                    clearTimeout(this.bulkConfirmTimeout);
+                    this.bulkConfirmTimeout = null;
+                }
+            },
+
+            startBulkConfirm() {
+                this.bulkConfirmDelete = true;
+                // Auto-cancel after 5 seconds
+                this.bulkConfirmTimeout = setTimeout(() => {
+                    this.resetBulkConfirm();
+                }, 5000);
+            }
+        });
+
+        // 🎭 Global magic helpers
+        Alpine.magic('formatBytes', () => {
+            return (bytes, decimals = 2) => {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            };
+        });
+
+        console.log('✅ Alpine.js Global Store initialized (Livewire bundled)');
+    }
+});
+</script>
 
 <!-- Navigation Loading States -->
 <script src="{{ asset('admin-assets/js/navigation-loading.js') }}"></script>

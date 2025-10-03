@@ -59,14 +59,14 @@ readonly class SeoMetaTagService
                 if ($model) return $model;
             }
             
-            // Portfolio modülü
-            if (isset($parameters['id']) && request()->is('admin/portfolio/manage/*')) {
+            // Portfolio modülü - SADECE TENANT CONTEXT'TE
+            if (!\App\Helpers\TenantHelpers::isCentral() && isset($parameters['id']) && request()->is('admin/portfolio/manage/*')) {
                 $model = \Modules\Portfolio\app\Models\Portfolio::find($parameters['id']);
                 if ($model) return $model;
             }
-            
-            // Announcement modülü
-            if (isset($parameters['id']) && request()->is('admin/announcement/*')) {
+
+            // Announcement modülü - SADECE TENANT CONTEXT'TE
+            if (!\App\Helpers\TenantHelpers::isCentral() && isset($parameters['id']) && request()->is('admin/announcement/*')) {
                 $model = \Modules\Announcement\app\Models\Announcement::find($parameters['id']);
                 if ($model) return $model;
             }
@@ -134,17 +134,19 @@ readonly class SeoMetaTagService
                 // Bilinen action'lar
                 $knownActions = ['category', 'tag', 'author', 'type', 'label'];
                 if (in_array($possibleAction, $knownActions)) {
-                    // Portfolio kategori kontrolü
-                    $category = \Modules\Portfolio\app\Models\PortfolioCategory::where('is_active', true)
-                        ->where(function($query) use ($categorySlug, $locale) {
-                            $query->whereJsonContains('slug->' . $locale, $categorySlug)
-                                  ->orWhere('slug', 'LIKE', '%"' . $categorySlug . '"%');
-                        })
-                        ->first();
-                    if ($category) return $category;
-                    
-                    // Announcement kategori kontrolü
-                    if (class_exists('\Modules\Announcement\app\Models\AnnouncementCategory')) {
+                    // Portfolio kategori kontrolü - SADECE TENANT CONTEXT'TE
+                    if (!\App\Helpers\TenantHelpers::isCentral()) {
+                        $category = \Modules\Portfolio\app\Models\PortfolioCategory::where('is_active', true)
+                            ->where(function($query) use ($categorySlug, $locale) {
+                                $query->whereJsonContains('slug->' . $locale, $categorySlug)
+                                      ->orWhere('slug', 'LIKE', '%"' . $categorySlug . '"%');
+                            })
+                            ->first();
+                        if ($category) return $category;
+                    }
+
+                    // Announcement kategori kontrolü - SADECE TENANT CONTEXT'TE
+                    if (!\App\Helpers\TenantHelpers::isCentral() && class_exists('\Modules\Announcement\app\Models\AnnouncementCategory')) {
                         $announcementCategory = \Modules\Announcement\app\Models\AnnouncementCategory::where('is_active', true)
                             ->where(function($query) use ($categorySlug, $locale) {
                                 $query->whereJsonContains('slug->' . $locale, $categorySlug)
@@ -166,24 +168,28 @@ readonly class SeoMetaTagService
             })
             ->first();
         if ($page) return $page;
-        
-        // Portfolio'da ara
-        $portfolio = \Modules\Portfolio\app\Models\Portfolio::where('is_active', true)
-            ->where(function($query) use ($slug, $locale) {
-                $query->whereJsonContains('slug->' . $locale, $slug)
-                      ->orWhere('slug', 'LIKE', '%"' . $slug . '"%');
-            })
-            ->first();
-        if ($portfolio) return $portfolio;
-        
-        // Announcement'ta ara
-        $announcement = \Modules\Announcement\app\Models\Announcement::where('is_active', true)
-            ->where(function($query) use ($slug, $locale) {
-                $query->whereJsonContains('slug->' . $locale, $slug)
-                      ->orWhere('slug', 'LIKE', '%"' . $slug . '"%');
-            })
-            ->first();
-        if ($announcement) return $announcement;
+
+        // Portfolio'da ara - SADECE TENANT CONTEXT'TE
+        if (!\App\Helpers\TenantHelpers::isCentral()) {
+            $portfolio = \Modules\Portfolio\app\Models\Portfolio::where('is_active', true)
+                ->where(function($query) use ($slug, $locale) {
+                    $query->whereJsonContains('slug->' . $locale, $slug)
+                          ->orWhere('slug', 'LIKE', '%"' . $slug . '"%');
+                })
+                ->first();
+            if ($portfolio) return $portfolio;
+        }
+
+        // Announcement'ta ara - SADECE TENANT CONTEXT'TE
+        if (!\App\Helpers\TenantHelpers::isCentral()) {
+            $announcement = \Modules\Announcement\app\Models\Announcement::where('is_active', true)
+                ->where(function($query) use ($slug, $locale) {
+                    $query->whereJsonContains('slug->' . $locale, $slug)
+                          ->orWhere('slug', 'LIKE', '%"' . $slug . '"%');
+                })
+                ->first();
+            if ($announcement) return $announcement;
+        }
         
         return null;
     }
@@ -539,21 +545,22 @@ readonly class SeoMetaTagService
             if ($seoSetting && $seoSetting->hasDirectTitle($locale) && $seoTitle = $seoSetting->getTitle($locale)) {
                 // 1. Öncelik: SEO ayarlarındaki manuel title
                 // Site name'i SettingManagement'ten al
-                $settingSiteName = setting('site_name') ?: setting('site_title', $siteName);
-                
+                $settingSiteName = setting('site_name') ?: setting('site_title', $siteName) ?: '';
+                $siteNameSafe = $siteName ?? '';
+
                 // SEO title zaten site name içeriyorsa ekleme
-                if (str_contains($seoTitle, $settingSiteName) || str_contains($seoTitle, $siteName)) {
+                if (($settingSiteName && str_contains($seoTitle, $settingSiteName)) || ($siteNameSafe && str_contains($seoTitle, $siteNameSafe))) {
                     $data['title'] = $seoTitle;
                 } else {
-                    $data['title'] = $seoTitle . ' - ' . $settingSiteName;
+                    $data['title'] = $seoTitle . ' - ' . ($settingSiteName ?: $siteNameSafe ?: config('app.name'));
                 }
             } elseif (method_exists($model, 'getTranslated') && $modelTitle = $model->getTranslated('title', $locale)) {
                 // 2. Öncelik: Model'in title alanı + site name
-                $settingSiteName = setting('site_name') ?: setting('site_title', $siteName);
+                $settingSiteName = setting('site_name') ?: setting('site_title', $siteName) ?: config('app.name');
                 $data['title'] = $modelTitle . ' - ' . $settingSiteName;
             } else {
                 // 3. Fallback: Sadece site default title
-                $data['title'] = setting('site_name') ?: setting('site_title', $siteName);
+                $data['title'] = setting('site_name') ?: setting('site_title', $siteName) ?: config('app.name');
             }
             
             // 2. DESCRIPTION - Geliştirilmiş Hiyerarşi

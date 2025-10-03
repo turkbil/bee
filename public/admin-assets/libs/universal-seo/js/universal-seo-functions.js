@@ -210,11 +210,20 @@
 
             if (fieldsContainer) {
                 if (checkbox.checked) {
-                    fieldsContainer.style.display = 'block';
-                    // AI'den gelen değerleri koru
+                    // jQuery slideDown veya native show
+                    if (typeof $ !== 'undefined') {
+                        $(fieldsContainer).slideDown(300);
+                    } else {
+                        fieldsContainer.style.display = 'block';
+                    }
                     console.log('✅ Social media fields açıldı:', language);
                 } else {
-                    fieldsContainer.style.display = 'none';
+                    // jQuery slideUp veya native hide
+                    if (typeof $ !== 'undefined') {
+                        $(fieldsContainer).slideUp(300);
+                    } else {
+                        fieldsContainer.style.display = 'none';
+                    }
                     // Checkbox kapalıysa alanları temizle
                     if (ogTitleInput) {
                         ogTitleInput.value = '';

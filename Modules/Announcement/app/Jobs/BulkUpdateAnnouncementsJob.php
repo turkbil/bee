@@ -12,16 +12,17 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Modules\Announcement\App\Models\Announcement;
+use Modules\Announcement\App\Services\AnnouncementService;
 use Throwable;
 
 /**
  * ✏️ Bulk Announcement Update Queue Job
- * 
+ *
  * Announcement modülünün bulk güncelleme işlemleri için queue job:
- * - Toplu duyuru güncelleme işlemleri için optimize edilmiş
+ * - Toplu sayfa güncelleme işlemleri için optimize edilmiş
  * - Progress tracking ile durum takibi
  * - Cache temizleme ve activity log
- * - Page modülünden kopya alınmış template
+ * - Ana template job - diğer modüller bu pattern'i alacak
  */
 class BulkUpdateAnnouncementsJob implements ShouldQueue
 {
@@ -32,14 +33,14 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
     public int $maxExceptions = 3;
 
     /**
-     * @param array $announcementIds Güncellenecek duyuru ID'leri
+     * @param array $pageIds Güncellenecek sayfa ID'leri
      * @param array $updateData Güncellenecek veriler
      * @param string $tenantId Tenant ID (multi-tenant sistem için)
      * @param string $userId İşlemi yapan kullanıcı ID'si
      * @param array $options Ek seçenekler (validate, etc.)
      */
     public function __construct(
-        public array $announcementIds,
+        public array $pageIds,
         public array $updateData,
         public string $tenantId,
         public string $userId,
@@ -51,7 +52,7 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
     /**
      * Job execution
      */
-    public function handle(): void
+    public function handle(AnnouncementService $pageService): void
     {
         $startTime = microtime(true);
         $processedCount = 0;
@@ -59,17 +60,17 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
         $errors = [];
 
         try {
-            Log::info('✏️ BULK ANNOUNCEMENT UPDATE STARTED', [
-                'announcement_ids' => $this->announcementIds,
+            Log::info('✏️ BULK PAGE UPDATE STARTED', [
+                'announcement_ids' => $this->pageIds,
                 'update_data' => $this->updateData,
                 'tenant_id' => $this->tenantId,
                 'user_id' => $this->userId,
-                'total_count' => count($this->announcementIds)
+                'total_count' => count($this->pageIds)
             ]);
 
             // Progress tracking için cache key
-            $progressKey = "bulk_update_announcements_{$this->tenantId}_{$this->userId}";
-            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'starting');
+            $progressKey = "bulk_update_pages_{$this->tenantId}_{$this->userId}";
+            $this->updateProgress($progressKey, 0, count($this->pageIds), 'starting');
 
             // Güvenlik kontrolü - güncellenebilir alanları kontrol et
             $allowedFields = $this->getAllowedUpdateFields();
@@ -79,13 +80,13 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
                 throw new \InvalidArgumentException('Güncellenebilir geçerli alan bulunamadı');
             }
 
-            // Her duyuru için güncelleme işlemi
-            foreach ($this->announcementIds as $index => $announcementId) {
+            // Her sayfa için güncelleme işlemi
+            foreach ($this->pageIds as $index => $pageId) {
                 try {
-                    // Duyuru var mı kontrol et
-                    $announcement = Announcement::find($announcementId);
+                    // Sayfa var mı kontrol et
+                    $announcement = Announcement::find($pageId);
                     if (!$announcement) {
-                        Log::warning("Duyuru bulunamadı: {$announcementId}");
+                        Log::warning("Sayfa bulunamadı: {$pageId}");
                         continue;
                     }
 
@@ -95,42 +96,30 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
                     }
 
                     // Güncelleme işlemi
-                    $oldData = $announcement->toArray();
                     $announcement->update($filteredUpdateData);
-                    
-                    // Activity log
-                    activity()
-                        ->performedOn($announcement)
-                        ->causedBy(auth()->id())
-                        ->withProperties([
-                            'old' => $oldData,
-                            'new' => $filteredUpdateData,
-                            'bulk_operation' => true
-                        ])
-                        ->log('bulk_updated');
+                    log_activity($announcement, 'toplu-güncellendi');
 
                     $processedCount++;
-                    
+
                     // Progress güncelle
-                    $progress = (int) (($index + 1) / count($this->announcementIds) * 100);
-                    $this->updateProgress($progressKey, $progress, count($this->announcementIds), 'processing', [
+                    $progress = (int) (($index + 1) / count($this->pageIds) * 100);
+                    $this->updateProgress($progressKey, $progress, count($this->pageIds), 'processing', [
                         'processed' => $processedCount,
                         'errors' => $errorCount,
-                        'current_announcement' => $announcement->title
+                        'current_page' => $announcement->title
                     ]);
 
-                    Log::info("✅ Duyuru güncellendi", [
-                        'id' => $announcementId,
+                    Log::info("✅ Sayfa güncellendi", [
+                        'id' => $pageId,
                         'title' => $announcement->title,
                         'updated_fields' => array_keys($filteredUpdateData)
                     ]);
-
                 } catch (\Exception $e) {
                     $errorCount++;
-                    $errors[] = "Duyuru güncelleme hatası (ID: {$announcementId}): " . $e->getMessage();
-                    
-                    Log::error("❌ Duyuru güncelleme hatası", [
-                        'announcement_id' => $announcementId,
+                    $errors[] = "Sayfa güncelleme hatası (ID: {$pageId}): " . $e->getMessage();
+
+                    Log::error("❌ Sayfa güncelleme hatası", [
+                        'announcement_id' => $pageId,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
@@ -138,11 +127,11 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
             }
 
             // Cache temizleme
-            $this->clearAnnouncementCaches();
+            $this->clearPageCaches();
 
             // Final progress
             $duration = round(microtime(true) - $startTime, 2);
-            $this->updateProgress($progressKey, 100, count($this->announcementIds), 'completed', [
+            $this->updateProgress($progressKey, 100, count($this->pageIds), 'completed', [
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration,
@@ -150,20 +139,19 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
                 'updated_fields' => array_keys($filteredUpdateData)
             ]);
 
-            Log::info('✅ BULK ANNOUNCEMENT UPDATE COMPLETED', [
-                'total_announcements' => count($this->announcementIds),
+            Log::info('✅ BULK PAGE UPDATE COMPLETED', [
+                'total_pages' => count($this->pageIds),
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration . 's',
                 'updated_fields' => array_keys($filteredUpdateData)
             ]);
-
         } catch (\Exception $e) {
-            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
+            $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
                 'error' => $e->getMessage()
             ]);
 
-            Log::error('💥 BULK ANNOUNCEMENT UPDATE FAILED', [
+            Log::error('💥 BULK PAGE UPDATE FAILED', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -173,85 +161,45 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
     }
 
     /**
-     * Güncellenebilir alanları tanımla - Announcement modülüne özel
+     * Güncellenebilir alanları tanımla
      */
     private function getAllowedUpdateFields(): array
     {
         return [
             'is_active',
-            'is_important',
-            'is_featured', 
-            'priority',
-            'type', // announcement_type
-            'start_date',
-            'end_date',
-            'published_at',
-            'slug',
             'meta_title',
             'meta_description',
-            'target_audience', // admin, user, all
-            'display_location', // header, sidebar, modal
-            'auto_hide'
+            'meta_keywords',
+            'canonical_url',
+            'og_title',
+            'og_description',
+            'og_image',
+            'twitter_title',
+            'twitter_description',
+            'twitter_image',
+            'priority',
+            'changefreq',
+            'noindex',
+            'nofollow',
+            'schema_type',
+            'published_at',
+            'slug' // Homepage için kısıtlı
         ];
     }
 
     /**
-     * Update data validasyonu - Announcement modülüne özel
+     * Update data validasyonu
      */
     private function validateUpdateData(Announcement $announcement, array $updateData): void
     {
         // Slug benzersizlik kontrolü
         if (isset($updateData['slug'])) {
-            $existingAnnouncement = Announcement::where('slug', $updateData['slug'])
+            $existingPage = Announcement::where('slug', $updateData['slug'])
                 ->where('id', '!=', $announcement->id)
                 ->first();
-                
-            if ($existingAnnouncement) {
+
+            if ($existingPage) {
                 throw new \InvalidArgumentException("Slug zaten kullanımda: {$updateData['slug']}");
-            }
-        }
-
-        // Tarih doğrulama
-        if (isset($updateData['start_date']) || isset($updateData['end_date'])) {
-            $startDate = isset($updateData['start_date']) ? 
-                \Carbon\Carbon::parse($updateData['start_date']) : 
-                $announcement->start_date;
-                
-            $endDate = isset($updateData['end_date']) ? 
-                \Carbon\Carbon::parse($updateData['end_date']) : 
-                $announcement->end_date;
-
-            if ($endDate && $startDate && $endDate->lt($startDate)) {
-                throw new \InvalidArgumentException('Bitiş tarihi başlangıç tarihinden önce olamaz');
-            }
-        }
-
-        // Priority kontrolü
-        if (isset($updateData['priority']) && ($updateData['priority'] < 1 || $updateData['priority'] > 10)) {
-            throw new \InvalidArgumentException('Priority 1-10 arasında olmalıdır');
-        }
-
-        // Type kontrolü
-        if (isset($updateData['type'])) {
-            $allowedTypes = ['info', 'warning', 'success', 'danger', 'maintenance'];
-            if (!in_array($updateData['type'], $allowedTypes)) {
-                throw new \InvalidArgumentException('Geçersiz duyuru tipi: ' . $updateData['type']);
-            }
-        }
-
-        // Target audience kontrolü
-        if (isset($updateData['target_audience'])) {
-            $allowedAudiences = ['admin', 'user', 'all'];
-            if (!in_array($updateData['target_audience'], $allowedAudiences)) {
-                throw new \InvalidArgumentException('Geçersiz hedef kitle: ' . $updateData['target_audience']);
-            }
-        }
-
-        // Display location kontrolü
-        if (isset($updateData['display_location'])) {
-            $allowedLocations = ['header', 'sidebar', 'modal', 'banner'];
-            if (!in_array($updateData['display_location'], $allowedLocations)) {
-                throw new \InvalidArgumentException('Geçersiz görüntüleme konumu: ' . $updateData['display_location']);
             }
         }
 
@@ -263,6 +211,15 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
         // Meta description uzunluk kontrolü
         if (isset($updateData['meta_description']) && strlen($updateData['meta_description']) > 160) {
             throw new \InvalidArgumentException("Meta description çok uzun (max 160 karakter)");
+        }
+
+        // Published date kontrolü
+        if (isset($updateData['published_at'])) {
+            try {
+                \Carbon\Carbon::parse($updateData['published_at']);
+            } catch (\Exception $e) {
+                throw new \InvalidArgumentException("Geçersiz tarih formatı: {$updateData['published_at']}");
+            }
         }
     }
 
@@ -283,30 +240,27 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
     /**
      * Cache temizleme
      */
-    private function clearAnnouncementCaches(): void
+    private function clearPageCaches(): void
     {
         try {
             // Announcement cache'leri temizle
-            Cache::forget('announcements_list');
-            Cache::forget('announcements_active');
-            Cache::forget('announcements_recent');
-            Cache::forget('announcements_important');
-            Cache::forget('announcements_featured');
-            
+            Cache::forget('pages_list');
+            Cache::forget('pages_menu_cache');
+            Cache::forget('pages_sitemap_cache');
+
             // Pattern-based cache temizleme
             $patterns = [
-                'announcement_*',
-                'announcements_*',
-                'recent_announcements_*',
-                'active_announcements_*'
+                'page_*',
+                'pages_*',
+                'sitemap_*',
+                'menu_*'
             ];
-            
+
             foreach ($patterns as $pattern) {
-                Cache::tags(['announcements'])->flush();
+                Cache::tags(['pages'])->flush();
             }
 
             Log::info('🗑️ Announcement caches cleared after bulk update');
-            
         } catch (\Exception $e) {
             Log::error('Cache temizleme hatası: ' . $e->getMessage());
         }
@@ -317,8 +271,8 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        Log::error('💥 BULK ANNOUNCEMENT UPDATE JOB FAILED', [
-            'announcement_ids' => $this->announcementIds,
+        Log::error('💥 BULK PAGE UPDATE JOB FAILED', [
+            'announcement_ids' => $this->pageIds,
             'update_data' => $this->updateData,
             'tenant_id' => $this->tenantId,
             'user_id' => $this->userId,
@@ -327,8 +281,8 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
         ]);
 
         // Progress'i failed olarak işaretle
-        $progressKey = "bulk_update_announcements_{$this->tenantId}_{$this->userId}";
-        $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
+        $progressKey = "bulk_update_pages_{$this->tenantId}_{$this->userId}";
+        $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
             'error' => $exception?->getMessage()
         ]);
     }

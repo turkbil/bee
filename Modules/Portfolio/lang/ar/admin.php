@@ -1,0 +1,51 @@
+<?php
+
+return [
+'portfolios' => 'الصفحات',
+'portfolio_management' => 'إدارة الصفحات',
+'new_portfolio' => 'صفحة جديدة',
+'home' => 'الصفحة الرئيسية',
+'title_field' => 'العنوان',
+'content' => 'المحتوى',
+'slug_field' => 'الرابط المختصر',
+'seo' => 'تحسين محركات البحث',
+'meta_keywords' => 'الكلمات المفتاحية',
+'meta_description' => 'وصف الميتا',
+'active' => 'نشط',
+'inactive' => 'غير نشط',
+'status' => 'الحالة',
+'activate' => 'تفعيل',
+'deactivate' => 'إلغاء التفعيل',
+'search_placeholder' => 'بحث...',
+'enter_new_title' => 'أدخل عنوان جديد',
+'items_selected' => 'عنصر محدد',
+'no_portfolios_found' => 'لم يتم العثور على صفحات',
+'no_results' => 'لم يتم العثور على نتائج',
+'menu' => 'القائمة',
+'menu_title' => 'إدارة الصفحات',
+'edit_portfolio' => 'تعديل الصفحة',
+'create_portfolio' => 'صفحة جديدة',
+'title_validation_error' => 'العنوان غير صحيح. يرجى المراجعة.',
+'title_updated' => 'تم تحديث العنوان',
+'title_updated_successfully' => 'تم تحديث العنوان بنجاح.',
+'portfolio_not_found' => 'الصفحة غير موجودة',
+'operation_failed' => 'فشلت العملية',
+'no_portfolios_can_be_deleted' => 'لا يمكن حذف أي صفحة',
+
+// Dashboard Translations
+'total_portfolios' => 'إجمالي الصفحات',
+'all_portfolios' => 'جميع الصفحات',
+'create_portfolio' => 'إنشاء صفحة',
+'recent_portfolios' => 'الصفحات الأخيرة',
+'no_portfolios_yet' => 'لا توجد صفحات بعد',
+'create_first_portfolio' => 'إنشاء الصفحة الأولى',
+'view_all' => 'عرض الكل',
+'manage' => 'إدارة',
+
+// Content Editor
+'content_placeholder' => 'اكتب محتوى الصفحة هنا',
+'wysiwyg_editor' => 'محرر النصوص المتقدم',
+'editor_supports_html' => 'المحرر يدعم HTML وتنسيقات النص المتقدم',
+'fullscreen' => 'ملء الشاشة',
+'initializing_editor' => 'جاري تشغيل المحرر'
+];

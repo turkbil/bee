@@ -39,31 +39,34 @@ class ModuleSlugService
         if (isset(self::$memoryCache[$memoryCacheKey])) {
             return self::$memoryCache[$memoryCacheKey];
         }
-        
+
         try {
             $cacheKey = "module_name_{$moduleName}_{$locale}";
-            
+
             $name = Cache::remember($cacheKey, 1440, function() use ($moduleName, $locale) {
-                // ModuleTenantSetting'den title kolonunu al
-                $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
-                
-                // Önce title kolonuna bak (yeni sistem)
-                if ($setting && $setting->title && isset($setting->title[$locale]) && !empty(trim($setting->title[$locale]))) {
-                    return $setting->title[$locale];
+                // Tenant context check - ModuleTenantSetting sadece tenant'larda var
+                if (tenancy()->initialized && \Schema::hasTable('module_tenant_settings')) {
+                    // ModuleTenantSetting'den title kolonunu al
+                    $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
+
+                    // Önce title kolonuna bak (yeni sistem)
+                    if ($setting && $setting->title && isset($setting->title[$locale]) && !empty(trim($setting->title[$locale]))) {
+                        return $setting->title[$locale];
+                    }
+
+                    // Backward compatibility: settings['multiLangNames']
+                    if ($setting && isset($setting->settings['multiLangNames'][$locale])) {
+                        return $setting->settings['multiLangNames'][$locale];
+                    }
                 }
-                
-                // Backward compatibility: settings['multiLangNames'] 
-                if ($setting && isset($setting->settings['multiLangNames'][$locale])) {
-                    return $setting->settings['multiLangNames'][$locale];
-                }
-                
+
                 // Default modül adı - central'dan
                 return self::getDefaultModuleName($moduleName, $locale);
             });
-            
+
             self::$memoryCache[$memoryCacheKey] = $name;
             return $name;
-            
+
         } catch (\Exception $e) {
             Log::warning('ModuleSlugService: Failed to get module name', [
                 'module' => $moduleName,
@@ -71,7 +74,7 @@ class ModuleSlugService
                 'error' => $e->getMessage()
             ]);
         }
-        
+
         return self::getDefaultModuleName($moduleName, $locale);
     }
     
@@ -131,27 +134,29 @@ class ModuleSlugService
         if (isset(self::$memoryCache[$memoryCacheKey])) {
             return self::$memoryCache[$memoryCacheKey];
         }
-        
+
         try {
             // MultiLang ayarlarından al
             $cacheKey = "module_multilang_slug_{$moduleName}_{$slugKey}_{$locale}";
-            
+
             $slug = Cache::remember($cacheKey, 1440, function() use ($moduleName, $slugKey, $locale) {
-                // ModuleTenantSetting'den multiLangSlugs'ı al
-                $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
-                
-                if ($setting && isset($setting->settings['multiLangSlugs'][$locale][$slugKey])) {
-                    return $setting->settings['multiLangSlugs'][$locale][$slugKey];
+                // Tenant context check - ModuleTenantSetting sadece tenant'larda var
+                if (tenancy()->initialized && \Schema::hasTable('module_tenant_settings')) {
+                    // ModuleTenantSetting'den multiLangSlugs'ı al
+                    $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
+
+                    if ($setting && isset($setting->settings['multiLangSlugs'][$locale][$slugKey])) {
+                        return $setting->settings['multiLangSlugs'][$locale][$slugKey];
+                    }
                 }
-                
-                
+
                 // Config'den default al
                 return self::getConfigSlug($moduleName, $slugKey);
             });
-            
+
             self::$memoryCache[$memoryCacheKey] = $slug;
             return $slug;
-            
+
         } catch (\Exception $e) {
             Log::warning('ModuleSlugService: Failed to get multiLang slug', [
                 'module' => $moduleName,
@@ -160,7 +165,7 @@ class ModuleSlugService
                 'error' => $e->getMessage()
             ]);
         }
-        
+
         // Hata durumunda config slug'ını döndür
         return self::getConfigSlug($moduleName, $slugKey);
     }
@@ -171,18 +176,25 @@ class ModuleSlugService
     private static function loadGlobalSettings(): void
     {
         try {
+            // Tenant context check - ModuleTenantSetting sadece tenant'larda var
+            if (!tenancy()->initialized || !\Schema::hasTable('module_tenant_settings')) {
+                Log::debug('ModuleSlugService: Not in tenant context, using config only');
+                self::$globalSettingsLoaded = true;
+                return;
+            }
+
             // Önce tablonun boş olup olmadığını kontrol et (24 saat cache)
             self::$tableIsEmpty = Cache::remember(self::$tableEmptyCacheKey, 60 * 24, function() {
                 return ModuleTenantSetting::count() === 0;
             });
-            
+
             if (self::$tableIsEmpty) {
                 // Tablo boşsa hiç sorgu yapma, doğrudan config kullan
                 Log::debug('ModuleSlugService: Table is empty, using config only');
                 self::$globalSettingsLoaded = true;
                 return;
             }
-            
+
             // Tablo doluysa tüm ayarları tek seferde al (1 saat cache)
             $allSettings = Cache::remember(self::$globalCacheKey, 60, function() {
                 return ModuleTenantSetting::all()->keyBy('module_name');
@@ -315,36 +327,39 @@ class ModuleSlugService
                 }
             }
             
-            // 2. AYNI TENANT'TAKİ BAŞKA MODÜL KONTROLÜ  
-            $modules = ['Page', 'Portfolio', 'Announcement'];
-            
-            foreach ($modules as $moduleName) {
-                // Aynı modül ise skip et (aynı modülde çakışma olmaz) - Case insensitive kontrol
-                if (strtolower($moduleName) === strtolower($currentModule)) {
-                    continue;
-                }
-                
-                $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
-                
-                if ($setting && isset($setting->settings['multiLangSlugs'][$locale])) {
-                    $slugs = $setting->settings['multiLangSlugs'][$locale];
-                    
-                    // Bu modülün herhangi bir key'inde aynı slug var mı?
-                    foreach ($slugs as $key => $slug) {
-                        if ($slug === $newSlug) {
-                            Log::info("Tenant slug conflict", [
-                                'conflicting_module' => $moduleName,
-                                'conflicting_key' => $key,
-                                'conflicting_slug' => $slug,
-                                'new_module' => $currentModule,
-                                'new_key' => $currentKey,
-                                'new_slug' => $newSlug,
-                                'locale' => $locale,
-                                'conflict_type' => 'tenant_slug',
-                                'message' => "Slug '{$newSlug}' is already used by {$moduleName}.{$key} in {$locale}"
-                            ]);
-                            
-                            return true; // Çakışma var: Başka modül bu slug'ı kullanıyor
+            // 2. AYNI TENANT'TAKİ BAŞKA MODÜL KONTROLÜ
+            // Tenant context check - ModuleTenantSetting sadece tenant'larda var
+            if (tenancy()->initialized && \Schema::hasTable('module_tenant_settings')) {
+                $modules = ['Page', 'Portfolio', 'Announcement'];
+
+                foreach ($modules as $moduleName) {
+                    // Aynı modül ise skip et (aynı modülde çakışma olmaz) - Case insensitive kontrol
+                    if (strtolower($moduleName) === strtolower($currentModule)) {
+                        continue;
+                    }
+
+                    $setting = ModuleTenantSetting::where('module_name', $moduleName)->first();
+
+                    if ($setting && isset($setting->settings['multiLangSlugs'][$locale])) {
+                        $slugs = $setting->settings['multiLangSlugs'][$locale];
+
+                        // Bu modülün herhangi bir key'inde aynı slug var mı?
+                        foreach ($slugs as $key => $slug) {
+                            if ($slug === $newSlug) {
+                                Log::info("Tenant slug conflict", [
+                                    'conflicting_module' => $moduleName,
+                                    'conflicting_key' => $key,
+                                    'conflicting_slug' => $slug,
+                                    'new_module' => $currentModule,
+                                    'new_key' => $currentKey,
+                                    'new_slug' => $newSlug,
+                                    'locale' => $locale,
+                                    'conflict_type' => 'tenant_slug',
+                                    'message' => "Slug '{$newSlug}' is already used by {$moduleName}.{$key} in {$locale}"
+                                ]);
+
+                                return true; // Çakışma var: Başka modül bu slug'ı kullanıyor
+                            }
                         }
                     }
                 }

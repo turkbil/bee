@@ -1,297 +1,214 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Portfolio\App\Services;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Modules\Portfolio\App\Contracts\PortfolioRepositoryInterface;
 use Modules\Portfolio\App\Models\Portfolio;
+use Throwable;
 
-class PortfolioService
+readonly class PortfolioService
 {
-    protected PortfolioRepositoryInterface $portfolioRepository;
-
-    public function __construct(PortfolioRepositoryInterface $portfolioRepository)
+    public function getPortfolio(int $id): Portfolio
     {
-        $this->portfolioRepository = $portfolioRepository;
+        return Portfolio::findOrFail($id);
     }
 
-    /**
-     * Portfolio oluştur
-     */
-    public function create(array $data): Portfolio
+    public function getActivePortfolios(): Collection
+    {
+        return Portfolio::where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    public function getPaginatedPortfolios(array $filters = [], int $perPage = 10): LengthAwarePaginator
+    {
+        $query = Portfolio::query();
+
+        // Search
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'LIKE', '%' . $search . '%')
+                  ->orWhere('body', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        // Sort
+        $sortField = $filters['sortField'] ?? 'portfolio_id';
+        $sortDirection = $filters['sortDirection'] ?? 'desc';
+        $query->orderBy($sortField, $sortDirection);
+
+        return $query->paginate($perPage);
+    }
+
+    public function createPortfolio(array $data): array
     {
         try {
-            DB::beginTransaction();
-            
-            // Slug oluştur
-            $data = $this->prepareSlugs($data);
-            
-            // Meta description hazırla
-            $data = $this->prepareMetaDescription($data);
-            
-            // Portfolio oluştur
-            $portfolio = $this->portfolioRepository->create($data);
-            
-            // Log kaydı
-            Log::info('Portfolio oluşturuldu', [
+            // Slug otomatik oluşturma
+            if (isset($data['title']) && is_array($data['title'])) {
+                $data['slug'] = $this->generateSlugsFromTitles($data['title']);
+            }
+
+            $portfolio = Portfolio::create($data);
+
+            Log::info('Portfolio created', [
                 'portfolio_id' => $portfolio->portfolio_id,
                 'title' => $portfolio->title,
-                'tenant_id' => tenant('id')
+                'user_id' => auth()->id()
             ]);
-            
-            // Activity log
-            if (function_exists('log_activity')) {
-                log_activity($portfolio, 'oluşturuldu');
-            }
-            
-            DB::commit();
-            return $portfolio;
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            Log::error('Portfolio oluşturma hatası', [
+
+            return [
+                'success' => true,
+                'message' => __('admin.created_successfully'),
+                'data' => $portfolio,
+                'type' => 'success'
+            ];
+
+        } catch (Throwable $e) {
+            Log::error('Portfolio creation failed', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
+                'user_id' => auth()->id()
             ]);
-            
-            throw $e;
+
+            return [
+                'success' => false,
+                'message' => __('admin.operation_failed'),
+                'type' => 'error'
+            ];
         }
     }
 
-    /**
-     * Portfolio güncelle
-     */
-    public function update(int $id, array $data): Portfolio
+    public function updatePortfolio(int $id, array $data): array
     {
         try {
-            DB::beginTransaction();
-            
-            // Mevcut portfolio
-            $existingPortfolio = $this->portfolioRepository->findById($id);
-            if (!$existingPortfolio) {
-                throw new \Exception('Portfolio bulunamadı');
+            $portfolio = Portfolio::findOrFail($id);
+
+            // Slug güncelleme
+            if (isset($data['title']) && is_array($data['title'])) {
+                $data['slug'] = $this->generateSlugsFromTitles($data['title'], $portfolio->slug ?? []);
             }
-            
-            // Slug oluştur
-            $data = $this->prepareSlugs($data, $id);
-            
-            // Meta description hazırla
-            $data = $this->prepareMetaDescription($data);
-            
-            // Portfolio güncelle
-            $portfolio = $this->portfolioRepository->update($id, $data);
-            
-            // Log kaydı
-            Log::info('Portfolio güncellendi', [
-                'portfolio_id' => $portfolio->portfolio_id,
-                'title' => $portfolio->title,
-                'tenant_id' => tenant('id')
+
+            $portfolio->update($data);
+
+            Log::info('Portfolio updated', [
+                'portfolio_id' => $id,
+                'title' => $data['title'] ?? 'unchanged',
+                'user_id' => auth()->id()
             ]);
-            
-            // Activity log
-            if (function_exists('log_activity')) {
-                log_activity($portfolio, 'güncellendi');
-            }
-            
-            DB::commit();
-            return $portfolio;
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            Log::error('Portfolio güncelleme hatası', [
+
+            return [
+                'success' => true,
+                'message' => __('admin.updated_successfully'),
+                'data' => $portfolio->refresh(),
+                'type' => 'success'
+            ];
+
+        } catch (Throwable $e) {
+            Log::error('Portfolio update failed', [
                 'portfolio_id' => $id,
                 'error' => $e->getMessage(),
-                'data' => $data
+                'user_id' => auth()->id()
             ]);
-            
-            throw $e;
+
+            return [
+                'success' => false,
+                'message' => __('admin.operation_failed'),
+                'type' => 'error'
+            ];
         }
     }
 
-    /**
-     * Portfolio sil
-     */
-    public function delete(int $id): bool
+    public function deletePortfolio(int $id): array
     {
         try {
-            DB::beginTransaction();
-            
-            $portfolio = $this->portfolioRepository->findById($id);
-            if (!$portfolio) {
-                throw new \Exception('Portfolio bulunamadı');
-            }
-            
-            // Activity log
-            if (function_exists('log_activity')) {
-                log_activity($portfolio, 'silindi');
-            }
-            
-            $result = $this->portfolioRepository->delete($id);
-            
-            Log::info('Portfolio silindi', [
+            $portfolio = Portfolio::findOrFail($id);
+            $portfolio->delete();
+
+            Log::info('Portfolio deleted', [
                 'portfolio_id' => $id,
                 'title' => $portfolio->title,
-                'tenant_id' => tenant('id')
+                'user_id' => auth()->id()
             ]);
-            
-            DB::commit();
-            return $result;
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            Log::error('Portfolio silme hatası', [
+
+            return [
+                'success' => true,
+                'message' => __('admin.deleted_successfully'),
+                'type' => 'success'
+            ];
+
+        } catch (Throwable $e) {
+            Log::error('Portfolio deletion failed', [
                 'portfolio_id' => $id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
             ]);
-            
-            throw $e;
+
+            return [
+                'success' => false,
+                'message' => __('admin.operation_failed'),
+                'type' => 'error'
+            ];
         }
     }
 
-    /**
-     * Portfolio listesi (sayfalanmış)
-     */
-    public function getPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function togglePortfolioStatus(int $id): array
     {
-        return $this->portfolioRepository->paginate($filters, $perPage);
+        try {
+            $portfolio = Portfolio::findOrFail($id);
+            $portfolio->is_active = !$portfolio->is_active;
+            $portfolio->save();
+
+            Log::info('Portfolio status toggled', [
+                'portfolio_id' => $id,
+                'new_status' => $portfolio->is_active,
+                'user_id' => auth()->id()
+            ]);
+
+            return [
+                'success' => true,
+                'message' => __($portfolio->is_active ? 'admin.activated' : 'admin.deactivated'),
+                'data' => $portfolio,
+                'type' => 'success',
+                'meta' => ['new_status' => $portfolio->is_active]
+            ];
+
+        } catch (Throwable $e) {
+            Log::error('Portfolio status toggle failed', [
+                'portfolio_id' => $id,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => __('admin.operation_failed'),
+                'type' => 'error'
+            ];
+        }
     }
 
-    /**
-     * Portfolio arama
-     */
-    public function search(array $filters = []): Collection
+    protected function generateSlugsFromTitles(array $titles, array $existingSlugs = []): array
     {
-        return $this->portfolioRepository->search($filters);
-    }
+        $slugs = $existingSlugs;
 
-    /**
-     * Aktif portfolioları getir
-     */
-    public function getActive(): Collection
-    {
-        return $this->portfolioRepository->getActive();
-    }
-
-    /**
-     * Kategoriye göre portfolioları getir
-     */
-    public function getByCategory(int $categoryId): Collection
-    {
-        return $this->portfolioRepository->getByCategory($categoryId);
-    }
-
-    /**
-     * Son portfolioları getir
-     */
-    public function getRecent(int $limit = 10): Collection
-    {
-        return $this->portfolioRepository->getRecent($limit);
-    }
-
-    /**
-     * Portfolio detayı getir
-     */
-    public function getById(int $id, array $with = []): ?Portfolio
-    {
-        return $this->portfolioRepository->findById($id, $with);
-    }
-
-    /**
-     * SEO verilerini güncelle
-     */
-    public function updateSeo(int $id, array $seoData): Portfolio
-    {
-        return $this->portfolioRepository->updateSeo($id, $seoData);
-    }
-
-    /**
-     * Cache temizle
-     */
-    public function clearCache(int $id = null): void
-    {
-        $this->portfolioRepository->clearCache($id);
-    }
-
-    /**
-     * Slug hazırla
-     */
-    protected function prepareSlugs(array $data, int $portfolioId = null): array
-    {
-        if (isset($data['title']) && is_array($data['title'])) {
-            $slugs = [];
-            
-            foreach ($data['title'] as $locale => $title) {
-                if (!empty($title)) {
-                    $baseSlug = isset($data['slug'][$locale]) && !empty($data['slug'][$locale]) 
-                        ? $data['slug'][$locale] 
-                        : Str::slug($title);
-                    
-                    // Unique slug kontrolü
-                    $slugs[$locale] = $this->makeUniqueSlug($baseSlug, $portfolioId);
-                }
+        foreach ($titles as $locale => $title) {
+            if (!empty($title) && empty($slugs[$locale])) {
+                $slugs[$locale] = \Str::slug($title);
             }
-            
-            $data['slug'] = $slugs;
         }
-        
-        return $data;
+
+        return $slugs;
     }
 
-    /**
-     * Meta description hazırla
-     */
-    protected function prepareMetaDescription(array $data): array
+    public function clearCache(): void
     {
-        if (isset($data['body']) && is_array($data['body'])) {
-            $metadescs = $data['metadesc'] ?? [];
-            
-            foreach ($data['body'] as $locale => $body) {
-                if (empty($metadescs[$locale]) && !empty($body)) {
-                    $metadescs[$locale] = Str::limit(strip_tags($body), 155, '');
-                }
-            }
-            
-            $data['metadesc'] = $metadescs;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * Unique slug oluştur
-     */
-    protected function makeUniqueSlug(string $slug, int $portfolioId = null): string
-    {
-        $originalSlug = $slug;
-        $counter = 1;
-        
-        while ($this->slugExists($slug, $portfolioId)) {
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
-        
-        return $slug;
-    }
-
-    /**
-     * Slug varlık kontrolü
-     */
-    protected function slugExists(string $slug, int $portfolioId = null): bool
-    {
-        $query = Portfolio::whereRaw("JSON_EXTRACT(slug, '$.\"" . app()->getLocale() . "\"') = ?", [$slug])
-            ->orWhereRaw("JSON_EXTRACT(slug, '$.\"tr\"') = ?", [$slug]);
-        
-        if ($portfolioId) {
-            $query->where('portfolio_id', '!=', $portfolioId);
-        }
-        
-        return $query->exists();
+        Log::info('Portfolio cache cleared', [
+            'user_id' => auth()->id()
+        ]);
     }
 }

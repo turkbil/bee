@@ -3,181 +3,160 @@
 namespace Modules\Portfolio\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\Portfolio\app\Models\Portfolio;
-use Modules\Portfolio\app\Models\PortfolioCategory;
-use App\Models\SeoSetting;
+use Modules\Portfolio\App\Models\Portfolio;
+use Modules\Portfolio\App\Models\PortfolioCategory;
 
+/**
+ * Portfolio Tenant 3 Database Seeder
+ *
+ * Seeds portfolios for Tenant 3 - Corporate Business theme.
+ * Creates demo portfolios with TR/EN translations.
+ *
+ * @package Modules\Portfolio\Database\Seeders
+ */
 class PortfolioSeederTenant3 extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        // Sağlık ve Medikal Teknolojiler kategorileri
-        $categories = [
-            [
-                'title' => ['tr' => 'Hastane Yönetim Sistemleri', 'en' => 'Hospital Management Systems'],
-                'slug' => ['tr' => 'hastane-yonetim-sistemleri', 'en' => 'hospital-management-systems'],
-                'body' => ['tr' => 'Entegre hastane bilgi yönetim sistemleri ve dijital sağlık çözümleri', 'en' => 'Integrated hospital information management systems and digital health solutions']
-            ],
-            [
-                'title' => ['tr' => 'Tıbbi Cihaz Yazılımları', 'en' => 'Medical Device Software'],
-                'slug' => ['tr' => 'tibbi-cihaz-yazilimlari', 'en' => 'medical-device-software'],
-                'body' => ['tr' => 'İleri teknoloji tıbbi cihazlar için özel yazılım geliştirme', 'en' => 'Custom software development for advanced medical devices']
-            ],
-            [
-                'title' => ['tr' => 'Telemedisin Uygulamaları', 'en' => 'Telemedicine Applications'],
-                'slug' => ['tr' => 'telemedisin-uygulamalari', 'en' => 'telemedicine-applications'],
-                'body' => ['tr' => 'Uzaktan sağlık hizmetleri ve hasta takip sistemleri', 'en' => 'Remote healthcare services and patient tracking systems']
-            ],
-            [
-                'title' => ['tr' => 'Laboratuvar Sistemleri', 'en' => 'Laboratory Systems'],
-                'slug' => ['tr' => 'laboratuvar-sistemleri', 'en' => 'laboratory-systems'],
-                'body' => ['tr' => 'Laboratuvar bilgi yönetim sistemleri ve analiz yazılımları', 'en' => 'Laboratory information management systems and analysis software']
-            ],
-        ];
-
-        foreach ($categories as $categoryData) {
-            PortfolioCategory::create($categoryData);
+        // Portfolio SADECE tenant database'lerde olmalı
+        if (\App\Helpers\TenantHelpers::isCentral()) {
+            $this->command->info('🏢 Portfolio Tenant3: sadece tenant database için, atlanıyor...');
+            return;
         }
+
+        // Central tenant (ID=1 / laravel database) kontrolü
+        if (tenancy()->initialized && tenant('tenancy_db_name') === 'laravel') {
+            $this->command->error('❌ Central tenant detected, portfolio tables do not exist in central!');
+            return;
+        }
+
+        $this->command->info('🏢 TENANT 3 - Corporate Business Portfolio Seeding');
+        $this->command->newLine();
+
+        // Duplicate check
+        if (Portfolio::count() > 0) {
+            $this->command->info('📋 Portfolios already exist, skipping...');
+            return;
+        }
+
+        // Önce kategorileri oluştur
+        $this->call(PortfolioCategorySeeder::class);
 
         $categories = PortfolioCategory::all();
 
-        // MedTech Solutions için sağlık sektörü portföy projeleri
+        // Kurumsal Yazılım Portfolioları
+        $corporateCategory = $categories->where('slug->en', 'corporate-software')->first();
+        if ($corporateCategory) {
+            $this->createCorporatePortfolios($corporateCategory);
+        }
+
+        // Web Tasarım Portfolioları
+        $webDesignCategory = $categories->where('slug->en', 'web-design')->first();
+        if ($webDesignCategory) {
+            $this->createWebDesignPortfolios($webDesignCategory);
+        }
+
+        // Dijital Pazarlama Portfolioları
+        $digitalMarketingCategory = $categories->where('slug->en', 'digital-marketing')->first();
+        if ($digitalMarketingCategory) {
+            $this->createDigitalMarketingPortfolios($digitalMarketingCategory);
+        }
+
+        $totalCount = Portfolio::count();
+        $this->command->info("✅ Total {$totalCount} portfolios created for Tenant 3");
+    }
+
+    /**
+     * Create Corporate Software portfolios
+     */
+    private function createCorporatePortfolios(PortfolioCategory $category): void
+    {
         $portfolios = [
             [
-                'title' => ['tr' => 'MediCare Hastane Bilgi Sistemleri', 'en' => 'MediCare Hospital Information Systems'],
-                'slug' => ['tr' => 'medicare-hastane-bilgi-sistemleri', 'en' => 'medicare-hospital-information-systems'],
+                'title' => ['tr' => 'ERP Yazılımı', 'en' => 'ERP Software'],
+                'slug' => ['tr' => 'erp-yazilimi', 'en' => 'erp-software'],
                 'body' => [
-                    'tr' => 'Türkiye\'nin en kapsamlı hastane bilgi yönetim sistemi. 500+ hastane ve 50,000+ sağlık personelinin güvenle kullandığı entegre sistem.',
-                    'en' => 'Turkey\'s most comprehensive hospital information management system trusted by 500+ hospitals and 50,000+ healthcare professionals.'
+                    'tr' => '<h2>Proje Özeti</h2><p>Şirket kaynaklarını yöneten entegre ERP sistemi. Muhasebe, stok, insan kaynakları ve CRM modülleri.</p><h3>Modüller</h3><ul><li>Accounting</li><li>Inventory Management</li><li>Human Resources</li><li>CRM</li><li>Reporting</li></ul><h3>Teknolojiler</h3><p>Laravel, PostgreSQL, Redis, Vue.js</p>',
+                    'en' => '<h2>Project Summary</h2><p>Integrated ERP system for managing company resources. Accounting, inventory, human resources and CRM modules.</p><h3>Modules</h3><ul><li>Accounting</li><li>Inventory Management</li><li>Human Resources</li><li>CRM</li><li>Reporting</li></ul><h3>Technologies</h3><p>Laravel, PostgreSQL, Redis, Vue.js</p>'
                 ],
-                'image' => 'portfolio/medicare-hbys.jpg',
-                'client' => 'MedTech Solutions',
-                'date' => '2024-03-15',
-                'url' => 'https://medicare.medtech.com',
-                'is_active' => true,
             ],
             [
-                'title' => ['tr' => 'CardioTech Kalp Monitörü Yazılımı', 'en' => 'CardioTech Heart Monitor Software'],
-                'slug' => ['tr' => 'cardiotech-kalp-monitoru-yazilimi', 'en' => 'cardiotech-heart-monitor-software'],
+                'title' => ['tr' => 'CRM Sistemi', 'en' => 'CRM System'],
+                'slug' => ['tr' => 'crm-sistemi', 'en' => 'crm-system'],
                 'body' => [
-                    'tr' => 'İleri teknoloji kalp monitörü cihazları için özel yazılım. 24/7 kalp ritmi takibi ve erken uyarı sistemi.',
-                    'en' => 'Advanced software for heart monitoring devices. 24/7 heart rhythm tracking and early warning system.'
+                    'tr' => '<h2>Proje Özeti</h2><p>Müşteri ilişkileri yönetim sistemi. Satış takibi, müşteri yönetimi ve raporlama özellikleri.</p><h3>Özellikler</h3><ul><li>Lead Management</li><li>Sales Pipeline</li><li>Email Integration</li><li>Analytics Dashboard</li></ul>',
+                    'en' => '<h2>Project Summary</h2><p>Customer relationship management system. Sales tracking, customer management and reporting features.</p><h3>Features</h3><ul><li>Lead Management</li><li>Sales Pipeline</li><li>Email Integration</li><li>Analytics Dashboard</li></ul>'
                 ],
-                'image' => 'portfolio/cardiotech-monitor.jpg',
-                'client' => 'CardioTech Inc.',
-                'date' => '2024-02-20',
-                'url' => 'https://cardiotech.medical.com',
-                'is_active' => true,
             ],
             [
-                'title' => ['tr' => 'TeleMed Uzaktan Konsültasyon Platformu', 'en' => 'TeleMed Remote Consultation Platform'],
-                'slug' => ['tr' => 'telemed-uzaktan-konsultasyon-platformu', 'en' => 'telemed-remote-consultation-platform'],
+                'title' => ['tr' => 'İnsan Kaynakları Yönetim Sistemi', 'en' => 'HR Management System'],
+                'slug' => ['tr' => 'insan-kaynaklari-yonetim-sistemi', 'en' => 'hr-management-system'],
                 'body' => [
-                    'tr' => 'Gelişmiş telemedisin çözümleri ve hasta takip sistemi. 15,000+ doktor ve 250,000+ hasta ile güvenli video konsültasyon platformu.',
-                    'en' => 'Advanced telemedicine solutions and patient tracking system. Secure video consultation platform with 15,000+ doctors and 250,000+ patients.'
+                    'tr' => '<h2>Proje Özeti</h2><p>Çalışan ve bordro yönetimi için kapsamlı İK sistemi. Özlük işlemleri, izin takibi ve performans değerlendirme.</p><h3>Modüller</h3><ul><li>Employee Management</li><li>Payroll</li><li>Leave Management</li><li>Performance Reviews</li></ul>',
+                    'en' => '<h2>Project Summary</h2><p>Comprehensive HR system for employee and payroll management. Personnel operations, leave tracking and performance evaluation.</p><h3>Modules</h3><ul><li>Employee Management</li><li>Payroll</li><li>Leave Management</li><li>Performance Reviews</li></ul>'
                 ],
-                'image' => 'portfolio/telemed-platform.jpg',
-                'client' => 'TeleMed Solutions',
-                'date' => '2024-01-10',
-                'url' => 'https://telemed.health.com',
-                'is_active' => true,
-            ],
-            [
-                'title' => ['tr' => 'LabTech Laboratuvar Bilgi Sistemi', 'en' => 'LabTech Laboratory Information System'],
-                'slug' => ['tr' => 'labtech-laboratuvar-bilgi-sistemi', 'en' => 'labtech-laboratory-information-system'],
-                'body' => [
-                    'tr' => 'Entegre laboratuvar yönetim ve analiz sistemi. Modern laboratuvarlar için tam otomatik bilgi yönetim sistemi.',
-                    'en' => 'Integrated laboratory management and analysis system. Fully automated information management system for modern laboratories.'
-                ],
-                'image' => 'portfolio/labtech-system.jpg',
-                'client' => 'LabTech Innovations',
-                'date' => '2023-12-05',
-                'url' => 'https://labtech.lab.com',
-                'is_active' => true,
-            ],
-            [
-                'title' => ['tr' => 'PharmaTech İlaç Takip Sistemi', 'en' => 'PharmaTech Drug Tracking System'],
-                'slug' => ['tr' => 'pharmatech-ilac-takip-sistemi', 'en' => 'pharmatech-drug-tracking-system'],
-                'body' => [
-                    'tr' => 'Eczane ve hastane ilaç stok yönetim sistemi. Blockchain tabanlı güvenli takip sistemi.',
-                    'en' => 'Pharmacy and hospital drug inventory management system. Blockchain-based secure tracking system.'
-                ],
-                'image' => 'portfolio/pharmatech-system.jpg',
-                'client' => 'PharmaTech Corp.',
-                'date' => '2023-11-15',
-                'url' => 'https://pharmatech.rx.com',
-                'is_active' => true,
-            ],
-            [
-                'title' => ['tr' => 'NeuroTech Beyin Görüntüleme Yazılımı', 'en' => 'NeuroTech Brain Imaging Software'],
-                'slug' => ['tr' => 'neurotech-beyin-goruntuleme-yazilimi', 'en' => 'neurotech-brain-imaging-software'],
-                'body' => [
-                    'tr' => 'MR ve BT görüntüleri için yapay zeka destekli analiz. Nöroloji alanında devrim yaratan AI destekli beyin görüntüsü analiz sistemi.',
-                    'en' => 'AI-powered analysis for MR and CT images. Revolutionary AI-powered brain image analysis system in neurology.'
-                ],
-                'image' => 'portfolio/neurotech-brain.jpg',
-                'client' => 'NeuroTech Research',
-                'date' => '2023-10-20',
-                'url' => 'https://neurotech.brain.com',
-                'is_active' => true,
             ],
         ];
 
-        foreach ($portfolios as $index => $portfolioData) {
-            // Her portfolio için doğru kategoriyi belirle ve ekle
-            if ($index < 2) {
-                $category = $categories->first(function($cat) {
-                    return isset($cat->slug['tr']) && $cat->slug['tr'] === 'hastane-yonetim-sistemleri';
-                });
-            } elseif ($index < 4) {
-                $category = $categories->first(function($cat) {
-                    return isset($cat->slug['tr']) && $cat->slug['tr'] === 'tibbi-cihaz-yazilimlari';
-                });
-            } elseif ($index < 5) {
-                $category = $categories->first(function($cat) {
-                    return isset($cat->slug['tr']) && $cat->slug['tr'] === 'telemedisin-uygulamalari';
-                });
-            } else {
-                $category = $categories->first(function($cat) {
-                    return isset($cat->slug['tr']) && $cat->slug['tr'] === 'laboratuvar-sistemleri';
-                });
-            }
-            
-            // Portfolio data'ya kategori ID'sini ekle
-            if ($category) {
-                $portfolioData['portfolio_category_id'] = $category->portfolio_category_id;
-            }
-            
-            $portfolio = Portfolio::create($portfolioData);
-
-            // Her portföy için SEO ayarları oluştur
-            $this->createSeoSetting($portfolio);
+        foreach ($portfolios as $data) {
+            Portfolio::create(array_merge($data, [
+                'category_id' => $category->category_id,
+                'is_active' => true,
+            ]));
+            $this->command->info("✓ Corporate: {$data['title']['en']}");
         }
     }
 
-    private function createSeoSetting($portfolio)
+    /**
+     * Create Web Design portfolios
+     */
+    private function createWebDesignPortfolios(PortfolioCategory $category): void
     {
-        // Yeni JSON tabanlı SeoSetting formatı
-        $portfolio->seoSetting()->create([
-            'titles' => [
-                'tr' => 'MediCare Hastane Bilgi Sistemleri | Sağlık Teknolojileri',
-                'en' => 'MediCare Hospital Information Systems | Healthcare Technology'
+        $portfolios = [
+            [
+                'title' => ['tr' => 'Holding Web Sitesi', 'en' => 'Holding Website'],
+                'slug' => ['tr' => 'holding-web-sitesi', 'en' => 'holding-website'],
+                'body' => [
+                    'tr' => '<h2>Proje Özeti</h2><p>Büyük ölçekli holding için kurumsal web sitesi. Şirket grupları, yatırımcı ilişkileri ve kariyer portalı.</p><h3>Özellikler</h3><ul><li>Multi-company Structure</li><li>Investor Relations</li><li>Career Portal</li><li>News & Press</li></ul>',
+                    'en' => '<h2>Project Summary</h2><p>Corporate website for large-scale holding. Company groups, investor relations and career portal.</p><h3>Features</h3><ul><li>Multi-company Structure</li><li>Investor Relations</li><li>Career Portal</li><li>News & Press</li></ul>'
+                ],
             ],
-            'descriptions' => [
-                'tr' => 'Türkiye\'nin en kapsamlı hastane bilgi yönetim sistemi. 500+ hastane ve 50,000+ sağlık personelinin güvenle kullandığı entegre çözüm.',
-                'en' => 'Turkey\'s most comprehensive hospital information management system trusted by 500+ hospitals and 50,000+ healthcare professionals.'
+        ];
+
+        foreach ($portfolios as $data) {
+            Portfolio::create(array_merge($data, [
+                'category_id' => $category->category_id,
+                'is_active' => true,
+            ]));
+            $this->command->info("✓ Web Design: {$data['title']['en']}");
+        }
+    }
+
+    /**
+     * Create Digital Marketing portfolios
+     */
+    private function createDigitalMarketingPortfolios(PortfolioCategory $category): void
+    {
+        $portfolios = [
+            [
+                'title' => ['tr' => 'SEO & Dijital Strateji Projesi', 'en' => 'SEO & Digital Strategy Project'],
+                'slug' => ['tr' => 'seo-dijital-strateji-projesi', 'en' => 'seo-digital-strategy-project'],
+                'body' => [
+                    'tr' => '<h2>Proje Özeti</h2><p>Kapsamlı SEO ve dijital pazarlama stratejisi. 6 ayda organik trafikte %250 artış sağlandı.</p><h3>Sonuçlar</h3><ul><li>%250 Traffic Increase</li><li>Top 3 Rankings for 50+ Keywords</li><li>%180 Conversion Rate Increase</li></ul>',
+                    'en' => '<h2>Project Summary</h2><p>Comprehensive SEO and digital marketing strategy. Achieved 250% increase in organic traffic in 6 months.</p><h3>Results</h3><ul><li>%250 Traffic Increase</li><li>Top 3 Rankings for 50+ Keywords</li><li>%180 Conversion Rate Increase</li></ul>'
+                ],
             ],
-            'og_titles' => [
-                'tr' => 'MediCare Hastane Bilgi Sistemleri',
-                'en' => 'MediCare Hospital Information Systems'
-            ],
-            'og_descriptions' => [
-                'tr' => 'Sağlık sektöründe dijital dönüşümün öncü çözümü',
-                'en' => 'Leading digital transformation solution in healthcare sector'
-            ],
-            'robots_meta' => ['index' => true, 'follow' => true, 'archive' => true],
-            'og_type' => 'article',
-            'seo_score' => rand(85, 95),
-        ]);
+        ];
+
+        foreach ($portfolios as $data) {
+            Portfolio::create(array_merge($data, [
+                'category_id' => $category->category_id,
+                'is_active' => true,
+            ]));
+            $this->command->info("✓ Digital Marketing: {$data['title']['en']}");
+        }
     }
 }

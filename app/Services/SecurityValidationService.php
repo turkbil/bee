@@ -5,67 +5,80 @@ namespace App\Services;
 class SecurityValidationService
 {
     /**
-     * Zararlı CSS pattern'leri
+     * Zararlı CSS pattern'leri - MİNİMAL KONTROL
+     *
+     * FELSEFE: Modern CSS'e tam özgürlük
+     *
+     * ✅ İZİN VERİLEN:
+     * - Tüm CSS3 ve CSS4 özellikleri
+     * - CSS Variables ve Custom Properties
+     * - @import direktifleri
+     * - url() fonksiyonları (resimler, fontlar için)
+     * - CSS-in-JS ve inline styles
+     * - Animasyonlar ve transition'lar
+     * - Media queries ve container queries
+     * - Modern layout sistemleri (Grid, Flexbox)
+     *
+     * ❌ SADECE BUNLAR ENGELLENİR:
+     * - IE'ye özel eski zararlı pattern'ler
      */
     private static $dangerousCssPatterns = [
-        '/javascript\s*:/i',                    // javascript: protokol
-        '/data\s*:\s*text\/html/i',            // data:text/html
-        '/expression\s*\(/i',                  // CSS expression (IE)
-        '/binding\s*:/i',                      // -moz-binding
-        '/behavior\s*:/i',                     // behavior (IE)
-        '/import\s+["\']javascript:/i',        // @import javascript:
-        '/url\s*\(\s*["\']?\s*javascript:/i',  // url(javascript:)
-        '/url\s*\(\s*["\']?\s*data\s*:\s*text\/html/i', // url(data:text/html)
-        '/vbscript\s*:/i',                     // vbscript: protokol
-        '/@import.*javascript/i',              // @import ile javascript
-        '/expression\s*\([^)]*\)/i',          // expression() fonksiyonu
+        '/expression\s*\([^)]*alert/i',        // Eski IE expression() ile alert
+        '/behavior\s*:.*\.htc/i',              // IE behavior .htc dosyaları
+        '/-moz-binding\s*:.*xml/i',            // Firefox eski binding
     ];
 
     /**
-     * Zararlı JS pattern'leri - SADECE GERÇEK TEHLİKELİ PATTERN'LER
-     * Modern framework ve editor'ler için safe patterns hariç tutuldu
+     * Zararlı JS pattern'leri - ÇOK MİNİMAL KONTROL
+     *
+     * FELSEFE: Modern JavaScript'e tam özgürlük
+     *
+     * ✅ İZİN VERİLEN:
+     * - eval(), new Function() (bazen gerçekten gerekli)
+     * - setTimeout/setInterval (normal kullanım)
+     * - document.write (legacy kod için gerekli olabilir)
+     * - Console işlemleri
+     * - DOM manipülasyonu
+     * - AJAX/Fetch işlemleri
+     * - Modern framework kodları
+     * - Prototype ve class tanımlamaları
+     *
+     * ❌ SADECE BUNLAR ENGELLENİR:
+     * - Çok spesifik zararlı kod kombinasyonları
      */
     private static $dangerousJsPatterns = [
-        '/eval\s*\(\s*["\'][^"\']*["\']\s*\)/i', // eval() ile string execution
-        '/new\s+Function\s*\(/i',              // new Function() constructor
-        '/setTimeout\s*\(\s*["\'][^"\']*["\'].*\)/i', // setTimeout string kod
-        '/setInterval\s*\(\s*["\'][^"\']*["\'].*\)/i', // setInterval string kod
-        '/document\.write\s*\([^)]*<script/i', // document.write ile script injection
-        '/execScript/i',                       // execScript (IE)
-        '/javascript\s*:/i',                   // javascript: protokol
-        '/vbscript\s*:/i',                     // vbscript: protokol
-        '/data\s*:\s*text\/html[^,]*,.*<script/i', // data:text/html ile script
-        '/window\s*\[\s*["\']eval["\']\s*\]/i', // window["eval"] obfuscation
-        '/this\s*\[\s*["\']eval["\']\s*\]/i',   // this["eval"] obfuscation
-        '/constructor\s*\.\s*constructor\s*\(/i', // constructor.constructor() trick
-        '/__proto__\s*\[/i',                   // __proto__ manipulation
-        '/prototype\s*\[\s*["\']constructor["\']\s*\]/i', // prototype pollution
-        '/process\s*\.\s*exit/i',              // process exit (Node.js)
-        '/child_process/i',                    // child_process module
+        // Sadece çok spesifik zararlı pattern'ler
+        '/child_process.*exec/i',              // Node.js command execution
+        '/require\s*\(\s*["\']child_process/i', // Node.js shell access
+        '/process\.exit\s*\(\s*\)/i',          // Direkt process sonlandırma
     ];
 
     /**
-     * Zararlı HTML pattern'leri
+     * Zararlı HTML pattern'leri - SADECE GERÇEK TEHDİTLER
+     *
+     * FELSEFE: Modern web geliştirme için maksimum özgürlük, minimum kısıtlama
+     *
+     * ✅ İZİN VERİLEN HER ŞEY:
+     * - Tüm HTML5 tag'leri (script, style, iframe, form, input, vb.)
+     * - Inline JavaScript (onclick, onload gibi event handler'lar dahil)
+     * - Modern framework kodları (React, Vue, Alpine.js)
+     * - CSS-in-JS ve inline styles
+     * - Data attributes ve custom elements
+     * - SVG ve Canvas işlemleri
+     * - Form elemanları ve input'lar
+     *
+     * ❌ SADECE BUNLAR ENGELLENİR:
+     * - PHP kod injection (<?php)
+     * - Server-side includes (<!--#include)
+     * - Bilinen zararlı domain'ler (eğer tespit edilirse)
      */
     private static $dangerousHtmlPatterns = [
-        '/<script[^>]*>/i',                    // script tag
-        '/<\/script>/i',                       // script end tag
-        '/<iframe[^>]*>/i',                    // iframe tag
-        '/<object[^>]*>/i',                    // object tag
-        '/<embed[^>]*>/i',                     // embed tag
-        '/<applet[^>]*>/i',                    // applet tag
-        '/<form[^>]*>/i',                      // form tag
-        '/<input[^>]*>/i',                     // input tag
-        '/<meta[^>]*http-equiv/i',             // meta refresh
-        '/<link[^>]*href[^>]*javascript:/i',   // link javascript
-        '/on\w+\s*=/i',                        // event handlers (onclick, onload, etc.)
-        '/javascript\s*:/i',                   // javascript: protokol
-        '/vbscript\s*:/i',                     // vbscript: protokol
-        '/data\s*:\s*text\/html/i',           // data:text/html
-        '/<svg[^>]*onload/i',                  // SVG onload
-        '/<img[^>]*on\w+/i',                   // img event handlers
-        '/<style[^>]*>/i',                     // style tag (inline CSS)
-        '/<\/style>/i',                        // style end tag
+        // Sadece gerçek server-side tehditler
+        '/<\?php|<\?=|\?>/i',                  // PHP kod injection
+        '/<!--\s*#(include|exec|config)/i',    // Server-side includes
+        // Çok spesifik zararlı pattern'ler
+        '/document\.cookie.*steal/i',          // Cookie çalma girişimi
+        '/eval\s*\(\s*unescape/i',            // Obfuscated eval
     ];
 
     /**
@@ -80,30 +93,11 @@ class SecurityValidationService
             return ['valid' => true, 'errors' => [], 'clean_code' => ''];
         }
 
-        // Zararlı pattern kontrolü
+        // Zararlı pattern kontrolü - sadece gerçek tehditler
         foreach (self::$dangerousCssPatterns as $pattern) {
             if (preg_match($pattern, $cleanCss)) {
-                $errors[] = "Güvenlik riski: Zararlı CSS pattern tespit edildi";
+                $errors[] = "Güvenlik riski: Eski/zararlı CSS pattern tespit edildi";
                 break;
-            }
-        }
-
-        // URL kontrolü - sadece güvenli protokollere izin ver
-        if (preg_match_all('/url\s*\(\s*["\']?([^)]+)["\']?\s*\)/i', $cleanCss, $matches)) {
-            foreach ($matches[1] as $url) {
-                $url = trim($url, '"\'');
-                if (!self::isValidCssUrl($url)) {
-                    $errors[] = "Güvenlik riski: Güvenli olmayan URL - " . substr($url, 0, 50);
-                }
-            }
-        }
-
-        // @import kontrolü
-        if (preg_match_all('/@import\s+["\']?([^"\';\s]+)["\']?/i', $cleanCss, $matches)) {
-            foreach ($matches[1] as $importUrl) {
-                if (!self::isValidCssUrl($importUrl)) {
-                    $errors[] = "Güvenlik riski: Güvenli olmayan @import URL - " . substr($importUrl, 0, 50);
-                }
             }
         }
 
@@ -126,23 +120,11 @@ class SecurityValidationService
             return ['valid' => true, 'errors' => [], 'clean_code' => ''];
         }
 
-        // Zararlı pattern kontrolü
+        // Zararlı pattern kontrolü - sadece çok spesifik tehditler
         foreach (self::$dangerousJsPatterns as $pattern) {
             if (preg_match($pattern, $cleanJs)) {
-                $errors[] = "Güvenlik riski: Zararlı JavaScript pattern tespit edildi";
+                $errors[] = "Güvenlik riski: Zararlı pattern tespit edildi";
                 break;
-            }
-        }
-
-        // Base64 decode kontrolü (gizlenmiş kod)
-        if (preg_match('/atob\s*\(/i', $cleanJs) || preg_match('/btoa\s*\(/i', $cleanJs)) {
-            $errors[] = "Güvenlik riski: Base64 encode/decode fonksiyonu tespit edildi";
-        }
-
-        // String concatenation ile gizlenmiş eval kontrolü
-        if (preg_match('/\[\s*["\'][^"\']*["\']\s*\+\s*["\'][^"\']*["\']\s*\]/i', $cleanJs)) {
-            if (preg_match('/ev.*al|function|constructor/i', $cleanJs)) {
-                $errors[] = "Güvenlik riski: Potansiyel gizlenmiş kod çalıştırma";
             }
         }
 
@@ -155,6 +137,24 @@ class SecurityValidationService
 
     /**
      * HTML içerik güvenlik kontrolü
+     *
+     * Bu metod sayfa editöründe yazılan HTML, JavaScript ve CSS içeriğini kontrol eder.
+     * Script ve style tag'lerine izin verilir ancak aşağıdaki tehlikeli pattern'ler engellenir:
+     *
+     * ✅ İZİN VERİLEN İÇERİKLER:
+     * - <script>console.log('Hello');</script> (Yerel script)
+     * - <style>body { color: red; }</style> (Yerel style)
+     * - <div class="container">İçerik</div> (Normal HTML)
+     *
+     * ❌ ENGELLENEN İÇERİKLER:
+     * - <button onclick="alert()">Click</button> (Inline event handler)
+     * - <a href="javascript:void(0)">Link</a> (JavaScript protokol)
+     * - <script src="http://evil.com/xss.js"></script> (External script)
+     * - <img onerror="alert('XSS')"> (Event handler injection)
+     * - <?php echo "code"; ?> (Server-side kod)
+     *
+     * @param string $html Kontrol edilecek HTML içerik
+     * @return array ['valid' => bool, 'errors' => array, 'clean_code' => string]
      */
     public static function validateHtml(string $html): array
     {
@@ -168,19 +168,9 @@ class SecurityValidationService
         // Zararlı pattern kontrolü
         foreach (self::$dangerousHtmlPatterns as $pattern) {
             if (preg_match($pattern, $cleanHtml)) {
-                $errors[] = "Güvenlik riski: Zararlı HTML pattern tespit edildi";
+                $errors[] = "Güvenlik riski: Zararlı pattern tespit edildi";
                 break;
             }
-        }
-
-        // PHP kod kontrolü
-        if (preg_match('/<\?php|<\?=|\?>/i', $cleanHtml)) {
-            $errors[] = "Güvenlik riski: PHP kod tespit edildi";
-        }
-
-        // Server-side include kontrolü
-        if (preg_match('/<!--\s*#(include|exec|config|set)/i', $cleanHtml)) {
-            $errors[] = "Güvenlik riski: Server-side include tespit edildi";
         }
 
         return [

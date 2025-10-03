@@ -175,30 +175,39 @@ class UnifiedUrlService
         try {
             $locale = $locale ?? app()->getLocale();
             $module = ucfirst(strtolower($module));
-            
+
             // Model class'ını bul
             $modelClass = "\\Modules\\{$module}\\App\\Models\\{$module}";
-            
+
             if (!class_exists($modelClass)) {
                 return null;
             }
-            
+
+            // Tablo adını al
+            $tableName = (new $modelClass)->getTable();
+
+            // Tenant context check - Tablo var mı kontrol et
+            if (!\Schema::hasTable($tableName)) {
+                // Tablo yok, muhtemelen central'dayız ve bu tenant-only bir tablo
+                return null;
+            }
+
             // Cache key
             $cacheKey = "content_by_slug_{$module}_{$slug}_{$locale}";
-            
+
             return Cache::remember($cacheKey, 300, function() use ($modelClass, $slug, $locale, $module) {
                 // Önce istenen dilde ara
                 $model = $modelClass::whereJsonContains("slug->{$locale}", $slug)->first();
-                
+
                 if ($model) {
                     return $model;
                 }
-                
+
                 // Bulunamazsa tüm dillerde ara (fallback)
                 $availableLocales = \get_tenant_languages();
                 foreach ($availableLocales as $searchLocale) {
                     if ($searchLocale === $locale) continue; // Zaten aradık
-                    
+
                     $model = $modelClass::whereJsonContains("slug->{$searchLocale}", $slug)->first();
                     if ($model) {
                         Log::info('UnifiedUrlService: Found content in different locale', [
@@ -210,10 +219,10 @@ class UnifiedUrlService
                         return $model;
                     }
                 }
-                
+
                 return null;
             });
-            
+
         } catch (\Exception $e) {
             Log::error('UnifiedUrlService: Failed to find content by slug', [
                 'module' => $module,
@@ -221,7 +230,7 @@ class UnifiedUrlService
                 'locale' => $locale,
                 'error' => $e->getMessage()
             ]);
-            
+
             return null;
         }
     }
@@ -430,27 +439,41 @@ class UnifiedUrlService
      */
     protected function findContentBySlugInClass(string $modelClass, string $slug, string $locale): ?Model
     {
+        // Model class kontrolü
+        if (!class_exists($modelClass)) {
+            return null;
+        }
+
+        // Tablo adını al
+        $tableName = (new $modelClass)->getTable();
+
+        // Tenant context check - Tablo var mı kontrol et
+        if (!\Schema::hasTable($tableName)) {
+            // Tablo yok, muhtemelen central'dayız ve bu tenant-only bir tablo
+            return null;
+        }
+
         $cacheKey = "content_by_slug_class_" . md5($modelClass) . "_{$slug}_{$locale}";
-        
+
         return Cache::remember($cacheKey, 300, function() use ($modelClass, $slug, $locale) {
             // Önce istenen dilde ara
             $model = $modelClass::whereJsonContains("slug->{$locale}", $slug)->first();
-            
+
             if ($model) {
                 return $model;
             }
-            
+
             // Tüm dillerde ara
             $availableLocales = get_tenant_languages();
             foreach ($availableLocales as $searchLocale) {
                 if ($searchLocale === $locale) continue;
-                
+
                 $model = $modelClass::whereJsonContains("slug->{$searchLocale}", $slug)->first();
                 if ($model) {
                     return $model;
                 }
             }
-            
+
             return null;
         });
     }

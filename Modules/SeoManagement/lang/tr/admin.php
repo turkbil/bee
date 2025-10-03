@@ -27,4 +27,17 @@ return [
     'characters' => 'karakter',
     'character_limit_warning' => 'Karakter limiti aşıldı',
     'recommended_limit' => 'Önerilen limit',
+
+    // Yapay Zeka Önerileri
+    'ai_recommendations' => 'Yapay Zeka Önerileri',
+    'ai_recommendations_preparing' => 'Yapay Zeka Önerileri Hazırlanıyor',
+    'ai_recommendations_analyzing' => 'Sayfanız analiz ediliyor ve özelleştirilmiş öneriler üretiliyor...',
+    'ai_recommendations_generating' => 'Yapay Zeka önerileri üretiliyor...',
+    'seo_title_recommendations' => 'SEO Başlığı Önerileri',
+    'seo_description_recommendations' => 'SEO Açıklaması Önerileri',
+    'og_title_recommendations' => 'Sosyal Medya Başlığı Önerileri',
+    'og_description_recommendations' => 'Sosyal Medya Açıklaması Önerileri',
+    'use_custom_og' => 'Özel Sosyal Medya Ayarları',
+    'use_basic_seo' => 'Temel SEO Bilgilerini Kullan',
+    'og_help_text' => 'Kapalıysa yukarıdaki SEO başlık ve açıklaması kullanılır',
 ];

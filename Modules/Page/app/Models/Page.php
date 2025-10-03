@@ -248,7 +248,7 @@ class Page extends BaseModel implements TranslatableEntity
      */
     protected static function newFactory()
     {
-        return \Database\Factories\PageFactory::new();
+        return \Modules\Page\Database\Factories\PageFactory::new();
     }
 
 }

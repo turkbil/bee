@@ -30216,3 +30216,15 @@ namespace  {
 
 
 
+
+// Custom Helper Functions
+namespace {
+    /**
+     * Activity log helper
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param string $event
+     * @param array|null $degisenler
+     * @return void
+     */
+    function log_activity(\Illuminate\Database\Eloquent\Model $model, string $event, ?array $degisenler = null): void {}
+}

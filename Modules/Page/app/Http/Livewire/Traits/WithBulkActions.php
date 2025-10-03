@@ -26,6 +26,32 @@ trait WithBulkActions
     public function updatedSelectedItems()
     {
         $this->bulkActionsEnabled = count($this->selectedItems) > 0;
+
+        // Tüm kayıtlar manuel seçildi mi kontrol et
+        $modelClass = $this->getModelClass();
+        if (!empty($modelClass)) {
+            $totalVisible = $modelClass::query()
+                ->where(function ($query) {
+                    $query->where('title', 'like', '%' . $this->search . '%')
+                        ->orWhere('slug', 'like', '%' . $this->search . '%');
+                })
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->paginate($this->perPage)
+                ->count();
+
+            // Tüm görünür kayıtlar seçiliyse selectAll = true
+            if (count($this->selectedItems) === $totalVisible && $totalVisible > 0) {
+                $this->selectAll = true;
+            }
+            // Hiç seçili yoksa selectAll = false
+            elseif (count($this->selectedItems) === 0) {
+                $this->selectAll = false;
+            }
+            // Kısmi seçim varsa selectAll = false (indeterminate UI'da gösterilecek)
+            else {
+                $this->selectAll = false;
+            }
+        }
     }
 
     public function updatedSelectAll($value)
@@ -148,11 +174,75 @@ trait WithBulkActions
         }
 
         $module = strtolower(class_basename($this->getModelClass()));
-        
+
         $this->dispatch('showBulkDeleteModal', [
             'module' => $module,
             'selectedItems' => $this->selectedItems
         ])->to('modals.bulk-delete-modal');
+    }
+
+    public function bulkDelete()
+    {
+        if (empty($this->selectedItems)) {
+            $this->dispatch('toast', [
+                'title'   => 'Uyarı!',
+                'message' => 'Lütfen silmek istediğiniz öğeleri seçin.',
+                'type'    => 'warning',
+            ]);
+            return;
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            $modelClass = $this->getModelClass();
+            $primaryKey = (new $modelClass)->getKeyName();
+
+            $items = $modelClass::whereIn($primaryKey, $this->selectedItems)->get();
+
+            // Media temizliği (Spatie Media Library varsa)
+            foreach ($items as $item) {
+                if (method_exists($item, 'getMedia')) {
+                    $collections = ['image'];
+                    for ($i = 1; $i <= 10; $i++) {
+                        $collections[] = 'image_' . $i;
+                    }
+
+                    foreach ($collections as $collection) {
+                        if ($item->hasMedia($collection)) {
+                            $item->clearMediaCollection($collection);
+                        }
+                    }
+                }
+
+                log_activity($item, 'silindi');
+            }
+
+            // Silme işlemi
+            $modelClass::whereIn($primaryKey, $this->selectedItems)->delete();
+
+            \DB::commit();
+
+            $this->dispatch('toast', [
+                'title'   => 'Silindi!',
+                'message' => count($this->selectedItems) . ' adet kayıt silindi.',
+                'type'    => 'success',
+            ]);
+
+            // State temizle
+            $this->selectedItems = [];
+            $this->selectAll = false;
+            $this->bulkActionsEnabled = false;
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+
+            $this->dispatch('toast', [
+                'title'   => 'Hata!',
+                'message' => 'Silme işlemi sırasında bir hata oluştu: ' . $e->getMessage(),
+                'type'    => 'error',
+            ]);
+        }
     }
 
 }

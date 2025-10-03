@@ -6,7 +6,9 @@ namespace Modules\Page\App\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use App\Services\TenantCacheService;
+use App\Services\TenantLanguageProvider;
 use Modules\Page\App\Contracts\PageRepositoryInterface;
 use Modules\Page\App\Models\Page;
 use Modules\Page\App\Enums\CacheStrategy;
@@ -46,14 +48,14 @@ readonly class PageRepository implements PageRepositoryInterface
     public function findByIdWithSeo(int $id): ?Page
     {
         $strategy = CacheStrategy::fromRequest();
-        
-        // Admin panelinde global cache service kullan
+
+        // Admin panelinde cache kullanma
         if ($strategy === CacheStrategy::ADMIN_FRESH) {
-            return \App\Services\GlobalCacheService::getPageWithSeo($id);
+            return $this->model->with('seoSetting')->where('page_id', $id)->first();
         }
-        
+
         $cacheKey = $this->getCacheKey("find_by_id_with_seo.{$id}");
-        
+
         return $this->cache->remember(
             $this->cachePrefix,
             "find_by_id_with_seo.{$id}",
@@ -104,12 +106,12 @@ readonly class PageRepository implements PageRepositoryInterface
     public function getPaginated(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
         $query = $this->model->newQuery();
-        
+
         // Search filter
         if (!empty($filters['search'])) {
             $searchTerm = '%' . $filters['search'] . '%';
-            $locales = $filters['locales'] ?? ['tr', 'en'];
-            
+            $locales = $filters['locales'] ?? TenantLanguageProvider::getActiveLanguageCodes();
+
             $query->where(function ($subQuery) use ($searchTerm, $locales) {
                 foreach ($locales as $locale) {
                     $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
@@ -141,11 +143,11 @@ readonly class PageRepository implements PageRepositoryInterface
     public function search(string $term, array $locales = []): Collection
     {
         if (empty($locales)) {
-            $locales = ['tr', 'en'];
+            $locales = TenantLanguageProvider::getActiveLanguageCodes();
         }
-        
+
         $searchTerm = '%' . $term . '%';
-        
+
         return $this->model->where(function ($query) use ($searchTerm, $locales) {
             foreach ($locales as $locale) {
                 $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])

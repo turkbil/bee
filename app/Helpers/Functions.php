@@ -323,13 +323,13 @@ if (!function_exists('user_initials')) {
 
 if (!function_exists('log_activity')) {
     function log_activity(
-        \Illuminate\Database\Eloquent\Model $model, 
+        \Illuminate\Database\Eloquent\Model $model,
         string $event,
         ?array $degisenler = null
     ): void {
         // Multi-language JSON alanları için title extraction
         $rawTitle = $model->title ?? $model->name ?? 'Bilinmeyen';
-        
+
         // Eğer title array/object ise (JSON decode edilmiş), ilk değeri al
         if (is_array($rawTitle) || is_object($rawTitle)) {
             $titleArray = (array) $rawTitle;
@@ -343,10 +343,17 @@ if (!function_exists('log_activity')) {
         } else {
             $baslik = $rawTitle;
         }
-        
+
         // Güvenlik için string'e çevir
         $baslik = (string) $baslik;
-        
+
+        // Event string'ini çevir (activity.php dil dosyasından)
+        $translatedEvent = __('activity.' . $event);
+        // Çeviri bulunamazsa orijinal event'i kullan
+        if ($translatedEvent === 'activity.' . $event) {
+            $translatedEvent = $event;
+        }
+
         $modelName = class_basename($model);
         $batchUuid = \Illuminate\Support\Str::uuid();
 
@@ -357,15 +364,14 @@ if (!function_exists('log_activity')) {
             ->withProperties([
                 'baslik' => $baslik,
                 'modul' => $modelName,
-                'degisenler' => $degisenler ?: []
+                'degisenler' => $degisenler ?: [],
+                'event_key' => $event, // Orijinal key'i de sakla
             ])
             ->tap(function (\Spatie\Activitylog\Models\Activity $activity) use ($batchUuid, $event) {
                 $activity->batch_uuid = $batchUuid;
-                $activity->event = $event;
+                $activity->event = $event; // DB'ye orijinal key kaydedilir
             })
-            ->log("{$baslik} {$event}");
-
-        \Illuminate\Support\Facades\Log::info("Log: {$baslik} - {$event}");
+            ->log("{$baslik} {$translatedEvent}"); // Gösterim için çevrilmiş metin
     }
 }
 

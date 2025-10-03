@@ -56,6 +56,14 @@ return [
             'report' => false,
         ],
 
+        'temp_media' => [
+            'driver' => 'local',
+            'root' => public_path('temp/media'),
+            'url' => env('APP_URL').'/temp/media',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

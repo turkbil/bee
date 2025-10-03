@@ -92,21 +92,20 @@
                             </div>
                         @endforeach
 
-                        {{-- MEDYA YÖNETİMİ - Fotoğraf Ekleme --}}
+                        {{-- MEDYA YÖNETİMİ --}}
                         <div class="mb-4 mt-4">
                             <hr class="mb-4">
-                            <h4 class="mb-3">
-                                <i class="fas fa-images me-2"></i>{{ __('announcement::admin.media_management') }}
-                            </h4>
 
-                            @livewire('mediamanagement::universal-media', [
-                                'modelId' => $announcementId,
-                                'modelType' => 'announcement',
-                                'modelClass' => 'Modules\Announcement\App\Models\Announcement',
-                                'collections' => ['featured_image', 'gallery'],
-                                'sortable' => true,
-                                'setFeaturedFromGallery' => true,
-                            ])
+                            <livewire:mediamanagement::universal-media
+                                wire:id="announcement-media-component"
+                                :model-id="$announcementId"
+                                model-type="announcement"
+                                model-class="Modules\Announcement\App\Models\Announcement"
+                                :collections="['featured_image', 'gallery']"
+                                :sortable="true"
+                                :set-featured-from-gallery="true"
+                                :key="'universal-media-' . ($announcementId ?? 'new')"
+                            />
                         </div>
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
@@ -164,6 +163,20 @@
                         console.warn('⚠️ forceTabRestore fonksiyonu bulunamadı');
                     }
                 });
+
+                // 🔄 BROWSER REDIRECT - Event işlendikten sonra yönlendir
+                Livewire.on('browser', (event) => {
+                    console.log('🔄 Browser event:', event);
+
+                    if (event.action === 'redirect') {
+                        const delay = event.delay || 0;
+                        console.log(`🔄 Redirecting to ${event.url} after ${delay}ms`);
+
+                        setTimeout(() => {
+                            window.location.href = event.url;
+                        }, delay);
+                    }
+                });
             });
         </script>
 
@@ -178,89 +191,5 @@
         ])
 
         @include('ai::admin.components.universal-ai-content-scripts')
-
-        {{-- 📸 SORTABLE.JS - Gallery Sorting --}}
-        <script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
-        <script>
-            document.addEventListener('livewire:initialized', function() {
-                initGallerySortable();
-
-                // Livewire update sonrası tekrar init
-                Livewire.hook('morph.updated', () => {
-                    initGallerySortable();
-                });
-
-                function initGallerySortable() {
-                    const container = document.getElementById('gallery-sortable-list');
-                    if (!container) {
-                        return;
-                    }
-
-                    // Mevcut sortable'ı temizle
-                    if (window.gallerySortable) {
-                        window.gallerySortable.destroy();
-                        window.gallerySortable = null;
-                    }
-
-                    // Yeni sortable oluştur
-                    window.gallerySortable = new Sortable(container, {
-                        animation: 200,
-                        ghostClass: 'sortable-ghost',
-                        dragClass: 'sortable-drag',
-                        handle: '.gallery-drag-handle',
-                        forceFallback: true,
-
-                        onStart: function(evt) {
-                            evt.item.style.opacity = '0.5';
-                        },
-
-                        onEnd: function(evt) {
-                            evt.item.style.opacity = '1';
-
-                            // Yeni sırayı topla
-                            const items = [];
-                            const allItems = Array.from(container.querySelectorAll('.gallery-item'));
-
-                            allItems.forEach((item, index) => {
-                                const id = item.getAttribute('data-id');
-                                if (id) {
-                                    items.push({
-                                        id: parseInt(id),
-                                        order: index + 1
-                                    });
-                                }
-                            });
-
-                            // Livewire'a gönder
-                            if (items.length > 0) {
-                                @this.call('updateGalleryOrder', items);
-                            }
-                        }
-                    });
-
-                    console.log('✅ Gallery sortable initialized');
-                }
-            });
-        </script>
-
-        {{-- Sortable Ghost Styles --}}
-        <style>
-            .sortable-ghost {
-                opacity: 0.4;
-                background: #f8f9fa;
-            }
-
-            .sortable-drag {
-                opacity: 1;
-            }
-
-            .gallery-card:active {
-                cursor: grabbing !important;
-            }
-
-            .gallery-drag-handle:active {
-                cursor: grabbing !important;
-            }
-        </style>
     @endpush
 </div>

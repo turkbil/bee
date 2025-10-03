@@ -29,10 +29,6 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
 
     public $studioEnabled = false;
 
-    // Spatie Media Library - File uploads
-    public $featuredImage;
-    public $galleryImages = [];
-    public $existingGallery = [];
 
     // Universal Component Data
     public $currentLanguage;
@@ -454,61 +450,29 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
             ];
         }
 
-        // Spatie Media Library - Featured Image Upload
-        if ($this->featuredImage) {
-            $announcement->addMedia($this->featuredImage->getRealPath())
-                ->usingName(pathinfo($this->featuredImage->getClientOriginalName(), PATHINFO_FILENAME))
-                ->usingFileName($this->featuredImage->getClientOriginalName())
-                ->toMediaCollection('featured_image');
-
-            Log::info('📸 Featured image uploaded', [
-                'announcement_id' => $announcement->announcement_id,
-                'filename' => $this->featuredImage->getClientOriginalName()
-            ]);
-
-            $this->featuredImage = null; // Reset after upload
-        }
-
-        // Spatie Media Library - Gallery Images Upload
-        if (!empty($this->galleryImages)) {
-            foreach ($this->galleryImages as $image) {
-                $announcement->addMedia($image->getRealPath())
-                    ->usingName(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($image->getClientOriginalName())
-                    ->toMediaCollection('gallery');
-            }
-
-            Log::info('🖼️ Gallery images uploaded', [
-                'announcement_id' => $announcement->announcement_id,
-                'count' => count($this->galleryImages)
-            ]);
-
-            $this->galleryImages = []; // Reset after upload
-        }
-
-        // Reload existing gallery for UI
-        $this->existingGallery = gallery($announcement);
-
         Log::info('🎯 Save method tamamlanıyor', [
             'announcementId' => $this->announcementId,
-            'redirect' => $redirect
+            'redirect' => $redirect,
+            'isNewRecord' => $isNewRecord
         ]);
 
+        // Toast mesajı göster
+        $this->dispatch('toast', $toast);
+
+        // Redirect istendiyse
         if ($redirect) {
             session()->flash('toast', $toast);
             return redirect()->route('admin.announcement.index');
         }
 
-        // Yeni kayıt oluşturulduysa, edit URL'ine yönlendir (medya upload için ID gerekli)
+        // Yeni kayıt oluşturulduysa - medya event'ini dispatch et ve redirect
         if ($isNewRecord && isset($announcement)) {
+            // UniversalMediaComponent'e save event'i gönder
+            $this->dispatch('announcement-saved', $announcement->announcement_id);
+
             session()->flash('toast', $toast);
             return redirect()->route('admin.announcement.manage', ['id' => $announcement->announcement_id]);
         }
-
-        $this->dispatch('toast', $toast);
-
-        // SEO VERİLERİNİ KAYDET - Universal SEO Tab Component'e event gönder
-        $this->dispatch('announcement-saved', announcementId: $this->announcementId);
 
         Log::info('✅ Save method başarıyla tamamlandı', [
             'announcementId' => $this->announcementId
@@ -521,196 +485,10 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
         }
     }
 
-    /**
-     * Delete featured image
-     */
-    public function deleteFeaturedImage()
-    {
-        if (!$this->announcementId) {
-            return;
-        }
-
-        $announcement = Announcement::query()->find($this->announcementId);
-        if ($announcement && $announcement->hasMedia('featured_image')) {
-            $announcement->clearMediaCollection('featured_image');
-
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('announcement::admin.media.featured_deleted'),
-                'type' => 'success'
-            ]);
-
-            Log::info('🗑️ Featured image deleted', [
-                'announcement_id' => $this->announcementId
-            ]);
-        }
-    }
-
-    /**
-     * Delete gallery image
-     */
-    public function deleteGalleryImage($mediaId)
-    {
-        try {
-            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($mediaId);
-
-            // Security: Check media belongs to this announcement
-            if ($media->model_id != $this->announcementId || $media->model_type != Announcement::class) {
-                $this->dispatch('toast', [
-                    'title' => __('admin.error'),
-                    'message' => __('admin.unauthorized'),
-                    'type' => 'error'
-                ]);
-                return;
-            }
-
-            $media->delete();
-
-            // Reload existing gallery
-            $announcement = Announcement::query()->find($this->announcementId);
-            $this->existingGallery = gallery($announcement);
-
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('announcement::admin.media.gallery_image_deleted'),
-                'type' => 'success'
-            ]);
-
-            Log::info('🗑️ Gallery image deleted', [
-                'announcement_id' => $this->announcementId,
-                'media_id' => $mediaId
-            ]);
-
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => __('admin.error'),
-                'message' => $e->getMessage(),
-                'type' => 'error'
-            ]);
-        }
-    }
-
-    /**
-     * Set featured image from gallery
-     */
-    public function setFeaturedFromGallery($mediaId)
-    {
-        try {
-            if (!$this->announcementId) {
-                $this->dispatch('toast', [
-                    'title' => __('admin.error'),
-                    'message' => __('admin.save_first'),
-                    'type' => 'error'
-                ]);
-                return;
-            }
-
-            $announcement = Announcement::query()->find($this->announcementId);
-            if (!$announcement) {
-                return;
-            }
-
-            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($mediaId);
-
-            // Security: Check media belongs to this announcement and is in gallery
-            if ($media->model_id != $this->announcementId
-                || $media->model_type != Announcement::class
-                || $media->collection_name != 'gallery') {
-                $this->dispatch('toast', [
-                    'title' => __('admin.error'),
-                    'message' => __('admin.unauthorized'),
-                    'type' => 'error'
-                ]);
-                return;
-            }
-
-            // Copy gallery image to featured_image collection
-            $announcement->clearMediaCollection('featured_image');
-            $announcement->copyMedia($media->getPath())
-                ->toMediaCollection('featured_image');
-
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('announcement::admin.media.featured_set_from_gallery'),
-                'type' => 'success'
-            ]);
-
-            Log::info('📸 Featured image set from gallery', [
-                'announcement_id' => $this->announcementId,
-                'media_id' => $mediaId
-            ]);
-
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => __('admin.error'),
-                'message' => $e->getMessage(),
-                'type' => 'error'
-            ]);
-
-            Log::error('Featured image set failed', [
-                'announcement_id' => $this->announcementId,
-                'media_id' => $mediaId,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    /**
-     * Update gallery order
-     */
-    public function updateGalleryOrder($list)
-    {
-        try {
-            if (!$this->announcementId) {
-                return;
-            }
-
-            foreach ($list as $item) {
-                $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($item['id']);
-                if ($media && $media->model_id == $this->announcementId) {
-                    $media->order_column = $item['order'];
-                    $media->save();
-                }
-            }
-
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('announcement::admin.media.gallery_order_updated'),
-                'type' => 'success'
-            ]);
-
-            Log::info('🔄 Gallery order updated', [
-                'announcement_id' => $this->announcementId,
-                'items_count' => count($list)
-            ]);
-
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => __('admin.error'),
-                'message' => $e->getMessage(),
-                'type' => 'error'
-            ]);
-
-            Log::error('Gallery order update failed', [
-                'announcement_id' => $this->announcementId,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
 
     public function render()
     {
-        // Load existing gallery for display
-        $announcement = null;
-        if ($this->announcementId) {
-            $announcement = Announcement::query()->find($this->announcementId);
-            if ($announcement) {
-                $this->existingGallery = gallery($announcement);
-            }
-        }
-
         return view('announcement::admin.livewire.announcement-manage-component', [
-            'announcement' => $announcement,
             'jsVariables' => [
                 'currentAnnouncementId' => $this->announcementId ?? null,
                 'currentLanguage' => $this->currentLanguage ?? 'tr'

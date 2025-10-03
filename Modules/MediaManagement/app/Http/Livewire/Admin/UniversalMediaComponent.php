@@ -59,9 +59,26 @@ class UniversalMediaComponent extends Component
     public array $existingDocuments = [];
 
     // ========================================
+    // SESSION-BASED TEMPORARY STORAGE
+    // ========================================
+    public ?array $tempFeaturedImage = null; // ['path' => 'temp/xxx.jpg', 'original_name' => 'photo.jpg']
+    public array $tempGallery = []; // [['path' => 'temp/xxx.jpg', 'original_name' => 'photo.jpg'], ...]
+
+    // ========================================
     // SERVICES
     // ========================================
     protected MediaService $mediaService;
+
+    // ========================================
+    // LISTENERS
+    // ========================================
+    protected $listeners = [
+        'announcement-saved' => 'handleModelSaved',
+        'page-saved' => 'handleModelSaved',
+        'portfolio-saved' => 'handleModelSaved',
+        'update-gallery-order' => 'updateGalleryOrderFromEvent',
+        'update-temp-gallery-order' => 'updateTempGalleryOrderFromEvent',
+    ];
 
     // ========================================
     // LIFECYCLE
@@ -87,6 +104,11 @@ class UniversalMediaComponent extends Component
         // Set defaults from config
         if (is_null($this->maxGalleryItems)) {
             $this->maxGalleryItems = config('mediamanagement.defaults.max_gallery_items', 50);
+        }
+
+        // Load temp files from session (for new records)
+        if (!$this->modelId) {
+            $this->loadTempFilesFromSession();
         }
     }
 
@@ -156,19 +178,23 @@ class UniversalMediaComponent extends Component
 
     public function updatedFeaturedImageFile()
     {
+        // Null ise (silme işlemi) validation yapma
+        if (!$this->featuredImageFile) {
+            return;
+        }
+
         $this->validate([
             'featuredImageFile' => 'image|max:10240', // 10MB
         ]);
 
-        // Model ID yoksa, parent'a geçici dosya bilgisi gönder
+        // Model ID yoksa, session-based temp storage'a kaydet
         if (!$this->modelId) {
-            $this->dispatch('media-uploaded-temporarily', [
-                'collection' => 'featured_image',
-                'file' => $this->featuredImageFile,
-            ]);
+            $this->saveFeaturedToTempStorage();
+            $this->featuredImageFile = null;
             return;
         }
 
+        // Model varsa direkt upload
         $model = $this->getModel();
         if (!$model) {
             return;
@@ -201,16 +227,14 @@ class UniversalMediaComponent extends Component
             'galleryFiles.*' => 'image|max:10240', // 10MB per file
         ]);
 
-        // Model ID yoksa, parent'a geçici dosya bilgisi gönder
+        // Model ID yoksa, session-based temp storage'a kaydet
         if (!$this->modelId) {
-            $this->dispatch('media-uploaded-temporarily', [
-                'collection' => 'gallery',
-                'files' => $this->galleryFiles,
-            ]);
+            $this->saveGalleryToTempStorage();
             $this->galleryFiles = [];
             return;
         }
 
+        // Model varsa direkt upload
         $model = $this->getModel();
         if (!$model) {
             return;
@@ -234,6 +258,184 @@ class UniversalMediaComponent extends Component
                 'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
                 'type' => 'error'
             ]);
+        }
+    }
+
+    // ========================================
+    // SESSION-BASED TEMP STORAGE METHODS
+    // ========================================
+
+    protected function saveFeaturedToTempStorage()
+    {
+        $tempDir = public_path('temp/media');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        $fileName = uniqid() . '_' . $this->featuredImageFile->getClientOriginalName();
+        $filePath = $tempDir . '/' . $fileName;
+
+        $this->featuredImageFile->storeAs('', $fileName, ['disk' => 'temp_media']);
+
+        $this->tempFeaturedImage = [
+            'path' => 'temp/media/' . $fileName,
+            'original_name' => $this->featuredImageFile->getClientOriginalName(),
+            'url' => asset('temp/media/' . $fileName)
+        ];
+
+        $this->saveTempFilesToSession();
+
+        Log::info('📸 Featured image saved to temp storage', [
+            'path' => $this->tempFeaturedImage['path']
+        ]);
+    }
+
+    protected function saveGalleryToTempStorage()
+    {
+        $tempDir = public_path('temp/media');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        foreach ($this->galleryFiles as $file) {
+            $fileName = uniqid() . '_' . $file->getClientOriginalName();
+            $filePath = $tempDir . '/' . $fileName;
+
+            $file->storeAs('', $fileName, ['disk' => 'temp_media']);
+
+            $this->tempGallery[] = [
+                'path' => 'temp/media/' . $fileName,
+                'original_name' => $file->getClientOriginalName(),
+                'url' => asset('temp/media/' . $fileName)
+            ];
+        }
+
+        $this->saveTempFilesToSession();
+
+        Log::info('🖼️ Gallery images saved to temp storage', [
+            'count' => count($this->tempGallery)
+        ]);
+    }
+
+    protected function saveTempFilesToSession()
+    {
+        session([
+            'media_temp_featured_' . $this->modelType => $this->tempFeaturedImage,
+            'media_temp_gallery_' . $this->modelType => $this->tempGallery,
+        ]);
+    }
+
+    protected function loadTempFilesFromSession()
+    {
+        $this->tempFeaturedImage = session('media_temp_featured_' . $this->modelType, null);
+        $this->tempGallery = session('media_temp_gallery_' . $this->modelType, []);
+
+        Log::info('🔄 Temp files loaded from session', [
+            'featured' => !empty($this->tempFeaturedImage),
+            'gallery_count' => count($this->tempGallery)
+        ]);
+    }
+
+    protected function clearTempFilesFromSession()
+    {
+        session()->forget('media_temp_featured_' . $this->modelType);
+        session()->forget('media_temp_gallery_' . $this->modelType);
+
+        // Delete actual temp files
+        if ($this->tempFeaturedImage) {
+            $filePath = public_path($this->tempFeaturedImage['path']);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        foreach ($this->tempGallery as $item) {
+            $filePath = public_path($item['path']);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        $this->tempFeaturedImage = null;
+        $this->tempGallery = [];
+    }
+
+    // ========================================
+    // TEMP FILE MANAGEMENT
+    // ========================================
+
+    public function removeTempFeaturedImage()
+    {
+        if ($this->tempFeaturedImage) {
+            $filePath = public_path($this->tempFeaturedImage['path']);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            $this->tempFeaturedImage = null;
+            $this->saveTempFilesToSession();
+        }
+    }
+
+    public function removeTempGalleryFile($index)
+    {
+        if (isset($this->tempGallery[$index])) {
+            $filePath = public_path($this->tempGallery[$index]['path']);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            unset($this->tempGallery[$index]);
+            $this->tempGallery = array_values($this->tempGallery);
+            $this->saveTempFilesToSession();
+        }
+    }
+
+    public function removeGalleryFile($index)
+    {
+        if (isset($this->galleryFiles[$index])) {
+            unset($this->galleryFiles[$index]);
+            $this->galleryFiles = array_values($this->galleryFiles); // Re-index
+        }
+    }
+
+    /**
+     * Session-based temporary gallery sıralamasını güncelle
+     */
+    public function updateTempGalleryOrder(array $order)
+    {
+        $newOrder = [];
+
+        foreach ($order as $item) {
+            $index = $item['index'];
+            if (isset($this->tempGallery[$index])) {
+                $newOrder[] = $this->tempGallery[$index];
+            }
+        }
+
+        $this->tempGallery = $newOrder;
+        $this->saveTempFilesToSession();
+
+        Log::info('🔄 Temp gallery order updated (session-based)', [
+            'count' => count($this->tempGallery)
+        ]);
+    }
+
+    /**
+     * Event handler for gallery order update
+     */
+    public function updateGalleryOrderFromEvent($data)
+    {
+        if (isset($data['items'])) {
+            $this->updateGalleryOrder($data['items']);
+        }
+    }
+
+    /**
+     * Event handler for temp gallery order update
+     */
+    public function updateTempGalleryOrderFromEvent($data)
+    {
+        if (isset($data['items'])) {
+            $this->updateTempGalleryOrder($data['items']);
         }
     }
 
@@ -357,6 +559,85 @@ class UniversalMediaComponent extends Component
         }
 
         return $this->modelClass::find($this->modelId);
+    }
+
+    /**
+     * Model kaydedildiğinde session-based temp dosyaları attach et
+     */
+    public function handleModelSaved($modelId)
+    {
+        // ModelId güncelle
+        $this->modelId = $modelId;
+
+        // Geçici dosyalar varsa attach et
+        $model = $this->getModel();
+        if (!$model) {
+            Log::warning('Model bulunamadı', ['modelId' => $modelId]);
+            return;
+        }
+
+        // Featured image upload (from temp storage)
+        if ($this->tempFeaturedImage) {
+            try {
+                $filePath = public_path($this->tempFeaturedImage['path']);
+
+                if (file_exists($filePath)) {
+                    $uploadedFile = new \Illuminate\Http\UploadedFile(
+                        $filePath,
+                        $this->tempFeaturedImage['original_name'],
+                        mime_content_type($filePath),
+                        null,
+                        true
+                    );
+
+                    $this->mediaService->uploadMedia($model, $uploadedFile, 'featured_image');
+
+                    Log::info('📸 Featured image attached from temp storage', [
+                        'model_id' => $modelId,
+                        'filename' => $this->tempFeaturedImage['original_name']
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Featured image attach failed', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // Gallery images upload (from temp storage)
+        if (!empty($this->tempGallery)) {
+            try {
+                $uploadedFiles = [];
+
+                foreach ($this->tempGallery as $item) {
+                    $filePath = public_path($item['path']);
+
+                    if (file_exists($filePath)) {
+                        $uploadedFiles[] = new \Illuminate\Http\UploadedFile(
+                            $filePath,
+                            $item['original_name'],
+                            mime_content_type($filePath),
+                            null,
+                            true
+                        );
+                    }
+                }
+
+                if (!empty($uploadedFiles)) {
+                    $this->mediaService->uploadMultipleMedia($model, $uploadedFiles, 'gallery');
+
+                    Log::info('🖼️ Gallery images attached from temp storage', [
+                        'model_id' => $modelId,
+                        'count' => count($uploadedFiles)
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Gallery attach failed', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // Cleanup temp files
+        $this->clearTempFilesFromSession();
+        $this->loadCollection($model, 'featured_image');
+        $this->loadCollection($model, 'gallery');
     }
 
     protected function hasCollection(string $collectionName): bool

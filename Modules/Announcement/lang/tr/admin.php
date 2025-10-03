@@ -9,6 +9,7 @@ return [
 'new_page_pretitle' => 'Yeni Duyuru Oluştur',
 'edit_page_pretitle' => 'Duyuru Düzenle',
 'save_to_upload_media' => 'Medya yüklemek için önce duyuruyu kaydedin',
+'title_required_for_media' => 'Medya yüklemek için en az başlık alanını doldurmanız gerekiyor',
 'announcement_detail' => 'Duyuru Detayı',
 'home' => 'Anasayfa',
 'title_field' => 'Başlık',

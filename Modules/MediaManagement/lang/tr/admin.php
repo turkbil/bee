@@ -71,6 +71,8 @@ return [
     'order_updated' => 'Sıralama güncellendi',
     'no_files' => 'Henüz dosya yüklenmedi',
     'no_media' => 'Henüz medya yok',
+    'save_first_to_upload' => 'Medya yüklemek için önce kaydediliyor...',
+    'ready_to_save' => 'Kaydetmeye hazır - Formu kaydettiğinizde medya eklenecek',
 
     // Errors
     'file_too_large' => 'Dosya çok büyük. Maksimum: :size',

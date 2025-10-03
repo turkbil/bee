@@ -242,12 +242,8 @@ class CreditWarningComponent extends Component
         $this->refreshBalance();
         $this->checkSessionMessages();
         $this->dispatch('credit-status-refreshed');
-        
-        // User feedback
-        $this->dispatch('show-toast', [
-            'type' => 'info',
-            'message' => 'Kredi durumu güncellendi.'
-        ]);
+
+        // Toast kaldırıldı - kullanıcı ilk girişte her seferinde mesaj görmüyordu
     }
 
     /**

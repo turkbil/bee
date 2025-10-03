@@ -44,6 +44,27 @@ Route::middleware(['web', 'auth', 'tenant'])->get('/admin/api/tenant-languages',
     }
 });
 
+// Global Language Session Update - Tüm modüller kullanabilir
+Route::middleware(['admin', 'tenant'])->post('/admin/language/update-session', function (\Illuminate\Http\Request $request) {
+    $language = $request->input('language');
+    $availableLanguages = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+
+    if ($language && in_array($language, $availableLanguages)) {
+        session(['admin_locale' => $language]);
+        return response()->json([
+            'success' => true,
+            'status' => 'success',
+            'language' => $language
+        ]);
+    }
+
+    return response()->json([
+        'success' => false,
+        'status' => 'error',
+        'message' => 'Invalid language code'
+    ], 400);
+})->name('language.update-session');
+
 // Cache temizleme endpoint'i
 Route::middleware(['admin', 'tenant'])->post('/admin/cache/clear', function () {
     try {

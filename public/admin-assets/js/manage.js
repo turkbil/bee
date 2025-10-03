@@ -305,72 +305,15 @@ function setupLanguageSwitching() {
         
         // *** JQUERY İLE LANGUAGE CONTENT DEĞİŞİMİ ***
 
-        // Önce tüm elementleri gizle
-        allLanguageContents.each(function(index) {
-            // KRİTİK: Hide için de force et
-            $(this).hide().css('display', 'none');
-        });
+        // Basit ve temiz: Önce hepsini gizle, sonra hedefi göster
 
-        // KRİTİK FİX: Aktif tab kontrolü
-        const currentActiveTab = $('.nav-tabs .nav-link.active').attr('href');
-        const isSeoTabActive = currentActiveTab === '#1';
-        const isCodeTabActive = currentActiveTab === '#2';
-        targetLanguageContent.each(function(index) {
-            const beforeShow = $(this).is(':visible');
-            const isBasicContent = $(this).hasClass('language-content');
-            const isSeoContent = $(this).hasClass('seo-language-content');
+        // Tüm language content'leri gizle
+        allLanguageContents.hide();
 
-            // KRİTİK KARAR: Tab durumuna göre gösterme mantığı
-            let shouldShow = false;
+        // Hedef dil content'lerini göster
+        targetLanguageContent.show();
 
-            if (isSeoTabActive) {
-                // SEO tab aktifse: Hem basic hem SEO content'leri göster
-                shouldShow = true;
-            } else if (isCodeTabActive) {
-                // Code tab aktifse: Hiçbir language content gösterme (Code ortak)
-                shouldShow = false;
-            } else {
-                // Diğer tab'lar aktifse: Sadece basic content'leri göster
-                shouldShow = isBasicContent;
-            }
-
-            if (shouldShow) {
-                // KRİTİK FİX: TÜM elementler için CSS display force et
-                $(this).css({
-                    'display': 'block',
-                    'visibility': 'visible'
-                }).removeClass('d-none').show();
-
-                // ULTRA FİX: Multiple DOM manipulation methods
-                if (!$(this).is(':visible')) {
-                    // Method 1: setProperty with important
-                    $(this)[0].style.setProperty('display', 'block', 'important');
-                    $(this)[0].style.setProperty('visibility', 'visible', 'important');
-
-                    // Method 2: CSS class override
-                    $(this).addClass('force-visible');
-
-                    // Method 3: Inline style override
-                    $(this).attr('style', 'display: block !important; visibility: visible !important;');
-
-                    console.log(`  🔨 ULTRA FİX: Multiple override methods - ${isBasicContent ? 'Basic' : 'SEO'}`);
-                }
-
-                // SEO content için özel fix
-                if (!isMenuManagement && isSeoContent) {
-                    // Parent container check
-                    const parentContainer = $(this).closest('.tab-pane');
-                    if (parentContainer.length) {
-                        parentContainer.addClass('show active');
-                        console.log(`  🔧 SEO parent container aktivasyon edildi`);
-                    }
-                    console.log(`  🔧 SEO element için display:block force edildi`);
-                }
-            }
-
-            const afterShow = $(this).is(':visible');
-            // Element visibility updated
-        });
+        console.log(`✅ Dil değiştirildi: ${language}`);
         
         // Final durum kontrolü
         // Update global variables
@@ -629,14 +572,18 @@ function setupSeoCharacterCounters() {
     // Sadece content tipindeki modüllerde SEO çalıştır
     const currentPath = window.location.pathname;
     const isMenuManagement = currentPath.includes('/menumanagement');
-    
+
     if (isMenuManagement) {
         // console.log('🚫 MenuManagement - SEO sistemi atlandı');
         return; // MenuManagement için SEO sistemini çalıştırma
     }
-    
+
     setTimeout(function() {
-        const languages = ['tr', 'en', 'ar'];
+        // DİNAMİK DİL TESPİTİ - DOM'dan mevcut dilleri al
+        const languageButtons = document.querySelectorAll('.language-switch-btn');
+        const languages = Array.from(languageButtons).map(btn => btn.getAttribute('data-language')).filter(Boolean);
+
+        console.log('🌍 SEO Counter - Dinamik diller tespit edildi:', languages);
         
         languages.forEach(function(lang) {
             // Title counter
@@ -1250,7 +1197,7 @@ function setupSlugNormalization() {
     // JavaScript slug normalization function (matches PHP SlugHelper)
     function normalizeSlug(slug) {
         slug = slug.toLowerCase().trim();
-        
+
         // Multi-language character mapping - extensible for any language
         const characterMaps = {
             // Turkish characters
@@ -1341,8 +1288,12 @@ function setupSlugNormalization() {
     
     // Find all slug inputs and attach normalization
     setTimeout(function() {
-        const languages = ['tr', 'en', 'ar'];
-        
+        // DİNAMİK DİL TESPİTİ - DOM'dan mevcut dilleri al
+        const languageButtons = document.querySelectorAll('.language-switch-btn');
+        const languages = Array.from(languageButtons).map(btn => btn.getAttribute('data-language')).filter(Boolean);
+
+        console.log('🌍 Slug Normalization - Dinamik diller tespit edildi:', languages);
+
         languages.forEach(function(lang) {
             // Find slug input by wire:model attribute
             const allInputs = document.querySelectorAll('input');
@@ -1484,69 +1435,38 @@ function loadDataForLanguageExceptCode(language) {
     // Language contents are managed by show/hide, Code tab is not affected
 }
 
-// DİL İÇERİK GÖRÜNÜRLÜĞÜ FONKSİYONU - Global olarak expose ediyoruz
+// DİL İÇERİK GÖRÜNÜRLÜĞÜ FONKSİYONU - Basit ve temiz
 window.switchLanguageContent = function(language) {
-    console.log('🎯 DİL İÇERİK DEĞİŞTİRME:', language);
+    // Tüm language content'leri işle (hem basic hem SEO)
+    $('.language-content, .seo-language-content').each(function() {
+        const $this = $(this);
+        const contentLang = $this.data('language');
 
-    // TEMEL BİLGİLER TAB - language-content divleri
-    document.querySelectorAll('.language-content').forEach(content => {
-        const contentLang = content.getAttribute('data-language');
         if (contentLang === language) {
-            // GÖRÜNÜR YAP - Tüm blokları temizle
-            content.style.display = 'block';
-            content.style.visibility = 'visible';
-            content.style.opacity = '1';
-            content.style.height = 'auto';
-            content.classList.remove('d-none');
-            console.log('👁️ TEMEL BİLGİLER görünür:', contentLang);
+            $this.show();
         } else {
-            // GİZLE - Agresif gizleme
-            content.style.display = 'none';
-            content.style.visibility = 'hidden';
-            content.style.opacity = '0';
-            content.style.height = '0';
-            content.classList.add('d-none');
-            console.log('👻 TEMEL BİLGİLER gizli:', contentLang);
+            $this.hide();
         }
     });
 
-    // SEO TAB - seo-language-content divleri
-    document.querySelectorAll('.seo-language-content').forEach(content => {
-        const contentLang = content.getAttribute('data-language');
-        if (contentLang === language) {
-            // GÖRÜNÜR YAP - Tüm blokları temizle
-            content.style.display = 'block';
-            content.style.visibility = 'visible';
-            content.style.opacity = '1';
-            content.style.height = 'auto';
-            content.classList.remove('d-none');
-            console.log('👁️ SEO CONTENT görünür:', contentLang);
-        } else {
-            // GİZLE - Agresif gizleme
-            content.style.display = 'none';
-            content.style.visibility = 'hidden';
-            content.style.opacity = '0';
-            content.style.height = '0';
-            content.classList.add('d-none');
-            console.log('👻 SEO CONTENT gizli:', contentLang);
-        }
-    });
+    // Dil butonlarını güncelle
+    $('.language-switch-btn').each(function() {
+        const $btn = $(this);
+        const btnLang = $btn.data('language');
 
-    // DİL BUTONU GÜNCELLEMESİ
-    document.querySelectorAll('.language-switch-btn').forEach(btn => {
-        const btnLang = btn.getAttribute('data-language');
         if (btnLang === language) {
-            btn.classList.add('text-primary');
-            btn.classList.remove('text-muted');
-            btn.style.borderBottom = '2px solid var(--primary-color) !important';
+            $btn.addClass('text-primary').removeClass('text-muted');
+            $btn.css('border-bottom', '2px solid var(--primary-color)');
         } else {
-            btn.classList.remove('text-primary');
-            btn.classList.add('text-muted');
-            btn.style.borderBottom = '2px solid transparent';
+            $btn.removeClass('text-primary').addClass('text-muted');
+            $btn.css('border-bottom', '2px solid transparent');
         }
     });
 
-    console.log('✅ Dil içerik görünürlük güncellendi:', language);
+    // Global değişkeni güncelle
+    window.currentLanguage = language;
+
+    console.log('✅ Dil değiştirildi:', language);
 };
 
 // 🚀 PURE CLIENT-SIDE LANGUAGE SWITCHING (NO LIVEWIRE)
@@ -1559,8 +1479,8 @@ window.clientSideLanguageSwitch = function(language) {
     // Global language variable'ı güncelle
     window.currentLanguage = language;
 
-    // Session'a da kaydet (AJAX ile - background)
-    fetch('/admin/page/manage/update-language-session', {
+    // Session'a da kaydet (AJAX ile - background) - Global route kullanılıyor
+    fetch('/admin/language/update-session', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

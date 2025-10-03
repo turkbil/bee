@@ -6,13 +6,13 @@ namespace Modules\Announcement\App\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\{DB, Log};
+use Illuminate\Support\Facades\Log;
 use Modules\Announcement\App\Contracts\AnnouncementRepositoryInterface;
 use App\Contracts\GlobalSeoRepositoryInterface;
 use App\Services\GlobalTabService;
 use Modules\Announcement\App\Models\Announcement;
-use Modules\Announcement\App\DataTransferObjects\AnnouncementOperationResult;
-use Modules\Announcement\App\Exceptions\{AnnouncementNotFoundException, AnnouncementCreationException};
+use Modules\Announcement\App\DataTransferObjects\{AnnouncementOperationResult, BulkOperationResult};
+use Modules\Announcement\App\Exceptions\{AnnouncementNotFoundException, AnnouncementCreationException, AnnouncementProtectionException};
 use Throwable;
 
 readonly class AnnouncementService
@@ -21,34 +21,34 @@ readonly class AnnouncementService
         private AnnouncementRepositoryInterface $announcementRepository,
         private GlobalSeoRepositoryInterface $seoRepository
     ) {}
-    
+
     public function getAnnouncement(int $id): Announcement
     {
-        return $this->announcementRepository->findById($id) 
+        return $this->announcementRepository->findById($id)
             ?? throw AnnouncementNotFoundException::withId($id);
     }
-    
+
     public function getAnnouncementBySlug(string $slug, string $locale = 'tr'): Announcement
     {
         return $this->announcementRepository->findBySlug($slug, $locale)
             ?? throw AnnouncementNotFoundException::withSlug($slug, $locale);
     }
-    
+
     public function getActiveAnnouncements(): Collection
     {
         return $this->announcementRepository->getActive();
     }
-    
+
     public function getPaginatedAnnouncements(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
-        return $this->announcementRepository->paginate($filters, $perPage);
+        return $this->announcementRepository->getPaginated($filters, $perPage);
     }
-    
+
     public function searchAnnouncements(string $term, array $locales = []): Collection
     {
         return $this->announcementRepository->search($term, $locales);
     }
-    
+
     public function createAnnouncement(array $data): AnnouncementOperationResult
     {
         try {
@@ -56,306 +56,354 @@ readonly class AnnouncementService
             if (isset($data['title']) && is_array($data['title'])) {
                 $data['slug'] = $this->generateSlugsFromTitles($data['title']);
             }
-            
+
             // SEO verileri hazırlama
             if (isset($data['seo']) && is_array($data['seo'])) {
                 $data['seo'] = $this->prepareSeoData($data['seo']);
             }
-            
+
             $announcement = $this->announcementRepository->create($data);
-            
+
             Log::info('Announcement created', [
                 'announcement_id' => $announcement->announcement_id,
                 'title' => $announcement->title,
                 'user_id' => auth()->id()
             ]);
-            
+
             return AnnouncementOperationResult::success(
-                message: __('announcement::admin.announcement_created_successfully'),
+                message: __('announcement::admin.page_created_successfully'),
                 data: $announcement
             );
-            
         } catch (Throwable $e) {
             Log::error('Announcement creation failed', [
                 'error' => $e->getMessage(),
                 'data' => $data,
                 'user_id' => auth()->id()
             ]);
-            
+
             throw AnnouncementCreationException::withDatabaseError($e->getMessage());
         }
     }
-    
+
     public function updateAnnouncement(int $id, array $data): AnnouncementOperationResult
     {
         try {
             $announcement = $this->announcementRepository->findById($id)
                 ?? throw AnnouncementNotFoundException::withId($id);
-            
+
             // Slug güncelleme
             if (isset($data['title']) && is_array($data['title'])) {
-                $data['slug'] = $this->generateSlugsFromTitles($data['title'], $id);
+                $data['slug'] = $this->generateSlugsFromTitles($data['title'], $announcement->slug ?? []);
             }
-            
+
             // SEO verileri hazırlama
             if (isset($data['seo']) && is_array($data['seo'])) {
-                $data['seo'] = $this->prepareSeoData($data['seo']);
+                $data['seo'] = $this->prepareSeoData($data['seo'], $announcement->seo ?? []);
             }
-            
-            $announcement = $this->announcementRepository->update($id, $data);
-            
+
+            $this->announcementRepository->update($id, $data);
+
             Log::info('Announcement updated', [
-                'announcement_id' => $announcement->announcement_id,
-                'title' => $announcement->title,
+                'announcement_id' => $id,
+                'title' => $data['title'] ?? 'unchanged',
                 'user_id' => auth()->id()
             ]);
-            
+
             return AnnouncementOperationResult::success(
-                message: __('announcement::admin.announcement_updated_successfully'),
-                data: $announcement
+                message: __('announcement::admin.page_updated_successfully'),
+                data: $announcement->refresh()
             );
-            
+        } catch (AnnouncementNotFoundException $e) {
+            throw $e;
         } catch (Throwable $e) {
             Log::error('Announcement update failed', [
                 'announcement_id' => $id,
                 'error' => $e->getMessage(),
-                'data' => $data,
                 'user_id' => auth()->id()
             ]);
-            
+
             return AnnouncementOperationResult::error(
-                message: __('announcement::admin.announcement_update_failed')
+                message: __('announcement::admin.update_failed'),
+                type: 'error'
             );
         }
     }
-    
+
     public function deleteAnnouncement(int $id): AnnouncementOperationResult
     {
         try {
             $announcement = $this->announcementRepository->findById($id)
                 ?? throw AnnouncementNotFoundException::withId($id);
-            
+
             $this->announcementRepository->delete($id);
-            
+
             Log::info('Announcement deleted', [
                 'announcement_id' => $id,
                 'title' => $announcement->title,
                 'user_id' => auth()->id()
             ]);
-            
+
             return AnnouncementOperationResult::success(
-                message: __('announcement::admin.announcement_deleted_successfully')
+                message: __('announcement::admin.page_deleted_successfully')
             );
-            
+        } catch (AnnouncementNotFoundException | AnnouncementProtectionException $e) {
+            throw $e;
         } catch (Throwable $e) {
             Log::error('Announcement deletion failed', [
                 'announcement_id' => $id,
                 'error' => $e->getMessage(),
                 'user_id' => auth()->id()
             ]);
-            
+
             return AnnouncementOperationResult::error(
-                message: __('announcement::admin.announcement_deletion_failed')
+                message: __('announcement::admin.deletion_failed'),
+                type: 'error'
             );
         }
     }
-    
-    public function prepareAnnouncementForForm(int $id, string $currentLanguage): array
-    {
-        $announcement = $this->getAnnouncement($id);
-        
-        // SEO verilerini yükle
-        $seoData = $this->seoRepository->getSeoData(
-            $announcement,
-            $currentLanguage
-        );
-        
-        // Tab completion durumunu hesapla  
-        $announcementData = array_merge(
-            $announcement->only(['is_active']),
-            [
-                'title' => $announcement->getTranslated('title', $currentLanguage) ?? '',
-                'body' => $announcement->getTranslated('body', $currentLanguage) ?? '',
-                'slug' => $announcement->getTranslated('slug', $currentLanguage) ?? '',
-            ],
-            $seoData
-        );
-        
-        $tabCompletion = GlobalTabService::getTabCompletionStatus($announcementData, 'announcement');
-        
-        // SEO limitleri
-        $seoLimits = [
-            'title' => ['min' => 30, 'max' => 60],
-            'description' => ['min' => 120, 'max' => 160],
-            'keywords' => ['min' => 3, 'max' => 10]
-        ];
-        
-        return [
-            'announcement' => $announcement,
-            'seoData' => $seoData,
-            'tabCompletion' => $tabCompletion,
-            'seoLimits' => $seoLimits
-        ];
-    }
-    
-    // Eski methodları da koruyalım (backward compatibility)
-    public function create(array $data): Announcement
-    {
-        $result = $this->createAnnouncement($data);
-        return $result->data;
-    }
-    
-    public function update(int $id, array $data): Announcement
-    {
-        $result = $this->updateAnnouncement($id, $data);
-        return $result->data;
-    }
-    
-    public function delete(int $id): bool
-    {
-        $result = $this->deleteAnnouncement($id);
-        return $result->success;
-    }
-    
-    public function getPaginated(array $filters = [], int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->getPaginatedAnnouncements($filters, $perPage);
-    }
-    
-    public function search(array $filters = []): Collection
-    {
-        // Eski arayüzü destekle
-        $term = $filters['search'] ?? '';
-        $locales = $filters['locales'] ?? [];
-        return $this->searchAnnouncements($term, $locales);
-    }
-    
-    public function getActive(): Collection
-    {
-        return $this->getActiveAnnouncements();
-    }
-    
-    public function getRecent(int $limit = 10): Collection
-    {
-        return $this->announcementRepository->getRecent($limit);
-    }
-    
-    public function getPopular(int $limit = 10): Collection
-    {
-        return $this->announcementRepository->getPopular($limit);
-    }
-    
-    public function getById(int $id, array $with = []): ?Announcement
-    {
-        return $this->announcementRepository->findById($id, $with);
-    }
-    
-    public function getBySlug(string $slug): ?Announcement
-    {
-        return $this->announcementRepository->findBySlug($slug);
-    }
-    
-    public function updateSeo(int $id, array $seoData): Announcement
-    {
-        return $this->announcementRepository->updateSeo($id, $seoData);
-    }
-    
-    public function clearCache(int $id = null): void
-    {
-        $this->announcementRepository->clearCache($id);
-    }
-    
+
     public function toggleAnnouncementStatus(int $id): AnnouncementOperationResult
     {
         try {
             $announcement = $this->announcementRepository->findById($id)
                 ?? throw AnnouncementNotFoundException::withId($id);
-            
-            $newStatus = !$announcement->is_active;
-            $announcement = $this->announcementRepository->update($id, ['is_active' => $newStatus]);
-            
-            $message = $newStatus 
-                ? __('admin.item_activated_successfully')
-                : __('admin.item_deactivated_successfully');
-            
+
+            $this->announcementRepository->toggleActive($id);
+            $announcement->refresh();
+
             Log::info('Announcement status toggled', [
                 'announcement_id' => $id,
-                'new_status' => $newStatus,
+                'new_status' => $announcement->is_active,
                 'user_id' => auth()->id()
             ]);
-            
+
             return AnnouncementOperationResult::success(
-                message: $message,
+                message: __($announcement->is_active ? 'admin.activated' : 'admin.deactivated'),
                 data: $announcement,
-                meta: ['new_status' => $newStatus]
+                meta: ['new_status' => $announcement->is_active]
             );
-            
+        } catch (AnnouncementNotFoundException $e) {
+            return AnnouncementOperationResult::error(
+                message: __('admin.page_not_found'),
+                type: 'error'
+            );
+        } catch (AnnouncementProtectionException $e) {
+            return AnnouncementOperationResult::warning(
+                message: $e->getMessage()
+            );
         } catch (Throwable $e) {
             Log::error('Announcement status toggle failed', [
                 'announcement_id' => $id,
                 'error' => $e->getMessage(),
                 'user_id' => auth()->id()
             ]);
-            
+
             return AnnouncementOperationResult::error(
-                message: __('admin.operation_failed')
+                message: __('admin.operation_failed'),
+                type: 'error'
             );
         }
     }
-    
-    /**
-     * Başlıklardan slug oluştur
-     */
-    protected function generateSlugsFromTitles(array $titles, int $announcementId = null): array
+
+    public function bulkDeleteAnnouncements(array $ids): BulkOperationResult
     {
-        $slugs = [];
-        
+        try {
+            if (empty($ids)) {
+                return BulkOperationResult::failure(
+                    message: __('admin.no_announcements_selected')
+                );
+            }
+
+            $deletedCount = $this->announcementRepository->bulkDelete($ids);
+
+            Log::info('Bulk delete performed', [
+                'deleted_count' => $deletedCount,
+                'user_id' => auth()->id()
+            ]);
+
+            return BulkOperationResult::success(
+                message: __('admin.deleted_successfully'),
+                affectedCount: $deletedCount
+            );
+        } catch (Throwable $e) {
+            Log::error('Bulk delete failed', [
+                'error' => $e->getMessage(),
+                'ids' => $ids,
+                'user_id' => auth()->id()
+            ]);
+
+            return BulkOperationResult::failure(
+                message: __('admin.bulk_operation_failed'),
+                errors: [$e->getMessage()]
+            );
+        }
+    }
+
+    public function bulkToggleAnnouncementStatus(array $ids): BulkOperationResult
+    {
+        try {
+            $affectedCount = $this->announcementRepository->bulkToggleActive($ids);
+
+            Log::info('Bulk status toggle performed', [
+                'affected_count' => $affectedCount,
+                'user_id' => auth()->id()
+            ]);
+
+            return BulkOperationResult::success(
+                message: __('admin.updated_successfully'),
+                affectedCount: $affectedCount
+            );
+        } catch (Throwable $e) {
+            Log::error('Bulk status toggle failed', [
+                'error' => $e->getMessage(),
+                'ids' => $ids,
+                'user_id' => auth()->id()
+            ]);
+
+            return BulkOperationResult::failure(
+                message: __('admin.bulk_operation_failed'),
+                errors: [$e->getMessage()]
+            );
+        }
+    }
+
+    public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool
+    {
+        $result = $this->announcementRepository->updateSeoField($id, $locale, $field, $value);
+
+        if ($result) {
+            Log::info('SEO field updated', [
+                'announcement_id' => $id,
+                'locale' => $locale,
+                'field' => $field,
+                'user_id' => auth()->id()
+            ]);
+        }
+
+        return $result;
+    }
+
+    protected function generateSlugsFromTitles(array $titles, array $existingSlugs = []): array
+    {
+        $slugs = $existingSlugs;
+
         foreach ($titles as $locale => $title) {
-            if (!empty($title)) {
-                $baseSlug = \Illuminate\Support\Str::slug($title);
-                $slugs[$locale] = $this->makeUniqueSlug($baseSlug, $locale, $announcementId);
+            if (!empty($title) && empty($slugs[$locale])) {
+                $slugs[$locale] = \Str::slug($title);
             }
         }
-        
+
         return $slugs;
     }
-    
-    /**
-     * SEO verilerini hazırla
-     */
-    protected function prepareSeoData(array $seoData): array
+
+    protected function prepareSeoData(array $seoData, array $existingSeo = []): array
     {
-        // SEO verilerini normalize et
-        return array_filter($seoData, fn($value) => !empty(trim($value)));
-    }
-    
-    /**
-     * Unique slug oluştur
-     */
-    protected function makeUniqueSlug(string $slug, string $locale, int $announcementId = null): string
-    {
-        $originalSlug = $slug;
-        $counter = 1;
-        
-        while ($this->slugExists($slug, $locale, $announcementId)) {
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
+        $prepared = $existingSeo;
+
+        foreach ($seoData as $locale => $data) {
+            if (is_array($data)) {
+                // Boş değerleri temizle
+                $cleanData = array_filter($data, function ($value) {
+                    return !is_null($value) && $value !== '' && $value !== [];
+                });
+
+                if (!empty($cleanData)) {
+                    $prepared[$locale] = array_merge($prepared[$locale] ?? [], $cleanData);
+                }
+            }
         }
-        
-        return $slug;
+
+        return $prepared;
     }
-    
+
     /**
-     * Slug varlık kontrolü
+     * Sayfa verilerini form için hazırla
      */
-    protected function slugExists(string $slug, string $locale, int $announcementId = null): bool
+    public function prepareAnnouncementForForm(int $id, string $language): array
     {
-        $query = Announcement::whereRaw("JSON_EXTRACT(slug, '$.\"" . $locale . "\"') = ?", [$slug]);
-        
-        if ($announcementId) {
-            $query->where('announcement_id', '!=', $announcementId);
+        // 🚨 PERFORMANCE FIX: Eager loading ile bir seferde çek
+        $announcement = $this->announcementRepository->findByIdWithSeo($id);
+
+        if (!$announcement) {
+            return $this->getEmptyFormData($language);
         }
-        
-        return $query->exists();
+
+        // 🚨 PERFORMANCE FIX: SEO data'yı sadece bir kez çek
+        $seoData = $this->seoRepository->getSeoData($announcement, $language);
+
+        // Tab completion durumunu hesapla
+        $allData = array_merge($announcement->toArray(), $seoData);
+        $tabCompletion = GlobalTabService::getTabCompletionStatus($allData, 'announcement');
+
+        return [
+            'announcement' => $announcement,
+            'seoData' => $seoData, // Tekrar çekme!
+            'tabCompletion' => $tabCompletion,
+            'tabConfig' => GlobalTabService::getJavaScriptConfig('announcement'),
+            'seoLimits' => $this->seoRepository->getFieldLimits('announcement')
+        ];
+    }
+
+    /**
+     * Yeni sayfa için boş form verisi
+     */
+    public function getEmptyFormData(string $language): array
+    {
+        $emptyData = [
+            'title' => '',
+            'body' => '',
+            'slug' => '',
+            'seo_title' => '',
+            'seo_description' => '',
+            'seo_keywords' => '',
+            'canonical_url' => ''
+        ];
+
+        return [
+            'announcement' => null,
+            'seoData' => $emptyData,
+            'tabCompletion' => GlobalTabService::getTabCompletionStatus($emptyData, 'announcement'),
+            'tabConfig' => GlobalTabService::getJavaScriptConfig('announcement'),
+            'seoLimits' => $this->seoRepository->getFieldLimits('announcement')
+        ];
+    }
+
+    /**
+     * Form validation kurallarını getir
+     */
+    public function getValidationRules(array $availableLanguages): array
+    {
+        $rules = [
+            'inputs.is_active' => 'boolean',
+        ];
+
+        // Çoklu dil alanları
+        foreach ($availableLanguages as $lang) {
+            $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+            $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
+            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
+        }
+
+        // SEO validation kuralları
+        $seoRules = $this->seoRepository->getValidationRules('announcement');
+
+        return array_merge($rules, $seoRules);
+    }
+
+    /**
+     * SEO skorunu hesapla
+     */
+    public function calculateSeoScore(array $seoData): array
+    {
+        return $this->seoRepository->calculateSeoScore($seoData, 'announcement');
+    }
+
+    public function clearCache(): void
+    {
+        $this->announcementRepository->clearCache();
+
+        Log::info('Announcement cache cleared', [
+            'user_id' => auth()->id()
+        ]);
     }
 }

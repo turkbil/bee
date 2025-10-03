@@ -15,6 +15,7 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/', AnnouncementComponent::class)
                     ->middleware('module.permission:announcement,view')
                     ->name('index');
+
                 Route::get('/manage/{id?}', AnnouncementManageComponent::class)
                     ->middleware('module.permission:announcement,update')
                     ->name('manage');

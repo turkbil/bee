@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Portfolio\App\Http\Livewire\Traits;
 
 trait WithBulkActions
@@ -153,4 +154,5 @@ trait WithBulkActions
             'selectedItems' => $this->selectedItems
         ])->to('modals.bulk-delete-modal');
     }
+
 }

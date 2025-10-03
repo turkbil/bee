@@ -6,14 +6,12 @@
     Polymorphic relationship ile çalışır
 --}}
 
+{{-- UNIVERSAL SEO TAB - Temiz ve basit --}}
 <div>
     @foreach ($availableLanguages as $lang)
-        <div class="seo-language-content" data-language="{{ $lang }}"
-            style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};
-                   visibility: {{ $currentLanguage === $lang ? 'visible' : 'hidden' }};
-                   opacity: {{ $currentLanguage === $lang ? '1' : '0' }};
-                   height: {{ $currentLanguage === $lang ? 'auto' : '0' }};"
-            class="{{ $currentLanguage === $lang ? '' : 'd-none' }}">
+        <div class="seo-language-content"
+             data-language="{{ $lang }}"
+             style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
             {{-- AI SEO TOOLBAR - A1 PATTERN --}}
             @php
@@ -30,7 +28,7 @@
                         data-seo-feature="seo-smart-recommendations" data-language="{{ $lang }}"
                         style="z-index: 9999; position: relative;">
                         <i class="fas fa-magic me-1"></i>
-                        AI Önerileri
+                        {{ __('seomanagement::admin.ai_recommendations') }}
                     </button>
                 </div>
             </div>
@@ -40,10 +38,10 @@
             @if (isset($recommendationLoaders[$lang]) && $recommendationLoaders[$lang])
                 <div class="text-center p-4 mb-4 bg-light rounded">
                     <div class="spinner-border text-success" role="status">
-                        <span class="visually-hidden">AI önerileri üretiliyor...</span>
+                        <span class="visually-hidden">{{ __('seomanagement::admin.ai_recommendations_generating') }}</span>
                     </div>
-                    <h5 class="mt-3 mb-1">🤖 AI Önerileri Hazırlanıyor</h5>
-                    <p class="text-muted">Sayfanız analiz ediliyor ve özelleştirilmiş öneriler üretiliyor...</p>
+                    <h5 class="mt-3 mb-1">🤖 {{ __('seomanagement::admin.ai_recommendations_preparing') }}</h5>
+                    <p class="text-muted">{{ __('seomanagement::admin.ai_recommendations_analyzing') }}</p>
                 </div>
             @else
                 {{-- AI RECOMMENDATIONS RESULTS --}}
@@ -316,22 +314,21 @@
                         {{-- Özelleştirme Switch --}}
                         <div class="col-md-6 mb-3">
                             <div class="mt-3">
-                                <div class="form-check form-switch">
-                                    @php
-                                        // Sosyal medya alanları doluysa otomatik checked
-                                        $ogTitle = $seoDataCache[$lang]['og_title'] ?? '';
-                                        $ogDescription = $seoDataCache[$lang]['og_description'] ?? '';
-                                        $autoChecked = !empty(trim($ogTitle)) || !empty(trim($ogDescription));
-                                    @endphp
+                                @php
+                                    // Sosyal medya alanları doluysa otomatik checked
+                                    $ogTitle = $seoDataCache[$lang]['og_title'] ?? '';
+                                    $ogDescription = $seoDataCache[$lang]['og_description'] ?? '';
+                                    $autoChecked = !empty(trim($ogTitle)) || !empty(trim($ogDescription));
+                                @endphp
+                                <div class="pretty p-switch p-fill">
                                     <input type="checkbox"
-                                        class="form-check-input"
-                                        wire:model.live="seoDataCache.{{ $lang }}.og_custom_enabled"
+                                        wire:model.defer="seoDataCache.{{ $lang }}.og_custom_enabled"
                                         id="og_custom_{{ $lang }}"
-                                        onchange="toggleOgCustomFields(this, '{{ $lang }}')"
+                                        onchange="toggleOgCustomFields(this, '{{ $lang }}');"
                                         {{ $autoChecked ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="og_custom_{{ $lang }}">
-                                        Özel sosyal medya ayarlarını kullan
-                                    </label>
+                                    <div class="state">
+                                        <label style="margin-left: 10px;">Özel sosyal medya ayarlarını kullan</label>
+                                    </div>
                                 </div>
                                 <div class="form-text">
                                     <small class="text-muted">Kapalıysa yukarıdaki SEO bilgileri kullanılır</small>
@@ -461,12 +458,13 @@
         checkSocialMediaSwitches();
     });
 
-    // Livewire morph sonrası kontrol
+    // Livewire morph sonrası kontrol - State'i koru
     if (typeof Livewire !== 'undefined') {
         Livewire.hook('element.updated', (el, component) => {
             setTimeout(() => {
                 checkSocialMediaSwitches();
-            }, 100);
+                preserveOgFieldsState();
+            }, 50);
         });
     }
 
@@ -485,6 +483,22 @@
             if ((ogTitleInput?.value || ogDescInput?.value) && checkbox) {
                 checkbox.checked = true;
                 if (ogFields) {
+                    ogFields.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // Livewire update sonrası OG fields state'ini koru
+    function preserveOgFieldsState() {
+        const languages = {!! json_encode($availableLanguages) !!};
+        languages.forEach(lang => {
+            const checkbox = document.getElementById(`og_custom_${lang}`);
+            const ogFields = document.getElementById(`og_custom_fields_${lang}`);
+
+            if (checkbox && ogFields) {
+                // Checkbox checked ise fields'i görünür tut
+                if (checkbox.checked) {
                     ogFields.style.display = 'block';
                 }
             }

@@ -43,6 +43,7 @@ class UniversalSeoTabComponent extends Component
     protected $listeners = [
         'languageChanged' => 'handleLanguageChange',
         'refreshSeoTab' => '$refresh',
+        'page-saved' => 'saveSeoData', // Parent component'ten gelen save event'i
     ];
 
     public function mount($modelId = null, $modelType = 'page', $modelClass = null)
@@ -265,6 +266,39 @@ class UniversalSeoTabComponent extends Component
                 $authorUrl[$lang] = $langData['author_url'] ?? '';
             }
 
+            // AI Analysis verilerini hazırla
+            $detailedScores = null;
+            $strengths = null;
+            $improvements = null;
+            $actionItems = null;
+
+            // staticAiAnalysis veya dynamicAiAnalysis'ten verileri al
+            foreach ($this->availableLanguages as $lang) {
+                if (!empty($this->staticAiAnalysis[$lang])) {
+                    $analysis = $this->staticAiAnalysis[$lang];
+
+                    // Detaylı skorları topla
+                    if (isset($analysis['detailed_scores'])) {
+                        $detailedScores[$lang] = $analysis['detailed_scores'];
+                    }
+
+                    // Strengths topla
+                    if (isset($analysis['strengths'])) {
+                        $strengths[$lang] = $analysis['strengths'];
+                    }
+
+                    // Improvements topla
+                    if (isset($analysis['improvements'])) {
+                        $improvements[$lang] = $analysis['improvements'];
+                    }
+
+                    // Action items topla
+                    if (isset($analysis['action_items'])) {
+                        $actionItems[$lang] = $analysis['action_items'];
+                    }
+                }
+            }
+
             // Polymorphic relationship ile kaydet - DOĞRU KOLON İSİMLERİ!
             $seoSetting = SeoSetting::updateOrCreate(
                 [
@@ -282,6 +316,13 @@ class UniversalSeoTabComponent extends Component
                     'author_names' => $authorName,
                     'author_urls' => $authorUrl,
                     'ai_suggestions' => $this->staticAiRecommendations ?: null,
+                    // AI Analysis Results
+                    'analysis_results' => !empty($this->staticAiAnalysis) ? $this->staticAiAnalysis : null,
+                    'detailed_scores' => $detailedScores,
+                    'strengths' => $strengths,
+                    'improvements' => $improvements,
+                    'action_items' => $actionItems,
+                    'analysis_date' => !empty($this->staticAiAnalysis) ? now() : null,
                 ]
             );
 

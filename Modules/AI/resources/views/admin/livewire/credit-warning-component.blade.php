@@ -97,28 +97,7 @@
 
 @endif
 
-{{-- Success Toast for Refresh --}}
-<div x-data="{ showToast: false }" 
-     @credit-status-refreshed.window="showToast = true; setTimeout(() => showToast = false, 3000);"
-     @show-toast.window="if($event.detail[0].type === 'info') { showToast = true; setTimeout(() => showToast = false, 3000); }">
-    <div x-show="showToast" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 transform translate-x-full"
-         x-transition:enter-end="opacity-100 transform translate-x-0"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 transform translate-x-0"
-         x-transition:leave-end="opacity-0 transform translate-x-full"
-         class="position-fixed bottom-0 end-0 m-3"
-         style="z-index: 9999;">
-        <div class="alert alert-success d-flex align-items-center shadow-lg" style="border-radius: 10px; min-width: 300px;">
-            <i class="ti ti-check-circle fs-4 me-2"></i>
-            <div>
-                <strong>✅ Başarılı!</strong><br>
-                <small>Kredi durumu güncellendi</small>
-            </div>
-        </div>
-    </div>
-</div>
+{{-- Success Toast removed - kullanıcı her sayfa yüklenişinde mesaj görmek istemiyor --}}
 
 </div>
 

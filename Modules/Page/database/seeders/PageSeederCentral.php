@@ -11,36 +11,78 @@ use Modules\MenuManagement\App\Models\MenuItem;
 
 /**
  * Page Seeder for Central Database
- * Languages: tr, en, ar
+ *
+ * Creates Turkish Informatics corporate website pages
+ * with AI-focused content in 3 languages.
+ *
+ * Languages: Turkish (tr), English (en), Arabic (ar)
+ * Theme: AI Solutions & Corporate Technology
+ *
+ * Features:
+ * - Modern gradient designs with Alpine.js animations
+ * - SEO-optimized content for all pages
+ * - Automatic menu creation with multilingual support
+ * - Factory-powered additional pages for testing
+ *
+ * @package Modules\Page\Database\Seeders
  */
 class PageSeederCentral extends Seeder
 {
+    /**
+     * Pages created counter for summary
+     */
+    private int $pagesCreated = 0;
+
+    /**
+     * Run the central database seeds
+     */
     public function run(): void
     {
-        $this->command->info('Creating CENTRAL pages (tr, en, ar)...');
-        
-        // Duplicate kontrolü
+        $this->command->info('🚀 Starting Central Database Page Seeding...');
+        $this->command->newLine();
+
+        // Duplicate check
         $existingCount = Page::count();
         if ($existingCount > 0) {
-            $this->command->info("Pages already exist in CENTRAL database ({$existingCount} pages), skipping seeder...");
+            $this->command->warn("⚠️  Pages already exist ({$existingCount} pages)");
+            $this->command->info('💡 Skipping seeder to prevent duplicates');
             return;
         }
-        
-        // Mevcut sayfaları sil (sadece boşsa)
+
+        // Clean slate
+        $this->command->info('🧹 Cleaning existing data...');
         Page::truncate();
-        
-        
+
+        // Create pages
+        $this->command->info('📝 Creating pages...');
         $this->createHomepage();
         $this->createAboutPage();
         $this->createServicesPage();
         $this->createContactPage();
         $this->createPrivacyPage();
-        
+
+        // Create menu
+        $this->command->newLine();
+        $this->command->info('🗂️  Creating navigation menu...');
         $this->createMainMenu();
+
+        // Create additional development pages
+        $this->command->newLine();
+        $this->command->info('🔨 Creating additional pages for development...');
+        $this->createDevelopmentPages();
+
+        // Summary
+        $this->command->newLine();
+        $this->showSummary();
     }
     
+    /**
+     * Create homepage with modern AI-focused design
+     */
     private function createHomepage(): void
     {
+        $this->command->info('  → Homepage (AI Solutions)');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Anasayfa', 
@@ -473,10 +515,17 @@ class PageSeederCentral extends Seeder
             'Enhanced, trained, and customized AI solutions to take your business to the next level.',
             'حلول ذكاء اصطناعي معززة ومدربة ومخصصة لنقل عملك إلى المستوى التالي.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create about us page
+     */
     private function createAboutPage(): void
     {
+        $this->command->info('  → About Us');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Hakkımızda',
@@ -563,10 +612,17 @@ class PageSeederCentral extends Seeder
             'We continue to be pioneers in the sector with our quality service and customer satisfaction-focused working principles.',
             'نواصل كوننا رواداً في القطاع بمبادئ عملنا المركزة على الخدمة الجيدة ورضا العملاء.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create services page
+     */
     private function createServicesPage(): void
     {
+        $this->command->info('  → Services');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Hizmetlerimiz',
@@ -644,10 +700,17 @@ class PageSeederCentral extends Seeder
             'Learn about our AI solutions, web design and digital marketing services.',
             'تعرف على خدماتنا في حلول الذكاء الاصطناعي وتصميم المواقع والتسويق الرقمي.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create contact page
+     */
     private function createContactPage(): void
     {
+        $this->command->info('  → Contact');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'İletişim',
@@ -749,10 +812,17 @@ class PageSeederCentral extends Seeder
             'Get in touch with us. Türk Bilişim contact information and message form.',
             'تواصل معنا. معلومات الاتصال ونموذج الرسائل لتورك بيليشيم.'
         );
+
+        $this->pagesCreated++;
     }
     
+    /**
+     * Create privacy policy page
+     */
     private function createPrivacyPage(): void
     {
+        $this->command->info('  → Privacy Policy');
+
         $page = Page::create([
             'title' => [
                 'tr' => 'Gizlilik Politikası',
@@ -809,22 +879,21 @@ class PageSeederCentral extends Seeder
             'Learn about how your personal data is protected and used.',
             'تعرف على كيفية حماية واستخدام بياناتك الشخصية.'
         );
+
+        $this->pagesCreated++;
     }
 
+    /**
+     * Create SEO settings for a page
+     * Supports 3 languages (tr, en, ar)
+     */
     private function createSeoSetting($page, $titleTr, $titleEn, $titleAr, $descriptionTr, $descriptionEn, $descriptionAr): void
     {
-        // DEBUG: Parametreleri kontrol et
-        $this->command->info("DEBUG - Creating SEO for page {$page->id}");
-        $this->command->info("Title TR: {$titleTr}");
-        $this->command->info("Title EN: {$titleEn}");
-        $this->command->info("Title AR: {$titleAr}");
-        
-        // SEO ayarı varsa sil ve yeniden oluştur (seeder için)
+        // Clean existing SEO settings for fresh seed
         if ($page->seoSetting()->exists()) {
-            $this->command->info("DEBUG - Deleting existing SEO setting");
             $page->seoSetting()->delete();
         }
-        
+
         $page->seoSetting()->create([
             'titles' => [
                 'tr' => $titleTr,
@@ -850,17 +919,21 @@ class PageSeederCentral extends Seeder
         ]);
     }
     
+    /**
+     * Create main navigation menu
+     * Includes all primary pages in 3 languages
+     */
     private function createMainMenu(): void
     {
-        // Mevcut ana menüyü kontrol et
+        // Check for existing menu
         $existingMenu = Menu::where('slug', 'ana-menu')->first();
-        
+
         if ($existingMenu) {
-            $this->command->info('Ana menu zaten var, atlanıyor...');
+            $this->command->info('  ℹ  Main menu already exists, skipping...');
             return;
         }
-        
-        // Ana Menü oluştur
+
+        // Create main menu
         $menu = Menu::create([
             'name' => [
                 'tr' => 'Ana Menü', 
@@ -933,7 +1006,46 @@ class PageSeederCentral extends Seeder
             'is_active' => true,
         ]);
 
-        $this->command->info('✅ Central pages menu oluşturuldu - Ana Menü (tr, en, ar)');
-        $this->command->info('📋 4 sayfa menu item eklendi (Anasayfa, Hakkımızda, Hizmetlerimiz, İletişim)');
+        $this->command->info('  ✓ Main menu created with 4 items');
+    }
+
+    /**
+     * Create additional pages for development/testing
+     * Uses factory to generate random content
+     */
+    private function createDevelopmentPages(): void
+    {
+        // Create 5 random simple pages
+        $count = 5;
+
+        Page::factory()
+            ->count($count)
+            ->create();
+
+        $this->command->info("  ✓ Created {$count} random pages for testing");
+        $this->pagesCreated += $count;
+    }
+
+    /**
+     * Show seeding summary
+     */
+    private function showSummary(): void
+    {
+        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->command->info('✅ CENTRAL DATABASE SEEDING COMPLETED');
+        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->command->table(
+            ['Metric', 'Value'],
+            [
+                ['Total Pages Created', $this->pagesCreated],
+                ['Languages Supported', 'Turkish, English, Arabic'],
+                ['Homepage', '1 (AI Solutions themed)'],
+                ['Standard Pages', '4 (About, Services, Contact, Privacy)'],
+                ['Development Pages', ($this->pagesCreated - 5)],
+                ['Menu Items', '4'],
+                ['SEO Settings', 'Auto-generated for all pages'],
+            ]
+        );
+        $this->command->newLine();
     }
 }

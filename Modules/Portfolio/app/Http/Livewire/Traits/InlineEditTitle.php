@@ -22,7 +22,7 @@ trait InlineEditTitle
         }
 
         $modelClass = $this->getModelClass();
-        $model = $modelClass::where('portfolio_id', $this->editingTitleId)
+        $model = $modelClass::where('page_id', $this->editingTitleId)
             ->first();
 
         if ($model) {
@@ -33,32 +33,42 @@ trait InlineEditTitle
 
             if ($validator->fails()) {
                 $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Başlık geçersiz. Lütfen kontrol edin.',
+                    'title' => __('admin.error'),
+                    'message' => __('admin.title_validation_error'),
                     'type' => 'error',
                 ]);
                 return;
             }
 
-            if ($model->title === $this->newTitle) {
+            // Site dilini al (hibrit sistem)
+            $currentSiteLocale = method_exists($this, 'getSiteLocale') 
+                ? $this->getSiteLocale() 
+                : session('tenant_locale', 'tr');
+
+            // Mevcut başlık değerini kontrol et
+            $currentTitle = $model->getTranslated('title', $currentSiteLocale);
+            if ($currentTitle === $this->newTitle) {
                 $this->editingTitleId = null;
                 $this->newTitle = '';
                 return;
             }
 
-            $oldTitle = $model->title;
-            $model->title = Str::limit($this->newTitle, 191, '');
+            // JSON title güncelle
+            $titles = is_array($model->title) ? $model->title : [];
+            $oldTitle = $titles[$currentSiteLocale] ?? '';
+            $titles[$currentSiteLocale] = Str::limit($this->newTitle, 191, '');
+            $model->title = $titles;
             $model->save();
 
             log_activity(
                 $model, 
-                'başlık güncellendi',
-                ['old' => $oldTitle, 'new' => $model->title]
+                __('admin.title_updated'),
+                ['old' => $oldTitle, 'new' => $titles[$currentSiteLocale], 'locale' => $currentSiteLocale]
             );
 
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => "Başlık başarıyla güncellendi.",
+                'title' => __('admin.success'),
+                'message' => __('admin.title_updated_successfully'),
                 'type' => 'success',
             ]);
         }

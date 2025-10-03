@@ -19,30 +19,24 @@ class PageApiController extends Controller
     }
 
     /**
-     * Tüm sayfaları listele
+     * Tüm sayfaları listele (homepage hariç)
      */
     public function index(Request $request): JsonResponse
     {
         $locale = $request->get('locale', app()->getLocale());
-        
+
         $pages = Page::where('is_active', true)
             ->where('is_homepage', false)
-            ->orderBy('sort_order', 'asc')
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($page) use ($locale) {
                 return [
-                    'id' => $page->id,
+                    'id' => $page->page_id,
                     'title' => $page->getTranslated('title', $locale),
                     'slug' => $page->getTranslated('slug', $locale),
-                    'content' => $page->getTranslated('content', $locale),
-                    'excerpt' => $page->getTranslated('excerpt', $locale),
-                    'meta_description' => $page->getTranslated('meta_description', $locale),
-                    'meta_keywords' => $page->getTranslated('meta_keywords', $locale),
-                    'featured_image' => $page->featured_image,
+                    'body' => $page->getTranslated('body', $locale),
                     'is_active' => $page->is_active,
                     'is_homepage' => $page->is_homepage,
-                    'sort_order' => $page->sort_order,
                     'created_at' => $page->created_at,
                     'updated_at' => $page->updated_at,
                 ];
@@ -64,18 +58,10 @@ class PageApiController extends Controller
     public function homepage(Request $request): JsonResponse
     {
         $locale = $request->get('locale', app()->getLocale());
-        
+
         $homepage = Page::where('is_homepage', true)
             ->where('is_active', true)
             ->first();
-
-        // Debug: Raw data
-        \Log::info('Homepage API Debug', [
-            'homepage_exists' => !!$homepage,
-            'homepage_id' => $homepage?->id,
-            'homepage_body_raw' => $homepage?->body,
-            'homepage_body_tr' => $homepage?->body['tr'] ?? 'N/A'
-        ]);
 
         if (!$homepage) {
             return response()->json([
@@ -88,29 +74,19 @@ class PageApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'page_id' => $homepage->id,
-                'id' => $homepage->id, // backward compatibility
-                'title' => $homepage->title, // JSON object format
-                'slug' => $homepage->slug, // JSON object format  
-                'body' => $homepage->fresh()->body ?? [], // Fresh from DB
-                'content' => $homepage->fresh()->body ?? [], // Fresh from DB
-                'excerpt' => $homepage->excerpt ?? [],
-                'meta_description' => $homepage->meta_description ?? [],
-                'meta_keywords' => $homepage->meta_keywords ?? [],
-                'seo' => [
-                    'meta_description' => $homepage->meta_description ?? [],
-                    'meta_keywords' => $homepage->meta_keywords ?? []
-                ],
-                'featured_image' => $homepage->featured_image,
+                'id' => $homepage->page_id,
+                'title' => $homepage->title,
+                'slug' => $homepage->slug,
+                'body' => $homepage->body,
                 'is_active' => (bool) $homepage->is_active,
                 'is_homepage' => (bool) $homepage->is_homepage,
-                'sort_order' => $homepage->sort_order,
+                'css' => $homepage->css,
+                'js' => $homepage->js,
                 'created_at' => $homepage->created_at,
                 'updated_at' => $homepage->updated_at,
             ],
             'meta' => [
                 'locale' => $locale,
-                'requested_locale' => $locale,
                 'available_locales' => is_array($homepage->title) ? array_keys($homepage->title) : []
             ]
         ]);
@@ -148,17 +124,14 @@ class PageApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'id' => $page->id,
+                'id' => $page->page_id,
                 'title' => $page->getTranslated('title', $locale),
                 'slug' => $page->getTranslated('slug', $locale),
-                'content' => $page->getTranslated('content', $locale),
-                'excerpt' => $page->getTranslated('excerpt', $locale),
-                'meta_description' => $page->getTranslated('meta_description', $locale),
-                'meta_keywords' => $page->getTranslated('meta_keywords', $locale),
-                'featured_image' => $page->featured_image,
+                'body' => $page->getTranslated('body', $locale),
                 'is_active' => $page->is_active,
                 'is_homepage' => $page->is_homepage,
-                'sort_order' => $page->sort_order,
+                'css' => $page->css,
+                'js' => $page->js,
                 'created_at' => $page->created_at,
                 'updated_at' => $page->updated_at,
             ],

@@ -96,6 +96,7 @@ return array(
     'Modules\\Page\\App\\' => array($baseDir . '/Modules/Page/app'),
     'Modules\\ModuleManagement\\App\\' => array($baseDir . '/Modules/ModuleManagement/app'),
     'Modules\\MenuManagement\\App\\' => array($baseDir . '/Modules/MenuManagement/app'),
+    'Modules\\MediaManagement\\App\\' => array($baseDir . '/Modules/MediaManagement/app'),
     'Modules\\LanguageManager\\App\\' => array($baseDir . '/Modules/LanguageManager/app'),
     'Modules\\Announcement\\App\\' => array($baseDir . '/Modules/Announcement/app'),
     'Modules\\AI\\App\\' => array($baseDir . '/Modules/AI/app'),

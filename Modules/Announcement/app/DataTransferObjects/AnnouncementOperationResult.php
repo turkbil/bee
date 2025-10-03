@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Modules\Announcement\App\DataTransferObjects;
 
 use Modules\Announcement\App\Models\Announcement;
@@ -15,7 +13,7 @@ readonly class AnnouncementOperationResult
         public ?Announcement $data = null,
         public ?array $meta = null
     ) {}
-    
+
     public static function success(string $message, ?Announcement $data = null, ?array $meta = null): self
     {
         return new self(
@@ -26,35 +24,35 @@ readonly class AnnouncementOperationResult
             meta: $meta
         );
     }
-    
-    public static function error(string $message, ?array $meta = null): self
+
+    public static function error(string $message, string $type = 'error', ?array $meta = null): self
     {
         return new self(
             success: false,
             message: $message,
-            type: 'error',
+            type: $type,
             meta: $meta
         );
     }
-    
-    public static function warning(string $message, ?Announcement $data = null, ?array $meta = null): self
+
+    public static function warning(string $message, ?array $meta = null): self
     {
         return new self(
             success: false,
             message: $message,
             type: 'warning',
-            data: $data,
             meta: $meta
         );
     }
-    
-    public function hasData(): bool
+
+    public function toArray(): array
     {
-        return !is_null($this->data);
-    }
-    
-    public function hasMeta(): bool
-    {
-        return !is_null($this->meta) && !empty($this->meta);
+        return [
+            'success' => $this->success,
+            'message' => $this->message,
+            'type' => $this->type,
+            'data' => $this->data?->toArray(),
+            'meta' => $this->meta
+        ];
     }
 }

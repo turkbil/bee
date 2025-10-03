@@ -7,18 +7,19 @@ namespace Modules\Page\App\Http\Livewire\Admin;
 use Livewire\Attributes\{Url, Layout, Computed};
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Page\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActionsQueue};
+use Modules\Page\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActions};
 use Modules\Page\App\Services\PageService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Page\App\DataTransferObjects\PageOperationResult;
 use App\Traits\HasUniversalTranslation;
 use Modules\Page\App\Models\Page;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 #[Layout('admin.layout')]
 class PageComponent extends Component
 {
-    use WithPagination, WithBulkActionsQueue, InlineEditTitle, HasUniversalTranslation;
+    use WithPagination, WithBulkActions, InlineEditTitle, HasUniversalTranslation;
 
     #[Url]
     public $search = '';
@@ -186,7 +187,7 @@ class PageComponent extends Component
             if ($result->success && $result->meta) {
                 log_activity(
                     $result->data,
-                    $result->meta['new_status'] ? __('admin.activated') : __('admin.deactivated')
+                    $result->meta['new_status'] ? 'etkinleştirildi' : 'devre-dışı'
                 );
             }
         } catch (\Exception $e) {
@@ -221,9 +222,9 @@ class PageComponent extends Component
     public function queueTranslation($pageId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
     {
         try {
-            // Session ID oluştur
-            $sessionId = 'translation_' . uniqid() . '_' . time();
-            
+            // Session ID oluştur (UUID v4 - globally unique)
+            $sessionId = Str::uuid()->toString();
+
             \Log::info("🚀 QUEUE Translation başlatıldı", [
                 'page_id' => $pageId,
                 'source' => $sourceLanguage,
@@ -286,8 +287,8 @@ class PageComponent extends Component
                 throw new \Exception('Page ID bulunamadı');
             }
 
-            // Session ID oluştur
-            $sessionId = 'translation_' . uniqid() . '_' . time();
+            // Session ID oluştur (UUID v4 - globally unique)
+            $sessionId = Str::uuid()->toString();
 
             // Job'u kuyruğa ekle
             Log::info('📦 TranslatePageJob kuyruğa ekleniyor', [

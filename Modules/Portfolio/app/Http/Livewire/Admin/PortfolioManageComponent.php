@@ -1,514 +1,548 @@
 <?php
-declare(strict_types=1);
 
 namespace Modules\Portfolio\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Modules\Portfolio\App\Models\Portfolio;
-use Modules\Portfolio\App\Models\PortfolioCategory;
-use App\Services\GlobalSeoService;
-use App\Services\GlobalTabService;
-use Modules\LanguageManagement\App\Models\TenantLanguage;
-use Illuminate\Support\Str;
+use Modules\AI\app\Traits\HasAIContentGeneration;
+use Modules\AI\app\Contracts\AIContentGeneratable;
+use Modules\Portfolio\App\Models\Page;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Computed;
 use App\Helpers\SlugHelper;
-use App\Traits\HasSlugManagement;
 
 #[Layout('admin.layout')]
-class PortfolioManageComponent extends Component
+class PortfolioManageComponent extends Component implements AIContentGeneratable
 {
-    use WithFileUploads, HasSlugManagement;
+    use WithFileUploads, HasAIContentGeneration;
 
-    public $portfolioId;
-    public $currentLanguage;
-    public $availableLanguages = [];
-    public $activeTab;
-    
+    public $portfoliod;
+
     // Çoklu dil inputs
     public $multiLangInputs = [];
-    
-    // Dil-neutral inputs (Portfolio özel alanları - Migration'a uygun)
+
+    // Dil-neutral inputs
     public $inputs = [
-        'portfolio_category_id' => '',
-        'client' => '',
-        'date' => '',
-        'url' => '',
-        'image' => '',
+        'css' => '',
+        'js' => '',
         'is_active' => true,
     ];
-    
-    // SEO Alanları (Global SEO sistemi)
-    public $seo_title = '';
-    public $seo_description = '';
-    public $seo_keywords = '';
-    public $canonical_url = '';
-    
-    // SEO Cache - Tüm dillerin SEO verileri
-    public $seoDataCache = [];
-    
-    // Konfigürasyon verileri
-    public $tabConfig = [];
-    public $seoConfig = [];
-    public $tabCompletionStatus = [];
-    public $seoLimits = [];
-    
+
     public $studioEnabled = false;
-    public $categories = [];
-    
-    // Image upload (Livewire WithFileUploads)
-    public $temporaryImages = [];
-    
-    // Cached portfolio with SEO
-    protected $cachedPortfolioWithSeo = null;
-    
-    // Livewire Listeners
+
+    // Universal Component Data
+    public $currentLanguage;
+    public $availableLanguages = [];
+    public $languageNames = []; // Dil adları (native_name)
+    public $activeTab;
+    public $tabConfig = [];
+    public $tabCompletionStatus = [];
+
+    // SOLID Dependencies
+    protected $portfolioervice;
+
+    /**
+     * Get current page model
+     */
+    #[Computed]
+    public function currentPage()
+    {
+        if (!$this->pageId) {
+            return null;
+        }
+
+        return Page::query()->find($this->pageId);
+    }
+
+    // Livewire Listeners - Universal component'lerden gelen event'ler
     protected $listeners = [
         'refreshComponent' => '$refresh',
-        'tab-changed' => 'handleTabChange',
-        'seo-keywords-updated' => 'updateSeoKeywords',
-        'seo-field-updated' => 'handleSeoFieldUpdate',
-        'switchLanguage' => 'switchLanguage',
-        'js-language-sync' => 'handleJavaScriptLanguageSync',
+        'languageChanged' => 'handleLanguageChange',
+        'translation-completed' => 'handleTranslationCompleted',
+        'ai-content-generated' => 'handleAIContentGenerated',
     ];
+
+    // Dependency Injection Boot
+    public function boot()
+    {
+        // PageService'i initialize et (her zaman var)
+        $this->pageService = app(\Modules\Portfolio\App\Services\PageService::class);
+
+        // Layout sections
+        view()->share('pretitle', __('portfolio::admin.page_management'));
+        view()->share('title', __('portfolio::admin.pages'));
+    }
+
+    public function updated($propertyName)
+    {
+        // Tab completion status güncelleme - Universal Tab System'e bildir
+        $this->dispatch('update-tab-completion', $this->getAllFormData());
+    }
 
     public function mount($id = null)
     {
-        // 1. Tab configuration yükle
-        $this->initializeTabConfiguration();
-        
-        // 2. Dilleri yükle
-        $this->loadAvailableLanguages();
-        
-        // 3. Kategorileri yükle
-        $this->loadCategories();
-        
-        // 4. Studio kontrolü
-        $this->checkStudioAvailability();
-        
-        // 5. SEO konfigürasyonu
-        $this->initializeSeoConfiguration();
-        
-        // 6. Portfolio data yükle (eğer edit mode)
+        // Dependencies initialize
+        $this->boot();
+
+        // Universal Component'lerden initial data al
+        $this->initializeUniversalComponents();
+
+        // Sayfa verilerini yükle
         if ($id) {
-            $this->portfolioId = $id;
-            $this->loadPortfolioData($id);
+            $this->pageId = $id;
+            $this->loadPageData($id);
         } else {
             $this->initializeEmptyInputs();
         }
-        
-        // 7. Tab completion durumunu hesapla
-        $this->calculateTabCompletion();
-    }
-    
-    /**
-     * Tab konfigürasyonunu başlat (Page pattern)
-     */
-    protected function initializeTabConfiguration(): void
-    {
-        $this->tabConfig = config('portfolio.tabs.tabs', [
-            [
-                'key' => 'basic',
-                'name' => 'Temel Bilgiler',
-                'icon' => 'fas fa-briefcase',
-                'required_fields' => ['title']
-            ],
-            [
-                'key' => 'seo',
-                'name' => 'SEO',
-                'icon' => 'fas fa-search',
-                'required_fields' => ['seo_title']
-            ]
-        ]);
-    }
-    
-    /**
-     * Available languages yükle (Page pattern)
-     */
-    protected function loadAvailableLanguages(): void
-    {
-        $this->availableLanguages = TenantLanguage::where('is_active', true)
-            ->orderBy('sort_order')
-            ->pluck('code')
-            ->toArray();
-            
-        if (empty($this->availableLanguages)) {
-            $this->availableLanguages = ['tr'];
-        }
-        
-        // Default language ayarla
-        $defaultLang = session('site_default_language', 'tr');
-        $this->currentLanguage = in_array($defaultLang, $this->availableLanguages) 
-            ? $defaultLang 
-            : $this->availableLanguages[0];
-    }
-    
-    /**
-     * Kategorileri yükle
-     */
-    protected function loadCategories(): void
-    {
-        $this->categories = PortfolioCategory::where('is_active', true)
-            ->orderBy('portfolio_category_id')
-            ->get();
-    }
-    
-    /**
-     * Studio availability check
-     */
-    protected function checkStudioAvailability(): void
-    {
+
+        // Studio modül kontrolü
         $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
+
+        // Tab completion durumunu hesapla
+        $this->dispatch('update-tab-completion', $this->getAllFormData());
     }
-    
+
     /**
-     * SEO konfigürasyonu başlat (Page pattern)
+     * Universal Component'leri initialize et
      */
-    protected function initializeSeoConfiguration(): void
+    protected function initializeUniversalComponents()
     {
-        $this->seoConfig = [
-            'model_type' => Portfolio::class,
-            'model_id' => $this->portfolioId,
-        ];
-        
-        $this->seoLimits = [
-            'seo_title' => ['min' => 30, 'max' => 60],
-            'seo_description' => ['min' => 120, 'max' => 160],
-        ];
+        // Dil bilgileri - LanguageManagement modülünden (cached helper)
+        $languages = available_tenant_languages();
+        $this->availableLanguages = array_column($languages, 'code');
+        $this->languageNames = array_column($languages, 'native_name', 'code');
+        $this->currentLanguage = get_tenant_default_locale();
+
+        // Tab bilgileri - Blade'de kullanılıyor
+        $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('page');
+        $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('page');
     }
-    
+
     /**
-     * Portfolio data yükle (edit mode)
+     * Dil değişikliğini handle et (UniversalLanguageSwitcher'dan)
      */
-    protected function loadPortfolioData(string|int $id): void
+    public function handleLanguageChange($language)
     {
-        $portfolio = Portfolio::with('seoSetting')->find($id);
-        
-        if (!$portfolio) {
-            abort(404, 'Portfolio bulunamadı');
+        if (in_array($language, $this->availableLanguages)) {
+            $this->currentLanguage = $language;
+
+            Log::info('🎯 PageManage - Dil değişti', [
+                'new_language' => $language
+            ]);
         }
-        
-        // Portfolio özel alanları
-        $this->inputs = [
-            'portfolio_category_id' => $portfolio->portfolio_category_id,
-            'client' => $portfolio->client,
-            'date' => $portfolio->date,
-            'url' => $portfolio->url,
-            'image' => $portfolio->image,
-            'is_active' => $portfolio->is_active,
-        ];
-        
-        // Çoklu dil alanları yükle
-        foreach ($this->availableLanguages as $lang) {
-            $this->multiLangInputs[$lang] = [
-                'title' => $portfolio->getTranslation('title', $lang) ?? '',
-                'slug' => $portfolio->getTranslation('slug', $lang) ?? '',
-                'body' => $portfolio->getTranslation('body', $lang) ?? '',
-            ];
-        }
-        
-        // SEO data yükle (Global SEO sistemi)
-        $this->loadSeoData($portfolio);
     }
-    
+
+
     /**
-     * SEO data yükle (Page pattern)
+     * Çeviri tamamlandığında (UniversalAIContent'ten)
      */
-    protected function loadSeoData(Portfolio $portfolio): void
+    public function handleTranslationCompleted($result)
     {
-        // Her dil için boş SEO cache oluştur
-        foreach ($this->availableLanguages as $lang) {
-            $this->seoDataCache[$lang] = [
-                'seo_title' => '',
-                'seo_description' => '',
-                'seo_keywords' => '',
-                'canonical_url' => '',
-            ];
+        if ($result['success'] && isset($result['results'])) {
+            foreach ($result['results'] as $translationResult) {
+                if ($translationResult['success']) {
+                    $lang = $translationResult['language'];
+                    $field = $translationResult['field'];
+                    $translatedText = $translationResult['translated_text'];
+
+                    // Çevrilmiş metni ilgili alana set et
+                    if (isset($this->multiLangInputs[$lang][$field])) {
+                        $this->multiLangInputs[$lang][$field] = $translatedText;
+
+                        // Slug otomatik oluştur (sadece title çevirildiyse)
+                        if ($field === 'title') {
+                            $this->multiLangInputs[$lang]['slug'] = SlugHelper::generateFromTitle(
+                                Page::class,
+                                $translatedText,
+                                $lang,
+                                'slug',
+                                'portfolio_id',
+                                $this->pageId
+                            );
+                        }
+                    }
+                }
+            }
+
+            // Çevirileri veritabanına kaydet
+            $this->save();
+
+            Log::info('✅ PageManage - Çeviri sonuçları alındı ve kaydedildi', [
+                'translated_count' => $result['translated_count'] ?? 0
+            ]);
         }
-        
-        // Eğer SEO kaydı varsa yükle
-        if ($portfolio->seoSetting) {
-            foreach ($this->availableLanguages as $lang) {
-                $this->seoDataCache[$lang] = [
-                    'seo_title' => $portfolio->seoSetting->getTranslation('titles', $lang) ?? '',
-                    'seo_description' => $portfolio->seoSetting->getTranslation('descriptions', $lang) ?? '',
-                    'seo_keywords' => $this->processKeywordsForDisplay($portfolio->seoSetting->getTranslation('keywords', $lang)),
-                    'canonical_url' => $portfolio->seoSetting->canonical_url ?? '',
-                ];
+    }
+
+    /**
+     * AI içerik üretildiğinde (UniversalAIContent'ten)
+     */
+    public function handleAIContentGenerated($result)
+    {
+        if ($result['success']) {
+            $content = $result['content'];
+            $targetField = $result['target_field'];
+            $language = $result['language'];
+
+            // Content'i ilgili field'a ata
+            if (isset($this->multiLangInputs[$language][$targetField])) {
+                $this->multiLangInputs[$language][$targetField] = $content;
+
+                // Database'e kaydet
+                $this->save();
+
+                Log::info('✅ PageManage - AI içerik alındı ve kaydedildi', [
+                    'field' => $targetField,
+                    'language' => $language,
+                    'content_length' => strlen($content)
+                ]);
             }
         }
-        
-        // Current language için properties set et
-        $currentSeoData = $this->seoDataCache[$this->currentLanguage] ?? [];
-        $this->seo_title = $currentSeoData['seo_title'] ?? '';
-        $this->seo_description = $currentSeoData['seo_description'] ?? '';
-        $this->seo_keywords = $currentSeoData['seo_keywords'] ?? '';
-        $this->canonical_url = $currentSeoData['canonical_url'] ?? '';
     }
-    
+
     /**
-     * Boş inputs initialize et
+     * Sayfa verilerini yükle
      */
-    protected function initializeEmptyInputs(): void
+    protected function loadPageData($id)
+    {
+        // PageService her zaman var, fallback gereksiz
+        $formData = $this->pageService->preparePageForForm($id, $this->currentLanguage);
+        $portfolio = $formData['page'] ?? null;
+        $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
+
+        if ($portfolio) {
+            // Dil-neutral alanlar
+
+            // Çoklu dil alanları - FALLBACK KAPALI (kullanıcı tüm dilleri boşaltabilsin)
+            foreach ($this->availableLanguages as $lang) {
+                $this->multiLangInputs[$lang] = [
+                    'title' => $portfolio->getTranslated('title', $lang, false) ?? '',
+                    'body' => $portfolio->getTranslated('body', $lang, false) ?? '',
+                    'slug' => $portfolio->getTranslated('slug', $lang, false) ?? '',
+                ];
+            }
+
+            // NOT: SEO verileri Universal SEO Tab component'te yüklenir
+        }
+    }
+
+    /**
+     * Boş inputs hazırla
+     */
+    protected function initializeEmptyInputs()
     {
         foreach ($this->availableLanguages as $lang) {
             $this->multiLangInputs[$lang] = [
                 'title' => '',
-                'slug' => '',
                 'body' => '',
-            ];
-            
-            $this->seoDataCache[$lang] = [
-                'seo_title' => '',
-                'seo_description' => '',
-                'seo_keywords' => '',
-                'canonical_url' => '',
+                'slug' => '',
             ];
         }
     }
-    
+
     /**
-     * Tab completion hesapla (Page pattern)
+     * Tüm form datasını al (tab completion için)
      */
-    protected function calculateTabCompletion(): void
+    protected function getAllFormData(): array
     {
-        $this->tabCompletionStatus = [];
-        
-        foreach ($this->tabConfig as $tab) {
-            $isComplete = true;
-            
-            if ($tab['key'] === 'basic') {
-                // Temel bilgiler için en az bir dilde title gerekli
-                $hasTitle = false;
-                foreach ($this->availableLanguages as $lang) {
-                    if (!empty($this->multiLangInputs[$lang]['title'])) {
-                        $hasTitle = true;
-                        break;
-                    }
-                }
-                $isComplete = $hasTitle && !empty($this->inputs['portfolio_category_id']);
-            }
-            
-            if ($tab['key'] === 'seo') {
-                // SEO için en az bir dilde seo_title gerekli
-                $hasSeoTitle = false;
-                foreach ($this->availableLanguages as $lang) {
-                    if (!empty($this->seoDataCache[$lang]['seo_title'])) {
-                        $hasSeoTitle = true;
-                        break;
-                    }
-                }
-                $isComplete = $hasSeoTitle;
-            }
-            
-            $this->tabCompletionStatus[$tab['key']] = $isComplete;
-        }
-    }
-    
-    /**
-     * Language switch handler (Page pattern)
-     */
-    public function switchLanguage($language): void
-    {
-        if (in_array($language, $this->availableLanguages)) {
-            $this->currentLanguage = $language;
-            
-            // SEO data sync for current language
-            $currentSeoData = $this->seoDataCache[$language] ?? [];
-            $this->seo_title = $currentSeoData['seo_title'] ?? '';
-            $this->seo_description = $currentSeoData['seo_description'] ?? '';
-            $this->seo_keywords = $currentSeoData['seo_keywords'] ?? '';
-            $this->canonical_url = $currentSeoData['canonical_url'] ?? '';
-        }
-    }
-    
-    /**
-     * SEO field update handler (Page pattern)
-     */
-    public function handleSeoFieldUpdate($data): void
-    {
-        $field = $data['field'] ?? null;
-        $value = $data['value'] ?? '';
-        $language = $data['language'] ?? $this->currentLanguage;
-        
-        if (!isset($this->seoDataCache[$language])) {
-            $this->seoDataCache[$language] = [
-                'seo_title' => '',
-                'seo_description' => '',
-                'seo_keywords' => '',
-                'canonical_url' => ''
-            ];
-        }
-        
-        $this->seoDataCache[$language][$field] = $value;
-        
-        // Current language ise property'yi de güncelle
-        if ($language === $this->currentLanguage) {
-            $this->{$field} = $value;
-        }
-        
-        $this->calculateTabCompletion();
-    }
-    
-    /**
-     * Slug management processing (Page pattern)
-     */
-    protected function processSlugManagement(): array
-    {
-        return $this->processMultiLanguageSlugs(
-            Portfolio::class,
-            $this->multiLangInputs,
-            $this->availableLanguages,
-            $this->portfolioId
+        return array_merge(
+            $this->inputs,
+            $this->multiLangInputs[$this->currentLanguage] ?? []
         );
     }
-    
+
     /**
-     * Save method (Page pattern uyumlu)
+     * Ana dili belirle (mecburi olan dil)
+     * LanguageManagement modülünden helper kullan
      */
-    public function save($redirect = false, $resetForm = false)
+    protected function getMainLanguage()
     {
-        // Slug processing
-        $processedSlugs = $this->processSlugManagement();
-        
-        // Merge processed slugs
-        foreach ($processedSlugs as $lang => $slug) {
-            $this->multiLangInputs[$lang]['slug'] = $slug;
+        return get_tenant_default_locale();
+    }
+
+    protected function rules()
+    {
+        $rules = [
+            'inputs.css' => 'nullable|string',
+            'inputs.js' => 'nullable|string',
+            'inputs.is_active' => 'boolean',
+        ];
+
+        // Çoklu dil alanları - ana dil mecburi, diğerleri opsiyonel
+        $mainLanguage = $this->getMainLanguage();
+        foreach ($this->availableLanguages as $lang) {
+            $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
         }
-        
-        try {
-            // Portfolio data hazırla
-            $portfolioData = [
-                'portfolio_category_id' => $this->inputs['portfolio_category_id'],
-                'client' => $this->inputs['client'],
-                'date' => $this->inputs['date'],
-                'url' => $this->inputs['url'],
-                'image' => $this->inputs['image'],
-                'is_active' => $this->inputs['is_active'],
-            ];
-            
-            // Multi-language fields ekle
-            foreach (['title', 'slug', 'body'] as $field) {
-                $portfolioData[$field] = [];
-                foreach ($this->availableLanguages as $lang) {
-                    $portfolioData[$field][$lang] = $this->multiLangInputs[$lang][$field] ?? '';
+
+        return $rules;
+    }
+
+    protected $messages = [
+        'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
+        'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
+        'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
+    ];
+
+    /**
+     * Tüm validation mesajlarını al
+     */
+    protected function getMessages()
+    {
+        // Slug validation mesajları - SlugHelper'dan al
+        $slugMessages = SlugHelper::getValidationMessages($this->availableLanguages, 'multiLangInputs');
+
+        return array_merge($this->messages, $slugMessages);
+    }
+
+    /**
+     * İçeriği validate et ve sanitize et (HTML, CSS, JS)
+     */
+    protected function validateAndSanitizeContent(): array
+    {
+        $validated = [];
+        $errors = [];
+
+        // HTML body validation (her dil için)
+        foreach ($this->availableLanguages as $lang) {
+            $body = $this->multiLangInputs[$lang]['body'] ?? '';
+            if (!empty(trim($body))) {
+                $result = \App\Services\SecurityValidationService::validateHtml($body);
+                if (!$result['valid']) {
+                    $errors[] = "HTML ({$lang}): " . implode(', ', $result['errors']);
+                } else {
+                    $validated['body'][$lang] = $result['clean_code'];
                 }
             }
-            
-            if ($this->portfolioId) {
-                // Update
-                $portfolio = Portfolio::find($this->portfolioId);
-                $portfolio->update($portfolioData);
-                $message = __('portfolio::admin.portfolio_updated');
+        }
+
+        // CSS validation
+        if (!empty(trim($this->inputs['css']))) {
+            $result = \App\Services\SecurityValidationService::validateCss($this->inputs['css']);
+            if (!$result['valid']) {
+                $errors[] = 'CSS: ' . implode(', ', $result['errors']);
             } else {
-                // Create
-                $portfolio = Portfolio::create($portfolioData);
-                $this->portfolioId = $portfolio->portfolio_id;
-                $message = __('portfolio::admin.portfolio_created');
+                $validated['css'] = $result['clean_code'];
             }
-            
-            // SEO data kaydet (Global SEO sistem)
-            $this->saveSeoData($portfolio);
-            
+        }
+
+        // JS validation
+        if (!empty(trim($this->inputs['js']))) {
+            $result = \App\Services\SecurityValidationService::validateJs($this->inputs['js']);
+            if (!$result['valid']) {
+                $errors[] = 'JavaScript: ' . implode(', ', $result['errors']);
+            } else {
+                $validated['js'] = $result['clean_code'];
+            }
+        }
+
+        return [
+            'valid' => empty($errors),
+            'data' => $validated,
+            'errors' => $errors
+        ];
+    }
+
+    /**
+     * Çoklu dil verilerini hazırla (title, slug, body)
+     */
+    protected function prepareMultiLangData(array $validatedContent = []): array
+    {
+        $multiLangData = [];
+
+        // Title verilerini topla
+        $multiLangData['title'] = [];
+        foreach ($this->availableLanguages as $lang) {
+            $title = $this->multiLangInputs[$lang]['title'] ?? '';
+            if (!empty($title)) {
+                $multiLangData['title'][$lang] = $title;
+            }
+        }
+
+        // Slug verilerini işle - SlugHelper toplu işlem
+        $slugInputs = [];
+        $titleInputs = [];
+        foreach ($this->availableLanguages as $lang) {
+            $slugInputs[$lang] = $this->multiLangInputs[$lang]['slug'] ?? '';
+            $titleInputs[$lang] = $this->multiLangInputs[$lang]['title'] ?? '';
+        }
+
+        $multiLangData['slug'] = SlugHelper::processMultiLanguageSlugs(
+            Page::class,
+            $slugInputs,
+            $titleInputs,
+            'slug',
+            $this->pageId
+        );
+
+        // Body verilerini ekle (validated'dan)
+        if (!empty($validatedContent['body'])) {
+            $multiLangData['body'] = $validatedContent['body'];
+        }
+
+        return $multiLangData;
+    }
+
+    public function save($redirect = false, $resetForm = false)
+    {
+        // TinyMCE içeriğini senkronize et
+        $this->dispatch('sync-tinymce-content');
+
+        Log::info('🚀 SAVE METHOD BAŞLADI', [
+            'pageId' => $this->pageId,
+            'redirect' => $redirect,
+            'currentLanguage' => $this->currentLanguage
+        ]);
+
+        try {
+            $this->validate($this->rules(), $this->getMessages());
+            Log::info('✅ Validation başarılı');
+        } catch (\Exception $e) {
+            Log::error('❌ Validation HATASI', [
+                'error' => $e->getMessage()
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Doğrulama Hatası',
+                'message' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+
+            // Tab restore tetikle - validation hatası sonrası tab görünür kalsın
+            $this->dispatch('restore-active-tab');
+
+            return;
+        }
+
+        // İçerik güvenlik validasyonu (HTML/CSS/JS)
+        $validation = $this->validateAndSanitizeContent();
+        if (!$validation['valid']) {
+            $this->dispatch('toast', [
+                'title' => 'İçerik Doğrulama Hatası',
+                'message' => implode("\n", $validation['errors']),
+                'type' => 'error'
+            ]);
+
+            // Tab restore tetikle
+            $this->dispatch('restore-active-tab');
+
+            return;
+        }
+
+        // Çoklu dil verilerini hazırla (title, slug, body)
+        $multiLangData = $this->prepareMultiLangData($validation['data']);
+
+        // Safe inputs - CSS ve JS validasyondan geldi
+        $safeInputs = $this->inputs;
+        if (isset($validation['data']['css'])) {
+            $safeInputs['css'] = $validation['data']['css'];
+        } else {
+            $safeInputs['css'] = '';
+        }
+        if (isset($validation['data']['js'])) {
+            $safeInputs['js'] = $validation['data']['js'];
+        } else {
+            $safeInputs['js'] = '';
+        }
+
+        $data = array_merge($safeInputs, $multiLangData);
+
+        if ($this->pageId) {
+            $portfolio = Page::query()->findOrFail($this->pageId);
+            $currentData = collect($portfolio->toArray())->only(array_keys($data))->all();
+
+            if ($data == $currentData) {
+                $toast = [
+                    'title' => __('admin.success'),
+                    'message' => __('admin.page_updated'),
+                    'type' => 'success'
+                ];
+            } else {
+                $portfolio->update($data);
+                log_activity($portfolio, 'güncellendi');
+
+                $toast = [
+                    'title' => __('admin.success'),
+                    'message' => __('admin.page_updated'),
+                    'type' => 'success'
+                ];
+            }
+        } else {
+            $portfolio = Page::query()->create($data);
+            $this->pageId = $portfolio->portfolio_id;
+            log_activity($portfolio, 'eklendi');
+
             $toast = [
                 'title' => __('admin.success'),
-                'message' => $message,
+                'message' => __('admin.page_created'),
                 'type' => 'success'
             ];
-            
-        } catch (\Exception $e) {
-            $toast = [
-                'title' => __('admin.error'),
-                'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
-                'type' => 'error'
-            ];
         }
-        
+
+        Log::info('🎯 Save method tamamlanıyor', [
+            'pageId' => $this->pageId,
+            'redirect' => $redirect
+        ]);
+
         if ($redirect) {
             session()->flash('toast', $toast);
-            return redirect()->route('admin.portfolio.index');
+            return redirect()->route('admin.page.index');
         }
-        
+
         $this->dispatch('toast', $toast);
-        
-        if ($resetForm && !$this->portfolioId) {
+
+        // SEO VERİLERİNİ KAYDET - Universal SEO Tab Component'e event gönder
+        $this->dispatch('page-saved', pageId: $this->pageId);
+
+        Log::info('✅ Save method başarıyla tamamlandı', [
+            'pageId' => $this->pageId
+        ]);
+
+        if ($resetForm && !$this->pageId) {
             $this->reset();
-            $this->mount();
+            $this->currentLanguage = get_tenant_default_locale();
+            $this->initializeEmptyInputs();
         }
     }
-    
-    /**
-     * SEO data save (Global SEO sistemi)
-     */
-    protected function saveSeoData(Portfolio $portfolio): void
-    {
-        $seoData = [];
-        
-        foreach (['seo_title', 'seo_description', 'seo_keywords'] as $field) {
-            $seoData[$field] = [];
-            foreach ($this->availableLanguages as $lang) {
-                $seoData[$field][$lang] = $this->seoDataCache[$lang][$field] ?? '';
-            }
-        }
-        
-        $seoData['canonical_url'] = $this->seoDataCache[$this->currentLanguage]['canonical_url'] ?? '';
-        
-        $portfolio->updateSeoForLanguage($this->currentLanguage, $seoData);
-    }
-    
-    /**
-     * Image remove handler
-     */
-    public function removeImage($imageKey = 'image'): void
-    {
-        if (isset($this->temporaryImages[$imageKey])) {
-            unset($this->temporaryImages[$imageKey]);
-        } else {
-            // Existing image remove
-            $this->inputs['image'] = '';
-        }
-    }
-    
-    /**
-     * Keywords processing for display (string to array conversion)
-     */
-    protected function processKeywordsForDisplay($keywords): string
-    {
-        if (empty($keywords)) {
-            return '';
-        }
-        
-        // JSON string ise decode et
-        if (is_string($keywords)) {
-            $decoded = json_decode($keywords, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                return implode(', ', $decoded);
-            }
-            return $keywords;
-        }
-        
-        // Array ise string'e çevir
-        if (is_array($keywords)) {
-            return implode(', ', $keywords);
-        }
-        
-        return (string) $keywords;
-    }
-    
-    /**
-     * Current portfolio accessor - Universal SEO Component için
-     */
-    public function currentPortfolio()
-    {
-        if (!$this->portfolioId) {
-            return null;
-        }
-        
-        return Portfolio::with('seoSetting')->find($this->portfolioId);
-    }
-    
+
     public function render()
     {
-        return view('portfolio::admin.livewire.portfolio-manage-component');
+        return view('portfolio::admin.livewire.page-manage-component', [
+            'jsVariables' => [
+                'currentPageId' => $this->pageId ?? null,
+                'currentLanguage' => $this->currentLanguage ?? 'tr'
+            ]
+        ]);
+    }
+
+    // =================================
+    // GLOBAL AI CONTENT GENERATION TRAIT IMPLEMENTATION
+    // =================================
+
+    public function getEntityType(): string
+    {
+        return 'page';
+    }
+
+    public function getTargetFields(array $params): array
+    {
+        $portfolioields = [
+            'title' => 'string',
+            'body' => 'html',
+            'excerpt' => 'text',
+            'meta_title' => 'string',
+            'meta_description' => 'text'
+        ];
+
+        if (isset($params['target_field'])) {
+            return [$params['target_field'] => $portfolioields[$params['target_field']] ?? 'html'];
+        }
+
+        return $portfolioields;
+    }
+
+    public function getModuleInstructions(): string
+    {
+        return __('portfolio::admin.ai_content_instructions');
     }
 }

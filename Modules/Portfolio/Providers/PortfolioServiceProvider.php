@@ -8,8 +8,11 @@ use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioManageComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryManageComponent;
 use Modules\Portfolio\App\Contracts\PortfolioRepositoryInterface;
+use Modules\Portfolio\App\Contracts\PortfolioCategoryRepositoryInterface;
 use Modules\Portfolio\App\Repositories\PortfolioRepository;
+use Modules\Portfolio\App\Repositories\PortfolioCategoryRepository;
 use Modules\Portfolio\App\Services\PortfolioService;
+use Modules\Portfolio\App\Services\PortfolioCategoryService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -27,6 +30,10 @@ class PortfolioServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Portfolio Observer kaydı
+        \Modules\Portfolio\App\Models\Portfolio::observe(\Modules\Portfolio\App\Observers\PortfolioObserver::class);
+        \Modules\Portfolio\App\Models\PortfolioCategory::observe(\Modules\Portfolio\App\Observers\PortfolioCategoryObserver::class);
+
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
@@ -63,10 +70,14 @@ class PortfolioServiceProvider extends ServiceProvider
         
         // Repository Pattern Bindings
         $this->app->bind(PortfolioRepositoryInterface::class, PortfolioRepository::class);
-        
+        $this->app->bind(PortfolioCategoryRepositoryInterface::class, PortfolioCategoryRepository::class);
+
         // Service Layer Bindings
         $this->app->singleton(PortfolioService::class, function ($app) {
             return new PortfolioService($app->make(PortfolioRepositoryInterface::class));
+        });
+        $this->app->singleton(PortfolioCategoryService::class, function ($app) {
+            return new PortfolioCategoryService($app->make(PortfolioCategoryRepositoryInterface::class));
         });
     }
 

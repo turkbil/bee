@@ -235,64 +235,137 @@ class SeoRecommendationsParser
     }
 
     /**
-     * REPAIR INCOMPLETE JSON
+     * REPAIR INCOMPLETE JSON - ENHANCED VERSION
      */
     private function repairIncompleteJson(string $jsonString): string
     {
-        // If JSON looks complete, return as is
-        if (substr_count($jsonString, '{') === substr_count($jsonString, '}')) {
-            return $jsonString;
-        }
-
-        Log::warning('Attempting to repair incomplete JSON', [
-            'original_length' => strlen($jsonString),
-            'open_braces' => substr_count($jsonString, '{'),
-            'close_braces' => substr_count($jsonString, '}'),
-            'preview' => substr($jsonString, -100)
-        ]);
-
-        // Try to close incomplete JSON structure
         $openBraces = substr_count($jsonString, '{');
         $closeBraces = substr_count($jsonString, '}');
         $openBrackets = substr_count($jsonString, '[');
         $closeBrackets = substr_count($jsonString, ']');
 
-        // Close incomplete objects and arrays
-        while ($closeBraces < $openBraces) {
-            $jsonString .= '}';
-            $closeBraces++;
+        // If JSON looks complete, still clean trailing commas
+        if ($openBraces === $closeBraces && $openBrackets === $closeBrackets) {
+            return $this->cleanTrailingCommas($jsonString);
         }
 
+        Log::warning('Attempting to repair incomplete JSON', [
+            'original_length' => strlen($jsonString),
+            'open_braces' => $openBraces,
+            'close_braces' => $closeBraces,
+            'open_brackets' => $openBrackets,
+            'close_brackets' => $closeBrackets,
+            'preview' => substr($jsonString, -100)
+        ]);
+
+        // Remove trailing incomplete data (incomplete string, number, etc)
+        $jsonString = $this->removeTrailingIncompleteData($jsonString);
+
+        // Clean trailing commas before closing
+        $jsonString = $this->cleanTrailingCommas($jsonString);
+
+        // Recalculate after cleanup
+        $openBraces = substr_count($jsonString, '{');
+        $closeBraces = substr_count($jsonString, '}');
+        $openBrackets = substr_count($jsonString, '[');
+        $closeBrackets = substr_count($jsonString, ']');
+
+        // Close incomplete arrays first
         while ($closeBrackets < $openBrackets) {
-            $jsonString .= ']';
+            $jsonString = rtrim($jsonString, ', ') . ']';
             $closeBrackets++;
         }
 
-        // If still incomplete, try to find the recommendations array and close it properly
-        if (strpos($jsonString, '"recommendations"') !== false) {
-            // Find last complete recommendation
-            $lastCloseBrace = strrpos($jsonString, '}');
-            if ($lastCloseBrace !== false) {
-                // Truncate after last complete recommendation and close properly
-                $truncated = substr($jsonString, 0, $lastCloseBrace + 1);
-                $truncated .= '] }';
+        // Close incomplete objects
+        while ($closeBraces < $openBraces) {
+            $jsonString = rtrim($jsonString, ', ') . '}';
+            $closeBraces++;
+        }
 
-                // Validate if this creates valid JSON
-                if (json_decode($truncated) !== null) {
-                    Log::info('JSON repaired successfully', [
-                        'repaired_length' => strlen($truncated)
-                    ]);
-                    return $truncated;
-                }
+        // Final cleanup
+        $jsonString = $this->cleanTrailingCommas($jsonString);
+
+        // Validate repair
+        $testDecode = json_decode($jsonString, true);
+        if ($testDecode !== null && json_last_error() === JSON_ERROR_NONE) {
+            Log::info('JSON repaired successfully', [
+                'repaired_length' => strlen($jsonString),
+                'recommendations_count' => isset($testDecode['recommendations']) ? count($testDecode['recommendations']) : 0
+            ]);
+            return $jsonString;
+        }
+
+        // If repair failed, try alternative approach: find last complete recommendation
+        if (strpos($jsonString, '"recommendations"') !== false) {
+            $recovered = $this->recoverFromLastCompleteRecommendation($jsonString);
+            if ($recovered !== null) {
+                Log::info('JSON recovered from last complete recommendation');
+                return $recovered;
             }
         }
 
-        Log::warning('JSON repair attempt made', [
+        Log::warning('JSON repair completed but may still have issues', [
             'repaired_length' => strlen($jsonString),
-            'final_preview' => substr($jsonString, -100)
+            'json_error' => json_last_error_msg()
         ]);
 
         return $jsonString;
+    }
+
+    /**
+     * CLEAN TRAILING COMMAS FROM JSON
+     */
+    private function cleanTrailingCommas(string $jsonString): string
+    {
+        // Remove trailing commas before ] or }
+        $jsonString = preg_replace('/,\s*(\]|\})/', '$1', $jsonString);
+        return $jsonString;
+    }
+
+    /**
+     * REMOVE TRAILING INCOMPLETE DATA
+     */
+    private function removeTrailingIncompleteData(string $jsonString): string
+    {
+        // Find last complete value (ending with ", ], }, or number)
+        $patterns = [
+            '/[,\s]*"[^"]*$/s',        // Incomplete string
+            '/[,\s]*\d+\.?\d*$/s',     // Incomplete number
+            '/[,\s]*[{\[]$/s',         // Opening bracket without closing
+        ];
+
+        foreach ($patterns as $pattern) {
+            $jsonString = preg_replace($pattern, '', $jsonString);
+        }
+
+        return rtrim($jsonString, ', ');
+    }
+
+    /**
+     * RECOVER FROM LAST COMPLETE RECOMMENDATION
+     */
+    private function recoverFromLastCompleteRecommendation(string $jsonString): ?string
+    {
+        // Find all complete recommendation objects
+        preg_match_all('/\{\s*"type"\s*:\s*"[^"]+"\s*,\s*"alternatives"\s*:\s*\[[^\]]*\]\s*\}/s', $jsonString, $matches);
+
+        if (empty($matches[0])) {
+            return null;
+        }
+
+        // Take all complete recommendations
+        $completeRecommendations = $matches[0];
+        $recommendationsJson = implode(',', $completeRecommendations);
+
+        // Build complete JSON structure
+        $recovered = '{"recommendations":[' . $recommendationsJson . ']}';
+
+        // Validate
+        if (json_decode($recovered) !== null) {
+            return $recovered;
+        }
+
+        return null;
     }
 
     /**

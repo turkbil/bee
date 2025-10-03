@@ -89,7 +89,7 @@
     
     <!-- Provider Bazlı Kullanım -->
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
@@ -102,8 +102,23 @@
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-layer-group me-2"></i>
+                        Hizmet Türü Bazlı Kullanım
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="operationChart"></canvas>
+                    <div class="mt-3" id="operationDetails"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
@@ -139,17 +154,18 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-vcenter" id="usageTable">
+                        <table class="table table-vcenter table-sm" id="usageTable">
                             <thead>
                                 <tr>
                                     <th>Tarih</th>
                                     <th>Tenant</th>
-                                    <th>Provider</th>
-                                    <th>Feature</th>
-                                    <th>Input Token</th>
-                                    <th>Output Token</th>
-                                    <th>Toplam Kredi</th>
-                                    <th>Maliyet</th>
+                                    <th>Hizmet Türü</th>
+                                    <th>Açıklama</th>
+                                    <th>Provider/Model</th>
+                                    <th class="text-end">Token</th>
+                                    <th class="text-end">Kredi</th>
+                                    <th class="text-end">Maliyet (₺)</th>
+                                    <th class="text-center">Pro</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -173,7 +189,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Grafik değişkenleri
-let usageChart, providerChart, featureChart;
+let usageChart, providerChart, featureChart, operationChart;
 
 // Sayfa yüklendiğinde
 document.addEventListener('DOMContentLoaded', function() {
@@ -254,6 +270,28 @@ function initializeCharts() {
         }
     });
     
+    // Operation Chart (YENİ - HYBRID SİSTEM)
+    const operationCtx = document.getElementById('operationChart').getContext('2d');
+    operationChart = new Chart(operationCtx, {
+        type: 'pie',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [] // Dinamik renk
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
     // Feature grafiği
     const featureCtx = document.getElementById('featureChart').getContext('2d');
     featureChart = new Chart(featureCtx, {
@@ -286,6 +324,7 @@ function loadUsageData() {
         .then(data => {
             updateUsageChart(7); // Default 7 gün
             updateProviderChart(data.provider_usage || []);
+            updateOperationChart(data.operation_usage || []); // YENİ
             updateFeatureChart(data.feature_usage || []);
             updateUsageTable(data.detailed_usage || []);
         })
@@ -315,6 +354,45 @@ function updateProviderChart(data) {
     providerChart.update();
 }
 
+// Operation grafiğini güncelle (YENİ - DİNAMİK RENK)
+function updateOperationChart(data) {
+    operationChart.data.labels = data.map(item => item.operation);
+    operationChart.data.datasets[0].data = data.map(item => item.credits);
+
+    // Dinamik renk oluştur
+    operationChart.data.datasets[0].backgroundColor = data.map((_, index) => {
+        const hue = (index * 360 / data.length);
+        return `hsl(${hue}, 70%, 60%)`;
+    });
+
+    operationChart.update();
+
+    // Detay tablosunu oluştur
+    const detailsDiv = document.getElementById('operationDetails');
+    let html = '<div class="list-group list-group-flush mt-2">';
+    data.forEach((item, index) => {
+        const hue = (index * 360 / data.length);
+        const color = `hsl(${hue}, 70%, 60%)`;
+        html += `
+            <div class="list-group-item d-flex justify-content-between align-items-center p-2">
+                <div class="d-flex align-items-center">
+                    <div style="width: 12px; height: 12px; background: ${color}; border-radius: 50%; margin-right: 8px;"></div>
+                    <div>
+                        <strong>${item.operation}</strong>
+                        <br><small class="text-muted">${item.count} işlem</small>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div><strong>${item.credits} kredi</strong></div>
+                    <div class="text-muted small">${item.cost_tl}₺</div>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    detailsDiv.innerHTML = html;
+}
+
 // Feature grafiğini güncelle
 function updateFeatureChart(data) {
     featureChart.data.labels = data.map(item => item.feature);
@@ -322,22 +400,27 @@ function updateFeatureChart(data) {
     featureChart.update();
 }
 
-// Kullanım tablosunu güncelle
+// Kullanım tablosunu güncelle (YENİ KOLONLAR)
 function updateUsageTable(data) {
     const tbody = document.querySelector('#usageTable tbody');
     tbody.innerHTML = '';
-    
+
     data.forEach(item => {
         const row = document.createElement('tr');
+        const proBadge = item.is_pro_service
+            ? '<span class="badge bg-purple">PRO</span>'
+            : '<span class="badge bg-secondary">Standart</span>';
+
         row.innerHTML = `
-            <td>${item.date}</td>
+            <td class="text-nowrap"><small>${item.date}</small></td>
             <td>${item.tenant}</td>
-            <td><span class="badge badge-primary">${item.provider}</span></td>
-            <td>${item.feature}</td>
-            <td>${item.input_tokens}</td>
-            <td>${item.output_tokens}</td>
-            <td class="fw-bold">${item.total_credits}</td>
-            <td>$${item.cost}</td>
+            <td><span class="badge bg-info">${item.operation_type}</span></td>
+            <td><small>${item.description}</small></td>
+            <td><small>${item.provider}<br>${item.model}</small></td>
+            <td class="text-end"><small>${item.input_tokens} / ${item.output_tokens}</small></td>
+            <td class="text-end"><strong>${item.total_credits}</strong></td>
+            <td class="text-end"><strong>${item.cost_tl}</strong></td>
+            <td class="text-center">${proBadge}</td>
         `;
         tbody.appendChild(row);
     });

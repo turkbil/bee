@@ -19,6 +19,11 @@
 <script>
 // ✅ UNIFIED TAB MANAGEMENT SYSTEM
 // Bu sistem manage.js ile koordine çalışır - conflict yok!
+
+// Global değişkenler - Hoisting sorunu önlemek için en üstte tanımlıyoruz
+let tabRestoreInProgress = false;
+let languageSyncInProgress = false;
+
 document.addEventListener('DOMContentLoaded', function() {
     const storageKey = '{{ $storageKey }}';
 
@@ -187,8 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 🎯 GLOBAL FUNCTION EXPORT WITH LOOP PREVENTION
-    let tabRestoreInProgress = false;
-    let languageSyncInProgress = false;
+    // Değişkenler zaten üstte tanımlandı, burada tekrar tanımlama
 
     // Wrapper function to prevent language sync loops
     function safeSwitchLanguageContent(language) {

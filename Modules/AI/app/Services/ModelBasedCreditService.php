@@ -187,27 +187,48 @@ readonly class ModelBasedCreditService
             return 0.0;
         }
 
+        // Feature bilgilerini al (HYBRID SİSTEM için)
+        $featureName = null;
+        $featureSlug = null;
+        $operationType = null;
+
+        if ($featureId && $featureType === 'ai_feature') {
+            $feature = \Modules\AI\App\Models\AIFeature::find($featureId);
+            if ($feature) {
+                $featureName = $feature->name;
+                $featureSlug = $feature->slug;
+
+                // Feature slug'a göre operation type belirle (GERÇEK SLUG'LAR)
+                $operationType = match($featureSlug) {
+                    'seo-smart-recommendations', 'seo-comprehensive-audit' => 'seo_recommendations',
+                    'cok-dilli-icerik-cevirici' => 'translation',
+                    'ai-content-builder', 'blog-yazisi-olusturucu' => 'content_generation',
+                    default => null // PDF analyzer feature henüz yok
+                };
+            }
+        }
+
+        // Provider name'i dinamik al
+        $provider = \Modules\AI\App\Models\AIProvider::find($providerId);
+        $providerName = $provider?->name ?? 'openai';
+
         $usedCredits = ai_use_credits_with_model(
             $actualInputTokens,
             $actualOutputTokens,
-            'openai',
+            $providerName, // Dinamik provider
             $model,
             [
                 'tenant_id' => $tenant->id,
                 'provider_id' => $providerId,
                 'feature_type' => $featureType,
-                'feature_id' => $featureId
+                'feature_id' => $featureId,
+                'feature_slug' => $featureSlug,
+                'operation_type' => $operationType, // 🎯 HYBRID SİSTEM
+                'description' => $featureName ?? $featureType
             ]
         );
 
-        // Feature adını da log'a ekle
-        $featureName = null;
-        if ($featureId && $featureType === 'ai_feature') {
-            $feature = \Modules\AI\App\Models\AIFeature::find($featureId);
-            $featureName = $feature?->name ?? "Feature #{$featureId}";
-        }
-
-        Log::info('🔥 Model-based credit deduction', [
+        Log::info('🔥 Model-based credit deduction (HYBRID)', [
             'tenant_id' => $tenant->id,
             'provider_id' => $providerId,
             'model' => $model,
@@ -217,7 +238,9 @@ readonly class ModelBasedCreditService
             'remaining_credits' => method_exists($tenant, 'fresh') ? $tenant->fresh()->credits : ($tenant->credits ?? 0),
             'feature_type' => $featureType,
             'feature_id' => $featureId,
-            'feature_name' => $featureName
+            'feature_name' => $featureName,
+            'feature_slug' => $featureSlug,
+            'operation_type' => $operationType // 🎯 YENİ
         ]);
 
         return $usedCredits;

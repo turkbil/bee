@@ -1,65 +1,37 @@
 <?php
-
 namespace Modules\Portfolio\App\Contracts;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Portfolio\App\Models\Portfolio;
 
 interface PortfolioRepositoryInterface
 {
-    /**
-     * ID ile portfolio bul
-     */
-    public function findById(int $id, array $with = []): ?Portfolio;
+    public function findById(int $id): ?Portfolio;
 
-    /**
-     * Portfolio arama
-     */
-    public function search(array $filters = []): Collection;
+    public function findByIdWithSeo(int $id): ?Portfolio;
 
-    /**
-     * Sayfalanmış portfolio listesi
-     */
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator;
+    public function findBySlug(string $slug, string $locale = 'tr'): ?Portfolio;
 
-    /**
-     * Portfolio oluştur
-     */
-    public function create(array $data): Portfolio;
-
-    /**
-     * Portfolio güncelle 
-     */
-    public function update(int $id, array $data): Portfolio;
-
-    /**
-     * Portfolio sil
-     */
-    public function delete(int $id): bool;
-
-    /**
-     * Aktif portfolioları getir
-     */
     public function getActive(): Collection;
 
-    /**
-     * Kategoriye göre portfolioları getir
-     */
-    public function getByCategory(int $categoryId): Collection;
+    public function getPaginated(array $filters = [], int $perPage = 10): LengthAwarePaginator;
 
-    /**
-     * Cache temizle
-     */
-    public function clearCache(int $id = null): void;
+    public function search(string $term, array $locales = []): Collection;
 
-    /**
-     * Portfolio SEO verilerini güncelle
-     */
-    public function updateSeo(int $id, array $seoData): Portfolio;
+    public function create(array $data): Portfolio;
 
-    /**
-     * Son portfolioları getir
-     */
-    public function getRecent(int $limit = 10): Collection;
+    public function update(int $id, array $data): bool;
+
+    public function delete(int $id): bool;
+
+    public function toggleActive(int $id): bool;
+
+    public function bulkDelete(array $ids): int;
+
+    public function bulkToggleActive(array $ids): int;
+
+    public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool;
+
+    public function clearCache(): void;
 }

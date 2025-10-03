@@ -29,7 +29,7 @@ class SeoSetting extends Model
         'page_speed_insights', 'last_crawled', 'ai_suggestions',
         'status', 'priority_score', 'priority_scores',
         // AI SEO Analysis Results (optimized - removed redundant columns)
-        'analysis_results', 'analysis_date',
+        'analysis_results', 'analysis_date', 'detailed_scores',
         'strengths', 'improvements', 'action_items'
     ];
 
@@ -53,6 +53,7 @@ class SeoSetting extends Model
         // AI SEO Analysis Results casts (optimized - removed redundant columns)
         'analysis_results' => 'array',
         'analysis_date' => 'datetime',
+        'detailed_scores' => 'array',
         'strengths' => 'array',
         'improvements' => 'array',
         'action_items' => 'array'

@@ -1,780 +1,894 @@
 <?php
 
-namespace Modules\Announcement\Database\Seeders;
+namespace Modules\Announcement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Announcement\App\Models\Announcement;
 use Modules\SeoManagement\App\Models\SeoSetting;
+use App\Helpers\TenantHelpers;
+use Modules\MenuManagement\App\Models\Menu;
+use Modules\MenuManagement\App\Models\MenuItem;
 
 /**
  * Announcement Seeder for Central Database
- * Languages: tr, en, ar
- * Pattern: Same as PageSeederCentral
+ *
+ * Creates Turkish Informatics corporate website pages
+ * with AI-focused content in 3 languages.
+ *
+ * Languages: Turkish (tr), English (en), Arabic (ar)
+ * Theme: AI Solutions & Corporate Technology
+ *
+ * Features:
+ * - Modern gradient designs with Alpine.js animations
+ * - SEO-optimized content for all pages
+ * - Automatic menu creation with multilingual support
+ * - Factory-powered additional pages for testing
+ *
+ * @package Modules\Announcement\Database\Seeders
  */
 class AnnouncementSeederCentral extends Seeder
 {
+    /**
+     * Pages created counter for summary
+     */
+    private int $pagesCreated = 0;
+
+    /**
+     * Run the central database seeds
+     */
     public function run(): void
     {
-        $this->command->info('📢 Creating CENTRAL announcements (tr, en, ar)...');
-        
-        // Duplicate kontrolü
+        $this->command->info('🚀 Starting Central Database Announcement Seeding...');
+        $this->command->newLine();
+
+        // Duplicate check
         $existingCount = Announcement::count();
         if ($existingCount > 0) {
-            $this->command->info("Announcements already exist in CENTRAL database ({$existingCount} announcements), skipping seeder...");
+            $this->command->warn("⚠️  Pages already exist ({$existingCount} pages)");
+            $this->command->info('💡 Skipping seeder to prevent duplicates');
             return;
         }
-        
-        // Mevcut duyuruları sil (sadece boşsa)
+
+        // Clean slate
+        $this->command->info('🧹 Cleaning existing data...');
         Announcement::truncate();
-        // SEO settings cleanup - no longer needed with auto-creation
-        
-        $this->createWelcomeAnnouncement();
-        $this->createNewProjectsAnnouncement();
-        $this->createTechUpdatesAnnouncement();
-        $this->createAILaunchAnnouncement();
-        $this->createMaintenanceAnnouncement();
-        
-        $this->command->info('✅ Central announcements created: 5 announcements (tr, en, ar)');
-    }
-    
-    private function createWelcomeAnnouncement(): void
-    {
-        $announcement = Announcement::create([
-            'title' => [
-                'tr' => 'Hoş Geldiniz! - Türk Bilişim Platformu',
-                'en' => 'Welcome! - Turkish Tech Platform',
-                'ar' => 'مرحباً بكم! - منصة تورك بيليشيم'
-            ],
-            'slug' => [
-                'tr' => 'hos-geldiniz-turk-bilisim',
-                'en' => 'welcome-turkish-tech',
-                'ar' => 'مرحبا-بكم-تورك-بيليشيم'
-            ],
-            'body' => [
-                'tr' => '<div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-lg">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">🎉 Sitemize Hoş Geldiniz!</h2>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
-                            <strong>Türk Bilişim</strong> olarak teknoloji alanında yenilikçi çözümler sunuyoruz. 
-                            Kurumsal yapay zeka sistemleri, web tasarım, mobil uygulama ve e-ticaret projelerinizde yanınızdayız.
-                        </p>
-                        
-                        <div class="grid md:grid-cols-3 gap-6 my-8">
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-3">🧠 Yapay Zeka</h3>
-                                <p class="text-gray-600 dark:text-gray-300">Size özel eğitilmiş AI sistemleri</p>
-                            </div>
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-purple-600 dark:text-purple-400 mb-3">💻 Web Tasarım</h3>
-                                <p class="text-gray-600 dark:text-gray-300">Modern ve responsive çözümler</p>
-                            </div>
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-pink-600 dark:text-pink-400 mb-3">📱 Mobil App</h3>
-                                <p class="text-gray-600 dark:text-gray-300">Cross-platform uygulamalar</p>
-                            </div>
-                        </div>
-                        
-                        <p class="text-base text-gray-600 dark:text-gray-400">
-                            <em>🚀 2025 yılında teknolojinin gücünü işinize entegre edin. Başarı hikayenizi birlikte yazalım!</em>
-                        </p>
-                    </div>
-                </div>',
-                'en' => '<div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-lg">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">🎉 Welcome to Our Platform!</h2>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
-                            As <strong>Turkish Tech</strong>, we offer innovative solutions in the field of technology. 
-                            We are with you in enterprise AI systems, web design, mobile application and e-commerce projects.
-                        </p>
-                        
-                        <div class="grid md:grid-cols-3 gap-6 my-8">
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-3">🧠 Artificial Intelligence</h3>
-                                <p class="text-gray-600 dark:text-gray-300">Custom trained AI systems for you</p>
-                            </div>
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-purple-600 dark:text-purple-400 mb-3">💻 Web Design</h3>
-                                <p class="text-gray-600 dark:text-gray-300">Modern and responsive solutions</p>
-                            </div>
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-pink-600 dark:text-pink-400 mb-3">📱 Mobile Apps</h3>
-                                <p class="text-gray-600 dark:text-gray-300">Cross-platform applications</p>
-                            </div>
-                        </div>
-                        
-                        <p class="text-base text-gray-600 dark:text-gray-400">
-                            <em>🚀 Integrate the power of technology into your business in 2025. Let\'s write your success story together!</em>
-                        </p>
-                    </div>
-                </div>',
-                'ar' => '<div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-8 rounded-lg" dir="rtl">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">🎉 مرحباً بكم في منصتنا!</h2>
-                    
-                    <div class="prose prose-lg dark:prose-invert max-w-none">
-                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
-                            نحن في <strong>تورك بيليشيم</strong> نقدم حلولاً مبتكرة في مجال التكنولوجيا. 
-                            نحن معكم في أنظمة الذكاء الاصطناعي المؤسسية وتصميم الويب وتطبيقات الهاتف المحمول ومشاريع التجارة الإلكترونية.
-                        </p>
-                        
-                        <div class="grid md:grid-cols-3 gap-6 my-8">
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-3">🧠 الذكاء الاصطناعي</h3>
-                                <p class="text-gray-600 dark:text-gray-300">أنظمة ذكاء اصطناعي مدربة خصيصاً لك</p>
-                            </div>
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-purple-600 dark:text-purple-400 mb-3">💻 تصميم الويب</h3>
-                                <p class="text-gray-600 dark:text-gray-300">حلول حديثة ومتجاوبة</p>
-                            </div>
-                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
-                                <h3 class="text-xl font-semibold text-pink-600 dark:text-pink-400 mb-3">📱 تطبيقات الهاتف</h3>
-                                <p class="text-gray-600 dark:text-gray-300">تطبيقات متعددة المنصات</p>
-                            </div>
-                        </div>
-                        
-                        <p class="text-base text-gray-600 dark:text-gray-400">
-                            <em>🚀 دمج قوة التكنولوجيا في عملك في عام 2025. دعونا نكتب قصة نجاحكم معاً!</em>
-                        </p>
-                    </div>
-                </div>'
-            ],
-            'is_active' => true,
-        ]);
 
-        $this->createSeoSetting(
-            $announcement,
-            'Hoş Geldiniz - Türk Bilişim Platformu',
-            'Welcome - Turkish Tech Platform',
-            'مرحباً بكم - منصة تورك بيليشيم',
-            'Türk Bilişim olarak teknoloji alanında yenilikçi çözümler sunuyoruz. Kurumsal yapay zeka sistemleri, web tasarım, mobil uygulama ve e-ticaret projelerinizde yanınızdayız.',
-            'As Turkish Tech, we offer innovative solutions in the field of technology. We are with you in enterprise AI systems, web design, mobile application and e-commerce projects.',
-            'نحن في تورك بيليشيم نقدم حلولاً مبتكرة في مجال التكنولوجيا. نحن معكم في أنظمة الذكاء الاصطناعي المؤسسية وتصميم الويب وتطبيقات الهاتف المحمول ومشاريع التجارة الإلكترونية.'
-        );
-        
-        $this->command->info('✅ Announcement created: Hoş Geldiniz');
-    }
-    
-    private function createNewProjectsAnnouncement(): void
-    {
-        $announcement = Announcement::create([
-            'title' => [
-                'tr' => '2025 Yılı Yeni Projelerimiz ve Hedeflerimiz',
-                'en' => 'Our New Projects and Goals for 2025',
-                'ar' => 'مشاريعنا وأهدافنا الجديدة لعام 2025'
-            ],
-            'slug' => [
-                'tr' => 'yeni-projelerimiz-2025',
-                'en' => 'our-new-projects-2025',
-                'ar' => 'مشاريعنا-الجديدة-2025'
-            ],
-            'body' => [
-                'tr' => '<div class="bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">🚀 2025 Yılı Projelerimiz</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-gray-700 dark:text-gray-300">
-                            Bu yıl birçok yeni projeyi hayata geçiriyoruz. Modern teknolojiler kullanarak müşterilerimize en iyi hizmeti sunmaya devam ediyoruz.
-                        </p>
-                        
-                        <div class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-lg">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📈 Hedeflerimiz:</h3>
-                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-                                <li>✅ 50+ yeni müşteri kazanımı</li>
-                                <li>✅ AI çözümlerinde %300 büyüme</li>
-                                <li>✅ Uluslararası pazara giriş</li>
-                                <li>✅ 10+ yeni teknoloji ortaklığı</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">🎯 Q1 Projeler</h4>
-                                <p class="text-sm text-green-700 dark:text-green-400">E-ticaret AI asistanı ve çoklu dil desteği</p>
-                            </div>
-                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                                <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Q2 Projeler</h4>
-                                <p class="text-sm text-blue-700 dark:text-blue-400">Mobil AI uygulaması ve API genişletmesi</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>',
-                'en' => '<div class="bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">🚀 Our 2025 Projects</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-gray-700 dark:text-gray-300">
-                            We are implementing many new projects this year. We continue to provide the best service to our customers using modern technologies.
-                        </p>
-                        
-                        <div class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-lg">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📈 Our Goals:</h3>
-                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-                                <li>✅ 50+ new customer acquisition</li>
-                                <li>✅ 300% growth in AI solutions</li>
-                                <li>✅ International market entry</li>
-                                <li>✅ 10+ new technology partnerships</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">🎯 Q1 Projects</h4>
-                                <p class="text-sm text-green-700 dark:text-green-400">E-commerce AI assistant and multilingual support</p>
-                            </div>
-                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                                <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Q2 Projects</h4>
-                                <p class="text-sm text-blue-700 dark:text-blue-400">Mobile AI application and API expansion</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>',
-                'ar' => '<div class="bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700" dir="rtl">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">🚀 مشاريعنا لعام 2025</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-gray-700 dark:text-gray-300">
-                            نحن ننفذ العديد من المشاريع الجديدة هذا العام. نواصل تقديم أفضل خدمة لعملائنا باستخدام التقنيات الحديثة.
-                        </p>
-                        
-                        <div class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-lg">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📈 أهدافنا:</h3>
-                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-                                <li>✅ اكتساب 50+ عميل جديد</li>
-                                <li>✅ نمو 300% في حلول الذكاء الاصطناعي</li>
-                                <li>✅ دخول الأسواق الدولية</li>
-                                <li>✅ 10+ شراكات تقنية جديدة</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">🎯 مشاريع الربع الأول</h4>
-                                <p class="text-sm text-green-700 dark:text-green-400">مساعد ذكي للتجارة الإلكترونية ودعم متعدد اللغات</p>
-                            </div>
-                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                                <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 مشاريع الربع الثاني</h4>
-                                <p class="text-sm text-blue-700 dark:text-blue-400">تطبيق ذكي للهاتف المحمول وتوسيع API</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>'
-            ],
-            'is_active' => true,
-        ]);
+        // Create pages
+        $this->command->info('📝 Creating pages...');
+        $this->createHomepage();
+        $this->createAboutPage();
+        $this->createServicesPage();
+        $this->createContactPage();
+        $this->createPrivacyPage();
 
-        $this->createSeoSetting(
-            $announcement,
-            '2025 Yılı Yeni Projelerimiz ve Hedeflerimiz',
-            'Our New Projects and Goals for 2025',
-            'مشاريعنا وأهدافنا الجديدة لعام 2025',
-            'Bu yıl birçok yeni projeyi hayata geçiriyoruz. Modern teknolojiler kullanarak müşterilerimize en iyi hizmeti sunmaya devam ediyoruz.',
-            'We are implementing many new projects this year. We continue to provide the best service to our customers using modern technologies.',
-            'نحن ننفذ العديد من المشاريع الجديدة هذا العام. نواصل تقديم أفضل خدمة لعملائنا باستخدام التقنيات الحديثة.'
-        );
-        
-        $this->command->info('✅ Announcement created: Yeni Projelerimiz');
-    }
-    
-    private function createTechUpdatesAnnouncement(): void
-    {
-        $announcement = Announcement::create([
-            'title' => [
-                'tr' => 'Teknoloji Güncellemeleri ve Yenilikler',
-                'en' => 'Technology Updates and Innovations',
-                'ar' => 'تحديثات وابتكارات التكنولوجيا'
-            ],
-            'slug' => [
-                'tr' => 'teknoloji-guncellemeleri',
-                'en' => 'technology-updates',
-                'ar' => 'تحديثات-التكنولوجيا'
-            ],
-            'body' => [
-                'tr' => '<div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-8 rounded-lg">
-                    <h2 class="text-2xl font-bold text-purple-900 dark:text-purple-300 mb-6">⚡ Son Teknoloji Trendleri</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-purple-800 dark:text-purple-200">
-                            Teknoloji dünyasındaki gelişmeleri takip ediyor ve projelerimizde en güncel yöntemleri kullanıyoruz.
-                        </p>
-                        
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-purple-500">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">🤖 AI & Machine Learning</h3>
-                                <ul class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
-                                    <li>• GPT-4 Turbo entegrasyonu</li>
-                                    <li>• Claude 3.5 Sonnet desteği</li>
-                                    <li>• Custom model eğitimi</li>
-                                    <li>• Çoklu dil AI çevirisi</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-blue-500">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">🌐 Web Technologies</h3>
-                                <ul class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
-                                    <li>• Laravel 11 framework</li>
-                                    <li>• Alpine.js & Livewire</li>
-                                    <li>• Tailwind CSS v4</li>
-                                    <li>• PWA uygulamaları</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                            <p class="text-yellow-800 dark:text-yellow-300 text-sm">
-                                <strong>💡 İpucu:</strong> Bu teknolojilerin hepsini projelerinizde kullanabilirsiniz. 
-                                Detaylı bilgi için bizimle iletişime geçin!
-                            </p>
-                        </div>
-                    </div>
-                </div>',
-                'en' => '<div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-8 rounded-lg">
-                    <h2 class="text-2xl font-bold text-purple-900 dark:text-purple-300 mb-6">⚡ Latest Technology Trends</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-purple-800 dark:text-purple-200">
-                            We follow the developments in the technology world and use the most current methods in our projects.
-                        </p>
-                        
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-purple-500">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">🤖 AI & Machine Learning</h3>
-                                <ul class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
-                                    <li>• GPT-4 Turbo integration</li>
-                                    <li>• Claude 3.5 Sonnet support</li>
-                                    <li>• Custom model training</li>
-                                    <li>• Multilingual AI translation</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-blue-500">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">🌐 Web Technologies</h3>
-                                <ul class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
-                                    <li>• Laravel 11 framework</li>
-                                    <li>• Alpine.js & Livewire</li>
-                                    <li>• Tailwind CSS v4</li>
-                                    <li>• PWA applications</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                            <p class="text-yellow-800 dark:text-yellow-300 text-sm">
-                                <strong>💡 Tip:</strong> You can use all of these technologies in your projects. 
-                                Contact us for detailed information!
-                            </p>
-                        </div>
-                    </div>
-                </div>',
-                'ar' => '<div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-8 rounded-lg" dir="rtl">
-                    <h2 class="text-2xl font-bold text-purple-900 dark:text-purple-300 mb-6">⚡ أحدث اتجاهات التكنولوجيا</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-purple-800 dark:text-purple-200">
-                            نتابع التطورات في عالم التكنولوجيا ونستخدم أحدث الطرق في مشاريعنا.
-                        </p>
-                        
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-r-4 border-purple-500">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">🤖 الذكاء الاصطناعي والتعلم الآلي</h3>
-                                <ul class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
-                                    <li>• تكامل GPT-4 Turbo</li>
-                                    <li>• دعم Claude 3.5 Sonnet</li>
-                                    <li>• تدريب النماذج المخصصة</li>
-                                    <li>• ترجمة ذكية متعددة اللغات</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-r-4 border-blue-500">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">🌐 تقنيات الويب</h3>
-                                <ul class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
-                                    <li>• إطار عمل Laravel 11</li>
-                                    <li>• Alpine.js و Livewire</li>
-                                    <li>• Tailwind CSS v4</li>
-                                    <li>• تطبيقات PWA</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                            <p class="text-yellow-800 dark:text-yellow-300 text-sm">
-                                <strong>💡 نصيحة:</strong> يمكنك استخدام كل هذه التقنيات في مشاريعك. 
-                                اتصل بنا للحصول على معلومات مفصلة!
-                            </p>
-                        </div>
-                    </div>
-                </div>'
-            ],
-            'is_active' => true,
-        ]);
+        // Create menu
+        $this->command->newLine();
+        $this->command->info('🗂️  Creating navigation menu...');
+        $this->createMainMenu();
 
-        $this->createSeoSetting(
-            $announcement,
-            'Teknoloji Güncellemeleri ve Yenilikler',
-            'Technology Updates and Innovations',
-            'تحديثات وابتكارات التكنولوجيا',
-            'Teknoloji dünyasındaki gelişmeleri takip ediyor ve projelerimizde en güncel yöntemleri kullanıyoruz.',
-            'We follow the developments in the technology world and use the most current methods in our projects.',
-            'نتابع التطورات في عالم التكنولوجيا ونستخدم أحدث الطرق في مشاريعنا.'
-        );
-        
-        $this->command->info('✅ Announcement created: Teknoloji Güncellemeleri');
-    }
-    
-    private function createAILaunchAnnouncement(): void
-    {
-        $announcement = Announcement::create([
-            'title' => [
-                'tr' => 'Yapay Zeka Platformumuz Yayında!',
-                'en' => 'Our AI Platform is Live!',
-                'ar' => 'منصة الذكاء الاصطناعي الخاصة بنا مباشرة!'
-            ],
-            'slug' => [
-                'tr' => 'yapay-zeka-platformu-yayinda',
-                'en' => 'ai-platform-live',
-                'ar' => 'منصة-الذكاء-الاصطناعي-مباشرة'
-            ],
-            'body' => [
-                'tr' => '<div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-8 rounded-lg border-2 border-green-200 dark:border-green-800">
-                    <h2 class="text-2xl font-bold text-green-900 dark:text-green-300 mb-6">🎊 Büyük Duyuru: AI Platform Lansmanı!</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-green-800 dark:text-green-200">
-                            Aylar süren geliştirme sürecinin ardından, kurumsal yapay zeka platformumuz artık kullanıma hazır!
-                        </p>
-                        
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">🚀 Platform Özellikleri:</h3>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                                        Türkçe optimized AI models
-                                    </div>
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                                        Gerçek zamanlı çeviri desteği
-                                    </div>
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                                        Custom training options
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                        RESTful API integration
-                                    </div>
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                        Advanced analytics dashboard
-                                    </div>
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                        Enterprise-grade security
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/20 dark:to-red-900/20 p-4 rounded-lg">
-                            <p class="text-center text-orange-800 dark:text-orange-300 font-semibold">
-                                🎁 İlk 100 kullanıcıya özel %50 indirim! Fırsatı kaçırmayın.
-                            </p>
-                        </div>
-                    </div>
-                </div>',
-                'en' => '<div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-8 rounded-lg border-2 border-green-200 dark:border-green-800">
-                    <h2 class="text-2xl font-bold text-green-900 dark:text-green-300 mb-6">🎊 Big Announcement: AI Platform Launch!</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-green-800 dark:text-green-200">
-                            After months of development process, our enterprise AI platform is now ready for use!
-                        </p>
-                        
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">🚀 Platform Features:</h3>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                                        Turkish optimized AI models
-                                    </div>
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                                        Real-time translation support
-                                    </div>
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
-                                        Custom training options
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                        RESTful API integration
-                                    </div>
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                        Advanced analytics dashboard
-                                    </div>
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                        Enterprise-grade security
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/20 dark:to-red-900/20 p-4 rounded-lg">
-                            <p class="text-center text-orange-800 dark:text-orange-300 font-semibold">
-                                🎁 Special 50% discount for the first 100 users! Don\'t miss the opportunity.
-                            </p>
-                        </div>
-                    </div>
-                </div>',
-                'ar' => '<div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-8 rounded-lg border-2 border-green-200 dark:border-green-800" dir="rtl">
-                    <h2 class="text-2xl font-bold text-green-900 dark:text-green-300 mb-6">🎊 إعلان كبير: إطلاق منصة الذكاء الاصطناعي!</h2>
-                    
-                    <div class="space-y-6">
-                        <p class="text-lg text-green-800 dark:text-green-200">
-                            بعد أشهر من عملية التطوير، منصة الذكاء الاصطناعي المؤسسية الخاصة بنا جاهزة الآن للاستخدام!
-                        </p>
-                        
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">🚀 ميزات المنصة:</h3>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full ml-3"></span>
-                                        نماذج ذكاء اصطناعي محسنة للتركية
-                                    </div>
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full ml-3"></span>
-                                        دعم الترجمة في الوقت الفعلي
-                                    </div>
-                                    <div class="flex items-center text-green-700 dark:text-green-300">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full ml-3"></span>
-                                        خيارات التدريب المخصصة
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full ml-3"></span>
-                                        تكامل RESTful API
-                                    </div>
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full ml-3"></span>
-                                        لوحة تحليلات متقدمة
-                                    </div>
-                                    <div class="flex items-center text-blue-700 dark:text-blue-300">
-                                        <span class="w-2 h-2 bg-blue-500 rounded-full ml-3"></span>
-                                        أمان على مستوى المؤسسة
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/20 dark:to-red-900/20 p-4 rounded-lg">
-                            <p class="text-center text-orange-800 dark:text-orange-300 font-semibold">
-                                🎁 خصم خاص 50% لأول 100 مستخدم! لا تفوت الفرصة.
-                            </p>
-                        </div>
-                    </div>
-                </div>'
-            ],
-            'is_active' => true,
-        ]);
+        // Create additional development pages
+        $this->command->newLine();
+        $this->command->info('🔨 Creating additional pages for development...');
+        $this->createDevelopmentPages();
 
-        $this->createSeoSetting(
-            $announcement,
-            'Yapay Zeka Platformumuz Yayında!',
-            'Our AI Platform is Live!',
-            'منصة الذكاء الاصطناعي الخاصة بنا مباشرة!',
-            'Aylar süren geliştirme sürecinin ardından, kurumsal yapay zeka platformumuz artık kullanıma hazır!',
-            'After months of development process, our enterprise AI platform is now ready for use!',
-            'بعد أشهر من عملية التطوير، منصة الذكاء الاصطناعي المؤسسية الخاصة بنا جاهزة الآن للاستخدام!'
-        );
-        
-        $this->command->info('✅ Announcement created: Yapay Zeka Platformu');
-    }
-    
-    private function createMaintenanceAnnouncement(): void
-    {
-        $announcement = Announcement::create([
-            'title' => [
-                'tr' => 'Sistem Bakım ve Güncelleme Duyurusu',
-                'en' => 'System Maintenance and Update Notice',
-                'ar' => 'إشعار صيانة وتحديث النظام'
-            ],
-            'slug' => [
-                'tr' => 'sistem-bakim-duyurusu',
-                'en' => 'system-maintenance-notice',
-                'ar' => 'إشعار-صيانة-النظام'
-            ],
-            'body' => [
-                'tr' => '<div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-8 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                    <h2 class="text-2xl font-bold text-yellow-900 dark:text-yellow-300 mb-6">⚠️ Planlı Sistem Bakımı</h2>
-                    
-                    <div class="space-y-6">
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📅 Bakım Detayları:</h3>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">🕐 Tarih ve Saat:</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">25 Ağustos 2025, Pazar</p>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">02:00 - 06:00 (GMT+3)</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">⏱️ Tahmini Süre:</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">4 saat</p>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">(En geç 06:00\'da tamamlanacak)</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
-                            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">🔧 Yapılacak İşlemler:</h3>
-                            <ul class="space-y-2 text-blue-800 dark:text-blue-200 text-sm">
-                                <li>• Veritabanı optimizasyonu ve güvenlik güncellemeleri</li>
-                                <li>• AI model performans iyileştirmeleri</li>
-                                <li>• Yeni API endpoint eklentileri</li>
-                                <li>• Sunucu altyapısı güçlendirme</li>
-                                <li>• Backup ve recovery testleri</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                            <p class="text-red-800 dark:text-red-300 text-sm font-medium">
-                                ⚠️ <strong>Önemli:</strong> Bu süre zarfında platform geçici olarak kullanılamayacaktır. 
-                                Devam eden işlemlerinizi önceden tamamlamanızı öneriyoruz.
-                            </p>
-                        </div>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                            <p class="text-green-800 dark:text-green-300 text-sm">
-                                💚 Anlayışınız için teşekkür ederiz. Bakım sonrası daha hızlı ve güvenli bir platform deneyimi yaşayacaksınız!
-                            </p>
-                        </div>
-                    </div>
-                </div>',
-                'en' => '<div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-8 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                    <h2 class="text-2xl font-bold text-yellow-900 dark:text-yellow-300 mb-6">⚠️ Scheduled System Maintenance</h2>
-                    
-                    <div class="space-y-6">
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📅 Maintenance Details:</h3>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">🕐 Date and Time:</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">August 25, 2025, Sunday</p>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">02:00 - 06:00 (GMT+3)</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">⏱️ Estimated Duration:</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">4 hours</p>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">(Will be completed by 06:00 at the latest)</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
-                            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">🔧 Tasks to be Performed:</h3>
-                            <ul class="space-y-2 text-blue-800 dark:text-blue-200 text-sm">
-                                <li>• Database optimization and security updates</li>
-                                <li>• AI model performance improvements</li>
-                                <li>• New API endpoint additions</li>
-                                <li>• Server infrastructure strengthening</li>
-                                <li>• Backup and recovery tests</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                            <p class="text-red-800 dark:text-red-300 text-sm font-medium">
-                                ⚠️ <strong>Important:</strong> The platform will be temporarily unavailable during this time. 
-                                We recommend completing your ongoing tasks in advance.
-                            </p>
-                        </div>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                            <p class="text-green-800 dark:text-green-300 text-sm">
-                                💚 Thank you for your understanding. You will experience a faster and more secure platform after maintenance!
-                            </p>
-                        </div>
-                    </div>
-                </div>',
-                'ar' => '<div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 p-8 rounded-lg border border-yellow-200 dark:border-yellow-800" dir="rtl">
-                    <h2 class="text-2xl font-bold text-yellow-900 dark:text-yellow-300 mb-6">⚠️ صيانة مجدولة للنظام</h2>
-                    
-                    <div class="space-y-6">
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📅 تفاصيل الصيانة:</h3>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">🕐 التاريخ والوقت:</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">25 أغسطس 2025، الأحد</p>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">02:00 - 06:00 (GMT+3)</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">⏱️ المدة المقدرة:</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">4 ساعات</p>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">(سيتم الانتهاء بحلول الساعة 06:00 على أقصى تقدير)</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
-                            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">🔧 المهام التي سيتم تنفيذها:</h3>
-                            <ul class="space-y-2 text-blue-800 dark:text-blue-200 text-sm">
-                                <li>• تحسين قاعدة البيانات وتحديثات الأمان</li>
-                                <li>• تحسينات أداء نموذج الذكاء الاصطناعي</li>
-                                <li>• إضافات نقطة نهاية API جديدة</li>
-                                <li>• تعزيز البنية التحتية للخادم</li>
-                                <li>• اختبارات النسخ الاحتياطي والاستعادة</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                            <p class="text-red-800 dark:text-red-300 text-sm font-medium">
-                                ⚠️ <strong>مهم:</strong> ستكون المنصة غير متاحة مؤقتاً خلال هذا الوقت. 
-                                نوصي بإكمال مهامك الجارية مسبقاً.
-                            </p>
-                        </div>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                            <p class="text-green-800 dark:text-green-300 text-sm">
-                                💚 شكراً لتفهمكم. ستحصلون على تجربة منصة أسرع وأكثر أماناً بعد الصيانة!
-                            </p>
-                        </div>
-                    </div>
-                </div>'
-            ],
-            'is_active' => true,
-        ]);
-
-        $this->createSeoSetting(
-            $announcement,
-            'Sistem Bakım ve Güncelleme Duyurusu',
-            'System Maintenance and Update Notice',
-            'إشعار صيانة وتحديث النظام',
-            'Planlı sistem bakımı hakkında önemli duyuru. Bu süre zarfında platform geçici olarak kullanılamayacaktır.',
-            'Important announcement about scheduled system maintenance. The platform will be temporarily unavailable during this time.',
-            'إعلان مهم حول صيانة النظام المجدولة. ستكون المنصة غير متاحة مؤقتاً خلال هذا الوقت.'
-        );
-        
-        $this->command->info('✅ Announcement created: Sistem Bakım Duyurusu');
+        // Summary
+        $this->command->newLine();
+        $this->showSummary();
     }
 
     /**
-     * Create SEO settings for announcement
+     * Create homepage with modern AI-focused design
      */
-    private function createSeoSetting($announcement, $titleTr, $titleEn, $titleAr, $descTr, $descEn, $descAr): void
+    private function createHomepage(): void
     {
-        // SEO ayarı varsa sil ve yeniden oluştur (seeder için)
+        $this->command->info('  → Homepage (AI Solutions)');
+
+        $announcement = Announcement::create([
+            'title' => [
+                'tr' => 'Anasayfa',
+                'en' => 'Homepage',
+                'ar' => 'الصفحة الرئيسية'
+            ],
+            'slug' => [
+                'tr' => 'anasayfa',
+                'en' => 'homepage',
+                'ar' => 'الصفحة-الرئيسية'
+            ],
+            'body' => [
+                'tr' => '<div x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 300)">
+                    <!-- Hero Section -->
+                    <section class="relative py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 overflow-hidden">
+                            <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse"></div>
+                            <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
+                            <div class="absolute bottom-1/4 left-1/3 w-72 h-72 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-4000"></div>
+                        </div>
+
+                        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center"
+                                 x-show="loaded"
+                                 x-transition:enter="transition ease-out duration-1000"
+                                 x-transition:enter-start="opacity-0 transform translate-y-8"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0">
+
+                                <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
+                                    <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
+                                        Türk Bilişim
+                                    </span><br>
+                                    <span class="text-gray-800 dark:text-gray-200">Kurumsal</span><br>
+                                    <span class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 bg-clip-text text-transparent">
+                                        Yapay Zeka
+                                    </span>
+                                </h1>
+
+                                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
+                                    🚀 Güçlendirilmiş, öğretilmiş ve <strong>size özel çalışan</strong> yapay zeka çözümleriyle işinizi bir üst seviyeye taşıyın
+                                </p>
+
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+                                    <button class="group relative px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                                        <span class="relative z-10">🎯 Hemen Başlayın</span>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </button>
+                                    <button class="px-6 py-3 border-2 border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 rounded-lg font-semibold hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-all duration-300">
+                                        📊 Portfolyo İnceleyin
+                                    </button>
+                                </div>
+
+                                <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                                        Türkçe Özel Eğitim
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
+                                        API Entegrasyonu
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-purple-500 rounded-full mr-2 animate-pulse"></span>
+                                        7/24 Destek
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scroll indicator -->
+                        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                            <svg class="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- Features Section -->
+                    <section class="py-20 bg-white dark:bg-gray-800 transition-colors duration-300">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-16">
+                                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                                    ⚡ <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Neden Bizi Seçmelisiniz?</span>
+                                </h2>
+                                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                                    Kurumsal yapay zeka çözümlerinde Türkiye\'nin öncü teknoloji şirketi olarak size en iyisini sunuyoruz
+                                </p>
+                            </div>
+
+                            <div class="grid md:grid-cols-3 gap-8">
+                                <!-- Feature 1 -->
+                                <div class="group bg-gradient-to-br from-blue-50 to-white dark:from-gray-700 dark:to-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-gray-600"
+                                     x-data="{ hovered: false }"
+                                     @mouseenter="hovered = true"
+                                     @mouseleave="hovered = false">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                        <span class="text-2xl">🧠</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Özel Eğitilmiş AI</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        Türkçe dil yapısına ve iş süreçlerinize özel eğitilmiş yapay zeka modelleri ile maksimum verimlilik
+                                    </p>
+                                    <div class="mt-6" x-show="hovered" x-transition>
+                                        <span class="text-blue-600 dark:text-blue-400 font-semibold">→ Detayları İncele</span>
+                                    </div>
+                                </div>
+
+                                <!-- Feature 2 -->
+                                <div class="group bg-gradient-to-br from-purple-50 to-white dark:from-gray-700 dark:to-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-gray-600"
+                                     x-data="{ hovered: false }"
+                                     @mouseenter="hovered = true"
+                                     @mouseleave="hovered = false">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                        <span class="text-2xl">⚡</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Hızlı Entegrasyon</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        Mevcut sistemlerinize kolay entegrasyon. API ile dakikalar içinde kullanmaya başlayın
+                                    </p>
+                                    <div class="mt-6" x-show="hovered" x-transition>
+                                        <span class="text-purple-600 dark:text-purple-400 font-semibold">→ API Dökümanı</span>
+                                    </div>
+                                </div>
+
+                                <!-- Feature 3 -->
+                                <div class="group bg-gradient-to-br from-pink-50 to-white dark:from-gray-700 dark:to-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-gray-600"
+                                     x-data="{ hovered: false }"
+                                     @mouseenter="hovered = true"
+                                     @mouseleave="hovered = false">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                        <span class="text-2xl">🔐</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Güvenli & Özel</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        Verileriniz tamamen güvende. Kendi altyapınızda çalışan, gizliliğinizi koruyan çözümler
+                                    </p>
+                                    <div class="mt-6" x-show="hovered" x-transition>
+                                        <span class="text-pink-600 dark:text-pink-400 font-semibold">→ Güvenlik Detayları</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Stats Section -->
+                    <section class="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="grid md:grid-cols-4 gap-8 text-center text-white">
+                                <div>
+                                    <div class="text-4xl font-bold mb-2" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 150) count += 3; }, 50)">
+                                        <span x-text="count"></span>+
+                                    </div>
+                                    <p class="text-lg opacity-90">Mutlu Müşteri</p>
+                                </div>
+                                <div>
+                                    <div class="text-4xl font-bold mb-2">99.9%</div>
+                                    <p class="text-lg opacity-90">Uptime Garantisi</p>
+                                </div>
+                                <div>
+                                    <div class="text-4xl font-bold mb-2">24/7</div>
+                                    <p class="text-lg opacity-90">Teknik Destek</p>
+                                </div>
+                                <div>
+                                    <div class="text-4xl font-bold mb-2">5★</div>
+                                    <p class="text-lg opacity-90">Müşteri Memnuniyeti</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- CTA Section -->
+                    <section class="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+                        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+                            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                                🚀 <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Hazır mısınız?</span>
+                            </h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300 mb-10">
+                                İşinizi bir sonraki seviyeye taşıyacak yapay zeka çözümlerini keşfedin
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <button class="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                                    ✨ Ücretsiz Demo Talep Edin
+                                </button>
+                                <button class="px-10 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full font-bold text-lg hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300">
+                                    📞 Bizi Arayın
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>',
+                'en' => '<div x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 300)">
+                    <!-- Hero Section -->
+                    <section class="relative py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 overflow-hidden">
+                            <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse"></div>
+                            <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
+                            <div class="absolute bottom-1/4 left-1/3 w-72 h-72 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-4000"></div>
+                        </div>
+
+                        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center"
+                                 x-show="loaded"
+                                 x-transition:enter="transition ease-out duration-1000"
+                                 x-transition:enter-start="opacity-0 transform translate-y-8"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0">
+
+                                <h1 class="text-6xl md:text-7xl font-black text-gray-900 dark:text-white mb-8 leading-tight">
+                                    <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
+                                        Custom Trained
+                                    </span><br>
+                                    <span class="text-gray-800 dark:text-gray-200">Artificial Intelligence</span><br>
+                                    <span class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 bg-clip-text text-transparent">
+                                        For Business
+                                    </span>
+                                </h1>
+
+                                <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed">
+                                    🚀 Enhanced, trained, and <strong>customized AI solutions</strong> to take your business to the next level
+                                </p>
+
+                                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+                                    <button class="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                                        <span class="relative z-10">🎯 Get Started Now</span>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </button>
+                                    <button class="px-8 py-4 border-2 border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 rounded-full font-semibold text-lg hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-all duration-300">
+                                        📊 View Portfolio
+                                    </button>
+                                </div>
+
+                                <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                                        Custom Training
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
+                                        API Integration
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-purple-500 rounded-full mr-2 animate-pulse"></span>
+                                        24/7 Support
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scroll indicator -->
+                        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                            <svg class="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- Features Section -->
+                    <section class="py-20 bg-white dark:bg-gray-800 transition-colors duration-300">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-16">
+                                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                                    ⚡ <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Why Choose Us?</span>
+                                </h2>
+                                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                                    As Turkey\'s leading technology company in enterprise AI solutions, we offer you the best
+                                </p>
+                            </div>
+
+                            <div class="grid md:grid-cols-3 gap-8">
+                                <!-- Feature 1 -->
+                                <div class="group bg-gradient-to-br from-blue-50 to-white dark:from-gray-700 dark:to-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-gray-600"
+                                     x-data="{ hovered: false }"
+                                     @mouseenter="hovered = true"
+                                     @mouseleave="hovered = false">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                        <span class="text-2xl">🧠</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Custom Trained AI</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        AI models specially trained for your language structure and business processes for maximum efficiency
+                                    </p>
+                                    <div class="mt-6" x-show="hovered" x-transition>
+                                        <span class="text-blue-600 dark:text-blue-400 font-semibold">→ View Details</span>
+                                    </div>
+                                </div>
+
+                                <!-- Feature 2 -->
+                                <div class="group bg-gradient-to-br from-purple-50 to-white dark:from-gray-700 dark:to-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-gray-600"
+                                     x-data="{ hovered: false }"
+                                     @mouseenter="hovered = true"
+                                     @mouseleave="hovered = false">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                        <span class="text-2xl">⚡</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Fast Integration</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        Easy integration into your existing systems. Start using with API in minutes
+                                    </p>
+                                    <div class="mt-6" x-show="hovered" x-transition>
+                                        <span class="text-purple-600 dark:text-purple-400 font-semibold">→ API Documentation</span>
+                                    </div>
+                                </div>
+
+                                <!-- Feature 3 -->
+                                <div class="group bg-gradient-to-br from-pink-50 to-white dark:from-gray-700 dark:to-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-gray-600"
+                                     x-data="{ hovered: false }"
+                                     @mouseenter="hovered = true"
+                                     @mouseleave="hovered = false">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                        <span class="text-2xl">🔐</span>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Secure & Private</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        Your data is completely safe. Solutions that run on your own infrastructure and protect your privacy
+                                    </p>
+                                    <div class="mt-6" x-show="hovered" x-transition>
+                                        <span class="text-pink-600 dark:text-pink-400 font-semibold">→ Security Details</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Stats Section -->
+                    <section class="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="grid md:grid-cols-4 gap-8 text-center text-white">
+                                <div>
+                                    <div class="text-4xl font-bold mb-2" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 150) count += 3; }, 50)">
+                                        <span x-text="count"></span>+
+                                    </div>
+                                    <p class="text-lg opacity-90">Happy Customers</p>
+                                </div>
+                                <div>
+                                    <div class="text-4xl font-bold mb-2">99.9%</div>
+                                    <p class="text-lg opacity-90">Uptime Guarantee</p>
+                                </div>
+                                <div>
+                                    <div class="text-4xl font-bold mb-2">24/7</div>
+                                    <p class="text-lg opacity-90">Technical Support</p>
+                                </div>
+                                <div>
+                                    <div class="text-4xl font-bold mb-2">5★</div>
+                                    <p class="text-lg opacity-90">Customer Satisfaction</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- CTA Section -->
+                    <section class="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+                        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+                            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                                🚀 <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ready to Start?</span>
+                            </h2>
+                            <p class="text-xl text-gray-600 dark:text-gray-300 mb-10">
+                                Discover AI solutions that will take your business to the next level
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <button class="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                                    ✨ Request Free Demo
+                                </button>
+                                <button class="px-10 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full font-bold text-lg hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-300">
+                                    📞 Call Us
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>',
+                'ar' => '<div x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 300)">
+                    <!-- Hero Section -->
+                    <section class="relative py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 overflow-hidden">
+                            <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse"></div>
+                            <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
+                            <div class="absolute bottom-1/4 left-1/3 w-72 h-72 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-30 animate-pulse animation-delay-4000"></div>
+                        </div>
+
+                        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center" x-show="loaded" x-transition:enter="transition ease-out duration-1000" x-transition:enter-start="opacity-0 transform translate-y-8" x-transition:enter-end="opacity-100 transform translate-y-0" style="display: none;">
+
+                                <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
+                                    <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">المعلوماتية التركية</span><br>
+                                    <span class="text-gray-800 dark:text-gray-200">مؤسسي</span><br>
+                                    <span class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 bg-clip-text text-transparent">الذكاء الاصطناعي</span>
+                                </h1>
+
+                                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">🚀 عزز، ودرب، و<strong>يعمل خصيصًا لك</strong> ارفع عملك إلى المستوى التالي بحلول الذكاء الاصطناعي المصممة خصيصًا لك</p>
+
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+                                    <button class="group relative px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                                        <span class="relative z-10">🎯 ابدأ الآن</span>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </button>
+                                    <button class="px-6 py-3 border-2 border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 rounded-lg font-semibold hover:bg-purple-600 dark:hover:bg-purple-500 hover:text-white transition-all duration-300">📊 استعرض الحافظة</button>
+                                </div>
+
+                                <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>تعليم خاص باللغة التركية</div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>تكامل API</div>
+                                    <div class="flex items-center">
+                                        <span class="w-2 h-2 bg-purple-500 rounded-full mr-2 animate-pulse"></span>دعم على مدار الساعة</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scroll indicator -->
+                        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                            <svg class="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                        </div>
+                    </section>
+                </div>'
+            ],
+            'is_active' => true,
+        ]);
+
+        $this->createSeoSetting(
+            $announcement,
+            'Türk Bilişim - Kurumunuza Özel Eğitilmiş Yapay Zeka',
+            'Custom Trained AI Solutions for Your Business',
+            'حلول ذكاء اصطناعي مخصصة لشركتك',
+            'Güçlendirilmiş, öğretilmiş ve size özel çalışan yapay zeka çözümleriyle işinizi bir üst seviyeye taşıyın.',
+            'Enhanced, trained, and customized AI solutions to take your business to the next level.',
+            'حلول ذكاء اصطناعي معززة ومدربة ومخصصة لنقل عملك إلى المستوى التالي.'
+        );
+
+        $this->pagesCreated++;
+    }
+
+    /**
+     * Create about us announcement
+     */
+    private function createAboutPage(): void
+    {
+        $this->command->info('  → About Us');
+
+        $announcement = Announcement::create([
+            'title' => [
+                'tr' => 'Hakkımızda',
+                'en' => 'About Us',
+                'ar' => 'من نحن'
+            ],
+            'slug' => [
+                'tr' => 'hakkimizda',
+                'en' => 'about-us',
+                'ar' => 'من-نحن'
+            ],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 mb-6">Hakkımızda</h1>
+                            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                                Kaliteli hizmet ve müşteri memnuniyeti odaklı çalışma prensiplerimizle sektörde öncü olmaya devam ediyoruz.
+                            </p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-16 items-center mb-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Misyonumuz</h2>
+                                <p class="text-gray-600 mb-4">Modern teknolojiler kullanarak müşterilerimize en iyi çözümleri sunmak.</p>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Vizyonumuz</h2>
+                                <p class="text-gray-600 mb-4">Teknoloji alanında global bir marka olmak.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 mb-6">About Us</h1>
+                            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                                We continue to be pioneers in the sector with our quality service and customer satisfaction-focused working principles.
+                            </p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-16 items-center mb-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Mission</h2>
+                                <p class="text-gray-600 mb-4">To provide the best solutions to our customers using modern technologies.</p>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Vision</h2>
+                                <p class="text-gray-600 mb-4">To become a global brand in the technology field.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-16">
+                            <h1 class="text-5xl font-bold text-gray-800 mb-6">من نحن</h1>
+                            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                                نواصل كوننا رواداً في القطاع بمبادئ عملنا المركزة على الخدمة الجيدة ورضا العملاء.
+                            </p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-16 items-center mb-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">مهمتنا</h2>
+                                <p class="text-gray-600 mb-4">تقديم أفضل الحلول لعملائنا باستخدام التقنيات الحديثة.</p>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">رؤيتنا</h2>
+                                <p class="text-gray-600 mb-4">أن نصبح علامة تجارية عالمية في مجال التكنولوجيا.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+        ]);
+
+        $this->createSeoSetting(
+            $announcement,
+            'Hakkımızda - Türk Bilişim',
+            'About Us - Türk Bilişim',
+            'من نحن - تورك بيليشيم',
+            'Kaliteli hizmet ve müşteri memnuniyeti odaklı çalışma prensiplerimizle sektörde öncü olmaya devam ediyoruz.',
+            'We continue to be pioneers in the sector with our quality service and customer satisfaction-focused working principles.',
+            'نواصل كوننا رواداً في القطاع بمبادئ عملنا المركزة على الخدمة الجيدة ورضا العملاء.'
+        );
+
+        $this->pagesCreated++;
+    }
+
+    /**
+     * Create services announcement
+     */
+    private function createServicesPage(): void
+    {
+        $this->command->info('  → Services');
+
+        $announcement = Announcement::create([
+            'title' => [
+                'tr' => 'Hizmetlerimiz',
+                'en' => 'Our Services',
+                'ar' => 'خدماتنا'
+            ],
+            'slug' => [
+                'tr' => 'hizmetlerimiz',
+                'en' => 'services',
+                'ar' => 'خدماتنا'
+            ],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">Hizmetlerimiz</h1>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">Yapay Zeka Çözümleri</h3>
+                            <p class="text-gray-600">Size özel eğitilmiş yapay zeka sistemleri geliştiriyoruz.</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">Web Tasarım</h3>
+                            <p class="text-gray-600">Modern ve responsive web siteleri tasarlıyoruz.</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">Dijital Pazarlama</h3>
+                            <p class="text-gray-600">Markanızı dijital dünyada büyütüyoruz.</p>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">Our Services</h1>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">AI Solutions</h3>
+                            <p class="text-gray-600">We develop custom trained AI systems for you.</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">Web Design</h3>
+                            <p class="text-gray-600">We design modern and responsive websites.</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">Digital Marketing</h3>
+                            <p class="text-gray-600">We grow your brand in the digital world.</p>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">خدماتنا</h1>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">حلول الذكاء الاصطناعي</h3>
+                            <p class="text-gray-600">نطور أنظمة ذكاء اصطناعي مدربة خصيصاً لك.</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">تصميم المواقع</h3>
+                            <p class="text-gray-600">نصمم مواقع ويب حديثة ومتجاوبة.</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-2xl font-bold mb-4">التسويق الرقمي</h3>
+                            <p class="text-gray-600">ننمي علامتك التجارية في العالم الرقمي.</p>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+        ]);
+
+        $this->createSeoSetting(
+            $announcement,
+            'Hizmetlerimiz - Türk Bilişim',
+            'Our Services - Türk Bilişim',
+            'خدماتنا - تورك بيليشيم',
+            'Yapay zeka çözümleri, web tasarım ve dijital pazarlama hizmetlerimiz hakkında bilgi alın.',
+            'Learn about our AI solutions, web design and digital marketing services.',
+            'تعرف على خدماتنا في حلول الذكاء الاصطناعي وتصميم المواقع والتسويق الرقمي.'
+        );
+
+        $this->pagesCreated++;
+    }
+
+    /**
+     * Create contact announcement
+     */
+    private function createContactPage(): void
+    {
+        $this->command->info('  → Contact');
+
+        $announcement = Announcement::create([
+            'title' => [
+                'tr' => 'İletişim',
+                'en' => 'Contact',
+                'ar' => 'اتصل بنا'
+            ],
+            'slug' => [
+                'tr' => 'iletisim',
+                'en' => 'contact',
+                'ar' => 'اتصل-بنا'
+            ],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">İletişim</h1>
+                    <div class="max-w-4xl mx-auto">
+                        <div class="grid md:grid-cols-2 gap-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">İletişim Bilgileri</h2>
+                                <div class="space-y-4">
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="mr-3">📧</span> info@turkbilisim.com
+                                    </p>
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="mr-3">📱</span> +90 532 123 45 67
+                                    </p>
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="mr-3">📍</span> İstanbul, Türkiye
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Mesaj Gönderin</h2>
+                                <p class="text-gray-600">Bizimle iletişime geçmek için formu doldurun.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">Contact</h1>
+                    <div class="max-w-4xl mx-auto">
+                        <div class="grid md:grid-cols-2 gap-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Contact Information</h2>
+                                <div class="space-y-4">
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="mr-3">📧</span> info@turkbilisim.com
+                                    </p>
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="mr-3">📱</span> +90 532 123 45 67
+                                    </p>
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="mr-3">📍</span> Istanbul, Turkey
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Message</h2>
+                                <p class="text-gray-600">Fill out the form to get in touch with us.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">اتصل بنا</h1>
+                    <div class="max-w-4xl mx-auto">
+                        <div class="grid md:grid-cols-2 gap-16">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">معلومات الاتصال</h2>
+                                <div class="space-y-4">
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="ml-3">📧</span> info@turkbilisim.com
+                                    </p>
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="ml-3">📱</span> +90 532 123 45 67
+                                    </p>
+                                    <p class="flex items-center text-gray-600">
+                                        <span class="ml-3">📍</span> إسطنبول، تركيا
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">أرسل رسالة</h2>
+                                <p class="text-gray-600">املأ النموذج للتواصل معنا.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+        ]);
+
+        $this->createSeoSetting(
+            $announcement,
+            'İletişim - Türk Bilişim',
+            'Contact - Türk Bilişim',
+            'اتصل بنا - تورك بيليشيم',
+            'Bizimle iletişime geçin. Türk Bilişim iletişim bilgileri ve mesaj formu.',
+            'Get in touch with us. Türk Bilişim contact information and message form.',
+            'تواصل معنا. معلومات الاتصال ونموذج الرسائل لتورك بيليشيم.'
+        );
+
+        $this->pagesCreated++;
+    }
+
+    /**
+     * Create privacy policy announcement
+     */
+    private function createPrivacyPage(): void
+    {
+        $this->command->info('  → Privacy Policy');
+
+        $announcement = Announcement::create([
+            'title' => [
+                'tr' => 'Gizlilik Politikası',
+                'en' => 'Privacy Policy',
+                'ar' => 'سياسة الخصوصية'
+            ],
+            'slug' => [
+                'tr' => 'gizlilik-politikasi',
+                'en' => 'privacy-policy',
+                'ar' => 'سياسة-الخصوصية'
+            ],
+            'body' => [
+                'tr' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">Gizlilik Politikası</h1>
+                    <div class="max-w-4xl mx-auto prose prose-lg">
+                        <p>Bu gizlilik politikası, kişisel verilerinizin nasıl korunduğunu açıklar.</p>
+                        <h2>Veri Toplama</h2>
+                        <p>Web sitemizi ziyaret ettiğinizde belirli bilgileri otomatik olarak toplarız.</p>
+                        <h2>Veri Kullanımı</h2>
+                        <p>Toplanan veriler hizmet kalitemizi artırmak için kullanılır.</p>
+                    </div>
+                </div>',
+                'en' => '<div class="container mx-auto px-4 py-16">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">Privacy Policy</h1>
+                    <div class="max-w-4xl mx-auto prose prose-lg">
+                        <p>This privacy policy explains how your personal data is protected.</p>
+                        <h2>Data Collection</h2>
+                        <p>When you visit our website, we automatically collect certain information.</p>
+                        <h2>Data Usage</h2>
+                        <p>The collected data is used to improve our service quality.</p>
+                    </div>
+                </div>',
+                'ar' => '<div class="container mx-auto px-4 py-16" dir="rtl">
+                    <h1 class="text-5xl font-bold text-center text-gray-800 mb-16">سياسة الخصوصية</h1>
+                    <div class="max-w-4xl mx-auto prose prose-lg">
+                        <p>تشرح سياسة الخصوصية هذه كيفية حماية بياناتك الشخصية.</p>
+                        <h2>جمع البيانات</h2>
+                        <p>عندما تزور موقعنا الإلكتروني، نقوم تلقائياً بجمع معلومات معينة.</p>
+                        <h2>استخدام البيانات</h2>
+                        <p>تُستخدم البيانات المجمعة لتحسين جودة خدمتنا.</p>
+                    </div>
+                </div>'
+            ],
+            'is_active' => true,
+        ]);
+
+        $this->createSeoSetting(
+            $announcement,
+            'Gizlilik Politikası - Türk Bilişim',
+            'Privacy Policy - Türk Bilişim',
+            'سياسة الخصوصية - تورك بيليشيم',
+            'Kişisel verilerinizin nasıl korunduğu ve kullanıldığı hakkında bilgi edinin.',
+            'Learn about how your personal data is protected and used.',
+            'تعرف على كيفية حماية واستخدام بياناتك الشخصية.'
+        );
+
+        $this->pagesCreated++;
+    }
+
+    /**
+     * Create SEO settings for a announcement
+     * Supports 3 languages (tr, en, ar)
+     */
+    private function createSeoSetting($announcement, $titleTr, $titleEn, $titleAr, $descriptionTr, $descriptionEn, $descriptionAr): void
+    {
+        // Clean existing SEO settings for fresh seed
         if ($announcement->seoSetting()->exists()) {
             $announcement->seoSetting()->delete();
         }
-        
+
         $announcement->seoSetting()->create([
             'titles' => [
                 'tr' => $titleTr,
@@ -782,9 +896,9 @@ class AnnouncementSeederCentral extends Seeder
                 'ar' => $titleAr
             ],
             'descriptions' => [
-                'tr' => $descTr,
-                'en' => $descEn,
-                'ar' => $descAr
+                'tr' => $descriptionTr,
+                'en' => $descriptionEn,
+                'ar' => $descriptionAr
             ],
             'og_titles' => [
                 'tr' => $titleTr,
@@ -792,11 +906,141 @@ class AnnouncementSeederCentral extends Seeder
                 'ar' => $titleAr
             ],
             'og_descriptions' => [
-                'tr' => $descTr,
-                'en' => $descEn,
-                'ar' => $descAr
+                'tr' => $descriptionTr,
+                'en' => $descriptionEn,
+                'ar' => $descriptionAr
             ],
             'seo_score' => rand(80, 95),
         ]);
+    }
+
+    /**
+     * Create main navigation menu
+     * Includes all primary pages in 3 languages
+     */
+    private function createMainMenu(): void
+    {
+        // Check for existing menu
+        $existingMenu = Menu::where('slug', 'ana-menu')->first();
+
+        if ($existingMenu) {
+            $this->command->info('  ℹ  Main menu already exists, skipping...');
+            return;
+        }
+
+        // Create main menu
+        $menu = Menu::create([
+            'name' => [
+                'tr' => 'Ana Menü',
+                'en' => 'Main Menu',
+                'ar' => 'القائمة الرئيسية'
+            ],
+            'slug' => 'ana-menu',
+            'location' => 'header',
+            'is_active' => true,
+            'is_default' => true,
+        ]);
+
+        // 1. Anasayfa
+        MenuItem::create([
+            'menu_id' => $menu->menu_id,
+            'title' => [
+                'tr' => 'Anasayfa',
+                'en' => 'Home',
+                'ar' => 'الصفحة الرئيسية'
+            ],
+            'url_type' => 'internal',
+            'url_data' => ['url' => 'announcements/anasayfa'],
+            'target' => '_self',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        // 2. Hakkımızda
+        MenuItem::create([
+            'menu_id' => $menu->menu_id,
+            'title' => [
+                'tr' => 'Hakkımızda',
+                'en' => 'About Us',
+                'ar' => 'من نحن'
+            ],
+            'url_type' => 'internal',
+            'url_data' => ['url' => 'announcements/hakkimizda'],
+            'target' => '_self',
+            'sort_order' => 2,
+            'is_active' => true,
+        ]);
+
+        // 3. Hizmetlerimiz
+        MenuItem::create([
+            'menu_id' => $menu->menu_id,
+            'title' => [
+                'tr' => 'Hizmetlerimiz',
+                'en' => 'Our Services',
+                'ar' => 'خدماتنا'
+            ],
+            'url_type' => 'internal',
+            'url_data' => ['url' => 'announcements/hizmetlerimiz'],
+            'target' => '_self',
+            'sort_order' => 3,
+            'is_active' => true,
+        ]);
+
+        // 4. İletişim
+        MenuItem::create([
+            'menu_id' => $menu->menu_id,
+            'title' => [
+                'tr' => 'İletişim',
+                'en' => 'Contact',
+                'ar' => 'اتصل بنا'
+            ],
+            'url_type' => 'internal',
+            'url_data' => ['url' => 'announcements/iletisim'],
+            'target' => '_self',
+            'sort_order' => 4,
+            'is_active' => true,
+        ]);
+
+        $this->command->info('  ✓ Main menu created with 4 items');
+    }
+
+    /**
+     * Create additional pages for development/testing
+     * Uses factory to generate random content
+     */
+    private function createDevelopmentPages(): void
+    {
+        // Create 5 random simple pages
+        $count = 5;
+
+        Announcement::factory()
+            ->count($count)
+            ->create();
+
+        $this->command->info("  ✓ Created {$count} random pages for testing");
+        $this->pagesCreated += $count;
+    }
+
+    /**
+     * Show seeding summary
+     */
+    private function showSummary(): void
+    {
+        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->command->info('✅ CENTRAL DATABASE SEEDING COMPLETED');
+        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->command->table(
+            ['Metric', 'Value'],
+            [
+                ['Total Pages Created', $this->pagesCreated],
+                ['Languages Supported', 'Turkish, English, Arabic'],
+                ['Homepage', '1 (AI Solutions themed)'],
+                ['Standard Pages', '4 (About, Services, Contact, Privacy)'],
+                ['Development Pages', ($this->pagesCreated - 5)],
+                ['Menu Items', '4'],
+                ['SEO Settings', 'Auto-generated for all pages'],
+            ]
+        );
+        $this->command->newLine();
     }
 }

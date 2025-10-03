@@ -189,10 +189,25 @@ readonly class MenuUrlBuilderService
                 } elseif ($id) {
                     // ID ile model bul
                     $modelClass = "\\Modules\\{$module}\\App\\Models\\{$module}";
+
                     if (class_exists($modelClass)) {
-                        $model = $modelClass::find($id);
-                        if ($model) {
-                            return $this->unifiedUrlService->buildUrlForModel($model, $locale);
+                        try {
+                            // Tablo adını al
+                            $tableName = (new $modelClass)->getTable();
+
+                            // Tenant context check - Tablo var mı kontrol et
+                            if (!\Schema::hasTable($tableName)) {
+                                // Tablo yok, muhtemelen central'dayız ve bu tenant-only bir tablo
+                                break;
+                            }
+
+                            $model = $modelClass::find($id);
+                            if ($model) {
+                                return $this->unifiedUrlService->buildUrlForModel($model, $locale);
+                            }
+                        } catch (\Exception $e) {
+                            // Hata durumunda devam et
+                            break;
                         }
                     }
                 }
@@ -227,21 +242,35 @@ readonly class MenuUrlBuilderService
     {
         $module = ucfirst($module);
         $action = ucfirst($action);
-        
+
         $possibleClasses = [
             "\\Modules\\{$module}\\App\\Models\\{$module}{$action}",
             "\\Modules\\{$module}\\App\\Models\\{$module}" . rtrim($action, 's'),
         ];
-        
+
         foreach ($possibleClasses as $modelClass) {
             if (class_exists($modelClass)) {
-                $model = $modelClass::find($id);
-                if ($model) {
-                    return $model;
+                try {
+                    // Tablo adını al
+                    $tableName = (new $modelClass)->getTable();
+
+                    // Tenant context check - Tablo var mı kontrol et
+                    if (!\Schema::hasTable($tableName)) {
+                        // Tablo yok, muhtemelen central'dayız ve bu tenant-only bir tablo
+                        continue;
+                    }
+
+                    $model = $modelClass::find($id);
+                    if ($model) {
+                        return $model;
+                    }
+                } catch (\Exception $e) {
+                    // Hata varsa bir sonraki class'ı dene
+                    continue;
                 }
             }
         }
-        
+
         return null;
     }
     
@@ -961,27 +990,31 @@ readonly class MenuUrlBuilderService
     private function getModuleItemSlug(string $module, int $id, string $locale): ?string
     {
         try {
-            switch ($module) {
-                case 'portfolio':
-                    if (class_exists('Modules\\Portfolio\\App\\Models\\Portfolio')) {
-                        $item = \Modules\Portfolio\App\Models\Portfolio::find($id);
-                        return $item ? $item->getTranslated('slug', $locale) : null;
-                    }
-                    break;
-                    
-                case 'announcement':
-                    if (class_exists('Modules\\Announcement\\App\\Models\\Announcement')) {
-                        $item = \Modules\Announcement\App\Models\Announcement::find($id);
-                        return $item ? $item->getTranslated('slug', $locale) : null;
-                    }
-                    break;
-                    
-                // Diğer modüller için benzer logic eklenebilir
+            $module = ucfirst(strtolower($module));
+            $modelClass = "\\Modules\\{$module}\\App\\Models\\{$module}";
+
+            // Model class'ı yoksa
+            if (!class_exists($modelClass)) {
+                return null;
             }
+
+            // Tablo adını al (snake_case)
+            $tableName = (new $modelClass)->getTable();
+
+            // Tenant context check - Tablo var mı kontrol et
+            if (!\Schema::hasTable($tableName)) {
+                // Tablo yok, muhtemelen central'dayız ve bu tenant-only bir tablo
+                return null;
+            }
+
+            // Model'i bul
+            $item = $modelClass::find($id);
+            return $item ? $item->getTranslated('slug', $locale) : null;
+
         } catch (\Exception $e) {
             logger('MenuUrlBuilderService::getModuleItemSlug error: ' . $e->getMessage());
         }
-        
+
         return null;
     }
     
@@ -991,20 +1024,31 @@ readonly class MenuUrlBuilderService
     private function getModuleCategorySlug(string $module, int $id, string $locale): ?string
     {
         try {
-            switch ($module) {
-                case 'portfolio':
-                    if (class_exists('Modules\\Portfolio\\App\\Models\\PortfolioCategory')) {
-                        $category = \Modules\Portfolio\App\Models\PortfolioCategory::find($id);
-                        return $category ? $category->getTranslated('slug', $locale) : null;
-                    }
-                    break;
-                    
-                // Diğer modüller için benzer logic eklenebilir
+            $module = ucfirst(strtolower($module));
+            $modelClass = "\\Modules\\{$module}\\App\\Models\\{$module}Category";
+
+            // Model class'ı yoksa
+            if (!class_exists($modelClass)) {
+                return null;
             }
+
+            // Tablo adını al (snake_case)
+            $tableName = (new $modelClass)->getTable();
+
+            // Tenant context check - Tablo var mı kontrol et
+            if (!\Schema::hasTable($tableName)) {
+                // Tablo yok, muhtemelen central'dayız ve bu tenant-only bir tablo
+                return null;
+            }
+
+            // Model'i bul
+            $category = $modelClass::find($id);
+            return $category ? $category->getTranslated('slug', $locale) : null;
+
         } catch (\Exception $e) {
             logger('MenuUrlBuilderService::getModuleCategorySlug error: ' . $e->getMessage());
         }
-        
+
         return null;
     }
     

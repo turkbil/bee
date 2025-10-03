@@ -1,150 +1,192 @@
 <?php
-// Modules/Portfolio/App/Models/PortfolioCategory.php
 namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
+use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PortfolioCategory extends BaseModel 
+class PortfolioCategory extends BaseModel implements TranslatableEntity
 {
-    use Sluggable, SoftDeletes, HasTranslations, HasSeo;
+    use Sluggable, HasTranslations, HasSeo, HasFactory;
 
-    protected $primaryKey = 'portfolio_category_id';
+    protected $primaryKey = 'category_id';
 
     protected $fillable = [
-        'parent_id',
-        'title',
+        'name',
         'slug',
-        'body',
-        'order',
+        'description',
         'is_active',
+        'sort_order',
     ];
 
     protected $casts = [
-        'parent_id' => 'integer',
-        'is_active' => 'boolean',
-        'order' => 'integer',
-        'title' => 'array',
+        'name' => 'array',
         'slug' => 'array',
-        'body' => 'array',
+        'description' => 'array',
+        'is_active' => 'boolean',
+        'sort_order' => 'integer',
     ];
 
     /**
      * Çevrilebilir alanlar
      */
-    protected $translatable = ['title', 'slug', 'body'];
-
+    protected $translatable = ['name', 'slug', 'description'];
 
     /**
-     * Sluggable Ayarları - JSON slug alanları için devre dışı
+     * ID accessor - category_id'yi id olarak döndür
+     */
+    public function getIdAttribute()
+    {
+        return $this->category_id;
+    }
+
+    /**
+     * Sluggable Ayarları - JSON çoklu dil desteği için devre dışı
      */
     public function sluggable(): array
     {
+        return [];
+    }
+
+    /**
+     * Aktif kategorileri getir
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Portfolios ilişkisi
+     */
+    public function portfolios()
+    {
+        return $this->hasMany(Portfolio::class, 'category_id', 'category_id');
+    }
+
+    /**
+     * HasSeo trait fallback implementations
+     */
+
+    protected function getSeoFallbackTitle(): ?string
+    {
+        return $this->getTranslated('name', app()->getLocale()) ?? $this->name;
+    }
+
+    protected function getSeoFallbackDescription(): ?string
+    {
+        $description = $this->getTranslated('description', app()->getLocale()) ?? $this->description;
+
+        if (is_string($description)) {
+            return \Illuminate\Support\Str::limit(strip_tags($description), 160);
+        }
+
+        return null;
+    }
+
+    protected function getSeoFallbackKeywords(): array
+    {
+        $name = $this->getSeoFallbackTitle();
+
+        if ($name) {
+            $words = array_filter(explode(' ', strtolower($name)), function($word) {
+                return strlen($word) > 3;
+            });
+
+            return array_slice($words, 0, 5);
+        }
+
+        return [];
+    }
+
+    protected function getSeoFallbackCanonicalUrl(): ?string
+    {
+        $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
+
+        if ($slug) {
+            return url('/portfolio/category/' . ltrim($slug, '/'));
+        }
+
+        return null;
+    }
+
+    protected function getSeoFallbackImage(): ?string
+    {
+        return null;
+    }
+
+    protected function getSeoFallbackSchemaMarkup(): ?array
+    {
         return [
-            // JSON slug alanları manuel olarak yönetiliyor
+            '@context' => 'https://schema.org',
+            '@type' => 'CollectionPage',
+            'name' => $this->getSeoFallbackTitle(),
+            'description' => $this->getSeoFallbackDescription(),
+            'url' => $this->getSeoFallbackCanonicalUrl(),
         ];
     }
 
-    public function portfolios(): HasMany
-    {
-        return $this->hasMany(Portfolio::class, 'portfolio_category_id', 'portfolio_category_id');
-    }
-
     /**
-     * Ana kategori ilişkisi
+     * Get or create SEO setting
      */
-    public function parent(): BelongsTo
+    public function getOrCreateSeoSetting()
     {
-        return $this->belongsTo(static::class, 'parent_id', 'portfolio_category_id');
-    }
+        if (!$this->seoSetting) {
+            $this->seoSetting()->create([
+                'titles' => [],
+                'descriptions' => [],
+                'og_titles' => [],
+                'og_descriptions' => [],
+                'robots_meta' => [
+                    'index' => true,
+                    'follow' => true,
+                    'archive' => true
+                ],
+                'status' => 'active'
+            ]);
 
-    /**
-     * Alt kategoriler ilişkisi
-     */
-    public function children(): HasMany
-    {
-        return $this->hasMany(static::class, 'parent_id', 'portfolio_category_id')
-                    ->where('is_active', true)
-                    ->orderBy('order', 'asc');
-    }
-
-    /**
-     * Tüm alt kategoriler (aktif/pasif fark etmez)
-     */
-    public function allChildren(): HasMany
-    {
-        return $this->hasMany(static::class, 'parent_id', 'portfolio_category_id')
-                    ->orderBy('order', 'asc');
-    }
-
-    /**
-     * Sadece ana kategorileri getir (parent_id null olanlar)
-     */
-    public static function scopeParents($query)
-    {
-        return $query->whereNull('parent_id');
-    }
-
-    /**
-     * Belirli bir kategorinin alt kategorilerini getir
-     */
-    public static function scopeChildrenOf($query, $parentId)
-    {
-        return $query->where('parent_id', $parentId);
-    }
-
-    /**
-     * Kategori ağacını getir (hierarchical)
-     */
-    public static function getTree($onlyActive = true)
-    {
-        $query = static::query()
-            ->with(['children' => function($q) use ($onlyActive) {
-                if ($onlyActive) {
-                    $q->where('is_active', true);
-                }
-                $q->orderBy('order', 'asc');
-            }])
-            ->whereNull('parent_id')
-            ->orderBy('order', 'asc');
-            
-        if ($onlyActive) {
-            $query->where('is_active', true);
+            $this->load('seoSetting');
         }
-        
-        return $query->get();
+
+        return $this->seoSetting;
     }
-    
+
     /**
-     * SEO için title fallback - JSON title alanından string döndür
+     * TranslatableEntity interface implementation
      */
-    protected function getSeoFallbackTitle(): ?string
+    public function getTranslatableFields(): array
     {
-        if (isset($this->title) && is_array($this->title)) {
-            // Önce mevcut dil, sonra Türkçe, sonra ilk değeri döndür
-            $locale = app()->getLocale() ?? 'tr';
-            return $this->title[$locale] ?? $this->title['tr'] ?? reset($this->title);
-        }
-        
-        return $this->title ?? null;
+        return [
+            'name' => 'text',
+            'description' => 'text',
+            'slug' => 'auto'
+        ];
     }
-    
-    /**
-     * SEO için description fallback - JSON body alanından string döndür
-     */
-    protected function getSeoFallbackDescription(): ?string
+
+    public function hasSeoSettings(): bool
     {
-        if (isset($this->body) && is_array($this->body)) {
-            $locale = app()->getLocale() ?? 'tr';
-            $body = $this->body[$locale] ?? $this->body['tr'] ?? reset($this->body);
-            return $body ? strip_tags($body) : null;
-        }
-        
-        return isset($this->body) ? strip_tags($this->body) : null;
+        return true;
+    }
+
+    public function afterTranslation(string $targetLanguage, array $translatedData): void
+    {
+        \Log::info("Portfolio Category çevirisi tamamlandı", [
+            'category_id' => $this->category_id,
+            'target_language' => $targetLanguage,
+            'translated_fields' => array_keys($translatedData)
+        ]);
+    }
+
+    public function getPrimaryKeyName(): string
+    {
+        return 'category_id';
+    }
+
+    protected static function newFactory()
+    {
+        return \Modules\Portfolio\Database\Factories\PortfolioCategoryFactory::new();
     }
 }

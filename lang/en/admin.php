@@ -200,6 +200,11 @@ return [
     'confirm' => 'Confirm',
     'approve' => 'Approve',
     'reject' => 'Reject',
+    'are_you_sure' => 'Are you sure?',
+    'yes_delete' => 'Yes, Delete',
+    'auto_cancel_5s' => 'Auto-cancel in 5 seconds',
+    'seconds_auto_cancel' => 'seconds until auto-cancel',
+    'unsaved_changes_warning' => 'You have unsaved changes. Are you sure you want to leave?',
 
     // Status
     'active' => 'Active',

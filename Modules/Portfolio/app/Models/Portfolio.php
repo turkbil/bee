@@ -1,42 +1,35 @@
 <?php
-
-declare(strict_types=1);
-
 namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
-use Modules\SeoManagement\App\Models\SeoSetting;
 use App\Traits\HasTranslations;
+use App\Traits\HasSeo;
+use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Portfolio extends BaseModel implements HasMedia
+class Portfolio extends BaseModel implements TranslatableEntity
 {
-    use Sluggable, SoftDeletes, InteractsWithMedia, HasTranslations;
+    use Sluggable, HasTranslations, HasSeo, HasFactory;
 
     protected $primaryKey = 'portfolio_id';
 
     protected $fillable = [
-        'portfolio_category_id',
         'title',
         'slug',
         'body',
-        'image',
-        'client',
-        'date',
-        'url',
+        'css',
+        'js',
+        'category_id',
         'is_active',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
         'title' => 'array',
         'slug' => 'array',
         'body' => 'array',
+        'category_id' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     /**
@@ -45,135 +38,168 @@ class Portfolio extends BaseModel implements HasMedia
     protected $translatable = ['title', 'slug', 'body'];
 
     /**
-     * Sluggable configuration (manuel yönetim)
+     * ID accessor - portfolio_id'yi id olarak döndür
+     */
+    public function getIdAttribute()
+    {
+        return $this->portfolio_id;
+    }
+
+    /**
+     * Sluggable Ayarları - JSON çoklu dil desteği için devre dışı
      */
     public function sluggable(): array
     {
+        return [];
+    }
+
+    /**
+     * Aktif portfolioları getir
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Category ilişkisi
+     */
+    public function category()
+    {
+        return $this->belongsTo(PortfolioCategory::class, 'category_id', 'category_id');
+    }
+
+    /**
+     * HasSeo trait fallback implementations
+     */
+
+    protected function getSeoFallbackTitle(): ?string
+    {
+        return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
+    }
+
+    protected function getSeoFallbackDescription(): ?string
+    {
+        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
+
+        if (is_string($content)) {
+            return \Illuminate\Support\Str::limit(strip_tags($content), 160);
+        }
+
+        return null;
+    }
+
+    protected function getSeoFallbackKeywords(): array
+    {
+        $title = $this->getSeoFallbackTitle();
+
+        if ($title) {
+            $words = array_filter(explode(' ', strtolower($title)), function($word) {
+                return strlen($word) > 3;
+            });
+
+            return array_slice($words, 0, 5);
+        }
+
+        return [];
+    }
+
+    protected function getSeoFallbackCanonicalUrl(): ?string
+    {
+        $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
+
+        if ($slug) {
+            return url('/portfolio/' . ltrim($slug, '/'));
+        }
+
+        return null;
+    }
+
+    protected function getSeoFallbackImage(): ?string
+    {
+        $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
+
+        if (is_string($content) && preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $content, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    protected function getSeoFallbackSchemaMarkup(): ?array
+    {
         return [
-            // JSON slug alanları manuel olarak yönetiliyor
+            '@context' => 'https://schema.org',
+            '@type' => 'CreativeWork',
+            'name' => $this->getSeoFallbackTitle(),
+            'description' => $this->getSeoFallbackDescription(),
+            'url' => $this->getSeoFallbackCanonicalUrl(),
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => url('/')
+            ]
         ];
     }
 
     /**
-     * SEO Setting Relationship (Global SEO System)
+     * Get or create SEO setting
      */
-    public function seoSetting(): MorphOne
+    public function getOrCreateSeoSetting()
     {
-        return $this->morphOne(SeoSetting::class, 'seoable');
-    }
-    
-    /**
-     * SEO için title fallback - JSON title alanından string döndür
-     */
-    protected function getSeoFallbackTitle(): ?string
-    {
-        if (isset($this->title) && is_array($this->title)) {
-            $locale = app()->getLocale() ?? 'tr';
-            return $this->title[$locale] ?? $this->title['tr'] ?? reset($this->title);
+        if (!$this->seoSetting) {
+            $this->seoSetting()->create([
+                'titles' => [],
+                'descriptions' => [],
+                'og_titles' => [],
+                'og_descriptions' => [],
+                'robots_meta' => [
+                    'index' => true,
+                    'follow' => true,
+                    'archive' => true
+                ],
+                'status' => 'active'
+            ]);
+
+            $this->load('seoSetting');
         }
-        
-        return $this->title ?? null;
-    }
-    
-    /**
-     * SEO için description fallback - JSON body alanından string döndür
-     */
-    protected function getSeoFallbackDescription(): ?string
-    {
-        if (isset($this->body) && is_array($this->body)) {
-            $locale = app()->getLocale() ?? 'tr';
-            $body = $this->body[$locale] ?? $this->body['tr'] ?? reset($this->body);
-            return $body ? strip_tags($body) : null;
-        }
-        
-        return isset($this->body) ? strip_tags($this->body) : null;
+
+        return $this->seoSetting;
     }
 
     /**
-     * Update SEO for specific language
+     * TranslatableEntity interface implementation
      */
-    public function updateSeoForLanguage(string $language, array $seoData): void
+    public function getTranslatableFields(): array
     {
-        // SEO verisi boş mu kontrol et
-        $hasAnyData = false;
-        foreach (['seo_title', 'seo_description'] as $field) {
-            if (!empty($seoData[$field])) {
-                $hasAnyData = true;
-                break;
-            }
-        }
-        if (!empty($seoData['canonical_url'])) {
-            $hasAnyData = true;
-        }
-        
-        // Eğer hiç SEO verisi yoksa işlem yapma
-        if (!$hasAnyData) {
-            return;
-        }
-        
-        // Mevcut SEO kaydını al veya yeni oluştur
-        $seoSetting = $this->seoSetting;
-        if (!$seoSetting) {
-            $seoSetting = new SeoSetting();
-            $seoSetting->seoable()->associate($this);
-        }
-        
-        // Update titles
-        $titles = $seoSetting->titles ?? [];
-        if (!empty($seoData['seo_title'])) {
-            $titles[$language] = $seoData['seo_title'];
-        }
-        $seoSetting->titles = $titles;
-        
-        // Update descriptions  
-        $descriptions = $seoSetting->descriptions ?? [];
-        if (!empty($seoData['seo_description'])) {
-            $descriptions[$language] = $seoData['seo_description'];
-        }
-        $seoSetting->descriptions = $descriptions;
-        
-        // Keywords field removed - will be handled by AI
-        
-        // Update canonical URL
-        if (!empty($seoData['canonical_url'])) {
-            $seoSetting->canonical_url = $seoData['canonical_url'];
-        }
-        
-        $seoSetting->save();
+        return [
+            'title' => 'text',
+            'body' => 'html',
+            'slug' => 'auto'
+        ];
     }
 
-    /**
-     * Portfolio Category Relationship
-     */
-    public function category(): BelongsTo
+    public function hasSeoSettings(): bool
     {
-        return $this->belongsTo(PortfolioCategory::class, 'portfolio_category_id', 'portfolio_category_id');
+        return true;
     }
 
-    /**
-     * Media Collections
-     */
-    public function registerMediaCollections(): void
+    public function afterTranslation(string $targetLanguage, array $translatedData): void
     {
-        $this->addMediaCollection('images')
-             ->singleFile()
-             ->useDisk('public');
-             
-        $this->addMediaCollection('gallery')
-             ->useDisk('public');
+        \Log::info("Portfolio çevirisi tamamlandı", [
+            'portfolio_id' => $this->portfolio_id,
+            'target_language' => $targetLanguage,
+            'translated_fields' => array_keys($translatedData)
+        ]);
     }
-    
-    /**
-     * Model Events
-     */
-    protected static function booted(): void
+
+    public function getPrimaryKeyName(): string
     {
-        static::saving(function ($portfolio) {
-            // Portfolio kategorisi kontrolü
-            if ($portfolio->portfolio_category_id) {
-                $category = PortfolioCategory::find($portfolio->portfolio_category_id);
-                // Category ile ilgili işlemler burada yapılabilir
-            }
-        });
+        return 'portfolio_id';
+    }
+
+    protected static function newFactory()
+    {
+        return \Modules\Portfolio\Database\Factories\PortfolioFactory::new();
     }
 }

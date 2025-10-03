@@ -1,195 +1,285 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Portfolio\App\Repositories;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use App\Services\TenantCacheService;
+use App\Services\TenantLanguageProvider;
 use Modules\Portfolio\App\Contracts\PortfolioRepositoryInterface;
 use Modules\Portfolio\App\Models\Portfolio;
-use App\Services\TenantCacheManager;
+use Modules\Page\App\Enums\CacheStrategy;
 
-class PortfolioRepository implements PortfolioRepositoryInterface
+readonly class PortfolioRepository implements PortfolioRepositoryInterface
 {
-    protected TenantCacheManager $cacheManager;
-    protected int $cacheMinutes = 60;
-
-    public function __construct(TenantCacheManager $cacheManager)
-    {
-        $this->cacheManager = $cacheManager;
+    private readonly string $cachePrefix;
+    private readonly int $cacheTtl;
+    private readonly TenantCacheService $cache;
+    
+    public function __construct(
+        private Portfolio $model
+    ) {
+        $this->cachePrefix = 'portfolio';
+        $this->cacheTtl = TenantCacheService::TTL_HOUR;
+        $this->cache = app(TenantCacheService::class);
     }
-
-    public function findById(int $id, array $with = []): ?Portfolio
+    
+    public function findById(int $id): ?Portfolio
     {
-        $cacheKey = $this->cacheManager->generateKey('portfolio', $id, $with);
+        $strategy = CacheStrategy::fromRequest();
         
-        return $this->cacheManager->remember($cacheKey, function () use ($id, $with) {
-            $query = Portfolio::query();
-            
-            if (!empty($with)) {
-                $query->with($with);
-            }
-            
-            return $query->find($id);
-        }, $this->cacheMinutes);
-    }
-
-    public function search(array $filters = []): Collection
-    {
-        $cacheKey = $this->cacheManager->generateKey('portfolio_search', $filters);
+        if (!$strategy->shouldCache()) {
+            return $this->model->where('portfolio_id', $id)->first();
+        }
         
-        return $this->cacheManager->remember($cacheKey, function () use ($filters) {
-            $query = Portfolio::query();
-
-            // Title filtreleme (çok dilli)
-            if (!empty($filters['title'])) {
-                $locale = app()->getLocale();
-                $query->where(function ($q) use ($filters, $locale) {
-                    $q->whereRaw("JSON_EXTRACT(title, '$.\"{$locale}\"') LIKE ?", ["%{$filters['title']}%"])
-                      ->orWhereRaw("JSON_EXTRACT(title, '$.\"tr\"') LIKE ?", ["%{$filters['title']}%"]);
-                });
-            }
-
-            // Kategori filtreleme
-            if (!empty($filters['category_id'])) {
-                $query->where('portfolio_category_id', $filters['category_id']);
-            }
-
-            // Durum filtreleme
-            if (isset($filters['is_active'])) {
-                $query->where('is_active', $filters['is_active']);
-            }
-
-            // Tarih filtreleme
-            if (!empty($filters['date_from'])) {
-                $query->whereDate('created_at', '>=', $filters['date_from']);
-            }
-
-            if (!empty($filters['date_to'])) {
-                $query->whereDate('created_at', '<=', $filters['date_to']);
-            }
-
-            return $query->with('category')->latest()->get();
-        }, $this->cacheMinutes);
+        $cacheKey = $this->getCacheKey("find_by_id.{$id}");
+        
+        return $this->cache->remember(
+            $this->cachePrefix,
+            "find_by_id.{$id}",
+            $strategy->getCacheTtl(),
+            fn() => $this->model->where('portfolio_id', $id)->first()
+        );
     }
-
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    
+    public function findByIdWithSeo(int $id): ?Portfolio
     {
-        $query = Portfolio::query();
+        $strategy = CacheStrategy::fromRequest();
+        
+        // Admin panelinde global cache service kullan
+        if ($strategy === CacheStrategy::ADMIN_FRESH) {
+            return \App\Services\GlobalCacheService::getPageWithSeo($id);
+        }
+        
+        $cacheKey = $this->getCacheKey("find_by_id_with_seo.{$id}");
+        
+        return $this->cache->remember(
+            $this->cachePrefix,
+            "find_by_id_with_seo.{$id}",
+            $strategy->getCacheTtl(),
+            fn() => $this->model->with('seoSetting')->where('portfolio_id', $id)->first()
+        );
+    }
+    
+    public function findBySlug(string $slug, string $locale = 'tr'): ?Portfolio
+    {
+        $strategy = CacheStrategy::PUBLIC_CACHED; // Always cache for SEO
+        $cacheKey = $this->getCacheKey("find_by_slug.{$slug}.{$locale}");
+        
+        return Cache::tags($this->getCacheTags())
+            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
+                $this->model->where(function ($query) use ($slug, $locale) {
+                    $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) = ?", [$slug])
+                          ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) = ?", [$slug]);
+                })->active()->first()
+            );
+    }
+    
+    public function getActive(): Collection
+    {
+        $strategy = CacheStrategy::fromRequest();
+        
+        if (!$strategy->shouldCache()) {
+            return $this->model->active()->orderBy('portfolio_id', 'desc')->get();
+        }
+        
+        $cacheKey = $this->getCacheKey('active_pages');
+        
+        return Cache::tags($this->getCacheTags())
+            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
+                $this->model->active()->orderBy('portfolio_id', 'desc')->get()
+            );
+    }
+    
+    public function getHomepage(): ?Portfolio
+    {
+        return null; // Portfolios don't have homepage
+    }
+    
+    public function getPaginated(array $filters = [], int $perPage = 10): LengthAwarePaginator
+    {
+        $query = $this->model->newQuery();
 
-        // Filtreleri uygula
-        if (!empty($filters['title'])) {
-            $locale = app()->getLocale();
-            $query->where(function ($q) use ($filters, $locale) {
-                $q->whereRaw("JSON_EXTRACT(title, '$.\"{$locale}\"') LIKE ?", ["%{$filters['title']}%"])
-                  ->orWhereRaw("JSON_EXTRACT(title, '$.\"tr\"') LIKE ?", ["%{$filters['title']}%"]);
+        // Search filter
+        if (!empty($filters['search'])) {
+            $searchTerm = '%' . $filters['search'] . '%';
+            $locales = $filters['locales'] ?? TenantLanguageProvider::getActiveLanguageCodes();
+
+            $query->where(function ($subQuery) use ($searchTerm, $locales) {
+                foreach ($locales as $locale) {
+                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
+                            ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                }
             });
         }
-
-        if (!empty($filters['category_id'])) {
-            $query->where('portfolio_category_id', $filters['category_id']);
-        }
-
+        
+        // Status filter
         if (isset($filters['is_active'])) {
             $query->where('is_active', $filters['is_active']);
         }
-
-        return $query->with('category')->latest()->paginate($perPage);
+        
+        // Sorting
+        $sortField = $filters['sortField'] ?? 'portfolio_id';
+        $sortDirection = $filters['sortDirection'] ?? 'desc';
+        
+        if ($sortField === 'title') {
+            $locale = $filters['currentLocale'] ?? 'tr';
+            $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) {$sortDirection}");
+        } else {
+            $query->orderBy($sortField, $sortDirection);
+        }
+        
+        // 🚀 PERFORMANCE FIX: Eager loading ile N+1 query sorununu çöz
+        return $query->with(['seoSetting'])->paginate($perPage);
     }
+    
+    public function search(string $term, array $locales = []): Collection
+    {
+        if (empty($locales)) {
+            $locales = TenantLanguageProvider::getActiveLanguageCodes();
+        }
 
+        $searchTerm = '%' . $term . '%';
+
+        return $this->model->where(function ($query) use ($searchTerm, $locales) {
+            foreach ($locales as $locale) {
+                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
+                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.{$locale}')) LIKE ?", [$searchTerm]);
+            }
+        })->active()->get();
+    }
+    
     public function create(array $data): Portfolio
     {
-        $portfolio = Portfolio::create($data);
-        
-        // Cache temizle
+        $portfolio = $this->model->create($data);
         $this->clearCache();
         
         return $portfolio;
     }
-
-    public function update(int $id, array $data): Portfolio
+    
+    public function update(int $id, array $data): bool
     {
-        $portfolio = Portfolio::findOrFail($id);
-        $portfolio->update($data);
+        $result = $this->model->where('portfolio_id', $id)->update($data);
         
-        // Cache temizle
-        $this->clearCache($id);
+        if ($result) {
+            $this->clearCache();
+        }
         
-        return $portfolio->fresh();
+        return (bool) $result;
     }
-
+    
     public function delete(int $id): bool
     {
-        $portfolio = Portfolio::findOrFail($id);
-        $result = $portfolio->delete();
+        $result = $this->model->where('portfolio_id', $id)->delete();
         
-        // Cache temizle
-        $this->clearCache($id);
-        
-        return $result;
-    }
-
-    public function getActive(): Collection
-    {
-        $cacheKey = $this->cacheManager->generateKey('portfolio_active');
-        
-        return $this->cacheManager->remember($cacheKey, function () {
-            return Portfolio::where('is_active', true)
-                ->with('category')
-                ->latest()
-                ->get();
-        }, $this->cacheMinutes);
-    }
-
-    public function getByCategory(int $categoryId): Collection
-    {
-        $cacheKey = $this->cacheManager->generateKey('portfolio_by_category', $categoryId);
-        
-        return $this->cacheManager->remember($cacheKey, function () use ($categoryId) {
-            return Portfolio::where('portfolio_category_id', $categoryId)
-                ->where('is_active', true)
-                ->with('category')
-                ->latest()
-                ->get();
-        }, $this->cacheMinutes);
-    }
-
-    public function getRecent(int $limit = 10): Collection
-    {
-        $cacheKey = $this->cacheManager->generateKey('portfolio_recent', $limit);
-        
-        return $this->cacheManager->remember($cacheKey, function () use ($limit) {
-            return Portfolio::where('is_active', true)
-                ->with('category')
-                ->latest()
-                ->limit($limit)
-                ->get();
-        }, $this->cacheMinutes);
-    }
-
-    public function updateSeo(int $id, array $seoData): Portfolio
-    {
-        $portfolio = Portfolio::findOrFail($id);
-        $currentSeo = $portfolio->seo ?? [];
-        
-        // SEO verilerini birleştir
-        $newSeo = array_merge($currentSeo, $seoData);
-        $portfolio->update(['seo' => $newSeo]);
-        
-        // Cache temizle
-        $this->clearCache($id);
-        
-        return $portfolio->fresh();
-    }
-
-    public function clearCache(int $id = null): void
-    {
-        if ($id) {
-            // Belirli portfolio cache'ini temizle
-            $this->cacheManager->forgetPattern("portfolio_{$id}_*");
-        } else {
-            // Tüm portfolio cache'lerini temizle
-            $this->cacheManager->forgetPattern('portfolio_*');
+        if ($result) {
+            $this->clearCache();
         }
+        
+        return (bool) $result;
+    }
+    
+    public function toggleActive(int $id): bool
+    {
+        // 🚨 PERFORMANCE FIX: Tek sorguda toggle yap, gereksiz findById kaldır
+        $portfolio = $this->model->where('portfolio_id', $id)->first(['portfolio_id', 'is_active', 'is_homepage']);
+        
+        if (!$portfolio) {
+            return false;
+        }
+        
+        // Ana sayfa ise pasif yapılmasına izin verme
+        if ($portfolio->is_homepage && $portfolio->is_active) {
+            return false;
+        }
+        
+        $result = $this->model->where('portfolio_id', $id)->update(['is_active' => !$portfolio->is_active]);
+        
+        if ($result) {
+            $this->clearCache();
+        }
+        
+        return (bool) $result;
+    }
+    
+    public function bulkDelete(array $ids): int
+    {
+        $count = $this->model->whereIn('portfolio_id', $ids)->delete();
+        
+        if ($count > 0) {
+            $this->clearCache();
+        }
+        
+        return $count;
+    }
+    
+    public function bulkToggleActive(array $ids): int
+    {
+        // Ana sayfaları çıkar
+        $homepageIds = $this->model->whereIn('portfolio_id', $ids)
+                                  ->where('is_homepage', true)
+                                  ->pluck('portfolio_id')
+                                  ->toArray();
+        
+        $allowedIds = array_diff($ids, $homepageIds);
+        
+        if (empty($allowedIds)) {
+            return 0;
+        }
+        
+        // Önce mevcut durumları al
+        $portfolios = $this->model->whereIn('portfolio_id', $allowedIds)->get(['portfolio_id', 'is_active']);
+        $count = 0;
+        
+        foreach ($portfolios as $portfolio) {
+            $this->model->where('portfolio_id', $portfolio->portfolio_id)
+                       ->update(['is_active' => !$portfolio->is_active]);
+            $count++;
+        }
+        
+        if ($count > 0) {
+            $this->clearCache();
+        }
+        
+        return $count;
+    }
+    
+    public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool
+    {
+        // 🚨 PERFORMANCE FIX: Gereksiz findById kaldır, direkt güncelle
+        $portfolio = $this->model->where('portfolio_id', $id)->first(['portfolio_id', 'seo']);
+        
+        if (!$portfolio) {
+            return false;
+        }
+        
+        $seo = $portfolio->seo ?? [];
+        $seo[$locale][$field] = $value;
+        
+        $result = $this->model->where('portfolio_id', $id)->update(['seo' => $seo]);
+        
+        if ($result) {
+            $this->clearCache();
+        }
+        
+        return (bool) $result;
+    }
+    
+    public function clearCache(): void
+    {
+        $this->cache->flushByPrefix($this->cachePrefix);
+    }
+    
+    protected function getCacheKey(string $key): string
+    {
+        return $this->cache->key($this->cachePrefix, $key);
+    }
+    
+    protected function getCacheTags(): array
+    {
+        return $this->cache->tags([$this->cachePrefix]);
     }
 }

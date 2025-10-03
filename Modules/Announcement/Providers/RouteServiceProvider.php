@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Announcement\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -38,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware(['web'])
             ->group(module_path('Announcement', 'routes/web.php'));
     }
-    
+
     /**
      * Define the "admin" routes for the application.
      *
@@ -46,7 +47,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAdminRoutes(): void
     {
-        Route::group([], module_path('Announcement', 'routes/admin.php'));
+        Route::middleware(['web'])
+            ->group(module_path('Announcement', 'routes/admin.php'));
     }
 
     /**

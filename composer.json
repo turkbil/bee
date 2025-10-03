@@ -75,6 +75,7 @@
             "Modules\\ThemeManagement\\App\\": "Modules/ThemeManagement/app/",
             "Modules\\Announcement\\App\\": "Modules/Announcement/app/",
             "Modules\\MenuManagement\\App\\": "Modules/MenuManagement/app/",
+            "Modules\\MediaManagement\\App\\": "Modules/MediaManagement/app/",
             "Modules\\LanguageManager\\App\\": "Modules/LanguageManager/app/",
             "Modules\\AI\\App\\": "Modules/AI/app/"
         },
@@ -87,7 +88,8 @@
             "app/Helpers/AdminTitleHelper.php",
             "app/Helpers/MenuHelper.php",
             "app/Helpers/tenant_helpers.php",
-            "app/Helpers/CacheHelper.php"
+            "app/Helpers/CacheHelper.php",
+            "app/Helpers/MediaHelper.php"
         ]
     },
     "autoload-dev": {

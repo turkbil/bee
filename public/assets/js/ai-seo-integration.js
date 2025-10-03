@@ -696,12 +696,15 @@
         if (seoRecs.length > 0) {
             html += '<div class="row mb-4">';
             seoRecs.forEach(rec => {
-                const title = rec.type === 'title' ? 'SEO Başlığı' : 'SEO Açıklaması';
+                const title = rec.type === 'title' ? 'SEO Başlığı Önerileri' : 'SEO Açıklaması Önerileri';
+                const icon = rec.type === 'title' ? 'fa-heading' : 'fa-align-left';
                 html += `
                     <div class="col-6">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">${title}</h3>
+                                <h3 class="card-title">
+                                    <i class="fas ${icon} me-2"></i>${title}
+                                </h3>
                             </div>
                             <div class="list-group list-group-flush">`;
 
@@ -729,12 +732,15 @@
         if (socialRecs.length > 0) {
             html += '<div class="row mb-4">';
             socialRecs.forEach(rec => {
-                const title = rec.type === 'og_title' ? 'Sosyal Medya Başlığı' : 'Sosyal Medya Açıklaması';
+                const title = rec.type === 'og_title' ? 'Sosyal Medya Başlığı Önerileri' : 'Sosyal Medya Açıklaması Önerileri';
+                const icon = rec.type === 'og_title' ? 'fa-share-alt' : 'fa-comment-dots';
                 html += `
                     <div class="col-6">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">${title}</h3>
+                                <h3 class="card-title">
+                                    <i class="fas ${icon} me-2"></i>${title}
+                                </h3>
                             </div>
                             <div class="list-group list-group-flush">`;
 
@@ -765,6 +771,32 @@
     async function handleSeoRecommendations(button) {
         console.log('🚀 SEO RECOMMENDATIONS START');
         const language = button.getAttribute('data-language') || getCurrentActiveLanguage();
+
+        // ✅ FORM VALIDATION: SADECE BAŞLIK MECBURİ
+        const formData = collectFormData();
+
+        // Başlık kontrolü (herhangi bir dildeki başlık)
+        const hasTitle = formData.title ||
+                        formData['multiLangInputs.tr.title'] ||
+                        formData['multiLangInputs.en.title'] ||
+                        formData['multiLangInputs.ar.title'] ||
+                        formData['seoDataCache.tr.seo_title'] ||
+                        formData['seoDataCache.en.seo_title'] ||
+                        formData['seoDataCache.ar.seo_title'];
+
+        if (!hasTitle) {
+            console.warn('⚠️ Başlık boş - AI önerileri oluşturulamaz');
+
+            // Toast göster
+            if (typeof window.showToast === 'function') {
+                window.showToast('Başlık Gerekli', 'AI önerileri oluşturmak için lütfen sayfa başlığını girin.', 'warning');
+            } else {
+                alert('AI önerileri oluşturmak için lütfen sayfa başlığını girin.');
+            }
+            return; // İşlemi durdur
+        }
+
+        console.log('✅ Validation geçti - Başlık var:', hasTitle);
 
         // DİREKT YENİLE - Confirm dialog yok
         console.log('🔄 AI Önerileri direkt yenileniyor (alert yok)');

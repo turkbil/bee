@@ -5,13 +5,12 @@ namespace Modules\Portfolio\App\Http\Livewire\Traits;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * 🚀 Queue-Based Bulk Actions Trait for Portfolio Module
- * 
+ * 🚀 Queue-Based Bulk Actions Trait
+ *
  * Portfolio modülü için queue-based bulk işlemler:
  * - Bulk delete (queue)
- * - Bulk update (queue) 
+ * - Bulk update (queue)
  * - Progress tracking
- * - Page modülünden kopyalanmış template
  */
 trait WithBulkActionsQueue
 {
@@ -110,7 +109,7 @@ trait WithBulkActionsQueue
             $tenantId = tenant('id') ?? 'central';
             $userId = (string) auth()->id();
             
-            \Modules\Portfolio\App\Jobs\BulkDeletePortfoliosJob::dispatch(
+            \Modules\Page\App\Jobs\BulkDeletePagesJob::dispatch(
                 $this->selectedItems,
                 $tenantId,
                 $userId,
@@ -127,13 +126,13 @@ trait WithBulkActionsQueue
             $this->bulkProgress = [
                 'operation' => 'delete',
                 'count' => $count,
-                'progress_key' => "bulk_delete_portfolios_{$tenantId}_{$userId}",
+                'progress_key' => "bulk_delete_pages_{$tenantId}_{$userId}",
                 'started_at' => now()->toISOString()
             ];
             
             $this->dispatch('toast', [
                 'title' => 'Queue İşlemi Başlatıldı',
-                'message' => "{$count} portfolio silme işlemi kuyruğa eklendi",
+                'message' => "{$count} sayfa silme işlemi kuyruğa eklendi",
                 'type' => 'success'
             ]);
             
@@ -170,7 +169,7 @@ trait WithBulkActionsQueue
             $tenantId = tenant('id') ?? 'central';
             $userId = (string) auth()->id();
             
-            \Modules\Portfolio\App\Jobs\BulkUpdatePortfoliosJob::dispatch(
+            \Modules\Page\App\Jobs\BulkUpdatePagesJob::dispatch(
                 $this->selectedItems,
                 $updateData,
                 $tenantId,
@@ -188,13 +187,13 @@ trait WithBulkActionsQueue
             $this->bulkProgress = [
                 'operation' => 'update',
                 'count' => $count,
-                'progress_key' => "bulk_update_portfolios_{$tenantId}_{$userId}",
+                'progress_key' => "bulk_update_pages_{$tenantId}_{$userId}",
                 'started_at' => now()->toISOString()
             ];
             
             $this->dispatch('toast', [
                 'title' => 'Queue İşlemi Başlatıldı',
-                'message' => "{$count} portfolio güncelleme işlemi kuyruğa eklendi",
+                'message' => "{$count} sayfa güncelleme işlemi kuyruğa eklendi",
                 'type' => 'success'
             ]);
             
@@ -289,6 +288,55 @@ trait WithBulkActionsQueue
     {
         $this->bulkProgressVisible = false;
         $this->bulkProgress = [];
+    }
+
+    /**
+     * 🌐 Queue-based manual translation
+     */
+    public function translateContent($data, ?int $pageId = null): void
+    {
+        if (!$pageId) {
+            $this->dispatch('toast', [
+                'title' => 'Çeviri Hatası',
+                'message' => 'Sayfa ID bulunamadı',
+                'type' => 'error'
+            ]);
+            return;
+        }
+
+        try {
+            // Progress key oluştur
+            $progressKey = "page_translation_progress_{$pageId}_" . uniqid();
+            
+            // Translation job dispatch et
+            $job = \Modules\Page\App\Jobs\TranslatePageContentJob::dispatch($data, $pageId);
+            
+            $this->dispatch('toast', [
+                'title' => 'Çeviri İşlemi Başlatıldı',
+                'message' => 'Çeviri işlemi kuyruğa eklendi ve başlatıldı',
+                'type' => 'success'
+            ]);
+            
+            // Progress tracking başlat
+            $this->dispatch('translation-queued', [
+                'page_id' => $pageId,
+                'progress_key' => $progressKey,
+                'success' => true,
+                'message' => 'Çeviri işlemi başlatıldı!'
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('❌ Queue translation hatası', [
+                'page_id' => $pageId,
+                'error' => $e->getMessage()
+            ]);
+            
+            $this->dispatch('toast', [
+                'title' => 'Çeviri Hatası',
+                'message' => 'Çeviri kuyruğu hatası: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
     }
 
     /**

@@ -46,29 +46,7 @@ class PageController extends Controller
         view()->share('currentModel', $page);
         
         try {
-            // Tenant'a göre anasayfa view seçimi
-            $tenantId = tenant()?->id;
-            $tenantSpecificView = null;
-            
-            // Tenant'a özel anasayfa view'ları
-            if ($tenantId == 2) { // a.test - Digital Agency
-                $tenantSpecificView = 'themes.blank.index-tenant2';
-            } elseif ($tenantId == 3) { // b.test - Tech Solutions  
-                $tenantSpecificView = 'themes.blank.index-tenant3';
-            } elseif ($tenantId == 4) { // c.test - SaaS Platform
-                $tenantSpecificView = 'themes.blank.index-tenant4';
-            }
-            
-            // Tenant'a özel view varsa kullan, yoksa varsayılan
-            if ($tenantSpecificView && view()->exists($tenantSpecificView)) {
-                // Log::info("🎨 Tenant-specific homepage loaded", [
-                //     'tenant_id' => $tenantId,
-                //     'view' => $tenantSpecificView
-                // ]);
-                return view($tenantSpecificView, ['item' => $page, 'is_homepage' => true]);
-            }
-            
-            // Varsayılan tema yolu
+            // ThemeService zaten tenant()->theme'den tema çekiyor (dinamik)
             $viewPath = $this->themeService->getThemeViewPath('show', 'page');
             return view($viewPath, ['item' => $page, 'is_homepage' => true]);
         } catch (\Exception $e) {

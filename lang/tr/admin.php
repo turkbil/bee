@@ -200,6 +200,11 @@ return [
     'confirm' => 'Onayla',
     'approve' => 'Onayla',
     'reject' => 'Reddet',
+    'are_you_sure' => 'Emin misiniz?',
+    'yes_delete' => 'Evet, Sil',
+    'auto_cancel_5s' => '5 saniye sonra otomatik iptal',
+    'seconds_auto_cancel' => 'saniye sonra otomatik iptal',
+    'unsaved_changes_warning' => 'Kaydedilmemiş değişiklikleriniz var. Çıkmak istediğinizden emin misiniz?',
     
     // Bilgilendirme
     'note' => 'Not',

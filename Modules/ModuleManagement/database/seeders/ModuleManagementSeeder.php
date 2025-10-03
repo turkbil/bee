@@ -71,6 +71,15 @@ class ModuleManagementSeeder extends Seeder
                     'is_active' => true
                 ],
                 [
+                    'name' => 'mediamanagement',
+                    'display_name' => 'Medya Yönetimi',
+                    'description' => 'Universal medya yönetim sistemi - Image, Video, Audio, Document desteği',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'management',
+                    'is_active' => true
+                ],
+                [
                     'name' => 'settingmanagement',
                     'display_name' => 'Ayarlar Yönetimi',
                     'description' => 'Sistem ayarlarının yönetimi',

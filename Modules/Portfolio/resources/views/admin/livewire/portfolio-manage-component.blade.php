@@ -1,43 +1,41 @@
-@php
-    View::share('pretitle', $portfolioId ? 'Portföy Düzenleme' : 'Yeni Portföy Ekleme');
-@endphp
+<div>
+    @php
+        View::share('pretitle', $portfoliod ? __('portfolio::admin.edit_page_pretitle') : __('portfolio::admin.new_page_pretitle'));
+    @endphp
 
-<div wire:key="portfolio-manage-component" wire:id="portfolio-manage-component">
-    {{-- Helper dosyası --}}
     @include('portfolio::admin.helper')
-    @include('admin.partials.error_message')
 
     <form method="post" wire:submit.prevent="save">
+        @include('admin.partials.error_message')
         <div class="card">
-            <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="portfolio_active_tab">
 
+            <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="page_active_tab">
                 {{-- Studio Edit Button --}}
-                @if ($studioEnabled && $portfolioId)
+                @if ($studioEnabled && $portfoliod)
                     <li class="nav-item ms-3">
-                        <a href="{{ route('admin.studio.editor', ['module' => 'portfolio', 'id' => $portfolioId]) }}"
+                        <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $portfoliod]) }}"
                             target="_blank" class="btn btn-outline-primary" style="padding: 0.20rem 0.75rem; margin-top: 5px;">
-                            <i class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('admin.studio.editor') }}
+                            <i class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('portfolio::admin.studio.editor') }}
                         </a>
                     </li>
                 @endif
 
                 <x-manage.language.switcher :current-language="$currentLanguage" />
-
             </x-tab-system>
+
             <div class="card-body">
                 <div class="tab-content" id="contentTabContent">
-                    <!-- Temel Bilgiler Tab -->
-                    <div class="tab-pane fade show active" id="0" role="tabpanel">
+
+                    <!-- TEMEL BİLGİLER TAB - NO FADE for instant switching -->
+                    <div class="tab-pane show active" id="0" role="tabpanel">
                         @foreach ($availableLanguages as $lang)
                             @php
                                 $langData = $multiLangInputs[$lang] ?? [];
-                                // Tenant languages'den dil ismini al
-                                $tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where('is_active', true)->get();
-                                $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
+                                $langName = $languageNames[$lang] ?? strtoupper($lang);
                             @endphp
 
                             <div class="language-content" data-language="{{ $lang }}"
-                                style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
+                                style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
                                 <!-- Başlık ve Slug alanları -->
                                 <div class="row mb-3">
@@ -48,7 +46,7 @@
                                                 placeholder="{{ __('portfolio::admin.title_field') }}">
                                             <label>
                                                 {{ __('portfolio::admin.title_field') }}
-                                                @if ($lang === session('site_default_language', 'tr'))
+                                                @if ($lang === get_tenant_default_locale())
                                                     <span class="required-star">★</span>
                                                 @endif
                                             </label>
@@ -62,7 +60,7 @@
                                         <div class="form-floating">
                                             <input type="text" class="form-control"
                                                 wire:model="multiLangInputs.{{ $lang }}.slug" maxlength="255"
-                                                placeholder="portfolio-url-slug">
+                                                placeholder="sayfa-url-slug">
                                             <label>
                                                 {{ __('admin.page_url_slug') }}
                                                 <small class="text-muted ms-2">-
@@ -77,74 +75,15 @@
                                     </div>
                                 </div>
 
-                                <!-- Portfolio Özel Alanları - Sadece default dilde -->
-                                @if ($lang === session('site_default_language', 'tr'))
-                                    
-                                    <!-- Kategori seçimi -->
-                                    <div class="form-floating mb-3">
-                                        <select wire:model.defer="inputs.portfolio_category_id"
-                                            class="form-control @error('inputs.portfolio_category_id') is-invalid @enderror"
-                                            data-choices 
-                                            data-choices-search="{{ count($categories) > 6 ? 'true' : 'false' }}"
-                                            data-choices-filter="true">
-                                            <option value="">{{ __('portfolio::admin.select_category') }}</option>
-                                            @foreach($categories as $category)
-                                            <option value="{{ $category->portfolio_category_id }}" {{ $category->portfolio_category_id == $inputs['portfolio_category_id'] ? 'selected' : '' }}>
-                                                {{ $category->getTranslated('title', app()->getLocale()) }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                        <label>{{ __('portfolio::admin.category') }}</label>
-                                        @error('inputs.portfolio_category_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <!-- Portfolio Detay Alanları -->
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <div class="form-floating">
-                                                <input type="text" wire:model="inputs.client"
-                                                    class="form-control"
-                                                    placeholder="{{ __('portfolio::admin.client_name') }}">
-                                                <label>{{ __('portfolio::admin.client_name') }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-floating">
-                                                <input type="text" wire:model="inputs.date"
-                                                    class="form-control"
-                                                    placeholder="{{ __('portfolio::admin.project_date') }}">
-                                                <label>{{ __('portfolio::admin.project_date') }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-floating">
-                                                <input type="url" wire:model="inputs.url"
-                                                    class="form-control"
-                                                    placeholder="{{ __('portfolio::admin.project_url') }}">
-                                                <label>{{ __('portfolio::admin.project_url') }}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Fotoğraf Yükleme -->
-                                    @include('portfolio::admin.partials.image-upload', [
-                                        'imageKey' => 'image',
-                                        'label' => __('admin.drag_drop_image')
-                                    ])
-
-                                @endif
-
-                                <!-- İçerik editörü -->
+                                {{-- İçerik editörü - AI button artık global component'te --}}
                                 @include('admin.components.content-editor', [
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
                                     'fieldName' => 'body',
                                     'label' => __('portfolio::admin.content'),
-                                    'placeholder' => __('portfolio::admin.content_placeholder')
-                                ])
+                                    'placeholder' => __('portfolio::admin.content_placeholder'),
+                                    ])
                             </div>
                         @endforeach
 
@@ -167,25 +106,75 @@
                         </div>
                     </div>
 
-                    <!-- SEO Tab -->
-                    <div class="tab-pane fade" id="1" role="tabpanel">
-                        <x-seomanagement::universal-seo-tab :model="$this->currentPortfolio()" :available-languages="$availableLanguages" :current-language="$currentLanguage" :seo-data-cache="$seoDataCache" />
+                    <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
+                    <div class="tab-pane" id="1" role="tabpanel">
+                        <livewire:seomanagement::universal-seo-tab
+                            :model-id="$portfoliod"
+                            model-type="page"
+                            model-class="Modules\Portfolio\App\Models\Page"
+                        />
+                    </div>
+
+                    <!-- CODE TAB - NO FADE for instant switching -->
+                    <div class="tab-pane" id="2" role="tabpanel" wire:ignore.self>
+                        <x-editor.monaco
+                            type="css"
+                            label="CSS"
+                            wire-model="inputs.css"
+                            :value="$inputs['css'] ?? ''"
+                        />
+
+                        <x-editor.monaco
+                            type="js"
+                            label="JavaScript"
+                            wire-model="inputs.js"
+                            :value="$inputs['js'] ?? ''"
+                        />
                     </div>
 
                 </div>
             </div>
 
-            <x-form-footer route="admin.portfolio" :model-id="$portfolioId" />
+            <x-form-footer route="admin.page" :model-id="$portfoliod" />
 
         </div>
     </form>
-</div>
+
 
 @push('scripts')
-    {{-- Portfolio JavaScript Variables --}}
+    {{-- 🎯 MODEL & MODULE SETUP --}}
     <script>
-        window.currentPortfolioId = {{ $portfolioId ?? 'null' }};
-        window.currentLanguage = '{{ $currentLanguage }}';
-        let currentLanguage = '{{ $currentLanguage }}';
+        window.currentModelId = {{ $portfoliod ?? 'null' }};
+        window.currentModuleName = 'page';
+        window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
+
+        // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
+        document.addEventListener('DOMContentLoaded', function() {
+            Livewire.on('restore-active-tab', () => {
+                console.log('🔄 Tab restore tetiklendi (validation error)');
+
+                // forceTabRestore fonksiyonu tab-system.blade.php'de tanımlı
+                if (typeof window.forceTabRestore === 'function') {
+                    setTimeout(() => {
+                        window.forceTabRestore();
+                    }, 100);
+                } else {
+                    console.warn('⚠️ forceTabRestore fonksiyonu bulunamadı');
+                }
+            });
+        });
     </script>
+
+    {{-- 🌍 UNIVERSAL SYSTEMS --}}
+    @include('languagemanagement::admin.components.universal-language-scripts', [
+        'currentLanguage' => $currentLanguage,
+        'availableLanguages' => $availableLanguages
+    ])
+
+    @include('seomanagement::admin.components.universal-seo-scripts', [
+        'availableLanguages' => $availableLanguages
+    ])
+
+    @include('ai::admin.components.universal-ai-content-scripts')
 @endpush
+</div>

@@ -349,6 +349,8 @@ class TranslatePageJob implements ShouldQueue
             'excerpt' => $currentExcerpt,
             'slug' => $slug
         ]);
+
+        log_activity($page, 'çevrildi');
     }
 
     /**

@@ -3,18 +3,18 @@
     <div class="card shadow-lg border-0 rounded-lg " style="backdrop-filter: blur(12px); background: var(--tblr-bg-surface);"><span class="badge bg-red badge-notification badge-blink"></span>
         <div class="card-body p-3">
             <div class="d-flex flex-wrap gap-3 align-items-center justify-content-center">
-                <span class="text-muted small">{{ count($selectedItems) }} {{ __('portfolio::admin.items_selected') }}</span>
+                <span class="text-muted small">{{ count($selectedItems) }} {{ __('admin.items_selected') }}</span>
                 <button type="button" class="btn btn-sm btn-outline-success px-3 py-1 hover-btn" wire:click="bulkToggleActive(true)">
                     <i class="fas fa-check me-2"></i>
-                    <span>{{ __('portfolio::admin.make_active') }}</span>
+                    <span>{{ __('admin.activate') }}</span>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-warning px-3 py-1 hover-btn" wire:click="bulkToggleActive(false)">
                     <i class="fas fa-times me-2"></i>
-                    <span>{{ __('portfolio::admin.make_passive') }}</span>
+                    <span>{{ __('admin.deactivate') }}</span>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 hover-btn" wire:click="confirmBulkDelete">
                     <i class="fas fa-trash me-2"></i>
-                    <span>{{ __('portfolio::admin.delete') }}</span>
+                    <span>{{ __('admin.delete') }}</span>
                 </button>
             </div>
         </div>

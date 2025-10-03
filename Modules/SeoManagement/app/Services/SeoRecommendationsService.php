@@ -48,45 +48,87 @@ class SeoRecommendationsService
             // Extract and analyze page content
             $pageAnalysis = $this->analyzePageContent($formContent);
 
-            // Check if we have at least title or meta description for analysis
-            if (empty($pageAnalysis['title']) && empty($pageAnalysis['meta_description'])) {
+            // Check if we have at least title for analysis (BAŞLIK MECBURİ)
+            if (empty($pageAnalysis['title'])) {
                 return [
                     'success' => false,
-                    'error' => 'No content available for SEO analysis. Please provide at least a title or meta description.'
+                    'error' => 'SEO önerileri oluşturmak için sayfa başlığı gereklidir. Lütfen başlık alanını doldurun.',
+                    'user_action' => 'Sayfa başlığını girerek tekrar deneyin.',
+                    'required_field' => 'title'
                 ];
             }
 
             // Build AI prompt for 2025 SEO standards
             $aiPrompt = $this->buildModernSeoPrompt($pageAnalysis, $language);
 
-            // Call AI service with optimized parameters for timeout fix
-            try {
-                // Set execution timeout
-                set_time_limit(60);
+            // Call AI service with automatic retry on incomplete response
+            $maxRetries = 2;
+            $retryCount = 0;
+            $aiResponse = null;
+            $lastError = null;
 
-                $aiResponse = $this->aiService->askFeature($featureSlug, $aiPrompt, [
-                    'language' => $language,
-                    'user_id' => $options['user_id'] ?? null,
-                    'stream' => false,
-                    'temperature' => 0.5,  // More deterministic
-                    'max_tokens' => 800,   // Reduced for faster response
-                    'timeout' => 30        // Explicit timeout
+            while ($retryCount < $maxRetries && $aiResponse === null) {
+                try {
+                    // Set execution timeout
+                    set_time_limit(90);
+
+                    if ($retryCount > 0) {
+                        Log::info('Retrying AI request', [
+                            'attempt' => $retryCount + 1,
+                            'max_retries' => $maxRetries
+                        ]);
+                        // Small delay before retry
+                        usleep(500000); // 0.5 seconds
+                    }
+
+                    $response = $this->aiService->askFeature($featureSlug, $aiPrompt, [
+                        'language' => $language,
+                        'user_id' => $options['user_id'] ?? null,
+                        'stream' => false,
+                        'temperature' => 0.5,  // More deterministic
+                        'max_tokens' => 2000,  // Increased for complete JSON response
+                        'timeout' => 60        // Increased timeout for reliability
+                    ]);
+
+                    Log::info('AI Response received', [
+                        'feature_slug' => $featureSlug,
+                        'attempt' => $retryCount + 1,
+                        'response_length' => strlen(is_string($response) ? $response : json_encode($response)),
+                        'type' => gettype($response)
+                    ]);
+
+                    // Validate response completeness
+                    $responseText = $this->extractResponseText($response);
+                    if ($this->isCompleteJsonResponse($responseText)) {
+                        $aiResponse = $response;
+                        Log::info('Complete AI response received', ['attempt' => $retryCount + 1]);
+                        break;
+                    } else {
+                        Log::warning('Incomplete AI response, retrying...', [
+                            'attempt' => $retryCount + 1,
+                            'response_preview' => substr($responseText, 0, 200)
+                        ]);
+                        $lastError = 'Incomplete JSON response';
+                    }
+
+                } catch (\Exception $e) {
+                    Log::error('AI Service Error', [
+                        'feature_slug' => $featureSlug,
+                        'attempt' => $retryCount + 1,
+                        'message' => $e->getMessage()
+                    ]);
+                    $lastError = $e->getMessage();
+                }
+
+                $retryCount++;
+            }
+
+            // If all retries failed, use fallback
+            if ($aiResponse === null) {
+                Log::error('All AI retry attempts failed', [
+                    'total_attempts' => $retryCount,
+                    'last_error' => $lastError
                 ]);
-
-                Log::info('AI Response received', [
-                    'feature_slug' => $featureSlug,
-                    'response_length' => strlen(is_string($aiResponse) ? $aiResponse : json_encode($aiResponse)),
-                    'type' => gettype($aiResponse)
-                ]);
-
-            } catch (\Exception $e) {
-                Log::error('AI Service Error', [
-                    'feature_slug' => $featureSlug,
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-
-                // Return fallback recommendations
                 return $this->getFallbackRecommendations($language, $pageAnalysis);
             }
 
@@ -424,6 +466,82 @@ class SeoRecommendationsService
         $prompt .= "- FORMAT: Single line JSON where possible to prevent truncation\n\n";
 
         return $prompt;
+    }
+
+    /**
+     * CHECK IF JSON RESPONSE IS COMPLETE
+     */
+    private function isCompleteJsonResponse(string $responseText): bool
+    {
+        if (empty($responseText)) {
+            return false;
+        }
+
+        // Extract JSON from response (handle markdown blocks)
+        $jsonStart = strpos($responseText, '{');
+        $jsonEnd = strrpos($responseText, '}');
+
+        if ($jsonStart === false || $jsonEnd === false) {
+            return false;
+        }
+
+        $jsonString = substr($responseText, $jsonStart, $jsonEnd - $jsonStart + 1);
+
+        // Check if braces are balanced
+        $openBraces = substr_count($jsonString, '{');
+        $closeBraces = substr_count($jsonString, '}');
+        $openBrackets = substr_count($jsonString, '[');
+        $closeBrackets = substr_count($jsonString, ']');
+
+        if ($openBraces !== $closeBraces || $openBrackets !== $closeBrackets) {
+            Log::debug('JSON structure incomplete', [
+                'open_braces' => $openBraces,
+                'close_braces' => $closeBraces,
+                'open_brackets' => $openBrackets,
+                'close_brackets' => $closeBrackets
+            ]);
+            return false;
+        }
+
+        // Try to decode
+        $data = json_decode($jsonString, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::debug('JSON parse failed', [
+                'error' => json_last_error_msg()
+            ]);
+            return false;
+        }
+
+        // Check if response has expected structure
+        if (!isset($data['recommendations']) || !is_array($data['recommendations'])) {
+            Log::debug('JSON missing recommendations array');
+            return false;
+        }
+
+        // Check if we have all 4 expected recommendation types
+        $types = array_column($data['recommendations'], 'type');
+        $expectedTypes = ['title', 'description', 'og_title', 'og_description'];
+        $missingTypes = array_diff($expectedTypes, $types);
+
+        if (!empty($missingTypes)) {
+            Log::debug('JSON missing recommendation types', [
+                'missing' => $missingTypes,
+                'found' => $types
+            ]);
+            return false;
+        }
+
+        // Check if each recommendation has alternatives
+        foreach ($data['recommendations'] as $rec) {
+            if (!isset($rec['alternatives']) || !is_array($rec['alternatives']) || empty($rec['alternatives'])) {
+                Log::debug('Recommendation missing alternatives', [
+                    'type' => $rec['type'] ?? 'unknown'
+                ]);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

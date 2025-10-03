@@ -1,19 +1,27 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Modules\Announcement\App\Exceptions;
 
-use Exception;
-
-class AnnouncementNotFoundException extends Exception
+class AnnouncementNotFoundException extends AnnouncementException
 {
-    public function __construct(string $identifier = '', int $code = 404)
+    public function getErrorType(): string
     {
-        $message = $identifier 
-            ? "Announcement not found with identifier: {$identifier}"
-            : "Announcement not found";
-            
-        parent::__construct($message, $code);
+        return 'page_not_found';
+    }
+
+    public static function withId(int $id): self
+    {
+        return new self(
+            message: "Announcement with ID {$id} not found",
+            context: ['announcement_id' => $id]
+        );
+    }
+
+    public static function withSlug(string $slug, string $locale = 'tr'): self
+    {
+        return new self(
+            message: "Announcement with slug '{$slug}' not found for locale '{$locale}'",
+            context: ['slug' => $slug, 'locale' => $locale]
+        );
     }
 }

@@ -1,241 +1,273 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Announcement\App\Repositories;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use App\Services\TenantCacheService;
+use App\Services\TenantLanguageProvider;
 use Modules\Announcement\App\Contracts\AnnouncementRepositoryInterface;
 use Modules\Announcement\App\Models\Announcement;
-use App\Services\TenantCacheManager;
+use Modules\Announcement\App\Enums\CacheStrategy;
 
-class AnnouncementRepository implements AnnouncementRepositoryInterface
+readonly class AnnouncementRepository implements AnnouncementRepositoryInterface
 {
-    protected TenantCacheManager $cacheManager;
-    protected int $cacheMinutes = 60;
+    private readonly string $cachePrefix;
+    private readonly int $cacheTtl;
+    private readonly TenantCacheService $cache;
 
-    public function __construct(TenantCacheManager $cacheManager)
-    {
-        $this->cacheManager = $cacheManager;
+    public function __construct(
+        private Announcement $model
+    ) {
+        $this->cachePrefix = TenantCacheService::PREFIX_ANNOUNCEMENT;
+        $this->cacheTtl = TenantCacheService::TTL_HOUR;
+        $this->cache = app(TenantCacheService::class);
     }
 
-    public function findById(int $id, array $with = []): ?Announcement
+    public function findById(int $id): ?Announcement
     {
-        $cacheKey = $this->cacheManager->generateKey('announcement', $id, $with);
-        
-        return $this->cacheManager->remember($cacheKey, function () use ($id, $with) {
-            $query = Announcement::query();
-            
-            if (!empty($with)) {
-                $query->with($with);
-            }
-            
-            return $query->find($id);
-        }, $this->cacheMinutes);
-    }
+        $strategy = CacheStrategy::fromRequest();
 
-    public function findBySlug(string $slug): ?Announcement
-    {
-        $cacheKey = $this->cacheManager->generateKey('announcement_by_slug', $slug);
-        
-        return $this->cacheManager->remember($cacheKey, function () use ($slug) {
-            $locale = app()->getLocale();
-            return Announcement::where('is_active', true)
-                ->where(function ($query) use ($slug, $locale) {
-                    $query->whereRaw("JSON_EXTRACT(slug, '$.\"{$locale}\"') = ?", [$slug])
-                          ->orWhereRaw("JSON_EXTRACT(slug, '$.\"tr\"') = ?", [$slug]);
-                })
-                ->first();
-        }, $this->cacheMinutes);
-    }
-
-    public function search(array $filters = []): Collection
-    {
-        $cacheKey = $this->cacheManager->generateKey('announcement_search', $filters);
-        
-        return $this->cacheManager->remember($cacheKey, function () use ($filters) {
-            $query = Announcement::query();
-
-            // Title filtreleme (çok dilli)
-            if (!empty($filters['title'])) {
-                $locale = app()->getLocale();
-                $query->where(function ($q) use ($filters, $locale) {
-                    $q->whereRaw("JSON_EXTRACT(title, '$.\"{$locale}\"') LIKE ?", ["%{$filters['title']}%"])
-                      ->orWhereRaw("JSON_EXTRACT(title, '$.\"tr\"') LIKE ?", ["%{$filters['title']}%"]);
-                });
-            }
-
-            // İçerik filtreleme
-            if (!empty($filters['body'])) {
-                $locale = app()->getLocale();
-                $query->where(function ($q) use ($filters, $locale) {
-                    $q->whereRaw("JSON_EXTRACT(body, '$.\"{$locale}\"') LIKE ?", ["%{$filters['body']}%"])
-                      ->orWhereRaw("JSON_EXTRACT(body, '$.\"tr\"') LIKE ?", ["%{$filters['body']}%"]);
-                });
-            }
-
-            // Durum filtreleme
-            if (isset($filters['is_active'])) {
-                $query->where('is_active', $filters['is_active']);
-            }
-
-            // Tarih filtreleme
-            if (!empty($filters['date_from'])) {
-                $query->whereDate('created_at', '>=', $filters['date_from']);
-            }
-
-            if (!empty($filters['date_to'])) {
-                $query->whereDate('created_at', '<=', $filters['date_to']);
-            }
-
-            return $query->latest()->get();
-        }, $this->cacheMinutes);
-    }
-
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
-    {
-        $query = Announcement::query();
-
-        // Arama filtreleme
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $currentLocale = $filters['currentLocale'] ?? 'tr';
-            $locales = $filters['locales'] ?? ['tr'];
-            
-            $query->where(function ($q) use ($search, $currentLocale, $locales) {
-                // Title arama
-                $q->where(function ($titleQuery) use ($search, $currentLocale, $locales) {
-                    $titleQuery->whereRaw("JSON_EXTRACT(title, '$.\"{$currentLocale}\"') LIKE ?", ["%{$search}%"]);
-                    foreach ($locales as $locale) {
-                        if ($locale !== $currentLocale) {
-                            $titleQuery->orWhereRaw("JSON_EXTRACT(title, '$.\"{$locale}\"') LIKE ?", ["%{$search}%"]);
-                        }
-                    }
-                });
-                
-                // Slug arama
-                $q->orWhere(function ($slugQuery) use ($search, $currentLocale, $locales) {
-                    $slugQuery->whereRaw("JSON_EXTRACT(slug, '$.\"{$currentLocale}\"') LIKE ?", ["%{$search}%"]);
-                    foreach ($locales as $locale) {
-                        if ($locale !== $currentLocale) {
-                            $slugQuery->orWhereRaw("JSON_EXTRACT(slug, '$.\"{$locale}\"') LIKE ?", ["%{$search}%"]);
-                        }
-                    }
-                });
-            });
+        if (!$strategy->shouldCache()) {
+            return $this->model->where('announcement_id', $id)->first();
         }
 
-        if (isset($filters['is_active'])) {
-            $query->where('is_active', $filters['is_active']);
-        }
+        $cacheKey = $this->getCacheKey("find_by_id.{$id}");
 
-        if (!empty($filters['date_from'])) {
-            $query->whereDate('created_at', '>=', $filters['date_from']);
-        }
-
-        if (!empty($filters['date_to'])) {
-            $query->whereDate('created_at', '<=', $filters['date_to']);
-        }
-
-        // Sıralama
-        $sortField = $filters['sortField'] ?? 'announcement_id';
-        $sortDirection = $filters['sortDirection'] ?? 'desc';
-        
-        return $query->orderBy($sortField, $sortDirection)->paginate($perPage);
+        return $this->cache->remember(
+            $this->cachePrefix,
+            "find_by_id.{$id}",
+            $strategy->getCacheTtl(),
+            fn() => $this->model->where('announcement_id', $id)->first()
+        );
     }
 
-    public function create(array $data): Announcement
+    public function findByIdWithSeo(int $id): ?Announcement
     {
-        $announcement = Announcement::create($data);
-        
-        // Cache temizle
-        $this->clearCache();
-        
-        return $announcement;
+        $strategy = CacheStrategy::fromRequest();
+
+        // Admin panelinde cache kullanma
+        if ($strategy === CacheStrategy::ADMIN_FRESH) {
+            return $this->model->with('seoSetting')->where('announcement_id', $id)->first();
+        }
+
+        $cacheKey = $this->getCacheKey("find_by_id_with_seo.{$id}");
+
+        return $this->cache->remember(
+            $this->cachePrefix,
+            "find_by_id_with_seo.{$id}",
+            $strategy->getCacheTtl(),
+            fn() => $this->model->with('seoSetting')->where('announcement_id', $id)->first()
+        );
     }
 
-    public function update(int $id, array $data): Announcement
+    public function findBySlug(string $slug, string $locale = 'tr'): ?Announcement
     {
-        $announcement = Announcement::findOrFail($id);
-        $announcement->update($data);
-        
-        // Cache temizle
-        $this->clearCache($id);
-        
-        return $announcement->fresh();
-    }
+        $strategy = CacheStrategy::PUBLIC_CACHED; // Always cache for SEO
+        $cacheKey = $this->getCacheKey("find_by_slug.{$slug}.{$locale}");
 
-    public function delete(int $id): bool
-    {
-        $announcement = Announcement::findOrFail($id);
-        $result = $announcement->delete();
-        
-        // Cache temizle
-        $this->clearCache($id);
-        
-        return $result;
+        return Cache::tags($this->getCacheTags())
+            ->remember(
+                $cacheKey,
+                $strategy->getCacheTtl(),
+                fn() =>
+                $this->model->where(function ($query) use ($slug, $locale) {
+                    $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) = ?", [$slug])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) = ?", [$slug]);
+                })->active()->first()
+            );
     }
 
     public function getActive(): Collection
     {
-        $cacheKey = $this->cacheManager->generateKey('announcement_active');
-        
-        return $this->cacheManager->remember($cacheKey, function () {
-            return Announcement::where('is_active', true)
-                ->latest()
-                ->get();
-        }, $this->cacheMinutes);
-    }
+        $strategy = CacheStrategy::fromRequest();
 
-    public function getRecent(int $limit = 10): Collection
-    {
-        $cacheKey = $this->cacheManager->generateKey('announcement_recent', $limit);
-        
-        return $this->cacheManager->remember($cacheKey, function () use ($limit) {
-            return Announcement::where('is_active', true)
-                ->latest()
-                ->limit($limit)
-                ->get();
-        }, $this->cacheMinutes);
-    }
-
-    public function getPopular(int $limit = 10): Collection
-    {
-        $cacheKey = $this->cacheManager->generateKey('announcement_popular', $limit);
-        
-        return $this->cacheManager->remember($cacheKey, function () use ($limit) {
-            // Şimdilik created_at'a göre sıralama
-            // İleride view count eklenirse oraya göre sıralanabilir
-            return Announcement::where('is_active', true)
-                ->latest()
-                ->limit($limit)
-                ->get();
-        }, $this->cacheMinutes);
-    }
-
-    public function updateSeo(int $id, array $seoData): Announcement
-    {
-        $announcement = Announcement::findOrFail($id);
-        $currentSeo = $announcement->seo ?? [];
-        
-        // SEO verilerini birleştir
-        $newSeo = array_merge($currentSeo, $seoData);
-        $announcement->update(['seo' => $newSeo]);
-        
-        // Cache temizle
-        $this->clearCache($id);
-        
-        return $announcement->fresh();
-    }
-
-    public function clearCache(int $id = null): void
-    {
-        if ($id) {
-            // Belirli duyuru cache'ini temizle
-            $this->cacheManager->forgetPattern("announcement_{$id}_*");
-        } else {
-            // Tüm duyuru cache'lerini temizle
-            $this->cacheManager->forgetPattern('announcement_*');
+        if (!$strategy->shouldCache()) {
+            return $this->model->active()->orderBy('announcement_id', 'desc')->get();
         }
+
+        $cacheKey = $this->getCacheKey('active_pages');
+
+        return Cache::tags($this->getCacheTags())
+            ->remember(
+                $cacheKey,
+                $strategy->getCacheTtl(),
+                fn() =>
+                $this->model->active()->orderBy('announcement_id', 'desc')->get()
+            );
+    }
+
+    public function getPaginated(array $filters = [], int $perPage = 10): LengthAwarePaginator
+    {
+        $query = $this->model->newQuery();
+
+        // Search filter
+        if (!empty($filters['search'])) {
+            $searchTerm = '%' . $filters['search'] . '%';
+            $locales = $filters['locales'] ?? TenantLanguageProvider::getActiveLanguageCodes();
+
+            $query->where(function ($subQuery) use ($searchTerm, $locales) {
+                foreach ($locales as $locale) {
+                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                }
+            });
+        }
+
+        // Status filter
+        if (isset($filters['is_active'])) {
+            $query->where('is_active', $filters['is_active']);
+        }
+
+        // Sorting
+        $sortField = $filters['sortField'] ?? 'announcement_id';
+        $sortDirection = $filters['sortDirection'] ?? 'desc';
+
+        if ($sortField === 'title') {
+            $locale = $filters['currentLocale'] ?? 'tr';
+            $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) {$sortDirection}");
+        } else {
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        // 🚀 PERFORMANCE FIX: Eager loading ile N+1 query sorununu çöz
+        return $query->with(['seoSetting'])->paginate($perPage);
+    }
+
+    public function search(string $term, array $locales = []): Collection
+    {
+        if (empty($locales)) {
+            $locales = TenantLanguageProvider::getActiveLanguageCodes();
+        }
+
+        $searchTerm = '%' . $term . '%';
+
+        return $this->model->where(function ($query) use ($searchTerm, $locales) {
+            foreach ($locales as $locale) {
+                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.{$locale}')) LIKE ?", [$searchTerm]);
+            }
+        })->active()->get();
+    }
+
+    public function create(array $data): Announcement
+    {
+        $announcement = $this->model->create($data);
+        $this->clearCache();
+
+        return $announcement;
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        $result = $this->model->where('announcement_id', $id)->update($data);
+
+        if ($result) {
+            $this->clearCache();
+        }
+
+        return (bool) $result;
+    }
+
+    public function delete(int $id): bool
+    {
+        $result = $this->model->where('announcement_id', $id)->delete();
+
+        if ($result) {
+            $this->clearCache();
+        }
+
+        return (bool) $result;
+    }
+
+    public function toggleActive(int $id): bool
+    {
+        // 🚨 PERFORMANCE FIX: Tek sorguda toggle yap, gereksiz findById kaldır
+        $announcement = $this->model->where('announcement_id', $id)->first(['announcement_id', 'is_active']);
+
+        if (!$announcement) {
+            return false;
+        }
+
+        $result = $this->model->where('announcement_id', $id)->update(['is_active' => !$announcement->is_active]);
+
+        if ($result) {
+            $this->clearCache();
+        }
+
+        return (bool) $result;
+    }
+
+    public function bulkDelete(array $ids): int
+    {
+        $count = $this->model->whereIn('announcement_id', $ids)->delete();
+
+        if ($count > 0) {
+            $this->clearCache();
+        }
+
+        return $count;
+    }
+
+    public function bulkToggleActive(array $ids): int
+    {
+        if (empty($ids)) {
+            return 0;
+        }
+
+        // Önce mevcut durumları al
+        $pages = $this->model->whereIn('announcement_id', $ids)->get(['announcement_id', 'is_active']);
+        $count = 0;
+
+        foreach ($pages as $announcement) {
+            $this->model->where('announcement_id', $announcement->announcement_id)
+                ->update(['is_active' => !$announcement->is_active]);
+            $count++;
+        }
+
+        if ($count > 0) {
+            $this->clearCache();
+        }
+
+        return $count;
+    }
+
+    public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool
+    {
+        // 🚨 PERFORMANCE FIX: Gereksiz findById kaldır, direkt güncelle
+        $announcement = $this->model->where('announcement_id', $id)->first(['announcement_id', 'seo']);
+
+        if (!$announcement) {
+            return false;
+        }
+
+        $seo = $announcement->seo ?? [];
+        $seo[$locale][$field] = $value;
+
+        $result = $this->model->where('announcement_id', $id)->update(['seo' => $seo]);
+
+        if ($result) {
+            $this->clearCache();
+        }
+
+        return (bool) $result;
+    }
+
+    public function clearCache(): void
+    {
+        $this->cache->flushByPrefix($this->cachePrefix);
+    }
+
+    protected function getCacheKey(string $key): string
+    {
+        return $this->cache->key($this->cachePrefix, $key);
+    }
+
+    protected function getCacheTags(): array
+    {
+        return $this->cache->tags([$this->cachePrefix]);
     }
 }

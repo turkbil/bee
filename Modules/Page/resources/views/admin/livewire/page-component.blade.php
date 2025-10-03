@@ -56,7 +56,16 @@
                     <tr>
                         <th style="width: 50px">
                             <div class="d-flex align-items-center gap-2">
-                                <input type="checkbox" wire:model.live="selectAll" class="form-check-input">
+                                <input type="checkbox"
+                                       wire:model.live="selectAll"
+                                       class="form-check-input"
+                                       id="selectAllCheckbox"
+                                       x-data="{
+                                           indeterminate: {{ count($selectedItems) > 0 && !$selectAll ? 'true' : 'false' }}
+                                       }"
+                                       x-init="$el.indeterminate = indeterminate"
+                                       x-effect="$el.indeterminate = ({{ count($selectedItems) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
+                                       @checked($selectAll)>
                                 <button
                                     class="table-sort {{ $sortField === 'page_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                     wire:click="sortBy('page_id')">
@@ -89,9 +98,12 @@
                         <td class="sort-id small">
                             <div class="hover-toggle">
                                 <span class="hover-hide">{{ $page->page_id }}</span>
-                                <input type="checkbox" wire:model.live="selectedItems" value="{{ $page->page_id }}"
-                                    class="form-check-input hover-show" @if(in_array($page->page_id, $selectedItems))
-                                checked @endif>
+                                <input type="checkbox"
+                                       wire:model.live="selectedItems"
+                                       value="{{ $page->page_id }}"
+                                       class="form-check-input hover-show"
+                                       id="checkbox-{{ $page->page_id }}"
+                                       @checked(in_array($page->page_id, $selectedItems))>
                             </div>
                         </td>
                         <td wire:key="title-{{ $page->page_id }}" class="position-relative">

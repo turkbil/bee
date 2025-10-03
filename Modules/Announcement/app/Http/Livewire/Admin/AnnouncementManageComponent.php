@@ -1,692 +1,751 @@
 <?php
+
 namespace Modules\Announcement\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Modules\AI\app\Traits\HasAIContentGeneration;
+use Modules\AI\app\Contracts\AIContentGeneratable;
 use Modules\Announcement\App\Models\Announcement;
-use App\Services\GlobalSeoService;
-use App\Services\GlobalTabService;
-use Modules\LanguageManagement\App\Models\TenantLanguage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use App\Helpers\SlugHelper;
-use Modules\SeoManagement\app\Http\Livewire\Traits\HandlesUniversalSeo;
 
 #[Layout('admin.layout')]
-class AnnouncementManageComponent extends Component
+class AnnouncementManageComponent extends Component implements AIContentGeneratable
 {
-   use WithFileUploads, HandlesUniversalSeo;
+    use WithFileUploads, HasAIContentGeneration;
 
-   public $announcementId;
-   public $activeTab;
-   
-   // Çoklu dil inputs
-   public $multiLangInputs = [];
-   
-   // Dil-neutral inputs
-   public $inputs = [
-       'is_active' => true,
-   ];
-   
-   // SEO Alanları
-   public $seo_title = '';
-   public $seo_description = '';
-   public $seo_keywords = '';
-  public $canonical_url = '';
- 
-   // Konfigürasyon verileri
-   public $tabConfig = [];
-   public $seoConfig = [];
-   public $tabCompletionStatus = [];
-   public $seoLimits = [];
-   
-   
-   // 🚨 PERFORMANCE FIX: Cached announcement with SEO
-   protected $cachedAnnouncementWithSeo = null;
-   
-   // SOLID Dependencies
-   protected $announcementService;
-   protected $seoRepository;
-   
-   // Livewire Listeners
-   protected $listeners = [
-       'refreshComponent' => '$refresh',
-       'tab-changed' => 'handleTabChange',
-       'seo-keywords-updated' => 'updateSeoKeywords',
-       'seo-field-updated' => 'handleSeoFieldUpdate',
-       'switchLanguage' => 'switchLanguage',
-       'js-language-sync' => 'handleJavaScriptLanguageSync',
-       'handleTestEvent' => 'handleTestEvent',
-       'simple-test' => 'handleSimpleTest',
-       'handleJavaScriptLanguageSync' => 'handleJavaScriptLanguageSync',
-       'debug-test' => 'handleDebugTest',
-       'set-js-language' => 'setJavaScriptLanguage',
-       'set-continue-mode' => 'setContinueMode'
-   ];
-   
-   /**
-    * SEO Keywords Updated Handler
-    */
-   public function updateSeoKeywords($data)
-   {
-       $language = $data['lang'] ?? $this->currentLanguage;
-       $keywords = $data['keywords'] ?? '';
-       
-       // seoDataCache'e kaydet
-       if (!isset($this->seoDataCache[$language])) {
-           $this->seoDataCache[$language] = [
-               'seo_title' => '',
-               'seo_description' => '',
-               'seo_keywords' => '',
-               'canonical_url' => ''
-           ];
-       }
-       
-       $this->seoDataCache[$language]['seo_keywords'] = $keywords;
-       
-       // Mevcut dil ise eski property'yi de güncelle (backward compatibility)
-       if ($language === $this->currentLanguage) {
-           $this->seo_keywords = $keywords;
-       }
-   }
-   
-   // Dependency Injection Boot
-   public function boot()
-   {
-       $this->announcementService = app(\Modules\Announcement\App\Services\AnnouncementService::class);
-       $this->seoRepository = app(\App\Contracts\GlobalSeoRepositoryInterface::class);
-   }
+    public $announcementId;
 
-   public function updated($propertyName)
-   {
-       // SEO alanları için real-time validation
-       if (in_array($propertyName, ['seo_title', 'seo_description', 'seo_keywords', 'canonical_url'])) {
-           $this->updateTabCompletionStatus();
-       }
-   }
-   
-   /**
-    * Tab completion durumunu güncelle
-    */
-   protected function updateTabCompletionStatus()
-   {
-       $allData = array_merge(
-           $this->inputs,
-           $this->multiLangInputs[$this->currentLanguage] ?? [],
-           [
-               'seo_title' => $this->seo_title,
-               'seo_description' => $this->seo_description,
-               'seo_keywords' => $this->seo_keywords,
-               'canonical_url' => $this->canonical_url
-           ]
-       );
-       
-       $this->tabCompletionStatus = GlobalTabService::getTabCompletionStatus($allData, 'announcement');
-   }
+    // Çoklu dil inputs
+    public $multiLangInputs = [];
 
-   public function mount($id = null)
-   {
-       // Dependencies initialize
-       $this->boot();
-       
-       // Konfigürasyonları yükle
-       $this->loadConfigurations();
-       
-       // Site dillerini yükle
-       $this->loadAvailableLanguages();
-       
-       // Announcement verilerini yükle
-       if ($id) {
-           $this->announcementId = $id;
-           $this->loadAnnouncementData($id);
-       } else {
-           $this->initializeEmptyInputs();
-       }
-       
-       
-       // Tab completion durumunu hesapla
-       $this->updateTabCompletionStatus();
-   }
+    // Dil-neutral inputs
+    public $inputs = [
+        'is_active' => true,
+    ];
 
-   /**
-    * Konfigürasyonları yükle
-    */
-   protected function loadConfigurations()
-   {
-       $this->tabConfig = GlobalTabService::getAllTabs('announcement');
-       $this->seoConfig = GlobalSeoService::getSeoConfig('announcement');
-       $this->activeTab = GlobalTabService::getDefaultTabKey('announcement');
-   }
-   
-   /**
-    * Site dillerini yükle
-    */
-   protected function loadAvailableLanguages()
-   {
-       $languages = $this->resolveAvailableLanguages(
-           TenantLanguage::where('is_active', true)
-               ->orderBy('sort_order')
-               ->pluck('code')
-               ->toArray()
-       );
+    public $studioEnabled = false;
 
-       $preferred = $this->determineAnnouncementPreferredLanguage($languages);
+    // Spatie Media Library - File uploads
+    public $featuredImage;
+    public $galleryImages = [];
+    public $existingGallery = [];
 
-       $this->initializeUniversalSeoState($languages, $preferred, $this->seoDataCache);
-   }
+    // Universal Component Data
+    public $currentLanguage;
+    public $availableLanguages = [];
+    public $languageNames = []; // Dil adları (native_name)
+    public $activeTab;
+    public $tabConfig = [];
+    public $tabCompletionStatus = [];
 
-   protected function determineAnnouncementPreferredLanguage(array $languages): ?string
-   {
-       if (empty($languages)) {
-           return null;
-       }
+    // SOLID Dependencies
+    protected $announcementService;
 
-       if (session('announcement_continue_mode') && session('js_saved_language')) {
-           $language = session('js_saved_language');
-           session()->forget(['announcement_continue_mode', 'js_saved_language']);
-           if ($language && in_array($language, $languages, true)) {
-               \Log::info('🔄 Announcement devam modu - dil korundu', ['language' => $language]);
-               return $language;
-           }
-       }
+    /**
+     * Get current announcement model
+     */
+    #[Computed]
+    public function currentPage()
+    {
+        if (!$this->announcementId) {
+            return null;
+        }
 
-       $sessionLanguage = session('js_current_language');
-       if ($sessionLanguage && in_array($sessionLanguage, $languages, true)) {
-           \Log::info('🔄 Announcement normal kaydet - dil korundu', ['language' => $sessionLanguage]);
-           return $sessionLanguage;
-       }
+        return Announcement::query()->find($this->announcementId);
+    }
 
-       $defaultLanguage = session('site_default_language');
-       if ($defaultLanguage && in_array($defaultLanguage, $languages, true)) {
-           return $defaultLanguage;
-       }
+    // Livewire Listeners - Universal component'lerden gelen event'ler
+    protected $listeners = [
+        'refreshComponent' => '$refresh',
+        'languageChanged' => 'handleLanguageChange',
+        'translation-completed' => 'handleTranslationCompleted',
+        'ai-content-generated' => 'handleAIContentGenerated',
+    ];
 
-       try {
-           $tenantDefault = \App\Services\TenantLanguageProvider::getDefaultLanguageCode();
-           if ($tenantDefault && in_array($tenantDefault, $languages, true)) {
-               return $tenantDefault;
-           }
-       } catch (\Throwable $exception) {
-       }
+    // Dependency Injection Boot
+    public function boot()
+    {
+        // AnnouncementService'i initialize et (her zaman var)
+        $this->announcementService = app(\Modules\Announcement\App\Services\AnnouncementService::class);
 
-       return $languages[0] ?? null;
-   }
+        // Layout sections
+        view()->share('pretitle', __('announcement::admin.page_management'));
+        view()->share('title', __('announcement::admin.pages'));
+    }
 
-   /**
-    * Announcement verilerini yükle
-    */
-   protected function loadAnnouncementData($id)
-   {
-       $formData = $this->announcementService->prepareAnnouncementForForm($id, $this->currentLanguage);
-       
-       if ($formData['announcement']) {
-           $announcement = $formData['announcement'];
-           
-           // Dil-neutral alanlar
-           $this->inputs = $announcement->only(['is_active']);
-           
-           // Çoklu dil alanları
-           foreach ($this->availableLanguages as $lang) {
-               $this->multiLangInputs[$lang] = [
-                   'title' => $announcement->getTranslated('title', $lang) ?? '',
-                   'body' => $announcement->getTranslated('body', $lang) ?? '',
-                   'slug' => $announcement->getTranslated('slug', $lang) ?? '',
-               ];
-           }
-           
-           // SEO alanlarını yükle - sadece mevcut dil için (backward compatibility)
-           $seoData = $formData['seoData'];
-           $this->seo_title = $seoData['seo_title'] ?? '';
-           $this->seo_description = $seoData['seo_description'] ?? '';
-           $this->seo_keywords = $seoData['seo_keywords'] ?? '';
-           $this->canonical_url = $seoData['canonical_url'] ?? '';
-           
-           // KRİTİK FİX: Tüm dillerin SEO verilerini seoDataCache'e yükle
-           // 🚨 PERFORMANCE FIX: Cached announcement kullan
-           $cachedAnnouncement = $this->getCachedAnnouncementWithSeo();
-           $seoSettings = $cachedAnnouncement ? $cachedAnnouncement->seoSetting : null;
-           if ($seoSettings) {
-               $titles = $seoSettings->titles ?? [];
-               $descriptions = $seoSettings->descriptions ?? [];
-               $keywords = $seoSettings->keywords ?? [];
-               
-               foreach ($this->availableLanguages as $lang) {
-                   // Keywords güvenli işleme
-                   $keywordData = $keywords[$lang] ?? [];
-                   $keywordString = '';
-                   if (is_array($keywordData)) {
-                       $keywordString = implode(', ', $keywordData);
-                   } elseif (is_string($keywordData)) {
-                       $keywordString = $keywordData;
-                   }
-                   
-                   $this->seoDataCache[$lang] = [
-                       'seo_title' => $titles[$lang] ?? '',
-                       'seo_description' => $descriptions[$lang] ?? '',
-                       'seo_keywords' => $keywordString,
-                       'canonical_url' => $seoSettings->canonical_url ?? ''
-                   ];
-               }
-               
-               // ✅ JavaScript için allLanguagesSeoData property'sini de güncelle
-               $this->allLanguagesSeoData = [];
-               foreach ($this->availableLanguages as $lang) {
-                   $this->allLanguagesSeoData[$lang] = $this->seoDataCache[$lang];
-               }
-           } else {
-               // SEO ayarları yoksa boş cache oluştur
-               foreach ($this->availableLanguages as $lang) {
-                   $this->seoDataCache[$lang] = [
-                       'seo_title' => '',
-                       'seo_description' => '',
-                       'seo_keywords' => '',
-                       'canonical_url' => ''
-                   ];
-               }
-               
-               // JavaScript için de boş data
-               $this->allLanguagesSeoData = $this->seoDataCache;
-           }
-       }
-       
-       // Tab ve SEO konfigürasyonları
-       $this->tabCompletionStatus = $formData['tabCompletion'];
-       $this->seoLimits = $formData['seoLimits'];
-   }
-   
-   /**
-    * Boş inputs hazırla
-    */
-   protected function initializeEmptyInputs()
-   {
-       foreach ($this->availableLanguages as $lang) {
-           $this->multiLangInputs[$lang] = [
-               'title' => '',
-               'body' => '',
-               'slug' => '',
-           ];
-       }
-       
-       // ✅ YENİ DUYURU İÇİN VARSAYILAN SEO AYARLARI - UX İYİLEŞTİRMESİ
-       // SEO alanlarını boşalt ama kullanıcı yazabilir hale getir
-       $this->seo_title = '';
-       $this->seo_description = '';
-       $this->seo_keywords = '';
-       $this->canonical_url = '';
-       
-       // SEO cache'i de başlat - her dil için boş veri
-       foreach ($this->availableLanguages as $lang) {
-           $this->seoDataCache[$lang] = [
-               'seo_title' => '',
-               'seo_description' => '',
-               'seo_keywords' => '',
-               'canonical_url' => '',
-               'og_titles' => '',
-               'og_descriptions' => '',
-               'og_image' => '',
-               'robots_meta' => 'index, follow, archive, snippet, imageindex',
-               'focus_keyword' => '',
-               'auto_generate' => false
-           ];
-       }
-       
-       // JavaScript için de boş data
-       $this->allLanguagesSeoData = $this->seoDataCache;
-   }
+    public function updated($propertyName)
+    {
+        // Tab completion status güncelleme - Universal Tab System'e bildir
+        $this->dispatch('update-tab-completion', $this->getAllFormData());
+    }
 
-   protected function rules()
-   {
-       $rules = [
-           'inputs.is_active' => 'boolean',
-       ];
-       
-       // Çoklu dil alanları
-       foreach ($this->availableLanguages as $lang) {
-           $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
-           $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
-       }
-       
-       // SEO validation kuralları - yeni seoDataCache sistemi için
-       foreach ($this->availableLanguages as $lang) {
-           $rules["seoDataCache.{$lang}.seo_title"] = 'nullable|string';
-           $rules["seoDataCache.{$lang}.seo_description"] = 'nullable|string';
-           $rules["seoDataCache.{$lang}.seo_keywords"] = 'nullable|string';
-           $rules["seoDataCache.{$lang}.canonical_url"] = 'nullable|url';
-       }
-       
-       return $rules;
-   }
+    public function mount($id = null)
+    {
+        // Dependencies initialize
+        $this->boot();
 
-   protected $messages = [
-       'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
-       'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
-       'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
-       'multiLangInputs.*.body.string' => 'İçerik metinsel olmalıdır',
-       'inputs.is_active.boolean' => 'Aktif durumu doğru/yanlış olmalıdır',
-       // SEO Cache messages for each language
-       'seoDataCache.*.seo_title.required' => 'SEO başlığı zorunludur',
-       'seoDataCache.*.seo_title.max' => 'SEO başlığı en fazla 60 karakter olabilir',
-       'seoDataCache.*.seo_title.string' => 'SEO başlığı metinsel olmalıdır',
-       'seoDataCache.*.seo_description.required' => 'SEO açıklaması zorunludur',
-       'seoDataCache.*.seo_description.max' => 'SEO açıklaması en fazla 160 karakter olabilir',
-       'seoDataCache.*.seo_description.string' => 'SEO açıklaması metinsel olmalıdır',
-       'seoDataCache.*.seo_keywords.string' => 'SEO anahtar kelimeleri metinsel olmalıdır',
-       'seoDataCache.*.canonical_url.url' => 'Geçerli bir URL giriniz',
-       // Backward compatibility
-       'seo_title.required' => 'SEO başlığı zorunludur',
-       'seo_title.max' => 'SEO başlığı en fazla 60 karakter olabilir',
-       'seo_description.required' => 'SEO açıklaması zorunludur',
-       'seo_description.max' => 'SEO açıklaması en fazla 160 karakter olabilir',
-   ];
-   
-   /**
-    * Tüm validation mesajlarını al
-    */
-   protected function getMessages()
-   {
-       // Slug validation mesajları - SlugHelper'dan al
-       $slugMessages = SlugHelper::getValidationMessages($this->availableLanguages, 'multiLangInputs');
-       
-       return array_merge($this->messages, $slugMessages);
-   }
-   
-   /**
-    * Dil sekmesi değiştir
-    */
-   public function switchLanguage($language)
-   {
-       if (in_array($language, $this->availableLanguages)) {
-           $oldLanguage = $this->currentLanguage;
-           $this->currentLanguage = $language;
-           
-           // Session'a kaydet - save sonrası dil koruması için
-           session(['announcement_manage_language' => $language]);
-           
-           \Log::info('🎯 AnnouncementManageComponent switchLanguage çağrıldı', [
-               'old_language' => $oldLanguage,
-               'new_language' => $language,
-               'current_language' => $this->currentLanguage,
-               'is_successfully_changed' => $this->currentLanguage === $language
-           ]);
-           
-           // JavaScript'e dil değişikliğini bildir (TinyMCE için)
-           $this->dispatch('language-switched', [
-               'language' => $language,
-               'editorId' => "editor_{$language}",
-               'content' => $this->multiLangInputs[$language]['body'] ?? ''
-           ]);
-           
-           \Log::info('⛔ AnnouncementManageComponent SEO dil eventi GÖNDERİLMEDİ (API çağrısı engellendi)', [
-               'language' => $language
-           ]);
-       }
-   }
+        // Universal Component'lerden initial data al
+        $this->initializeUniversalComponents();
 
-   public function save($redirect = false, $resetForm = false)
-   {
-       // CRITICAL FIX: Session'dan JavaScript currentLanguage'i al ve senkronize et
-       $jsCurrentLanguage = session('js_current_language', $this->currentLanguage);
-       if ($jsCurrentLanguage !== $this->currentLanguage && in_array($jsCurrentLanguage, $this->availableLanguages)) {
-           \Log::info('🔄 SAVE SYNC: JavaScript dili ile senkronize ediliyor', [
-               'old_livewire_language' => $this->currentLanguage,
-               'js_session_language' => $jsCurrentLanguage,
-               'syncing_for_save' => true
-           ]);
-           $this->currentLanguage = $jsCurrentLanguage;
-       }
-       
-       \Log::info('🚀 SAVE METHOD BAŞLADI!', [
-           'announcementId' => $this->announcementId,
-           'redirect' => $redirect,
-           'resetForm' => $resetForm,
-           'currentLanguage' => $this->currentLanguage,
-           'seo_title' => $this->seo_title,
-           'seo_description' => $this->seo_description,
-           'js_session_language' => $jsCurrentLanguage,
-           'language_synced' => $jsCurrentLanguage === $this->currentLanguage
-       ]);
-      // TinyMCE içeriğini senkronize et
-      $this->dispatch('sync-tinymce-content');
-      
-      \Log::info('🔍 Validation başlıyor...', ['currentLanguage' => $this->currentLanguage]);
-      
-      try {
-          $this->validate($this->rules(), $this->getMessages());
-          \Log::info('✅ Validation başarılı geçti!');
-      } catch (\Exception $e) {
-          \Log::error('❌ Validation HATASI!', [
-              'error' => $e->getMessage(),
-              'file' => $e->getFile(),
-              'line' => $e->getLine()
-          ]);
-          
-          // Validation hatası varsa devam etme
-          $this->dispatch('toast', [
-              'title' => 'Validation Hatası',
-              'message' => $e->getMessage(),
-              'type' => 'error'
-          ]);
-          return;
-      }
-      
-      // JSON formatında çoklu dil verilerini hazırla
-      $multiLangData = [];
-      foreach (['title', 'slug', 'body'] as $field) {
-          $multiLangData[$field] = [];
-          foreach ($this->availableLanguages as $lang) {
-              $value = $this->multiLangInputs[$lang][$field] ?? '';
-              
-              // Slug işleme - SlugHelper kullan
-              if ($field === 'slug') {
-                  if (empty($value) && !empty($this->multiLangInputs[$lang]['title'])) {
-                      // Boş slug'lar için title'dan oluştur
-                      $value = SlugHelper::generateFromTitle(
-                          Announcement::class,
-                          $this->multiLangInputs[$lang]['title'],
-                          $lang,
-                          'slug',
-                          'announcement_id',
-                          $this->announcementId
-                      );
-                  } elseif (!empty($value)) {
-                      // Dolu slug'lar için unique kontrolü yap
-                      $value = SlugHelper::generateUniqueSlug(
-                          Announcement::class,
-                          $value,
-                          $lang,
-                          'slug',
-                          'announcement_id',
-                          $this->announcementId
-                      );
-                  }
-              }
-              
-              if (!empty($value)) {
-                  $multiLangData[$field][$lang] = $value;
-              }
-          }
-      }
-      
-      // SEO verilerini kaydet - TÜM DİLLERİN VERİLERİNİ KAYDET (ÇOKLU DİL DESTEĞİ)
-      \Log::info('🔍 SAVE METHOD - seoDataCache durumu', [
-          'currentLanguage' => $this->currentLanguage,
-          'seoDataCache' => $this->seoDataCache,
-          'seoDataCache_for_current_lang' => $this->seoDataCache[$this->currentLanguage] ?? 'YOK!'
-      ]);
-      
-      // KRİTİK FİX: TÜM dillerin SEO verilerini kaydet
-      $allLanguagesSeoData = [
-          'titles' => [],
-          'descriptions' => [],
-          'keywords' => [],
-          'canonical_url' => $this->seoDataCache[$this->currentLanguage]['canonical_url'] ?? ''
-      ];
-      
-      foreach ($this->availableLanguages as $lang) {
-          if (isset($this->seoDataCache[$lang])) {
-              $allLanguagesSeoData['titles'][$lang] = $this->seoDataCache[$lang]['seo_title'] ?? '';
-              $allLanguagesSeoData['descriptions'][$lang] = $this->seoDataCache[$lang]['seo_description'] ?? '';
-              
-              // Keywords - string'i array'e çevir
-              $keywordString = $this->seoDataCache[$lang]['seo_keywords'] ?? '';
-              if (!empty(trim($keywordString))) {
-                  $keywordArray = array_filter(array_map('trim', explode(',', $keywordString)));
-                  $allLanguagesSeoData['keywords'][$lang] = $keywordArray;
-              } else {
-                  $allLanguagesSeoData['keywords'][$lang] = [];
-              }
-          }
-      }
-      
-      \Log::info('🔄 TÜM DİLLERİN SEO verileri hazırlandı', [
-          'allLanguagesSeoData' => $allLanguagesSeoData,
-          'tr_keywords' => $allLanguagesSeoData['keywords']['tr'] ?? 'YOK',
-          'en_keywords' => $allLanguagesSeoData['keywords']['en'] ?? 'YOK'
-      ]);
-      
-      // ✅ KRİTİK FİX: JavaScript için allLanguagesSeoData property'sini güncelle
-      $this->allLanguagesSeoData = $allLanguagesSeoData;
-      \Log::info('✅ allLanguagesSeoData property güncellendi', [
-          'property_set' => true,
-          'data_size' => count($this->allLanguagesSeoData)
-      ]);
-      
-      // Eski format için backward compatibility
-      $seoData = [
-          'title' => $allLanguagesSeoData['titles'][$this->currentLanguage] ?? '',
-          'description' => $allLanguagesSeoData['descriptions'][$this->currentLanguage] ?? '',
-          'keywords' => implode(', ', $allLanguagesSeoData['keywords'][$this->currentLanguage] ?? []),
-          'canonical_url' => $allLanguagesSeoData['canonical_url']
-      ];
-      
-      \Log::info('💾 SEO verilerini kaydediliyor...', [
-          'seoData' => $seoData,
-          'announcementId' => $this->announcementId,
-          'currentLanguage' => $this->currentLanguage,
-          'seo_title_length' => strlen($this->seo_title ?? ''),
-          'seo_description_length' => strlen($this->seo_description ?? ''),
-          'filtered_data' => array_filter($seoData)
-      ]);
-      
-      if ($this->announcementId) {
-          // 🚨 PERFORMANCE FIX: Cached announcement kullan
-          $announcement = $this->getCachedAnnouncementWithSeo() ?? Announcement::findOrFail($this->announcementId);
-          
-          // KRİTİK FİX: TÜM dillerin SEO verilerini kaydet
-          foreach ($this->availableLanguages as $lang) {
-              if (isset($allLanguagesSeoData['titles'][$lang]) || 
-                  isset($allLanguagesSeoData['descriptions'][$lang]) || 
-                  isset($allLanguagesSeoData['keywords'][$lang])) {
-                  
-                  $langSeoData = [
-                      'title' => $allLanguagesSeoData['titles'][$lang] ?? '',
-                      'description' => $allLanguagesSeoData['descriptions'][$lang] ?? '', 
-                      'keywords' => implode(', ', $allLanguagesSeoData['keywords'][$lang] ?? []),
-                      'canonical_url' => $allLanguagesSeoData['canonical_url']
-                  ];
-                  
-                  // Boş olmayan veriler varsa kaydet
-                  if (!empty(array_filter($langSeoData, fn($v) => !empty(trim($v))))) {
-                      $announcement->updateSeoForLanguage($lang, $langSeoData);
-                      \Log::info('✅ SEO ayarları kaydedildi', [
-                          'language' => $lang,
-                          'title' => $langSeoData['title'],
-                          'description' => substr($langSeoData['description'], 0, 50) . '...',
-                          'keywords_count' => count($allLanguagesSeoData['keywords'][$lang] ?? []),
-                          'has_data' => true
-                      ]);
-                  }
-              }
-          }
-      }
-       
-      try {
-          // Announcement data hazırla - Page pattern'ına uygun
-          $announcementData = array_merge($multiLangData, $this->inputs);
-          
-          if ($this->announcementId) {
-              // Güncelleme işlemi
-              $announcement = $this->announcementService->update($this->announcementId, $announcementData);
-              
-              $toast = [
-                  'title' => __('admin.success'),
-                  'message' => __('announcement::admin.announcement_updated'),
-                  'type' => 'success'
-              ];
-          } else {
-              // Oluşturma işlemi
-              $announcement = $this->announcementService->create($announcementData);
-              $this->announcementId = $announcement->announcement_id;
-              
-              $toast = [
-                  'title' => __('admin.success'),
-                  'message' => __('announcement::admin.announcement_created'),
-                  'type' => 'success'
-              ];
-          }
-      } catch (\Exception $e) {
-          $toast = [
-              'title' => __('admin.error'),
-              'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
-              'type' => 'error'
-          ];
-      }
-   
-      if ($redirect) {
-          session()->flash('toast', $toast);
-          return redirect()->route('admin.announcement.index');
-      }
-   
-      $this->dispatch('toast', $toast);
-   
-      if ($resetForm && !$this->announcementId) {
-          $this->reset();
-      }
-   }
-   
-   /**
-    * 🚨 PERFORMANCE FIX: Cached announcement with SEO
-    */
-   protected function getCachedAnnouncementWithSeo()
-   {
-       if ($this->cachedAnnouncementWithSeo === null && $this->announcementId) {
-           $this->cachedAnnouncementWithSeo = Announcement::with('seoSetting')
-               ->find($this->announcementId);
-       }
-       
-       return $this->cachedAnnouncementWithSeo;
-   }
-   
-   public function openStudioEditor()
-   {
-       if (!$this->announcementId) {
-           // Önce duyuruyı kaydet
-           $this->save();
-           
-           if ($this->announcementId) {
-               return redirect()->route('admin.studio.editor', ['module' => 'announcement', 'id' => $this->announcementId]);
-           }
-       } else {
-           return redirect()->route('admin.studio.editor', ['module' => 'announcement', 'id' => $this->announcementId]);
-       }
-   }
+        // Sayfa verilerini yükle
+        if ($id) {
+            $this->announcementId = $id;
+            $this->loadPageData($id);
+        } else {
+            $this->initializeEmptyInputs();
+        }
 
-   /**
-    * Computed property for universal SEO component
-    */
-   #[Computed]
-   public function currentAnnouncement()
-   {
-       if (!$this->announcementId) {
-           return null;
-       }
-       
-       return $this->getCachedAnnouncementWithSeo() ?? Announcement::find($this->announcementId);
-   }
+        // Studio modül kontrolü
+        $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
 
-   public function render()
-   {
-       return view('announcement::admin.livewire.announcement-manage-component');
-   }
+        // Tab completion durumunu hesapla
+        $this->dispatch('update-tab-completion', $this->getAllFormData());
+    }
+
+    /**
+     * Universal Component'leri initialize et
+     */
+    protected function initializeUniversalComponents()
+    {
+        // Dil bilgileri - LanguageManagement modülünden (cached helper)
+        $languages = available_tenant_languages();
+        $this->availableLanguages = array_column($languages, 'code');
+        $this->languageNames = array_column($languages, 'native_name', 'code');
+        $this->currentLanguage = get_tenant_default_locale();
+
+        // Tab bilgileri - Blade'de kullanılıyor
+        $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('announcement');
+        $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('announcement');
+    }
+
+    /**
+     * Dil değişikliğini handle et (UniversalLanguageSwitcher'dan)
+     */
+    public function handleLanguageChange($language)
+    {
+        if (in_array($language, $this->availableLanguages)) {
+            $this->currentLanguage = $language;
+
+            Log::info('🎯 PageManage - Dil değişti', [
+                'new_language' => $language
+            ]);
+        }
+    }
+
+
+    /**
+     * Çeviri tamamlandığında (UniversalAIContent'ten)
+     */
+    public function handleTranslationCompleted($result)
+    {
+        if ($result['success'] && isset($result['results'])) {
+            foreach ($result['results'] as $translationResult) {
+                if ($translationResult['success']) {
+                    $lang = $translationResult['language'];
+                    $field = $translationResult['field'];
+                    $translatedText = $translationResult['translated_text'];
+
+                    // Çevrilmiş metni ilgili alana set et
+                    if (isset($this->multiLangInputs[$lang][$field])) {
+                        $this->multiLangInputs[$lang][$field] = $translatedText;
+
+                        // Slug otomatik oluştur (sadece title çevirildiyse)
+                        if ($field === 'title') {
+                            $this->multiLangInputs[$lang]['slug'] = SlugHelper::generateFromTitle(
+                                Announcement::class,
+                                $translatedText,
+                                $lang,
+                                'slug',
+                                'announcement_id',
+                                $this->announcementId
+                            );
+                        }
+                    }
+                }
+            }
+
+            // Çevirileri veritabanına kaydet
+            $this->save();
+
+            Log::info('✅ PageManage - Çeviri sonuçları alındı ve kaydedildi', [
+                'translated_count' => $result['translated_count'] ?? 0
+            ]);
+        }
+    }
+
+    /**
+     * AI içerik üretildiğinde (UniversalAIContent'ten)
+     */
+    public function handleAIContentGenerated($result)
+    {
+        if ($result['success']) {
+            $content = $result['content'];
+            $targetField = $result['target_field'];
+            $language = $result['language'];
+
+            // Content'i ilgili field'a ata
+            if (isset($this->multiLangInputs[$language][$targetField])) {
+                $this->multiLangInputs[$language][$targetField] = $content;
+
+                // Database'e kaydet
+                $this->save();
+
+                Log::info('✅ PageManage - AI içerik alındı ve kaydedildi', [
+                    'field' => $targetField,
+                    'language' => $language,
+                    'content_length' => strlen($content)
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Sayfa verilerini yükle
+     */
+    protected function loadPageData($id)
+    {
+        // AnnouncementService her zaman var, fallback gereksiz
+        $formData = $this->announcementService->prepareAnnouncementForForm($id, $this->currentLanguage);
+        $announcement = $formData['announcement'] ?? null;
+        $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
+
+        if ($announcement) {
+            // Dil-neutral alanlar
+            $this->inputs = $announcement->only(['is_active']);
+
+            // Çoklu dil alanları - FALLBACK KAPALI (kullanıcı tüm dilleri boşaltabilsin)
+            foreach ($this->availableLanguages as $lang) {
+                $this->multiLangInputs[$lang] = [
+                    'title' => $announcement->getTranslated('title', $lang, false) ?? '',
+                    'body' => $announcement->getTranslated('body', $lang, false) ?? '',
+                    'slug' => $announcement->getTranslated('slug', $lang, false) ?? '',
+                ];
+            }
+
+            // NOT: SEO verileri Universal SEO Tab component'te yüklenir
+        }
+    }
+
+    /**
+     * Boş inputs hazırla
+     */
+    protected function initializeEmptyInputs()
+    {
+        foreach ($this->availableLanguages as $lang) {
+            $this->multiLangInputs[$lang] = [
+                'title' => '',
+                'body' => '',
+                'slug' => '',
+            ];
+        }
+    }
+
+    /**
+     * Tüm form datasını al (tab completion için)
+     */
+    protected function getAllFormData(): array
+    {
+        return array_merge(
+            $this->inputs,
+            $this->multiLangInputs[$this->currentLanguage] ?? []
+        );
+    }
+
+    /**
+     * Ana dili belirle (mecburi olan dil)
+     * LanguageManagement modülünden helper kullan
+     */
+    protected function getMainLanguage()
+    {
+        return get_tenant_default_locale();
+    }
+
+    protected function rules()
+    {
+        $rules = [
+            'inputs.is_active' => 'boolean',
+        ];
+
+        // Çoklu dil alanları - ana dil mecburi, diğerleri opsiyonel
+        $mainLanguage = $this->getMainLanguage();
+        foreach ($this->availableLanguages as $lang) {
+            $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
+        }
+
+        return $rules;
+    }
+
+    protected $messages = [
+        'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
+        'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
+        'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
+    ];
+
+    /**
+     * Tüm validation mesajlarını al
+     */
+    protected function getMessages()
+    {
+        // Slug validation mesajları - SlugHelper'dan al
+        $slugMessages = SlugHelper::getValidationMessages($this->availableLanguages, 'multiLangInputs');
+
+        return array_merge($this->messages, $slugMessages);
+    }
+
+    /**
+     * İçeriği validate et ve sanitize et (HTML, CSS, JS)
+     */
+    protected function validateAndSanitizeContent(): array
+    {
+        $validated = [];
+        $errors = [];
+
+        // HTML body validation (her dil için)
+        foreach ($this->availableLanguages as $lang) {
+            $body = $this->multiLangInputs[$lang]['body'] ?? '';
+            if (!empty(trim($body))) {
+                $result = \App\Services\SecurityValidationService::validateHtml($body);
+                if (!$result['valid']) {
+                    $errors[] = "HTML ({$lang}): " . implode(', ', $result['errors']);
+                } else {
+                    $validated['body'][$lang] = $result['clean_code'];
+                }
+            }
+        }
+
+        return [
+            'valid' => empty($errors),
+            'data' => $validated,
+            'errors' => $errors
+        ];
+    }
+
+    /**
+     * Çoklu dil verilerini hazırla (title, slug, body)
+     */
+    protected function prepareMultiLangData(array $validatedContent = []): array
+    {
+        $multiLangData = [];
+
+        // Title verilerini topla
+        $multiLangData['title'] = [];
+        foreach ($this->availableLanguages as $lang) {
+            $title = $this->multiLangInputs[$lang]['title'] ?? '';
+            if (!empty($title)) {
+                $multiLangData['title'][$lang] = $title;
+            }
+        }
+
+        // Slug verilerini işle - SlugHelper toplu işlem
+        $slugInputs = [];
+        $titleInputs = [];
+        foreach ($this->availableLanguages as $lang) {
+            $slugInputs[$lang] = $this->multiLangInputs[$lang]['slug'] ?? '';
+            $titleInputs[$lang] = $this->multiLangInputs[$lang]['title'] ?? '';
+        }
+
+        $multiLangData['slug'] = SlugHelper::processMultiLanguageSlugs(
+            Announcement::class,
+            $slugInputs,
+            $titleInputs,
+            'slug',
+            $this->announcementId
+        );
+
+        // Body verilerini ekle (validated'dan)
+        if (!empty($validatedContent['body'])) {
+            $multiLangData['body'] = $validatedContent['body'];
+        }
+
+        return $multiLangData;
+    }
+
+    public function save($redirect = false, $resetForm = false)
+    {
+        // TinyMCE içeriğini senkronize et
+        $this->dispatch('sync-tinymce-content');
+
+        Log::info('🚀 SAVE METHOD BAŞLADI', [
+            'announcementId' => $this->announcementId,
+            'redirect' => $redirect,
+            'currentLanguage' => $this->currentLanguage
+        ]);
+
+        try {
+            $this->validate($this->rules(), $this->getMessages());
+            Log::info('✅ Validation başarılı');
+        } catch (\Exception $e) {
+            Log::error('❌ Validation HATASI', [
+                'error' => $e->getMessage()
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Doğrulama Hatası',
+                'message' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+
+            // Tab restore tetikle - validation hatası sonrası tab görünür kalsın
+            $this->dispatch('restore-active-tab');
+
+            return;
+        }
+
+        // İçerik güvenlik validasyonu (HTML/CSS/JS)
+        $validation = $this->validateAndSanitizeContent();
+        if (!$validation['valid']) {
+            $this->dispatch('toast', [
+                'title' => 'İçerik Doğrulama Hatası',
+                'message' => implode("\n", $validation['errors']),
+                'type' => 'error'
+            ]);
+
+            // Tab restore tetikle
+            $this->dispatch('restore-active-tab');
+
+            return;
+        }
+
+        // Çoklu dil verilerini hazırla (title, slug, body)
+        $multiLangData = $this->prepareMultiLangData($validation['data']);
+
+        // Safe inputs
+        $safeInputs = $this->inputs;
+
+        $data = array_merge($safeInputs, $multiLangData);
+
+        // Yeni kayıt mı kontrol et
+        $isNewRecord = !$this->announcementId;
+
+        if ($this->announcementId) {
+            $announcement = Announcement::query()->findOrFail($this->announcementId);
+            $currentData = collect($announcement->toArray())->only(array_keys($data))->all();
+
+            if ($data == $currentData) {
+                $toast = [
+                    'title' => __('admin.success'),
+                    'message' => __('admin.page_updated'),
+                    'type' => 'success'
+                ];
+            } else {
+                $announcement->update($data);
+                log_activity($announcement, 'güncellendi');
+
+                $toast = [
+                    'title' => __('admin.success'),
+                    'message' => __('admin.page_updated'),
+                    'type' => 'success'
+                ];
+            }
+        } else {
+            $announcement = Announcement::query()->create($data);
+            $this->announcementId = $announcement->announcement_id;
+            log_activity($announcement, 'eklendi');
+
+            $toast = [
+                'title' => __('admin.success'),
+                'message' => __('admin.page_created'),
+                'type' => 'success'
+            ];
+        }
+
+        // Spatie Media Library - Featured Image Upload
+        if ($this->featuredImage) {
+            $announcement->addMedia($this->featuredImage->getRealPath())
+                ->usingName(pathinfo($this->featuredImage->getClientOriginalName(), PATHINFO_FILENAME))
+                ->usingFileName($this->featuredImage->getClientOriginalName())
+                ->toMediaCollection('featured_image');
+
+            Log::info('📸 Featured image uploaded', [
+                'announcement_id' => $announcement->announcement_id,
+                'filename' => $this->featuredImage->getClientOriginalName()
+            ]);
+
+            $this->featuredImage = null; // Reset after upload
+        }
+
+        // Spatie Media Library - Gallery Images Upload
+        if (!empty($this->galleryImages)) {
+            foreach ($this->galleryImages as $image) {
+                $announcement->addMedia($image->getRealPath())
+                    ->usingName(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->usingFileName($image->getClientOriginalName())
+                    ->toMediaCollection('gallery');
+            }
+
+            Log::info('🖼️ Gallery images uploaded', [
+                'announcement_id' => $announcement->announcement_id,
+                'count' => count($this->galleryImages)
+            ]);
+
+            $this->galleryImages = []; // Reset after upload
+        }
+
+        // Reload existing gallery for UI
+        $this->existingGallery = gallery($announcement);
+
+        Log::info('🎯 Save method tamamlanıyor', [
+            'announcementId' => $this->announcementId,
+            'redirect' => $redirect
+        ]);
+
+        if ($redirect) {
+            session()->flash('toast', $toast);
+            return redirect()->route('admin.announcement.index');
+        }
+
+        // Yeni kayıt oluşturulduysa, edit URL'ine yönlendir (medya upload için ID gerekli)
+        if ($isNewRecord && isset($announcement)) {
+            session()->flash('toast', $toast);
+            return redirect()->route('admin.announcement.manage', ['id' => $announcement->announcement_id]);
+        }
+
+        $this->dispatch('toast', $toast);
+
+        // SEO VERİLERİNİ KAYDET - Universal SEO Tab Component'e event gönder
+        $this->dispatch('announcement-saved', announcementId: $this->announcementId);
+
+        Log::info('✅ Save method başarıyla tamamlandı', [
+            'announcementId' => $this->announcementId
+        ]);
+
+        if ($resetForm && !$this->announcementId) {
+            $this->reset();
+            $this->currentLanguage = get_tenant_default_locale();
+            $this->initializeEmptyInputs();
+        }
+    }
+
+    /**
+     * Delete featured image
+     */
+    public function deleteFeaturedImage()
+    {
+        if (!$this->announcementId) {
+            return;
+        }
+
+        $announcement = Announcement::query()->find($this->announcementId);
+        if ($announcement && $announcement->hasMedia('featured_image')) {
+            $announcement->clearMediaCollection('featured_image');
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('announcement::admin.media.featured_deleted'),
+                'type' => 'success'
+            ]);
+
+            Log::info('🗑️ Featured image deleted', [
+                'announcement_id' => $this->announcementId
+            ]);
+        }
+    }
+
+    /**
+     * Delete gallery image
+     */
+    public function deleteGalleryImage($mediaId)
+    {
+        try {
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($mediaId);
+
+            // Security: Check media belongs to this announcement
+            if ($media->model_id != $this->announcementId || $media->model_type != Announcement::class) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('admin.unauthorized'),
+                    'type' => 'error'
+                ]);
+                return;
+            }
+
+            $media->delete();
+
+            // Reload existing gallery
+            $announcement = Announcement::query()->find($this->announcementId);
+            $this->existingGallery = gallery($announcement);
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('announcement::admin.media.gallery_image_deleted'),
+                'type' => 'success'
+            ]);
+
+            Log::info('🗑️ Gallery image deleted', [
+                'announcement_id' => $this->announcementId,
+                'media_id' => $mediaId
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Set featured image from gallery
+     */
+    public function setFeaturedFromGallery($mediaId)
+    {
+        try {
+            if (!$this->announcementId) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('admin.save_first'),
+                    'type' => 'error'
+                ]);
+                return;
+            }
+
+            $announcement = Announcement::query()->find($this->announcementId);
+            if (!$announcement) {
+                return;
+            }
+
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($mediaId);
+
+            // Security: Check media belongs to this announcement and is in gallery
+            if ($media->model_id != $this->announcementId
+                || $media->model_type != Announcement::class
+                || $media->collection_name != 'gallery') {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('admin.unauthorized'),
+                    'type' => 'error'
+                ]);
+                return;
+            }
+
+            // Copy gallery image to featured_image collection
+            $announcement->clearMediaCollection('featured_image');
+            $announcement->copyMedia($media->getPath())
+                ->toMediaCollection('featured_image');
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('announcement::admin.media.featured_set_from_gallery'),
+                'type' => 'success'
+            ]);
+
+            Log::info('📸 Featured image set from gallery', [
+                'announcement_id' => $this->announcementId,
+                'media_id' => $mediaId
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+
+            Log::error('Featured image set failed', [
+                'announcement_id' => $this->announcementId,
+                'media_id' => $mediaId,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Update gallery order
+     */
+    public function updateGalleryOrder($list)
+    {
+        try {
+            if (!$this->announcementId) {
+                return;
+            }
+
+            foreach ($list as $item) {
+                $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($item['id']);
+                if ($media && $media->model_id == $this->announcementId) {
+                    $media->order_column = $item['order'];
+                    $media->save();
+                }
+            }
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('announcement::admin.media.gallery_order_updated'),
+                'type' => 'success'
+            ]);
+
+            Log::info('🔄 Gallery order updated', [
+                'announcement_id' => $this->announcementId,
+                'items_count' => count($list)
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+
+            Log::error('Gallery order update failed', [
+                'announcement_id' => $this->announcementId,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function render()
+    {
+        // Load existing gallery for display
+        $announcement = null;
+        if ($this->announcementId) {
+            $announcement = Announcement::query()->find($this->announcementId);
+            if ($announcement) {
+                $this->existingGallery = gallery($announcement);
+            }
+        }
+
+        return view('announcement::admin.livewire.announcement-manage-component', [
+            'announcement' => $announcement,
+            'jsVariables' => [
+                'currentAnnouncementId' => $this->announcementId ?? null,
+                'currentLanguage' => $this->currentLanguage ?? 'tr'
+            ]
+        ]);
+    }
+
+    // =================================
+    // GLOBAL AI CONTENT GENERATION TRAIT IMPLEMENTATION
+    // =================================
+
+    public function getEntityType(): string
+    {
+        return 'announcement';
+    }
+
+    public function getTargetFields(array $params): array
+    {
+        $pageFields = [
+            'title' => 'string',
+            'body' => 'html',
+            'excerpt' => 'text',
+            'meta_title' => 'string',
+            'meta_description' => 'text'
+        ];
+
+        if (isset($params['target_field'])) {
+            return [$params['target_field'] => $pageFields[$params['target_field']] ?? 'html'];
+        }
+
+        return $pageFields;
+    }
+
+    public function getModuleInstructions(): string
+    {
+        return __('announcement::admin.ai_content_instructions');
+    }
 }

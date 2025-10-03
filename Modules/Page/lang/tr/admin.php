@@ -1,6 +1,7 @@
 <?php
 
 return [
+// Genel
 'pages' => 'Sayfalar',
 'page_management' => 'Sayfa Yönetimi',
 'new_page' => 'Yeni Sayfa',
@@ -9,27 +10,42 @@ return [
 'title_field' => 'Başlık',
 'content' => 'İçerik',
 'slug_field' => 'Slug',
+'active' => 'Aktif',
+'inactive' => 'Pasif',
+'status' => 'Durum',
+'activate' => 'Aktifleştir',
+'deactivate' => 'Pasifleştir',
+
+// Pretitle
+'edit_page_pretitle' => 'Sayfa Düzenleme',
+'new_page_pretitle' => 'Yeni Sayfa Ekleme',
+
+// SEO
 'seo' => 'SEO',
 'meta_keywords' => 'Meta Anahtar Kelimeler',
 'meta_description' => 'Meta Açıklama',
 'focus_keywords' => 'Ana Odak Kelimeleri',
 'focus_keywords_placeholder' => 'ana kelime1, ana kelime2, ana kelime3',
 'focus_keywords_help' => 'Bu sayfa için en önemli anahtar kelimeleri girin. SEO odaklanması için kullanılır.',
-'active' => 'Aktif',
-'inactive' => 'Pasif',
-'status' => 'Durum',
-'activate' => 'Aktifleştir',
-'deactivate' => 'Pasifleştir',
+
+// AI & Translation
 'ai_bulk_translate' => 'Yapay Zeka ile Toplu Çeviri',
+'ai_content_instructions' => 'Sayfa içerikleri üretimi. SEO uyumlu, kullanıcı dostu ve kapsamlı sayfa içerikleri oluştur.',
+
+// Search & Filter
 'search_placeholder' => 'Ara...',
 'enter_new_title' => 'Yeni başlık giriniz',
 'items_selected' => 'öğe seçildi',
 'no_pages_found' => 'Sayfa bulunamadı',
 'no_results' => 'Sonuç bulunamadı',
+
+// Menu
 'menu' => 'Menü',
 'menu_title' => 'Sayfa Yönetimi',
 'edit_page' => 'Sayfa Düzenle',
 'create_page' => 'Yeni Sayfa',
+
+// Validation & Messages
 'title_validation_error' => 'Başlık geçersiz. Lütfen kontrol edin.',
 'title_updated' => 'başlık güncellendi',
 'title_updated_successfully' => 'Başlık başarıyla güncellendi.',

@@ -43,9 +43,6 @@
             <button type="button" class="monaco-toolbar-btn" data-action="theme" title="Tema">
                 <i class="fas fa-palette"></i> Tema
             </button>
-            <button type="button" class="monaco-toolbar-btn" data-action="fullscreen" title="Tam Ekran">
-                <i class="fas fa-expand"></i> Tam Ekran
-            </button>
         </div>
     </div>
     <div class="monaco-editor-wrapper"

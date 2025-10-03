@@ -1,13 +1,11 @@
 <?php
+
 namespace Modules\Announcement\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\Announcement\App\Http\Livewire\Admin\AnnouncementComponent;
 use Modules\Announcement\App\Http\Livewire\Admin\AnnouncementManageComponent;
-use Modules\Announcement\App\Contracts\AnnouncementRepositoryInterface;
-use Modules\Announcement\App\Repositories\AnnouncementRepository;
-use Modules\Announcement\App\Services\AnnouncementService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -25,6 +23,8 @@ class AnnouncementServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Announcement Observer kaydı
+        \Modules\Announcement\App\Models\Announcement::observe(\Modules\Announcement\App\Observers\AnnouncementObserver::class);
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
@@ -35,7 +35,7 @@ class AnnouncementServiceProvider extends ServiceProvider
         // Önce rotalar yüklenir
         $this->loadRoutesFrom(module_path('Announcement', 'routes/web.php'));
         $this->loadRoutesFrom(module_path('Announcement', 'routes/admin.php'));
-        
+
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
         // Front themes klasörü için kontrol ekle
@@ -56,17 +56,20 @@ class AnnouncementServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
-        
-        // Repository Pattern Bindings
-        $this->app->bind(AnnouncementRepositoryInterface::class, AnnouncementRepository::class);
-        
-        // Service Layer Bindings
-        $this->app->singleton(AnnouncementService::class, function ($app) {
-            return new AnnouncementService(
-                $app->make(AnnouncementRepositoryInterface::class),
-                $app->make(\App\Contracts\GlobalSeoRepositoryInterface::class)
-            );
-        });
+
+        // Repository Pattern bindings
+        $this->app->bind(
+            \Modules\Announcement\App\Contracts\AnnouncementRepositoryInterface::class,
+            \Modules\Announcement\App\Repositories\AnnouncementRepository::class
+        );
+
+        $this->app->bind(
+            \App\Contracts\GlobalSeoRepositoryInterface::class,
+            \App\Repositories\GlobalSeoRepository::class
+        );
+
+        // Service Layer bindings
+        $this->app->singleton(\Modules\Announcement\App\Services\AnnouncementService::class);
     }
 
     /**
@@ -74,7 +77,9 @@ class AnnouncementServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\Announcement\App\Console\WarmAnnouncementCacheCommand::class,
+        ]);
     }
 
     /**
@@ -99,7 +104,7 @@ class AnnouncementServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($moduleLangPath);
         }
-        
+
         // Resource'daki dil dosyaları (varsa)
         $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
         if (is_dir($resourceLangPath)) {
@@ -136,11 +141,11 @@ class AnnouncementServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/announcement');
         $sourcePath = module_path('Announcement', 'resources/views');
-    
+
         $this->publishes([
             $sourcePath => $viewPath,
         ], ['views', 'announcement-module-views']);
-        
+
         // Tema klasörlerinin yapılandırması - YENİ YAPI
         $themeSourcePath = module_path('Announcement', 'resources/views/front/themes');
         $themeViewPath = resource_path('views/themes/modules/announcement');
@@ -151,7 +156,7 @@ class AnnouncementServiceProvider extends ServiceProvider
                 $themeSourcePath => $themeViewPath,
             ], ['views', 'announcement-module-theme-views']);
         }
-    
+
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'announcement');
     }
 

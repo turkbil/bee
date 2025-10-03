@@ -58,4 +58,5 @@ return array(
     'c71260c1cf084f756474d36b60f4fe08' => $baseDir . '/app/Helpers/MenuHelper.php',
     'a02b724d0c8910ca6d2a2dc3ad0e0ebd' => $baseDir . '/app/Helpers/tenant_helpers.php',
     'cc908781867dd803042b960930928b7f' => $baseDir . '/app/Helpers/CacheHelper.php',
+    '07ac275da986829f888a465f3856d603' => $baseDir . '/app/Helpers/MediaHelper.php',
 );

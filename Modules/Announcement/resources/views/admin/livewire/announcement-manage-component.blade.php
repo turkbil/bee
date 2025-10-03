@@ -1,34 +1,46 @@
-@php
-    View::share('pretitle', $announcementId ? 'Duyuru Düzenleme' : 'Yeni Duyuru Ekleme');
-@endphp
+<div>
+    @php
+        View::share(
+            'pretitle',
+            $announcementId ? __('announcement::admin.edit_page_pretitle') : __('announcement::admin.new_page_pretitle'),
+        );
+    @endphp
 
-<div wire:key="announcement-manage-component" wire:id="announcement-manage-component">
-    {{-- Helper dosyası --}}
     @include('announcement::admin.helper')
-    @include('admin.partials.error_message')
 
     <form method="post" wire:submit.prevent="save">
+        @include('admin.partials.error_message')
         <div class="card">
-            <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="announcement_active_tab">
 
+            <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="announcement_active_tab">
+                {{-- Studio Edit Button --}}
+                @if ($studioEnabled && $announcementId)
+                    <li class="nav-item ms-3">
+                        <a href="{{ route('admin.studio.editor', ['module' => 'announcement', 'id' => $announcementId]) }}"
+                            target="_blank" class="btn btn-outline-primary"
+                            style="padding: 0.20rem 0.75rem; margin-top: 5px;">
+                            <i
+                                class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('announcement::admin.studio.editor') }}
+                        </a>
+                    </li>
+                @endif
 
                 <x-manage.language.switcher :current-language="$currentLanguage" />
-
             </x-tab-system>
+
             <div class="card-body">
                 <div class="tab-content" id="contentTabContent">
-                    <!-- Temel Bilgiler Tab -->
-                    <div class="tab-pane fade show active" id="0" role="tabpanel">
+
+                    <!-- TEMEL BİLGİLER TAB - NO FADE for instant switching -->
+                    <div class="tab-pane show active" id="0" role="tabpanel">
                         @foreach ($availableLanguages as $lang)
                             @php
                                 $langData = $multiLangInputs[$lang] ?? [];
-                                // Tenant languages'den dil ismini al
-                                $tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where('is_active', true)->get();
-                                $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
+                                $langName = $languageNames[$lang] ?? strtoupper($lang);
                             @endphp
 
                             <div class="language-content" data-language="{{ $lang }}"
-                                style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
+                                style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
                                 <!-- Başlık ve Slug alanları -->
                                 <div class="row mb-3">
@@ -39,7 +51,7 @@
                                                 placeholder="{{ __('announcement::admin.title_field') }}">
                                             <label>
                                                 {{ __('announcement::admin.title_field') }}
-                                                @if ($lang === session('site_default_language', 'tr'))
+                                                @if ($lang === get_tenant_default_locale())
                                                     <span class="required-star">★</span>
                                                 @endif
                                             </label>
@@ -53,9 +65,9 @@
                                         <div class="form-floating">
                                             <input type="text" class="form-control"
                                                 wire:model="multiLangInputs.{{ $lang }}.slug" maxlength="255"
-                                                placeholder="duyuru-url-slug">
+                                                placeholder="sayfa-url-slug">
                                             <label>
-                                                {{ __('admin.announcement_url_slug') }}
+                                                {{ __('admin.page_url_slug') }}
                                                 <small class="text-muted ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
@@ -68,17 +80,34 @@
                                     </div>
                                 </div>
 
-                                <!-- İçerik editörü -->
+                                {{-- İçerik editörü - AI button artık global component'te --}}
                                 @include('admin.components.content-editor', [
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
                                     'fieldName' => 'body',
                                     'label' => __('announcement::admin.content'),
-                                    'placeholder' => __('announcement::admin.content_placeholder')
+                                    'placeholder' => __('announcement::admin.content_placeholder'),
                                 ])
                             </div>
                         @endforeach
+
+                        {{-- MEDYA YÖNETİMİ - Fotoğraf Ekleme --}}
+                        <div class="mb-4 mt-4">
+                            <hr class="mb-4">
+                            <h4 class="mb-3">
+                                <i class="fas fa-images me-2"></i>{{ __('announcement::admin.media_management') }}
+                            </h4>
+
+                            @livewire('mediamanagement::universal-media', [
+                                'modelId' => $announcementId,
+                                'modelType' => 'announcement',
+                                'modelClass' => 'Modules\Announcement\App\Models\Announcement',
+                                'collections' => ['featured_image', 'gallery'],
+                                'sortable' => true,
+                                'setFeaturedFromGallery' => true,
+                            ])
+                        </div>
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
@@ -99,11 +128,11 @@
                         </div>
                     </div>
 
-                    <!-- SEO Tab -->
-                    <div class="tab-pane fade" id="1" role="tabpanel">
-                        <x-seomanagement::universal-seo-tab :model="$this->currentAnnouncement" :available-languages="$availableLanguages" :current-language="$currentLanguage" :seo-data-cache="$seoDataCache" />
+                    <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
+                    <div class="tab-pane" id="1" role="tabpanel">
+                        <livewire:seomanagement::universal-seo-tab :model-id="$announcementId" model-type="announcement"
+                            model-class="Modules\Announcement\App\Models\Announcement" />
                     </div>
-
 
                 </div>
             </div>
@@ -112,13 +141,126 @@
 
         </div>
     </form>
-</div>
 
-@push('scripts')
-    {{-- Announcement JavaScript Variables --}}
-    <script>
-        window.currentAnnouncementId = {{ $announcementId ?? 'null' }};
-        window.currentLanguage = '{{ $currentLanguage }}';
-        let currentLanguage = '{{ $currentLanguage }}';
-    </script>
-@endpush
+
+    @push('scripts')
+        {{-- 🎯 MODEL & MODULE SETUP --}}
+        <script>
+            window.currentModelId = {{ $announcementId ?? 'null' }};
+            window.currentModuleName = 'announcement';
+            window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
+
+            // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
+            document.addEventListener('DOMContentLoaded', function() {
+                Livewire.on('restore-active-tab', () => {
+                    console.log('🔄 Tab restore tetiklendi (validation error)');
+
+                    // forceTabRestore fonksiyonu tab-system.blade.php'de tanımlı
+                    if (typeof window.forceTabRestore === 'function') {
+                        setTimeout(() => {
+                            window.forceTabRestore();
+                        }, 100);
+                    } else {
+                        console.warn('⚠️ forceTabRestore fonksiyonu bulunamadı');
+                    }
+                });
+            });
+        </script>
+
+        {{-- 🌍 UNIVERSAL SYSTEMS --}}
+        @include('languagemanagement::admin.components.universal-language-scripts', [
+            'currentLanguage' => $currentLanguage,
+            'availableLanguages' => $availableLanguages,
+        ])
+
+        @include('seomanagement::admin.components.universal-seo-scripts', [
+            'availableLanguages' => $availableLanguages,
+        ])
+
+        @include('ai::admin.components.universal-ai-content-scripts')
+
+        {{-- 📸 SORTABLE.JS - Gallery Sorting --}}
+        <script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
+        <script>
+            document.addEventListener('livewire:initialized', function() {
+                initGallerySortable();
+
+                // Livewire update sonrası tekrar init
+                Livewire.hook('morph.updated', () => {
+                    initGallerySortable();
+                });
+
+                function initGallerySortable() {
+                    const container = document.getElementById('gallery-sortable-list');
+                    if (!container) {
+                        return;
+                    }
+
+                    // Mevcut sortable'ı temizle
+                    if (window.gallerySortable) {
+                        window.gallerySortable.destroy();
+                        window.gallerySortable = null;
+                    }
+
+                    // Yeni sortable oluştur
+                    window.gallerySortable = new Sortable(container, {
+                        animation: 200,
+                        ghostClass: 'sortable-ghost',
+                        dragClass: 'sortable-drag',
+                        handle: '.gallery-drag-handle',
+                        forceFallback: true,
+
+                        onStart: function(evt) {
+                            evt.item.style.opacity = '0.5';
+                        },
+
+                        onEnd: function(evt) {
+                            evt.item.style.opacity = '1';
+
+                            // Yeni sırayı topla
+                            const items = [];
+                            const allItems = Array.from(container.querySelectorAll('.gallery-item'));
+
+                            allItems.forEach((item, index) => {
+                                const id = item.getAttribute('data-id');
+                                if (id) {
+                                    items.push({
+                                        id: parseInt(id),
+                                        order: index + 1
+                                    });
+                                }
+                            });
+
+                            // Livewire'a gönder
+                            if (items.length > 0) {
+                                @this.call('updateGalleryOrder', items);
+                            }
+                        }
+                    });
+
+                    console.log('✅ Gallery sortable initialized');
+                }
+            });
+        </script>
+
+        {{-- Sortable Ghost Styles --}}
+        <style>
+            .sortable-ghost {
+                opacity: 0.4;
+                background: #f8f9fa;
+            }
+
+            .sortable-drag {
+                opacity: 1;
+            }
+
+            .gallery-card:active {
+                cursor: grabbing !important;
+            }
+
+            .gallery-drag-handle:active {
+                cursor: grabbing !important;
+            }
+        </style>
+    @endpush
+</div>

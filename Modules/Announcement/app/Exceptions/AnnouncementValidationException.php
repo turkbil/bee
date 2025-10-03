@@ -6,18 +6,60 @@ namespace Modules\Announcement\App\Exceptions;
 
 use Exception;
 
+/**
+ * Announcement Validation Exception
+ *
+ * Sayfa validasyon hataları için kullanılan custom exception sınıfı.
+ */
 class AnnouncementValidationException extends Exception
 {
-    public function __construct(string $message = 'Announcement validation failed', int $code = 422, array $errors = [])
+    /**
+     * CSS boyutu aşıldı exception
+     */
+    public static function cssSizeExceeded(int $maxSize): self
     {
-        parent::__construct($message, $code);
-        $this->errors = $errors;
+        return new self(
+            "CSS içeriği maksimum boyutu ({$maxSize} karakter) aşıyor."
+        );
     }
-    
-    protected array $errors = [];
-    
-    public function getErrors(): array
+
+    /**
+     * JavaScript boyutu aşıldı exception
+     */
+    public static function jsSizeExceeded(int $maxSize): self
     {
-        return $this->errors;
+        return new self(
+            "JavaScript içeriği maksimum boyutu ({$maxSize} karakter) aşıyor."
+        );
+    }
+
+    /**
+     * Başlık çok kısa exception
+     */
+    public static function titleTooShort(string $locale, int $minLength): self
+    {
+        return new self(
+            "Başlık minimum {$minLength} karakter olmalıdır. ({$locale})"
+        );
+    }
+
+    /**
+     * Geçersiz slug exception
+     */
+    public static function invalidSlug(string $slug, string $locale): self
+    {
+        return new self(
+            "Geçersiz slug formatı: '{$slug}' ({$locale})"
+        );
+    }
+
+    /**
+     * Slug zaten kullanımda exception
+     */
+    public static function slugTaken(string $slug, string $locale): self
+    {
+        return new self(
+            "Bu slug zaten kullanımda: '{$slug}' ({$locale})"
+        );
     }
 }

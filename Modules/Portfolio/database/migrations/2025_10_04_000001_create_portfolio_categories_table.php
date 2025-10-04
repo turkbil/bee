@@ -30,13 +30,26 @@ return new class extends Migration
             $table->index(['is_active', 'deleted_at', 'sort_order'], 'portfolio_categories_active_deleted_sort_idx');
         });
 
-        // JSON slug indexes (MySQL 8.0+) - Tablo oluşturulduktan sonra
+        // JSON slug indexes (MySQL 8.0+ / MariaDB 10.5+) - Tablo oluşturulduktan sonra
         // Dinamik olarak system_languages'dan alınır
         if (DB::getDriverName() === 'mysql') {
-            $mysqlVersion = DB::selectOne('SELECT VERSION() as version')->version;
-            $majorVersion = (int) explode('.', $mysqlVersion)[0];
+            $version = DB::selectOne('SELECT VERSION() as version')->version;
 
-            if ($majorVersion >= 8) {
+            // MySQL 8.0+ veya MariaDB 10.5+ kontrolü
+            $isMariaDB = stripos($version, 'MariaDB') !== false;
+
+            if ($isMariaDB) {
+                // MariaDB için versiyon kontrolü (10.5+)
+                preg_match('/(\d+\.\d+)/', $version, $matches);
+                $mariaVersion = isset($matches[1]) ? (float) $matches[1] : 0;
+                $supportsJsonIndex = $mariaVersion >= 10.5;
+            } else {
+                // MySQL için versiyon kontrolü (8.0+)
+                $majorVersion = (int) explode('.', $version)[0];
+                $supportsJsonIndex = $majorVersion >= 8;
+            }
+
+            if ($supportsJsonIndex) {
                 // Config'den sistem dillerini al
                 $systemLanguages = config('modules.system_languages', ['tr', 'en']);
 

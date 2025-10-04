@@ -19,7 +19,7 @@ class StudioController extends Controller
     protected $blockService;
     
     public function __construct(
-        EditorService $editorService, 
+        EditorService $editorService,
         WidgetService $widgetService,
         AssetService $assetService,
         BlockService $blockService
@@ -30,7 +30,23 @@ class StudioController extends Controller
         $this->assetService = $assetService;
         $this->blockService = $blockService;
     }
-    
+
+    /**
+     * Studio ana sayfası
+     */
+    public function index()
+    {
+        return view('studio::admin.index');
+    }
+
+    /**
+     * Studio editor sayfası
+     */
+    public function editor(string $module, int $id, ?string $locale = null)
+    {
+        return view('studio::admin.editor', compact('module', 'id', 'locale'));
+    }
+
     public function save(Request $request, string $module, int $id): JsonResponse
     {
         try {

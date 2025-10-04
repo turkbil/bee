@@ -17,6 +17,13 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // IdeHelper - Sadece local environment'ta yükle
+        if ($this->app->environment('local')) {
+            if (class_exists(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class)) {
+                $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+            }
+        }
+
         // Contracts binding
         $this->app->bind(
             \App\Contracts\ModuleAccessServiceInterface::class,

@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Studio\App\Http\Controllers\Admin\StudioController;
 use Modules\Studio\App\Http\Controllers\Admin\AssetController;
-use Modules\Studio\App\Http\Livewire\Admin\StudioIndexComponent;
-use Modules\Studio\App\Http\Livewire\EditorComponent;
 
 Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
@@ -13,11 +11,11 @@ Route::middleware(['admin', 'tenant'])
         Route::prefix('studio')
             ->name('studio.')
             ->group(function () {
-                Route::get('/', StudioIndexComponent::class)
+                Route::get('/', [StudioController::class, 'index'])
                     ->middleware('module.permission:studio,view')
                     ->name('index');
-                
-                Route::get('/editor/{module}/{id}/{locale?}', EditorComponent::class)
+
+                Route::get('/editor/{module}/{id}/{locale?}', [StudioController::class, 'editor'])
                     ->middleware('module.permission:studio,view')
                     ->name('editor');
                 

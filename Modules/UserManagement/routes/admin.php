@@ -1,7 +1,7 @@
 <?php
 // Modules/UserManagement/routes/admin.php
 use Illuminate\Support\Facades\Route;
-use Modules\UserManagement\App\Http\Livewire\UserComponent;
+use Modules\UserManagement\App\Http\Controllers\Admin\UserManagementController;
 use Modules\UserManagement\App\Http\Livewire\UserManageComponent;
 use Modules\UserManagement\App\Http\Livewire\RoleComponent;
 use Modules\UserManagement\App\Http\Livewire\RoleManageComponent;
@@ -20,7 +20,7 @@ Route::middleware(['admin', 'tenant'])
         Route::prefix('usermanagement')
             ->name('usermanagement.')
             ->group(function () {
-                Route::get('/', UserComponent::class)
+                Route::get('/', [UserManagementController::class, 'index'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
                     

@@ -79,13 +79,19 @@ class AIService
             if ($fallbackResult) {
                 $this->currentProvider = $fallbackResult['provider'];
                 $this->currentService = $fallbackResult['service'];
-                
+
                 Log::info('✅ Silent Fallback activated during initialization', [
                     'fallback_provider' => $this->currentProvider->name,
                     'fallback_model' => $fallbackResult['model']
                 ]);
             } else {
-                throw new \Exception('All AI providers unavailable: ' . $e->getMessage());
+                // Silent fail - AI features disabled but system continues to boot
+                Log::warning('⚠️ AI Provider not configured - AI features disabled', [
+                    'error' => $e->getMessage()
+                ]);
+
+                $this->currentProvider = null;
+                $this->currentService = null;
             }
         }
         
@@ -93,10 +99,15 @@ class AIService
         $this->promptService = $promptService ?? new PromptService();
         $this->aiTokenService = $aiTokenService ?? new AITokenService();
         $this->contextEngine = $contextEngine ?? app(ContextEngine::class);
-        
+
         // ConversationService en son oluşturulmalı çünkü diğer servislere bağımlı
-        $this->conversationService = $conversationService ?? 
-            new ConversationService($this->currentService, $this->aiTokenService);
+        // Eğer provider yoksa ConversationService de null olacak
+        if ($this->currentService) {
+            $this->conversationService = $conversationService ??
+                new ConversationService($this->currentService, $this->aiTokenService);
+        } else {
+            $this->conversationService = null;
+        }
     }
 
     /**
@@ -109,6 +120,15 @@ class AIService
      */
     public function askStream(string $prompt, array $options = [], ?callable $streamCallback = null)
     {
+        // AI Provider kontrolü - yoksa hata döndür
+        if (!$this->currentService || !$this->currentProvider) {
+            Log::warning('AI Provider not configured - askStream() called but provider unavailable');
+            if ($streamCallback) {
+                $streamCallback('AI provider not configured. Please configure an AI provider first.');
+            }
+            return null;
+        }
+
         // Modern token sistemi kontrolü
         $tenant = tenant();
         if ($tenant) {
@@ -221,6 +241,16 @@ class AIService
      */
     public function ask(string $prompt, array $options = [], bool $stream = false)
     {
+        // AI Provider kontrolü - yoksa hata döndür
+        if (!$this->currentService || !$this->currentProvider) {
+            Log::warning('AI Provider not configured - ask() called but provider unavailable');
+            return [
+                'success' => false,
+                'error' => 'AI provider not configured. Please configure an AI provider first.',
+                'content' => null
+            ];
+        }
+
         // Modern token sistemi kontrolü - TEST İÇİN GEÇİCİ OLARAK DEVRE DIŞI
         $tenant = tenant(); // tenant değişkeni hala gerekli
         /*

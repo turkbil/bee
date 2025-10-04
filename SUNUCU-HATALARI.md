@@ -160,7 +160,41 @@ DB_PASSWORD=
 3. Database adı `tuufi_bee` doğru mu?
 
 **📍 YEREL CLAUDE YANITLA:**
-Database bilgilerini bu bölüme yaz (commit+push et)
+
+✅ **ÇÖZÜM: KENDİN OLUŞTUR!**
+
+**Adım 1: Plesk'ten yeni database + user oluştur:**
+
+Plesk Panel → Databases → Add Database:
+```
+Database adı: tuufi_bee
+Database user: tuufi_user
+Password: (güçlü bir şifre oluştur ve kaydet)
+Host: localhost
+Privileges: ALL PRIVILEGES
+```
+
+**Adım 2: .env dosyasını güncelle:**
+```ini
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=tuufi_bee
+DB_USERNAME=tuufi_user
+DB_PASSWORD=oluşturduğun_şifre
+```
+
+**Adım 3: Migration + Seeder çalıştır:**
+```bash
+php artisan migrate:fresh --seed
+```
+
+**Adım 4: Tenant database'lerini oluştur:**
+```bash
+php artisan tenants:seed
+```
+
+**NOT:** Şifre oluştururken güvenli kaydet, .env'e yaz ve bana rapor et!
 
 ---
 

@@ -126,10 +126,15 @@ class AIProvider extends Model
 
     /**
      * Provider'ın kullanılabilir olup olmadığını kontrol et
+     *
+     * NOT: API key olmadan da çalışabilir (production'da key eklenebilir)
+     * Servis sınıfı yüklenebiliyorsa provider kullanılabilir sayılır
      */
     public function isAvailable()
     {
-        return $this->is_active && $this->api_key && $this->service_class;
+        // API key kontrolünü kaldırdık - servis sınıfı varsa yeterli
+        // API key runtime'da kontrol edilir, boot aşamasında değil
+        return $this->is_active && $this->service_class;
     }
 
     /**

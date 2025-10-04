@@ -26,9 +26,8 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
     {
         $locale = $locale ?? app()->getLocale();
         $cacheKey = $this->generateCacheKey($slug1, $slug2, $slug3, $locale);
-        $cacheTags = $this->getCacheTags();
-        
-        return Cache::tags($cacheTags)->remember($cacheKey, now()->addMinutes(self::CACHE_TTL), function () use ($slug1, $slug2, $slug3, $locale) {
+
+        return Cache::remember($cacheKey, now()->addMinutes(self::CACHE_TTL), function () use ($slug1, $slug2, $slug3, $locale) {
             return $this->resolveSlugMapping($slug1, $slug2, $slug3, $locale);
         });
     }
@@ -41,14 +40,13 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
         if (!empty(self::$moduleRouteCache)) {
             return self::$moduleRouteCache;
         }
-        
+
         $cacheKey = 'dynamic_route_module_map';
-        $cacheTags = $this->getCacheTags();
-        
-        self::$moduleRouteCache = Cache::tags($cacheTags)->remember($cacheKey, now()->addMinutes(self::CACHE_TTL), function () {
+
+        self::$moduleRouteCache = Cache::remember($cacheKey, now()->addMinutes(self::CACHE_TTL), function () {
             return $this->loadModuleRoutes();
         });
-        
+
         return self::$moduleRouteCache;
     }
     
@@ -109,8 +107,24 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
     public function clearRouteCache(): void
     {
         self::$moduleRouteCache = []; // Memory cache temizle
-        Cache::tags($this->getCacheTags())->flush();
-        
+
+        // Cache::forget ile specific key'leri temizle
+        Cache::forget('dynamic_route_module_map');
+
+        // Redis pattern matching ile tüm dynamic route cache'lerini temizle
+        try {
+            $redis = Cache::getRedis();
+            $prefix = config('database.redis.options.prefix', '');
+            $pattern = $prefix . ':dynamic_route:*';
+            $keys = $redis->keys($pattern);
+
+            if (!empty($keys)) {
+                $redis->del($keys);
+            }
+        } catch (\Exception $e) {
+            Log::debug('Dynamic route cache clear failed: ' . $e->getMessage());
+        }
+
         if (app()->environment(['local', 'staging'])) {
             Log::debug('Dynamic route cache cleared');
         }

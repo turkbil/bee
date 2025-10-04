@@ -209,7 +209,7 @@ class BlogComponent extends Component
             'currentLocale' => $this->siteLocale
         ];
 
-        $blogs = $this->blogService->getPaginatedBlogs($filters, $this->perPage);
+        $blogs = $this->blogService->getPaginatedBlogs($filters, (int) $this->perPage);
 
         return view('blog::admin.livewire.blog-component', [
             'blogs' => $blogs,

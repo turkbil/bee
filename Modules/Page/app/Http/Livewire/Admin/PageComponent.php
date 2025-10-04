@@ -210,7 +210,7 @@ class PageComponent extends Component
             'currentLocale' => $this->siteLocale
         ];
         
-        $pages = $this->pageService->getPaginatedPages($filters, $this->perPage);
+        $pages = $this->pageService->getPaginatedPages($filters, (int) $this->perPage);
     
         return view('page::admin.livewire.page-component', [
             'pages' => $pages,

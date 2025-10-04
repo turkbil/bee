@@ -295,7 +295,7 @@ class DatabaseConnectionPoolService
         try {
             $totalActive = array_sum(array_column($this->pools, 'active_connections'));
             $totalIdle = array_sum(array_column($this->pools, 'idle_connections'));
-            
+
             $stats = [
             'total_pools' => count($this->pools),
             'total_active_connections' => $totalActive,
@@ -303,9 +303,10 @@ class DatabaseConnectionPoolService
             'pools' => $this->pools,
             'updated_at' => now(),
         ];
-        
-            Cache::put('database_pool_stats', $stats, 300); // 5 dakika cache
-            
+
+            // Redis cache kullan (file cache yerine)
+            Cache::store('redis')->put('database_pool_stats', $stats, 300); // 5 dakika cache
+
             $this->poolStats = $stats;
         } catch (\Exception $e) {
             // Cache bağlantısı yoksa sessizce devam et
@@ -318,7 +319,7 @@ class DatabaseConnectionPoolService
      */
     public function getPoolStats()
     {
-        return Cache::get('database_pool_stats', $this->poolStats);
+        return Cache::store('redis')->get('database_pool_stats', $this->poolStats);
     }
     
     /**

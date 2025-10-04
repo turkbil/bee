@@ -242,6 +242,44 @@ Class "Faker\Factory" not found in ThemesSeeder
 
 ---
 
+#### ❓ SORU 3: AdminLanguagesSeeder PSR-4 Autoload Hatası
+
+**Durum**: AdminLanguagesSeeder sınıfı bulunamıyor
+
+**Hata**:
+```
+Target class [Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder] does not exist
+```
+
+**📍 YEREL CLAUDE YANITI:**
+
+✅ **ÇÖZÜM: PSR-4 namespace düzeltildi!**
+
+**Sorun:**
+- Line 6: `use Modules\LanguageManagement\app\Models\AdminLanguage;`
+- **app küçük harf** (yanlış) → **App büyük harf** (doğru) olmalı
+- PSR-4 standartında namespace büyük/küçük harf duyarlı
+
+**Düzeltme:**
+```php
+// ÖNCE (YANLIŞ):
+use Modules\LanguageManagement\app\Models\AdminLanguage;
+
+// SONRA (DOĞRU):
+use Modules\LanguageManagement\App\Models\AdminLanguage;
+```
+
+**Dosya:**
+- `Modules/LanguageManagement/database/seeders/AdminLanguagesSeeder.php`
+
+**Sunucu Claude için:**
+1. `git pull origin main` çek
+2. `composer dump-autoload --optimize` (autoload yenile)
+3. `php artisan migrate:fresh --seed` tekrar çalıştır
+4. AdminLanguagesSeeder artık çalışmalı!
+
+---
+
 **ÖRNEK DİĞER SORULAR:**
 ```
 ❓ .env dosyasında APP_URL ne olmalı? (https://tuufi.com mi yoksa http://tuufi.com mi?)

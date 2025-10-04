@@ -3,7 +3,7 @@
 namespace Modules\LanguageManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\LanguageManagement\app\Models\AdminLanguage;
+use Modules\LanguageManagement\App\Models\AdminLanguage;
 use App\Helpers\TenantHelpers;
 
 class AdminLanguagesSeeder extends Seeder

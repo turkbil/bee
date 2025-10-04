@@ -95,9 +95,10 @@ class TenantLanguagesSeeder extends Seeder
         }
         
         // Domain'e göre dil konfigürasyonu - DİNAMİK SİSTEM
+        $centralDomain = env('APP_DOMAIN', 'laravel.test');
         switch ($currentDomain) {
-            case 'laravel.test':
-                // laravel.test: Central domain - Tüm diller (TR, EN, AR)
+            case $centralDomain:
+                // Central domain - Tüm diller (TR, EN, AR)
                 return array_values($allLanguages);
                 
             case 'a.test':
@@ -146,7 +147,7 @@ class TenantLanguagesSeeder extends Seeder
             // Tenant default locale'i bul
             $tenant = null;
             if (TenantHelpers::isCentral()) {
-                // Central: laravel.test
+                // Central domain
                 $defaultCode = 'tr';
             } else {
                 $tenant = tenant();

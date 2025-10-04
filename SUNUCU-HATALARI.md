@@ -428,11 +428,56 @@ if (app()->environment(['local', 'testing'])) {
 
 **Sunucu Claude için FINAL DEPLOYMENT:**
 1. `git pull origin main` çek
-2. `php artisan migrate:fresh --seed` (**ŞİMDİ TAMAMLANACAK!**)
-3. `php artisan config:cache`
-4. `php artisan route:cache`
-5. `php artisan route:list` → ✅ Çalışacak!
-6. `curl http://tuufi.com` → ✅ Site LIVE! 🚀
+2. **.env'e APP_DOMAIN ekle:** `APP_DOMAIN=tuufi.com`
+3. `php artisan migrate:fresh --seed` (**ŞİMDİ TAMAMLANACAK!**)
+4. `php artisan config:cache`
+5. `php artisan route:cache`
+6. `php artisan route:list` → ✅ Çalışacak!
+7. `curl http://tuufi.com` → ✅ Site LIVE! 🚀
+
+---
+
+#### ❓ SORU 7: Local Domain (laravel.test) → Production Domain (tuufi.com) Değişikliği
+
+**Nurullah'ın İsteği:**
+"localde laravel.test olan her şey sunucuda tuufi.com olarak yayına girmeli"
+
+**📍 YEREL CLAUDE YANITI:**
+
+✅ **ÇÖZÜM: APP_DOMAIN environment variable sistemi eklendi!**
+
+**Değişiklik:**
+10 dosyada hard-coded `'laravel.test'` → `env('APP_DOMAIN', 'laravel.test')` yapıldı
+
+**Güncellenen Dosyalar:**
+1. `.env.example` → APP_DOMAIN=laravel.test eklendi
+2. `database/seeders/TenantSeeder.php` → Domain seeding
+3. `Modules/LanguageManagement/database/seeders/TenantLanguagesSeeder.php` → Dil switcher (2 yer)
+4. `app/Http/Middleware/AdminTenantSelection.php` → Tenant selection
+5. `app/Services/TenantQueueService.php` → Central domain check
+6. `config/tenancy.php` → Central domains config
+7. `resources/views/auth/login.blade.php` → Login auto-fill
+8. `Modules/ModuleManagement/database/seeders/ModuleTenantsSeeder.php` → Module assignment (2 yer)
+
+**Nasıl Çalışır:**
+```bash
+# Local .env
+APP_DOMAIN=laravel.test
+
+# Production .env
+APP_DOMAIN=tuufi.com
+```
+
+**Artık:**
+- ✅ Local'de: laravel.test domain'i kullanılır
+- ✅ Production'da: tuufi.com domain'i kullanılır
+- ✅ Tüm seeder, middleware, config otomatik adapte olur
+- ✅ Tek değişiklik: .env dosyasında APP_DOMAIN
+
+**Sunucu Claude için:**
+1. `git pull origin main` çek
+2. **.env dosyasına ekle:** `APP_DOMAIN=tuufi.com`
+3. Seeding ve deployment devam et!
 
 ---
 

@@ -9,11 +9,14 @@ class TenantQueueService
     /**
      * 🏢 CENTRAL TENANT DOMAINS - These are central domains
      */
-    private const CENTRAL_DOMAINS = [
-        'laravel.test',
-        'localhost',
-        '127.0.0.1'
-    ];
+    private static function getCentralDomains(): array
+    {
+        return [
+            env('APP_DOMAIN', 'laravel.test'),
+            'localhost',
+            '127.0.0.1'
+        ];
+    }
 
     /**
      * 🔍 Check if current request is from central tenant
@@ -21,8 +24,8 @@ class TenantQueueService
     public static function isCentralTenant(): bool
     {
         $host = request()->getHost() ?? 'localhost';
-        
-        return in_array($host, self::CENTRAL_DOMAINS);
+
+        return in_array($host, self::getCentralDomains());
     }
 
     /**

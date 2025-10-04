@@ -30,7 +30,8 @@ class AdminTenantSelection
             $tenantId = null;
             
             // Domain'e göre tenant_id tespit et
-            if ($host === 'laravel.test') {
+            $centralDomain = env('APP_DOMAIN', 'laravel.test');
+            if ($host === $centralDomain) {
                 $tenantId = 1; // Central/main tenant
             } elseif ($host === 'a.test') {
                 $tenantId = 2;

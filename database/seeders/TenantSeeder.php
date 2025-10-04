@@ -61,9 +61,9 @@ class TenantSeeder extends Seeder
         // Son eklenen tenant ID'sini al
         $centralTenantId = DB::table('tenants')->where('title', 'Laravel')->value('id');
 
-        // Domain ekleyin
+        // Domain ekleyin - Environment'a göre
         DB::table('domains')->insert([
-            'domain' => 'laravel.test',
+            'domain' => env('APP_DOMAIN', 'laravel.test'),
             'tenant_id' => $centralTenantId,
             'created_at' => now(),
             'updated_at' => now(),

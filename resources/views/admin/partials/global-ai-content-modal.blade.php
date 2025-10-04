@@ -379,7 +379,7 @@ window.fileUploader = function() {
             if (fileInfo) {
               fileInfo.innerHTML = `
                 <div class="alert alert-danger">
-                  <i class="ti ti-x"></i>
+                  <i class="fas fa-times"></i>
                   Desteklenmeyen dosya türü: ${file.name}.
                   Sadece PDF, JPG, PNG ve WebP dosyaları kabul edilir.
                 </div>`;

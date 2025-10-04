@@ -31,7 +31,7 @@ class TranslateAnnouncementJob implements ShouldQueue
     public int $timeout = 300; // 5 dakika
 
     public function __construct(
-        public array $pageIds,
+        public array $announcementIds,
         public string $sourceLanguage,
         public array $targetLanguages,
         public string $quality = 'balanced',
@@ -46,7 +46,7 @@ class TranslateAnnouncementJob implements ShouldQueue
     {
         // 🚨 ULTRA DEBUG - Handle metoduna giriş
         Log::info('🔥🔥🔥 TRANSLATEPAGEJOB HANDLE() BAŞLADI! 🔥🔥🔥', [
-            'pageIds' => $this->pageIds,
+            'announcementIds' => $this->announcementIds,
             'sourceLanguage' => $this->sourceLanguage,
             'targetLanguages' => $this->targetLanguages,
             'operationId' => $this->operationId,
@@ -63,17 +63,17 @@ class TranslateAnnouncementJob implements ShouldQueue
 
             // Defensive: targetLanguages array olmalı
             $targetLanguages = is_array($this->targetLanguages) ? $this->targetLanguages : [$this->targetLanguages];
-            $totalOperations = count($this->pageIds) * count($targetLanguages);
+            $totalOperations = count($this->announcementIds) * count($targetLanguages);
             $processedCount = 0;
             $successCount = 0;
             $failedCount = 0;
             $totalTokensUsed = 0;
 
-            foreach ($this->pageIds as $pageId) {
-                $announcement = Announcement::find($pageId);
+            foreach ($this->announcementIds as $announcementId) {
+                $announcement = Announcement::find($announcementId);
 
                 if (!$announcement) {
-                    Log::warning("Announcement not found: {$pageId}");
+                    Log::warning("Announcement not found: {$announcementId}");
                     $failedCount++;
                     continue;
                 }
@@ -96,7 +96,7 @@ class TranslateAnnouncementJob implements ShouldQueue
 
                         // Boş içerik varsa atla
                         if (empty(trim($sourceData['title'] . $sourceData['body']))) {
-                            Log::info("Empty content for announcement {$pageId}, language {$this->sourceLanguage}");
+                            Log::info("Empty content for announcement {$announcementId}, language {$this->sourceLanguage}");
                             $processedCount++;
                             continue;
                         }
@@ -106,7 +106,7 @@ class TranslateAnnouncementJob implements ShouldQueue
                             $sourceData['title'],
                             $this->sourceLanguage,
                             $targetLanguage,
-                            ['context' => 'page_title']
+                            ['context' => 'announcement_title']
                         );
 
                         // Body HTML çeviri
@@ -132,7 +132,7 @@ class TranslateAnnouncementJob implements ShouldQueue
 
                             // DEBUG: Çeviri sonucunu log'la
                             Log::info("🔍 AI Translation Response Debug", [
-                                'announcement_id' => $pageId,
+                                'announcement_id' => $announcementId,
                                 'target_language' => $targetLanguage,
                                 'raw_response' => substr($response['response'] ?? '', 0, 200),
                                 'parsed_data' => $translatedData
@@ -148,24 +148,24 @@ class TranslateAnnouncementJob implements ShouldQueue
 
                                 ai_use_credits($perLanguageCost, $tenantId, [
                                     'usage_type' => 'translation',
-                                    'description' => "Announcement Translation: #{$pageId} ({$this->sourceLanguage} → {$targetLanguage})",
+                                    'description' => "Announcement Translation: #{$announcementId} ({$this->sourceLanguage} → {$targetLanguage})",
                                     'entity_type' => 'announcement',
-                                    'entity_id' => $pageId,
+                                    'entity_id' => $announcementId,
                                     'source_language' => $this->sourceLanguage,
                                     'target_language' => $targetLanguage,
-                                    'provider_name' => 'page_translation_service',
+                                    'provider_name' => 'announcement_translation_service',
                                     'tokens_used' => $response['tokens_used'] ?? 0
                                 ]);
 
-                                Log::info('💰 KREDİ DÜŞÜRÜLDİ: PAGE ÇEVİRİ - 1 DİL = 1 KREDİ', [
-                                    'announcement_id' => $pageId,
+                                Log::info('💰 KREDİ DÜŞÜRÜLDİ: ANNOUNCEMENT ÇEVİRİ - 1 DİL = 1 KREDİ', [
+                                    'announcement_id' => $announcementId,
                                     'language_pair' => "{$this->sourceLanguage} → {$targetLanguage}",
                                     'credits_deducted' => $perLanguageCost,
                                     'tenant_id' => $tenantId
                                 ]);
                             } catch (\Exception $e) {
                                 Log::warning('⚠️ Kredi düşürme hatası (çeviri devam ediyor)', [
-                                    'announcement_id' => $pageId,
+                                    'announcement_id' => $announcementId,
                                     'error' => $e->getMessage()
                                 ]);
                             }
@@ -173,14 +173,14 @@ class TranslateAnnouncementJob implements ShouldQueue
                             $successCount++;
                             $totalTokensUsed += $response['tokens_used'] ?? 0;
 
-                            Log::info("Announcement {$pageId} translated to {$targetLanguage} successfully");
+                            Log::info("Announcement {$announcementId} translated to {$targetLanguage} successfully");
                         } else {
                             $failedCount++;
-                            Log::error("Translation failed for announcement {$pageId} to {$targetLanguage}: " . ($response['error'] ?? 'Unknown error'));
+                            Log::error("Translation failed for announcement {$announcementId} to {$targetLanguage}: " . ($response['error'] ?? 'Unknown error'));
                         }
                     } catch (Throwable $e) {
                         $failedCount++;
-                        Log::error("Translation error for announcement {$pageId} to {$targetLanguage}: " . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
+                        Log::error("Translation error for announcement {$announcementId} to {$targetLanguage}: " . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
                     }
 
                     $processedCount++;
@@ -201,7 +201,7 @@ class TranslateAnnouncementJob implements ShouldQueue
             // Frontend'e completion event'ini gönder
             event(new \Modules\Announcement\App\Events\TranslationCompletedEvent([
                 'sessionId' => $this->operationId,
-                'pageIds' => $this->pageIds,
+                'announcementIds' => $this->announcementIds,
                 'success' => $successCount,
                 'failed' => $failedCount,
                 'status' => 'completed'

@@ -107,11 +107,10 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
     
     public function create(array $data): MenuItem
     {
-        // Sort order otomatik hesapla
+        // Sort order otomatik hesapla - GLOBAL max (tüm menu items içinden)
         if (!isset($data['sort_order'])) {
             $maxOrder = $this->model->where('menu_id', $data['menu_id'])
-                                   ->where('parent_id', $data['parent_id'] ?? null)
-                                   ->max('sort_order') ?? 0;
+                                   ->max('sort_order') ?? -1;
             $data['sort_order'] = $maxOrder + 1;
         }
         
@@ -270,19 +269,25 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
                 // Item array veya sadece ID olabilir
                 if (is_array($item)) {
                     $rawItemId = $item['id'] ?? $item;
-                    $rawParentId = $item['parentId'] ?? null;
-                    
+
+                    // Parent ID kontrolü - array_key_exists kullan (null için de geçerli)
+                    if (array_key_exists('parentId', $item)) {
+                        $rawParentId = $item['parentId'];
+                        $parentId = $rawParentId === null ? null : (int)$rawParentId;
+                    } else {
+                        $parentId = null;
+                    }
+
                     // JavaScript'ten gelen string'leri int'e çevir
                     $itemId = (int)$rawItemId;
-                    $parentId = $rawParentId === null ? null : (int)$rawParentId;
                 } else {
                     $itemId = (int)$item;
                     $parentId = null;
                 }
-                
+
                 // Update data prepare
                 $updateData = ['sort_order' => $sortOrder];
-                
+
                 // Parent ID update (null için de geçerli)
                 $updateData['parent_id'] = $parentId;
                 

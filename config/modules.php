@@ -1,285 +1,199 @@
 <?php
 
-use Nwidart\Modules\Activators\FileActivator;
-use Nwidart\Modules\Providers\ConsoleServiceProvider;
-
 return [
 
     /*
     |--------------------------------------------------------------------------
-    | Module Namespace
+    | Global Module Settings
     |--------------------------------------------------------------------------
     |
-    | Default module namespace.
+    | Bu ayarlar TÜM modüller için geçerlidir.
+    | Modül-specific ayarlar için: config/{module-name}.php
     |
     */
-    'namespace' => 'Modules',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Module Stubs
-    |--------------------------------------------------------------------------
-    |
-    | Default module stubs.
-    |
-    */
-    'stubs' => [
-        'enabled' => false,
-        'path' => base_path('vendor/nwidart/laravel-modules/src/Commands/stubs'),
-        'files' => [
-            'routes/web' => 'routes/web.php',
-            'routes/api' => 'routes/api.php',
-            'views/index' => 'resources/views/index.blade.php',
-            'views/master' => 'resources/views/layouts/master.blade.php',
-            'scaffold/config' => 'config/config.php',
-            'composer' => 'composer.json',
-            'assets/js/app' => 'resources/assets/js/app.js',
-            'assets/sass/app' => 'resources/assets/sass/app.scss',
-            'vite' => 'vite.config.js',
-            'package' => 'package.json',
+    // ========================================
+    // DİL SİSTEMİ
+    // ========================================
+    // NOT: Her modül bu değerleri kendi config'inde override edebilir
+    'system_languages' => env('SYSTEM_LANGUAGES') ? explode(',', env('SYSTEM_LANGUAGES')) : ['tr', 'en'],
+    'default_language' => env('DEFAULT_LANGUAGE', 'tr'),
+
+    // ========================================
+    // MEDYA YÖNETİMİ
+    // ========================================
+    'media' => [
+        // Genel dosya boyutu limitleri
+        'max_file_size' => env('MEDIA_MAX_FILE_SIZE', 10240), // KB (10MB)
+        
+        // Koleksiyon limitleri
+        'max_items' => [
+            'featured' => 1,
+            'gallery' => 50,
+            'documents' => 20,
         ],
-        'replacements' => [
-            'routes/web' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME', 'MODULE_NAMESPACE', 'CONTROLLER_NAMESPACE'],
-            'routes/api' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME', 'MODULE_NAMESPACE', 'CONTROLLER_NAMESPACE'],
-            'vite' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME'],
-            'json' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME', 'MODULE_NAMESPACE', 'PROVIDER_NAMESPACE'],
-            'views/index' => ['LOWER_NAME'],
-            'views/master' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME',],
-            'scaffold/config' => ['STUDLY_NAME'],
-            'composer' => [
-                'LOWER_NAME',
-                'STUDLY_NAME',
-                'VENDOR',
-                'AUTHOR_NAME',
-                'AUTHOR_EMAIL',
-                'MODULE_NAMESPACE',
-                'PROVIDER_NAMESPACE',
-                'APP_FOLDER_NAME',
-            ],
+        
+        // İzin verilen dosya tipleri
+        'allowed_extensions' => [
+            'image' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+            'document' => ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
+            'video' => ['mp4', 'avi', 'mov', 'wmv'],
         ],
-        'gitkeep' => true,
+        
+        // Görsel dönüşüm boyutları
+        'conversions' => [
+            'thumb' => ['width' => 150, 'height' => 150],
+            'medium' => ['width' => 300, 'height' => 300],
+            'large' => ['width' => 1024, 'height' => 768],
+            'responsive' => ['width' => 1920, 'height' => null],
+        ],
+        
+        // Upload path (tenant-aware)
+        'base_path' => 'uploads',
     ],
-    'paths' => [
-        /*
-        |--------------------------------------------------------------------------
-        | Modules path
-        |--------------------------------------------------------------------------
-        |
-        | This path is used to save the generated module.
-        | This path will also be added automatically to the list of scanned folders.
-        |
-        */
-        'modules' => base_path('Modules'),
 
-        /*
-        |--------------------------------------------------------------------------
-        | Modules assets path
-        |--------------------------------------------------------------------------
-        |
-        | Here you may update the modules' assets path.
-        |
-        */
-        'assets' => public_path('modules'),
+    // ========================================
+    // SAYFALAMA (PAGINATION)
+    // ========================================
+    'pagination' => [
+        'admin_per_page' => env('ADMIN_PER_PAGE', 10),
+        'front_per_page' => env('FRONT_PER_PAGE', 12),
+        'max_per_page' => 100,
+        'available_per_page' => [10, 25, 50, 100],
+    ],
 
-        /*
-        |--------------------------------------------------------------------------
-        | The migrations' path
-        |--------------------------------------------------------------------------
-        |
-        | Where you run the 'module:publish-migration' command, where do you publish the
-        | the migration files?
-        |
-        */
-        'migration' => [
-            base_path('database/migrations'),
-            base_path('database/migrations/tenant'),
+    // ========================================
+    // CACHE YÖNETİMİ
+    // ========================================
+    'cache' => [
+        'enabled' => env('MODULE_CACHE_ENABLED', true),
+        'ttl' => [
+            'list' => env('CACHE_TTL_LIST', 3600),      // 1 saat
+            'detail' => env('CACHE_TTL_DETAIL', 7200),  // 2 saat
+            'api' => env('CACHE_TTL_API', 1800),        // 30 dakika
         ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | The app path
-        |--------------------------------------------------------------------------
-        |
-        | app folder name
-        | for example can change it to 'src' or 'App'
-        */
-        'app_folder' => 'app/',
-
-        /*
-        |--------------------------------------------------------------------------
-        | Generator path
-        |--------------------------------------------------------------------------
-        | Customise the paths where the folders will be generated.
-        | Setting the generate key to false will not generate that folder
-        */
-        'generator' => [
-            // app/
-            'actions' => ['path' => 'app/Actions', 'generate' => false],
-            'casts' => ['path' => 'app/Casts', 'generate' => false],
-            'channels' => ['path' => 'app/Broadcasting', 'generate' => false],
-            'class' => ['path' => 'app/Classes', 'generate' => false],
-            'command' => ['path' => 'app/Console', 'generate' => false],
-            'component-class' => ['path' => 'app/View/Components', 'generate' => false],
-            'emails' => ['path' => 'app/Emails', 'generate' => false],
-            'event' => ['path' => 'app/Events', 'generate' => false],
-            'enums' => ['path' => 'app/Enums', 'generate' => false],
-            'exceptions' => ['path' => 'app/Exceptions', 'generate' => false],
-            'jobs' => ['path' => 'app/Jobs', 'generate' => false],
-            'helpers' => ['path' => 'app/Helpers', 'generate' => false],
-            'interfaces' => ['path' => 'app/Interfaces', 'generate' => false],
-            'listener' => ['path' => 'app/Listeners', 'generate' => false],
-            'model' => ['path' => 'app/Models', 'generate' => false],
-            'notifications' => ['path' => 'app/Notifications', 'generate' => false],
-            'observer' => ['path' => 'app/Observers', 'generate' => false],
-            'policies' => ['path' => 'app/Policies', 'generate' => false],
-            'provider' => ['path' => 'app/Providers', 'generate' => true],
-            'repository' => ['path' => 'app/Repositories', 'generate' => false],
-            'resource' => ['path' => 'app/Transformers', 'generate' => false],
-            'route-provider' => ['path' => 'app/Providers', 'generate' => true],
-            'rules' => ['path' => 'app/Rules', 'generate' => false],
-            'services' => ['path' => 'app/Services', 'generate' => false],
-            'scopes' => ['path' => 'app/Models/Scopes', 'generate' => false],
-            'traits' => ['path' => 'app/Traits', 'generate' => false],
-
-            // app/Http/
-            'controller' => ['path' => 'app/Http/Controllers', 'generate' => true],
-            'filter' => ['path' => 'app/Http/Middleware', 'generate' => false],
-            'request' => ['path' => 'app/Http/Requests', 'generate' => false],
-
-            // config/
-            'config' => ['path' => 'config', 'generate' => true],
-
-            // database/
-            'factory' => ['path' => 'database/factories', 'generate' => true],
-            'migration' => ['path' => 'database/migrations', 'generate' => true],
-            'seeder' => ['path' => 'database/seeders', 'generate' => true],
-
-            // lang/
-            'lang' => ['path' => 'lang', 'generate' => false],
-
-            // resource/
-            'assets' => ['path' => 'resources/assets', 'generate' => true],
-            'component-view' => ['path' => 'resources/views/components', 'generate' => false],
-            'views' => ['path' => 'resources/views', 'generate' => true],
-
-            // routes/
-            'routes' => ['path' => 'routes', 'generate' => true],
-
-            // tests/
-            'test-feature' => ['path' => 'tests/Feature', 'generate' => true],
-            'test-unit' => ['path' => 'tests/Unit', 'generate' => true],
+        'warming' => [
+            'enabled' => env('CACHE_WARMING_ENABLED', true),
+            'batch_size' => 50,
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Auto Discover of Modules
-    |--------------------------------------------------------------------------
-    |
-    | Here you configure auto discover of module
-    | This is useful for simplify module providers.
-    |
-    */
-    'auto-discover' => [
-        /*
-        |--------------------------------------------------------------------------
-        | Migrations
-        |--------------------------------------------------------------------------
-        |
-        | This option for register migration automatically.
-        |
-        */
-        'migrations' => true,
-
-        /*
-        |--------------------------------------------------------------------------
-        | Translations
-        |--------------------------------------------------------------------------
-        |
-        | This option for register lang file automatically.
-        |
-        */
-        'translations' => false,
-
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Package commands
-    |--------------------------------------------------------------------------
-    |
-    | Here you can define which commands will be visible and used in your
-    | application. You can add your own commands to merge section.
-    |
-    */
-    'commands' => ConsoleServiceProvider::defaultCommands()
-        ->merge([
-            // New commands go here
-        ])->toArray(),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Scan Path
-    |--------------------------------------------------------------------------
-    |
-    | Here you define which folder will be scanned. By default will scan vendor
-    | directory. This is useful if you host the package in packagist website.
-    |
-    */
-    'scan' => [
-        'enabled' => false,
-        'paths' => [
-            base_path('vendor/*/*'),
+    // ========================================
+    // VALİDASYON KURALLARI
+    // ========================================
+    'validation' => [
+        'title' => [
+            'min' => 3,
+            'max' => 191,
+        ],
+        'slug' => [
+            'min' => 3,
+            'max' => 255,
+            'separator' => '-',
+            'lowercase' => true,
+        ],
+        'body' => [
+            'max' => 65535, // TEXT field limit
+        ],
+        'description' => [
+            'max' => 500,
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Composer File Template
-    |--------------------------------------------------------------------------
-    |
-    | Here is the config for the composer.json file, generated by this package
-    |
-    */
-    'composer' => [
-        'vendor' => env('MODULE_VENDOR', 'nwidart'),
-        'author' => [
-            'name' => env('MODULE_AUTHOR_NAME', 'Nicolas Widart'),
-            'email' => env('MODULE_AUTHOR_EMAIL', 'n.widart@gmail.com'),
+    // ========================================
+    // RESERVED SLUGS (Tüm Modüller İçin)
+    // ========================================
+    'reserved_slugs' => [
+        'admin',
+        'api',
+        'login',
+        'logout',
+        'register',
+        'password',
+        'dashboard',
+        'profile',
+        'settings',
+        'search',
+        'home',
+        'index',
+        'create',
+        'edit',
+        'delete',
+        'update',
+        'store',
+        'show',
+    ],
+
+    // ========================================
+    // QUEUE YÖNETİMİ
+    // ========================================
+    'queue' => [
+        'connection' => env('MODULE_QUEUE_CONNECTION', 'redis'),
+        'queue_name' => env('MODULE_QUEUE_NAME', 'tenant_isolated'),
+        'timeout' => env('QUEUE_TIMEOUT', 300),
+        'tries' => env('QUEUE_TRIES', 3),
+        'retry_after' => env('QUEUE_RETRY_AFTER', 90),
+    ],
+
+    // ========================================
+    // SEO YÖNETİMİ
+    // ========================================
+    'seo' => [
+        'enabled' => true,
+        'fields' => [
+            'seo_title' => ['max_length' => 60],
+            'seo_description' => ['max_length' => 160],
+            'seo_keywords' => ['max_keywords' => 10],
         ],
-        'composer-output' => false,
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Choose what laravel-modules will register as custom namespaces.
-    | Setting one to false will require you to register that part
-    | in your own Service Provider class.
-    |--------------------------------------------------------------------------
-    */
-    'register' => [
-        'translations' => true,
-        /**
-         * load files on boot or register method
-         */
-        'files' => 'register',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Activators
-    |--------------------------------------------------------------------------
-    |
-    | You can define new types of activators here, file, database, etc. The only
-    | required parameter is 'class'.
-    | The file activator will store the activation status in storage/installed_modules
-    */
-    'activators' => [
-        'file' => [
-            'class' => FileActivator::class,
-            'statuses-file' => base_path('modules_statuses.json'),
+        'fallbacks' => [
+            'use_title_for_meta_title' => true,
+            'use_excerpt_for_meta_description' => true,
+            'auto_generate_keywords' => true,
+            'max_auto_keywords' => 5,
+        ],
+        'schema' => [
+            'enabled' => true,
+            'include_breadcrumbs' => true,
+            'include_organization' => true,
         ],
     ],
 
-    'activator' => 'file',
+    // ========================================
+    // SECURITY
+    // ========================================
+    'security' => [
+        'sanitize_html' => true,
+        'xss_protection' => true,
+        'csrf_protection' => true,
+    ],
+
+    // ========================================
+    // PERFORMANS
+    // ========================================
+    'performance' => [
+        'eager_loading' => ['seoSetting'],
+        'chunk_size' => 100,
+        'lazy_loading' => true,
+    ],
+
+    // ========================================
+    // AI & TRANSLATION
+    // ========================================
+    'ai' => [
+        'translation_enabled' => env('AI_TRANSLATION_ENABLED', true),
+        'content_generation_enabled' => env('AI_CONTENT_ENABLED', false),
+    ],
+
+    // ========================================
+    // FORM YÖNETİMİ
+    // ========================================
+    'form' => [
+        'auto_save' => env('FORM_AUTO_SAVE', false),
+        'auto_save_interval' => 30, // saniye
+        'validation' => [
+            'real_time' => true,
+            'submit_button_states' => true,
+        ],
+    ],
+
 ];

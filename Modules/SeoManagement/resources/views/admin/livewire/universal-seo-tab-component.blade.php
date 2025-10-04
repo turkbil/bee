@@ -207,10 +207,10 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row mb-4">
                         {{-- SEO Title --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="position-relative">
+                        <div class="col-12 col-md-6">
+                            <div class="position-relative mb-3 mb-md-0">
                                 <div class="form-floating">
                                     <input type="text" wire:model="seoDataCache.{{ $lang }}.seo_title"
                                         class="form-control seo-no-enter" placeholder="SEO Başlık"
@@ -229,7 +229,7 @@
                         </div>
 
                         {{-- SEO Description --}}
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6">
                             <div class="position-relative">
                                 <div class="form-floating">
                                     <textarea wire:model="seoDataCache.{{ $lang }}.seo_description"
@@ -249,9 +249,12 @@
                             </div>
                         </div>
 
+                    </div>
+
+                    <div class="row mb-4">
                         {{-- Schema.org Article Type (2025 SEO Standard - Rich Results) --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="form-floating">
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating mb-3 mb-md-0">
                                 <select wire:model="seoDataCache.{{ $lang }}.schema_type"
                                     class="form-select" id="schema_type_{{ $lang }}">
                                     <option value="WebPage" selected>🌐 WebPage (Varsayılan - Genel Sayfa)</option>
@@ -273,7 +276,7 @@
                         </div>
 
                         {{-- Priority Score --}}
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6">
                             <div class="d-flex justify-content-between align-items-center">
                                 <label class="form-label mb-0">SEO Önceliği</label>
                                 <span class="badge bg-warning priority-badge" id="priority_badge_{{ $lang }}">
@@ -310,34 +313,49 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row mb-4">
                         {{-- Özelleştirme Switch --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="mt-3">
-                                @php
-                                    // Sosyal medya alanları doluysa otomatik checked
-                                    $ogTitle = $seoDataCache[$lang]['og_title'] ?? '';
-                                    $ogDescription = $seoDataCache[$lang]['og_description'] ?? '';
-                                    $autoChecked = !empty(trim($ogTitle)) || !empty(trim($ogDescription));
-                                @endphp
-                                <div class="pretty p-switch p-fill">
-                                    <input type="checkbox"
-                                        wire:model.defer="seoDataCache.{{ $lang }}.og_custom_enabled"
-                                        id="og_custom_{{ $lang }}"
-                                        onchange="toggleOgCustomFields(this, '{{ $lang }}');"
-                                        {{ $autoChecked ? 'checked' : '' }}>
-                                    <div class="state">
-                                        <label style="margin-left: 10px;">Özel sosyal medya ayarlarını kullan</label>
+                        <div class="col-12 col-md-6">
+                            <div class="mt-3 mb-3 mb-md-0">
+                                @if(isset($seoDataCache[$lang]))
+                                    @php
+                                        // Sosyal medya alanları doluysa otomatik checked
+                                        $ogTitle = $seoDataCache[$lang]['og_title'] ?? '';
+                                        $ogDescription = $seoDataCache[$lang]['og_description'] ?? '';
+                                        $autoChecked = !empty(trim($ogTitle)) || !empty(trim($ogDescription));
+                                    @endphp
+                                    <div class="pretty p-switch p-fill">
+                                        <input type="checkbox"
+                                            wire:model.defer="seoDataCache.{{ $lang }}.og_custom_enabled"
+                                            id="og_custom_{{ $lang }}"
+                                            onchange="toggleOgCustomFields(this, '{{ $lang }}');"
+                                            {{ $autoChecked ? 'checked' : '' }}>
+                                        <div class="state">
+                                            <label style="margin-left: 10px;">Özel sosyal medya ayarlarını kullan</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-text">
-                                    <small class="text-muted">Kapalıysa yukarıdaki SEO bilgileri kullanılır</small>
-                                </div>
+                                    <div class="form-text">
+                                        <small class="text-muted">Kapalıysa yukarıdaki SEO bilgileri kullanılır</small>
+                                    </div>
+                                @else
+                                    <div class="pretty p-switch p-fill">
+                                        <input type="checkbox"
+                                            wire:model.defer="seoDataCache.{{ $lang }}.og_custom_enabled"
+                                            id="og_custom_{{ $lang }}"
+                                            onchange="toggleOgCustomFields(this, '{{ $lang }}');">
+                                        <div class="state">
+                                            <label style="margin-left: 10px;">Özel sosyal medya ayarlarını kullan</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-text">
+                                        <small class="text-muted">Kapalıysa yukarıdaki SEO bilgileri kullanılır</small>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
                         {{-- OG Image - Bağımsız (Her zaman görünür) --}}
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6">
                             <label class="form-label">
                                 Sosyal Medya Resmi
                                 <small class="ms-2">1200x630 önerilen</small>
@@ -360,11 +378,16 @@
                     </div>
 
                     {{-- OG Custom Fields - Düz çizgi kaldırıldı --}}
-                    <div class="og-custom-fields" id="og_custom_fields_{{ $lang }}" style="display: {{ $autoChecked ? 'block' : 'none' }}; margin-top: 1rem;">
-                        <div class="row">
+                    @php
+                        $shouldShowOgFields = isset($seoDataCache[$lang]) &&
+                                            (!empty(trim($seoDataCache[$lang]['og_title'] ?? '')) ||
+                                             !empty(trim($seoDataCache[$lang]['og_description'] ?? '')));
+                    @endphp
+                    <div class="og-custom-fields" id="og_custom_fields_{{ $lang }}" style="display: {{ $shouldShowOgFields ? 'block' : 'none' }}; margin-top: 1rem;">
+                        <div class="row mb-4">
                             {{-- OG Title --}}
-                            <div class="col-md-6 mb-3">
-                                <div class="form-floating position-relative">
+                            <div class="col-12 col-md-6">
+                                <div class="form-floating position-relative mb-3 mb-md-0">
                                     <input type="text" wire:model="seoDataCache.{{ $lang }}.og_title"
                                         class="form-control seo-no-enter" placeholder="Facebook/LinkedIn'de görünecek özel başlık"
                                         maxlength="60" oninput="updateCharCounter(this, '{{ $lang }}', 'og_title')">
@@ -384,7 +407,7 @@
                             </div>
 
                             {{-- OG Description --}}
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 col-md-6">
                                 <div class="form-floating position-relative">
                                     <textarea wire:model="seoDataCache.{{ $lang }}.og_description"
                                         class="form-control seo-no-enter" placeholder="Facebook/LinkedIn'de görünecek özel açıklama"
@@ -410,31 +433,113 @@
                 </div>
             </div>
 
-            {{-- PUBLISHER BİLGİLERİ --}}
+            {{-- ROBOTS META CONTROLS (2025 SEO Best Practice) --}}
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-robot me-2"></i>
+                        Arama Motoru Direktifleri
+                        <small class="ms-2">Google bot kontrolleri</small>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @php
+                        // Robots meta verilerini al - varsayılanlar true
+                        $robotsMeta = $seoDataCache[$lang]['robots_meta'] ?? [
+                            'index' => true,
+                            'follow' => true,
+                            'archive' => true,
+                            'snippet' => true,
+                        ];
+                    @endphp
+
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                <input type="checkbox" id="robots_index_{{ $lang }}"
+                                    wire:model="seoDataCache.{{ $lang }}.robots_meta.index"
+                                    @if($robotsMeta['index'] ?? true) checked @endif>
+                                <div class="state p-success p-on ms-2">
+                                    <label>Index</label>
+                                </div>
+                                <div class="state p-danger p-off ms-2">
+                                    <label>NoIndex</label>
+                                </div>
+                            </div>
+                            <div class="form-text mt-2"><small>Arama motorlarında göster</small></div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                <input type="checkbox" id="robots_follow_{{ $lang }}"
+                                    wire:model="seoDataCache.{{ $lang }}.robots_meta.follow"
+                                    @if($robotsMeta['follow'] ?? true) checked @endif>
+                                <div class="state p-success p-on ms-2">
+                                    <label>Follow</label>
+                                </div>
+                                <div class="state p-danger p-off ms-2">
+                                    <label>NoFollow</label>
+                                </div>
+                            </div>
+                            <div class="form-text mt-2"><small>Linkleri takip et</small></div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                <input type="checkbox" id="robots_archive_{{ $lang }}"
+                                    wire:model="seoDataCache.{{ $lang }}.robots_meta.archive"
+                                    @if($robotsMeta['archive'] ?? true) checked @endif>
+                                <div class="state p-success p-on ms-2">
+                                    <label>Archive</label>
+                                </div>
+                                <div class="state p-danger p-off ms-2">
+                                    <label>NoArchive</label>
+                                </div>
+                            </div>
+                            <div class="form-text mt-2"><small>Arşivlenebilir</small></div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                <input type="checkbox" id="robots_snippet_{{ $lang }}"
+                                    wire:model="seoDataCache.{{ $lang }}.robots_meta.snippet"
+                                    @if($robotsMeta['snippet'] ?? true) checked @endif>
+                                <div class="state p-success p-on ms-2">
+                                    <label>Snippet</label>
+                                </div>
+                                <div class="state p-danger p-off ms-2">
+                                    <label>NoSnippet</label>
+                                </div>
+                            </div>
+                            <div class="form-text mt-2"><small>Meta description göster</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- PUBLISHER BİLGİLERİ - SADECE DEFAULT LANGUAGE --}}
+            @if ($lang === get_tenant_default_locale())
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
                     <h6 class="mb-0">
                         <i class="fas fa-user-edit me-2"></i>
                         Publisher Bilgileri
-                        <small class="ms-2">Yazar ve organizasyon bilgileri</small>
+                        <small class="ms-2">Tek yazar - tüm diller için aynı</small>
                     </h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row mb-4">
                         {{-- Author Name --}}
-                        <div class="col-md-6 mb-3">
-                            <div class="form-floating">
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating mb-3 mb-md-0">
                                 <input type="text" wire:model="seoDataCache.{{ $lang }}.author_name"
                                     class="form-control" placeholder="Yazar adı">
-                                <label>Yazar Adı ({{ strtoupper($lang) }})</label>
+                                <label>Yazar Adı</label>
                                 <div class="form-text">
-                                    <small>İçeriği yazan kişinin adı</small>
+                                    <small>İçeriği yazan kişinin adı (tüm diller için aynı)</small>
                                 </div>
                             </div>
                         </div>
 
                         {{-- Author URL --}}
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6">
                             <div class="form-floating">
                                 <input type="url" wire:model="seoDataCache.{{ $lang }}.author_url"
                                     class="form-control" placeholder="https://example.com">
@@ -447,6 +552,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     @endforeach
 </div>
@@ -456,6 +562,7 @@
     // Social media switch'lerini AI önerilerinden sonra kontrol et
     document.addEventListener('DOMContentLoaded', function() {
         checkSocialMediaSwitches();
+        syncRobotsMetaPrettyCheckboxes();
     });
 
     // Livewire morph sonrası kontrol - State'i koru
@@ -464,7 +571,27 @@
             setTimeout(() => {
                 checkSocialMediaSwitches();
                 preserveOgFieldsState();
+                syncRobotsMetaPrettyCheckboxes();
             }, 50);
+        });
+    }
+
+    // Robots Meta Pretty Checkbox'larını Livewire data ile senkronize et
+    function syncRobotsMetaPrettyCheckboxes() {
+        const languages = {!! json_encode($availableLanguages) !!};
+        languages.forEach(lang => {
+            // Livewire component data'sını al
+            if (typeof @this !== 'undefined' && @this.seoDataCache && @this.seoDataCache[lang]) {
+                const robotsMeta = @this.seoDataCache[lang].robots_meta || {};
+
+                // Her robots meta checkbox'ını güncelle
+                ['index', 'follow', 'archive', 'snippet'].forEach(type => {
+                    const checkbox = document.getElementById(`robots_${type}_${lang}`);
+                    if (checkbox && typeof robotsMeta[type] !== 'undefined') {
+                        checkbox.checked = robotsMeta[type];
+                    }
+                });
+            }
         });
     }
 

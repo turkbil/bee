@@ -35,25 +35,22 @@ return new class extends Migration
         });
 
         // JSON slug arama için virtual column indexes (MySQL 8.0+)
-        // Aktif: Sistem MySQL 9.4.0 kullanıyor
+        // Dinamik olarak system_languages'dan alınır
         if (DB::getDriverName() === 'mysql') {
             $mysqlVersion = DB::selectOne('SELECT VERSION() as version')->version;
             $majorVersion = (int) explode('.', $mysqlVersion)[0];
 
             if ($majorVersion >= 8) {
-                // TR slug index
-                DB::statement('
-                    CREATE INDEX pages_slug_tr_idx ON pages (
-                        (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) AS CHAR(255)))
-                    )
-                ');
+                // Config'den sistem dillerini al
+                $systemLanguages = config('modules.system_languages', ['tr', 'en']);
 
-                // EN slug index
-                DB::statement('
-                    CREATE INDEX pages_slug_en_idx ON pages (
-                        (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) AS CHAR(255)))
-                    )
-                ');
+                foreach ($systemLanguages as $locale) {
+                    DB::statement("
+                        CREATE INDEX pages_slug_{$locale}_idx ON pages (
+                            (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) AS CHAR(255)))
+                        )
+                    ");
+                }
             }
         }
     }

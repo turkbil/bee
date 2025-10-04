@@ -6,7 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\AI\app\Traits\HasAIContentGeneration;
 use Modules\AI\app\Contracts\AIContentGeneratable;
-use Modules\Portfolio\App\Models\Page;
+use Modules\Portfolio\App\Models\Portfolio;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
@@ -17,19 +17,19 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
 {
     use WithFileUploads, HasAIContentGeneration;
 
-    public $portfoliod;
+    public $portfolioId;
 
     // Çoklu dil inputs
     public $multiLangInputs = [];
 
     // Dil-neutral inputs
     public $inputs = [
-        'css' => '',
-        'js' => '',
         'is_active' => true,
+        'category_id' => null,
     ];
 
     public $studioEnabled = false;
+
 
     // Universal Component Data
     public $currentLanguage;
@@ -40,19 +40,19 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
     public $tabCompletionStatus = [];
 
     // SOLID Dependencies
-    protected $portfolioervice;
+    protected $portfolioService;
 
     /**
-     * Get current page model
+     * Get current portfolio model
      */
     #[Computed]
     public function currentPage()
     {
-        if (!$this->pageId) {
+        if (!$this->portfolioId) {
             return null;
         }
 
-        return Page::query()->find($this->pageId);
+        return Portfolio::query()->find($this->portfolioId);
     }
 
     // Livewire Listeners - Universal component'lerden gelen event'ler
@@ -66,12 +66,12 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
     // Dependency Injection Boot
     public function boot()
     {
-        // PageService'i initialize et (her zaman var)
-        $this->pageService = app(\Modules\Portfolio\App\Services\PageService::class);
+        // PortfolioService'i initialize et (her zaman var)
+        $this->portfolioService = app(\Modules\Portfolio\App\Services\PortfolioService::class);
 
         // Layout sections
-        view()->share('pretitle', __('portfolio::admin.page_management'));
-        view()->share('title', __('portfolio::admin.pages'));
+        view()->share('pretitle', __('portfolio::admin.portfolio_management'));
+        view()->share('title', __('portfolio::admin.portfolios'));
     }
 
     public function updated($propertyName)
@@ -90,14 +90,15 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
 
         // Sayfa verilerini yükle
         if ($id) {
-            $this->pageId = $id;
+            $this->portfolioId = $id;
             $this->loadPageData($id);
         } else {
             $this->initializeEmptyInputs();
         }
 
-        // Studio modül kontrolü
-        $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
+        // Studio modül kontrolü - config'den kontrol et
+        $studioConfig = config('portfolio.integrations.studio', []);
+        $this->studioEnabled = ($studioConfig['enabled'] ?? false) && class_exists($studioConfig['component'] ?? '');
 
         // Tab completion durumunu hesapla
         $this->dispatch('update-tab-completion', $this->getAllFormData());
@@ -115,8 +116,8 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
         $this->currentLanguage = get_tenant_default_locale();
 
         // Tab bilgileri - Blade'de kullanılıyor
-        $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('page');
-        $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('page');
+        $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('portfolio');
+        $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('portfolio');
     }
 
     /**
@@ -153,12 +154,12 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
                         // Slug otomatik oluştur (sadece title çevirildiyse)
                         if ($field === 'title') {
                             $this->multiLangInputs[$lang]['slug'] = SlugHelper::generateFromTitle(
-                                Page::class,
+                                Portfolio::class,
                                 $translatedText,
                                 $lang,
                                 'slug',
                                 'portfolio_id',
-                                $this->pageId
+                                $this->portfolioId
                             );
                         }
                     }
@@ -205,13 +206,14 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
      */
     protected function loadPageData($id)
     {
-        // PageService her zaman var, fallback gereksiz
-        $formData = $this->pageService->preparePageForForm($id, $this->currentLanguage);
-        $portfolio = $formData['page'] ?? null;
+        // PortfolioService her zaman var, fallback gereksiz
+        $formData = $this->portfolioService->preparePortfolioForForm($id, $this->currentLanguage);
+        $portfolio = $formData['portfolio'] ?? null;
         $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
         if ($portfolio) {
             // Dil-neutral alanlar
+            $this->inputs = $portfolio->only(['is_active']);
 
             // Çoklu dil alanları - FALLBACK KAPALI (kullanıcı tüm dilleri boşaltabilsin)
             foreach ($this->availableLanguages as $lang) {
@@ -263,9 +265,8 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
     protected function rules()
     {
         $rules = [
-            'inputs.css' => 'nullable|string',
-            'inputs.js' => 'nullable|string',
             'inputs.is_active' => 'boolean',
+            'inputs.category_id' => 'nullable|exists:portfolio_categories,category_id',
         ];
 
         // Çoklu dil alanları - ana dil mecburi, diğerleri opsiyonel
@@ -279,9 +280,13 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
     }
 
     protected $messages = [
+        'inputs.is_active.boolean' => 'Aktif durumu geçerli bir değer olmalıdır',
         'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
         'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
         'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
+        'multiLangInputs.*.body.string' => 'İçerik metin formatında olmalıdır',
+        'multiLangInputs.*.slug.string' => 'Slug metin formatında olmalıdır',
+        'multiLangInputs.*.slug.max' => 'Slug en fazla 255 karakter olabilir',
     ];
 
     /**
@@ -313,26 +318,6 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
                 } else {
                     $validated['body'][$lang] = $result['clean_code'];
                 }
-            }
-        }
-
-        // CSS validation
-        if (!empty(trim($this->inputs['css']))) {
-            $result = \App\Services\SecurityValidationService::validateCss($this->inputs['css']);
-            if (!$result['valid']) {
-                $errors[] = 'CSS: ' . implode(', ', $result['errors']);
-            } else {
-                $validated['css'] = $result['clean_code'];
-            }
-        }
-
-        // JS validation
-        if (!empty(trim($this->inputs['js']))) {
-            $result = \App\Services\SecurityValidationService::validateJs($this->inputs['js']);
-            if (!$result['valid']) {
-                $errors[] = 'JavaScript: ' . implode(', ', $result['errors']);
-            } else {
-                $validated['js'] = $result['clean_code'];
             }
         }
 
@@ -368,11 +353,11 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
         }
 
         $multiLangData['slug'] = SlugHelper::processMultiLanguageSlugs(
-            Page::class,
+            Portfolio::class,
             $slugInputs,
             $titleInputs,
             'slug',
-            $this->pageId
+            $this->portfolioId
         );
 
         // Body verilerini ekle (validated'dan)
@@ -389,7 +374,7 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
         $this->dispatch('sync-tinymce-content');
 
         Log::info('🚀 SAVE METHOD BAŞLADI', [
-            'pageId' => $this->pageId,
+            'portfolioId' => $this->portfolioId,
             'redirect' => $redirect,
             'currentLanguage' => $this->currentLanguage
         ]);
@@ -432,29 +417,22 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
         // Çoklu dil verilerini hazırla (title, slug, body)
         $multiLangData = $this->prepareMultiLangData($validation['data']);
 
-        // Safe inputs - CSS ve JS validasyondan geldi
+        // Safe inputs
         $safeInputs = $this->inputs;
-        if (isset($validation['data']['css'])) {
-            $safeInputs['css'] = $validation['data']['css'];
-        } else {
-            $safeInputs['css'] = '';
-        }
-        if (isset($validation['data']['js'])) {
-            $safeInputs['js'] = $validation['data']['js'];
-        } else {
-            $safeInputs['js'] = '';
-        }
 
         $data = array_merge($safeInputs, $multiLangData);
 
-        if ($this->pageId) {
-            $portfolio = Page::query()->findOrFail($this->pageId);
+        // Yeni kayıt mı kontrol et
+        $isNewRecord = !$this->portfolioId;
+
+        if ($this->portfolioId) {
+            $portfolio = Portfolio::query()->findOrFail($this->portfolioId);
             $currentData = collect($portfolio->toArray())->only(array_keys($data))->all();
 
             if ($data == $currentData) {
                 $toast = [
                     'title' => __('admin.success'),
-                    'message' => __('admin.page_updated'),
+                    'message' => __('admin.portfolio_updated'),
                     'type' => 'success'
                 ];
             } else {
@@ -463,53 +441,66 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
 
                 $toast = [
                     'title' => __('admin.success'),
-                    'message' => __('admin.page_updated'),
+                    'message' => __('admin.portfolio_updated'),
                     'type' => 'success'
                 ];
             }
         } else {
-            $portfolio = Page::query()->create($data);
-            $this->pageId = $portfolio->portfolio_id;
+            $portfolio = Portfolio::query()->create($data);
+            $this->portfolioId = $portfolio->portfolio_id;
             log_activity($portfolio, 'eklendi');
 
             $toast = [
                 'title' => __('admin.success'),
-                'message' => __('admin.page_created'),
+                'message' => __('admin.portfolio_created'),
                 'type' => 'success'
             ];
         }
 
         Log::info('🎯 Save method tamamlanıyor', [
-            'pageId' => $this->pageId,
-            'redirect' => $redirect
+            'portfolioId' => $this->portfolioId,
+            'redirect' => $redirect,
+            'isNewRecord' => $isNewRecord
         ]);
 
-        if ($redirect) {
-            session()->flash('toast', $toast);
-            return redirect()->route('admin.page.index');
-        }
-
+        // Toast mesajı göster
         $this->dispatch('toast', $toast);
 
         // SEO VERİLERİNİ KAYDET - Universal SEO Tab Component'e event gönder
-        $this->dispatch('page-saved', pageId: $this->pageId);
+        $this->dispatch('page-saved', $this->portfolioId);
+
+        // Redirect istendiyse
+        if ($redirect) {
+            session()->flash('toast', $toast);
+            return redirect()->route('admin.portfolio.index');
+        }
+
+        // Yeni kayıt oluşturulduysa - medya event'ini dispatch et ve redirect
+        if ($isNewRecord && isset($portfolio)) {
+            // UniversalMediaComponent'e save event'i gönder
+            $this->dispatch('portfolio-saved', $portfolio->portfolio_id);
+
+            session()->flash('toast', $toast);
+            return redirect()->route('admin.portfolio.manage', ['id' => $portfolio->portfolio_id]);
+        }
 
         Log::info('✅ Save method başarıyla tamamlandı', [
-            'pageId' => $this->pageId
+            'portfolioId' => $this->portfolioId
         ]);
 
-        if ($resetForm && !$this->pageId) {
+        if ($resetForm && !$this->portfolioId) {
             $this->reset();
             $this->currentLanguage = get_tenant_default_locale();
             $this->initializeEmptyInputs();
         }
     }
 
+
     public function render()
     {
-        return view('portfolio::admin.livewire.page-manage-component', [
+        return view('portfolio::admin.livewire.portfolio-manage-component', [
             'jsVariables' => [
-                'currentPageId' => $this->pageId ?? null,
+                'currentPortfolioId' => $this->portfolioId ?? null,
                 'currentLanguage' => $this->currentLanguage ?? 'tr'
             ]
         ]);
@@ -521,12 +512,12 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
 
     public function getEntityType(): string
     {
-        return 'page';
+        return 'portfolio';
     }
 
     public function getTargetFields(array $params): array
     {
-        $portfolioields = [
+        $portfolioFields = [
             'title' => 'string',
             'body' => 'html',
             'excerpt' => 'text',
@@ -535,10 +526,10 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
         ];
 
         if (isset($params['target_field'])) {
-            return [$params['target_field'] => $portfolioields[$params['target_field']] ?? 'html'];
+            return [$params['target_field'] => $portfolioFields[$params['target_field']] ?? 'html'];
         }
 
-        return $portfolioields;
+        return $portfolioFields;
     }
 
     public function getModuleInstructions(): string

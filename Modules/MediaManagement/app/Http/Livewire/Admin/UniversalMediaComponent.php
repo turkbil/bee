@@ -78,6 +78,7 @@ class UniversalMediaComponent extends Component
         'portfolio-saved' => 'handleModelSaved',
         'update-gallery-order' => 'updateGalleryOrderFromEvent',
         'update-temp-gallery-order' => 'updateTempGalleryOrderFromEvent',
+        'save-media-caption' => 'saveMediaCaption',
     ];
 
     // ========================================
@@ -147,6 +148,7 @@ class UniversalMediaComponent extends Component
                     'mime_type' => $item->mime_type,
                     'type' => $this->mediaService->getMediaTypeFromMime($item->mime_type),
                     'order' => $item->order_column,
+                    'custom_properties' => $item->custom_properties ?? [],
                 ];
             })
             ->values()
@@ -421,21 +423,27 @@ class UniversalMediaComponent extends Component
 
     /**
      * Event handler for gallery order update
+     * Livewire 3: Global events receive payload as single parameter
      */
-    public function updateGalleryOrderFromEvent($data)
+    public function updateGalleryOrderFromEvent($items)
     {
-        if (isset($data['items'])) {
-            $this->updateGalleryOrder($data['items']);
+        // Livewire 3'te global event { items: [...] } şeklinde gelir
+        // Ancak listener'da doğrudan $items olarak alırız
+        if (is_array($items)) {
+            $this->updateGalleryOrder($items);
         }
     }
 
     /**
      * Event handler for temp gallery order update
+     * Livewire 3: Global events receive payload as single parameter
      */
-    public function updateTempGalleryOrderFromEvent($data)
+    public function updateTempGalleryOrderFromEvent($items)
     {
-        if (isset($data['items'])) {
-            $this->updateTempGalleryOrder($data['items']);
+        // Livewire 3'te global event { items: [...] } şeklinde gelir
+        // Ancak listener'da doğrudan $items olarak alırız
+        if (is_array($items)) {
+            $this->updateTempGalleryOrder($items);
         }
     }
 
@@ -537,14 +545,20 @@ class UniversalMediaComponent extends Component
             return;
         }
 
+        Log::info('🔍 Gallery Order - Gelen sıralama:', [
+            'list' => $list
+        ]);
+
+        // Backend'e kaydet
         $success = $this->mediaService->updateGalleryOrder($model, $list);
 
         if ($success) {
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('mediamanagement::admin.order_updated'),
-                'type' => 'success'
-            ]);
+            // Frontend'i güncelle - YENİ sıralamayı yükle
+            $this->loadCollection($model, 'gallery');
+
+            Log::info('✅ Gallery sıralaması güncellendi ve frontend yenilendi');
+        } else {
+            Log::error('❌ Gallery sıralaması güncellenemedi');
         }
     }
 
@@ -648,6 +662,170 @@ class UniversalMediaComponent extends Component
     protected function getCollectionConfig(string $collectionName): ?array
     {
         return $this->mediaService->getCollectionConfig($this->modelType, $collectionName);
+    }
+
+    // ========================================
+    // CAPTION MANAGEMENT
+    // ========================================
+
+    /**
+     * Save media caption (title, description, alt_text)
+     */
+    public function saveMediaCaption($mediaId, $captionData)
+    {
+        Log::info('💾 Caption data received from frontend', [
+            'mediaId' => $mediaId,
+            'captionData' => $captionData
+        ]);
+
+        // Temp media için caption'u session'da sakla
+        if ($mediaId === 'temp-featured') {
+            if ($this->tempFeaturedImage) {
+                $this->tempFeaturedImage['caption'] = $captionData;
+
+                // Session'da da güncelle
+                $sessionKey = "media_temp_{$this->modelType}_{$this->modelId}_featured_image";
+                session([$sessionKey => $this->tempFeaturedImage]);
+
+                Log::info('💾 Temp featured caption saved to session', [
+                    'caption' => $captionData
+                ]);
+            }
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('mediamanagement::admin.caption_saved'),
+                'type' => 'success'
+            ]);
+
+            $this->dispatch('close-caption-modal');
+            return;
+        }
+
+        // Temp gallery için caption'u session'da sakla
+        if (is_string($mediaId) && str_starts_with($mediaId, 'temp-gallery-')) {
+            $index = (int) str_replace('temp-gallery-', '', $mediaId);
+            if (isset($this->tempGallery[$index])) {
+                $this->tempGallery[$index]['caption'] = $captionData;
+
+                // Session'da da güncelle
+                $sessionKey = "media_temp_{$this->modelType}_{$this->modelId}_gallery";
+                session([$sessionKey => $this->tempGallery]);
+
+                Log::info('💾 Temp gallery caption saved to session', [
+                    'index' => $index,
+                    'caption' => $captionData
+                ]);
+            }
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('mediamanagement::admin.caption_saved'),
+                'type' => 'success'
+            ]);
+
+            $this->dispatch('close-caption-modal');
+            return;
+        }
+
+        // Existing media için Spatie custom properties kullan
+        $model = $this->getModel();
+        if (!$model) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.error_occurred'),
+                'type' => 'error'
+            ]);
+            return;
+        }
+
+        try {
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
+
+            // Security: Check ownership
+            if (!$media || $media->model_id != $model->id || $media->model_type != get_class($model)) {
+                Log::warning('Unauthorized media caption edit attempt', [
+                    'media_id' => $mediaId,
+                    'model_id' => $model->id
+                ]);
+
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('mediamanagement::admin.unauthorized'),
+                    'type' => 'error'
+                ]);
+                return;
+            }
+
+            // Custom properties güncelle
+            $media->setCustomProperty('title', $captionData['title'] ?? []);
+            $media->setCustomProperty('description', $captionData['description'] ?? []);
+            $media->setCustomProperty('alt_text', $captionData['alt_text'] ?? []);
+            $media->save();
+
+            Log::info('💾 Media caption saved', [
+                'media_id' => $mediaId,
+                'model_id' => $model->id,
+                'custom_properties' => $media->custom_properties
+            ]);
+
+            // Sadece ilgili media item'ın custom_properties'ini güncelle
+            // loadCollection çağırmıyoruz çünkü tüm component'i render ediyor ve tab durumlarını bozuyor
+            if ($media->collection_name === 'featured_image') {
+                if (!empty($this->existingFeaturedImage)) {
+                    $this->existingFeaturedImage['custom_properties'] = $media->custom_properties;
+                }
+            } elseif ($media->collection_name === 'gallery') {
+                foreach ($this->existingGallery as $index => $item) {
+                    if ($item['id'] == $mediaId) {
+                        $this->existingGallery[$index]['custom_properties'] = $media->custom_properties;
+                        break;
+                    }
+                }
+            }
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('mediamanagement::admin.caption_saved'),
+                'type' => 'success'
+            ]);
+
+            $this->dispatch('close-caption-modal');
+
+        } catch (\Exception $e) {
+            Log::error('Media caption save failed', [
+                'media_id' => $mediaId,
+                'error' => $e->getMessage()
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.error_occurred'),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Get media caption for a specific field and locale
+     */
+    public function getMediaCaption($media, string $field, ?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        // Array ise (temp media)
+        if (is_array($media)) {
+            $caption = $media['caption'][$field] ?? [];
+            return $caption[$locale] ?? $caption['tr'] ?? null;
+        }
+
+        // Spatie Media object ise
+        if ($media instanceof \Spatie\MediaLibrary\MediaCollections\Models\Media) {
+            $customProps = $media->getCustomProperty($field, []);
+            return $customProps[$locale] ?? $customProps['tr'] ?? null;
+        }
+
+        return null;
     }
 
     // ========================================

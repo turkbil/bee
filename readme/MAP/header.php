@@ -34,15 +34,122 @@
                 <a href="index.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'text-accent' : ''; ?>">
                     <span>Ana Sayfa</span>
                 </a>
-                <a href="tenant-system.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'tenant-system.php') ? 'text-accent' : ''; ?>">
-                    <span>Çok Kiracılı Sistem</span>
-                </a>
-                <a href="ai-system.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'ai-system.php') ? 'text-accent' : ''; ?>">
-                    <span>AI Sistemi</span>
-                </a>
-                <a href="mobile-app.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'mobile-app.php') ? 'text-accent' : ''; ?>">
-                    <span>Mobil Uygulama</span>
-                </a>
+                
+                <!-- Sistem Mimarisi Dropdown -->
+                <div class="nav-dropdown" x-data="{ open: false }">
+                    <button class="nav-link dropdown-toggle" @click="open = !open">
+                        <span>Sistem Mimarisi</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 ml-1 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 transform scale-95" 
+                         x-transition:enter-end="opacity-100 transform scale-100" 
+                         x-transition:leave="transition ease-in duration-150" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform scale-95" 
+                         class="dropdown-menu" 
+                         @click.away="open = false">
+                        <a href="architecture.php" class="dropdown-item">
+                            <i data-lucide="layers" class="w-4 h-4"></i>
+                            <span>Genel Mimari</span>
+                        </a>
+                        <a href="security.php" class="dropdown-item">
+                            <i data-lucide="shield" class="w-4 h-4"></i>
+                            <span>Güvenlik Sistemi</span>
+                        </a>
+                        <a href="performance.php" class="dropdown-item">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            <span>Performans</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Özellikler Dropdown -->
+                <div class="nav-dropdown" x-data="{ open: false }">
+                    <button class="nav-link dropdown-toggle" @click="open = !open">
+                        <span>Özellikler</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 ml-1 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 transform scale-95" 
+                         x-transition:enter-end="opacity-100 transform scale-100" 
+                         x-transition:leave="transition ease-in duration-150" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform scale-95" 
+                         class="dropdown-menu" 
+                         @click.away="open = false">
+                        <a href="features.php" class="dropdown-item">
+                            <i data-lucide="star" class="w-4 h-4"></i>
+                            <span>Ana Özellikler</span>
+                        </a>
+                        <a href="ai-features.php" class="dropdown-item">
+                            <i data-lucide="brain" class="w-4 h-4"></i>
+                            <span>Yapay Zeka Sistemi</span>
+                        </a>
+                        <a href="widget-system.php" class="dropdown-item">
+                            <i data-lucide="puzzle" class="w-4 h-4"></i>
+                            <span>Widget Sistemi</span>
+                        </a>
+                        <a href="theme-system.php" class="dropdown-item">
+                            <i data-lucide="palette" class="w-4 h-4"></i>
+                            <span>Tema Sistemi</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Teknoloji Dropdown -->
+                <div class="nav-dropdown" x-data="{ open: false }">
+                    <button class="nav-link dropdown-toggle" @click="open = !open">
+                        <span>Teknoloji</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 ml-1 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 transform scale-95" 
+                         x-transition:enter-end="opacity-100 transform scale-100" 
+                         x-transition:leave="transition ease-in duration-150" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform scale-95" 
+                         class="dropdown-menu" 
+                         @click.away="open = false">
+                        <a href="technology.php" class="dropdown-item">
+                            <i data-lucide="code" class="w-4 h-4"></i>
+                            <span>Teknoloji Stack</span>
+                        </a>
+                        <a href="api-documentation.php" class="dropdown-item">
+                            <i data-lucide="book" class="w-4 h-4"></i>
+                            <span>API Dokümantasyonu</span>
+                        </a>
+                        <a href="mobile-app-details.php" class="dropdown-item">
+                            <i data-lucide="smartphone" class="w-4 h-4"></i>
+                            <span>Mobil Uygulama</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Yönetim Dropdown -->
+                <div class="nav-dropdown" x-data="{ open: false }">
+                    <button class="nav-link dropdown-toggle" @click="open = !open">
+                        <span>Yönetim</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 ml-1 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 transform scale-95" 
+                         x-transition:enter-end="opacity-100 transform scale-100" 
+                         x-transition:leave="transition ease-in duration-150" 
+                         x-transition:leave-start="opacity-100 transform scale-100" 
+                         x-transition:leave-end="opacity-0 transform scale-95" 
+                         class="dropdown-menu" 
+                         @click.away="open = false">
+                        <a href="admin-panel.php" class="dropdown-item">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
+                            <span>Admin Panel</span>
+                        </a>
+                    </div>
+                </div>
             </nav>
             
             <!-- Actions -->

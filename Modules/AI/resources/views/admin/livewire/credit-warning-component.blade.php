@@ -17,10 +17,10 @@
             </div>
             <div class="ms-3">
                 <button type="button" class="btn btn-sm btn-outline-primary me-2" wire:click="buyCredits" title="Kredi Satın Al">
-                    <i class="ti ti-plus"></i>
+                    <i class="fas fa-plus"></i>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="refreshCredits" title="Yenile">
-                    <i class="ti ti-refresh"></i>
+                    <i class="fas fa-sync-alt"></i>
                 </button>
                 <button type="button" class="btn-close ms-2" wire:click="dismissWarning" aria-label="Close"></button>
             </div>
@@ -37,7 +37,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header bg-danger text-white">
                     <div class="d-flex align-items-center">
-                        <i class="ti ti-alert-triangle fs-2 me-3"></i>
+                        <i class="fas fa-exclamation-triangle fs-2 me-3"></i>
                         <div>
                             <h4 class="modal-title mb-0">🚫 AI Kredisi Tükendi!</h4>
                             <small class="opacity-75">AI özelliklerini kullanmak için kredi gerekli</small>
@@ -50,7 +50,7 @@
                     <!-- Critical Warning Message -->
                     <div class="alert alert-danger mb-4">
                         <div class="d-flex align-items-center">
-                            <i class="ti ti-alert-triangle fs-3 me-3"></i>
+                            <i class="fas fa-exclamation-triangle fs-3 me-3"></i>
                             <div>
                                 <h5 class="mb-1">⛔ Kredi bakiyeniz tükendi!</h5>
                                 <p class="mb-0">{{ $warningMessage }}</p>
@@ -70,7 +70,7 @@
                             </div>
                             
                             <div class="alert alert-warning">
-                                <i class="ti ti-info-circle me-2"></i>
+                                <i class="fas fa-info-circle me-2"></i>
                                 <strong>Bilgi:</strong> AI Chat, Çeviri ve diğer AI özellikleri için kredi gereklidir.
                             </div>
                         </div>
@@ -81,11 +81,11 @@
                 <div class="modal-footer">
                     <div class="w-100 d-flex justify-content-center">
                         <button type="button" class="btn btn-danger btn-lg me-3" wire:click="buyCredits">
-                            <i class="ti ti-shopping-cart me-2"></i>
+                            <i class="fas fa-shopping-cart me-2"></i>
                             Hemen Kredi Satın Al
                         </button>
                         <button type="button" class="btn btn-outline-secondary" wire:click="refreshCredits">
-                            <i class="ti ti-refresh me-2"></i>
+                            <i class="fas fa-sync-alt me-2"></i>
                             Durumu Yenile
                         </button>
                     </div>

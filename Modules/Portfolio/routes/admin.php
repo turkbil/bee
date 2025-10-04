@@ -17,16 +17,22 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/', PortfolioComponent::class)
                     ->middleware('module.permission:portfolio,view')
                     ->name('index');
+
                 Route::get('/manage/{id?}', PortfolioManageComponent::class)
                     ->middleware('module.permission:portfolio,update')
                     ->name('manage');
-                
-                // Kategori Rotaları
-                Route::get('/category', PortfolioCategoryComponent::class)
-                    ->middleware('module.permission:portfolio,view')
-                    ->name('category.index');
-                Route::get('/category/manage/{id?}', PortfolioCategoryManageComponent::class)
-                    ->middleware('module.permission:portfolio,update')
-                    ->name('category.manage');
+
+                // Kategori route'ları
+                Route::prefix('category')
+                    ->name('category.')
+                    ->group(function () {
+                        Route::get('/', PortfolioCategoryComponent::class)
+                            ->middleware('module.permission:portfolio,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', PortfolioCategoryManageComponent::class)
+                            ->middleware('module.permission:portfolio,update')
+                            ->name('manage');
+                    });
             });
     });

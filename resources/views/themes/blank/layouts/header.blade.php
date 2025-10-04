@@ -13,7 +13,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
+    {{-- Performance Optimization - DNS Prefetch & Preconnect --}}
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    {{-- Preload Critical Resources (2025 Best Practice) --}}
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js">
+
 {{-- Global SEO Meta Tags - Tek Satır --}}
 <x-seo-meta />
 
@@ -23,6 +33,15 @@
     <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
     @else
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
+
+    {{-- PWA Manifest (2025 Best Practice) --}}
+    <link rel="manifest" href="{{ route('manifest') }}">
+
+    {{-- Apple Touch Icon (iOS/Safari) --}}
+    @php $appleTouchIcon = setting('site_logo') ?? $favicon; @endphp
+    @if($appleTouchIcon && $appleTouchIcon !== 'Favicon yok')
+    <link rel="apple-touch-icon" href="{{ cdn($appleTouchIcon) }}">
     @endif
 
     {{-- Tailwind CSS --}}

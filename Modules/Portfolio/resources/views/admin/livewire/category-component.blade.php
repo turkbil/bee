@@ -2,223 +2,265 @@
     View::share('pretitle', __('portfolio::admin.category_management'));
 @endphp
 
-<div wire:id="{{ $this->getId() }}" class="category-component-wrapper">
-    <div class="card">
-        @include('portfolio::admin.helper-category')
-        <div class="card-body p-0">
-            <!-- Header Bölümü -->
-            <div class="row mx-2 my-3">
-                <!-- Arama Kutusu -->
-                <div class="col">
-                    <div class="input-icon">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" wire:model.live="search" class="form-control"
-                            placeholder="{{ __('portfolio::admin.search_categories') }}">
-                    </div>
-                </div>
-                <!-- Ortadaki Loading -->
-                <div class="col position-relative">
-                    <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, toggleActive"
-                        class="position-absolute top-50 start-50 translate-middle text-center"
-                        style="width: 100%; max-width: 250px;">
-                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
-                        <div class="progress mb-1">
-                            <div class="progress-bar progress-bar-indeterminate"></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Sağ Taraf (Sayfa Adeti) -->
-                <div class="col">
-                    <div class="d-flex align-items-center justify-content-end gap-3">
-                        <!-- Sayfa Adeti Seçimi -->
-                        <div style="width: 80px; min-width: 80px">
-                            <select wire:model.live="perPage" class="form-control listing-filter-select"
-                                    data-choices
-                                    data-choices-search="false"
-                                    data-choices-filter="true">
-                                <option value="10"><nobr>10</nobr></option>
-                                <option value="15"><nobr>15</nobr></option>
-                                <option value="50"><nobr>50</nobr></option>
-                                <option value="100"><nobr>100</nobr></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div wire:key="portfolio-category-component" wire:id="portfolio-category-component">
+    {{-- Helper dosyası --}}
+    @include('portfolio::admin.helper-category')
+    @include('admin.partials.error_message')
 
-            <!-- Tablo Bölümü -->
-            <div id="table-default" class="table-responsive">
-                <table class="table table-vcenter card-table table-hover text-nowrap datatable">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <button
-                                        class="table-sort {{ $sortField === 'category_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                        wire:click="sortBy('category_id')">
-                                    </button>
-                                </div>
-                            </th>
-                            <th>
-                                <button
-                                    class="table-sort {{ $sortField === 'name' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('name')">
-                                    {{ __('portfolio::admin.category_name') }}
-                                </button>
-                            </th>
-                            <th>
-                                <button
-                                    class="table-sort {{ $sortField === 'slug' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('slug')">
-                                    {{ __('portfolio::admin.slug') }}
-                                </button>
-                            </th>
-                            <th class="text-center" style="width: 100px">
-                                <button
-                                    class="table-sort {{ $sortField === 'sort_order' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('sort_order')">
-                                    {{ __('portfolio::admin.sort_order') }}
-                                </button>
-                            </th>
-                            <th class="text-center" style="width: 80px">
-                                <button
-                                    class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('is_active')">
-                                    {{ __('admin.status') }}
-                                </button>
-                            </th>
-                            <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-tbody">
-                        @forelse($categories as $category)
-                        <tr class="hover-trigger" wire:key="row-{{ $category->category_id }}">
-                            <td class="sort-id small">
-                                <span>{{ $category->category_id }}</span>
-                            </td>
-                            <td wire:key="name-{{ $category->category_id }}" class="position-relative">
-                                @if($editingTitleId === $category->category_id)
-                                <div class="d-flex align-items-center gap-3" x-data
-                                    @click.outside="$wire.updateTitleInline()">
-                                    <div class="flexible-input-wrapper">
-                                        <input type="text" wire:model.defer="newTitle"
-                                            class="form-control form-control-sm flexible-input"
-                                            placeholder="{{ __('portfolio::admin.category_name') }}"
-                                            wire:keydown.enter="updateTitleInline"
-                                            wire:keydown.escape="$set('editingTitleId', null)"
-                                            x-init="$nextTick(() => {
-                                                $el.focus();
-                                                $el.style.width = '20px';
-                                                $el.style.width = ($el.scrollWidth + 2) + 'px';
-                                            })"
-                                            x-on:input="
-                                                $el.style.width = '20px';
-                                                $el.style.width = ($el.scrollWidth + 2) + 'px'
-                                            "
-                                            style="min-width: 60px; max-width: 100%;">
+    <!-- İki Sütunlu Layout -->
+    <div class="row">
+        <!-- Sol Sütun: Form -->
+        <div class="col-lg-5 col-md-12 mb-3">
+            <form method="post" wire:submit.prevent="addCategory">
+                <div class="card">
+                    <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="category_active_tab">
+                        <x-manage.language.switcher :current-language="$currentLanguage" />
+                    </x-tab-system>
+                    <div class="card-body">
+                        <div class="tab-content" id="contentTabContent">
+                            <!-- Kategori Ekleme Tab -->
+                            <div class="tab-pane fade show active" id="0" role="tabpanel">
+
+                                @foreach ($availableLanguages as $lang)
+                                    @php
+                                        $langData = $multiLangInputs[$lang] ?? [];
+                                        $tenantLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where('is_active', true)->get();
+                                        $langName = $tenantLanguages->where('code', $lang)->first()?->native_name ?? strtoupper($lang);
+                                    @endphp
+
+                                    <div class="language-content" data-language="{{ $lang }}"
+                                        style="display: {{ $currentLanguage === $lang ? 'block' : 'none' }};">
+
+                                        <!-- Kategori Adı - MenuManagement Pattern -->
+                                        <div class="form-floating mb-3">
+                                            <input type="text"
+                                                class="form-control @error('multiLangInputs.' . $lang . '.title') is-invalid @enderror"
+                                                wire:model="multiLangInputs.{{ $lang }}.title"
+                                                placeholder="{{ __('portfolio::admin.category_title') }}">
+                                            <label>
+                                                {{ __('portfolio::admin.category_title') }}
+                                                @if ($lang === session('site_default_language', 'tr'))
+                                                    <span class="required-star">★</span>
+                                                @endif
+                                            </label>
+                                            @error('multiLangInputs.' . $lang . '.title')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
                                     </div>
-                                    <button class="btn px-2 py-1 btn-outline-success" wire:click="updateTitleInline">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="btn px-2 py-1 btn-outline-danger"
-                                        wire:click="$set('editingTitleId', null)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                @endforeach
+
+                                <!-- Üst Kategori (Parent) -->
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" wire:model.defer="parent_id">
+                                        <option value="">{{ __('portfolio::admin.main_category') }}</option>
+                                        @foreach($this->hierarchicalCategories as $cat)
+                                            <option value="{{ $cat['id'] }}">
+                                                {{ $cat['title'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label>{{ __('portfolio::admin.parent_category') }}</label>
                                 </div>
-                                @else
-                                <div class="d-flex align-items-center">
-                                    <span class="editable-title pr-4">{{ $category->getTranslated('name', $currentSiteLocale) ?? $category->getTranslated('name', 'tr') }}</span>
-                                    <button class="btn btn-sm px-2 py-1 edit-icon ms-4"
-                                        wire:click="startEditingTitle({{ $category->category_id }}, '{{ addslashes($category->getTranslated('name', $currentSiteLocale) ?? $category->getTranslated('name', 'tr')) }}')">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </div>
-                                @endif
-                            </td>
-                            <td>
-                                <span class="text-muted">{{ $category->getTranslated('slug', $currentSiteLocale) ?? $category->getTranslated('slug', 'tr') }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge badge-outline text-secondary">{{ $category->sort_order }}</span>
-                            </td>
-                            <td wire:key="status-{{ $category->category_id }}" class="text-center align-middle">
-                                <button wire:click="toggleActive({{ $category->category_id }})"
-                                    class="btn btn-icon btn-sm {{ $category->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
-                                    <!-- Loading Durumu -->
-                                    <div wire:loading wire:target="toggleActive({{ $category->category_id }})"
-                                        class="spinner-border spinner-border-sm">
-                                    </div>
-                                    <!-- Normal Durum -->
-                                    <div wire:loading.remove wire:target="toggleActive({{ $category->category_id }})">
-                                        @if($category->is_active)
-                                        <i class="fas fa-check"></i>
-                                        @else
-                                        <i class="fas fa-times"></i>
-                                        @endif
-                                    </div>
-                                </button>
-                            </td>
-                            <td class="text-center align-middle">
-                                <div class="d-flex align-items-center gap-3 justify-content-center">
-                                    <a href="{{ route('admin.portfolio.category.manage', $category->category_id) }}"
-                                       data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.edit') }}"
-                                       style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                        <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
-                                    </a>
-                                    @hasmoduleaccess('portfolio', 'delete')
-                                    <div class="dropdown">
-                                        <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false"
-                                            style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                            <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a href="javascript:void(0);" wire:click="$dispatch('showDeleteModal', {
-                                                module: 'portfolio_category',
-                                                id: {{ $category->category_id }},
-                                                title: '{{ addslashes($category->getTranslated('name', app()->getLocale()) ?? $category->getTranslated('name', 'tr')) }}'
-                                            })" class="dropdown-item link-danger">
-                                                {{ __('admin.delete') }}
-                                            </a>
+
+                                <!-- Aktif Durumu - MenuManagement Pattern -->
+                                <div class="mb-3">
+                                    <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                        <input type="checkbox" id="is_active" name="is_active" wire:model="is_active"
+                                            value="1"
+                                            {{ !isset($is_active) || $is_active ? 'checked' : '' }} />
+
+                                        <div class="state p-success p-on ms-2">
+                                            <label>{{ __('portfolio::admin.active') }}</label>
+                                        </div>
+                                        <div class="state p-danger p-off ms-2">
+                                            <label>{{ __('portfolio::admin.inactive') }}</label>
                                         </div>
                                     </div>
-                                    @endhasmoduleaccess
                                 </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-4">
-                                <div class="empty">
-                                    <p class="empty-title">{{ __('portfolio::admin.no_categories_found') }}</p>
-                                    <p class="empty-subtitle text-muted">
-                                        {{ __('portfolio::admin.no_results') }}
-                                    </p>
+
+                                <!-- Kaydet Butonu -->
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>
+                                        {{ __('portfolio::admin.new_category') }}
+                                    </button>
                                 </div>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sağ Sütun: Kategori Listesi -->
+        <div class="col-lg-7 col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Header Bölümü - MenuManagement Pattern -->
+                    <div class="row mb-3">
+                        <!-- Dinamik Başlık - Sol -->
+                        <div class="col">
+                            <h3 class="card-title mb-0">{{ __('portfolio::admin.categories') }}</h3>
+                            <p class="text-muted small mb-0">{{ __('portfolio::admin.category_management') }}</p>
+                        </div>
+                        <!-- Ortadaki Loading -->
+                        <div class="col position-relative">
+                            <div wire:loading
+                                wire:target="toggleCategoryStatus, updateOrder, addCategory, search"
+                                class="position-absolute top-50 start-50 translate-middle text-center"
+                                style="width: 100%; max-width: 250px; z-index: 10;">
+                                <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
+                                <div class="progress mb-1">
+                                    <div class="progress-bar progress-bar-indeterminate"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Arama Kutusu - Sağ -->
+                        <div class="col">
+                            <div class="d-flex align-items-center justify-content-end">
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
+                                        placeholder="{{ __('portfolio::admin.search_categories') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tablo Bölümü -->
+                <div class="card-body p-0">
+                    <!-- Category Items List -->
+                    <div wire:loading.class="opacity-50" wire:target="toggleCategoryStatus, updateOrder, addCategory, search">
+                        <div class="list-group list-group-flush" id="category-sortable-list">
+                            @forelse($categories as $item)
+
+                                <!-- Kategori Öğesi - MenuManagement Pattern -->
+                                @php
+                                    $depthLevel = $item->depth_level ?? 0;
+                                    $indentPx = $depthLevel * 30; // 30px per level
+                                @endphp
+                                <div class="category-item list-group-item p-2"
+                                    style="padding-left: {{ 8 + $indentPx }}px !important;"
+                                    wire:key="category-{{ $item->category_id }}"
+                                    data-id="{{ $item->category_id }}"
+                                    data-depth="{{ $depthLevel }}"
+                                    @if($item->parent_id)
+                                        data-parent-id="{{ $item->parent_id }}"
+                                    @endif>
+                                    <div class="d-flex align-items-center">
+
+                                        <!-- Drag Handle - MenuManagement Pattern -->
+                                        <div class="category-drag-handle me-2">
+                                            <i class="fas fa-grip-vertical text-muted"></i>
+                                        </div>
+
+                                        <!-- Icon - MenuManagement Pattern -->
+                                        <div class="{{ $depthLevel > 0 ? 'bg-secondary-lt' : 'bg-primary-lt' }} rounded-2 d-flex align-items-center justify-content-center me-2"
+                                            style="width: 2.5rem; height: 2.5rem;">
+                                            <i class="{{ $depthLevel > 0 ? 'fas fa-folder-open' : 'fas fa-folder' }}"></i>
+                                        </div>
+
+                                        <!-- Content - MenuManagement Pattern -->
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <div class="h4 mb-0">{{ $item->getTranslated('title', app()->getLocale()) }}</div>
+                                                </div>
+
+                                                <!-- Actions - MenuManagement Pattern -->
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <!-- Portfolio Count Badge -->
+                                                    @if($item->portfolios_count > 0)
+                                                    <div>
+                                                        <span class="badge bg-blue-lt">{{ $item->portfolios_count }}</span>
+                                                    </div>
+                                                    @endif
+                                                    <!-- Active/Inactive Toggle -->
+                                                    <div>
+                                                        <button wire:click="toggleCategoryStatus({{ $item->category_id }})"
+                                                            class="btn btn-icon btn-sm {{ $item->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="{{ $item->is_active ? __('admin.deactivate') : __('admin.activate') }}">
+
+                                                            <div wire:loading wire:target="toggleCategoryStatus({{ $item->category_id }})"
+                                                                class="spinner-border spinner-border-sm">
+                                                            </div>
+
+                                                            <div wire:loading.remove wire:target="toggleCategoryStatus({{ $item->category_id }})">
+                                                                @if($item->is_active)
+                                                                <i class="fas fa-check fa-lg"></i>
+                                                                @else
+                                                                <i class="fas fa-times fa-lg"></i>
+                                                                @endif
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <!-- Edit Button -->
+                                                    <div>
+                                                        <a href="{{ route('admin.portfolio.category.manage', $item->category_id) }}"
+                                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.edit') }}">
+                                                            <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
+                                                        </a>
+                                                    </div>
+                                                    <!-- Menu Dropdown -->
+                                                    <div class="lh-1">
+                                                        <div class="dropdown mt-1">
+                                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="false">
+                                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-end">
+                                                                <a href="javascript:void(0);"
+                                                                   onclick="Livewire.find('{{ $_instance->getId() }}').call('openDeleteModal', {{ $item->category_id }}, '{{ addslashes($item->getTranslated('title', app()->getLocale())) }}')"
+                                                                   class="dropdown-item link-danger">
+                                                                    <i class="fas fa-trash me-2"></i> {{ __('admin.delete') }}
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            @empty
+                                <div class="list-group-item py-4">
+                                    <div class="empty">
+                                        <div class="empty-img">
+                                            <i class="fas fa-folder-open fa-4x text-muted"></i>
+                                        </div>
+                                        <p class="empty-title mt-2">{{ __('portfolio::admin.no_categories_found') }}</p>
+                                        <p class="empty-subtitle text-muted">{{ __('portfolio::admin.no_results') }}</p>
+                                    </div>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Pagination -->
-        <div class="card-footer">
-            @if($categories->hasPages())
-                {{ $categories->links() }}
-            @else
-                <div class="d-flex justify-content-between align-items-center mb-0">
-                    <p class="small text-muted mb-0">
-                        Toplam <span class="fw-semibold">{{ $categories->total() }}</span> sonuç
-                    </p>
-                </div>
-            @endif
-        </div>
-
-        <livewire:modals.delete-modal />
     </div>
+
+    <!-- Global Category Delete Modal -->
+    <livewire:modals.category-delete-modal />
 </div>
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('admin-assets/css/category-sortable.css') }}">
+@endpush
+
+@push('scripts')
+<script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
+<script src="{{ asset('admin-assets/js/category-sortable.js') }}"></script>
+
+{{-- Category JavaScript Variables --}}
+<script>
+    window.currentCategoryId = 1;
+    window.currentLanguage = '{{ $currentLanguage }}';
+</script>
+@endpush

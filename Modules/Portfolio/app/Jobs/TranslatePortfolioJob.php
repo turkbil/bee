@@ -12,12 +12,12 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Modules\AI\App\Services\AIService;
-use Modules\Portfolio\App\Models\Page;
+use Modules\Portfolio\App\Models\Portfolio;
 use Throwable;
 
 /**
  * 🚀 Portfolio Translation Queue Job
- * 
+ *
  * Bu job Portfolio modülündeki sayfaları AI ile çevirir:
  * - Toplu çeviri işlemleri için optimize edilmiş
  * - Progress tracking ile durum takibi
@@ -31,7 +31,7 @@ class TranslatePortfolioJob implements ShouldQueue
     public int $timeout = 300; // 5 dakika
 
     public function __construct(
-        public array $portfoliods,
+        public array $portfolioIds,
         public string $sourceLanguage,
         public array $targetLanguages,
         public string $quality = 'balanced',
@@ -46,7 +46,7 @@ class TranslatePortfolioJob implements ShouldQueue
     {
         // 🚨 ULTRA DEBUG - Handle metoduna giriş
         Log::info('🔥🔥🔥 TRANSLATEPAGEJOB HANDLE() BAŞLADI! 🔥🔥🔥', [
-            'pageIds' => $this->pageIds,
+            'portfolioIds' => $this->portfolioIds,
             'sourceLanguage' => $this->sourceLanguage,
             'targetLanguages' => $this->targetLanguages,
             'operationId' => $this->operationId,
@@ -54,26 +54,26 @@ class TranslatePortfolioJob implements ShouldQueue
             'connection' => $this->connection ?? 'default',
             'timestamp' => now()->toDateTimeString()
         ]);
-        
+
         try {
             $aiService = app(AIService::class);
-            
+
             // İlerleme durumunu güncelle
             $this->updateProgress('processing', 0);
-            
+
             // Defensive: targetLanguages array olmalı
             $targetLanguages = is_array($this->targetLanguages) ? $this->targetLanguages : [$this->targetLanguages];
-            $totalOperations = count($this->pageIds) * count($targetLanguages);
+            $totalOperations = count($this->portfolioIds) * count($targetLanguages);
             $processedCount = 0;
             $successCount = 0;
             $failedCount = 0;
             $totalTokensUsed = 0;
 
-            foreach ($this->pageIds as $portfoliod) {
-                $portfolio= Page::find($portfoliod);
-                
-                if (!$portfolio {
-                    Log::warning("Portfolio not found: {$portfoliod}");
+            foreach ($this->portfolioIds as $portfolioId) {
+                $portfolio = Portfolio::find($portfolioId);
+
+                if (!$portfolio) {
+                    Log::warning("Portfolio not found: {$portfolioId}");
                     $failedCount++;
                     continue;
                 }
@@ -85,9 +85,9 @@ class TranslatePortfolioJob implements ShouldQueue
 
                     try {
                         // Kaynak içeriği al
-                        $title = is_array($portfolio>title) ? ($portfolio>title[$this->sourceLanguage] ?? '') : ($portfolio>title ?? '');
-                        $body = is_array($portfolio>body) ? ($portfolio>body[$this->sourceLanguage] ?? '') : ($portfolio>body ?? '');
-                        
+                        $title = is_array($portfolio->title) ? ($portfolio->title[$this->sourceLanguage] ?? '') : ($portfolio->title ?? '');
+                        $body = is_array($portfolio->body) ? ($portfolio->body[$this->sourceLanguage] ?? '') : ($portfolio->body ?? '');
+
                         $sourceData = [
                             'title' => $title,
                             'body' => $body,
@@ -96,7 +96,7 @@ class TranslatePortfolioJob implements ShouldQueue
 
                         // Boş içerik varsa atla
                         if (empty(trim($sourceData['title'] . $sourceData['body']))) {
-                            Log::info("Empty content for page {$portfoliod}, language {$this->sourceLanguage}");
+                            Log::info("Empty content for portfolio {$portfolioId}, language {$this->sourceLanguage}");
                             $processedCount++;
                             continue;
                         }
@@ -106,7 +106,7 @@ class TranslatePortfolioJob implements ShouldQueue
                             $sourceData['title'],
                             $this->sourceLanguage,
                             $targetLanguage,
-                            ['context' => 'page_title']
+                            ['context' => 'portfolio_title']
                         );
 
                         // Body HTML çeviri
@@ -129,67 +129,65 @@ class TranslatePortfolioJob implements ShouldQueue
                         if ($response['success'] ?? false) {
                             // Çeviri sonucunu parse et
                             $translatedData = $this->parseTranslationResponse($response['response'] ?? '');
-                            
+
                             // DEBUG: Çeviri sonucunu log'la
                             Log::info("🔍 AI Translation Response Debug", [
-                                'portfolio_id' => $portfoliod,
+                                'portfolio_id' => $portfolioId,
                                 'target_language' => $targetLanguage,
                                 'raw_response' => substr($response['response'] ?? '', 0, 200),
                                 'parsed_data' => $translatedData
                             ]);
-                            
+
                             // Sayfayı güncelle
-                            $this->updatePageTranslation($portfolio $translatedData, $targetLanguage);
-                            
+                            $this->updatePageTranslation($portfolio, $translatedData, $targetLanguage);
+
                             // 💰 KRİTİK: Her başarılı çeviri için 1 kredi düş
                             try {
                                 $tenantId = (string) (tenancy()->tenant?->id ?? '1'); // String olarak cast
                                 $perLanguageCost = 1.0; // Her dil = 1 kredi
-                                
+
                                 ai_use_credits($perLanguageCost, $tenantId, [
                                     'usage_type' => 'translation',
-                                    'description' => "Portfolio Translation: #{$portfoliod} ({$this->sourceLanguage} → {$targetLanguage})",
-                                    'entity_type' => 'page',
-                                    'entity_id' => $portfoliod,
+                                    'description' => "Portfolio Translation: #{$portfolioId} ({$this->sourceLanguage} → {$targetLanguage})",
+                                    'entity_type' => 'portfolio',
+                                    'entity_id' => $portfolioId,
                                     'source_language' => $this->sourceLanguage,
                                     'target_language' => $targetLanguage,
-                                    'provider_name' => 'page_translation_service',
+                                    'provider_name' => 'portfolio_translation_service',
                                     'tokens_used' => $response['tokens_used'] ?? 0
                                 ]);
-                                
-                                Log::info('💰 KREDİ DÜŞÜRÜLDİ: PAGE ÇEVİRİ - 1 DİL = 1 KREDİ', [
-                                    'portfolio_id' => $portfoliod,
+
+                                Log::info('💰 KREDİ DÜŞÜRÜLDİ: PORTFOLIO ÇEVİRİ - 1 DİL = 1 KREDİ', [
+                                    'portfolio_id' => $portfolioId,
                                     'language_pair' => "{$this->sourceLanguage} → {$targetLanguage}",
                                     'credits_deducted' => $perLanguageCost,
                                     'tenant_id' => $tenantId
                                 ]);
-                                
                             } catch (\Exception $e) {
                                 Log::warning('⚠️ Kredi düşürme hatası (çeviri devam ediyor)', [
-                                    'portfolio_id' => $portfoliod,
+                                    'portfolio_id' => $portfolioId,
                                     'error' => $e->getMessage()
                                 ]);
                             }
-                            
+
                             $successCount++;
                             $totalTokensUsed += $response['tokens_used'] ?? 0;
-                            
-                            Log::info("Portfolio {$portfoliod} translated to {$targetLanguage} successfully");
+
+                            Log::info("Portfolio {$portfolioId} translated to {$targetLanguage} successfully");
                         } else {
                             $failedCount++;
-                            Log::error("Translation failed for page {$portfoliod} to {$targetLanguage}: " . ($response['error'] ?? 'Unknown error'));
+                            Log::error("Translation failed for portfolio {$portfolioId} to {$targetLanguage}: " . ($response['error'] ?? 'Unknown error'));
                         }
-
                     } catch (Throwable $e) {
                         $failedCount++;
-                        Log::error("Translation error for page {$portfoliod} to {$targetLanguage}: " . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
+                        Log::error("Translation error for portfolio {$portfolioId} to {$targetLanguage}: " . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
                     }
 
                     $processedCount++;
-                    
+
                     // İlerleme durumunu güncelle
                     $this->updateProgress('processing', $processedCount, $successCount, $failedCount, $totalTokensUsed);
-                    
+
                     // Her işlem arası kısa bekleme (rate limiting)
                     usleep(100000); // 0.1 saniye
                 }
@@ -197,18 +195,17 @@ class TranslatePortfolioJob implements ShouldQueue
 
             // İşlem tamamlandı
             $this->updateProgress('completed', $processedCount, $successCount, $failedCount, $totalTokensUsed);
-            
+
             Log::info("Translation job completed. Success: {$successCount}, Failed: {$failedCount}, Tokens: {$totalTokensUsed}");
 
             // Frontend'e completion event'ini gönder
             event(new \Modules\Portfolio\App\Events\TranslationCompletedEvent([
                 'sessionId' => $this->operationId,
-                'pageIds' => $this->pageIds,
+                'portfolioIds' => $this->portfolioIds,
                 'success' => $successCount,
                 'failed' => $failedCount,
                 'status' => 'completed'
             ]));
-
         } catch (Throwable $e) {
             $this->updateProgress('failed', $processedCount ?? 0, $successCount ?? 0, $failedCount ?? 0, $totalTokensUsed ?? 0);
             Log::error("Translation job failed: " . $e->getMessage());
@@ -223,25 +220,25 @@ class TranslatePortfolioJob implements ShouldQueue
     {
         $content = "Kaynak Dil: {$this->sourceLanguage}\n";
         $content .= "Hedef Dil: {$targetLanguage}\n\n";
-        
+
         $content .= "Başlık: {$sourceData['title']}\n\n";
-        
+
         if (!empty($sourceData['excerpt'])) {
             $content .= "Özet: {$sourceData['excerpt']}\n\n";
         }
-        
+
         $content .= "İçerik:\n{$sourceData['body']}\n\n";
-        
+
         $content .= "Çeviri Kalitesi: {$this->quality}\n";
-        
+
         if ($this->options['preserve_formatting'] ?? true) {
             $content .= "HTML/Markdown formatını koru.\n";
         }
-        
+
         if ($this->options['preserve_seo'] ?? true) {
             $content .= "SEO dostu çeviri yap.\n";
         }
-        
+
         if ($this->options['cultural_adaptation'] ?? false) {
             $content .= "Kültürel uyarlama yap.\n";
         }
@@ -273,7 +270,7 @@ class TranslatePortfolioJob implements ShouldQueue
         $currentSection = '';
         foreach ($lines as $line) {
             $line = trim($line);
-            
+
             if (stripos($line, 'başlık:') === 0 || stripos($line, 'title:') === 0) {
                 $currentSection = 'title';
                 $result['title'] = trim(substr($line, strpos($line, ':') + 1));
@@ -299,12 +296,12 @@ class TranslatePortfolioJob implements ShouldQueue
     /**
      * Sayfa çevirisini güncelle
      */
-    private function updatePageTranslation(Portfolio $portfolio array $translatedData, string $targetLanguage): void
+    private function updatePageTranslation(Portfolio $portfolio, array $translatedData, string $targetLanguage): void
     {
         // Mevcut çevirileri al
-        $currentTitle = $portfolio>title ?? [];
-        $currentBody = $portfolio>body ?? [];
-        $currentExcerpt = $portfolio>excerpt ?? [];
+        $currentTitle = $portfolio->title ?? [];
+        $currentBody = $portfolio->body ?? [];
+        $currentExcerpt = $portfolio->excerpt ?? [];
 
         // JSON decode if string
         if (is_string($currentTitle)) {
@@ -321,46 +318,46 @@ class TranslatePortfolioJob implements ShouldQueue
         if (!empty($translatedData['title'])) {
             $currentTitle[$targetLanguage] = $translatedData['title'];
         }
-        
+
         if (!empty($translatedData['body'])) {
             $currentBody[$targetLanguage] = $translatedData['body'];
         }
-        
+
         if (!empty($translatedData['excerpt'])) {
             $currentExcerpt[$targetLanguage] = $translatedData['excerpt'];
         }
 
         // Slug oluştur (basit slug)
         $slug = [];
-        if (is_array($portfolio>slug)) {
-            $slug = $portfolio>slug;
-        } elseif (is_string($portfolio>slug)) {
-            $slug = json_decode($portfolio>slug, true) ?? [];
+        if (is_array($portfolio->slug)) {
+            $slug = $portfolio->slug;
+        } elseif (is_string($portfolio->slug)) {
+            $slug = json_decode($portfolio->slug, true) ?? [];
         }
-        
+
         if (!empty($translatedData['title'])) {
             $slug[$targetLanguage] = \Str::slug($translatedData['title']);
         }
 
         // Güncelleme
-        $portfolio>update([
+        $portfolio->update([
             'title' => $currentTitle,
             'body' => $currentBody,
             'excerpt' => $currentExcerpt,
             'slug' => $slug
         ]);
 
-        log_activity($portfolio 'çevrildi');
+        log_activity($portfolio, 'çevrildi');
     }
 
     /**
      * İlerleme durumunu güncelle
      */
     private function updateProgress(
-        string $status, 
-        int $processed = 0, 
-        int $successCount = 0, 
-        int $failedCount = 0, 
+        string $status,
+        int $processed = 0,
+        int $successCount = 0,
+        int $failedCount = 0,
         int $tokensUsed = 0
     ): void {
         if (empty($this->operationId)) {
@@ -368,7 +365,7 @@ class TranslatePortfolioJob implements ShouldQueue
         }
 
         $progress = Cache::get("translation_progress_{$this->operationId}", []);
-        
+
         $progress['status'] = $status;
         $progress['processed'] = $processed;
         $progress['success_count'] = $successCount;
@@ -382,6 +379,6 @@ class TranslatePortfolioJob implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         $this->updateProgress('failed');
-        Log::error("TranslatePageJob failed: " . $exception->getMessage());
+        Log::error("TranslatePortfolioJob failed: " . $exception->getMessage());
     }
 }

@@ -6,18 +6,20 @@
 @endpush
 
 @section('module_content')
+<div class="relative" x-data="featured()" x-init="init()">
     <!-- Gradient Background -->
     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
-    
+
     @php
         $currentLocale = app()->getLocale();
         $title = $item->getTranslated('title', $currentLocale);
         $body = $item->getTranslated('body', $currentLocale);
     @endphp
-    
+
+    <!-- Homeportfolio Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="prose prose-lg max-w-none dark:prose-invert mb-12
-                  prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white 
+                  prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
                   prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
                   prose-a:text-transparent prose-a:bg-gradient-to-r prose-a:from-blue-600 prose-a:to-purple-600 prose-a:bg-clip-text hover:prose-a:from-blue-700 hover:prose-a:to-purple-700
                   prose-strong:text-gray-900 dark:prose-strong:text-white
@@ -27,16 +29,16 @@
                   prose-img:rounded-xl prose-img:shadow-lg">
             @parsewidgets($body ?? '')
         </div>
-            
+
         </div>
     </div>
-    
+
     @if(isset($item->js))
     <script>
         {!! $item->js !!}
     </script>
     @endif
-    
+
     @if(isset($item->css))
     <style>
         {!! $item->css !!}
@@ -45,9 +47,10 @@
 </div>
 
 <script>
+function featured() {
     return {
         loaded: false,
-        
+
         init() {
             this.$nextTick(() => {
                 this.loaded = true;
@@ -58,7 +61,7 @@
 </script>
 @else
 <div class="bg-white dark:bg-gray-900">
-    
+
     <!-- Header -->
     <div class="border-b border-gray-100 dark:border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -72,21 +75,21 @@
 
     <!-- Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="prose prose-lg max-w-none dark:prose-invert 
-                   prose-headings:text-gray-900 dark:prose-headings:text-white 
-                   prose-p:text-gray-600 dark:prose-p:text-gray-300 
-                   prose-a:text-blue-600 dark:prose-a:text-blue-400 
+        <div class="prose prose-lg max-w-none dark:prose-invert
+                   prose-headings:text-gray-900 dark:prose-headings:text-white
+                   prose-p:text-gray-600 dark:prose-p:text-gray-300
+                   prose-a:text-blue-600 dark:prose-a:text-blue-400
                    prose-strong:text-gray-900 dark:prose-strong:text-white
                    prose-img:rounded-lg">
             @parsewidgets($item->getTranslated('body', app()->getLocale()) ?? '')
         </div>
-        
+
         @if(isset($item->js))
         <script>
             {!! $item->js !!}
         </script>
         @endif
-        
+
         @if(isset($item->css))
         <style>
             {!! $item->css !!}

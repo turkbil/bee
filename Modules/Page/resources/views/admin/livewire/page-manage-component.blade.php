@@ -38,9 +38,9 @@
                                 style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
                                 <!-- Başlık ve Slug alanları -->
-                                <div class="row mb-3">
-                                    <div class="col-md-8">
-                                        <div class="form-floating">
+                                <div class="row mb-4">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating mb-3 mb-md-0">
                                             <input type="text" wire:model="multiLangInputs.{{ $lang }}.title"
                                                 class="form-control @error('multiLangInputs.' . $lang . '.title') is-invalid @enderror"
                                                 placeholder="{{ __('page::admin.title_field') }}">
@@ -56,7 +56,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control"
                                                 wire:model="multiLangInputs.{{ $lang }}.slug" maxlength="255"
@@ -68,7 +68,7 @@
                                             </label>
                                             <div class="form-text">
                                                 <small class="text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>{{ __('admin.slug_help') }}
+                                                    {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
                                         </div>
@@ -90,7 +90,7 @@
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
                         <!-- Aktif/Pasif - sadece bir kere -->
-                        <div class="mb-3">
+                        <div class="mb-3 mt-4">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
                                     value="1"

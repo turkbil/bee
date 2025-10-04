@@ -69,8 +69,8 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
         $this->announcementService = app(\Modules\Announcement\App\Services\AnnouncementService::class);
 
         // Layout sections
-        view()->share('pretitle', __('announcement::admin.page_management'));
-        view()->share('title', __('announcement::admin.pages'));
+        view()->share('pretitle', __('announcement::admin.announcement_management'));
+        view()->share('title', __('announcement::admin.announcements'));
     }
 
     public function updated($propertyName)
@@ -95,8 +95,9 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
             $this->initializeEmptyInputs();
         }
 
-        // Studio modül kontrolü
-        $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
+        // Studio modül kontrolü - config'den kontrol et
+        $studioConfig = config('announcement.integrations.studio', []);
+        $this->studioEnabled = ($studioConfig['enabled'] ?? false) && class_exists($studioConfig['component'] ?? '');
 
         // Tab completion durumunu hesapla
         $this->dispatch('update-tab-completion', $this->getAllFormData());
@@ -277,9 +278,13 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
     }
 
     protected $messages = [
+        'inputs.is_active.boolean' => 'Aktif durumu geçerli bir değer olmalıdır',
         'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
         'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
         'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
+        'multiLangInputs.*.body.string' => 'İçerik metin formatında olmalıdır',
+        'multiLangInputs.*.slug.string' => 'Slug metin formatında olmalıdır',
+        'multiLangInputs.*.slug.max' => 'Slug en fazla 255 karakter olabilir',
     ];
 
     /**
@@ -425,7 +430,7 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
             if ($data == $currentData) {
                 $toast = [
                     'title' => __('admin.success'),
-                    'message' => __('admin.page_updated'),
+                    'message' => __('admin.announcement_updated'),
                     'type' => 'success'
                 ];
             } else {
@@ -434,7 +439,7 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
 
                 $toast = [
                     'title' => __('admin.success'),
-                    'message' => __('admin.page_updated'),
+                    'message' => __('admin.announcement_updated'),
                     'type' => 'success'
                 ];
             }
@@ -445,7 +450,7 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
 
             $toast = [
                 'title' => __('admin.success'),
-                'message' => __('admin.page_created'),
+                'message' => __('admin.announcement_created'),
                 'type' => 'success'
             ];
         }
@@ -458,6 +463,9 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
 
         // Toast mesajı göster
         $this->dispatch('toast', $toast);
+
+        // SEO VERİLERİNİ KAYDET - Universal SEO Tab Component'e event gönder
+        $this->dispatch('page-saved', $this->announcementId);
 
         // Redirect istendiyse
         if ($redirect) {
@@ -507,7 +515,7 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
 
     public function getTargetFields(array $params): array
     {
-        $pageFields = [
+        $announcementFields = [
             'title' => 'string',
             'body' => 'html',
             'excerpt' => 'text',
@@ -516,10 +524,10 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
         ];
 
         if (isset($params['target_field'])) {
-            return [$params['target_field'] => $pageFields[$params['target_field']] ?? 'html'];
+            return [$params['target_field'] => $announcementFields[$params['target_field']] ?? 'html'];
         }
 
-        return $pageFields;
+        return $announcementFields;
     }
 
     public function getModuleInstructions(): string

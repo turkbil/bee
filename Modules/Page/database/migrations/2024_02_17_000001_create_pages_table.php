@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -33,15 +34,32 @@ return new class extends Migration
             $table->index(['is_homepage', 'deleted_at', 'is_active'], 'pages_homepage_deleted_active_idx');
             $table->index(['is_active', 'deleted_at', 'created_at'], 'pages_active_deleted_created_idx');
             $table->index(['is_active', 'deleted_at'], 'pages_active_deleted_idx');
-            
-            // JSON slug arama için virtual column index (MySQL 5.7+)
-            // $table->rawIndex('(CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) AS CHAR(255)))', 'pages_slug_tr_idx');
-            // $table->rawIndex('(CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) AS CHAR(255)))', 'pages_slug_en_idx');
         });
+
+        // JSON slug arama için virtual column indexes (MySQL 8.0+)
+        // Dinamik olarak system_languages'dan alınır
+        if (DB::getDriverName() === 'mysql') {
+            $mysqlVersion = DB::selectOne('SELECT VERSION() as version')->version;
+            $majorVersion = (int) explode('.', $mysqlVersion)[0];
+
+            if ($majorVersion >= 8) {
+                // Config'den sistem dillerini al
+                $systemLanguages = config('modules.system_languages', ['tr', 'en']);
+
+                foreach ($systemLanguages as $locale) {
+                    DB::statement("
+                        CREATE INDEX pages_slug_{$locale}_idx ON pages (
+                            (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) AS CHAR(255)))
+                        )
+                    ");
+                }
+            }
+        }
     }
 
     public function down(): void
     {
+        // Virtual column indexes otomatik drop olur
         Schema::dropIfExists('pages');
     }
 };

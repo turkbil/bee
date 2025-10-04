@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Portfolio\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -38,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware(['web'])
             ->group(module_path('Portfolio', 'routes/web.php'));
     }
-    
+
     /**
      * Define the "admin" routes for the application.
      *

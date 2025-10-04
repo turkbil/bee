@@ -202,7 +202,7 @@
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">
-                                                        <i class="ti ti-calendar me-1"></i>
+                                                        <i class="far fa-calendar me-1"></i>
                                                         {{ $setting->label }}
                                                     </label>
                                                     @error('values.' . $setting->id)
@@ -219,7 +219,7 @@
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">
-                                                        <i class="ti ti-clock me-1"></i>
+                                                        <i class="far fa-clock me-1"></i>
                                                         {{ $setting->label }}
                                                     </label>
                                                     @error('values.' . $setting->id)
@@ -315,7 +315,7 @@
                                         @if(isset($originalValues[$setting->id]) && $originalValues[$setting->id] != $values[$setting->id])
                                             <div class="mt-2 text-end">
                                                 <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault({{ $setting->id }})">
-                                                    <i class="ti ti-rotate-clockwise me-1"></i> {{ __('settingmanagement::admin.reset_to_default') }}
+                                                    <i class="fas fa-redo me-1"></i> {{ __('settingmanagement::admin.reset_to_default') }}
                                                 </button>
                                             </div>
                                         @endif

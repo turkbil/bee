@@ -11,7 +11,7 @@
         <div class="col-auto ms-auto">
             <div class="btn-list">
                 <button class="btn btn-primary" onclick="refreshStats()">
-                    <i class="ti ti-refresh me-2"></i>Yenile
+                    <i class="fas fa-sync-alt me-2"></i>Yenile
                 </button>
             </div>
         </div>
@@ -36,7 +36,7 @@
                     <div>Tamamlanan</div>
                     <div class="ms-auto">
                         <span class="text-green d-inline-flex align-items-center lh-1" id="completed-jobs">
-                            - <i class="ti ti-trending-up ms-1"></i>
+                            - <i class="fas fa-chart-line ms-1"></i>
                         </span>
                     </div>
                 </div>
@@ -168,14 +168,14 @@
                 <div class="card-actions">
                     <div class="dropdown">
                         <a href="#" class="btn-action dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="ti ti-dots-vertical"></i>
+                            <i class="fas fa-ellipsis-v"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <a href="#" class="dropdown-item" onclick="clearCompletedJobs()">
-                                <i class="ti ti-trash me-2"></i>Tamamlananları Temizle
+                                <i class="fas fa-trash me-2"></i>Tamamlananları Temizle
                             </a>
                             <a href="#" class="dropdown-item" onclick="exportStats()">
-                                <i class="ti ti-download me-2"></i>İstatistikleri İndir
+                                <i class="fas fa-download me-2"></i>İstatistikleri İndir
                             </a>
                         </div>
                     </div>

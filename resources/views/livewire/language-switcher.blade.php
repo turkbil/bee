@@ -1,6 +1,6 @@
 <div class="dropdown">
     <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-label="Open language menu">
-        <i class="ti ti-language me-2"></i>
+        <i class="fas fa-language me-2"></i>
         @if($currentLanguage)
             {{ $currentLanguage->native_name }}
         @else
@@ -22,7 +22,7 @@
                     @endif
                     {{ $language->native_name }}
                     @if($currentLocale === $language->code)
-                        <i class="ti ti-check ms-auto"></i>
+                        <i class="fas fa-check ms-auto"></i>
                     @endif
                 </button>
             @endforeach

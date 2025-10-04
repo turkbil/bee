@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// use Modules\Portfolio\Http\Controllers\PortfolioController;
+use Modules\Portfolio\App\Http\Controllers\Api\PortfolioApiController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,5 +14,7 @@ use Illuminate\Support\Facades\Route;
  *
 */
 
-// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-// });
+Route::prefix('v1/portfolios')->group(function () {
+    Route::get('/', [PortfolioApiController::class, 'index'])->name('api.portfolios.index');
+    Route::get('{slug}', [PortfolioApiController::class, 'show'])->name('api.portfolios.show');
+});

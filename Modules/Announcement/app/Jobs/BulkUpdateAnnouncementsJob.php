@@ -33,14 +33,14 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
     public int $maxExceptions = 3;
 
     /**
-     * @param array $pageIds Güncellenecek sayfa ID'leri
+     * @param array $announcementIds Güncellenecek sayfa ID'leri
      * @param array $updateData Güncellenecek veriler
      * @param string $tenantId Tenant ID (multi-tenant sistem için)
      * @param string $userId İşlemi yapan kullanıcı ID'si
      * @param array $options Ek seçenekler (validate, etc.)
      */
     public function __construct(
-        public array $pageIds,
+        public array $announcementIds,
         public array $updateData,
         public string $tenantId,
         public string $userId,
@@ -52,7 +52,7 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
     /**
      * Job execution
      */
-    public function handle(AnnouncementService $pageService): void
+    public function handle(AnnouncementService $announcementService): void
     {
         $startTime = microtime(true);
         $processedCount = 0;
@@ -60,17 +60,17 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
         $errors = [];
 
         try {
-            Log::info('✏️ BULK PAGE UPDATE STARTED', [
-                'announcement_ids' => $this->pageIds,
+            Log::info('✏️ BULK ANNOUNCEMENT UPDATE STARTED', [
+                'announcement_ids' => $this->announcementIds,
                 'update_data' => $this->updateData,
                 'tenant_id' => $this->tenantId,
                 'user_id' => $this->userId,
-                'total_count' => count($this->pageIds)
+                'total_count' => count($this->announcementIds)
             ]);
 
             // Progress tracking için cache key
-            $progressKey = "bulk_update_pages_{$this->tenantId}_{$this->userId}";
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'starting');
+            $progressKey = "bulk_update_announcements_{$this->tenantId}_{$this->userId}";
+            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'starting');
 
             // Güvenlik kontrolü - güncellenebilir alanları kontrol et
             $allowedFields = $this->getAllowedUpdateFields();
@@ -81,12 +81,12 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
             }
 
             // Her sayfa için güncelleme işlemi
-            foreach ($this->pageIds as $index => $pageId) {
+            foreach ($this->announcementIds as $index => $announcementId) {
                 try {
                     // Sayfa var mı kontrol et
-                    $announcement = Announcement::find($pageId);
+                    $announcement = Announcement::find($announcementId);
                     if (!$announcement) {
-                        Log::warning("Sayfa bulunamadı: {$pageId}");
+                        Log::warning("Sayfa bulunamadı: {$announcementId}");
                         continue;
                     }
 
@@ -102,24 +102,24 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
                     $processedCount++;
 
                     // Progress güncelle
-                    $progress = (int) (($index + 1) / count($this->pageIds) * 100);
-                    $this->updateProgress($progressKey, $progress, count($this->pageIds), 'processing', [
+                    $progress = (int) (($index + 1) / count($this->announcementIds) * 100);
+                    $this->updateProgress($progressKey, $progress, count($this->announcementIds), 'processing', [
                         'processed' => $processedCount,
                         'errors' => $errorCount,
-                        'current_page' => $announcement->title
+                        'current_announcement' => $announcement->title
                     ]);
 
                     Log::info("✅ Sayfa güncellendi", [
-                        'id' => $pageId,
+                        'id' => $announcementId,
                         'title' => $announcement->title,
                         'updated_fields' => array_keys($filteredUpdateData)
                     ]);
                 } catch (\Exception $e) {
                     $errorCount++;
-                    $errors[] = "Sayfa güncelleme hatası (ID: {$pageId}): " . $e->getMessage();
+                    $errors[] = "Sayfa güncelleme hatası (ID: {$announcementId}): " . $e->getMessage();
 
                     Log::error("❌ Sayfa güncelleme hatası", [
-                        'announcement_id' => $pageId,
+                        'announcement_id' => $announcementId,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
@@ -131,7 +131,7 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
 
             // Final progress
             $duration = round(microtime(true) - $startTime, 2);
-            $this->updateProgress($progressKey, 100, count($this->pageIds), 'completed', [
+            $this->updateProgress($progressKey, 100, count($this->announcementIds), 'completed', [
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration,
@@ -139,19 +139,19 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
                 'updated_fields' => array_keys($filteredUpdateData)
             ]);
 
-            Log::info('✅ BULK PAGE UPDATE COMPLETED', [
-                'total_pages' => count($this->pageIds),
+            Log::info('✅ BULK ANNOUNCEMENT UPDATE COMPLETED', [
+                'total_announcements' => count($this->announcementIds),
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration . 's',
                 'updated_fields' => array_keys($filteredUpdateData)
             ]);
         } catch (\Exception $e) {
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
                 'error' => $e->getMessage()
             ]);
 
-            Log::error('💥 BULK PAGE UPDATE FAILED', [
+            Log::error('💥 BULK ANNOUNCEMENT UPDATE FAILED', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -183,7 +183,7 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
             'nofollow',
             'schema_type',
             'published_at',
-            'slug' // Homepage için kısıtlı
+            'slug' // Homeannouncement için kısıtlı
         ];
     }
 
@@ -244,20 +244,20 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
     {
         try {
             // Announcement cache'leri temizle
-            Cache::forget('pages_list');
-            Cache::forget('pages_menu_cache');
-            Cache::forget('pages_sitemap_cache');
+            Cache::forget('announcements_list');
+            Cache::forget('announcements_menu_cache');
+            Cache::forget('announcements_sitemap_cache');
 
             // Pattern-based cache temizleme
             $patterns = [
-                'page_*',
-                'pages_*',
+                'announcement_*',
+                'announcements_*',
                 'sitemap_*',
                 'menu_*'
             ];
 
             foreach ($patterns as $pattern) {
-                Cache::tags(['pages'])->flush();
+                Cache::tags(['announcements'])->flush();
             }
 
             Log::info('🗑️ Announcement caches cleared after bulk update');
@@ -271,8 +271,8 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        Log::error('💥 BULK PAGE UPDATE JOB FAILED', [
-            'announcement_ids' => $this->pageIds,
+        Log::error('💥 BULK ANNOUNCEMENT UPDATE JOB FAILED', [
+            'announcement_ids' => $this->announcementIds,
             'update_data' => $this->updateData,
             'tenant_id' => $this->tenantId,
             'user_id' => $this->userId,
@@ -281,8 +281,8 @@ class BulkUpdateAnnouncementsJob implements ShouldQueue
         ]);
 
         // Progress'i failed olarak işaretle
-        $progressKey = "bulk_update_pages_{$this->tenantId}_{$this->userId}";
-        $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+        $progressKey = "bulk_update_announcements_{$this->tenantId}_{$this->userId}";
+        $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
             'error' => $exception?->getMessage()
         ]);
     }

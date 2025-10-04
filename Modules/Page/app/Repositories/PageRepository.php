@@ -23,7 +23,7 @@ readonly class PageRepository implements PageRepositoryInterface
         private Page $model
     ) {
         $this->cachePrefix = TenantCacheService::PREFIX_PAGE;
-        $this->cacheTtl = TenantCacheService::TTL_HOUR;
+        $this->cacheTtl = (int) config('modules.cache.ttl.list', 3600);
         $this->cache = app(TenantCacheService::class);
     }
     

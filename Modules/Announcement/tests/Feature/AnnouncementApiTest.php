@@ -30,7 +30,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_access_page_index(): void
+    public function admin_can_access_announcement_index(): void
     {
         $this->actingAs($this->admin);
 
@@ -40,7 +40,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_access_page_manage(): void
+    public function admin_can_access_announcement_manage(): void
     {
         $this->actingAs($this->admin);
 
@@ -50,7 +50,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_access_page_edit(): void
+    public function admin_can_access_announcement_edit(): void
     {
         $this->actingAs($this->admin);
 
@@ -62,7 +62,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_access_page_index(): void
+    public function guest_cannot_access_announcement_index(): void
     {
         $response = $this->get(route('admin.announcement.index'));
 
@@ -70,7 +70,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_access_page_manage(): void
+    public function guest_cannot_access_announcement_manage(): void
     {
         $response = $this->get(route('admin.announcement.manage'));
 
@@ -126,7 +126,7 @@ class AnnouncementApiTest extends TestCase
             'language' => 'en'
         ]);
 
-        $this->assertEquals('en', session('page_manage_language'));
+        $this->assertEquals('en', session('announcement_manage_language'));
     }
 
     /** @test */
@@ -164,7 +164,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function page_routes_are_prefixed_correctly(): void
+    public function announcement_routes_are_prefixed_correctly(): void
     {
         $indexRoute = route('admin.announcement.index');
         $manageRoute = route('admin.announcement.manage');
@@ -174,7 +174,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function page_routes_have_correct_names(): void
+    public function announcement_routes_have_correct_names(): void
     {
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('admin.announcement.index'));
         $this->assertTrue(\Illuminate\Support\Facades\Route::has('admin.announcement.manage'));
@@ -206,7 +206,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_nonexistent_page_edit_gracefully(): void
+    public function it_handles_nonexistent_announcement_edit_gracefully(): void
     {
         $this->actingAs($this->admin);
 
@@ -228,7 +228,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function page_index_uses_livewire_component(): void
+    public function announcement_index_uses_livewire_component(): void
     {
         $this->actingAs($this->admin);
 
@@ -238,7 +238,7 @@ class AnnouncementApiTest extends TestCase
     }
 
     /** @test */
-    public function page_manage_uses_livewire_component(): void
+    public function announcement_manage_uses_livewire_component(): void
     {
         $this->actingAs($this->admin);
 

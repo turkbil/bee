@@ -2,6 +2,10 @@
 @if($metaTags['description'])
 <meta name="description" content="{{ $metaTags['description'] }}">
 @endif
+{{-- Author Meta Tag (E-E-A-T için kritik - 2025 SEO) --}}
+@if(isset($metaTags['author']) && $metaTags['author'])
+<meta name="author" content="{{ $metaTags['author'] }}">
+@endif
 <meta name="theme-color" content="{{ setting('site_theme_color', '#000000') }}" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="{{ setting('site_theme_color_light', '#ffffff') }}" media="(prefers-color-scheme: light)">
 <meta name="color-scheme" content="light dark">
@@ -15,6 +19,15 @@
 @if($metaTags['canonical_url'])
 <link rel="canonical" href="{{ $metaTags['canonical_url'] }}">
 @endif
+{{-- Sitemap Link (2025 SEO Best Practice) --}}
+<link rel="sitemap" type="application/xml" title="Sitemap" href="{{ route('sitemap') }}">
+{{-- Copyright Meta Tag (2025 SEO) --}}
+<meta name="copyright" content="{{ setting('site_copyright') ?: '© ' . date('Y') . ' ' . setting('site_title') }}">
+{{-- PWA Meta Tags (Mobile-First Indexing - 2025 SEO) --}}
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="{{ setting('site_name') ?: setting('site_title') }}">
 @if($metaTags['og_titles'])
 <meta property="og:title" content="{{ $metaTags['og_titles'] }}">
 @endif
@@ -30,6 +43,15 @@
 @endif
 @if($metaTags['og_type'])
 <meta property="og:type" content="{{ $metaTags['og_type'] }}">
+@endif
+@if(isset($metaTags['article_published_time']) && $metaTags['article_published_time'])
+<meta property="article:published_time" content="{{ $metaTags['article_published_time'] }}">
+@endif
+@if(isset($metaTags['article_modified_time']) && $metaTags['article_modified_time'])
+<meta property="article:modified_time" content="{{ $metaTags['article_modified_time'] }}">
+@endif
+@if(isset($metaTags['article_author']) && $metaTags['article_author'])
+<meta property="article:author" content="{{ $metaTags['article_author'] }}">
 @endif
 @if($metaTags['og_locale'])
 <meta property="og:locale" content="{{ $metaTags['og_locale'] }}">
@@ -70,12 +92,24 @@ $defaultLocale = get_tenant_default_locale();
 <link rel="alternate" hreflang="x-default" href="{{ $metaTags['hreflang'][$defaultLocale]['url'] }}">
 @endif
 @endif
-@if($metaTags['schema'] && is_array($metaTags['schema']) && count($metaTags['schema']) > 0)
+{{-- Schema.org Structured Data (2025 Multi-Schema Approach) --}}
+@if(isset($metaTags['schemas']) && is_array($metaTags['schemas']))
+    @foreach($metaTags['schemas'] as $schemaKey => $schema)
+        @if(is_array($schema) && count($schema) > 0)
+<script type="application/ld+json">
+{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+</script>
+        @endif
+    @endforeach
+@endif
+
+{{-- Legacy Support: Eski schema yapısı için fallback --}}
+@if(!isset($metaTags['schemas']) && isset($metaTags['schema']) && is_array($metaTags['schema']) && count($metaTags['schema']) > 0)
 <script type="application/ld+json">
 {!! json_encode($metaTags['schema'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
 </script>
 @endif
-@if(isset($metaTags['breadcrumb_schema']) && is_array($metaTags['breadcrumb_schema']) && count($metaTags['breadcrumb_schema']) > 0)
+@if(!isset($metaTags['schemas']) && isset($metaTags['breadcrumb_schema']) && is_array($metaTags['breadcrumb_schema']) && count($metaTags['breadcrumb_schema']) > 0)
 <script type="application/ld+json">
 {!! json_encode($metaTags['breadcrumb_schema'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
 </script>

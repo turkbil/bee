@@ -521,6 +521,10 @@ readonly class SeoMetaTagService
                 'og_type' => 'website',
                 'og_locale' => null,
                 'og_site_name' => null,
+                // Article-specific OG tags (2025 SEO Standards)
+                'article_published_time' => null,
+                'article_modified_time' => null,
+                'article_author' => null,
                 'twitter_card' => 'summary',
                 'twitter_title' => null,
                 'twitter_description' => null,
@@ -542,8 +546,16 @@ readonly class SeoMetaTagService
             }
             
             // 1. TITLE - Geliştirilmiş Hiyerarşi
+            \Log::debug('SEO TITLE CHECK', [
+                'locale' => $locale,
+                'has_seo_setting' => ($seoSetting ? 'YES' : 'NO'),
+                'hasDirectTitle' => ($seoSetting ? $seoSetting->hasDirectTitle($locale) : 'N/A'),
+                'seoTitle' => ($seoSetting ? $seoSetting->getTitle($locale) : 'N/A'),
+            ]);
+
             if ($seoSetting && $seoSetting->hasDirectTitle($locale) && $seoTitle = $seoSetting->getTitle($locale)) {
                 // 1. Öncelik: SEO ayarlarındaki manuel title
+                \Log::debug('SEO TITLE: Using SEO Setting', ['title' => $seoTitle]);
                 // Site name'i SettingManagement'ten al
                 $settingSiteName = setting('site_name') ?: setting('site_title', $siteName) ?: '';
                 $siteNameSafe = $siteName ?? '';
@@ -556,10 +568,12 @@ readonly class SeoMetaTagService
                 }
             } elseif (method_exists($model, 'getTranslated') && $modelTitle = $model->getTranslated('title', $locale)) {
                 // 2. Öncelik: Model'in title alanı + site name
+                \Log::debug('SEO TITLE: Using Model Title', ['title' => $modelTitle, 'locale' => $locale]);
                 $settingSiteName = setting('site_name') ?: setting('site_title', $siteName) ?: config('app.name');
                 $data['title'] = $modelTitle . ' - ' . $settingSiteName;
             } else {
                 // 3. Fallback: Sadece site default title
+                \Log::debug('SEO TITLE: Using Site Title Fallback');
                 $data['title'] = setting('site_name') ?: setting('site_title', $siteName) ?: config('app.name');
             }
             
@@ -606,8 +620,13 @@ readonly class SeoMetaTagService
             }
             
             // 3.1. BASIC META FIELDS - Tenant bazlı sistem
-            $data['author'] = ($seoSetting && $seoSetting->author) ? $seoSetting->author : null;
-            $data['publisher'] = ($seoSetting && $seoSetting->publisher) ? $seoSetting->publisher : setting('site_title', $siteName);
+            // Author: Öncelik seo_settings.author, fallback setting('site_author')
+            $data['author'] = ($seoSetting && $seoSetting->author)
+                ? $seoSetting->author
+                : setting('site_author', setting('site_title', $siteName));
+
+            // Publisher: site_title kullan (publisher kolonu kaldırıldı)
+            $data['publisher'] = setting('site_title', $siteName);
             
             // Copyright - otomatik çok dilli oluşturma
             $copyright = self::generateAutomaticCopyright($siteName, $locale);
@@ -654,24 +673,39 @@ readonly class SeoMetaTagService
                 $data['og_descriptions'] = $data['description'];
             }
             
-            // og:image - Geliştirilmiş Hiyerarşi
+            // og:image - 2025 Optimized Priority
+            $featuredImage = null;
+            $allImages = []; // Tüm görselleri topla (Schema için)
+
             if ($seoSetting && $seoSetting->og_image) {
-                // 1. Öncelik: SEO ayarlarında tanımlı resim
-                $data['og_image'] = cdn($seoSetting->og_image);
-            } elseif (method_exists($model, 'getFirstMediaUrl') && $mediaImage = $model->getFirstMediaUrl('featured')) {
-                // 2. Öncelik: Model'in featured resmi (Media library)
-                $data['og_image'] = $mediaImage;
-            } elseif (method_exists($model, 'getFirstMediaUrl') && $mediaImage = $model->getFirstMediaUrl()) {
-                // 3. Öncelik: Model'in 1 numaralı media fotoğrafı (herhangi bir collection)
-                $data['og_image'] = $mediaImage;
-            } elseif (isset($model->image) && $model->image) {
-                // 4. Öncelik: Model'in image field'ı
-                $data['og_image'] = cdn($model->image);
-            } else {
-                // 5. Varsayılan: Site logo (her zaman var olmalı)
-                $defaultOgImage = setting('site_logo') ?: setting('site_logo_url') ?: asset('logo.png');
-                $data['og_image'] = $defaultOgImage;
+                // 1. Öncelik: SEO Settings og_image
+                $featuredImage = cdn($seoSetting->og_image);
+                $allImages[] = $featuredImage;
+            } elseif (method_exists($model, 'getFirstMediaUrl') && $mediaImage = $model->getFirstMediaUrl('featured_image')) {
+                // 2. Öncelik: Media Library - featured_image collection
+                $featuredImage = $mediaImage;
+                $allImages[] = $featuredImage;
+            } elseif (method_exists($model, 'getMedia')) {
+                // 3. Öncelik: Media Library - gallery collection (ilk görsel)
+                $galleryMedia = $model->getMedia('gallery');
+                if ($galleryMedia->isNotEmpty()) {
+                    $featuredImage = $galleryMedia->first()->getUrl();
+                    // Tüm galeri görsellerini ekle
+                    foreach ($galleryMedia as $media) {
+                        $allImages[] = $media->getUrl();
+                    }
+                }
             }
+
+            // Fallback: Site logo
+            if (!$featuredImage) {
+                $defaultOgImage = setting('site_logo') ?: setting('site_logo_url') ?: asset('logo.png');
+                $featuredImage = $defaultOgImage;
+                $allImages[] = $featuredImage;
+            }
+
+            $data['og_image'] = $featuredImage;
+            $data['all_images'] = array_unique($allImages); // Schema için kullanılacak
             
             // og:type - Model tipine göre
             $data['og_type'] = match($model->getMorphClass()) {
@@ -679,7 +713,26 @@ readonly class SeoMetaTagService
                 'Modules\Announcement\app\Models\Announcement' => 'article',
                 default => 'website'
             };
-            
+
+            // Article-specific OG tags (NewsArticle, BlogPosting için - 2025 SEO Standards)
+            if ($data['og_type'] === 'article') {
+                // article:published_time
+                if (isset($model->created_at)) {
+                    $data['article_published_time'] = $model->created_at->toIso8601String();
+                }
+
+                // article:modified_time
+                if (isset($model->updated_at)) {
+                    $data['article_modified_time'] = $model->updated_at->toIso8601String();
+                }
+
+                // article:author - VARCHAR kolonu (tek değer, dil bazlı değil)
+                // Öncelik: seo_settings.author, fallback: setting('site_author')
+                $data['article_author'] = ($seoSetting && $seoSetting->author)
+                    ? $seoSetting->author
+                    : setting('site_author', setting('site_title', $siteName));
+            }
+
             // og:locale - Setting sistemi entegrasyonu
             $data['og_locale'] = ($seoSetting && $seoSetting->og_locale) 
                 ? $seoSetting->og_locale 
@@ -716,24 +769,67 @@ readonly class SeoMetaTagService
                 ? $seoSetting->twitter_creator 
                 : null;
             
-            // 6. ROBOTS - 2025 Standards
-            if ($seoSetting && $seoSetting->robots) {
+            // 6. ROBOTS - 2025 Standards (robots_meta JSON array desteği)
+            if ($seoSetting && isset($seoSetting->robots_meta)) {
+                // Yeni robots_meta JSON array'ini kullan
+                $robotsMeta = $seoSetting->robots_meta;
+                $robotsDirectives = [];
+
+                // Index/NoIndex
+                $robotsDirectives[] = ($robotsMeta['index'] ?? true) ? 'index' : 'noindex';
+
+                // Follow/NoFollow
+                $robotsDirectives[] = ($robotsMeta['follow'] ?? true) ? 'follow' : 'nofollow';
+
+                // Archive/NoArchive
+                if (isset($robotsMeta['archive']) && !$robotsMeta['archive']) {
+                    $robotsDirectives[] = 'noarchive';
+                }
+
+                // Snippet/NoSnippet
+                if (isset($robotsMeta['snippet']) && !$robotsMeta['snippet']) {
+                    $robotsDirectives[] = 'nosnippet';
+                }
+
+                $data['robots'] = implode(', ', $robotsDirectives);
+            } elseif ($seoSetting && $seoSetting->robots) {
+                // Eski robots kolonu ile geriye dönük uyumluluk
                 $data['robots'] = $seoSetting->robots;
             } elseif (isset($model->is_active) && !$model->is_active) {
-                $data['robots'] = 'noindex, nofollow, max-snippet:0, max-image-preview:none, max-video-preview:0';
+                // Pasif sayfalar için sıkı kısıtlama
+                $data['robots'] = 'noindex, nofollow, noarchive, nosnippet, max-snippet:0, max-image-preview:none, max-video-preview:0';
             } else {
+                // Default: hepsi açık
                 $data['robots'] = 'index, follow';
             }
             
-            // 7. SCHEMA.ORG
-            $data['schema'] = $this->generateSchema($model, $data);
-            
-            // 7.1. BREADCRUMB SCHEMA (Otomatik)
+            // 7. SCHEMA.ORG (Multiple Schemas - 2025 Best Practice)
+            $schemas = [];
+
+            // 7.1. Ana Schema (NewsArticle/WebPage/etc)
+            $schemas['main'] = $this->generateSchema($model, $data);
+
+            // 7.2. WebSite Schema (Sadece Homepage)
+            if ($this->isHomepage()) {
+                $schemas['website'] = $this->generateWebSiteSchema($data);
+            }
+
+            // 7.3. Organization Schema (Global - Her Sayfada)
+            $schemas['organization'] = $this->generateOrganizationSchema();
+
+            // 7.4. ItemList Schema (Liste Sayfaları)
+            if ($this->isIndexPage($model)) {
+                $schemas['itemlist'] = $this->generateItemListSchema($model, $locale);
+            }
+
+            // 7.5. Breadcrumb Schema (Otomatik)
             $breadcrumbs = $this->generateAutoBreadcrumbs($model, $locale);
             if (!empty($breadcrumbs)) {
                 $schemaGenerator = app(\Modules\SeoManagement\app\Services\SchemaGeneratorService::class);
-                $data['breadcrumb_schema'] = $schemaGenerator->generateBreadcrumbSchema($breadcrumbs);
+                $schemas['breadcrumb'] = $schemaGenerator->generateBreadcrumbSchema($breadcrumbs);
             }
+
+            $data['schemas'] = $schemas;
             
             // 8. HREFLANG URLS
             if ($model) {
@@ -767,7 +863,25 @@ readonly class SeoMetaTagService
                 $schema['description'] = $seoData['description'];
             }
             
-            if (!empty($seoData['og_image'])) {
+            // Images - Tüm görselleri schema'ya ekle (2025 Best Practice)
+            if (!empty($seoData['all_images']) && count($seoData['all_images']) > 0) {
+                if (count($seoData['all_images']) === 1) {
+                    // Tek görsel
+                    $schema['image'] = [
+                        '@type' => 'ImageObject',
+                        'url' => $seoData['all_images'][0]
+                    ];
+                } else {
+                    // Birden fazla görsel - Array olarak ekle
+                    $schema['image'] = array_map(function($imageUrl) {
+                        return [
+                            '@type' => 'ImageObject',
+                            'url' => $imageUrl
+                        ];
+                    }, $seoData['all_images']);
+                }
+            } elseif (!empty($seoData['og_image'])) {
+                // Fallback: Sadece featured image
                 $schema['image'] = [
                     '@type' => 'ImageObject',
                     'url' => $seoData['og_image']
@@ -946,5 +1060,185 @@ readonly class SeoMetaTagService
         
         // Varsayılan: show
         return 'show';
+    }
+
+    /**
+     * Ana sayfada mı kontrol et
+     */
+    private function isHomepage(): bool
+    {
+        $currentUrl = url()->current();
+        $homeUrl = url('/');
+
+        // Locale'li ana sayfa kontrolü (tr/, en/, ar/)
+        $defaultLocale = get_tenant_default_locale();
+        $currentLocale = app()->getLocale();
+
+        if ($currentLocale !== $defaultLocale) {
+            $homeUrl = url('/' . $currentLocale);
+        }
+
+        return $currentUrl === $homeUrl || $currentUrl . '/' === $homeUrl || $currentUrl === $homeUrl . '/';
+    }
+
+    /**
+     * Liste/Index sayfasında mı kontrol et
+     */
+    private function isIndexPage(Model $model): bool
+    {
+        $currentPath = request()->path();
+        $modelClass = get_class($model);
+
+        // Model class'ından modül adını çıkar
+        if (str_contains($modelClass, 'Announcement')) {
+            return str_contains($currentPath, 'announcement') && !str_contains($currentPath, '/announcement/');
+        }
+
+        if (str_contains($modelClass, 'Portfolio')) {
+            return str_contains($currentPath, 'portfolio') && !str_contains($currentPath, '/portfolio/');
+        }
+
+        if (str_contains($modelClass, 'Page')) {
+            // Page için özel durum - genelde tek sayfalar
+            return false;
+        }
+
+        // Genel kural: URL'de modül adı var ama detay yok
+        $urlSegments = explode('/', trim($currentPath, '/'));
+        return count($urlSegments) === 1; // Sadece /announcement, /portfolio gibi
+    }
+
+    /**
+     * WebSite Schema oluştur (Sadece Homepage)
+     */
+    private function generateWebSiteSchema(array $data): array
+    {
+        $currentLocale = app()->getLocale();
+        $siteName = setting('site_name') ?: setting('site_title') ?: config('app.name');
+        $siteDescription = $data['description'] ?: setting('site_description') ?: '';
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            '@id' => url('/') . '#website',
+            'url' => url('/'),
+            'name' => $siteName,
+            'description' => $siteDescription,
+            'inLanguage' => $currentLocale,
+        ];
+
+        // Arama özelliği ekle (2025 Best Practice)
+        $schema['potentialAction'] = [
+            '@type' => 'SearchAction',
+            'target' => [
+                '@type' => 'EntryPoint',
+                'urlTemplate' => url('/search?q={search_term_string}')
+            ],
+            'query-input' => 'required name=search_term_string'
+        ];
+
+        return $schema;
+    }
+
+    /**
+     * Organization Schema oluştur (Global - Her Sayfada)
+     */
+    private function generateOrganizationSchema(): array
+    {
+        $siteName = setting('site_name') ?: setting('site_title') ?: config('app.name');
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Organization',
+            '@id' => url('/') . '#organization',
+            'name' => $siteName,
+            'url' => url('/'),
+        ];
+
+        // Logo ekle
+        $siteLogo = setting('site_logo');
+        if ($siteLogo) {
+            $schema['logo'] = [
+                '@type' => 'ImageObject',
+                'url' => cdn($siteLogo)
+            ];
+        }
+
+        // İletişim bilgileri
+        $contactEmail = setting('contact_email');
+        if ($contactEmail) {
+            $schema['email'] = $contactEmail;
+        }
+
+        $contactPhone = setting('contact_phone');
+        if ($contactPhone) {
+            $schema['telephone'] = $contactPhone;
+        }
+
+        // Sosyal medya hesapları (2025 Best Practice)
+        $socialLinks = [];
+        $socialPlatforms = ['facebook', 'twitter', 'instagram', 'linkedin', 'youtube'];
+
+        foreach ($socialPlatforms as $platform) {
+            $socialUrl = setting('social_' . $platform);
+            if ($socialUrl) {
+                $socialLinks[] = $socialUrl;
+            }
+        }
+
+        if (!empty($socialLinks)) {
+            $schema['sameAs'] = $socialLinks;
+        }
+
+        return $schema;
+    }
+
+    /**
+     * ItemList Schema oluştur (Liste Sayfaları için) - DİNAMİK
+     */
+    private function generateItemListSchema(Model $model, string $locale): array
+    {
+        $modelClass = get_class($model);
+        $items = [];
+
+        try {
+            // Dinamik olarak aynı model class'ından aktif kayıtları çek
+            $listItems = $modelClass::query()
+                ->where('is_active', 1)
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get();
+
+            // Her item için ListItem oluştur
+            foreach ($listItems as $index => $item) {
+                // getUrl ve getTranslated methodları varsa kullan
+                $url = method_exists($item, 'getUrl') ? $item->getUrl($locale) : url()->current();
+                $name = method_exists($item, 'getTranslated')
+                    ? $item->getTranslated('title', $locale)
+                    : ($item->title ?? 'Item ' . ($index + 1));
+
+                $items[] = [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'url' => $url,
+                    'name' => $name
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::warning('ItemList Schema generation hatası', [
+                'error' => $e->getMessage(),
+                'model' => $modelClass
+            ]);
+        }
+
+        if (empty($items)) {
+            return [];
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'ItemList',
+            'itemListElement' => $items
+        ];
     }
 }

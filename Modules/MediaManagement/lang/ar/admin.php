@@ -1,0 +1,102 @@
+<?php
+
+return [
+    // 9'E
+    'media_management' => '%/'1) 'DH3'&7',
+    'media' => 'H3'&7',
+    'module_name' => '%/'1) 'DH3'&7',
+    'module_management' => '%/'1) 'DH-/'*',
+    'about_module' => '-HD 'DH-/)',
+    'module_description' => '%/'1) 'DH3'&7 GH F8'E 9'DEJ D%/'1) 'DH3'&7 JECF '3*./'EG 9(1 ,EJ9 'DH-/'*. J3E- DC (%/'1) 'D5H1 HEB'79 'DAJ/JH H'D5H* H'DE3*F/'* HEDA'* 'D#14JA.',
+    'how_to_use' => 'CJAJ) 'D'3*./'E',
+    'usage_instructions' => 'D' J*E '3*./'E G0G 'DH-/) E('41). J*E /E,G' *DB'&JK' AJ 9D'E) 'D*(HJ( "'DH3'&7" AJ 5A-'* 'D*-1J1 DDH-/'* E+D 'D%9D'F'* H'DE-A8).',
+    'supported_types' => '#FH'9 'DH3'&7 'DE/9HE)',
+    'type_image' => '5H1)',
+    'type_video' => 'AJ/JH',
+    'type_audio' => '5H*',
+    'type_document' => 'E3*F/',
+    'max_size' => ''D-,E 'D#B5I',
+    'features' => ''DEJ2'*',
+    'drag_drop' => ''D3-( H'D%AD'*',
+    'drag_drop_desc' => 'BE (*-EJD 'DEDA'* 9F 71JB 3-(G' H%AD'*G' EF E*5A-C',
+    'auto_conversion' => ''D*-HJD 'D*DB'&J',
+    'auto_conversion_desc' => 'J*E *-HJD 'D5H1 *DB'&JK' %DI *F3JB WebP H#-,'E E.*DA)',
+    'sortable_gallery' => 'E916 B'(D DDA12',
+    'sortable_gallery_desc' => '#9/ *1*J( 5H1 'DE916 ('3*./'E 'D3-( H'D%AD'*',
+    'secure' => '"EF',
+    'secure_desc' => 'EDA'* 'DH3'&7 E-EJ) (A-H5'* 'D#E'F',
+
+    // #FH'9 'DH3'&7
+    'image' => '5H1)',
+    'video' => 'AJ/JH',
+    'audio' => '5H*',
+    'document' => 'E3*F/',
+    'archive' => '#14JA',
+
+    // 'DE,EH9'*
+    'featured_image' => ''D5H1) 'D1&J3J)',
+    'gallery' => 'E916',
+    'videos' => 'EB'79 'DAJ/JH',
+    'audio_files' => 'EDA'* 'D5H*',
+    'documents' => ''DE3*F/'*',
+
+    // 'D%,1'!'*
+    'upload' => '*-EJD',
+    'upload_files' => '*-EJD 'DEDA'*',
+    'delete' => '-0A',
+    'set_as_featured' => '*9JJF C:D'A',
+    'drag_to_reorder' => ''3-( D%9'/) 'D*1*J(',
+    'choose_file' => ''.*1 EDA',
+    'choose_files' => ''.*1 EDA'*',
+    'edit_caption' => '*-1J1 'D9FH'F H'DH5A',
+    'edit_media_caption' => '*-1J1 E9DHE'* 'DH3'&7',
+
+    // -BHD 'D9FH'F
+    'title' => ''D9FH'F',
+    'description' => ''DH5A',
+    'alt_text' => 'F5 (/) (SEO)',
+    'caption_saved' => '*E -A8 E9DHE'* 'DH3'&7',
+    'caption_helper' => 'JECFC %6'A) 9FH'F HH5A DD5H1)',
+
+    // EF7B) 'D*-EJD
+    'drag_drop_files' => ''3-( H#AD* 'DEDA'* #H 'FB1 DD*-/J/',
+    'drag_drop_file' => ''3-( H#AD* 'DEDA #H 'FB1 DD*-/J/',
+    'click_to_upload' => ''FB1 DD*-EJD',
+    'or_drag_drop' => '#H '3-( H#AD*',
+
+    // E9DHE'* 'DEDA
+    'max_file_size' => ''D-/ 'D#B5I D-,E 'DEDA: :size',
+    'allowed_types' => ''D*F3JB'* 'DE3EH- (G': :types',
+    'file_size' => '-,E 'DEDA',
+    'file_type' => 'FH9 'DEDA',
+    'uploaded_at' => '*E 'D*-EJD AJ',
+
+    // 'D13'&D
+    'uploading' => ','1J 'D*-EJD...',
+    'upload_success' => '*E *-EJD 'DEDA (F,'-',
+    'upload_failed' => 'A4D 'D*-EJD',
+    'file_deleted' => '*E -0A 'DEDA',
+    'featured_set' => '*E *9JJF 'D5H1) CEEJ2) (F,'-',
+    'order_updated' => '*E *-/J+ 'D*1*J( (F,'-',
+    'no_files' => 'DE J*E *-EJD EDA'* (9/',
+    'no_media' => 'D' *H,/ H3'&7 (9/',
+    'save_first_to_upload' => ','1J 'D-A8 D*-EJD 'DH3'&7...',
+    'ready_to_save' => ','G2 DD-A8 - 3J*E %6'A) 'DH3'&7 9F/ -A8 'DFEH0,',
+
+    // 'D#.7'!
+    'file_too_large' => ''DEDA C(J1 ,/K'. 'D-/ 'D#B5I: :size',
+    'invalid_file_type' => 'FH9 EDA :J1 5'D-. 'DE3EH- (G: :types',
+    'upload_error' => '.7# AJ 'D*-EJD: :message',
+    'delete_error' => '.7# AJ 'D-0A: :message',
+    'unauthorized' => '#F* :J1 E51- DC (G0' 'D%,1'!',
+
+    // 'D*-BB
+    'required' => 'G0' 'D-BD E7DH(',
+    'max_items' => 'JECFC *-EJD (-/ #B5I :count EDA'*',
+    'min_items' => 'J,( 9DJC *-EJD E' D' JBD 9F :count EDA'*',
+
+    // 'D%-5'&J'*
+    'total_files' => '%,E'DJ 'DEDA'*',
+    'total_size' => ''D-,E 'D%,E'DJ',
+    'file_count' => ':count EDA'*',
+];

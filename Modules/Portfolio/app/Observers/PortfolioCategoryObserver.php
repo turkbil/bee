@@ -29,12 +29,12 @@ class PortfolioCategoryObserver
      */
     public function creating(PortfolioCategory $category): void
     {
-        // Slug yoksa name'den otomatik oluştur
-        if (empty($category->slug) && !empty($category->name)) {
+        // Slug yoksa title'dan otomatik oluştur
+        if (empty($category->slug) && !empty($category->title)) {
             $slugs = [];
-            foreach ($category->name as $locale => $name) {
-                if (!empty($name)) {
-                    $slugs[$locale] = Str::slug($name);
+            foreach ($category->title as $locale => $title) {
+                if (!empty($title)) {
+                    $slugs[$locale] = Str::slug($title);
                 }
             }
             if (!empty($slugs)) {
@@ -52,7 +52,7 @@ class PortfolioCategoryObserver
         }
 
         Log::info('Portfolio Category creating', [
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
     }
@@ -73,7 +73,7 @@ class PortfolioCategoryObserver
 
         Log::info('Portfolio Category created successfully', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
     }
@@ -141,26 +141,26 @@ class PortfolioCategoryObserver
      */
     public function saving(PortfolioCategory $category): void
     {
-        // Name validasyon
-        if (is_array($category->name)) {
-            foreach ($category->name as $locale => $name) {
+        // Title validasyon
+        if (is_array($category->title)) {
+            foreach ($category->title as $locale => $title) {
                 $minLength = 2;
                 $maxLength = 191;
 
-                if (!empty($name)) {
+                if (!empty($title)) {
                     // Minimum length check
-                    if (strlen($name) < $minLength) {
-                        throw new \Exception("Kategori adı en az {$minLength} karakter olmalıdır ({$locale})");
+                    if (strlen($title) < $minLength) {
+                        throw new \Exception("Kategori başlığı en az {$minLength} karakter olmalıdır ({$locale})");
                     }
 
                     // Maximum length check - auto trim
-                    if (strlen($name) > $maxLength) {
-                        $category->name[$locale] = mb_substr($name, 0, $maxLength);
+                    if (strlen($title) > $maxLength) {
+                        $category->title[$locale] = mb_substr($title, 0, $maxLength);
 
-                        Log::warning('Portfolio Category name auto-trimmed', [
+                        Log::warning('Portfolio Category title auto-trimmed', [
                             'category_id' => $category->category_id,
                             'locale' => $locale,
-                            'original_length' => strlen($name),
+                            'original_length' => strlen($title),
                             'trimmed_length' => $maxLength
                         ]);
                     }
@@ -197,7 +197,7 @@ class PortfolioCategoryObserver
 
         Log::info('Portfolio Category deleting', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
 
@@ -225,7 +225,7 @@ class PortfolioCategoryObserver
 
         Log::info('Portfolio Category deleted successfully', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
     }
@@ -238,7 +238,7 @@ class PortfolioCategoryObserver
     {
         Log::info('Portfolio Category restoring', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
     }
@@ -259,7 +259,7 @@ class PortfolioCategoryObserver
 
         Log::info('Portfolio Category restored successfully', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
     }
@@ -272,7 +272,7 @@ class PortfolioCategoryObserver
     {
         Log::warning('Portfolio Category force deleting', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
 
@@ -290,7 +290,7 @@ class PortfolioCategoryObserver
 
         Log::warning('Portfolio Category force deleted', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
     }

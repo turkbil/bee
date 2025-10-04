@@ -2,11 +2,11 @@
 
 return [
     'general' => [
-        'pages' => 'الصفحات',
-        'all_pages' => 'جميع الصفحات',
+        'announcements' => 'الصفحات',
+        'all_announcements' => 'جميع الصفحات',
         'read_more' => 'اقرأ المزيد',
     ],
     'messages' => [
-        'no_pages_found' => 'لم يتم إضافة أي صفحة بعد.',
+        'no_announcements_found' => 'لم يتم إضافة أي صفحة بعد.',
     ],
 ];

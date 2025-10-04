@@ -35,7 +35,7 @@ class AnnouncementSeeder extends Seeder
         $tenantId = TenantHelpers::getCurrentTenantId();
 
         $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        $this->command->info('📄 PAGE MODULE SEEDER');
+        $this->command->info('📄 ANNOUNCEMENT MODULE SEEDER');
         $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
         // Central Database Seeding
@@ -84,7 +84,7 @@ class AnnouncementSeeder extends Seeder
 
             default:
                 $this->command->warn("⚠️  No specific seeder found for Tenant ID: {$tenantId}");
-                $this->command->info('💡 Creating default pages with factory...');
+                $this->command->info('💡 Creating default announcements with factory...');
                 $this->command->newLine();
 
                 $this->createDefaultPages();
@@ -96,7 +96,7 @@ class AnnouncementSeeder extends Seeder
     }
 
     /**
-     * Create default pages for unknown tenants
+     * Create default announcements for unknown tenants
      * Uses factory to generate basic announcement structure
      */
     private function createDefaultPages(): void
@@ -107,32 +107,32 @@ class AnnouncementSeeder extends Seeder
             return;
         }
 
-        // Create homepage
-        $homepage = Announcement::factory()
+        // Create homeannouncement
+        $homeannouncement = Announcement::factory()
             ->featured()
             ->create();
 
-        $this->command->info('✓ Homepage created');
+        $this->command->info('✓ Homeannouncement created');
 
-        // Create basic pages
-        $pages = [
+        // Create basic announcements
+        $announcements = [
             'about' => Announcement::factory()->aboutPage(),
             'contact' => Announcement::factory()->contactPage(),
             'privacy' => Announcement::factory()->privacyPage(),
             'terms' => Announcement::factory()->termsPage(),
         ];
 
-        foreach ($pages as $type => $factory) {
+        foreach ($announcements as $type => $factory) {
             $factory->create();
             $this->command->info("✓ {$type} announcement created");
         }
 
-        // Create additional random pages for development
+        // Create additional random announcements for development
         Announcement::factory()
             ->simple()
             ->count(10)
             ->create();
 
-        $this->command->info('✓ 10 random pages created for development');
+        $this->command->info('✓ 10 random announcements created for development');
     }
 }

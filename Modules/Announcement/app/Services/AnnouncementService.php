@@ -13,9 +13,10 @@ use App\Services\GlobalTabService;
 use Modules\Announcement\App\Models\Announcement;
 use Modules\Announcement\App\DataTransferObjects\{AnnouncementOperationResult, BulkOperationResult};
 use Modules\Announcement\App\Exceptions\{AnnouncementNotFoundException, AnnouncementCreationException, AnnouncementProtectionException};
+use App\Services\BaseService;
 use Throwable;
 
-readonly class AnnouncementService
+readonly class AnnouncementService extends BaseService
 {
     public function __construct(
         private AnnouncementRepositoryInterface $announcementRepository,
@@ -71,7 +72,7 @@ readonly class AnnouncementService
             ]);
 
             return AnnouncementOperationResult::success(
-                message: __('announcement::admin.page_created_successfully'),
+                message: __('announcement::admin.announcement_created_successfully'),
                 data: $announcement
             );
         } catch (Throwable $e) {
@@ -110,7 +111,7 @@ readonly class AnnouncementService
             ]);
 
             return AnnouncementOperationResult::success(
-                message: __('announcement::admin.page_updated_successfully'),
+                message: __('announcement::admin.announcement_updated_successfully'),
                 data: $announcement->refresh()
             );
         } catch (AnnouncementNotFoundException $e) {
@@ -144,7 +145,7 @@ readonly class AnnouncementService
             ]);
 
             return AnnouncementOperationResult::success(
-                message: __('announcement::admin.page_deleted_successfully')
+                message: __('announcement::admin.announcement_deleted_successfully')
             );
         } catch (AnnouncementNotFoundException | AnnouncementProtectionException $e) {
             throw $e;
@@ -184,7 +185,7 @@ readonly class AnnouncementService
             );
         } catch (AnnouncementNotFoundException $e) {
             return AnnouncementOperationResult::error(
-                message: __('admin.page_not_found'),
+                message: __('announcement::admin.announcement_not_found'),
                 type: 'error'
             );
         } catch (AnnouncementProtectionException $e) {
@@ -267,22 +268,6 @@ readonly class AnnouncementService
         }
     }
 
-    public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool
-    {
-        $result = $this->announcementRepository->updateSeoField($id, $locale, $field, $value);
-
-        if ($result) {
-            Log::info('SEO field updated', [
-                'announcement_id' => $id,
-                'locale' => $locale,
-                'field' => $field,
-                'user_id' => auth()->id()
-            ]);
-        }
-
-        return $result;
-    }
-
     protected function generateSlugsFromTitles(array $titles, array $existingSlugs = []): array
     {
         $slugs = $existingSlugs;
@@ -302,8 +287,7 @@ readonly class AnnouncementService
 
         foreach ($seoData as $locale => $data) {
             if (is_array($data)) {
-                // Boş değerleri temizle
-                $cleanData = array_filter($data, function ($value) {
+                $cleanData = array_filter($data, function($value) {
                     return !is_null($value) && $value !== '' && $value !== [];
                 });
 
@@ -377,9 +361,12 @@ readonly class AnnouncementService
             'inputs.is_active' => 'boolean',
         ];
 
+        // Default locale'i al
+        $defaultLocale = get_tenant_default_locale();
+
         // Çoklu dil alanları
         foreach ($availableLanguages as $lang) {
-            $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+            $rules["multiLangInputs.{$lang}.title"] = $lang === $defaultLocale ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
             $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
             $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
         }
@@ -396,6 +383,22 @@ readonly class AnnouncementService
     public function calculateSeoScore(array $seoData): array
     {
         return $this->seoRepository->calculateSeoScore($seoData, 'announcement');
+    }
+
+    public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool
+    {
+        $result = $this->announcementRepository->updateSeoField($id, $locale, $field, $value);
+
+        if ($result) {
+            Log::info('SEO field updated', [
+                'announcement_id' => $id,
+                'locale' => $locale,
+                'field' => $field,
+                'user_id' => auth()->id()
+            ]);
+        }
+
+        return $result;
     }
 
     public function clearCache(): void

@@ -11,13 +11,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Modules\Portfolio\App\Models\Page;
-use Modules\Portfolio\App\Services\PageService;
+use Modules\Portfolio\App\Models\Portfolio;
+use Modules\Portfolio\App\Services\PortfolioService;
 use Throwable;
 
 /**
  * 🗑️ Bulk Portfolio Delete Queue Job
- * 
+ *
  * Portfolio modülünün bulk silme işlemleri için queue job:
  * - Toplu sayfa silme işlemleri için optimize edilmiş
  * - Progress tracking ile durum takibi
@@ -33,13 +33,13 @@ class BulkDeletePortfoliosJob implements ShouldQueue
     public int $maxExceptions = 3;
 
     /**
-     * @param array $portfoliods Silinecek sayfa ID'leri
+     * @param array $portfolioIds Silinecek sayfa ID'leri
      * @param string $tenantId Tenant ID (multi-tenant sistem için)
      * @param string $userId İşlemi yapan kullanıcı ID'si
      * @param array $options Ek seçenekler (force_delete, etc.)
      */
     public function __construct(
-        public array $portfoliods,
+        public array $portfolioIds,
         public string $tenantId,
         public string $userId,
         public array $options = []
@@ -50,7 +50,7 @@ class BulkDeletePortfoliosJob implements ShouldQueue
     /**
      * Job execution
      */
-    public function handle(PageService $portfolioervice): void
+    public function handle(PortfolioService $portfolioService): void
     {
         $startTime = microtime(true);
         $processedCount = 0;
@@ -58,65 +58,62 @@ class BulkDeletePortfoliosJob implements ShouldQueue
         $errors = [];
 
         try {
-            Log::info('🗑️ BULK PAGE DELETE STARTED', [
-                'portfolio_ids' => $this->pageIds,
+            Log::info('🗑️ BULK PORTFOLIO DELETE STARTED', [
+                'portfolio_ids' => $this->portfolioIds,
                 'tenant_id' => $this->tenantId,
                 'user_id' => $this->userId,
-                'total_count' => count($this->pageIds)
+                'total_count' => count($this->portfolioIds)
             ]);
 
             // Progress tracking için cache key
-            $progressKey = "bulk_delete_pages_{$this->tenantId}_{$this->userId}";
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'starting');
+            $progressKey = "bulk_delete_portfolios_{$this->tenantId}_{$this->userId}";
+            $this->updateProgress($progressKey, 0, count($this->portfolioIds), 'starting');
 
             // Her sayfa için silme işlemi
-            foreach ($this->pageIds as $index => $portfoliod) {
+            foreach ($this->portfolioIds as $index => $portfolioId) {
                 try {
                     // Sayfa var mı kontrol et
-                    $portfolio= Page::find($portfoliod);
-                    if (!$portfolio {
-                        Log::warning("Sayfa bulunamadı: {$portfoliod}");
+                    $portfolio = Portfolio::find($portfolioId);
+                    if (!$portfolio) {
+                        Log::warning("Sayfa bulunamadı: {$portfolioId}");
                         continue;
                     }
 
-                        $errors[] = "Ana sayfa silinemez: {$portfolio>title}";
-                        $errorCount++;
-                        continue;
-                    }
+                    // Homeportfolio kontrolü - ana sayfa silinemesin (disabled for portfolios)
+                    // Portfolios don't have homepage concept like pages
 
                     // Silme işlemi
                     $forceDelete = $this->options['force_delete'] ?? false;
 
                     if ($forceDelete) {
-                        $portfolio>forceDelete();
-                        log_activity($portfolio 'kalıcı-silindi');
+                        $portfolio->forceDelete();
+                        log_activity($portfolio, 'kalıcı-silindi');
                     } else {
-                        $portfolio>delete();
-                        log_activity($portfolio 'silindi');
+                        $portfolio->delete();
+                        log_activity($portfolio, 'silindi');
                     }
 
                     $processedCount++;
-                    
+
                     // Progress güncelle
-                    $progress = (int) (($index + 1) / count($this->pageIds) * 100);
-                    $this->updateProgress($progressKey, $progress, count($this->pageIds), 'processing', [
+                    $progress = (int) (($index + 1) / count($this->portfolioIds) * 100);
+                    $this->updateProgress($progressKey, $progress, count($this->portfolioIds), 'processing', [
                         'processed' => $processedCount,
                         'errors' => $errorCount,
-                        'current_page' => $portfolio>title
+                        'current_portfolio' => $portfolio->title
                     ]);
 
                     Log::info("✅ Sayfa silindi", [
-                        'id' => $portfoliod,
-                        'title' => $portfolio>title,
+                        'id' => $portfolioId,
+                        'title' => $portfolio->title,
                         'force_delete' => $forceDelete
                     ]);
-
                 } catch (\Exception $e) {
                     $errorCount++;
-                    $errors[] = "Sayfa silme hatası (ID: {$portfoliod}): " . $e->getMessage();
-                    
+                    $errors[] = "Sayfa silme hatası (ID: {$portfolioId}): " . $e->getMessage();
+
                     Log::error("❌ Sayfa silme hatası", [
-                        'portfolio_id' => $portfoliod,
+                        'portfolio_id' => $portfolioId,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
@@ -128,26 +125,25 @@ class BulkDeletePortfoliosJob implements ShouldQueue
 
             // Final progress
             $duration = round(microtime(true) - $startTime, 2);
-            $this->updateProgress($progressKey, 100, count($this->pageIds), 'completed', [
+            $this->updateProgress($progressKey, 100, count($this->portfolioIds), 'completed', [
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration,
                 'error_messages' => $errors
             ]);
 
-            Log::info('✅ BULK PAGE DELETE COMPLETED', [
-                'total_pages' => count($this->pageIds),
+            Log::info('✅ BULK PORTFOLIO DELETE COMPLETED', [
+                'total_portfolios' => count($this->portfolioIds),
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration . 's'
             ]);
-
         } catch (\Exception $e) {
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+            $this->updateProgress($progressKey, 0, count($this->portfolioIds), 'failed', [
                 'error' => $e->getMessage()
             ]);
 
-            Log::error('💥 BULK PAGE DELETE FAILED', [
+            Log::error('💥 BULK PORTFOLIO DELETE FAILED', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -177,24 +173,23 @@ class BulkDeletePortfoliosJob implements ShouldQueue
     {
         try {
             // Portfolio cache'leri temizle
-            Cache::forget('pages_list');
-            Cache::forget('pages_menu_cache');
-            Cache::forget('pages_sitemap_cache');
-            
+            Cache::forget('portfolios_list');
+            Cache::forget('portfolios_menu_cache');
+            Cache::forget('portfolios_sitemap_cache');
+
             // Pattern-based cache temizleme
             $patterns = [
-                'page_*',
-                'pages_*',
+                'portfolio_*',
+                'portfolios_*',
                 'sitemap_*',
                 'menu_*'
             ];
-            
+
             foreach ($patterns as $pattern) {
                 Cache::tags(['portfolios'])->flush();
             }
 
             Log::info('🗑️ Portfolio caches cleared after bulk delete');
-            
         } catch (\Exception $e) {
             Log::error('Cache temizleme hatası: ' . $e->getMessage());
         }
@@ -205,8 +200,8 @@ class BulkDeletePortfoliosJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        Log::error('💥 BULK PAGE DELETE JOB FAILED', [
-            'portfolio_ids' => $this->pageIds,
+        Log::error('💥 BULK PORTFOLIO DELETE JOB FAILED', [
+            'portfolio_ids' => $this->portfolioIds,
             'tenant_id' => $this->tenantId,
             'user_id' => $this->userId,
             'error' => $exception?->getMessage(),
@@ -214,8 +209,8 @@ class BulkDeletePortfoliosJob implements ShouldQueue
         ]);
 
         // Progress'i failed olarak işaretle
-        $progressKey = "bulk_delete_pages_{$this->tenantId}_{$this->userId}";
-        $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+        $progressKey = "bulk_delete_portfolios_{$this->tenantId}_{$this->userId}";
+        $this->updateProgress($progressKey, 0, count($this->portfolioIds), 'failed', [
             'error' => $exception?->getMessage()
         ]);
     }

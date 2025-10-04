@@ -5,152 +5,111 @@ namespace Modules\Portfolio\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\Portfolio;
 use Modules\Portfolio\App\Models\PortfolioCategory;
-use App\Helpers\TenantHelpers;
+use Faker\Factory as Faker;
+use Illuminate\Support\Str;
 
-/**
- * Portfolio Module Master Seeder
- *
- * Context-aware orchestrator seeder.
- * Routes to appropriate seeder based on database context (Central or Tenant).
- *
- * Architecture:
- * - Central Database: PortfolioSeederCentral (tr, en)
- * - Tenant 2: PortfolioSeederTenant2 (tr, en)
- * - Tenant 3: PortfolioSeederTenant3 (tr, en)
- * - Tenant 4: PortfolioSeederTenant4 (tr, en)
- *
- * @package Modules\Portfolio\Database\Seeders
- */
 class PortfolioSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * Automatically detects context and calls appropriate seeder.
-     * Prevents duplicate seeding with smart checks.
-     */
     public function run(): void
     {
-        // Context detection
-        $isCentral = TenantHelpers::isCentral();
-        $tenantId = TenantHelpers::getCurrentTenantId();
-
-        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        $this->command->info('📂 PORTFOLIO MODULE SEEDER');
-        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
-        // Central Database Seeding
-        if ($isCentral) {
-            $this->command->info('🌐 Context: CENTRAL DATABASE');
-            $this->command->info('🗂️  Running: PortfolioSeederCentral');
-            $this->command->info('🌍 Languages: Turkish, English');
-            $this->command->newLine();
-
-            $this->call(PortfolioSeederCentral::class);
-
-            $this->command->info('✅ Central database seeding completed');
+        // Portfolio SADECE tenant database'lerde olmalı
+        if (\App\Helpers\TenantHelpers::isCentral()) {
+            $this->command->info('📦 Portfolio: sadece tenant database için, atlanıyor...');
             return;
         }
 
-        // Central tenant (ID=1 / laravel database) kontrolü
-        if (tenancy()->initialized && tenant('tenancy_db_name') === 'laravel') {
-            $this->command->error('❌ Central tenant detected (Tenant ID: 1), portfolio tables do not exist in central!');
-            return;
-        }
-
-        // Tenant Database Seeding
-        $this->command->info("🏢 Context: TENANT DATABASE (ID: {$tenantId})");
-
-        switch ($tenantId) {
-            case 2:
-                $this->command->info('🗂️  Running: PortfolioSeederTenant2');
-                $this->command->info('🌍 Languages: Turkish, English');
-                $this->command->info('🎨 Theme: Digital Agency / E-Commerce');
-                $this->command->newLine();
-
-                $this->call(PortfolioSeederTenant2::class);
-                break;
-
-            case 3:
-                $this->command->info('🗂️  Running: PortfolioSeederTenant3');
-                $this->command->info('🌍 Languages: Turkish, English');
-                $this->command->info('🎨 Theme: Corporate Business');
-                $this->command->newLine();
-
-                $this->call(PortfolioSeederTenant3::class);
-                break;
-
-            case 4:
-                $this->command->info('🗂️  Running: PortfolioSeederTenant4');
-                $this->command->info('🌍 Languages: Turkish, English');
-                $this->command->info('🎨 Theme: Creative Portfolio');
-                $this->command->newLine();
-
-                $this->call(PortfolioSeederTenant4::class);
-                break;
-
-            default:
-                $this->command->warn("⚠️  No specific seeder found for Tenant ID: {$tenantId}");
-                $this->command->info('💡 Creating default portfolios with factory...');
-                $this->command->newLine();
-
-                $this->createDefaultPortfolios();
-                break;
-        }
-
-        $this->command->info('✅ Tenant database seeding completed');
-        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    }
-
-    /**
-     * Create default portfolios for unknown tenants
-     * Uses factory to generate basic portfolio structure
-     */
-    private function createDefaultPortfolios(): void
-    {
         // Central tenant (ID=1 / laravel database) kontrolü
         if (tenancy()->initialized && tenant('tenancy_db_name') === 'laravel') {
             $this->command->error('❌ Central tenant detected, portfolio tables do not exist in central!');
             return;
         }
 
-        // Önce kategorileri oluştur
-        $this->call(PortfolioCategorySeeder::class);
-
-        // Duplicate check
-        if (Portfolio::count() > 0) {
-            $this->command->info('📋 Portfolios already exist, skipping default creation');
+        // Tenant context kontrolü
+        if (!tenancy()->initialized) {
+            $this->command->error('❌ Tenant context not initialized for Portfolio!');
             return;
         }
 
-        $categories = PortfolioCategory::all();
-
-        if ($categories->isEmpty()) {
-            $this->command->warn('⚠️  No categories found. Creating categories first...');
-            $this->call(PortfolioCategorySeeder::class);
-            $categories = PortfolioCategory::all();
+        // Duplicate check - eğer zaten veri varsa skip
+        if (PortfolioCategory::count() > 0) {
+            $this->command->warn("⚠️  Portfolio categories already exist. Skipping...");
+            return;
         }
 
-        // Her kategori için 2-3 portfolio oluştur
-        foreach ($categories as $category) {
-            Portfolio::factory()
-                ->forCategory($category->category_id)
-                ->active()
-                ->count(rand(2, 3))
-                ->create();
+        $faker = Faker::create('tr_TR');
 
-            $this->command->info("✓ Created portfolios for category: {$category->name['en']}");
+        // 5 Kategori
+        $categoryNames = [
+            'Web Tasarım' => 'Web Design',
+            'Mobil Uygulama' => 'Mobile App',
+            'E-Ticaret' => 'E-Commerce',
+            'Kurumsal' => 'Corporate',
+            'Dijital Pazarlama' => 'Digital Marketing'
+        ];
+
+        foreach ($categoryNames as $nameTr => $nameEn) {
+            $category = PortfolioCategory::create([
+                'title' => [
+                    'tr' => $nameTr,
+                    'en' => $nameEn,
+                    'ar' => $nameTr
+                ],
+                'slug' => [
+                    'tr' => Str::slug($nameTr),
+                    'en' => Str::slug($nameEn),
+                    'ar' => Str::slug($nameTr)
+                ],
+                'description' => [
+                    'tr' => $faker->paragraph(3),
+                    'en' => $faker->paragraph(3),
+                    'ar' => $faker->paragraph(3)
+                ],
+                'is_active' => true,
+                'sort_order' => 0,
+                'parent_id' => null,
+            ]);
+
+            // Her kategori için 10 portfolio
+            for ($i = 1; $i <= 10; $i++) {
+                $title = ucwords($faker->words(rand(2, 4), true));
+
+                Portfolio::create([
+                    'title' => [
+                        'tr' => $title,
+                        'en' => $title,
+                        'ar' => $title
+                    ],
+                    'slug' => [
+                        'tr' => Str::slug($title) . '-' . $faker->unique()->numberBetween(1000, 9999),
+                        'en' => Str::slug($title) . '-' . $faker->unique()->numberBetween(1000, 9999),
+                        'ar' => Str::slug($title) . '-' . $faker->unique()->numberBetween(1000, 9999)
+                    ],
+                    'body' => [
+                        'tr' => $this->generateContent($faker),
+                        'en' => $this->generateContent($faker),
+                        'ar' => $this->generateContent($faker)
+                    ],
+                    'portfolio_category_id' => $category->category_id,
+                    'is_active' => $faker->boolean(90),
+                ]);
+            }
         }
+    }
 
-        // Ek rastgele portfoliolar (development için)
-        Portfolio::factory()
-            ->simple()
-            ->count(5)
-            ->create();
+    private function generateContent($faker): string
+    {
+        $content = '<h2>' . $faker->sentence(4) . '</h2>';
+        $content .= '<p>' . $faker->paragraph(5) . '</p>';
 
-        $this->command->info('✓ 5 random portfolios created for development');
+        $content .= '<h3>' . $faker->sentence(3) . '</h3>';
+        $content .= '<ul>';
+        for ($i = 0; $i < rand(3, 5); $i++) {
+            $content .= '<li>' . $faker->sentence() . '</li>';
+        }
+        $content .= '</ul>';
 
-        $totalCount = Portfolio::count();
-        $this->command->info("✅ Total {$totalCount} portfolios created");
+        $content .= '<p>' . $faker->paragraph(4) . '</p>';
+
+        return $content;
     }
 }

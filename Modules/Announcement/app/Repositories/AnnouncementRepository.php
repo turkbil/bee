@@ -23,7 +23,7 @@ readonly class AnnouncementRepository implements AnnouncementRepositoryInterface
         private Announcement $model
     ) {
         $this->cachePrefix = TenantCacheService::PREFIX_ANNOUNCEMENT;
-        $this->cacheTtl = TenantCacheService::TTL_HOUR;
+        $this->cacheTtl = (int) config('modules.cache.ttl.list', 3600);
         $this->cache = app(TenantCacheService::class);
     }
 
@@ -89,7 +89,7 @@ readonly class AnnouncementRepository implements AnnouncementRepositoryInterface
             return $this->model->active()->orderBy('announcement_id', 'desc')->get();
         }
 
-        $cacheKey = $this->getCacheKey('active_pages');
+        $cacheKey = $this->getCacheKey('active_announcements');
 
         return Cache::tags($this->getCacheTags())
             ->remember(
@@ -219,10 +219,10 @@ readonly class AnnouncementRepository implements AnnouncementRepositoryInterface
         }
 
         // Önce mevcut durumları al
-        $pages = $this->model->whereIn('announcement_id', $ids)->get(['announcement_id', 'is_active']);
+        $announcements = $this->model->whereIn('announcement_id', $ids)->get(['announcement_id', 'is_active']);
         $count = 0;
 
-        foreach ($pages as $announcement) {
+        foreach ($announcements as $announcement) {
             $this->model->where('announcement_id', $announcement->announcement_id)
                 ->update(['is_active' => !$announcement->is_active]);
             $count++;
@@ -237,7 +237,6 @@ readonly class AnnouncementRepository implements AnnouncementRepositoryInterface
 
     public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool
     {
-        // 🚨 PERFORMANCE FIX: Gereksiz findById kaldır, direkt güncelle
         $announcement = $this->model->where('announcement_id', $id)->first(['announcement_id', 'seo']);
 
         if (!$announcement) {

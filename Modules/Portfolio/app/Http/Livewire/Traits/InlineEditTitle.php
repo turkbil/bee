@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Portfolio\App\Http\Livewire\Traits;
 
 use Illuminate\Support\Str;
@@ -22,7 +23,7 @@ trait InlineEditTitle
         }
 
         $modelClass = $this->getModelClass();
-        $model = $modelClass::where('page_id', $this->editingTitleId)
+        $model = $modelClass::where('portfolio_id', $this->editingTitleId)
             ->first();
 
         if ($model) {
@@ -41,8 +42,8 @@ trait InlineEditTitle
             }
 
             // Site dilini al (hibrit sistem)
-            $currentSiteLocale = method_exists($this, 'getSiteLocale') 
-                ? $this->getSiteLocale() 
+            $currentSiteLocale = method_exists($this, 'getSiteLocale')
+                ? $this->getSiteLocale()
                 : session('tenant_locale', 'tr');
 
             // Mevcut başlık değerini kontrol et
@@ -61,7 +62,7 @@ trait InlineEditTitle
             $model->save();
 
             log_activity(
-                $model, 
+                $model,
                 __('admin.title_updated'),
                 ['old' => $oldTitle, 'new' => $titles[$currentSiteLocale], 'locale' => $currentSiteLocale]
             );

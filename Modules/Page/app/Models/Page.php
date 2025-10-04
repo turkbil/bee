@@ -244,6 +244,30 @@ class Page extends BaseModel implements TranslatableEntity
     }
 
     /**
+     * Generate full URL for the page
+     *
+     * @param string|null $locale Dil kodu (null ise current locale)
+     * @return string Tam URL
+     */
+    public function getUrl(?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        $slug = $this->getTranslated('slug', $locale);
+
+        // ModuleSlugService kullanarak dinamik route slug'ını al
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Page', 'show');
+        $defaultLocale = get_tenant_default_locale();
+
+        // Default locale ise locale prefix'i ekleme
+        if ($locale === $defaultLocale) {
+            return url("/{$moduleSlug}/{$slug}");
+        }
+
+        // Diğer diller için locale prefix ekle
+        return url("/{$locale}/{$moduleSlug}/{$slug}");
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory()

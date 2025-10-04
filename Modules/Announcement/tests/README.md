@@ -12,7 +12,7 @@ Test'ler `:memory:` SQLite kullanmaya çalışıyor, ancak Laravel'in migration 
 
 Test'ler yazılırken gerçek production koduna karşı doğrulama yapılmıştır:
 
-### Homepage Koruma Sistemi
+### Homeannouncement Koruma Sistemi
 
 ```bash
 # Test 1: Direct Model Update (Observer Layer)
@@ -31,7 +31,7 @@ Test'ler yazılırken gerçek production koduna karşı doğrulama yapılmışt�
 - ✅ Repository Pattern çalışıyor
 - ✅ Service Layer çalışıyor
 - ✅ Observer Lifecycle Events çalışıyor
-- ✅ Homepage Protection çalışıyor
+- ✅ Homeannouncement Protection çalışıyor
 - ✅ Bulk Operations çalışıyor
 - ✅ Cache Warming çalışıyor
 - ✅ API Resources çalışıyor

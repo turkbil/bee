@@ -11,14 +11,22 @@ use App\Services\TenantCacheService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Warm Announcement Cache Command
  *
- * Pre-loads frequently accessed pages into cache for better performance.
+ * Pre-loads frequently accessed announcements into cache for better performance.
  * Supports multi-tenant architecture with isolated cache warming.
  *
  * @package Modules\Announcement\App\Console
+ *
+ * @method void info(string $message)
+ * @method void warn(string $message)
+ * @method void error(string $message)
+ * @method void newLine(int $count = 1)
+ * @method array option(string $key = null)
+ * @method mixed table(array $headers, array $rows)
  */
 class WarmAnnouncementCacheCommand extends Command
 {
@@ -29,7 +37,7 @@ class WarmAnnouncementCacheCommand extends Command
      */
     protected $signature = 'announcement:warm-cache
         {--tenant=* : Specific tenant IDs to warm cache for}
-        {--pages=10 : Number of pages to warm per tenant}
+        {--announcements=10 : Number of announcements to warm per tenant}
         {--force : Force cache refresh even if already cached}
         {--urls : Also warm frontend URL caches}
         {--quiet : Suppress output}';
@@ -50,7 +58,7 @@ class WarmAnnouncementCacheCommand extends Command
      * Statistics tracking
      */
     private array $stats = [
-        'pages_cached' => 0,
+        'announcements_cached' => 0,
         'urls_warmed' => 0,
         'errors' => 0,
         'skipped' => 0,
@@ -60,7 +68,7 @@ class WarmAnnouncementCacheCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(AnnouncementService $pageService, TenantCacheService $cacheService): int
+    public function handle(AnnouncementService $announcementService, TenantCacheService $cacheService): int
     {
         $startTime = microtime(true);
 
@@ -80,7 +88,7 @@ class WarmAnnouncementCacheCommand extends Command
 
             // Process each tenant
             foreach ($tenantIds as $tenantId) {
-                $this->processTenant($tenantId, $pageService, $cacheService);
+                $this->processTenant($tenantId, $announcementService, $cacheService);
             }
 
             // Display summary
@@ -112,7 +120,7 @@ class WarmAnnouncementCacheCommand extends Command
 
         // Get all tenant IDs from database
         if (class_exists('\App\Models\Tenant')) {
-            return \App\Models\Tenant::pluck('id')->toArray();
+            return DB::table('tenants')->pluck('id')->toArray();
         }
 
         // Default to current tenant or central
@@ -122,7 +130,7 @@ class WarmAnnouncementCacheCommand extends Command
     /**
      * Process cache warming for a specific tenant
      */
-    private function processTenant(int $tenantId, AnnouncementService $pageService, TenantCacheService $cacheService): void
+    private function processTenant(int $tenantId, AnnouncementService $announcementService, TenantCacheService $cacheService): void
     {
         if (!$this->option('quiet')) {
             $this->info("📦 Processing Tenant #{$tenantId}");
@@ -133,26 +141,26 @@ class WarmAnnouncementCacheCommand extends Command
             \App\Helpers\TenantHelpers::setTenantContext($tenantId);
         }
 
-        // Get pages to warm
-        $limit = (int) $this->option('pages');
-        $pages = $this->getPagesToWarm($limit);
+        // Get announcements to warm
+        $limit = (int) $this->option('announcements');
+        $announcements = $this->getPagesToWarm($limit);
 
-        if ($pages->isEmpty()) {
+        if ($announcements->isEmpty()) {
             if (!$this->option('quiet')) {
-                $this->warn("  No pages found for tenant #{$tenantId}");
+                $this->warn("  No announcements found for tenant #{$tenantId}");
             }
             return;
         }
 
         // Create progress bar
         if (!$this->option('quiet')) {
-            $this->progressBar = $this->output->createProgressBar($pages->count());
+            $this->progressBar = $this->output->createProgressBar($announcements->count());
             $this->progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% %message%');
         }
 
         // Warm cache for each announcement
-        foreach ($pages as $announcement) {
-            $this->warmPageCache($announcement, $pageService, $cacheService);
+        foreach ($announcements as $announcement) {
+            $this->warmPageCache($announcement, $announcementService, $cacheService);
 
             if (!$this->option('quiet')) {
                 $this->progressBar->advance();
@@ -166,7 +174,7 @@ class WarmAnnouncementCacheCommand extends Command
     }
 
     /**
-     * Get pages that should be warmed
+     * Get announcements that should be warmed
      */
     private function getPagesToWarm(int $limit): \Illuminate\Database\Eloquent\Collection
     {
@@ -174,7 +182,7 @@ class WarmAnnouncementCacheCommand extends Command
             ->where('is_active', true)
             ->with(config('announcement.performance.eager_loading', []));
 
-        // Prioritize important pages
+        // Prioritize important announcements
         $query->orderByRaw('
             CASE
                 WHEN slug LIKE \'%about%\' THEN 1
@@ -191,7 +199,7 @@ class WarmAnnouncementCacheCommand extends Command
     /**
      * Warm cache for a specific announcement
      */
-    private function warmPageCache(Announcement $announcement, AnnouncementService $pageService, TenantCacheService $cacheService): void
+    private function warmPageCache(Announcement $announcement, AnnouncementService $announcementService, TenantCacheService $cacheService): void
     {
         try {
             $force = $this->option('force');
@@ -203,7 +211,7 @@ class WarmAnnouncementCacheCommand extends Command
             }
 
             // Cache key for this announcement
-            $cacheKey = "page_detail_{$announcement->announcement_id}";
+            $cacheKey = "announcement_detail_{$announcement->announcement_id}";
 
             // Check if already cached
             if (!$force && $cacheService->has(TenantCacheService::PREFIX_PAGES, $cacheKey)) {
@@ -220,12 +228,12 @@ class WarmAnnouncementCacheCommand extends Command
                 fn() => $announcement->load('seoSetting')->toArray()
             );
 
-            $this->stats['pages_cached']++;
+            $this->stats['announcements_cached']++;
 
             // Cache different language versions
             if (is_array($announcement->slug)) {
                 foreach ($announcement->slug as $locale => $slug) {
-                    $localeCacheKey = "page_slug_{$locale}_{$slug}";
+                    $localeCacheKey = "announcement_slug_{$locale}_{$slug}";
                     $cacheService->remember(
                         TenantCacheService::PREFIX_PAGES,
                         $localeCacheKey,
@@ -240,11 +248,11 @@ class WarmAnnouncementCacheCommand extends Command
                 $this->warmPageUrls($announcement);
             }
 
-            // Cache SEO data separately
-            if ($announcement->hasSeoSettings()) {
+            // Cache SEO data separately (if SEO trait is available)
+            if (method_exists($announcement, 'hasSeoSettings') && $announcement->hasSeoSettings()) {
                 Cache::put(
-                    "universal_seo_page_{$announcement->announcement_id}",
-                    $announcement->getSeoData(),
+                    "universal_seo_announcement_{$announcement->announcement_id}",
+                    method_exists($announcement, 'getSeoData') ? $announcement->getSeoData() : [],
                     $ttl
                 );
             }
@@ -305,7 +313,7 @@ class WarmAnnouncementCacheCommand extends Command
         $this->table(
             ['Metric', 'Value'],
             [
-                ['Pages Cached', $this->stats['pages_cached']],
+                ['Pages Cached', $this->stats['announcements_cached']],
                 ['URLs Warmed', $this->stats['urls_warmed']],
                 ['Skipped (Already Cached)', $this->stats['skipped']],
                 ['Errors', $this->stats['errors']],
@@ -327,7 +335,7 @@ class WarmAnnouncementCacheCommand extends Command
      */
     private function calculateCacheHitRate(): float
     {
-        $total = $this->stats['pages_cached'] + $this->stats['skipped'];
+        $total = $this->stats['announcements_cached'] + $this->stats['skipped'];
 
         if ($total === 0) {
             return 0;
@@ -337,24 +345,21 @@ class WarmAnnouncementCacheCommand extends Command
     }
 
     /**
-     * Schedule the command to run periodically
-     *
+     * SCHEDULING GUIDE
+     * ================
      * Add this to your App\Console\Kernel schedule() method:
-     * $schedule->command('announcement:warm-cache')->hourly();
+     *
+     * // Warm cache every hour during business hours
+     * $schedule->command('announcement:warm-cache --announcements=20')
+     *     ->hourly()
+     *     ->between('08:00', '20:00')
+     *     ->withoutOverlapping()
+     *     ->runInBackground();
+     *
+     * // Full cache warm daily at night
+     * $schedule->command('announcement:warm-cache --announcements=50 --urls')
+     *     ->dailyAt('03:00')
+     *     ->withoutOverlapping()
+     *     ->runInBackground();
      */
-    public static function schedule(\Illuminate\Console\Scheduling\Schedule $schedule): void
-    {
-        // Warm cache every hour during business hours
-        $schedule->command('announcement:warm-cache --pages=20')
-            ->hourly()
-            ->between('08:00', '20:00')
-            ->withoutOverlapping()
-            ->runInBackground();
-
-        // Full cache warm daily at night
-        $schedule->command('announcement:warm-cache --pages=50 --urls')
-            ->dailyAt('03:00')
-            ->withoutOverlapping()
-            ->runInBackground();
-    }
 }

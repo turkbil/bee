@@ -11,7 +11,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-folder me-2"></i>
+                                <i class="far fa-folder me-2"></i>
                                 {{ __('settingmanagement::admin.group_info') }}
                             </h3>
                         </div>
@@ -86,7 +86,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-settings me-2"></i>
+                                <i class="fas fa-cog me-2"></i>
                                 {{ __('settingmanagement::admin.settings') }}
                             </h3>
                         </div>

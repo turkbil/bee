@@ -78,7 +78,7 @@
         @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
             <div class="mt-2">
                 <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $elementName }}')">
-                    <i class="ti ti-refresh me-1"></i>
+                    <i class="fas fa-sync-alt me-1"></i>
                     Varsayılana Döndür
                 </button>
             </div>

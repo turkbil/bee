@@ -63,7 +63,7 @@ class PortfolioCategoryService
 
         Log::info('Portfolio Category created', [
             'category_id' => $category->category_id,
-            'name' => $category->name,
+            'title' => $category->title,
             'user_id' => auth()->id()
         ]);
 
@@ -221,7 +221,7 @@ class PortfolioCategoryService
 
         // Tab completion status hesapla
         $tabCompletion = [
-            'general' => !empty($category->getTranslated('name', $currentLanguage)),
+            'general' => !empty($category->getTranslated('title', $currentLanguage)),
             'seo' => $category->seoSetting !== null
         ];
 

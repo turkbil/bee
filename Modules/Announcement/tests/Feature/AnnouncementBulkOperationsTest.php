@@ -31,10 +31,10 @@ class AnnouncementBulkOperationsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_bulk_delete_multiple_pages(): void
+    public function it_can_bulk_delete_multiple_announcements(): void
     {
-        $pages = Announcement::factory()->count(5)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(5)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $result = $this->service->bulkDeletePages($ids);
 
@@ -42,7 +42,7 @@ class AnnouncementBulkOperationsTest extends TestCase
         $this->assertEquals(5, $result->affectedCount);
 
         foreach ($ids as $id) {
-            $this->assertDatabaseMissing('pages', ['announcement_id' => $id]);
+            $this->assertDatabaseMissing('announcements', ['announcement_id' => $id]);
         }
     }
 
@@ -51,7 +51,7 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_can_bulk_toggle_page_status(): void
+    public function it_can_bulk_toggle_announcement_status(): void
     {
         $activePages = Announcement::factory()->active()->count(3)->create();
         $inactivePages = Announcement::factory()->inactive()->count(2)->create();
@@ -70,7 +70,7 @@ class AnnouncementBulkOperationsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_toggle_both_active_and_inactive_pages(): void
+    public function it_can_toggle_both_active_and_inactive_announcements(): void
     {
         $mixedPages = collect([
             Announcement::factory()->active()->create(),
@@ -140,14 +140,14 @@ class AnnouncementBulkOperationsTest extends TestCase
         ]);
 
         $this->assertEquals(1, $result->affectedCount);
-        $this->assertDatabaseMissing('pages', ['announcement_id' => $announcement->announcement_id]);
+        $this->assertDatabaseMissing('announcements', ['announcement_id' => $announcement->announcement_id]);
     }
 
     /** @test */
     public function bulk_operations_clear_cache(): void
     {
-        $pages = Announcement::factory()->count(3)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(3)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         // Cache'i doldur
         $this->service->getActivePages();
@@ -163,8 +163,8 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
     public function bulk_delete_logs_operations(): void
     {
-        $pages = Announcement::factory()->count(3)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(3)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         \Illuminate\Support\Facades\Log::shouldReceive('info')
             ->once()
@@ -176,8 +176,8 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
     public function bulk_toggle_logs_operations(): void
     {
-        $pages = Announcement::factory()->count(3)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(3)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         \Illuminate\Support\Facades\Log::shouldReceive('info')
             ->once()
@@ -207,8 +207,8 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
     public function bulk_operations_return_correct_result_objects(): void
     {
-        $pages = Announcement::factory()->count(3)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(3)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $result = $this->service->bulkDeletePages($ids);
 
@@ -221,10 +221,10 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
     public function partial_bulk_delete_returns_partial_result(): void
     {
-        $homepage = Announcement::factory()->create();
-        $pages = Announcement::factory()->count(2)->create();
+        $homeannouncement = Announcement::factory()->create();
+        $announcements = Announcement::factory()->count(2)->create();
 
-        $allIds = array_merge([$homepage->announcement_id], $pages->pluck('announcement_id')->toArray());
+        $allIds = array_merge([$homeannouncement->announcement_id], $announcements->pluck('announcement_id')->toArray());
 
         $result = $this->service->bulkDeletePages($allIds);
 
@@ -236,8 +236,8 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
     public function bulk_operations_handle_large_datasets(): void
     {
-        $pages = Announcement::factory()->count(100)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(100)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $result = $this->service->bulkDeletePages($ids);
 
@@ -248,17 +248,17 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
     public function bulk_toggle_maintains_data_integrity(): void
     {
-        $pages = Announcement::factory()->count(5)->create([
+        $announcements = Announcement::factory()->count(5)->create([
             'title' => ['tr' => 'Test', 'en' => 'Test'],
             'is_active' => true
         ]);
 
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $this->service->bulkToggleStatus($ids);
 
         // Sadece is_active değişmeli, diğer veriler aynı kalmalı
-        foreach ($pages as $announcement) {
+        foreach ($announcements as $announcement) {
             $fresh = $announcement->fresh();
             $this->assertFalse($fresh->is_active);
             $this->assertEquals($announcement->getTranslated('title', 'tr'), $fresh->getTranslated('title', 'tr'));
@@ -268,8 +268,8 @@ class AnnouncementBulkOperationsTest extends TestCase
     /** @test */
     public function bulk_operations_are_transactional(): void
     {
-        $pages = Announcement::factory()->count(3)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(3)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         // Bulk delete başarılı olmalı
         $result = $this->service->bulkDeletePages($ids);
@@ -277,7 +277,7 @@ class AnnouncementBulkOperationsTest extends TestCase
         // Hepsi silinmiş olmalı
         $this->assertTrue($result->success);
         foreach ($ids as $id) {
-            $this->assertDatabaseMissing('pages', ['announcement_id' => $id]);
+            $this->assertDatabaseMissing('announcements', ['announcement_id' => $id]);
         }
     }
 }

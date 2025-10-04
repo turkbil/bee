@@ -140,7 +140,7 @@
                                                     <i class="fas fa-tools me-2"></i> Yapılandır
                                                 </a>
                                                 <a href="{{ route('admin.widgetmanagement.preview.template', $widget->id) }}" class="dropdown-item" target="_blank">
-                                                    <i class="ti ti-eye me-2"></i> Önizleme
+                                                    <i class="far fa-eye me-2"></i> Önizleme
                                                 </a>
                                             </div>
                                         </div>
@@ -170,7 +170,7 @@
                                                 <i class="fas fa-tools me-1"></i> Yapılandır
                                             </a>
                                             <a href="{{ route('admin.widgetmanagement.preview.template', $widget->id) }}" class="btn btn-outline-secondary" target="_blank">
-                                                <i class="ti ti-eye me-1"></i> Önizle
+                                                <i class="far fa-eye me-1"></i> Önizle
                                             </a>
                                         </div>
                                         

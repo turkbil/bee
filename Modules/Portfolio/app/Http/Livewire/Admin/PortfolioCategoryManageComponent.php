@@ -21,7 +21,7 @@ class PortfolioCategoryManageComponent extends Component
     // Dil-neutral inputs
     public $inputs = [
         'is_active' => true,
-        'sort_order' => 0,
+        'parent_id' => null,
     ];
 
     // Universal Component Data
@@ -48,6 +48,32 @@ class PortfolioCategoryManageComponent extends Component
         return PortfolioCategory::query()->find($this->categoryId);
     }
 
+    /**
+     * Dropdown için hiyerarşik kategori listesi
+     */
+    #[Computed]
+    public function hierarchicalCategories()
+    {
+        $categories = PortfolioCategory::orderBy('sort_order', 'asc')
+            ->orderBy('category_id', 'asc')
+            ->get();
+
+        return $categories->map(function($category) {
+            $depth = $category->depth_level ?? 0;
+            $prefix = str_repeat('─', $depth);
+            if ($depth > 0) {
+                $prefix .= ' ';
+            }
+
+            return [
+                'id' => $category->category_id,
+                'title' => $prefix . $category->getTranslated('title', app()->getLocale()),
+                'depth' => $depth,
+                'parent_id' => $category->parent_id
+            ];
+        });
+    }
+
     // Livewire Listeners
     protected $listeners = [
         'refreshComponent' => '$refresh',
@@ -57,29 +83,22 @@ class PortfolioCategoryManageComponent extends Component
     // Dependency Injection Boot
     public function boot()
     {
-        // CategoryService'i initialize et
         $this->categoryService = app(\Modules\Portfolio\App\Services\PortfolioCategoryService::class);
 
-        // Layout sections
         view()->share('pretitle', __('portfolio::admin.category_management'));
         view()->share('title', __('portfolio::admin.categories'));
     }
 
     public function updated($propertyName)
     {
-        // Tab completion status güncelleme
         $this->dispatch('update-tab-completion', $this->getAllFormData());
     }
 
     public function mount($id = null)
     {
-        // Dependencies initialize
         $this->boot();
-
-        // Universal Component'lerden initial data al
         $this->initializeUniversalComponents();
 
-        // Kategori verilerini yükle
         if ($id) {
             $this->categoryId = $id;
             $this->loadCategoryData($id);
@@ -87,7 +106,6 @@ class PortfolioCategoryManageComponent extends Component
             $this->initializeEmptyInputs();
         }
 
-        // Tab completion durumunu hesapla
         $this->dispatch('update-tab-completion', $this->getAllFormData());
     }
 
@@ -96,13 +114,11 @@ class PortfolioCategoryManageComponent extends Component
      */
     protected function initializeUniversalComponents()
     {
-        // Dil bilgileri
         $languages = available_tenant_languages();
         $this->availableLanguages = array_column($languages, 'code');
         $this->languageNames = array_column($languages, 'native_name', 'code');
         $this->currentLanguage = get_tenant_default_locale();
 
-        // Tab bilgileri
         $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('portfolio_category');
         $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('portfolio_category');
     }
@@ -126,18 +142,16 @@ class PortfolioCategoryManageComponent extends Component
      */
     protected function loadCategoryData($id)
     {
-        $formData = $this->categoryService->prepareCategoryForForm($id, $this->currentLanguage);
-        $category = $formData['category'] ?? null;
-        $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
+        $category = PortfolioCategory::find($id);
 
         if ($category) {
             // Dil-neutral alanlar
-            $this->inputs = $category->only(['is_active', 'sort_order']);
+            $this->inputs = $category->only(['is_active', 'parent_id']);
 
             // Çoklu dil alanları
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
-                    'name' => $category->getTranslated('name', $lang, false) ?? '',
+                    'title' => $category->getTranslated('title', $lang, false) ?? '',
                     'description' => $category->getTranslated('description', $lang, false) ?? '',
                     'slug' => $category->getTranslated('slug', $lang, false) ?? '',
                 ];
@@ -152,7 +166,7 @@ class PortfolioCategoryManageComponent extends Component
     {
         foreach ($this->availableLanguages as $lang) {
             $this->multiLangInputs[$lang] = [
-                'name' => '',
+                'title' => '',
                 'description' => '',
                 'slug' => '',
             ];
@@ -182,13 +196,13 @@ class PortfolioCategoryManageComponent extends Component
     {
         $rules = [
             'inputs.is_active' => 'boolean',
-            'inputs.sort_order' => 'integer',
+            'inputs.parent_id' => 'nullable|exists:portfolio_categories,category_id',
         ];
 
         // Çoklu dil alanları - ana dil mecburi
         $mainLanguage = $this->getMainLanguage();
         foreach ($this->availableLanguages as $lang) {
-            $rules["multiLangInputs.{$lang}.name"] = $lang === $mainLanguage ? 'required|min:2|max:191' : 'nullable|min:2|max:191';
+            $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:2|max:191' : 'nullable|min:2|max:191';
             $rules["multiLangInputs.{$lang}.description"] = 'nullable|string';
         }
 
@@ -196,9 +210,9 @@ class PortfolioCategoryManageComponent extends Component
     }
 
     protected $messages = [
-        'multiLangInputs.*.name.required' => 'Kategori adı zorunludur',
-        'multiLangInputs.*.name.min' => 'Kategori adı en az 2 karakter olmalıdır',
-        'multiLangInputs.*.name.max' => 'Kategori adı en fazla 191 karakter olabilir',
+        'multiLangInputs.*.title.required' => 'Kategori başlığı zorunludur',
+        'multiLangInputs.*.title.min' => 'Kategori başlığı en az 2 karakter olmalıdır',
+        'multiLangInputs.*.title.max' => 'Kategori başlığı en fazla 191 karakter olabilir',
     ];
 
     /**
@@ -208,12 +222,12 @@ class PortfolioCategoryManageComponent extends Component
     {
         $multiLangData = [];
 
-        // Name verilerini topla
-        $multiLangData['name'] = [];
+        // Title verilerini topla
+        $multiLangData['title'] = [];
         foreach ($this->availableLanguages as $lang) {
-            $name = $this->multiLangInputs[$lang]['name'] ?? '';
-            if (!empty($name)) {
-                $multiLangData['name'][$lang] = $name;
+            $title = $this->multiLangInputs[$lang]['title'] ?? '';
+            if (!empty($title)) {
+                $multiLangData['title'][$lang] = $title;
             }
         }
 
@@ -226,18 +240,18 @@ class PortfolioCategoryManageComponent extends Component
             }
         }
 
-        // Slug verilerini işle - SlugHelper toplu işlem
+        // Slug verilerini işle
         $slugInputs = [];
-        $nameInputs = [];
+        $titleInputs = [];
         foreach ($this->availableLanguages as $lang) {
             $slugInputs[$lang] = $this->multiLangInputs[$lang]['slug'] ?? '';
-            $nameInputs[$lang] = $this->multiLangInputs[$lang]['name'] ?? '';
+            $titleInputs[$lang] = $this->multiLangInputs[$lang]['title'] ?? '';
         }
 
         $multiLangData['slug'] = SlugHelper::processMultiLanguageSlugs(
             PortfolioCategory::class,
             $slugInputs,
-            $nameInputs,
+            $titleInputs,
             'slug',
             $this->categoryId
         );
@@ -247,20 +261,9 @@ class PortfolioCategoryManageComponent extends Component
 
     public function save($redirect = false, $resetForm = false)
     {
-        Log::info('SAVE METHOD BAŞLADI - Category', [
-            'categoryId' => $this->categoryId,
-            'redirect' => $redirect,
-            'currentLanguage' => $this->currentLanguage
-        ]);
-
         try {
             $this->validate($this->rules(), $this->messages);
-            Log::info('Validation başarılı - Category');
         } catch (\Exception $e) {
-            Log::error('Validation HATASI - Category', [
-                'error' => $e->getMessage()
-            ]);
-
             $this->dispatch('toast', [
                 'title' => 'Doğrulama Hatası',
                 'message' => $e->getMessage(),
@@ -270,31 +273,19 @@ class PortfolioCategoryManageComponent extends Component
             return;
         }
 
-        // Çoklu dil verilerini hazırla
         $multiLangData = $this->prepareMultiLangData();
-
         $data = array_merge($this->inputs, $multiLangData);
 
         if ($this->categoryId) {
             $category = PortfolioCategory::query()->findOrFail($this->categoryId);
-            $currentData = collect($category->toArray())->only(array_keys($data))->all();
+            $category->update($data);
+            log_activity($category, 'güncellendi');
 
-            if ($data == $currentData) {
-                $toast = [
-                    'title' => __('admin.success'),
-                    'message' => __('portfolio::admin.category_updated'),
-                    'type' => 'success'
-                ];
-            } else {
-                $category->update($data);
-                log_activity($category, 'güncellendi');
-
-                $toast = [
-                    'title' => __('admin.success'),
-                    'message' => __('portfolio::admin.category_updated'),
-                    'type' => 'success'
-                ];
-            }
+            $toast = [
+                'title' => __('admin.success'),
+                'message' => __('portfolio::admin.category_updated'),
+                'type' => 'success'
+            ];
         } else {
             $category = PortfolioCategory::query()->create($data);
             $this->categoryId = $category->category_id;
@@ -307,11 +298,6 @@ class PortfolioCategoryManageComponent extends Component
             ];
         }
 
-        Log::info('Save method tamamlanıyor - Category', [
-            'categoryId' => $this->categoryId,
-            'redirect' => $redirect
-        ]);
-
         if ($redirect) {
             session()->flash('toast', $toast);
             return redirect()->route('admin.portfolio.category.index');
@@ -321,10 +307,6 @@ class PortfolioCategoryManageComponent extends Component
 
         // SEO VERİLERİNİ KAYDET
         $this->dispatch('category-saved', categoryId: $this->categoryId);
-
-        Log::info('Save method başarıyla tamamlandı - Category', [
-            'categoryId' => $this->categoryId
-        ]);
 
         if ($resetForm && !$this->categoryId) {
             $this->reset();
@@ -341,5 +323,41 @@ class PortfolioCategoryManageComponent extends Component
                 'currentLanguage' => $this->currentLanguage ?? 'tr'
             ]
         ]);
+    }
+
+    /**
+     * Kategori silme
+     */
+    public function deleteCategory()
+    {
+        if (!$this->categoryId) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('portfolio::admin.category_not_found'),
+                'type' => 'error'
+            ]);
+            return;
+        }
+
+        try {
+            $result = $this->categoryService->deleteCategory($this->categoryId);
+
+            $this->dispatch('toast', [
+                'title' => $result['success'] ? __('admin.success') : __('admin.error'),
+                'message' => $result['message'],
+                'type' => $result['success'] ? 'success' : 'error'
+            ]);
+
+            if ($result['success']) {
+                return redirect()->route('admin.portfolio.category.index');
+            }
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error'
+            ]);
+        }
     }
 }

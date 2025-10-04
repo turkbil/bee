@@ -51,7 +51,7 @@ class TranslationCompletedEvent implements ShouldBroadcast
     {
         return [
             'sessionId' => $this->data['sessionId'],
-            'pageIds' => $this->data['pageIds'],
+            'announcementIds' => $this->data['announcementIds'],
             'success' => $this->data['success'],
             'failed' => $this->data['failed'],
             'status' => $this->data['status'],

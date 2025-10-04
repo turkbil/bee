@@ -47,7 +47,7 @@ class PortfolioResource extends JsonResource
     }
 
     /**
-     * Get page attributes
+     * Get portfolio attributes
      *
      * @param string $locale
      * @param array $fields
@@ -131,8 +131,8 @@ class PortfolioResource extends JsonResource
         if ($this->relationLoaded('seoSetting') || in_array('seo', $includeRelations)) {
             $relationships['seo'] = [
                 'links' => [
-                    'self' => route('api.pages.relationships.seo', $this->portfolio_id),
-                    'related' => route('api.pages.seo', $this->portfolio_id)
+                    'self' => route('api.portfolios.relationships.seo', $this->portfolio_id),
+                    'related' => route('api.portfolios.seo', $this->portfolio_id)
                 ],
                 'data' => $this->when(
                     $this->relationLoaded('seoSetting'),
@@ -148,8 +148,8 @@ class PortfolioResource extends JsonResource
         if (in_array('activities', $includeRelations)) {
             $relationships['activities'] = [
                 'links' => [
-                    'self' => route('api.pages.relationships.activities', $this->portfolio_id),
-                    'related' => route('api.pages.activities', $this->portfolio_id)
+                    'self' => route('api.portfolios.relationships.activities', $this->portfolio_id),
+                    'related' => route('api.portfolios.activities', $this->portfolio_id)
                 ],
                 'meta' => [
                     'count' => $this->whenCounted('activities')
@@ -171,9 +171,9 @@ class PortfolioResource extends JsonResource
         $slug = $this->getTranslatedAttribute('slug', $locale);
 
         return [
-            'self' => route('api.pages.show', $this->portfolio_id),
-            'frontend' => $slug ? route('page.show', $slug) : null,
-            'admin' => route('admin.page.manage', $this->portfolio_id)
+            'self' => route('api.portfolios.show', $this->portfolio_id),
+            'frontend' => $slug ? route('portfolio.show', $slug) : null,
+            'admin' => route('admin.portfolio.manage', $this->portfolio_id)
         ];
     }
 
@@ -197,7 +197,7 @@ class PortfolioResource extends JsonResource
         if (config('app.debug')) {
             $meta['cache'] = [
                 'cached_at' => now()->toIso8601String(),
-                'ttl' => config('page.cache.ttl.detail', 7200)
+                'ttl' => config('portfolio.cache.ttl.detail', 7200)
             ];
         }
 
@@ -243,7 +243,7 @@ class PortfolioResource extends JsonResource
     }
 
     /**
-     * Get available locales for this page
+     * Get available locales for this portfolio
      *
      * @return array<string>
      */
@@ -306,7 +306,7 @@ class PortfolioResource extends JsonResource
     {
         // Add cache headers
         if (!config('app.debug') && $this->resource->is_active) {
-            $ttl = config('page.cache.ttl.detail', 7200);
+            $ttl = config('portfolio.cache.ttl.detail', 7200);
             $response->header('Cache-Control', "public, max-age={$ttl}");
             $response->header('ETag', md5($this->resource->updated_at));
         }

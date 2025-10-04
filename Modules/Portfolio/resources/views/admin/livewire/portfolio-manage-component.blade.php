@@ -1,6 +1,9 @@
 <div>
     @php
-        View::share('pretitle', $portfoliod ? __('portfolio::admin.edit_page_pretitle') : __('portfolio::admin.new_page_pretitle'));
+        View::share(
+            'pretitle',
+            $portfolioId ? __('portfolio::admin.edit_portfolio_pretitle') : __('portfolio::admin.new_portfolio_pretitle'),
+        );
     @endphp
 
     @include('portfolio::admin.helper')
@@ -9,13 +12,15 @@
         @include('admin.partials.error_message')
         <div class="card">
 
-            <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="page_active_tab">
+            <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="portfolio_active_tab">
                 {{-- Studio Edit Button --}}
-                @if ($studioEnabled && $portfoliod)
+                @if ($studioEnabled && $portfolioId)
                     <li class="nav-item ms-3">
-                        <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $portfoliod]) }}"
-                            target="_blank" class="btn btn-outline-primary" style="padding: 0.20rem 0.75rem; margin-top: 5px;">
-                            <i class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('portfolio::admin.studio.editor') }}
+                        <a href="{{ route('admin.studio.editor', ['module' => 'portfolio', 'id' => $portfolioId]) }}"
+                            target="_blank" class="btn btn-outline-primary"
+                            style="padding: 0.20rem 0.75rem; margin-top: 5px;">
+                            <i
+                                class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('portfolio::admin.studio.editor') }}
                         </a>
                     </li>
                 @endif
@@ -37,10 +42,36 @@
                             <div class="language-content" data-language="{{ $lang }}"
                                 style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
-                                <!-- Başlık ve Slug alanları -->
-                                <div class="row mb-3">
-                                    <div class="col-md-8">
+                                <!-- Kategori Seçimi (Sadece ilk dilde göster) -->
+                                @if($lang === get_tenant_default_locale())
+                                <div class="row mb-4">
+                                    <div class="col-12">
                                         <div class="form-floating">
+                                            <select wire:model="inputs.category_id"
+                                                class="form-control @error('inputs.category_id') is-invalid @enderror"
+                                                id="category_select">
+                                                <option value="">{{ __('portfolio::admin.select_category') }}</option>
+                                                @foreach(\Modules\Portfolio\App\Models\PortfolioCategory::active()->orderBy('sort_order')->get() as $category)
+                                                    <option value="{{ $category->category_id }}">
+                                                        {{ $category->getTranslated('title', app()->getLocale()) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <label for="category_select">
+                                                {{ __('portfolio::admin.category') }}
+                                            </label>
+                                            @error('inputs.category_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
+                                <!-- Başlık ve Slug alanları -->
+                                <div class="row mb-4">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating mb-3 mb-md-0">
                                             <input type="text" wire:model="multiLangInputs.{{ $lang }}.title"
                                                 class="form-control @error('multiLangInputs.' . $lang . '.title') is-invalid @enderror"
                                                 placeholder="{{ __('portfolio::admin.title_field') }}">
@@ -56,24 +87,49 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control"
                                                 wire:model="multiLangInputs.{{ $lang }}.slug" maxlength="255"
                                                 placeholder="sayfa-url-slug">
                                             <label>
-                                                {{ __('admin.page_url_slug') }}
+                                                {{ __('admin.portfolio_url_slug') }}
                                                 <small class="text-muted ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
                                                 <small class="text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>{{ __('admin.slug_help') }}
+                                                    {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        @endforeach
+
+                        {{-- MEDYA YÖNETİMİ --}}
+                        <div class="mb-4">
+                            <livewire:mediamanagement::universal-media
+                                wire:id="portfolio-media-component"
+                                :model-id="$portfolioId"
+                                model-type="portfolio"
+                                model-class="Modules\Portfolio\App\Models\Portfolio"
+                                :collections="['featured_image', 'gallery']"
+                                :sortable="true"
+                                :set-featured-from-gallery="true"
+                                :key="'universal-media-' . ($portfolioId ?? 'new')"
+                            />
+                        </div>
+
+                        @foreach ($availableLanguages as $lang)
+                            @php
+                                $langData = $multiLangInputs[$lang] ?? [];
+                                $langName = $languageNames[$lang] ?? strtoupper($lang);
+                            @endphp
+
+                            <div class="language-content" data-language="{{ $lang }}"
+                                style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
                                 {{-- İçerik editörü - AI button artık global component'te --}}
                                 @include('admin.components.content-editor', [
@@ -83,14 +139,14 @@
                                     'fieldName' => 'body',
                                     'label' => __('portfolio::admin.content'),
                                     'placeholder' => __('portfolio::admin.content_placeholder'),
-                                    ])
+                                ])
                             </div>
                         @endforeach
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
                         <!-- Aktif/Pasif - sadece bir kere -->
-                        <div class="mb-3">
+                        <div class="mb-3 mt-4">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
                                     value="1"
@@ -108,73 +164,67 @@
 
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
-                        <livewire:seomanagement::universal-seo-tab
-                            :model-id="$portfoliod"
-                            model-type="page"
-                            model-class="Modules\Portfolio\App\Models\Page"
-                        />
-                    </div>
-
-                    <!-- CODE TAB - NO FADE for instant switching -->
-                    <div class="tab-pane" id="2" role="tabpanel" wire:ignore.self>
-                        <x-editor.monaco
-                            type="css"
-                            label="CSS"
-                            wire-model="inputs.css"
-                            :value="$inputs['css'] ?? ''"
-                        />
-
-                        <x-editor.monaco
-                            type="js"
-                            label="JavaScript"
-                            wire-model="inputs.js"
-                            :value="$inputs['js'] ?? ''"
-                        />
+                        <livewire:seomanagement::universal-seo-tab :model-id="$portfolioId" model-type="portfolio"
+                            model-class="Modules\Portfolio\App\Models\Portfolio" />
                     </div>
 
                 </div>
             </div>
 
-            <x-form-footer route="admin.page" :model-id="$portfoliod" />
+            <x-form-footer route="admin.portfolio" :model-id="$portfolioId" />
 
         </div>
     </form>
 
 
-@push('scripts')
-    {{-- 🎯 MODEL & MODULE SETUP --}}
-    <script>
-        window.currentModelId = {{ $portfoliod ?? 'null' }};
-        window.currentModuleName = 'page';
-        window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
+    @push('scripts')
+        {{-- 🎯 MODEL & MODULE SETUP --}}
+        <script>
+            window.currentModelId = {{ $portfolioId ?? 'null' }};
+            window.currentModuleName = 'portfolio';
+            window.currentLanguage = '{{ $jsVariables['currentLanguage'] ?? 'tr' }}';
 
-        // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
-        document.addEventListener('DOMContentLoaded', function() {
-            Livewire.on('restore-active-tab', () => {
-                console.log('🔄 Tab restore tetiklendi (validation error)');
+            // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
+            document.addEventListener('DOMContentLoaded', function() {
+                Livewire.on('restore-active-tab', () => {
+                    console.log('🔄 Tab restore tetiklendi (validation error)');
 
-                // forceTabRestore fonksiyonu tab-system.blade.php'de tanımlı
-                if (typeof window.forceTabRestore === 'function') {
-                    setTimeout(() => {
-                        window.forceTabRestore();
-                    }, 100);
-                } else {
-                    console.warn('⚠️ forceTabRestore fonksiyonu bulunamadı');
-                }
+                    // forceTabRestore fonksiyonu tab-system.blade.php'de tanımlı
+                    if (typeof window.forceTabRestore === 'function') {
+                        setTimeout(() => {
+                            window.forceTabRestore();
+                        }, 100);
+                    } else {
+                        console.warn('⚠️ forceTabRestore fonksiyonu bulunamadı');
+                    }
+                });
+
+                // 🔄 BROWSER REDIRECT - Event işlendikten sonra yönlendir
+                Livewire.on('browser', (event) => {
+                    console.log('🔄 Browser event:', event);
+
+                    if (event.action === 'redirect') {
+                        const delay = event.delay || 0;
+                        console.log(`🔄 Redirecting to ${event.url} after ${delay}ms`);
+
+                        setTimeout(() => {
+                            window.location.href = event.url;
+                        }, delay);
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 
-    {{-- 🌍 UNIVERSAL SYSTEMS --}}
-    @include('languagemanagement::admin.components.universal-language-scripts', [
-        'currentLanguage' => $currentLanguage,
-        'availableLanguages' => $availableLanguages
-    ])
+        {{-- 🌍 UNIVERSAL SYSTEMS --}}
+        @include('languagemanagement::admin.components.universal-language-scripts', [
+            'currentLanguage' => $currentLanguage,
+            'availableLanguages' => $availableLanguages,
+        ])
 
-    @include('seomanagement::admin.components.universal-seo-scripts', [
-        'availableLanguages' => $availableLanguages
-    ])
+        @include('seomanagement::admin.components.universal-seo-scripts', [
+            'availableLanguages' => $availableLanguages,
+        ])
 
-    @include('ai::admin.components.universal-ai-content-scripts')
-@endpush
+        @include('ai::admin.components.universal-ai-content-scripts')
+    @endpush
 </div>

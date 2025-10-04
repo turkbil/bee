@@ -221,11 +221,15 @@ class AIContentGeneratorService
 
                 // Seçilen modele göre service kullan
                 if ($preferredModel['provider'] === 'anthropic') {
-                    // Doğrudan env'den al
-                    $apiKey = env('ANTHROPIC_API_KEY');
+                    // Database'den al (şifrelenmiş)
+                    $provider = \Modules\AI\App\Models\AIProvider::where('name', 'anthropic')
+                        ->where('is_active', true)
+                        ->first();
+                    $apiKey = $provider ? $provider->api_key : null; // Otomatik decrypt
+
                     Log::info('🔑 Anthropic API Key Debug', [
                         'has_key' => !empty($apiKey),
-                        'key_prefix' => $apiKey ? substr($apiKey, 0, 10) . '...' : 'empty',
+                        'from_database' => true,
                         'key_length' => $apiKey ? strlen($apiKey) : 0
                     ]);
 

@@ -2,11 +2,11 @@
 
 namespace Modules\Portfolio\App\Exceptions;
 
-class PortfolioCreationException extends PageException
+class PortfolioCreationException extends PortfolioException
 {
     public function getErrorType(): string
     {
-        return 'page_creation_failed';
+        return 'portfolio_creation_failed';
     }
 
     public static function withValidationErrors(array $errors): self

@@ -34,7 +34,7 @@ return [
     'archive' => 'Arşiv',
 
     // Collections
-    'featured_image' => 'Öne Çıkan Görsel',
+    'featured_image' => 'Ana Görsel',
     'gallery' => 'Galeri',
     'videos' => 'Videolar',
     'audio_files' => 'Ses Dosyaları',
@@ -48,6 +48,8 @@ return [
     'drag_to_reorder' => 'Sıralamak için sürükleyin',
     'choose_file' => 'Dosya Seç',
     'choose_files' => 'Dosyalar Seç',
+    'edit_caption' => 'Başlık ve Açıklama Düzenle',
+    'edit_media_caption' => 'Medya Bilgilerini Düzenle',
 
     // Upload Area
     'drag_drop_files' => 'Dosyaları sürükle bırak veya tıklayarak seç',
@@ -61,6 +63,9 @@ return [
     'file_size' => 'Dosya Boyutu',
     'file_type' => 'Dosya Tipi',
     'uploaded_at' => 'Yüklenme Tarihi',
+    'title' => 'Başlık',
+    'description' => 'Açıklama',
+    'alt_text' => 'Alt Metin (SEO)',
 
     // Messages
     'uploading' => 'Yükleniyor...',
@@ -73,6 +78,8 @@ return [
     'no_media' => 'Henüz medya yok',
     'save_first_to_upload' => 'Medya yüklemek için önce kaydediliyor...',
     'ready_to_save' => 'Kaydetmeye hazır - Formu kaydettiğinizde medya eklenecek',
+    'caption_saved' => 'Medya bilgileri kaydedildi',
+    'caption_helper' => 'Görsele başlık ve açıklama ekleyebilirsiniz',
 
     // Errors
     'file_too_large' => 'Dosya çok büyük. Maksimum: :size',

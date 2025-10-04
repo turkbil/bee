@@ -315,25 +315,25 @@
                         <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-global-settings" class="nav-link active" data-bs-toggle="tab" aria-selected="true" role="tab">
-                                    <i class="ti ti-world me-2"></i>
+                                    <i class="fas fa-globe me-2"></i>
                                     Global Ayarlar
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-permissions" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">
-                                    <i class="ti ti-lock me-2"></i>
+                                    <i class="fas fa-lock me-2"></i>
                                     İzinler
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-performance" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">
-                                    <i class="ti ti-dashboard me-2"></i>
+                                    <i class="fas fa-tachometer-alt me-2"></i>
                                     Performans
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-logs" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">
-                                    <i class="ti ti-file-text me-2"></i>
+                                    <i class="far fa-file-alt me-2"></i>
                                     Loglar
                                 </a>
                             </li>
@@ -512,7 +512,7 @@
                                                         <div class="row align-items-center">
                                                             <div class="col-auto">
                                                                 <span class="bg-primary text-white avatar">
-                                                                    <i class="ti ti-clock"></i>
+                                                                    <i class="far fa-clock"></i>
                                                                 </span>
                                                             </div>
                                                             <div class="col">
@@ -529,7 +529,7 @@
                                                         <div class="row align-items-center">
                                                             <div class="col-auto">
                                                                 <span class="bg-success text-white avatar">
-                                                                    <i class="ti ti-database"></i>
+                                                                    <i class="fas fa-database"></i>
                                                                 </span>
                                                             </div>
                                                             <div class="col">
@@ -546,7 +546,7 @@
                                                         <div class="row align-items-center">
                                                             <div class="col-auto">
                                                                 <span class="bg-warning text-white avatar">
-                                                                    <i class="ti ti-alert-triangle"></i>
+                                                                    <i class="fas fa-exclamation-triangle"></i>
                                                                 </span>
                                                             </div>
                                                             <div class="col">
@@ -563,7 +563,7 @@
                                                         <div class="row align-items-center">
                                                             <div class="col-auto">
                                                                 <span class="bg-info text-white avatar">
-                                                                    <i class="ti ti-activity"></i>
+                                                                    <i class="fas fa-chart-line"></i>
                                                                 </span>
                                                             </div>
                                                             <div class="col">
@@ -631,7 +631,7 @@
                                         
                                         <div class="mb-3">
                                             <button class="btn btn-outline-warning w-100" onclick="clearAllCaches()">
-                                                <i class="ti ti-trash"></i>
+                                                <i class="fas fa-trash"></i>
                                                 Tüm Cache'leri Temizle
                                             </button>
                                         </div>
@@ -646,7 +646,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" placeholder="Log ara..." id="logSearch">
                                             <button class="btn btn-outline-secondary" type="button">
-                                                <i class="ti ti-search"></i>
+                                                <i class="fas fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -876,7 +876,7 @@ function configureModule(moduleName) {
 function testModule(moduleName) {
     const btn = event.target;
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="ti ti-loader spinning"></i> Test ediliyor...';
+    btn.innerHTML = '<i class="fas fa-spinner spinning"></i> Test ediliyor...';
     btn.disabled = true;
     
     // Simulate module test
@@ -895,7 +895,7 @@ function testModule(moduleName) {
 function saveAllChanges() {
     const btn = event.target;
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="ti ti-loader spinning"></i> Kaydediliyor...';
+    btn.innerHTML = '<i class="fas fa-spinner spinning"></i> Kaydediliyor...';
     btn.disabled = true;
     
     // Collect all form data
@@ -938,7 +938,7 @@ function saveIntegration() {
     
     const btn = event.target;
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="ti ti-loader spinning"></i> Oluşturuluyor...';
+    btn.innerHTML = '<i class="fas fa-spinner spinning"></i> Oluşturuluyor...';
     btn.disabled = true;
     
     setTimeout(() => {
@@ -965,7 +965,7 @@ function clearAllCaches() {
     
     const btn = event.target;
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="ti ti-loader spinning"></i> Temizleniyor...';
+    btn.innerHTML = '<i class="fas fa-spinner spinning"></i> Temizleniyor...';
     btn.disabled = true;
     
     setTimeout(() => {

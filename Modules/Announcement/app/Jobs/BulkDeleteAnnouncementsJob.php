@@ -33,13 +33,13 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
     public int $maxExceptions = 3;
 
     /**
-     * @param array $pageIds Silinecek sayfa ID'leri
+     * @param array $announcementIds Silinecek sayfa ID'leri
      * @param string $tenantId Tenant ID (multi-tenant sistem için)
      * @param string $userId İşlemi yapan kullanıcı ID'si
      * @param array $options Ek seçenekler (force_delete, etc.)
      */
     public function __construct(
-        public array $pageIds,
+        public array $announcementIds,
         public string $tenantId,
         public string $userId,
         public array $options = []
@@ -50,7 +50,7 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
     /**
      * Job execution
      */
-    public function handle(AnnouncementService $pageService): void
+    public function handle(AnnouncementService $announcementService): void
     {
         $startTime = microtime(true);
         $processedCount = 0;
@@ -58,32 +58,29 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
         $errors = [];
 
         try {
-            Log::info('🗑️ BULK PAGE DELETE STARTED', [
-                'announcement_ids' => $this->pageIds,
+            Log::info('🗑️ BULK ANNOUNCEMENT DELETE STARTED', [
+                'announcement_ids' => $this->announcementIds,
                 'tenant_id' => $this->tenantId,
                 'user_id' => $this->userId,
-                'total_count' => count($this->pageIds)
+                'total_count' => count($this->announcementIds)
             ]);
 
             // Progress tracking için cache key
-            $progressKey = "bulk_delete_pages_{$this->tenantId}_{$this->userId}";
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'starting');
+            $progressKey = "bulk_delete_announcements_{$this->tenantId}_{$this->userId}";
+            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'starting');
 
             // Her sayfa için silme işlemi
-            foreach ($this->pageIds as $index => $pageId) {
+            foreach ($this->announcementIds as $index => $announcementId) {
                 try {
                     // Sayfa var mı kontrol et
-                    $announcement = Announcement::find($pageId);
+                    $announcement = Announcement::find($announcementId);
                     if (!$announcement) {
-                        Log::warning("Sayfa bulunamadı: {$pageId}");
+                        Log::warning("Sayfa bulunamadı: {$announcementId}");
                         continue;
                     }
 
-                    // Homepage kontrolü - ana sayfa silinemesin
-                        $errors[] = "Ana sayfa silinemez: {$announcement->title}";
-                        $errorCount++;
-                        continue;
-                    }
+                    // Homeannouncement kontrolü - ana sayfa silinemesin (disabled for announcements)
+                    // Announcements don't have homepage concept like pages
 
                     // Silme işlemi
                     $forceDelete = $this->options['force_delete'] ?? false;
@@ -99,24 +96,24 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
                     $processedCount++;
 
                     // Progress güncelle
-                    $progress = (int) (($index + 1) / count($this->pageIds) * 100);
-                    $this->updateProgress($progressKey, $progress, count($this->pageIds), 'processing', [
+                    $progress = (int) (($index + 1) / count($this->announcementIds) * 100);
+                    $this->updateProgress($progressKey, $progress, count($this->announcementIds), 'processing', [
                         'processed' => $processedCount,
                         'errors' => $errorCount,
-                        'current_page' => $announcement->title
+                        'current_announcement' => $announcement->title
                     ]);
 
                     Log::info("✅ Sayfa silindi", [
-                        'id' => $pageId,
+                        'id' => $announcementId,
                         'title' => $announcement->title,
                         'force_delete' => $forceDelete
                     ]);
                 } catch (\Exception $e) {
                     $errorCount++;
-                    $errors[] = "Sayfa silme hatası (ID: {$pageId}): " . $e->getMessage();
+                    $errors[] = "Sayfa silme hatası (ID: {$announcementId}): " . $e->getMessage();
 
                     Log::error("❌ Sayfa silme hatası", [
-                        'announcement_id' => $pageId,
+                        'announcement_id' => $announcementId,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
@@ -128,25 +125,25 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
 
             // Final progress
             $duration = round(microtime(true) - $startTime, 2);
-            $this->updateProgress($progressKey, 100, count($this->pageIds), 'completed', [
+            $this->updateProgress($progressKey, 100, count($this->announcementIds), 'completed', [
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration,
                 'error_messages' => $errors
             ]);
 
-            Log::info('✅ BULK PAGE DELETE COMPLETED', [
-                'total_pages' => count($this->pageIds),
+            Log::info('✅ BULK ANNOUNCEMENT DELETE COMPLETED', [
+                'total_announcements' => count($this->announcementIds),
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration . 's'
             ]);
         } catch (\Exception $e) {
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+            $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
                 'error' => $e->getMessage()
             ]);
 
-            Log::error('💥 BULK PAGE DELETE FAILED', [
+            Log::error('💥 BULK ANNOUNCEMENT DELETE FAILED', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -176,20 +173,20 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
     {
         try {
             // Announcement cache'leri temizle
-            Cache::forget('pages_list');
-            Cache::forget('pages_menu_cache');
-            Cache::forget('pages_sitemap_cache');
+            Cache::forget('announcements_list');
+            Cache::forget('announcements_menu_cache');
+            Cache::forget('announcements_sitemap_cache');
 
             // Pattern-based cache temizleme
             $patterns = [
-                'page_*',
-                'pages_*',
+                'announcement_*',
+                'announcements_*',
                 'sitemap_*',
                 'menu_*'
             ];
 
             foreach ($patterns as $pattern) {
-                Cache::tags(['pages'])->flush();
+                Cache::tags(['announcements'])->flush();
             }
 
             Log::info('🗑️ Announcement caches cleared after bulk delete');
@@ -203,8 +200,8 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        Log::error('💥 BULK PAGE DELETE JOB FAILED', [
-            'announcement_ids' => $this->pageIds,
+        Log::error('💥 BULK ANNOUNCEMENT DELETE JOB FAILED', [
+            'announcement_ids' => $this->announcementIds,
             'tenant_id' => $this->tenantId,
             'user_id' => $this->userId,
             'error' => $exception?->getMessage(),
@@ -212,8 +209,8 @@ class BulkDeleteAnnouncementsJob implements ShouldQueue
         ]);
 
         // Progress'i failed olarak işaretle
-        $progressKey = "bulk_delete_pages_{$this->tenantId}_{$this->userId}";
-        $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+        $progressKey = "bulk_delete_announcements_{$this->tenantId}_{$this->userId}";
+        $this->updateProgress($progressKey, 0, count($this->announcementIds), 'failed', [
             'error' => $exception?->getMessage()
         ]);
     }

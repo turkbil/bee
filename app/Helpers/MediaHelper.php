@@ -127,3 +127,111 @@ if (!function_exists('responsive_image')) {
         return $media?->getSrcset($conversion);
     }
 }
+
+if (!function_exists('media_conversion_config')) {
+    /**
+     * Media conversion yapılandırması döndür
+     * Config dosyasından veya override değerlerle
+     *
+     * @param string $conversionName Conversion adı (thumb, medium, large)
+     * @param array $override Override edilecek değerler
+     * @return array Conversion config
+     *
+     * @example media_conversion_config('thumb')
+     * @example media_conversion_config('thumb', ['width' => 400, 'quality' => 90])
+     */
+    function media_conversion_config(string $conversionName, array $override = []): array
+    {
+        $config = config("mediamanagement.conversions.{$conversionName}", []);
+
+        return array_merge($config, $override);
+    }
+}
+
+if (!function_exists('media_thumb_size')) {
+    /**
+     * Thumbnail boyutlarını döndür
+     *
+     * @param string $type Boyut tipi: 'width', 'height', 'both', 'aspect'
+     * @return int|array|float
+     *
+     * @example media_thumb_size('width') // 300
+     * @example media_thumb_size('height') // 200
+     * @example media_thumb_size('both') // ['width' => 300, 'height' => 200]
+     * @example media_thumb_size('aspect') // 1.5 (3:2 ratio)
+     */
+    function media_thumb_size(string $type = 'both')
+    {
+        $config = config('mediamanagement.conversions.thumb', []);
+        $width = $config['width'] ?? 300;
+        $height = $config['height'] ?? 200;
+
+        return match($type) {
+            'width' => $width,
+            'height' => $height,
+            'aspect' => round($width / $height, 2),
+            'ratio' => $width . ':' . $height,
+            'both' => ['width' => $width, 'height' => $height],
+            default => ['width' => $width, 'height' => $height],
+        };
+    }
+}
+
+if (!function_exists('media_quality')) {
+    /**
+     * Media conversion kalitesini döndür
+     *
+     * @param string $conversionName Conversion adı
+     * @return int Quality (0-100)
+     *
+     * @example media_quality('thumb') // 85
+     * @example media_quality('medium') // 90
+     */
+    function media_quality(string $conversionName = 'thumb'): int
+    {
+        return config("mediamanagement.conversions.{$conversionName}.quality", 85);
+    }
+}
+
+if (!function_exists('media_format')) {
+    /**
+     * Media conversion formatını döndür
+     *
+     * @param string $conversionName Conversion adı
+     * @return string Format (webp, jpg, png)
+     *
+     * @example media_format('thumb') // 'webp'
+     */
+    function media_format(string $conversionName = 'thumb'): string
+    {
+        return config("mediamanagement.conversions.{$conversionName}.format", 'webp');
+    }
+}
+
+if (!function_exists('media_aspect_ratio')) {
+    /**
+     * CSS aspect-ratio değeri döndür
+     *
+     * @param string $conversionName Conversion adı
+     * @return string CSS aspect-ratio (ör: '3/2', '16/9')
+     *
+     * @example media_aspect_ratio('thumb') // '3/2'
+     */
+    function media_aspect_ratio(string $conversionName = 'thumb'): string
+    {
+        $config = config("mediamanagement.conversions.{$conversionName}", []);
+        $width = $config['width'] ?? 300;
+        $height = $config['height'] ?? 200;
+
+        // GCD (Greatest Common Divisor) ile basitleştir
+        $gcd = function($a, $b) use (&$gcd) {
+            return $b ? $gcd($b, $a % $b) : $a;
+        };
+
+        $divisor = $gcd($width, $height);
+        $ratioWidth = $width / $divisor;
+        $ratioHeight = $height / $divisor;
+
+        return $ratioWidth . '/' . $ratioHeight;
+    }
+}

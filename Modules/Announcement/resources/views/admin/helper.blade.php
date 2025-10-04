@@ -1,12 +1,12 @@
 {{-- Modules/Announcement/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @section('pretitle')
-    {{ __('announcement::admin.page_management') }}
+    {{ __('announcement::admin.announcement_management') }}
 @endsection
 
 {{-- Başlık --}}
 @section('title')
-    {{ __('announcement::admin.pages') }}
+    {{ __('announcement::admin.announcements') }}
 @endsection
 
 {{-- Modül Menüsü --}}
@@ -19,13 +19,13 @@
             <div class="module-menu-revert">
                 @hasmoduleaccess('announcement', 'view')
                     <a href="{{ route('admin.announcement.index') }}" class="dropdown-module-item btn btn-ghost-primary">
-                        {{ __('announcement::admin.pages') }}
+                        {{ __('announcement::admin.announcements') }}
                     </a>
                 @endhasmoduleaccess
 
                 @hasmoduleaccess('announcement', 'create')
                     <a href="{{ route('admin.announcement.manage') }}" class="dropdown-module-item btn btn-primary">
-                        {{ __('announcement::admin.new_page') }}
+                        {{ __('announcement::admin.new_announcement') }}
                     </a>
                 @endhasmoduleaccess
             </div>

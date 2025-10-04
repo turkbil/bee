@@ -106,13 +106,16 @@ class UniversalSeoTabComponent extends Component
                 // JSON decode - DOĞRU KOLON İSİMLERİ!
                 $seoTitle = is_string($seoSetting->titles) ? json_decode($seoSetting->titles, true) : $seoSetting->titles;
                 $seoDescription = is_string($seoSetting->descriptions) ? json_decode($seoSetting->descriptions, true) : $seoSetting->descriptions;
-                $schemaType = is_string($seoSetting->schema_types) ? json_decode($seoSetting->schema_types, true) : $seoSetting->schema_types;
-                $priorityScore = is_string($seoSetting->priority_scores) ? json_decode($seoSetting->priority_scores, true) : $seoSetting->priority_scores;
+                $schemaType = is_string($seoSetting->schema_type) ? json_decode($seoSetting->schema_type, true) : $seoSetting->schema_type;
+                $priorityScore = $seoSetting->priority_score ?? 5; // INTEGER - tek değer, JSON değil
                 $ogTitle = is_string($seoSetting->og_titles) ? json_decode($seoSetting->og_titles, true) : $seoSetting->og_titles;
                 $ogDescription = is_string($seoSetting->og_descriptions) ? json_decode($seoSetting->og_descriptions, true) : $seoSetting->og_descriptions;
                 $ogImageUrl = is_string($seoSetting->og_images) ? json_decode($seoSetting->og_images, true) : $seoSetting->og_images;
-                $authorName = is_string($seoSetting->author_names) ? json_decode($seoSetting->author_names, true) : $seoSetting->author_names;
-                $authorUrl = is_string($seoSetting->author_urls) ? json_decode($seoSetting->author_urls, true) : $seoSetting->author_urls;
+
+                // Author & Author URL - SINGLE VALUE (NOT JSON)
+                $author = $seoSetting->author; // VARCHAR - tek değer
+                $authorUrl = $seoSetting->author_url; // VARCHAR - tek değer
+
                 $aiSuggestions = is_string($seoSetting->ai_suggestions) ? json_decode($seoSetting->ai_suggestions, true) : $seoSetting->ai_suggestions;
 
                 Log::info('📦 UniversalSeoTab - JSON decode tamamlandı', [
@@ -124,17 +127,28 @@ class UniversalSeoTabComponent extends Component
 
                 // Her dil için cache'e aktar
                 foreach ($this->availableLanguages as $lang) {
+                    // Robots meta fallback - her zaman true (belirtilmemişse)
+                    $robotsMeta = $seoSetting->robots_meta ?? [];
+
                     $this->seoDataCache[$lang] = [
                         'seo_title' => $seoTitle[$lang] ?? '',
                         'seo_description' => $seoDescription[$lang] ?? '',
-                        'schema_type' => $schemaType[$lang] ?? 'WebPage',
-                        'priority_score' => $priorityScore[$lang] ?? 5,
+                        'schema_type' => $schemaType[$lang] ?? 'WebPage', // Fallback: WebPage
+                        'priority_score' => $priorityScore, // INTEGER - tüm dillerde aynı
                         'og_title' => $ogTitle[$lang] ?? '',
                         'og_description' => $ogDescription[$lang] ?? '',
                         'og_image_url' => $ogImageUrl[$lang] ?? '',
                         'og_custom_enabled' => !empty(trim($ogTitle[$lang] ?? '')) || !empty(trim($ogDescription[$lang] ?? '')),
-                        'author_name' => $authorName[$lang] ?? '',
-                        'author_url' => $authorUrl[$lang] ?? '',
+                        // Author - SINGLE VALUE (tüm dillerde aynı)
+                        'author_name' => $author ?? '',
+                        'author_url' => $authorUrl ?? '',
+                        // Robots Meta - Fallback her zaman TRUE
+                        'robots_meta' => [
+                            'index' => $robotsMeta['index'] ?? true,
+                            'follow' => $robotsMeta['follow'] ?? true,
+                            'archive' => $robotsMeta['archive'] ?? true,
+                            'snippet' => $robotsMeta['snippet'] ?? true,
+                        ],
                     ];
 
                     Log::info("📝 UniversalSeoTab - Cache'e dil eklendi: {$lang}", [
@@ -179,14 +193,22 @@ class UniversalSeoTabComponent extends Component
         return [
             'seo_title' => '',
             'seo_description' => '',
-            'schema_type' => 'WebPage',
+            'schema_type' => 'WebPage', // Fallback default
             'priority_score' => 5,
             'og_title' => '',
             'og_description' => '',
             'og_image_url' => '',
             'og_custom_enabled' => false,
+            // Author - SINGLE VALUE (not per language)
             'author_name' => '',
             'author_url' => '',
+            // Robots Meta - Fallback her zaman TRUE
+            'robots_meta' => [
+                'index' => true,
+                'follow' => true,
+                'archive' => true,
+                'snippet' => true,
+            ],
         ];
     }
 
@@ -245,26 +267,31 @@ class UniversalSeoTabComponent extends Component
             $seoTitle = [];
             $seoDescription = [];
             $schemaType = [];
-            $priorityScore = [];
             $ogTitle = [];
             $ogDescription = [];
             $ogImageUrl = [];
-            $authorName = [];
-            $authorUrl = [];
 
             foreach ($this->availableLanguages as $lang) {
                 $langData = $this->seoDataCache[$lang] ?? $this->getEmptySeoData();
 
                 $seoTitle[$lang] = $langData['seo_title'] ?? '';
                 $seoDescription[$lang] = $langData['seo_description'] ?? '';
-                $schemaType[$lang] = $langData['schema_type'] ?? 'WebPage';
-                $priorityScore[$lang] = $langData['priority_score'] ?? 5;
+                $schemaType[$lang] = $langData['schema_type'] ?? 'WebPage'; // Fallback: WebPage
                 $ogTitle[$lang] = $langData['og_title'] ?? '';
                 $ogDescription[$lang] = $langData['og_description'] ?? '';
                 $ogImageUrl[$lang] = $langData['og_image_url'] ?? '';
-                $authorName[$lang] = $langData['author_name'] ?? '';
-                $authorUrl[$lang] = $langData['author_url'] ?? '';
             }
+
+            // Priority Score - INTEGER tek değer (default language'den al)
+            $defaultLocale = get_tenant_default_locale();
+            $defaultData = $this->seoDataCache[$defaultLocale] ?? $this->getEmptySeoData();
+            $priorityScore = $defaultData['priority_score'] ?? 5;
+
+            // Author & Author URL - SINGLE VALUE (default language'den al)
+            $defaultLocale = get_tenant_default_locale();
+            $defaultData = $this->seoDataCache[$defaultLocale] ?? $this->getEmptySeoData();
+            $author = $defaultData['author_name'] ?? '';
+            $authorUrl = $defaultData['author_url'] ?? '';
 
             // AI Analysis verilerini hazırla
             $detailedScores = null;
@@ -308,13 +335,13 @@ class UniversalSeoTabComponent extends Component
                 [
                     'titles' => $seoTitle,
                     'descriptions' => $seoDescription,
-                    'schema_types' => $schemaType,
-                    'priority_scores' => $priorityScore,
+                    'schema_type' => $schemaType,
+                    'priority_score' => $priorityScore,
                     'og_titles' => $ogTitle,
                     'og_descriptions' => $ogDescription,
                     'og_images' => $ogImageUrl,
-                    'author_names' => $authorName,
-                    'author_urls' => $authorUrl,
+                    'author' => $author,
+                    'author_url' => $authorUrl,
                     'ai_suggestions' => $this->staticAiRecommendations ?: null,
                     // AI Analysis Results
                     'analysis_results' => !empty($this->staticAiAnalysis) ? $this->staticAiAnalysis : null,

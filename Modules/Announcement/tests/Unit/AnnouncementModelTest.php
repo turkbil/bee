@@ -101,7 +101,7 @@ class AnnouncementModelTest extends TestCase
     }
 
     /** @test */
-    public function active_scope_returns_only_active_pages(): void
+    public function active_scope_returns_only_active_announcements(): void
     {
         Announcement::factory()->active()->count(5)->create();
         Announcement::factory()->inactive()->count(3)->create();
@@ -271,7 +271,7 @@ class AnnouncementModelTest extends TestCase
         $announcement = Announcement::factory()->create();
 
         $this->assertInstanceOf(Announcement::class, $announcement);
-        $this->assertDatabaseHas('pages', ['announcement_id' => $announcement->announcement_id]);
+        $this->assertDatabaseHas('announcements', ['announcement_id' => $announcement->announcement_id]);
     }
 
     /** @test */
@@ -287,7 +287,7 @@ class AnnouncementModelTest extends TestCase
     /** @test */
 
     /** @test */
-    public function factory_active_state_creates_active_page(): void
+    public function factory_active_state_creates_active_announcement(): void
     {
         $announcement = Announcement::factory()->active()->create();
 
@@ -295,7 +295,7 @@ class AnnouncementModelTest extends TestCase
     }
 
     /** @test */
-    public function factory_inactive_state_creates_inactive_page(): void
+    public function factory_inactive_state_creates_inactive_announcement(): void
     {
         $announcement = Announcement::factory()->inactive()->create();
 

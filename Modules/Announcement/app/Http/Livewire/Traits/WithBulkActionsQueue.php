@@ -127,7 +127,7 @@ trait WithBulkActionsQueue
             $this->bulkProgress = [
                 'operation' => 'delete',
                 'count' => $count,
-                'progress_key' => "bulk_delete_pages_{$tenantId}_{$userId}",
+                'progress_key' => "bulk_delete_announcements_{$tenantId}_{$userId}",
                 'started_at' => now()->toISOString()
             ];
 
@@ -187,7 +187,7 @@ trait WithBulkActionsQueue
             $this->bulkProgress = [
                 'operation' => 'update',
                 'count' => $count,
-                'progress_key' => "bulk_update_pages_{$tenantId}_{$userId}",
+                'progress_key' => "bulk_update_announcements_{$tenantId}_{$userId}",
                 'started_at' => now()->toISOString()
             ];
 
@@ -290,9 +290,9 @@ trait WithBulkActionsQueue
     /**
      * 🌐 Queue-based manual translation
      */
-    public function translateContent($data, ?int $pageId = null): void
+    public function translateContent($data, ?int $announcementId = null): void
     {
-        if (!$pageId) {
+        if (!$announcementId) {
             $this->dispatch('toast', [
                 'title' => 'Çeviri Hatası',
                 'message' => 'Sayfa ID bulunamadı',
@@ -303,10 +303,10 @@ trait WithBulkActionsQueue
 
         try {
             // Progress key oluştur
-            $progressKey = "page_translation_progress_{$pageId}_" . uniqid();
+            $progressKey = "announcement_translation_progress_{$announcementId}_" . uniqid();
 
             // Translation job dispatch et
-            $job = \Modules\Announcement\App\Jobs\TranslateAnnouncementContentJob::dispatch($data, $pageId);
+            $job = \Modules\Announcement\App\Jobs\TranslateAnnouncementContentJob::dispatch($data, $announcementId);
 
             $this->dispatch('toast', [
                 'title' => 'Çeviri İşlemi Başlatıldı',
@@ -316,14 +316,14 @@ trait WithBulkActionsQueue
 
             // Progress tracking başlat
             $this->dispatch('translation-queued', [
-                'announcement_id' => $pageId,
+                'announcement_id' => $announcementId,
                 'progress_key' => $progressKey,
                 'success' => true,
                 'message' => 'Çeviri işlemi başlatıldı!'
             ]);
         } catch (\Exception $e) {
             \Log::error('❌ Queue translation hatası', [
-                'announcement_id' => $pageId,
+                'announcement_id' => $announcementId,
                 'error' => $e->getMessage()
             ]);
 

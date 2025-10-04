@@ -1,7 +1,7 @@
 @extends('themes.blank.layouts.app')
 
 @section('module_content')
-    <div class="relative" x-data="pagesList()" x-init="init()">
+    <div class="relative" x-data="announcementsList()" x-init="init()">
 
         <!-- Gradient Background -->
         <div
@@ -18,7 +18,7 @@
                     <div class="max-w-3xl">
                         <h1
                             class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
-                            {{ $moduleTitle ?? __('announcement::front.general.pages') }}
+                            {{ $moduleTitle ?? __('announcement::front.general.announcements') }}
                         </h1>
                         <p class="text-lg text-gray-600 dark:text-gray-400">
                             Bilgi sayfalarımızı keşfedin
@@ -168,7 +168,7 @@ if (
                             </div>
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Henüz sayfa yok</h3>
                             <p class="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                                {{ __('announcement::front.general.no_pages_found') }}</p>
+                                {{ __('announcement::front.general.no_announcements_found') }}</p>
                         </div>
                     </div>
                 @endif
@@ -177,7 +177,7 @@ if (
     </div>
 
     <script>
-        function pagesList() {
+        function announcementsList() {
             return {
                 loaded: false,
                 hover: null,

@@ -29,7 +29,7 @@ vendor/bin/phpunit Modules/Announcement/tests
 vendor/bin/phpunit Modules/Announcement/tests/Unit/AnnouncementRepositoryTest.php
 
 # Tek bir test
-vendor/bin/phpunit --filter=it_can_find_page_by_id Modules/Announcement/tests/Unit/AnnouncementRepositoryTest.php
+vendor/bin/phpunit --filter=it_can_find_announcement_by_id Modules/Announcement/tests/Unit/AnnouncementRepositoryTest.php
 
 # Testdox format (okunabilir)
 vendor/bin/phpunit Modules/Announcement/tests --testdox
@@ -66,7 +66,7 @@ Modules/Announcement/tests/
 ```php
 // Örnek test
 /** @test */
-public function it_can_find_page_by_id(): void
+public function it_can_find_announcement_by_id(): void
 {
     $announcement = Announcement::factory()->create();
 
@@ -80,14 +80,14 @@ public function it_can_find_page_by_id(): void
 **Kapsam**:
 - CRUD operations
 - Search & filtering
-- Homepage management
+- Homeannouncement management
 - Bulk operations
 - Cache clearing
 
 #### Service Tests (30 test)
 ```php
 /** @test */
-public function it_creates_page_successfully(): void
+public function it_creates_announcement_successfully(): void
 {
     $data = [
         'title' => ['tr' => 'Test', 'en' => 'Test'],
@@ -125,7 +125,7 @@ public function it_generates_slug_automatically(): void
 **Kapsam**:
 - Lifecycle events
 - Automatic slug generation
-- Homepage uniqueness
+- Homeannouncement uniqueness
 - Validation
 - Cache clearing
 
@@ -157,7 +157,7 @@ public function it_has_seo_fallback_title(): void
 #### Admin Tests (35 test)
 ```php
 /** @test */
-public function admin_can_create_page(): void
+public function admin_can_create_announcement(): void
 {
     $this->actingAs($this->admin);
 
@@ -167,7 +167,7 @@ public function admin_can_create_page(): void
         ->call('save')
         ->assertDispatched('toast');
 
-    $this->assertDatabaseHas('pages', [
+    $this->assertDatabaseHas('announcements', [
         'title->tr' => 'Yeni Sayfa'
     ]);
 }
@@ -182,7 +182,7 @@ public function admin_can_create_page(): void
 #### API Tests (20 test)
 ```php
 /** @test */
-public function admin_can_access_page_index(): void
+public function admin_can_access_announcement_index(): void
 {
     $this->actingAs($this->admin);
 
@@ -209,7 +209,7 @@ public function it_clears_cache_after_update(): void
         'title' => ['tr' => 'Updated']
     ]);
 
-    $this->assertNull(Cache::get('homepage_data'));
+    $this->assertNull(Cache::get('homeannouncement_data'));
 }
 ```
 
@@ -222,31 +222,31 @@ public function it_clears_cache_after_update(): void
 #### Bulk Operations Tests (22 test)
 ```php
 /** @test */
-public function it_protects_homepage_in_bulk_delete(): void
+public function it_protects_homeannouncement_in_bulk_delete(): void
 {
-    $homepage = Announcement::factory()->homepage()->create();
-    $pages = Announcement::factory()->count(3)->create();
+    $homeannouncement = Announcement::factory()->homeannouncement()->create();
+    $announcements = Announcement::factory()->count(3)->create();
 
     $result = $this->service->bulkDeletePages([
-        $homepage->announcement_id,
-        ...$pages->pluck('announcement_id')
+        $homeannouncement->announcement_id,
+        ...$announcements->pluck('announcement_id')
     ]);
 
     $this->assertEquals(3, $result->affectedCount);
-    $this->assertDatabaseHas('pages', ['announcement_id' => $homepage->announcement_id]);
+    $this->assertDatabaseHas('announcements', ['announcement_id' => $homeannouncement->announcement_id]);
 }
 ```
 
 **Kapsam**:
 - Bulk delete/toggle
-- Homepage protection
+- Homeannouncement protection
 - Edge cases
 - Data integrity
 
 #### Permission Tests (25 test)
 ```php
 /** @test */
-public function guest_cannot_access_admin_pages(): void
+public function guest_cannot_access_admin_announcements(): void
 {
     $response = $this->get(route('admin.announcement.index'));
 
@@ -262,26 +262,26 @@ public function guest_cannot_access_admin_pages(): void
 
 ## Yaygın Test Senaryoları
 
-### Homepage Koruması
+### Homeannouncement Koruması
 ```php
-// Homepage silinemez
+// Homeannouncement silinemez
 $this->expectException(\Exception::class);
-$homepage->delete();
+$homeannouncement->delete();
 
-// Homepage deaktive edilemez
-$result = $this->service->togglePageStatus($homepage->announcement_id);
+// Homeannouncement deaktive edilemez
+$result = $this->service->togglePageStatus($homeannouncement->announcement_id);
 $this->assertFalse($result->success);
 ```
 
 ### Slug Benzersizliği
 ```php
 // Aynı slug'dan ikinci bir sayfa otomatik unique slug alır
-$page1 = Announcement::create(['title' => ['tr' => 'Test']]);
-$page2 = Announcement::create(['title' => ['tr' => 'Test']]);
+$announcement1 = Announcement::create(['title' => ['tr' => 'Test']]);
+$announcement2 = Announcement::create(['title' => ['tr' => 'Test']]);
 
 $this->assertNotEquals(
-    $page1->getTranslated('slug', 'tr'),
-    $page2->getTranslated('slug', 'tr')
+    $announcement1->getTranslated('slug', 'tr'),
+    $announcement2->getTranslated('slug', 'tr')
 );
 ```
 
@@ -323,15 +323,15 @@ DB::enableQueryLog();
 dd(DB::getQueryLog());
 
 // Mevcut database state'i kontrol et
-$this->assertDatabaseCount('pages', 5);
-$this->assertDatabaseHas('pages', ['slug->tr' => 'test-slug']);
-$this->assertDatabaseMissing('pages', ['announcement_id' => 999]);
+$this->assertDatabaseCount('announcements', 5);
+$this->assertDatabaseHas('announcements', ['slug->tr' => 'test-slug']);
+$this->assertDatabaseMissing('announcements', ['announcement_id' => 999]);
 ```
 
 ### Cache Debugging
 ```php
 // Cache'i kontrol et
-$cacheValue = Cache::get('homepage_data');
+$cacheValue = Cache::get('homeannouncement_data');
 dump($cacheValue);
 
 // Cache temizle
@@ -355,7 +355,7 @@ $this->repository->clearCache();
 
 3. **Açıklayıcı İsimler**
    ```php
-   public function it_can_create_page(): void // Açık
+   public function it_can_create_announcement(): void // Açık
    public function test_create(): void        // Belirsiz
    ```
 
@@ -373,7 +373,7 @@ $this->repository->clearCache();
 
 5. **Type Declarations**
    ```php
-   public function it_returns_page(): void
+   public function it_returns_announcement(): void
    {
        $announcement = $this->repository->findById(1);
        $this->assertInstanceOf(Announcement::class, $announcement);
@@ -385,8 +385,8 @@ $this->repository->clearCache();
 1. **Test'ler birbirine bağımlı olmamalı**
    ```php
    // YANLIŞ
-   public function test_1() { $this->pageId = ...; }
-   public function test_2() { $announcement = Announcement::find($this->pageId); }
+   public function test_1() { $this->announcementId = ...; }
+   public function test_2() { $announcement = Announcement::find($this->announcementId); }
    ```
 
 2. **Sleep kullanma**
@@ -487,8 +487,8 @@ php artisan test --parallel --processes=4 --filter=Announcement
 
 ### Test Filtreleme
 ```bash
-# Sadece homepage testleri
-vendor/bin/phpunit --filter=homepage
+# Sadece homeannouncement testleri
+vendor/bin/phpunit --filter=homeannouncement
 
 # Sadece validation testleri
 vendor/bin/phpunit --filter=validation
@@ -580,7 +580,7 @@ class ExampleFeatureTest extends TestCase
             ->call('someMethod')
             ->assertDispatched('toast');
 
-        $this->assertDatabaseHas('pages', ['title->tr' => 'value']);
+        $this->assertDatabaseHas('announcements', ['title->tr' => 'value']);
     }
 }
 ```

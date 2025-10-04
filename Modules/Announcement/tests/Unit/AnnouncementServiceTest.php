@@ -37,7 +37,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_page_by_id(): void
+    public function it_can_get_announcement_by_id(): void
     {
         $announcement = Announcement::factory()->create();
 
@@ -48,7 +48,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_when_page_not_found(): void
+    public function it_throws_exception_when_announcement_not_found(): void
     {
         $this->expectException(AnnouncementNotFoundException::class);
 
@@ -56,7 +56,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_page_by_slug(): void
+    public function it_can_get_announcement_by_slug(): void
     {
         $announcement = Announcement::factory()->active()->create([
             'slug' => ['tr' => 'test-slug', 'en' => 'test-slug']
@@ -77,7 +77,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_active_pages(): void
+    public function it_can_get_active_announcements(): void
     {
         Announcement::factory()->active()->count(5)->create();
         Announcement::factory()->inactive()->count(3)->create();
@@ -90,7 +90,7 @@ class AnnouncementServiceTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_can_create_page_successfully(): void
+    public function it_can_create_announcement_successfully(): void
     {
         $data = [
             'title' => ['tr' => 'Test Sayfası', 'en' => 'Test Announcement'],
@@ -106,7 +106,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_generates_slug_automatically_when_creating_page(): void
+    public function it_generates_slug_automatically_when_creating_announcement(): void
     {
         $data = [
             'title' => ['tr' => 'Test Sayfası', 'en' => 'Test Announcement'],
@@ -121,7 +121,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_logs_page_creation(): void
+    public function it_logs_announcement_creation(): void
     {
         Log::shouldReceive('info')
             ->once()
@@ -137,7 +137,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_update_page_successfully(): void
+    public function it_can_update_announcement_successfully(): void
     {
         $announcement = Announcement::factory()->create([
             'title' => ['tr' => 'Eski Başlık', 'en' => 'Old Title']
@@ -152,7 +152,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_when_updating_nonexistent_page(): void
+    public function it_throws_exception_when_updating_nonexistent_announcement(): void
     {
         $this->expectException(AnnouncementNotFoundException::class);
 
@@ -160,14 +160,14 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_delete_regular_page(): void
+    public function it_can_delete_regular_announcement(): void
     {
         $announcement = Announcement::factory()->create();
 
         $result = $this->service->deletePage($announcement->announcement_id);
 
         $this->assertTrue($result->success);
-        $this->assertDatabaseMissing('pages', ['announcement_id' => $announcement->announcement_id]);
+        $this->assertDatabaseMissing('announcements', ['announcement_id' => $announcement->announcement_id]);
     }
 
     /** @test */
@@ -175,7 +175,7 @@ class AnnouncementServiceTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_can_toggle_page_status(): void
+    public function it_can_toggle_announcement_status(): void
     {
         $announcement = Announcement::factory()->active()->create();
 
@@ -188,10 +188,10 @@ class AnnouncementServiceTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_can_bulk_delete_pages(): void
+    public function it_can_bulk_delete_announcements(): void
     {
-        $pages = Announcement::factory()->count(5)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(5)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $result = $this->service->bulkDeletePages($ids);
 
@@ -202,11 +202,11 @@ class AnnouncementServiceTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_returns_failure_when_no_pages_can_be_deleted(): void
+    public function it_returns_failure_when_no_announcements_can_be_deleted(): void
     {
-        $homepage = Announcement::factory()->create();
+        $homeannouncement = Announcement::factory()->create();
 
-        $result = $this->service->bulkDeletePages([$homepage->announcement_id]);
+        $result = $this->service->bulkDeletePages([$homeannouncement->announcement_id]);
 
         $this->assertFalse($result->success);
     }
@@ -214,8 +214,8 @@ class AnnouncementServiceTest extends TestCase
     /** @test */
     public function it_can_bulk_toggle_status(): void
     {
-        $pages = Announcement::factory()->active()->count(5)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->active()->count(5)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $result = $this->service->bulkToggleStatus($ids);
 
@@ -224,7 +224,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_search_pages(): void
+    public function it_can_search_announcements(): void
     {
         Announcement::factory()->active()->create([
             'title' => ['tr' => 'Laravel Öğreniyorum', 'en' => 'Learning Laravel']
@@ -282,7 +282,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_prepare_page_for_form(): void
+    public function it_can_prepare_announcement_for_form(): void
     {
         $announcement = Announcement::factory()->create();
 
@@ -296,7 +296,7 @@ class AnnouncementServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_empty_form_data_for_new_page(): void
+    public function it_returns_empty_form_data_for_new_announcement(): void
     {
         $formData = $this->service->getEmptyFormData('tr');
 

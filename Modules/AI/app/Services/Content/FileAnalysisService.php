@@ -338,10 +338,14 @@ class FileAnalysisService
             // Claude Vision API call - API key'i set et
             $anthropicService = app(\Modules\AI\App\Services\AnthropicService::class);
 
-            // Config'den API key al
-            $apiKey = config('ai.providers.anthropic.api_key');
+            // Database'den API key al (şifrelenmiş)
+            $provider = \Modules\AI\App\Models\AIProvider::where('name', 'anthropic')
+                ->where('is_active', true)
+                ->first();
+            $apiKey = $provider ? $provider->api_key : null; // Otomatik decrypt
+
             if (empty($apiKey)) {
-                throw new \Exception('Anthropic API key not configured. Please set ANTHROPIC_API_KEY in .env file');
+                throw new \Exception('Anthropic API key not configured. Please configure it from Admin Panel > AI Settings');
             }
 
             // API key ve model ayarlarını set et

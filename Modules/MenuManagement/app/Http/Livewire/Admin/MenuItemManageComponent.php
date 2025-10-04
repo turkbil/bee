@@ -146,8 +146,10 @@ class MenuItemManageComponent extends Component
         }
         
         // CACHE BYPASS: Doğrudan MenuItem modelinden çek - relation cache sorunu için
+        // Sort order'a göre sırala - parent-child ilişkisi zaten doğru sort_order ile yönetiliyor
         $query = MenuItem::where('menu_id', $this->currentHeaderMenu->menu_id)
-            ->orderByRaw('COALESCE(parent_id, item_id), parent_id IS NOT NULL, sort_order');
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('item_id', 'asc');
         
         // Search filter
         if (!empty($this->search)) {
@@ -190,8 +192,40 @@ class MenuItemManageComponent extends Component
         //     'search_term' => $this->search,
         //     'filtered' => !empty($this->search)
         // ]);
-        
+
         return $items;
+    }
+
+    /**
+     * Dropdown için hiyerarşik menü listesi
+     * Depth level'a göre "─" prefix ekler
+     */
+    #[Computed]
+    public function hierarchicalMenuItems()
+    {
+        if (!$this->currentHeaderMenu) {
+            return collect();
+        }
+
+        $items = MenuItem::where('menu_id', $this->currentHeaderMenu->menu_id)
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('item_id', 'asc')
+            ->get();
+
+        return $items->map(function($item) {
+            $depth = $item->depth_level ?? 0;
+            $prefix = str_repeat('─', $depth);
+            if ($depth > 0) {
+                $prefix .= ' ';
+            }
+
+            return [
+                'id' => $item->item_id,
+                'title' => $prefix . $item->getTranslated('title', app()->getLocale()),
+                'depth' => $depth,
+                'parent_id' => $item->parent_id
+            ];
+        });
     }
 
     private function loadHeaderMenu(): void
@@ -492,7 +526,8 @@ class MenuItemManageComponent extends Component
             if ($result->success) {
                 // Anlık güncelleme için cache'i temizle
                 $this->headerMenu = null;
-                
+                unset($this->headerMenuItems);
+
                 logger('✅ MenuManagement drag-drop başarılı', [
                     'updated_items' => count($items)
                 ]);

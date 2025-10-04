@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => 'Page',
+    'name' => 'Portfolio',
 
     // ROUTE TANIMLAMALARI - DynamicRouteService tarafından kullanılıyor
     'slugs' => [
@@ -11,33 +11,27 @@ return [
 
     'routes' => [
         'index' => [
-            'controller' => \Modules\Portfolio\App\Http\Controllers\Front\PageController::class,
+            'controller' => \Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class,
             'method' => 'index'
         ],
         'show' => [
-            'controller' => \Modules\Portfolio\App\Http\Controllers\Front\PageController::class,
+            'controller' => \Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class,
             'method' => 'show'
         ]
     ],
 
-    // TAB SİSTEMİ
+    // TAB SİSTEMİ - PORTFOLIO
     'tabs' => [
         [
             'key' => 'content',
             'name' => 'İçerik',
             'icon' => 'edit',
-            'required_fields' => ['title', 'content']
+            'required_fields' => ['title', 'body']
         ],
         [
             'key' => 'seo',
             'name' => 'SEO',
             'icon' => 'search',
-            'required_fields' => ['seo_title', 'seo_description']
-        ],
-        [
-            'key' => 'advanced',
-            'name' => 'Gelişmiş',
-            'icon' => 'cogs',
             'required_fields' => []
         ]
     ],
@@ -68,8 +62,8 @@ return [
      * Pagination Ayarları
      */
     'pagination' => [
-        'admin_per_portfolio' => env('PAGE_ADMIN_PER_PAGE', 10),
-        'front_per_portfolio' => env('PAGE_FRONT_PER_PAGE', 12),
+        'admin_per_portfolio' => env('PORTFOLIO_ADMIN_PER_PAGE', 10),
+        'front_per_portfolio' => env('PORTFOLIO_FRONT_PER_PAGE', 12),
         'max_per_portfolio' => 100,
     ],
 
@@ -77,20 +71,30 @@ return [
      * Özellik Toggleları (Feature Flags)
      */
     'features' => [
-        'ai_translation' => env('PAGE_AI_TRANSLATION', true),
-        'bulk_operations' => env('PAGE_BULK_OPERATIONS', true),
-        'inline_editing' => env('PAGE_INLINE_EDITING', true),
-        'version_control' => env('PAGE_VERSION_CONTROL', false),
-        'preview_mode' => env('PAGE_PREVIEW_MODE', true),
-        'custom_css_js' => env('PAGE_CUSTOM_CSS_JS', true),
+        'ai_translation' => env('PORTFOLIO_AI_TRANSLATION', true),
+        'bulk_operations' => env('PORTFOLIO_BULK_OPERATIONS', true),
+        'inline_editing' => env('PORTFOLIO_INLINE_EDITING', true),
+        'version_control' => env('PORTFOLIO_VERSION_CONTROL', false),
+        'preview_mode' => env('PORTFOLIO_PREVIEW_MODE', true),
+        'custom_css_js' => false,
+    ],
+
+    /**
+     * Entegrasyon Ayarları
+     */
+    'integrations' => [
+        'studio' => [
+            'enabled' => env('PORTFOLIO_STUDIO_ENABLED', true),
+            'component' => 'Modules\Studio\App\Http\Livewire\EditorComponent',
+        ],
     ],
 
     /**
      * Queue Ayarları
      */
     'queue' => [
-        'connection' => env('PAGE_QUEUE_CONNECTION', 'redis'),
-        'queue_name' => env('PAGE_QUEUE_NAME', 'tenant_isolated'),
+        'connection' => env('PORTFOLIO_QUEUE_CONNECTION', 'redis'),
+        'queue_name' => env('PORTFOLIO_QUEUE_NAME', 'tenant_isolated'),
         'retry_after' => 90,
         'tries' => 3,
         'timeout' => 300, // 5 dakika
@@ -112,8 +116,6 @@ return [
      */
     'defaults' => [
         'is_active' => true,
-        'css' => null,
-        'js' => null,
     ],
 
     /**
@@ -129,14 +131,14 @@ return [
     // CACHE YÖNETİMİ
     // ========================================
     'cache' => [
-        'enabled' => env('PAGE_CACHE_ENABLED', true),
+        'enabled' => env('PORTFOLIO_CACHE_ENABLED', true),
         'ttl' => [
             'list' => 3600,      // 1 saat - Liste sayfaları
             'detail' => 7200,    // 2 saat - Detay sayfaları
         ],
         'tags' => ['portfolios', 'content'],
         'warming' => [
-            'enabled' => env('PAGE_CACHE_WARMING_ENABLED', true),
+            'enabled' => env('PORTFOLIO_CACHE_WARMING_ENABLED', true),
             'schedule' => 'hourly', // hourly, daily, weekly
             'batch_size' => 50,
             'include_urls' => true,
@@ -185,8 +187,15 @@ return [
             'lowercase' => true,
             'unique_check' => true,
             'reserved_slugs' => [
-                'admin', 'api', 'login', 'logout', 'register',
-                'dashboard', 'profile', 'settings', 'search'
+                'admin',
+                'api',
+                'login',
+                'logout',
+                'register',
+                'dashboard',
+                'profile',
+                'settings',
+                'search'
             ],
         ],
         'body' => [
@@ -199,18 +208,18 @@ return [
     // ========================================
     'security' => [
         'sanitize_html' => true,
-        'allowed_tags' => [
-            'p', 'br', 'strong', 'b', 'em', 'i', 'u', 'a', 'img',
-            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'ul', 'ol', 'li', 'blockquote', 'code', 'pre',
-            'table', 'thead', 'tbody', 'tr', 'th', 'td',
-            'div', 'span', 'section', 'article', 'header', 'footer'
-        ],
-        'allowed_attributes' => [
-            'href', 'src', 'alt', 'title', 'class', 'id', 'style',
-            'target', 'rel', 'width', 'height', 'data-*'
-        ],
-        'max_css_size' => 50000, // 50KB
-        'max_js_size' => 50000,  // 50KB
+        // NOT: allowed_tags/attributes kullanılmıyor, SecurityValidationService global olarak yönetiyor
+        // NOT: CSS/JS security ayarları yok çünkü Portfolio'ta custom CSS/JS desteği yok
+    ],
+
+    // ========================================
+    // DEBUG & LOGGING
+    // ========================================
+    'debug' => [
+        'enabled' => env('PORTFOLIO_DEBUG_ENABLED', env('APP_DEBUG', false)),
+        'verbose_logs' => env('PORTFOLIO_VERBOSE_LOGS', false),
+        'log_channel' => env('PORTFOLIO_LOG_CHANNEL', 'stack'),
+        'log_queries' => env('PORTFOLIO_LOG_QUERIES', false),
+        'log_routes' => env('PORTFOLIO_LOG_ROUTES', false),
     ],
 ];

@@ -6,7 +6,7 @@ class AnnouncementNotFoundException extends AnnouncementException
 {
     public function getErrorType(): string
     {
-        return 'page_not_found';
+        return 'announcement_not_found';
     }
 
     public static function withId(int $id): self

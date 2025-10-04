@@ -68,8 +68,8 @@ class ModuleSeeder extends Seeder
                     continue;
                 }
                 
-                // Page ve Announcement modülleri için ana seeder varsa sadece onu çalıştır
-                if (in_array($moduleBaseName, ['Page', 'Announcement']) && class_exists($moduleSeederClassName)) {
+                // Page, Announcement ve Portfolio modülleri için ana seeder varsa sadece onu çalıştır
+                if (in_array($moduleBaseName, ['Page', 'Announcement', 'Portfolio']) && class_exists($moduleSeederClassName)) {
                     $this->command->info("{$moduleBaseName} module has main seeder, skipping individual seeders");
                     continue;
                 }

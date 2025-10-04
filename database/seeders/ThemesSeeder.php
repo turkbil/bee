@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\ThemeManagement\App\Models\Theme;
-use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Schema;
 
 class ThemesSeeder extends Seeder
@@ -15,7 +14,6 @@ class ThemesSeeder extends Seeder
         if (!Schema::hasTable('themes')) {
             return;
         }
-        $faker = Faker::create('tr_TR');
 
         // Varsayılan Tema (blank)
         Theme::create([
@@ -27,33 +25,36 @@ class ThemesSeeder extends Seeder
             'is_default' => true,
         ]);
 
-        // Diğer örnek temalar
+        // Diğer örnek temalar (production-ready, hard-coded)
         $temalar = [
             [
                 'name' => 'dark',
                 'title' => 'Koyu Tema',
                 'folder_name' => 'dark',
                 'description' => 'Koyu arka plan ve kontrastlı renkler içeren tema.',
+                'is_active' => true,
+                'is_default' => false,
             ],
             [
                 'name' => 'blue',
                 'title' => 'Mavi Tema',
                 'folder_name' => 'blue',
                 'description' => 'Mavi tonları ağırlıklı kurumsal görünüm sunan tema.',
+                'is_active' => true,
+                'is_default' => false,
             ],
             [
                 'name' => 'modern',
                 'title' => 'Modern Tema',
                 'folder_name' => 'modern',
                 'description' => 'Flat tasarım ve modern UI elementleri içeren tema.',
+                'is_active' => false,
+                'is_default' => false,
             ]
         ];
 
         foreach ($temalar as $tema) {
-            Theme::create(array_merge($tema, [
-                'is_active' => $faker->boolean(80),
-                'is_default' => false,
-            ]));
+            Theme::create($tema);
         }
     }
 }

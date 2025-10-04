@@ -162,28 +162,26 @@ class ThemeService
     {
         $this->activeTheme = null; // Instance cache'i temizle
 
-        try {
-            if ($tenantId) {
-                // Belirli tenant'ın tema cache'ini temizle
-                Cache::forget("theme:tenant_{$tenantId}");
-            } else {
-                // Default tema cache'ini temizle
-                Cache::forget('theme:default');
+        if ($tenantId) {
+            // Belirli tenant'ın tema cache'ini temizle
+            Cache::forget("theme:tenant_{$tenantId}");
+        } else {
+            // Default tema cache'ini temizle
+            Cache::forget('theme:default');
 
-                // Tüm tenant tema cache'lerini de temizle (pattern matching)
-                if (Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
-                    $connection = Cache::getStore()->connection();
-                    $keys = $connection->keys('*theme:tenant_*');
+            // Tüm tenant tema cache'lerini de temizle
+            try {
+                $redis = Cache::getRedis();
+                $pattern = config('database.redis.options.prefix') . ':theme:tenant_*';
+                $keys = $redis->keys($pattern);
 
-                    if (!empty($keys)) {
-                        foreach ($keys as $key) {
-                            $connection->del($key);
-                        }
-                    }
+                if (!empty($keys)) {
+                    $redis->del($keys);
                 }
+            } catch (\Exception $e) {
+                // Redis hatası - sessizce devam et
+                \Log::debug('Theme cache clear failed: ' . $e->getMessage());
             }
-        } catch (\Exception $e) {
-            Log::warning('ThemeService cache clear failed: ' . $e->getMessage());
         }
     }
     

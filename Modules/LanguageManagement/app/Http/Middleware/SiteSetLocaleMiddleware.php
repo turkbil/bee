@@ -247,13 +247,24 @@ class SiteSetLocaleMiddleware
             if (class_exists('\App\Services\DynamicRouteResolver')) {
                 app(\App\Services\DynamicRouteResolver::class)->clearRouteCache();
             }
-            
-            // Widget cache'lerini temizle (varsa)
-            \Cache::tags(['widgets'])->flush();
-            
+
+            // Widget cache'lerini temizle (pattern-based)
+            try {
+                $redis = \Cache::getRedis();
+                $prefix = config('database.redis.options.prefix', '');
+                $pattern = $prefix . ':widget_*';
+                $keys = $redis->keys($pattern);
+
+                if (!empty($keys)) {
+                    $redis->del($keys);
+                }
+            } catch (\Exception $e) {
+                \Log::debug('Widget cache clear failed: ' . $e->getMessage());
+            }
+
             // View cache'lerini temizle
             \Artisan::call('view:clear');
-            
+
             \Log::debug('Language related caches cleared due to locale change');
             
         } catch (\Exception $e) {

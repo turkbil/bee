@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Modules\SeoManagement\App\Http\Controllers\Admin\SeoManagementController;
+use Modules\SeoManagement\App\Http\Controllers\Admin\SeoAIController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,20 +16,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'tenant']], function () {
-    Route::get('/seomanagement', [Modules\SeoManagement\App\Http\Controllers\Admin\SeoManagementController::class, 'index'])
+    Route::get('/seomanagement', [SeoManagementController::class, 'index'])
         ->name('admin.seomanagement.index');
-    
+
     // SEO AI Routes - Complete System
     Route::prefix('seo/ai')->name('admin.seo.ai.')->group(function () {
-        Route::post('analyze', [Modules\SeoManagement\App\Http\Controllers\Admin\SeoAIController::class, 'analyze'])
+        Route::post('analyze', [SeoAIController::class, 'analyze'])
             ->name('analyze');
-        Route::post('generate', [Modules\SeoManagement\App\Http\Controllers\Admin\SeoAIController::class, 'generateSeo'])
+        Route::post('generate', [SeoAIController::class, 'generateSeo'])
             ->name('generate');
-        Route::post('suggestions', [Modules\SeoManagement\App\Http\Controllers\Admin\SeoAIController::class, 'getSuggestions'])
+        Route::post('suggestions', [SeoAIController::class, 'getSuggestions'])
             ->name('suggestions');
-        Route::post('save', [Modules\SeoManagement\App\Http\Controllers\Admin\SeoAIController::class, 'saveSeoData'])
+        Route::post('save', [SeoAIController::class, 'saveSeoData'])
             ->name('save');
-        Route::get('history', [Modules\SeoManagement\App\Http\Controllers\Admin\SeoAIController::class, 'getAnalysisHistory'])
+        Route::get('history', [SeoAIController::class, 'getAnalysisHistory'])
             ->name('history');
     });
 });

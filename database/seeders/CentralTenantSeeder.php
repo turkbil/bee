@@ -36,15 +36,20 @@ class CentralTenantSeeder extends Seeder
         // Central tenant'ı ekle
         DB::table('tenants')->insert([
             'title' => config('app.name', 'Laravel'),
+            'tenancy_db_name' => config('database.connections.mysql.database'), // Ana database adı
+            'is_active' => true,
+            'central' => true, // Central tenant flag
             'fullname' => 'Admin User',
             'email' => 'admin@' . env('APP_DOMAIN', 'laravel.test'),
             'phone' => '',
-            'address' => '',
-            'tax_office' => '',
-            'tax_number' => '',
-            'tenant_type' => 'central',
+            'theme_id' => 1, // Default theme
+            'admin_default_locale' => 'tr',
             'tenant_default_locale' => 'tr',
+            'data' => json_encode([]), // Empty JSON data
+            'ai_credits_balance' => 0,
+            'ai_last_used_at' => null,
             'tenant_ai_provider_id' => null,
+            'tenant_ai_provider_model_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -91,6 +91,44 @@ php artisan route:list | head -20
 
 ---
 
+## ❓ YEREL CLAUDE'UN SORULARI (Sunucu Claude yanıtlayacak)
+
+### 1. Database Durumu
+- ✅ Database migration'lar çalıştı mı?
+- ✅ Seeder'lar çalıştı mı? (Central + Tenant)
+- ✅ Hangi tenant'lar oluşturuldu? (tenant2, tenant3, tenant4 vs.)
+
+### 2. .env Konfigürasyonu
+- ✅ `APP_ENV=production` set edildi mi?
+- ✅ `APP_DEBUG=false` set edildi mi?
+- ✅ Database bağlantısı doğru mu? (credentials)
+- ✅ `QUEUE_CONNECTION` ne? (sync/database/redis)
+- ✅ `CACHE_STORE` ne? (file/redis)
+
+### 3. Sunucu Ortam Bilgileri
+- ✅ PHP versiyonu nedir? (`php -v`)
+- ✅ Hangi extensions yüklü? (gd, imagick, redis, vb.)
+- ✅ Composer versiyonu? (`composer --version`)
+- ✅ Laravel versiyonu çalışıyor mu? (`php artisan --version`)
+
+### 4. İlk Erişim Testi
+- ✅ Ana domain açılıyor mu? (https://tuufi.com)
+- ✅ Admin paneli açılıyor mu? (https://tuufi.com/admin/login)
+- ✅ Test user ile giriş yapılabiliyor mu? (nurullah@nurullah.net / test)
+- ✅ Tenant domain'ler çalışıyor mu? (tenant2.tuufi.com vs.)
+
+### 5. Önemli Log/Hata Kontrolleri
+- ✅ `storage/logs/laravel.log` dosyasında hata var mı?
+- ✅ Route cache sonrası route:list çıktısı temiz mi?
+- ✅ Livewire component'leri yükleniyor mu?
+- ✅ Modül izinleri çalışıyor mu? (middleware kontrolleri)
+
+**YANITLAMA ŞEKLİ:**
+Bu soruların yanıtlarını bu dosyanın "AKTİF HATALAR" veya yeni bir "📊 SUNUCU DURUM RAPORU" bölümüne ekle.
+Herhangi bir sorun varsa detaylı hata mesajlarını yaz.
+
+---
+
 ## ✅ DOĞRULAMA
 
 Yerel test: ✅ BAŞARILI

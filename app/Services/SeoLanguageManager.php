@@ -264,13 +264,25 @@ class SeoLanguageManager
             "seo_twitter_{$model}_{$id}",
             "seo_schema_{$model}_{$id}"
         ];
-        
+
         foreach ($cacheKeys as $key) {
             Cache::forget($key);
         }
-        
-        // Clear pattern-based cache
-        Cache::tags(["seo_{$model}", "seo_lang"])->flush();
+
+        // Clear pattern-based cache using Redis directly
+        try {
+            $redis = Cache::getRedis();
+            $prefix = config('database.redis.options.prefix', '');
+            $pattern = $prefix . ":seo_{$model}_*";
+            $keys = $redis->keys($pattern);
+
+            if (!empty($keys)) {
+                $redis->del($keys);
+            }
+        } catch (\Exception $e) {
+            // Redis hatası - sessizce devam et
+            \Log::debug('SEO cache clear failed: ' . $e->getMessage());
+        }
     }
 
     /**

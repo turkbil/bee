@@ -38,24 +38,22 @@ class ThemeService
             if (function_exists('tenant') && $t = tenant()) {
                 // Tenant tema cache - Repository ile uyumlu
                 $cacheKey = "theme:tenant_{$t->id}";
-                $cacheTags = ["tenant_{$t->id}:theme"];
-                
-                $theme = Cache::tags($cacheTags)->remember($cacheKey, now()->addHours(1), function() use ($t) {
+
+                $theme = Cache::remember($cacheKey, now()->addHours(1), function() use ($t) {
                     return Theme::on('mysql')->where('name', $t->theme)
                                   ->where('is_active', true)
                                   ->first();
                 });
-                
+
                 if ($theme) {
                     return $theme;
                 }
             }
-            
+
             // Default tema cache - Repository ile uyumlu
             $cacheKey = 'theme:default';
-            $cacheTags = ['central:theme'];
-            
-            return Cache::tags($cacheTags)->remember($cacheKey, now()->addHours(24), function() {
+
+            return Cache::remember($cacheKey, now()->addHours(24), function() {
                 // Default tema ara
                 $theme = Theme::on('mysql')
                     ->where('is_default', true)
@@ -163,21 +161,26 @@ class ThemeService
     public function clearThemeCache(?string $tenantId = null): void
     {
         $this->activeTheme = null; // Instance cache'i temizle
-        
+
         if ($tenantId) {
             // Belirli tenant'ın tema cache'ini temizle
-            Cache::tags(["tenant_{$tenantId}:theme"])->flush();
+            Cache::forget("theme:tenant_{$tenantId}");
         } else {
-            // Tüm tema cache'lerini temizle
-            Cache::tags(['central:theme'])->flush();
-            
+            // Default tema cache'ini temizle
+            Cache::forget('theme:default');
+
             // Tüm tenant tema cache'lerini de temizle
-            $redis = Cache::getRedis();
-            $pattern = '*:theme:*';
-            $keys = $redis->keys($pattern);
-            
-            if (!empty($keys)) {
-                $redis->del($keys);
+            try {
+                $redis = Cache::getRedis();
+                $pattern = config('database.redis.options.prefix') . ':theme:tenant_*';
+                $keys = $redis->keys($pattern);
+
+                if (!empty($keys)) {
+                    $redis->del($keys);
+                }
+            } catch (\Exception $e) {
+                // Redis hatası - sessizce devam et
+                \Log::debug('Theme cache clear failed: ' . $e->getMessage());
             }
         }
     }

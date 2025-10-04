@@ -2,17 +2,17 @@
 
 return [
     'general' => [
-        'pages' => 'Sayfalar',
-        'all_pages' => 'Tüm Sayfalar',
+        'announcements' => 'Sayfalar',
+        'all_announcements' => 'Tüm Sayfalar',
         'read_more' => 'Devamını Oku',
-        'homepage' => 'Anasayfa',
+        'homeannouncement' => 'Anasayfa',
         'previous' => 'Önceki',
         'next' => 'Sonraki',
-        'no_pages_found' => 'Henüz sayfa eklenmemiş.',
-        'no_pages_description' => 'Henüz hiç sayfa yayınlanmamış.',
+        'no_announcements_found' => 'Henüz sayfa eklenmemiş.',
+        'no_announcements_description' => 'Henüz hiç sayfa yayınlanmamış.',
         'updated' => 'Güncellendi',
     ],
     'messages' => [
-        'no_pages_found' => 'Henüz sayfa eklenmemiş.',
+        'no_announcements_found' => 'Henüz sayfa eklenmemiş.',
     ],
 ];

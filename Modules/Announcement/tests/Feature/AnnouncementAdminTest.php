@@ -33,7 +33,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_view_pages_list(): void
+    public function admin_can_view_announcements_list(): void
     {
         $this->actingAs($this->admin);
 
@@ -44,7 +44,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_view_pages_list(): void
+    public function guest_cannot_view_announcements_list(): void
     {
         $response = $this->get(route('admin.announcement.index'));
 
@@ -52,7 +52,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_see_pages_in_list(): void
+    public function admin_can_see_announcements_in_list(): void
     {
         $this->actingAs($this->admin);
 
@@ -65,7 +65,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_search_pages(): void
+    public function admin_can_search_announcements(): void
     {
         $this->actingAs($this->admin);
 
@@ -83,7 +83,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_sort_pages(): void
+    public function admin_can_sort_announcements(): void
     {
         $this->actingAs($this->admin);
 
@@ -97,7 +97,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_change_per_page(): void
+    public function admin_can_change_per_announcement(): void
     {
         $this->actingAs($this->admin);
 
@@ -109,7 +109,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_toggle_page_status(): void
+    public function admin_can_toggle_announcement_status(): void
     {
         $this->actingAs($this->admin);
 
@@ -125,7 +125,7 @@ class AnnouncementAdminTest extends TestCase
     /** @test */
 
     /** @test */
-    public function admin_can_view_create_page_form(): void
+    public function admin_can_view_create_announcement_form(): void
     {
         $this->actingAs($this->admin);
 
@@ -136,7 +136,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_view_edit_page_form(): void
+    public function admin_can_view_edit_announcement_form(): void
     {
         $this->actingAs($this->admin);
 
@@ -149,7 +149,7 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_create_page(): void
+    public function admin_can_create_announcement(): void
     {
         $this->actingAs($this->admin);
 
@@ -162,14 +162,14 @@ class AnnouncementAdminTest extends TestCase
             ->call('save')
             ->assertDispatched('toast');
 
-        $this->assertDatabaseHas('pages', [
+        $this->assertDatabaseHas('announcements', [
             'title->tr' => 'Yeni Sayfa',
             'title->en' => 'New Announcement'
         ]);
     }
 
     /** @test */
-    public function admin_can_update_page(): void
+    public function admin_can_update_announcement(): void
     {
         $this->actingAs($this->admin);
 
@@ -248,10 +248,10 @@ class AnnouncementAdminTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $pages = Announcement::factory()->count(3)->create();
+        $announcements = Announcement::factory()->count(3)->create();
 
         Livewire::test(AnnouncementComponent::class)
-            ->set('selectedItems', $pages->pluck('announcement_id')->toArray())
+            ->set('selectedItems', $announcements->pluck('announcement_id')->toArray())
             ->assertSet('bulkActionsEnabled', false); // İlk state
     }
 
@@ -266,7 +266,7 @@ class AnnouncementAdminTest extends TestCase
             ->set('multiLangInputs.tr.body', '<p>Test</p>')
             ->call('save');
 
-        $this->assertDatabaseHas('pages', [
+        $this->assertDatabaseHas('announcements', [
             'slug->tr' => 'test-sayfasi',
             'slug->en' => 'test-announcement'
         ]);
@@ -283,13 +283,13 @@ class AnnouncementAdminTest extends TestCase
             ->set('multiLangInputs.tr.body', '<p>Test</p>')
             ->call('save');
 
-        $this->assertDatabaseHas('pages', [
+        $this->assertDatabaseHas('announcements', [
             'slug->tr' => 'ozel-slug'
         ]);
     }
 
     /** @test */
-    public function page_manage_loads_existing_data(): void
+    public function announcement_manage_loads_existing_data(): void
     {
         $this->actingAs($this->admin);
 
@@ -305,18 +305,18 @@ class AnnouncementAdminTest extends TestCase
     }
 
     /** @test */
-    public function form_initializes_empty_inputs_for_new_page(): void
+    public function form_initializes_empty_inputs_for_new_announcement(): void
     {
         $this->actingAs($this->admin);
 
         Livewire::test(AnnouncementManageComponent::class)
-            ->assertSet('pageId', null)
+            ->assertSet('announcementId', null)
             ->assertSet('multiLangInputs.tr.title', '')
             ->assertSet('multiLangInputs.en.title', '');
     }
 
     /** @test */
-    public function it_dispatches_page_saved_event(): void
+    public function it_dispatches_announcement_saved_event(): void
     {
         $this->actingAs($this->admin);
 

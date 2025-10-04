@@ -137,7 +137,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-auto">
                                             <div class="drag-handle" style="cursor: move;">
-                                                <i class="ti ti-grip-vertical text-muted"></i>
+                                                <i class="fas fa-grip-vertical text-muted"></i>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -174,7 +174,7 @@
                                                 @if($input->input_type === 'select' || $input->input_type === 'radio' || $input->input_type === 'checkbox')
                                                     <button class="btn btn-sm btn-outline-info manage-options-btn" 
                                                             data-input-id="{{ $input->id }}">
-                                                        <i class="ti ti-settings"></i>
+                                                        <i class="fas fa-cog"></i>
                                                         Seçenekler
                                                     </button>
                                                 @endif
@@ -185,7 +185,7 @@
                                                 </button>
                                                 <button class="btn btn-sm btn-outline-secondary duplicate-input-btn" 
                                                         data-input-id="{{ $input->id }}">
-                                                    <i class="ti ti-copy"></i>
+                                                    <i class="far fa-copy"></i>
                                                 </button>
                                                 <button class="btn btn-sm btn-outline-danger delete-input-btn" 
                                                         data-input-id="{{ $input->id }}">
@@ -201,7 +201,7 @@
                 @else
                     <div class="empty">
                         <div class="empty-img">
-                            <i class="ti ti-settings" style="font-size: 4rem; opacity: 0.3;"></i>
+                            <i class="fas fa-cog" style="font-size: 4rem; opacity: 0.3;"></i>
                         </div>
                         <p class="empty-title">İleri Düzey Input Yok</p>
                         <p class="empty-subtitle text-muted">
@@ -399,7 +399,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-check"></i>
+                        <i class="fas fa-check"></i>
                         Güncelle
                     </button>
                 </div>

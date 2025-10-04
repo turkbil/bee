@@ -68,10 +68,31 @@ class MediaService
     public function uploadMedia(HasMedia $model, $file, string $collectionName): ?Media
     {
         try {
-            $media = $model->addMedia($file->getRealPath())
-                ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-                ->usingFileName($file->getClientOriginalName())
-                ->toMediaCollection($collectionName);
+            // Livewire TemporaryUploadedFile için özel işlem
+            if (class_exists('Livewire\Features\SupportFileUploads\TemporaryUploadedFile')
+                && $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+
+                // Livewire temp dosyasını geçici bir yere kopyala
+                $tempPath = sys_get_temp_dir() . '/' . uniqid('media_') . '_' . $file->getClientOriginalName();
+                copy($file->getRealPath(), $tempPath);
+
+                $media = $model->addMedia($tempPath)
+                    ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->usingFileName($file->getClientOriginalName())
+                    ->toMediaCollection($collectionName);
+
+                // Geçici dosyayı temizle
+                @unlink($tempPath);
+
+            } else {
+                // Normal file upload
+                $filePath = method_exists($file, 'getRealPath') ? $file->getRealPath() : $file->path();
+
+                $media = $model->addMedia($filePath)
+                    ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->usingFileName($file->getClientOriginalName())
+                    ->toMediaCollection($collectionName);
+            }
 
             Log::info('📤 Media uploaded', [
                 'model' => get_class($model),
@@ -85,10 +106,21 @@ class MediaService
             return $media;
 
         } catch (\Exception $e) {
+            // Eğer media başarıyla oluşturulduysa (ID varsa) hatayı logla ama throw etme
+            // Çünkü Spatie bazen file_size alamasa bile upload'u başarıyla yapabiliyor
+            if (isset($media) && $media && $media->id) {
+                Log::warning('Media uploaded but with warnings', [
+                    'media_id' => $media->id,
+                    'warning' => $e->getMessage()
+                ]);
+                return $media;
+            }
+
             Log::error('Media upload failed', [
                 'model' => get_class($model),
                 'collection' => $collectionName,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'file_class' => get_class($file)
             ]);
 
             throw $e;
@@ -205,19 +237,30 @@ class MediaService
     public function updateGalleryOrder(HasMedia $model, array $items): bool
     {
         try {
+            $updates = [];
+
             foreach ($items as $item) {
                 $media = Media::find($item['id']);
 
                 if ($media && $media->model_id == $model->id) {
+                    $oldOrder = $media->order_column;
                     $media->order_column = $item['order'];
                     $media->save();
+
+                    $updates[] = [
+                        'id' => $media->id,
+                        'name' => $media->file_name,
+                        'old_order' => $oldOrder,
+                        'new_order' => $item['order']
+                    ];
                 }
             }
 
             Log::info('🔄 Gallery order updated', [
                 'model' => get_class($model),
                 'model_id' => $model->id,
-                'items_count' => count($items)
+                'items_count' => count($items),
+                'updates' => $updates
             ]);
 
             return true;

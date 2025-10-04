@@ -1,193 +1,106 @@
 <?php
 
-namespace Modules\Portfolio\Database\Seeders;
+namespace Modules\Portfolio\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\Portfolio;
-use Modules\Portfolio\App\Models\PortfolioCategory;
+use Modules\SeoManagement\App\Models\SeoSetting;
+use Faker\Factory as Faker;
 
-/**
- * Portfolio Tenant 2 Database Seeder
- *
- * Seeds portfolios for Tenant 2 - Digital Agency / E-Commerce theme.
- * Creates demo portfolios with TR/EN translations.
- *
- * @package Modules\Portfolio\Database\Seeders
- */
 class PortfolioSeederTenant2 extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    private $fakers = [];
+    private $languages = [];
+
     public function run(): void
     {
-        // Portfolio SADECE tenant database'lerde olmalı
-        if (\App\Helpers\TenantHelpers::isCentral()) {
-            $this->command->info('🏢 Portfolio Tenant2: sadece tenant database için, atlanıyor...');
-            return;
-        }
-
-        // Central tenant (ID=1 / laravel database) kontrolü
-        if (tenancy()->initialized && tenant('tenancy_db_name') === 'laravel') {
-            $this->command->error('❌ Central tenant detected, portfolio tables do not exist in central!');
-            return;
-        }
-
-        $this->command->info('🏢 TENANT 2 - Digital Agency / E-Commerce Portfolio Seeding');
-        $this->command->newLine();
-
-        // Duplicate check
         if (Portfolio::count() > 0) {
-            $this->command->info('📋 Portfolios already exist, skipping...');
+            $this->command->warn("⚠️  Portfolios exist. Skipping...");
             return;
         }
 
-        // Önce kategorileri oluştur
-        $this->call(PortfolioCategorySeeder::class);
+        // Tenant dillerini al
+        $this->languages = \DB::table('tenant_languages')
+            ->where('is_active', 1)
+            ->pluck('code')
+            ->toArray();
 
-        $categories = PortfolioCategory::all();
-
-        // Web Tasarım Portfolioları
-        $webDesignCategory = $categories->where('slug->en', 'web-design')->first();
-        if ($webDesignCategory) {
-            $this->createWebDesignPortfolios($webDesignCategory);
+        if (empty($this->languages)) {
+            $this->languages = ['tr', 'en']; // Fallback
         }
 
-        // E-Ticaret Portfolioları
-        $ecommerceCategory = $categories->where('slug->en', 'e-commerce')->first();
-        if ($ecommerceCategory) {
-            $this->createEcommercePortfolios($ecommerceCategory);
+        // Her dil için Faker instance oluştur
+        $localeMap = ['tr' => 'tr_TR', 'en' => 'en_US', 'ar' => 'ar_SA'];
+        foreach ($this->languages as $lang) {
+            $locale = $localeMap[$lang] ?? 'en_US';
+            $this->fakers[$lang] = Faker::create($locale);
         }
 
-        // Mobil Uygulama Portfolioları
-        $mobileAppCategory = $categories->where('slug->en', 'mobile-application')->first();
-        if ($mobileAppCategory) {
-            $this->createMobileAppPortfolios($mobileAppCategory);
+        $this->command->info("📝 Creating portfolios for languages: " . implode(', ', $this->languages));
+
+        for ($i = 1; $i <= 12; $i++) {
+            $data = $this->generatePortfolio($i);
+            $seoMeta = $data['seo_meta'];
+            unset($data['seo_meta']);
+
+            $portfolio = Portfolio::create($data);
+            $this->createSeoSettings($portfolio, $seoMeta);
+
+            $this->command->info("  ✅ {$data['title'][$this->languages[0]]}");
         }
 
-        // UI/UX Tasarım Portfolioları
-        $uiuxCategory = $categories->where('slug->en', 'ui-ux-design')->first();
-        if ($uiuxCategory) {
-            $this->createUIUXPortfolios($uiuxCategory);
-        }
-
-        $totalCount = Portfolio::count();
-        $this->command->info("✅ Total {$totalCount} portfolios created for Tenant 2");
+        $this->command->info("🎉 Created 12 portfolios!");
     }
 
-    /**
-     * Create Web Design portfolios
-     */
-    private function createWebDesignPortfolios(PortfolioCategory $category): void
+    private function generatePortfolio(int $index): array
     {
-        $portfolios = [
-            [
-                'title' => ['tr' => 'Modern E-Ticaret Sitesi', 'en' => 'Modern E-Commerce Website'],
-                'slug' => ['tr' => 'modern-e-ticaret-sitesi', 'en' => 'modern-e-commerce-website'],
-                'body' => [
-                    'tr' => '<h2>Proje Özeti</h2><p>Kullanıcı dostu arayüzü ile modern ve responsive e-ticaret platformu. Mobil öncelikli tasarım ve hızlı yükleme süreleri ile öne çıkıyor.</p><h3>Özellikler</h3><ul><li>Responsive Design</li><li>SEO Optimized</li><li>Fast Loading</li><li>Payment Integration</li></ul><h3>Kullanılan Teknolojiler</h3><p>Laravel, Vue.js, MySQL, Redis, Stripe API</p>',
-                    'en' => '<h2>Project Summary</h2><p>Modern and responsive e-commerce platform with user-friendly interface. Stands out with mobile-first design and fast loading times.</p><h3>Features</h3><ul><li>Responsive Design</li><li>SEO Optimized</li><li>Fast Loading</li><li>Payment Integration</li></ul><h3>Technologies Used</h3><p>Laravel, Vue.js, MySQL, Redis, Stripe API</p>'
-                ],
-            ],
-            [
-                'title' => ['tr' => 'Kurumsal Web Sitesi', 'en' => 'Corporate Website'],
-                'slug' => ['tr' => 'kurumsal-web-sitesi', 'en' => 'corporate-website'],
-                'body' => [
-                    'tr' => '<h2>Proje Özeti</h2><p>Profesyonel ve etkileyici kurumsal web sitesi tasarımı. Çok dilli destek ve gelişmiş içerik yönetim sistemi.</p><h3>Özellikler</h3><ul><li>Multi-language Support</li><li>CMS Integration</li><li>Blog System</li><li>Contact Forms</li></ul>',
-                    'en' => '<h2>Project Summary</h2><p>Professional and impressive corporate website design. Multi-language support and advanced content management system.</p><h3>Features</h3><ul><li>Multi-language Support</li><li>CMS Integration</li><li>Blog System</li><li>Contact Forms</li></ul>'
-                ],
-            ],
-        ];
+        $titles = [];
+        $slugs = [];
+        $bodies = [];
+        $seoMeta = [];
 
-        foreach ($portfolios as $data) {
-            Portfolio::create(array_merge($data, [
-                'category_id' => $category->category_id,
-                'is_active' => true,
-            ]));
-            $this->command->info("✓ Web Design: {$data['title']['en']}");
+        foreach ($this->languages as $lang) {
+            $faker = $this->fakers[$lang];
+            $title = $faker->sentence(rand(4, 7));
+
+            $titles[$lang] = $title;
+            $slugs[$lang] = \Str::slug($title);
+
+            // Body oluştur
+            $body = '<div class="prose dark:prose-invert max-w-none">';
+            $body .= '<h2>' . $title . '</h2>';
+            for ($i = 0; $i < rand(5, 8); $i++) {
+                $body .= '<p>' . $faker->paragraph(rand(10, 20)) . '</p>';
+            }
+            $body .= '</div>';
+
+            $bodies[$lang] = $body;
+            $seoMeta[$lang] = [
+                'title' => $title,
+                'description' => $faker->sentence(15),
+            ];
         }
+
+        return [
+            'title' => $titles,
+            'slug' => $slugs,
+            'body' => $bodies,
+            'is_active' => rand(0, 10) > 2,
+            'seo_meta' => $seoMeta
+        ];
     }
 
-    /**
-     * Create E-Commerce portfolios
-     */
-    private function createEcommercePortfolios(PortfolioCategory $category): void
+    private function createSeoSettings($portfolio, $seoMeta): void
     {
-        $portfolios = [
-            [
-                'title' => ['tr' => 'B2B E-Ticaret Platformu', 'en' => 'B2B E-Commerce Platform'],
-                'slug' => ['tr' => 'b2b-e-ticaret-platformu', 'en' => 'b2b-e-commerce-platform'],
-                'body' => [
-                    'tr' => '<h2>Proje Özeti</h2><p>Toptan satış için gelişmiş B2B e-ticaret çözümü. Müşteri bazlı fiyatlandırma ve sipariş yönetimi.</p><h3>Özellikler</h3><ul><li>Customer Pricing</li><li>Order Management</li><li>Bulk Ordering</li><li>Credit System</li></ul>',
-                    'en' => '<h2>Project Summary</h2><p>Advanced B2B e-commerce solution for wholesale. Customer-based pricing and order management.</p><h3>Features</h3><ul><li>Customer Pricing</li><li>Order Management</li><li>Bulk Ordering</li><li>Credit System</li></ul>'
-                ],
-            ],
-            [
-                'title' => ['tr' => 'Multi-Vendor Marketplace', 'en' => 'Multi-Vendor Marketplace'],
-                'slug' => ['tr' => 'multi-vendor-marketplace', 'en' => 'multi-vendor-marketplace'],
-                'body' => [
-                    'tr' => '<h2>Proje Özeti</h2><p>Çoklu satıcı e-ticaret platformu. Satıcı paneli, komisyon sistemi ve gelişmiş raporlama.</p><h3>Özellikler</h3><ul><li>Vendor Dashboard</li><li>Commission System</li><li>Advanced Reports</li><li>Review System</li></ul>',
-                    'en' => '<h2>Project Summary</h2><p>Multi-vendor e-commerce platform. Vendor dashboard, commission system and advanced reporting.</p><h3>Features</h3><ul><li>Vendor Dashboard</li><li>Commission System</li><li>Advanced Reports</li><li>Review System</li></ul>'
-                ],
-            ],
-        ];
-
-        foreach ($portfolios as $data) {
-            Portfolio::create(array_merge($data, [
-                'category_id' => $category->category_id,
-                'is_active' => true,
-            ]));
-            $this->command->info("✓ E-Commerce: {$data['title']['en']}");
-        }
-    }
-
-    /**
-     * Create Mobile App portfolios
-     */
-    private function createMobileAppPortfolios(PortfolioCategory $category): void
-    {
-        $portfolios = [
-            [
-                'title' => ['tr' => 'Yemek Sipariş Uygulaması', 'en' => 'Food Ordering App'],
-                'slug' => ['tr' => 'yemek-siparis-uygulamasi', 'en' => 'food-ordering-app'],
-                'body' => [
-                    'tr' => '<h2>Uygulama Özeti</h2><p>iOS ve Android platformları için yemek sipariş mobil uygulaması. Gerçek zamanlı sipariş takibi ve push notification desteği.</p><h3>Özellikler</h3><ul><li>Real-time Tracking</li><li>Push Notifications</li><li>Payment Integration</li><li>Review System</li></ul>',
-                    'en' => '<h2>Application Summary</h2><p>Food ordering mobile application for iOS and Android platforms. Real-time order tracking and push notification support.</p><h3>Features</h3><ul><li>Real-time Tracking</li><li>Push Notifications</li><li>Payment Integration</li><li>Review System</li></ul>'
-                ],
-            ],
-        ];
-
-        foreach ($portfolios as $data) {
-            Portfolio::create(array_merge($data, [
-                'category_id' => $category->category_id,
-                'is_active' => true,
-            ]));
-            $this->command->info("✓ Mobile App: {$data['title']['en']}");
-        }
-    }
-
-    /**
-     * Create UI/UX Design portfolios
-     */
-    private function createUIUXPortfolios(PortfolioCategory $category): void
-    {
-        $portfolios = [
-            [
-                'title' => ['tr' => 'Finans Uygulaması UI/UX', 'en' => 'Finance App UI/UX'],
-                'slug' => ['tr' => 'finans-uygulamasi-ui-ux', 'en' => 'finance-app-ui-ux'],
-                'body' => [
-                    'tr' => '<h2>Tasarım Özeti</h2><p>Modern finans uygulaması için kullanıcı arayüzü ve deneyim tasarımı. Kullanıcı testleri ile optimize edildi.</p><h3>Tasarım Süreci</h3><ul><li>User Research</li><li>Wireframing</li><li>Prototyping</li><li>User Testing</li></ul>',
-                    'en' => '<h2>Design Summary</h2><p>User interface and experience design for modern finance application. Optimized with user testing.</p><h3>Design Process</h3><ul><li>User Research</li><li>Wireframing</li><li>Prototyping</li><li>User Testing</li></ul>'
-                ],
-            ],
-        ];
-
-        foreach ($portfolios as $data) {
-            Portfolio::create(array_merge($data, [
-                'category_id' => $category->category_id,
-                'is_active' => true,
-            ]));
-            $this->command->info("✓ UI/UX: {$data['title']['en']}");
+        foreach ($seoMeta as $lang => $data) {
+            $portfolio->seoSetting()->updateOrCreate(
+                ['seoable_id' => $portfolio->portfolio_id, 'seoable_type' => Portfolio::class],
+                [
+                    'titles' => [$lang => $data['title']],
+                    'descriptions' => [$lang => $data['description']],
+                    'status' => 'active',
+                ]
+            );
         }
     }
 }

@@ -23,7 +23,7 @@ readonly class PortfolioCategoryRepository implements PortfolioCategoryRepositor
         private PortfolioCategory $model
     ) {
         $this->cachePrefix = 'portfolio_categories';
-        $this->cacheTtl = TenantCacheService::TTL_HOUR;
+        $this->cacheTtl = (int) config('modules.cache.ttl.list', 3600);
         $this->cache = app(TenantCacheService::class);
     }
 
@@ -109,7 +109,7 @@ readonly class PortfolioCategoryRepository implements PortfolioCategoryRepositor
 
             $query->where(function ($subQuery) use ($searchTerm, $locales) {
                 foreach ($locales as $locale) {
-                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.{$locale}')) LIKE ?", [$searchTerm])
+                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
                             ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) LIKE ?", [$searchTerm]);
                 }
             });
@@ -124,9 +124,9 @@ readonly class PortfolioCategoryRepository implements PortfolioCategoryRepositor
         $sortField = $filters['sortField'] ?? 'category_id';
         $sortDirection = $filters['sortDirection'] ?? 'desc';
 
-        if ($sortField === 'name') {
+        if ($sortField === 'title') {
             $locale = $filters['currentLocale'] ?? 'tr';
-            $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.{$locale}')) {$sortDirection}");
+            $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) {$sortDirection}");
         } else {
             $query->orderBy($sortField, $sortDirection);
         }
@@ -145,7 +145,7 @@ readonly class PortfolioCategoryRepository implements PortfolioCategoryRepositor
 
         return $this->model->where(function ($query) use ($searchTerm, $locales) {
             foreach ($locales as $locale) {
-                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.{$locale}')) LIKE ?", [$searchTerm])
+                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
                       ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, '$.{$locale}')) LIKE ?", [$searchTerm]);
             }
         })->active()->get();

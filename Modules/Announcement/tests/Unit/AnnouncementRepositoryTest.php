@@ -30,7 +30,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_find_page_by_id(): void
+    public function it_can_find_announcement_by_id(): void
     {
         $announcement = Announcement::factory()->create();
 
@@ -42,7 +42,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_null_when_page_not_found_by_id(): void
+    public function it_returns_null_when_announcement_not_found_by_id(): void
     {
         $found = $this->repository->findById(999);
 
@@ -50,7 +50,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_find_page_by_id_with_seo(): void
+    public function it_can_find_announcement_by_id_with_seo(): void
     {
         $announcement = Announcement::factory()->create();
 
@@ -62,7 +62,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_find_page_by_slug(): void
+    public function it_can_find_announcement_by_slug(): void
     {
         $announcement = Announcement::factory()->active()->create([
             'slug' => ['tr' => 'test-sayfasi', 'en' => 'test-announcement']
@@ -86,7 +86,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_find_inactive_pages_by_slug(): void
+    public function it_does_not_find_inactive_announcements_by_slug(): void
     {
         Announcement::factory()->inactive()->create([
             'slug' => ['tr' => 'inactive-announcement']
@@ -98,7 +98,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_active_pages(): void
+    public function it_can_get_active_announcements(): void
     {
         Announcement::factory()->active()->count(3)->create();
         Announcement::factory()->inactive()->count(2)->create();
@@ -116,7 +116,7 @@ class AnnouncementRepositoryTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_can_get_paginated_pages(): void
+    public function it_can_get_paginated_announcements(): void
     {
         Announcement::factory()->count(15)->create();
 
@@ -128,7 +128,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_search_pages_with_filters(): void
+    public function it_can_search_announcements_with_filters(): void
     {
         Announcement::factory()->create([
             'title' => ['tr' => 'Laravel Test Sayfası', 'en' => 'Laravel Test Announcement']
@@ -159,11 +159,11 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_sort_pages(): void
+    public function it_can_sort_announcements(): void
     {
-        $page1 = Announcement::factory()->create(['created_at' => now()->subDays(2)]);
-        $page2 = Announcement::factory()->create(['created_at' => now()->subDay()]);
-        $page3 = Announcement::factory()->create(['created_at' => now()]);
+        $announcement1 = Announcement::factory()->create(['created_at' => now()->subDays(2)]);
+        $announcement2 = Announcement::factory()->create(['created_at' => now()->subDay()]);
+        $announcement3 = Announcement::factory()->create(['created_at' => now()]);
 
         $ascending = $this->repository->getPaginated([
             'sortField' => 'created_at',
@@ -175,12 +175,12 @@ class AnnouncementRepositoryTest extends TestCase
             'sortDirection' => 'desc'
         ], 10);
 
-        $this->assertEquals($page1->announcement_id, $ascending->items()[0]->announcement_id);
-        $this->assertEquals($page3->announcement_id, $descending->items()[0]->announcement_id);
+        $this->assertEquals($announcement1->announcement_id, $ascending->items()[0]->announcement_id);
+        $this->assertEquals($announcement3->announcement_id, $descending->items()[0]->announcement_id);
     }
 
     /** @test */
-    public function it_can_search_pages(): void
+    public function it_can_search_announcements(): void
     {
         Announcement::factory()->active()->create([
             'title' => ['tr' => 'Laravel Framework', 'en' => 'Laravel Framework']
@@ -195,25 +195,25 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_page(): void
+    public function it_can_create_announcement(): void
     {
         $data = [
             'title' => ['tr' => 'Yeni Sayfa', 'en' => 'New Announcement'],
             'slug' => ['tr' => 'yeni-sayfa', 'en' => 'new-announcement'],
             'body' => ['tr' => '<p>İçerik</p>', 'en' => '<p>Content</p>'],
             'is_active' => true,
-            
+
         ];
 
         $announcement = $this->repository->create($data);
 
         $this->assertInstanceOf(Announcement::class, $announcement);
         $this->assertEquals('Yeni Sayfa', $announcement->getTranslated('title', 'tr'));
-        $this->assertDatabaseHas('pages', ['announcement_id' => $announcement->announcement_id]);
+        $this->assertDatabaseHas('announcements', ['announcement_id' => $announcement->announcement_id]);
     }
 
     /** @test */
-    public function it_can_update_page(): void
+    public function it_can_update_announcement(): void
     {
         $announcement = Announcement::factory()->create([
             'title' => ['tr' => 'Eski Başlık', 'en' => 'Old Title']
@@ -228,7 +228,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_false_when_updating_nonexistent_page(): void
+    public function it_returns_false_when_updating_nonexistent_announcement(): void
     {
         $result = $this->repository->update(999, ['title' => ['tr' => 'Test']]);
 
@@ -236,18 +236,18 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_delete_page(): void
+    public function it_can_delete_announcement(): void
     {
         $announcement = Announcement::factory()->create();
 
         $result = $this->repository->delete($announcement->announcement_id);
 
         $this->assertTrue($result);
-        $this->assertDatabaseMissing('pages', ['announcement_id' => $announcement->announcement_id]);
+        $this->assertDatabaseMissing('announcements', ['announcement_id' => $announcement->announcement_id]);
     }
 
     /** @test */
-    public function it_returns_false_when_deleting_nonexistent_page(): void
+    public function it_returns_false_when_deleting_nonexistent_announcement(): void
     {
         $result = $this->repository->delete(999);
 
@@ -255,7 +255,7 @@ class AnnouncementRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_toggle_page_active_status(): void
+    public function it_can_toggle_announcement_active_status(): void
     {
         $announcement = Announcement::factory()->active()->create();
         $this->assertTrue($announcement->is_active);
@@ -270,16 +270,16 @@ class AnnouncementRepositoryTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_can_bulk_delete_pages(): void
+    public function it_can_bulk_delete_announcements(): void
     {
-        $pages = Announcement::factory()->count(5)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(5)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $deletedCount = $this->repository->bulkDelete($ids);
 
         $this->assertEquals(5, $deletedCount);
         foreach ($ids as $id) {
-            $this->assertDatabaseMissing('pages', ['announcement_id' => $id]);
+            $this->assertDatabaseMissing('announcements', ['announcement_id' => $id]);
         }
     }
 
@@ -288,13 +288,13 @@ class AnnouncementRepositoryTest extends TestCase
     /** @test */
     public function it_can_bulk_toggle_active_status(): void
     {
-        $pages = Announcement::factory()->active()->count(3)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->active()->count(3)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         $affectedCount = $this->repository->bulkToggleActive($ids);
 
         $this->assertEquals(3, $affectedCount);
-        foreach ($pages as $announcement) {
+        foreach ($announcements as $announcement) {
             $this->assertFalse($announcement->fresh()->is_active);
         }
     }

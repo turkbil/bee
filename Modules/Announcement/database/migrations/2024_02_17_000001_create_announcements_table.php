@@ -13,7 +13,6 @@ return new class extends Migration
             $table->json('title')->comment('Çoklu dil başlık: {"tr": "Başlık", "en": "Title"}');
             $table->json('slug')->comment('Çoklu dil slug: {"tr": "baslik", "en": "title"}');
             $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "İçerik", "en": "Content"}');
-            $table->json('seo')->nullable()->comment('SEO verileri: {"tr": {"meta_title": "Başlık", "meta_description": "Açıklama", "keywords": [], "og_image": "image.jpg"}}');
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();
@@ -29,24 +28,22 @@ return new class extends Migration
         });
 
         // JSON slug arama için virtual column indexes (MySQL 8.0+)
+        // Dinamik olarak system_languages'dan alınır
         if (DB::getDriverName() === 'mysql') {
             $mysqlVersion = DB::selectOne('SELECT VERSION() as version')->version;
             $majorVersion = (int) explode('.', $mysqlVersion)[0];
 
             if ($majorVersion >= 8) {
-                // TR slug index
-                DB::statement('
-                    CREATE INDEX announcements_slug_tr_idx ON announcements (
-                        (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) AS CHAR(255)))
-                    )
-                ');
+                // Config'den sistem dillerini al
+                $systemLanguages = config('modules.system_languages', ['tr', 'en']);
 
-                // EN slug index
-                DB::statement('
-                    CREATE INDEX announcements_slug_en_idx ON announcements (
-                        (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) AS CHAR(255)))
-                    )
-                ');
+                foreach ($systemLanguages as $locale) {
+                    DB::statement("
+                        CREATE INDEX announcements_slug_{$locale}_idx ON announcements (
+                            (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) AS CHAR(255)))
+                        )
+                    ");
+                }
             }
         }
     }

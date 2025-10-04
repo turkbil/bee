@@ -13,9 +13,10 @@ use App\Services\GlobalTabService;
 use Modules\Page\App\Models\Page;
 use Modules\Page\App\DataTransferObjects\{PageOperationResult, BulkOperationResult};
 use Modules\Page\App\Exceptions\{PageNotFoundException, PageCreationException, HomepageProtectionException};
+use App\Services\BaseService;
 use Throwable;
 
-readonly class PageService
+readonly class PageService extends BaseService
 {
     public function __construct(
         private PageRepositoryInterface $pageRepository,
@@ -424,9 +425,12 @@ readonly class PageService
             'inputs.is_homepage' => 'boolean',
         ];
         
+        // Default locale'i al
+        $defaultLocale = get_tenant_default_locale();
+
         // Çoklu dil alanları
         foreach ($availableLanguages as $lang) {
-            $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+            $rules["multiLangInputs.{$lang}.title"] = $lang === $defaultLocale ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
             $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
             $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
         }

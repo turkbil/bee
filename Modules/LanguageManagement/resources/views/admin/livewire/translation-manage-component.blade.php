@@ -89,7 +89,7 @@
                                 <div class="col-md-1">
                                     <label class="form-label">&nbsp;</label>
                                     <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#newFileModal">
-                                        <i class="ti ti-plus"></i>
+                                        <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                             </h3>
                             <div class="card-actions">
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTranslationModal">
-                                    <i class="ti ti-plus"></i> Yeni Çeviri
+                                    <i class="fas fa-plus"></i> Yeni Çeviri
                                 </button>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                             @if(empty($translations))
                                 <div class="empty">
                                     <div class="empty-icon">
-                                        <i class="ti ti-language"></i>
+                                        <i class="fas fa-language"></i>
                                     </div>
                                     <p class="empty-title">Çeviri bulunamadı</p>
                                     <p class="empty-subtitle text-muted">
@@ -149,10 +149,10 @@
                                                                 <input wire:model="editingValue" type="text" class="form-control" 
                                                                        wire:keydown.enter="saveEdit" wire:keydown.escape="cancelEdit">
                                                                 <button wire:click="saveEdit" class="btn btn-success btn-sm">
-                                                                    <i class="ti ti-check"></i>
+                                                                    <i class="fas fa-check"></i>
                                                                 </button>
                                                                 <button wire:click="cancelEdit" class="btn btn-outline-secondary btn-sm">
-                                                                    <i class="ti ti-x"></i>
+                                                                    <i class="fas fa-times"></i>
                                                                 </button>
                                                             </div>
                                                         @else
@@ -165,12 +165,12 @@
                                                         @else
                                                             <div class="btn-group btn-group-sm">
                                                                 <button wire:click="startEdit('{{ $key }}')" class="btn btn-outline-primary">
-                                                                    <i class="ti ti-edit"></i>
+                                                                    <i class="fas fa-pen"></i>
                                                                 </button>
                                                                 <button wire:click="deleteTranslation('{{ $key }}')" 
                                                                         class="btn btn-outline-danger"
                                                                         onclick="return confirm('Bu çeviriyi silmek istediğinizden emin misiniz?')">
-                                                                    <i class="ti ti-trash"></i>
+                                                                    <i class="fas fa-trash"></i>
                                                                 </button>
                                                             </div>
                                                         @endif

@@ -68,14 +68,14 @@ class AnnouncementObserverTest extends TestCase
             'is_active' => true,
         ]);
 
-        $page2 = Announcement::create([
+        $announcement2 = Announcement::create([
             'title' => ['tr' => 'Test Sayfa', 'en' => 'Test Announcement'],
             'body' => ['tr' => '<p>Test 2</p>', 'en' => '<p>Test 2</p>'],
             'is_active' => true,
         ]);
 
         // İkinci sayfa unique slug almalı
-        $slug = $page2->getTranslated('slug', 'tr');
+        $slug = $announcement2->getTranslated('slug', 'tr');
         $this->assertNotEquals('test-sayfa', $slug);
         $this->assertStringStartsWith('test-sayfa', $slug);
     }
@@ -141,28 +141,28 @@ class AnnouncementObserverTest extends TestCase
     /** @test */
 
     /** @test */
-    public function it_allows_regular_page_deletion(): void
+    public function it_allows_regular_announcement_deletion(): void
     {
         $announcement = Announcement::factory()->create();
 
         $announcement->delete();
 
-        $this->assertDatabaseMissing('pages', ['announcement_id' => $announcement->announcement_id]);
+        $this->assertDatabaseMissing('announcements', ['announcement_id' => $announcement->announcement_id]);
     }
 
     /** @test */
     public function it_clears_cache_after_create(): void
     {
         Cache::shouldReceive('forget')
-            ->with('pages_list')
+            ->with('announcements_list')
             ->once();
 
         Cache::shouldReceive('forget')
-            ->with('pages_menu_cache')
+            ->with('announcements_menu_cache')
             ->once();
 
         Cache::shouldReceive('forget')
-            ->with('pages_sitemap_cache')
+            ->with('announcements_sitemap_cache')
             ->once();
 
         Cache::shouldReceive('forget')
@@ -211,7 +211,7 @@ class AnnouncementObserverTest extends TestCase
     }
 
     /** @test */
-    public function it_logs_page_creation(): void
+    public function it_logs_announcement_creation(): void
     {
         Log::shouldReceive('info')
             ->once()
@@ -225,7 +225,7 @@ class AnnouncementObserverTest extends TestCase
     }
 
     /** @test */
-    public function it_logs_page_update(): void
+    public function it_logs_announcement_update(): void
     {
         $announcement = Announcement::factory()->create();
 
@@ -241,7 +241,7 @@ class AnnouncementObserverTest extends TestCase
     }
 
     /** @test */
-    public function it_logs_page_deletion(): void
+    public function it_logs_announcement_deletion(): void
     {
         $announcement = Announcement::factory()->create();
 
@@ -280,7 +280,7 @@ class AnnouncementObserverTest extends TestCase
         $announcement = Announcement::factory()->create();
 
         Cache::shouldReceive('forget')
-            ->with("universal_seo_page_{$announcement->announcement_id}")
+            ->with("universal_seo_announcement_{$announcement->announcement_id}")
             ->once();
 
         $announcement->update(['title' => ['tr' => 'Updated', 'en' => 'Updated']]);

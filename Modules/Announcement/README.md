@@ -37,7 +37,7 @@ Modules/Announcement/
 │   │   ├── AnnouncementException.php
 │   │   ├── AnnouncementNotFoundException.php
 │   │   ├── AnnouncementCreationException.php
-│   │   └── HomepageProtectionException.php
+│   │   └── HomeannouncementProtectionException.php
 │   ├── Http/
 │   │   ├── Controllers/
 │   │   │   ├── Admin/
@@ -75,8 +75,8 @@ Modules/Announcement/
 │   ├── factories/               # Model factories
 │   │   └── AnnouncementFactory.php
 │   ├── migrations/              # Database migrations
-│   │   ├── 2024_02_17_000001_create_pages_table.php
-│   │   └── 2024_12_30_add_optimizations_to_pages_table.php
+│   │   ├── 2024_02_17_000001_create_announcements_table.php
+│   │   └── 2024_12_30_add_optimizations_to_announcements_table.php
 │   └── seeders/                 # Database seeders
 │       ├── AnnouncementSeeder.php
 │       ├── AnnouncementSeederCentral.php
@@ -93,7 +93,7 @@ Modules/Announcement/
 │       │       ├── announcement-component.blade.php
 │       │       └── announcement-manage-component.blade.php
 │       └── front/
-│           └── pages/
+│           └── announcements/
 │               └── show.blade.php
 ├── routes/
 │   ├── admin.php               # Admin routes
@@ -188,7 +188,7 @@ php artisan announcement:warm-cache
 
 # Opsiyonlar
 php artisan announcement:warm-cache --tenant=2  # Belirli tenant
-php artisan announcement:warm-cache --pages=20  # İlk 20 sayfa
+php artisan announcement:warm-cache --announcements=20  # İlk 20 sayfa
 php artisan announcement:warm-cache --urls      # URL'leri de cache'le
 php artisan announcement:warm-cache --force     # Cache'i zorla yenile
 ```
@@ -250,7 +250,7 @@ interface AnnouncementRepositoryInterface {
 // Usage
 class AnnouncementService {
     public function __construct(
-        private readonly AnnouncementRepositoryInterface $pageRepository
+        private readonly AnnouncementRepositoryInterface $announcementRepository
     ) {}
 }
 ```
@@ -259,9 +259,9 @@ class AnnouncementService {
 
 ```php
 // Business logic encapsulation
-$pageService = app(AnnouncementService::class);
+$announcementService = app(AnnouncementService::class);
 
-$result = $pageService->createPage([
+$result = $announcementService->createPage([
     'title' => ['tr' => 'Başlık', 'en' => 'Title'],
     'slug' => ['tr' => 'baslik', 'en' => 'title'],
     'body' => ['tr' => 'İçerik', 'en' => 'Content'],
@@ -353,8 +353,8 @@ title_tr_generated VARCHAR(255) GENERATED
 slug_tr_generated VARCHAR(255) GENERATED
 
 -- Composite indexes
-INDEX pages_active_deleted_created_idx
-INDEX pages_homepage_active_deleted_idx
+INDEX announcements_active_deleted_created_idx
+INDEX announcements_homeannouncement_active_deleted_idx
 
 -- Fulltext search
 FULLTEXT INDEX ft_title_tr
@@ -391,7 +391,7 @@ SecurityValidationService::validateJs($js);
 ### Content Protection
 
 ```php
-// Announcement modülünde is_homepage özelliği yoktur
+// Announcement modülünde is_homeannouncement özelliği yoktur
 // Duyurular ana sayfa olamaz
 ```
 
@@ -425,7 +425,7 @@ return [
         'ttl' => [
             'list' => 3600,
             'detail' => 7200,
-            'homepage' => 1800,
+            'homeannouncement' => 1800,
         ],
     ],
 
@@ -447,18 +447,18 @@ return [
 $announcement = Announcement::create($data);
 
 // ✅ Correct
-$result = $pageService->createPage($data);
+$result = $announcementService->createPage($data);
 ```
 
 ### 2. Handle Exceptions
 
 ```php
 try {
-    $result = $pageService->updatePage($id, $data);
+    $result = $announcementService->updatePage($id, $data);
 } catch (AnnouncementNotFoundException $e) {
     // Handle not found
-} catch (HomepageProtectionException $e) {
-    // Handle homepage protection
+} catch (HomeannouncementProtectionException $e) {
+    // Handle homeannouncement protection
 }
 ```
 
@@ -466,7 +466,7 @@ try {
 
 ```php
 // Frontend - long cache
-$announcement = Cache::remember('page_' . $id, 7200, fn() => ...);
+$announcement = Cache::remember('announcement_' . $id, 7200, fn() => ...);
 
 // Admin - always fresh
 $announcement = Announcement::find($id); // No cache

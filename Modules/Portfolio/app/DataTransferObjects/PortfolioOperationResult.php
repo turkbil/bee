@@ -2,7 +2,7 @@
 
 namespace Modules\Portfolio\App\DataTransferObjects;
 
-use Modules\Portfolio\App\Models\Page;
+use Modules\Portfolio\App\Models\Portfolio;
 
 readonly class PortfolioOperationResult
 {

@@ -42,7 +42,7 @@
 <div class="col-{{ $width }}">
     <div class="mb-3">
         <label for="{{ $fieldName }}" class="form-label">
-            <i class="ti ti-clock me-2"></i>
+            <i class="far fa-clock me-2"></i>
             {{ $fieldLabel }}
             @if($isRequired) 
                 <span class="text-danger">*</span> 
@@ -60,7 +60,7 @@
                     <button type="button" class="btn btn-outline-secondary" 
                         wire:click="clearField('formData.{{ $fieldName }}')"
                         title="Temizle">
-                        <i class="ti ti-x"></i>
+                        <i class="fas fa-times"></i>
                     </button>
                 @endif
                 @error('formData.' . $fieldName)
@@ -76,7 +76,7 @@
                     <button type="button" class="btn btn-outline-secondary" 
                         wire:click="clearField('settings.{{ str_replace('widget.', '', $fieldName) }}')"
                         title="Temizle">
-                        <i class="ti ti-x"></i>
+                        <i class="fas fa-times"></i>
                     </button>
                 @endif
                 @error('settings.' . str_replace('widget.', '', $fieldName))
@@ -94,7 +94,7 @@
         @if(isset($originalData[$fieldName]) && isset($formData[$fieldName]) && $originalData[$fieldName] != $formData[$fieldName])
             <div class="mt-2 text-end">
                 <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $fieldName }}')">
-                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                    <i class="fas fa-redo me-1"></i> Varsayılana Döndür
                 </button>
             </div>
         @endif

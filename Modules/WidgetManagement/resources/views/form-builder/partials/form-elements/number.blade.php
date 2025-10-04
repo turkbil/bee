@@ -49,7 +49,7 @@
         @if(isset($originalData[$fieldName]) && isset($formData[$fieldName]) && $originalData[$fieldName] != $formData[$fieldName])
             <div class="mb-2">
                 <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $fieldName }}')">
-                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                    <i class="fas fa-redo me-1"></i> Varsayılana Döndür
                 </span>
             </div>
         @endif

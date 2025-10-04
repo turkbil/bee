@@ -34,7 +34,7 @@ return [
     'archive' => 'Archive',
 
     // Collections
-    'featured_image' => 'Featured Image',
+    'featured_image' => 'Main Image',
     'gallery' => 'Gallery',
     'videos' => 'Videos',
     'audio_files' => 'Audio Files',
@@ -48,6 +48,8 @@ return [
     'drag_to_reorder' => 'Drag to reorder',
     'choose_file' => 'Choose File',
     'choose_files' => 'Choose Files',
+    'edit_caption' => 'Edit Caption',
+    'edit_media_caption' => 'Edit Media Information',
 
     // Upload Area
     'drag_drop_files' => 'Drag and drop files or click to select',
@@ -61,6 +63,9 @@ return [
     'file_size' => 'File Size',
     'file_type' => 'File Type',
     'uploaded_at' => 'Uploaded At',
+    'title' => 'Title',
+    'description' => 'Description',
+    'alt_text' => 'Alt Text (SEO)',
 
     // Messages
     'uploading' => 'Uploading...',
@@ -71,6 +76,10 @@ return [
     'order_updated' => 'Order updated successfully',
     'no_files' => 'No files uploaded yet',
     'no_media' => 'No media yet',
+    'save_first_to_upload' => 'Saving first to enable media upload...',
+    'ready_to_save' => 'Ready to save - Media will be added when you save the form',
+    'caption_saved' => 'Media information saved successfully',
+    'caption_helper' => 'You can add title and description to the image',
 
     // Errors
     'file_too_large' => 'File too large. Maximum: :size',

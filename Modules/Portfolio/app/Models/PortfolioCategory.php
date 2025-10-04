@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
@@ -7,33 +8,37 @@ use App\Traits\HasSeo;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia;
+use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
-class PortfolioCategory extends BaseModel implements TranslatableEntity
+class PortfolioCategory extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement;
 
     protected $primaryKey = 'category_id';
 
     protected $fillable = [
-        'name',
+        'title',
         'slug',
         'description',
         'is_active',
         'sort_order',
+        'parent_id',
     ];
 
     protected $casts = [
-        'name' => 'array',
+        'title' => 'array',
         'slug' => 'array',
         'description' => 'array',
         'is_active' => 'boolean',
         'sort_order' => 'integer',
+        'parent_id' => 'integer',
     ];
 
     /**
      * Çevrilebilir alanlar
      */
-    protected $translatable = ['name', 'slug', 'description'];
+    protected $translatable = ['title', 'slug', 'description'];
 
     /**
      * ID accessor - category_id'yi id olarak döndür
@@ -64,7 +69,65 @@ class PortfolioCategory extends BaseModel implements TranslatableEntity
      */
     public function portfolios()
     {
-        return $this->hasMany(Portfolio::class, 'category_id', 'category_id');
+        return $this->hasMany(Portfolio::class, 'portfolio_category_id', 'category_id');
+    }
+
+    /**
+     * Parent category ilişkisi
+     */
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id', 'category_id');
+    }
+
+    /**
+     * Children categories ilişkisi
+     */
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id', 'category_id');
+    }
+
+    /**
+     * Calculate depth level based on parent (recursive)
+     * Circular reference korumalı
+     */
+    public function getDepthLevelAttribute(): int
+    {
+        return $this->calculateDepth();
+    }
+
+    private function calculateDepth(array $visited = []): int
+    {
+        // Circular reference kontrolü
+        if (in_array($this->category_id, $visited)) {
+            \Log::warning("Circular reference detected in category hierarchy", [
+                'category_id' => $this->category_id,
+                'visited' => $visited
+            ]);
+            return 0;
+        }
+
+        if (!$this->parent_id) {
+            return 0;
+        }
+
+        $visited[] = $this->category_id;
+        $parent = $this->parent()->first();
+
+        if (!$parent) {
+            return 0;
+        }
+
+        return $parent->calculateDepth($visited) + 1;
+    }
+
+    /**
+     * Get indent pixels for display
+     */
+    public function getIndentPxAttribute(): int
+    {
+        return $this->depth_level * 30; // 30px per level
     }
 
     /**
@@ -73,7 +136,7 @@ class PortfolioCategory extends BaseModel implements TranslatableEntity
 
     protected function getSeoFallbackTitle(): ?string
     {
-        return $this->getTranslated('name', app()->getLocale()) ?? $this->name;
+        return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
     }
 
     protected function getSeoFallbackDescription(): ?string
@@ -89,10 +152,10 @@ class PortfolioCategory extends BaseModel implements TranslatableEntity
 
     protected function getSeoFallbackKeywords(): array
     {
-        $name = $this->getSeoFallbackTitle();
+        $title = $this->getSeoFallbackTitle();
 
-        if ($name) {
-            $words = array_filter(explode(' ', strtolower($name)), function($word) {
+        if ($title) {
+            $words = array_filter(explode(' ', strtolower($title)), function($word) {
                 return strlen($word) > 3;
             });
 
@@ -115,6 +178,11 @@ class PortfolioCategory extends BaseModel implements TranslatableEntity
 
     protected function getSeoFallbackImage(): ?string
     {
+        // Kategori görseli varsa onu kullan
+        if ($this->hasMedia('category_image')) {
+            return $this->getFirstMediaUrl('category_image');
+        }
+
         return null;
     }
 
@@ -160,8 +228,8 @@ class PortfolioCategory extends BaseModel implements TranslatableEntity
     public function getTranslatableFields(): array
     {
         return [
-            'name' => 'text',
-            'description' => 'text',
+            'title' => 'text',
+            'description' => 'html',
             'slug' => 'auto'
         ];
     }
@@ -189,4 +257,24 @@ class PortfolioCategory extends BaseModel implements TranslatableEntity
     {
         return \Modules\Portfolio\Database\Factories\PortfolioCategoryFactory::new();
     }
+
+    /**
+     * Media collections config
+     * HasMediaManagement trait kullanır
+     */
+    protected function getMediaConfig(): array
+    {
+        return [
+            'category_image' => [
+                'type' => 'image',
+                'single_file' => true,
+                'max_items' => config('modules.media.max_items.featured', 1),
+                'max_size' => config('modules.media.max_file_size', 10240),
+                'conversions' => array_keys(config('modules.media.conversions', ['thumb', 'medium', 'large', 'responsive'])),
+                'sortable' => false,
+            ],
+        ];
+    }
+
+    protected $mediaConfig;
 }

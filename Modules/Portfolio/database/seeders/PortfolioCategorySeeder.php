@@ -4,6 +4,8 @@ namespace Modules\Portfolio\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\PortfolioCategory;
+use Modules\SeoManagement\App\Models\SeoSetting;
+use Faker\Factory as Faker;
 
 /**
  * Portfolio Category Seeder
@@ -15,6 +17,9 @@ use Modules\Portfolio\App\Models\PortfolioCategory;
  */
 class PortfolioCategorySeeder extends Seeder
 {
+    private $fakers = [];
+    private $languages = [];
+
     /**
      * Run the database seeds.
      */
@@ -38,136 +43,129 @@ class PortfolioCategorySeeder extends Seeder
             return;
         }
 
-        $this->command->info('📁 Creating portfolio categories...');
-
-        $categories = [
-            [
-                'name' => [
-                    'tr' => 'Web Tasarım',
-                    'en' => 'Web Design'
-                ],
-                'slug' => [
-                    'tr' => 'web-tasarim',
-                    'en' => 'web-design'
-                ],
-                'description' => [
-                    'tr' => 'Modern ve responsive web tasarım projeleri. Kullanıcı deneyimi odaklı, SEO uyumlu ve mobil uyumlu web siteleri.',
-                    'en' => 'Modern and responsive web design projects. User experience focused, SEO compatible and mobile friendly websites.'
-                ],
-                'sort_order' => 1,
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'tr' => 'Mobil Uygulama',
-                    'en' => 'Mobile Application'
-                ],
-                'slug' => [
-                    'tr' => 'mobil-uygulama',
-                    'en' => 'mobile-application'
-                ],
-                'description' => [
-                    'tr' => 'iOS ve Android mobil uygulama geliştirme projeleri. Native ve cross-platform çözümler.',
-                    'en' => 'iOS and Android mobile application development projects. Native and cross-platform solutions.'
-                ],
-                'sort_order' => 2,
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'tr' => 'E-Ticaret',
-                    'en' => 'E-Commerce'
-                ],
-                'slug' => [
-                    'tr' => 'e-ticaret',
-                    'en' => 'e-commerce'
-                ],
-                'description' => [
-                    'tr' => 'Online satış platformları ve e-ticaret çözümleri. B2B ve B2C ticaret sistemleri.',
-                    'en' => 'Online sales platforms and e-commerce solutions. B2B and B2C commerce systems.'
-                ],
-                'sort_order' => 3,
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'tr' => 'Kurumsal Yazılım',
-                    'en' => 'Corporate Software'
-                ],
-                'slug' => [
-                    'tr' => 'kurumsal-yazilim',
-                    'en' => 'corporate-software'
-                ],
-                'description' => [
-                    'tr' => 'Kurumsal web siteleri ve özel yazılım projeleri. ERP, CRM ve iş süreçleri yönetimi.',
-                    'en' => 'Corporate websites and custom software projects. ERP, CRM and business process management.'
-                ],
-                'sort_order' => 4,
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'tr' => 'Grafik Tasarım',
-                    'en' => 'Graphic Design'
-                ],
-                'slug' => [
-                    'tr' => 'grafik-tasarim',
-                    'en' => 'graphic-design'
-                ],
-                'description' => [
-                    'tr' => 'Logo, afiş ve görsel tasarım projeleri. Kurumsal kimlik ve marka tasarımı.',
-                    'en' => 'Logo, poster and visual design projects. Corporate identity and brand design.'
-                ],
-                'sort_order' => 5,
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'tr' => 'UI/UX Tasarım',
-                    'en' => 'UI/UX Design'
-                ],
-                'slug' => [
-                    'tr' => 'ui-ux-tasarim',
-                    'en' => 'ui-ux-design'
-                ],
-                'description' => [
-                    'tr' => 'Kullanıcı arayüzü ve kullanıcı deneyimi tasarım projeleri. Interaktif prototipleme ve kullanılabilirlik testleri.',
-                    'en' => 'User interface and user experience design projects. Interactive prototyping and usability testing.'
-                ],
-                'sort_order' => 6,
-                'is_active' => true,
-            ],
-            [
-                'name' => [
-                    'tr' => 'Dijital Pazarlama',
-                    'en' => 'Digital Marketing'
-                ],
-                'slug' => [
-                    'tr' => 'dijital-pazarlama',
-                    'en' => 'digital-marketing'
-                ],
-                'description' => [
-                    'tr' => 'SEO, SEM ve sosyal medya pazarlama projeleri. Dijital strateji ve içerik yönetimi.',
-                    'en' => 'SEO, SEM and social media marketing projects. Digital strategy and content management.'
-                ],
-                'sort_order' => 7,
-                'is_active' => true,
-            ],
-        ];
-
-        foreach ($categories as $category) {
-            PortfolioCategory::create($category);
-            $this->command->info("✓ Category created: {$category['name']['en']}");
+        // Duplicate check
+        if (PortfolioCategory::count() > 3) {
+            $this->command->warn("⚠️  Portfolio categories exist (>3). Skipping...");
+            return;
         }
 
-        $this->command->info("✅ Total {$this->count($categories)} categories created");
+        // Tenant dillerini al
+        $this->languages = \DB::table('tenant_languages')
+            ->where('is_active', 1)
+            ->pluck('code')
+            ->toArray();
+
+        if (empty($this->languages)) {
+            $this->languages = ['tr', 'en']; // Fallback
+        }
+
+        // Her dil için Faker instance oluştur
+        $localeMap = ['tr' => 'tr_TR', 'en' => 'en_US', 'ar' => 'ar_SA'];
+        foreach ($this->languages as $lang) {
+            $locale = $localeMap[$lang] ?? 'en_US';
+            $this->fakers[$lang] = Faker::create($locale);
+        }
+
+        $this->command->info("📁 Creating portfolio categories for languages: " . implode(', ', $this->languages));
+
+        $categories = $this->getCategoryData();
+
+        foreach ($categories as $categoryData) {
+            $seoMeta = $categoryData['seo_meta'];
+            unset($categoryData['seo_meta']);
+
+            $category = PortfolioCategory::create($categoryData);
+            $this->createSeoSettings($category, $seoMeta);
+
+            $this->command->info("  ✓ Category created: {$categoryData['title'][$this->languages[0]]}");
+        }
+
+        $this->command->info("✅ Total " . count($categories) . " categories created");
     }
 
     /**
-     * Count helper
+     * Get category data with translations
      */
-    private function count(array $items): int
+    private function getCategoryData(): array
     {
-        return count($items);
+        $baseCategories = [
+            [
+                'tr' => 'Web Geliştirme',
+                'en' => 'Web Development',
+                'ar' => 'تطوير الويب'
+            ],
+            [
+                'tr' => 'Mobil Uygulamalar',
+                'en' => 'Mobile Apps',
+                'ar' => 'تطبيقات الجوال'
+            ],
+            [
+                'tr' => 'E-Ticaret',
+                'en' => 'E-Commerce',
+                'ar' => 'التجارة الإلكترونية'
+            ],
+            [
+                'tr' => 'UI/UX Tasarım',
+                'en' => 'UI/UX Design',
+                'ar' => 'تصميم واجهة المستخدم'
+            ],
+            [
+                'tr' => 'SEO & Dijital Pazarlama',
+                'en' => 'SEO & Digital Marketing',
+                'ar' => 'تحسين محركات البحث والتسويق الرقمي'
+            ],
+        ];
+
+        $categories = [];
+        $order = 1;
+
+        foreach ($baseCategories as $baseCategory) {
+            $titles = [];
+            $slugs = [];
+            $descriptions = [];
+            $seoMeta = [];
+
+            foreach ($this->languages as $lang) {
+                $title = $baseCategory[$lang] ?? $baseCategory['en'];
+                $faker = $this->fakers[$lang];
+
+                $titles[$lang] = $title;
+                $slugs[$lang] = \Str::slug($title);
+                $descriptions[$lang] = $faker->sentence(rand(12, 18));
+
+                $seoMeta[$lang] = [
+                    'title' => $title,
+                    'description' => $faker->sentence(15),
+                ];
+            }
+
+            $categories[] = [
+                'title' => $titles,
+                'slug' => $slugs,
+                'description' => $descriptions,
+                'sort_order' => $order++,
+                'is_active' => true,
+                'seo_meta' => $seoMeta
+            ];
+        }
+
+        return $categories;
+    }
+
+    /**
+     * Create SEO settings for category
+     */
+    private function createSeoSettings($category, $seoMeta): void
+    {
+        foreach ($seoMeta as $lang => $data) {
+            $category->seoSetting()->updateOrCreate(
+                ['seoable_id' => $category->category_id, 'seoable_type' => PortfolioCategory::class],
+                [
+                    'titles' => [$lang => $data['title']],
+                    'descriptions' => [$lang => $data['description']],
+                    'status' => 'active',
+                ]
+            );
+        }
     }
 }

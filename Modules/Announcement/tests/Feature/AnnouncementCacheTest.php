@@ -72,7 +72,7 @@ class AnnouncementCacheTest extends TestCase
         $this->repository->delete($announcement->announcement_id);
 
         // Cache temizlenmiş olmalı
-        $this->assertNull(Cache::get("page_detail_{$announcement->announcement_id}"));
+        $this->assertNull(Cache::get("announcement_detail_{$announcement->announcement_id}"));
     }
 
     /** @test */
@@ -86,15 +86,15 @@ class AnnouncementCacheTest extends TestCase
         // Toggle yap
         $this->repository->toggleActive($announcement->announcement_id);
 
-        // Active pages cache temizlenmiş olmalı
-        $this->assertNull(Cache::get('pages_list'));
+        // Active announcements cache temizlenmiş olmalı
+        $this->assertNull(Cache::get('announcements_list'));
     }
 
     /** @test */
     public function it_clears_cache_after_bulk_delete(): void
     {
-        $pages = Announcement::factory()->count(3)->create();
-        $ids = $pages->pluck('announcement_id')->toArray();
+        $announcements = Announcement::factory()->count(3)->create();
+        $ids = $announcements->pluck('announcement_id')->toArray();
 
         // Cache'i doldur
         $this->repository->getActive();
@@ -103,7 +103,7 @@ class AnnouncementCacheTest extends TestCase
         $this->repository->bulkDelete($ids);
 
         // Cache temizlenmiş olmalı
-        $this->assertNull(Cache::get('pages_list'));
+        $this->assertNull(Cache::get('announcements_list'));
     }
 
     /** @test */
@@ -116,7 +116,7 @@ class AnnouncementCacheTest extends TestCase
         $this->repository->clearCache();
 
         // Cache temiz olmalı
-        $this->assertNull(Cache::get('pages_list'));
+        $this->assertNull(Cache::get('announcements_list'));
     }
 
     /** @test */
@@ -140,9 +140,9 @@ class AnnouncementCacheTest extends TestCase
     public function cache_is_tenant_aware(): void
     {
         // Tenant context'i simüle et
-        $page1 = Announcement::factory()->create(['title' => ['tr' => 'Tenant 1 Announcement']]);
+        $announcement1 = Announcement::factory()->create(['title' => ['tr' => 'Tenant 1 Announcement']]);
 
-        $result = $this->repository->findById($page1->announcement_id);
+        $result = $this->repository->findById($announcement1->announcement_id);
 
         $this->assertNotNull($result);
         $this->assertEquals('Tenant 1 Announcement', $result->getTranslated('title', 'tr'));
@@ -170,13 +170,13 @@ class AnnouncementCacheTest extends TestCase
         $announcement = Announcement::factory()->create();
 
         // SEO cache key'i oluştur
-        Cache::put("universal_seo_page_{$announcement->announcement_id}", 'test_data', 3600);
+        Cache::put("universal_seo_announcement_{$announcement->announcement_id}", 'test_data', 3600);
 
         // Update yap
         $announcement->update(['title' => ['tr' => 'Updated']]);
 
         // SEO cache temizlenmiş olmalı
-        $this->assertNull(Cache::get("universal_seo_page_{$announcement->announcement_id}"));
+        $this->assertNull(Cache::get("universal_seo_announcement_{$announcement->announcement_id}"));
     }
 
     /** @test */

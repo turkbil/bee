@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 /**
  * Portfolio Collection Resource
  *
- * Transforms collection of pages for API responses.
+ * Transforms collection of portfolios for API responses.
  * Implements JSON API specification with pagination.
  */
 class PortfolioCollection extends ResourceCollection
@@ -20,7 +20,7 @@ class PortfolioCollection extends ResourceCollection
      *
      * @var string
      */
-    public $collects = PageResource::class;
+    public $collects = PortfolioResource::class;
 
     /**
      * Transform the resource collection into an array.
@@ -74,9 +74,9 @@ class PortfolioCollection extends ResourceCollection
             $meta['pagination'] = [
                 'total' => $this->resource->total(),
                 'count' => $this->resource->count(),
-                'per_page' => $this->resource->perPage(),
-                'current_page' => $this->resource->currentPage(),
-                'total_pages' => $this->resource->lastPage(),
+                'per_portfolio' => $this->resource->perPage(),
+                'current_portfolio' => $this->resource->currentPage(),
+                'total_portfolios' => $this->resource->lastPage(),
             ];
         } else {
             $meta['count'] = $this->collection->count();
@@ -89,8 +89,6 @@ class PortfolioCollection extends ResourceCollection
 
         if ($request->filled('is_active')) {
             $meta['filters']['is_active'] = (bool) $request->get('is_active');
-        }
-
         }
 
         // Add sort information
@@ -113,9 +111,9 @@ class PortfolioCollection extends ResourceCollection
      */
     public function withResponse(Request $request, $response): void
     {
-        // Add cache headers for list pages
+        // Add cache headers for list portfolios
         if (!config('app.debug')) {
-            $ttl = config('page.cache.ttl.list', 3600);
+            $ttl = config('portfolio.cache.ttl.list', 3600);
             $response->header('Cache-Control', "public, max-age={$ttl}");
         }
 

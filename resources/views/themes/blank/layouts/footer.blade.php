@@ -258,10 +258,33 @@
             }
         }
     </script>
-    
+
+    {{-- GLightbox - Image Lightbox Library --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
+    <script>
+        // GLightbox Global Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof GLightbox !== 'undefined') {
+                setTimeout(function() {
+                    const lightbox = GLightbox({
+                        selector: '.glightbox',
+                        touchNavigation: true,
+                        loop: true,
+                        autoplayVideos: false,
+                        zoomable: true,
+                        draggable: true,
+                        skin: 'clean',
+                        closeButton: true
+                    });
+                }, 100);
+            }
+        });
+    </script>
+
     {{-- Core System Scripts - Mandatory for all themes --}}
     <script src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
-    
+
     {{-- Dynamic Script Stack --}}
     @stack('scripts')
 </body>

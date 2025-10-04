@@ -51,7 +51,7 @@
                     placeholder="{{ $fieldLabel }}"
                     @if($isRequired) required @endif>
                 <label for="{{ $fieldName }}">
-                    <i class="ti ti-calendar me-1"></i>
+                    <i class="far fa-calendar me-1"></i>
                     {{ $fieldLabel }}
                     @if($isRequired) 
                         <span class="text-danger">*</span> 
@@ -68,7 +68,7 @@
                     placeholder="{{ $fieldLabel }}"
                     @if($isRequired) required @endif>
                 <label for="{{ $fieldName }}">
-                    <i class="ti ti-calendar me-1"></i>
+                    <i class="far fa-calendar me-1"></i>
                     {{ $fieldLabel }}
                     @if($isRequired) 
                         <span class="text-danger">*</span> 
@@ -89,7 +89,7 @@
         @if(isset($originalData[$fieldName]) && isset($formData[$fieldName]) && $originalData[$fieldName] != $formData[$fieldName])
             <div class="mt-2 text-end">
                 <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $fieldName }}')">
-                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                    <i class="fas fa-redo me-1"></i> Varsayılana Döndür
                 </button>
             </div>
         @endif

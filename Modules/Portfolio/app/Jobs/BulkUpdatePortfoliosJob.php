@@ -11,13 +11,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Modules\Portfolio\App\Models\Page;
-use Modules\Portfolio\App\Services\PageService;
+use Modules\Portfolio\App\Models\Portfolio;
+use Modules\Portfolio\App\Services\PortfolioService;
 use Throwable;
 
 /**
  * ✏️ Bulk Portfolio Update Queue Job
- * 
+ *
  * Portfolio modülünün bulk güncelleme işlemleri için queue job:
  * - Toplu sayfa güncelleme işlemleri için optimize edilmiş
  * - Progress tracking ile durum takibi
@@ -33,14 +33,14 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
     public int $maxExceptions = 3;
 
     /**
-     * @param array $portfoliods Güncellenecek sayfa ID'leri
+     * @param array $portfolioIds Güncellenecek sayfa ID'leri
      * @param array $updateData Güncellenecek veriler
      * @param string $tenantId Tenant ID (multi-tenant sistem için)
      * @param string $userId İşlemi yapan kullanıcı ID'si
      * @param array $options Ek seçenekler (validate, etc.)
      */
     public function __construct(
-        public array $portfoliods,
+        public array $portfolioIds,
         public array $updateData,
         public string $tenantId,
         public string $userId,
@@ -52,7 +52,7 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
     /**
      * Job execution
      */
-    public function handle(PageService $portfolioervice): void
+    public function handle(PortfolioService $portfolioService): void
     {
         $startTime = microtime(true);
         $processedCount = 0;
@@ -60,17 +60,17 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
         $errors = [];
 
         try {
-            Log::info('✏️ BULK PAGE UPDATE STARTED', [
-                'portfolio_ids' => $this->pageIds,
+            Log::info('✏️ BULK PORTFOLIO UPDATE STARTED', [
+                'portfolio_ids' => $this->portfolioIds,
                 'update_data' => $this->updateData,
                 'tenant_id' => $this->tenantId,
                 'user_id' => $this->userId,
-                'total_count' => count($this->pageIds)
+                'total_count' => count($this->portfolioIds)
             ]);
 
             // Progress tracking için cache key
-            $progressKey = "bulk_update_pages_{$this->tenantId}_{$this->userId}";
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'starting');
+            $progressKey = "bulk_update_portfolios_{$this->tenantId}_{$this->userId}";
+            $this->updateProgress($progressKey, 0, count($this->portfolioIds), 'starting');
 
             // Güvenlik kontrolü - güncellenebilir alanları kontrol et
             $allowedFields = $this->getAllowedUpdateFields();
@@ -81,59 +81,45 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
             }
 
             // Her sayfa için güncelleme işlemi
-            foreach ($this->pageIds as $index => $portfoliod) {
+            foreach ($this->portfolioIds as $index => $portfolioId) {
                 try {
                     // Sayfa var mı kontrol et
-                    $portfolio= Page::find($portfoliod);
-                    if (!$portfolio {
-                        Log::warning("Sayfa bulunamadı: {$portfoliod}");
+                    $portfolio = Portfolio::find($portfolioId);
+                    if (!$portfolio) {
+                        Log::warning("Sayfa bulunamadı: {$portfolioId}");
                         continue;
-                    }
-
-                        // Slug değiştirilemez
-                        if (isset($filteredUpdateData['slug'])) {
-                            unset($filteredUpdateData['slug']);
-                            Log::warning("Ana sayfa slug'ı değiştirilemez: {$portfolio>title}");
-                        }
-
-                        // Pasif edilemez
-                        if (isset($filteredUpdateData['is_active']) && $filteredUpdateData['is_active'] === false) {
-                            unset($filteredUpdateData['is_active']);
-                            Log::warning("Ana sayfa pasif edilemez: {$portfolio>title}");
-                        }
                     }
 
                     // Özel validasyonlar
                     if ($this->options['validate'] ?? true) {
-                        $this->validateUpdateData($portfolio $filteredUpdateData);
+                        $this->validateUpdateData($portfolio, $filteredUpdateData);
                     }
 
                     // Güncelleme işlemi
-                    $portfolio>update($filteredUpdateData);
-                    log_activity($portfolio 'toplu-güncellendi');
+                    $portfolio->update($filteredUpdateData);
+                    log_activity($portfolio, 'toplu-güncellendi');
 
                     $processedCount++;
-                    
+
                     // Progress güncelle
-                    $progress = (int) (($index + 1) / count($this->pageIds) * 100);
-                    $this->updateProgress($progressKey, $progress, count($this->pageIds), 'processing', [
+                    $progress = (int) (($index + 1) / count($this->portfolioIds) * 100);
+                    $this->updateProgress($progressKey, $progress, count($this->portfolioIds), 'processing', [
                         'processed' => $processedCount,
                         'errors' => $errorCount,
-                        'current_page' => $portfolio>title
+                        'current_portfolio' => $portfolio->title
                     ]);
 
                     Log::info("✅ Sayfa güncellendi", [
-                        'id' => $portfoliod,
-                        'title' => $portfolio>title,
+                        'id' => $portfolioId,
+                        'title' => $portfolio->title,
                         'updated_fields' => array_keys($filteredUpdateData)
                     ]);
-
                 } catch (\Exception $e) {
                     $errorCount++;
-                    $errors[] = "Sayfa güncelleme hatası (ID: {$portfoliod}): " . $e->getMessage();
-                    
+                    $errors[] = "Sayfa güncelleme hatası (ID: {$portfolioId}): " . $e->getMessage();
+
                     Log::error("❌ Sayfa güncelleme hatası", [
-                        'portfolio_id' => $portfoliod,
+                        'portfolio_id' => $portfolioId,
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
@@ -145,7 +131,7 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
 
             // Final progress
             $duration = round(microtime(true) - $startTime, 2);
-            $this->updateProgress($progressKey, 100, count($this->pageIds), 'completed', [
+            $this->updateProgress($progressKey, 100, count($this->portfolioIds), 'completed', [
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration,
@@ -153,20 +139,19 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
                 'updated_fields' => array_keys($filteredUpdateData)
             ]);
 
-            Log::info('✅ BULK PAGE UPDATE COMPLETED', [
-                'total_pages' => count($this->pageIds),
+            Log::info('✅ BULK PORTFOLIO UPDATE COMPLETED', [
+                'total_portfolios' => count($this->portfolioIds),
                 'processed' => $processedCount,
                 'errors' => $errorCount,
                 'duration' => $duration . 's',
                 'updated_fields' => array_keys($filteredUpdateData)
             ]);
-
         } catch (\Exception $e) {
-            $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+            $this->updateProgress($progressKey, 0, count($this->portfolioIds), 'failed', [
                 'error' => $e->getMessage()
             ]);
 
-            Log::error('💥 BULK PAGE UPDATE FAILED', [
+            Log::error('💥 BULK PORTFOLIO UPDATE FAILED', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -198,20 +183,21 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
             'nofollow',
             'schema_type',
             'published_at',
+            'slug' // Homeportfolio için kısıtlı
         ];
     }
 
     /**
      * Update data validasyonu
      */
-    private function validateUpdateData(Portfolio $portfolio array $updateData): void
+    private function validateUpdateData(Portfolio $portfolio, array $updateData): void
     {
         // Slug benzersizlik kontrolü
         if (isset($updateData['slug'])) {
-            $existingPortfolio = Page::where('slug', $updateData['slug'])
-                ->where('id', '!=', $portfolio>id)
+            $existingPage = Portfolio::where('slug', $updateData['slug'])
+                ->where('id', '!=', $portfolio->id)
                 ->first();
-                
+
             if ($existingPage) {
                 throw new \InvalidArgumentException("Slug zaten kullanımda: {$updateData['slug']}");
             }
@@ -258,24 +244,23 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
     {
         try {
             // Portfolio cache'leri temizle
-            Cache::forget('pages_list');
-            Cache::forget('pages_menu_cache');
-            Cache::forget('pages_sitemap_cache');
-            
+            Cache::forget('portfolios_list');
+            Cache::forget('portfolios_menu_cache');
+            Cache::forget('portfolios_sitemap_cache');
+
             // Pattern-based cache temizleme
             $patterns = [
-                'page_*',
-                'pages_*',
+                'portfolio_*',
+                'portfolios_*',
                 'sitemap_*',
                 'menu_*'
             ];
-            
+
             foreach ($patterns as $pattern) {
                 Cache::tags(['portfolios'])->flush();
             }
 
             Log::info('🗑️ Portfolio caches cleared after bulk update');
-            
         } catch (\Exception $e) {
             Log::error('Cache temizleme hatası: ' . $e->getMessage());
         }
@@ -286,8 +271,8 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        Log::error('💥 BULK PAGE UPDATE JOB FAILED', [
-            'portfolio_ids' => $this->pageIds,
+        Log::error('💥 BULK PORTFOLIO UPDATE JOB FAILED', [
+            'portfolio_ids' => $this->portfolioIds,
             'update_data' => $this->updateData,
             'tenant_id' => $this->tenantId,
             'user_id' => $this->userId,
@@ -296,8 +281,8 @@ class BulkUpdatePortfoliosJob implements ShouldQueue
         ]);
 
         // Progress'i failed olarak işaretle
-        $progressKey = "bulk_update_pages_{$this->tenantId}_{$this->userId}";
-        $this->updateProgress($progressKey, 0, count($this->pageIds), 'failed', [
+        $progressKey = "bulk_update_portfolios_{$this->tenantId}_{$this->userId}";
+        $this->updateProgress($progressKey, 0, count($this->portfolioIds), 'failed', [
             'error' => $exception?->getMessage()
         ]);
     }

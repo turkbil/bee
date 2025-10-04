@@ -35,7 +35,7 @@ class AnnouncementPermissionTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_access_page_index(): void
+    public function admin_can_access_announcement_index(): void
     {
         $this->actingAs($this->admin);
 
@@ -45,7 +45,7 @@ class AnnouncementPermissionTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_access_page_manage(): void
+    public function admin_can_access_announcement_manage(): void
     {
         $this->actingAs($this->admin);
 
@@ -55,13 +55,13 @@ class AnnouncementPermissionTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_create_page(): void
+    public function admin_can_create_announcement(): void
     {
         $this->actingAs($this->admin);
 
         $announcement = Announcement::factory()->make();
 
-        $this->assertDatabaseCount('pages', 0);
+        $this->assertDatabaseCount('announcements', 0);
 
         Announcement::create([
             'title' => $announcement->title,
@@ -70,11 +70,11 @@ class AnnouncementPermissionTest extends TestCase
             'is_active' => true,
         ]);
 
-        $this->assertDatabaseCount('pages', 1);
+        $this->assertDatabaseCount('announcements', 1);
     }
 
     /** @test */
-    public function admin_can_update_page(): void
+    public function admin_can_update_announcement(): void
     {
         $this->actingAs($this->admin);
 
@@ -86,7 +86,7 @@ class AnnouncementPermissionTest extends TestCase
     }
 
     /** @test */
-    public function admin_can_delete_page(): void
+    public function admin_can_delete_announcement(): void
     {
         $this->actingAs($this->admin);
 
@@ -94,11 +94,11 @@ class AnnouncementPermissionTest extends TestCase
 
         $announcement->delete();
 
-        $this->assertDatabaseMissing('pages', ['announcement_id' => $announcement->announcement_id]);
+        $this->assertDatabaseMissing('announcements', ['announcement_id' => $announcement->announcement_id]);
     }
 
     /** @test */
-    public function guest_cannot_access_admin_pages(): void
+    public function guest_cannot_access_admin_announcements(): void
     {
         $response = $this->get(route('admin.announcement.index'));
 
@@ -106,7 +106,7 @@ class AnnouncementPermissionTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_access_page_manage(): void
+    public function guest_cannot_access_announcement_manage(): void
     {
         $response = $this->get(route('admin.announcement.manage'));
 
@@ -124,7 +124,7 @@ class AnnouncementPermissionTest extends TestCase
     }
 
     /** @test */
-    public function viewer_can_view_pages_but_cannot_edit(): void
+    public function viewer_can_view_announcements_but_cannot_edit(): void
     {
         // Viewer yetkisi varsa view yapabilmeli
         $this->actingAs($this->viewer);
@@ -258,7 +258,7 @@ class AnnouncementPermissionTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $maliciousInput = "'; DROP TABLE pages; --";
+        $maliciousInput = "'; DROP TABLE announcements; --";
 
         // SQL injection korumalı olmalı
         Announcement::create([
@@ -269,7 +269,7 @@ class AnnouncementPermissionTest extends TestCase
         ]);
 
         // Tablo hala var olmalı
-        $this->assertDatabaseCount('pages', 1);
+        $this->assertDatabaseCount('announcements', 1);
     }
 
     /** @test */

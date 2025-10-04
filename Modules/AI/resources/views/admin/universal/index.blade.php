@@ -138,7 +138,7 @@
                                     </div>
                                     <div class="ms-3">
                                         <span class="text-green d-inline-flex align-items-center lh-1">
-                                            90% <i class="ti ti-trending-up ms-1" style="font-size: 0.75rem"></i>
+                                            90% <i class="fas fa-chart-line ms-1" style="font-size: 0.75rem"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -156,25 +156,25 @@
                         <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-features" class="nav-link active" data-bs-toggle="tab" aria-selected="true" role="tab">
-                                    <i class="ti ti-sparkles me-2"></i>
+                                    <i class="fas fa-star me-2"></i>
                                     AI Features
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-templates" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">
-                                    <i class="ti ti-template me-2"></i>
+                                    <i class="far fa-file-code me-2"></i>
                                     Templates
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-context" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">
-                                    <i class="ti ti-settings me-2"></i>
+                                    <i class="fas fa-cog me-2"></i>
                                     Context Rules
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a href="#tabs-analytics" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">
-                                    <i class="ti ti-chart-line me-2"></i>
+                                    <i class="fas fa-chart-line me-2"></i>
                                     Analytics
                                 </a>
                             </li>
@@ -190,7 +190,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" placeholder="Feature ara..." id="featureSearch">
                                             <button class="btn btn-outline-secondary" type="button">
-                                                <i class="ti ti-search"></i>
+                                                <i class="fas fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -237,7 +237,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" placeholder="Template ara..." id="templateSearch">
                                             <button class="btn btn-outline-secondary" type="button">
-                                                <i class="ti ti-search"></i>
+                                                <i class="fas fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" placeholder="Kural ara..." id="contextSearch">
                                             <button class="btn btn-outline-secondary" type="button">
-                                                <i class="ti ti-search"></i>
+                                                <i class="fas fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -761,7 +761,7 @@ function refreshSystemCache() {
     // Show loading state
     const btn = event.target;
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="ti ti-refresh spinning"></i> Yenileniyor...';
+    btn.innerHTML = '<i class="fas fa-sync-alt spinning"></i> Yenileniyor...';
     btn.disabled = true;
     
     setTimeout(() => {
@@ -786,7 +786,7 @@ function saveTemplate() {
     // Show loading state
     const btn = event.target;
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="ti ti-loader spinning"></i> Kaydediliyor...';
+    btn.innerHTML = '<i class="fas fa-spinner spinning"></i> Kaydediliyor...';
     btn.disabled = true;
     
     setTimeout(() => {

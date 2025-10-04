@@ -173,9 +173,9 @@
                                                 <div class="form-floating mb-3">
                                                     <select class="form-select" wire:model.defer="parent_id">
                                                         <option value="">{{ __('menumanagement::admin.no_parent') }}</option>
-                                                        @foreach($headerMenuItems as $item)
-                                                            <option value="{{ $item->item_id }}">
-                                                                {{ $item->getTranslated('title', app()->getLocale()) }}
+                                                        @foreach($this->hierarchicalMenuItems as $item)
+                                                            <option value="{{ $item['id'] }}">
+                                                                {{ $item['title'] }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -294,12 +294,16 @@
                             @forelse($headerMenuItems as $item)
                                 
                                 <!-- Menü Öğesi - Widget Pattern -->
-                                <!-- DEBUG: ID:{{ $item->item_id }} | Parent:{{ $item->parent_id ?? 'NONE' }} | Title:{{ $item->getTranslated('title', app()->getLocale()) }} -->
-                                <div class="menu-item list-group-item p-2 {{ $item->parent_id ? 'ps-5' : '' }}" 
-                                    wire:key="menu-{{ $item->item_id }}" 
+                                @php
+                                    $depthLevel = $item->depth_level ?? 0;
+                                    $indentPx = $depthLevel * 30; // 30px per level
+                                @endphp
+                                <div class="menu-item list-group-item p-2"
+                                    style="padding-left: {{ 8 + $indentPx }}px !important;"
+                                    wire:key="menu-{{ $item->item_id }}"
                                     data-id="{{ $item->item_id }}"
-                                    data-is-parent="{{ $item->parent_id ? '0' : '1' }}"
-                                    @if($item->parent_id) 
+                                    data-depth="{{ $depthLevel }}"
+                                    @if($item->parent_id)
                                         data-parent-id="{{ $item->parent_id }}"
                                     @endif>
                                     <div class="d-flex align-items-center">
@@ -310,7 +314,7 @@
                                         </div>
                                         
                                         <!-- Icon - Widget Pattern -->
-                                        <div class="{{ $item->parent_id ? 'bg-secondary-lt' : 'bg-primary-lt' }} rounded-2 d-flex align-items-center justify-content-center me-2" 
+                                        <div class="{{ $depthLevel > 0 ? 'bg-secondary-lt' : 'bg-primary-lt' }} rounded-2 d-flex align-items-center justify-content-center me-2" 
                                             style="width: 2.5rem; height: 2.5rem;">
                                             <i class="{{ $item->icon ?: 'fas fa-link' }}"></i>
                                         </div>
@@ -434,282 +438,11 @@
     @endif
 </div>
 
-<!-- Widget Pattern Styles -->
 @push('styles')
-<style>
-/* Menu sortable styles - Widget Pattern */
-.menu-item {
-    transition: all 0.3s ease;
-}
-
-.menu-item:hover {
-    background-color: rgba(var(--tblr-primary-rgb), 0.05);
-}
-
-.menu-drag-handle:hover {
-    color: var(--tblr-primary) !important;
-    cursor: move;
-}
-
-.list-group-item {
-    border-left: 3px solid transparent;
-}
-
-.list-group-item:hover {
-    border-left-color: var(--tblr-primary);
-}
-
-/* Widget Pattern Loading Animation */
-.category-progress-bar-indeterminate {
-    background: linear-gradient(45deg, #206bc4 25%, transparent 25%, transparent 50%, #206bc4 50%, #206bc4 75%, transparent 75%, transparent);
-    background-size: 1rem 1rem;
-    animation: progress-bar-stripes 1s linear infinite;
-    height: 4px;
-    width: 100%;
-}
-
-@keyframes progress-bar-stripes {
-    0% { background-position: 0 0; }
-    100% { background-position: 1rem 0; }
-}
-
-/* Widget Pattern Sortable Ghost */
-.menu-sortable-ghost {
-    opacity: 0.4;
-    background-color: var(--tblr-primary);
-}
-
-.menu-sortable-drag {
-    background-color: rgba(var(--tblr-primary-rgb), 0.1);
-}
-
-/* Sub-category visual indicator */
-.category-drop-indicator {
-    border-left: 4px solid var(--tblr-primary) !important;
-    background-color: rgba(var(--tblr-primary-rgb), 0.1) !important;
-}
-
-</style>
+<link rel="stylesheet" href="{{ asset('admin-assets/css/category-sortable.css') }}">
 @endpush
 
-<!-- Widget Pattern Scripts -->
 @push('scripts')
 <script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
-
-<script>
-document.addEventListener('livewire:initialized', function() {
-    initMenuSortable();
-    
-    // Livewire event listener - sadece component refresh'te çağrılır
-    Livewire.on('refresh-sortable', () => {
-        console.log('🔄 Manual sortable refresh çağrıldı');
-        setTimeout(() => initMenuSortable(), 100);
-    });
-    
-    function initMenuSortable() {
-        const container = document.getElementById('menu-sortable-list');
-        if (!container) {
-            console.error('❌ menu-sortable-list container bulunamadı!');
-            return;
-        }
-        
-        // console.log('✅ Container bulundu:', container);
-        
-        // Menu item sayısını kontrol et
-        const menuItems = container.querySelectorAll('.menu-item');
-        // console.log('📋 Bulunan menu item sayısı:', menuItems.length);
-        
-        if (menuItems.length === 0) {
-            console.warn('⚠️ Hiç menu item bulunamadı - liste boş olabilir');
-        }
-        
-        // Mevcut sortable'ı temizle
-        if (window.menuSortable) {
-            window.menuSortable.destroy();
-            window.menuSortable = null;
-        }
-        
-        // Yeni sortable oluştur - Widget Pattern
-        window.menuSortable = new Sortable(container, {
-            animation: 150,
-            ghostClass: 'menu-sortable-ghost',
-            dragClass: 'menu-sortable-drag',
-            handle: '.menu-drag-handle',
-            group: 'menu-items',
-            
-            onStart: function(evt) {
-                const item = evt.item;
-                item._indentLevel = item.classList.contains('ps-5') ? 1 : 0;
-                item._originalParentId = item.getAttribute('data-parent-id');
-            },
-            
-            onMove: function(evt) {
-                return true;
-            },
-            
-            onChange: function(evt) {
-                // Sürükleme sırasında alt kategori görsel göstergesini ayarla
-                const item = evt.item;
-                const previousItem = item.previousElementSibling;
-                
-                if (previousItem) {
-                    const dragOffset = evt.originalEvent?.clientX || 0;
-                    const itemRect = item.getBoundingClientRect();
-                    const itemLeft = itemRect.left;
-                    
-                    // Sağa doğru sürüklendiyse alt kategori olarak göster
-                    if (dragOffset > itemLeft + 50) {
-                        item.classList.add('category-drop-indicator');
-                    } else {
-                        item.classList.remove('category-drop-indicator');
-                    }
-                } else {
-                    item.classList.remove('category-drop-indicator');
-                }
-            },
-            
-            onEnd: function(evt) {
-                // Sürükleme sona erdiğinde
-                const item = evt.item;
-                const previousItem = item.previousElementSibling;
-                
-                // Görsel göstergeyi kaldır
-                item.classList.remove('category-drop-indicator');
-                
-                // Alt kategori veya ana kategori belirleme
-                let isSubcategory = false;
-                let parentId = null;
-                
-                // Gerçek konumu ve parent-child ilişkisini belirle
-                if (previousItem) {
-                    const dragOffset = evt.originalEvent?.clientX || 0;
-                    const itemRect = item.getBoundingClientRect();
-                    const itemLeft = itemRect.left;
-                    
-                    // Eğer önceki öğe ana kategori ise VE sağa doğru sürüklendiyse
-                    if (!previousItem.classList.contains('ps-5') && dragOffset > itemLeft + 50) {
-                        isSubcategory = true;
-                        parentId = previousItem.getAttribute('data-id');
-                        item.classList.add('ps-5');
-                        item.setAttribute('data-parent-id', parentId);
-                    } 
-                    // Eğer önceki öğe zaten alt kategori ise
-                    else if (previousItem.classList.contains('ps-5')) {
-                        // Önceki öğenin parent ID'sini al
-                        const prevParentId = previousItem.getAttribute('data-parent-id');
-                        
-                        // Sağa doğru sürüklendiyse önceki öğe ile aynı seviyede alt kategori olarak ekle
-                        if (dragOffset > itemLeft + 50) {
-                            isSubcategory = true;
-                            parentId = prevParentId;
-                            item.classList.add('ps-5');
-                            item.setAttribute('data-parent-id', parentId);
-                        } else {
-                            // Ana kategori olarak ekle
-                            item.classList.remove('ps-5');
-                            item.removeAttribute('data-parent-id');
-                        }
-                    } else {
-                        // Ana kategori olarak ekle
-                        item.classList.remove('ps-5');
-                        item.removeAttribute('data-parent-id');
-                    }
-                } else {
-                    // Listedeki ilk öğe her zaman ana kategori olmalı
-                    item.classList.remove('ps-5');
-                    item.removeAttribute('data-parent-id');
-                }
-                
-                // Tüm menü öğelerini dolaşıp sıralama ve parent-child ilişkilerini güncelle
-                const items = [];
-                const allItems = Array.from(container.querySelectorAll('.menu-item'));
-                
-                // console.log('🔍 onEnd DEBUG:', {
-                //     containerFound: !!container,
-                //     allItemsLength: allItems.length,
-                //     allItems: allItems.map(item => ({
-                //         tagName: item.tagName,
-                //         className: item.className,
-                //         dataId: item.getAttribute('data-id')
-                //     }))
-                // });
-                
-                // SAFE PARENT-CHILD ALGORITHM - Circular reference önlemi
-                allItems.forEach((item, index) => {
-                    if (!item) {
-                        console.warn(`⚠️ Item ${index} is null`);
-                        return;
-                    }
-                    
-                    const id = item.getAttribute('data-id');
-                    if (!id) {
-                        console.warn(`⚠️ Item ${index} has no data-id:`, item);
-                        return;
-                    }
-                    
-                    // Alt kategori mi ana kategori mi belirle
-                    const isChild = item.classList.contains('ps-5');
-                    
-                    // Alt kategoriyse parent'ını güvenli şekilde bul
-                    let itemParentId = null;
-                    if (isChild) {
-                        // Önceki tüm öğeleri kontrol et, ana kategori (ps-5 olmayan) bul
-                        for (let i = index - 1; i >= 0; i--) {
-                            const prevItem = allItems[i];
-                            if (prevItem && !prevItem.classList.contains('ps-5')) {
-                                const prevId = prevItem.getAttribute('data-id');
-                                if (prevId && prevId !== id) { // Circular reference önlemi
-                                    itemParentId = prevId;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        // Eğer parent bulunamadıysa, ana kategori yap
-                        if (!itemParentId) {
-                            item.classList.remove('ps-5');
-                            item.removeAttribute('data-parent-id');
-                            console.warn(`⚠️ ID: ${id} için parent bulunamadı, ana kategori yapıldı`);
-                        }
-                    }
-                    
-                    items.push({
-                        id: id,
-                        order: index + 1,
-                        parentId: itemParentId
-                    });
-                });
-                
-                // DEBUG: JavaScript çalışma testi
-                console.log('🚀 MenuManagement onEnd çalıştı', {
-                    items: items,
-                    itemsLength: items.length,
-                    timestamp: new Date().toLocaleTimeString()
-                });
-                
-                // Livewire'a sıralama verilerini gönder - Widget Pattern
-                if (items.length > 0) {
-                    console.log('📤 Livewire dispatch gönderiliyor', { list: items });
-                    
-                    Livewire.dispatch('updateOrder', { list: items });
-                    
-                    // console.log('✅ Livewire dispatch gönderildi');
-                    
-                    // DOM güncellemesi için kısa bekle (sonsuz döngü önlemi)
-                    // setTimeout kaldırıldı - Livewire morph.updated hook'u yeterli
-                } else {
-                    console.error('❌ Items listesi boş!');
-                }
-            }
-        });
-    }
-});
-</script>
-
-{{-- MenuManagement JavaScript Variables - Page Pattern --}}
-<script>
-    window.currentPageId = 1;
-    window.currentLanguage = '{{ $currentLanguage }}';
-    // currentLanguage variable available as window.currentLanguage from manage.js
-</script>
+<script src="{{ asset('admin-assets/js/menu-sortable.js') }}"></script>
 @endpush

@@ -99,7 +99,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-tbody">
-                        @forelse($pages as $announcement)
+                        @forelse($announcements as $announcement)
                             <tr class="hover-trigger" wire:key="row-{{ $announcement->announcement_id }}">
                                 <td class="sort-id small">
                                     <div class="hover-toggle">
@@ -179,12 +179,14 @@
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
+                                        @if(config('announcement.integrations.studio.enabled', false) && class_exists(config('announcement.integrations.studio.component', '')))
                                         <a href="{{ route('admin.studio.editor', ['module' => 'announcement', 'id' => $announcement->announcement_id]) }}"
                                             target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ __('announcement::admin.studio.editor') }}"
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
                                         </a>
+                                        @endif
                                         <x-ai-translation :entity-type="'announcement'" :entity-id="$announcement->announcement_id"
                                             tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('announcement', 'delete')
@@ -214,7 +216,7 @@
                             <tr>
                                 <td colspan="4" class="text-center py-4">
                                     <div class="empty">
-                                        <p class="empty-title">{{ __('announcement::admin.no_pages_found') }}</p>
+                                        <p class="empty-title">{{ __('announcement::admin.no_announcements_found') }}</p>
                                         <p class="empty-subtitle text-muted">
                                             {{ __('announcement::admin.no_results') }}
                                         </p>
@@ -229,12 +231,12 @@
 
         <!-- Pagination -->
         <div class="card-footer">
-            @if ($pages->hasPages())
-                {{ $pages->links() }}
+            @if ($announcements->hasPages())
+                {{ $announcements->links() }}
             @else
                 <div class="d-flex justify-content-between align-items-center mb-0">
                     <p class="small text-muted mb-0">
-                        Toplam <span class="fw-semibold">{{ $pages->total() }}</span> sonuç
+                        Toplam <span class="fw-semibold">{{ $announcements->total() }}</span> sonuç
                     </p>
                 </div>
             @endif

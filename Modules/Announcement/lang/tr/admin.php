@@ -2,12 +2,12 @@
 
 return [
 // Genel
-'pages' => 'Sayfalar',
-'page_management' => 'Sayfa Yönetimi',
-'new_page' => 'Yeni Sayfa',
+'announcements' => 'Sayfalar',
+'announcement_management' => 'Duyuru Yönetimi',
+'new_announcement' => 'Yeni Duyuru',
 'media_management' => 'Medya Yönetimi',
-'new_page_pretitle' => 'Yeni Duyuru Oluştur',
-'edit_page_pretitle' => 'Duyuru Düzenle',
+'new_announcement_pretitle' => 'Yeni Duyuru Oluştur',
+'edit_announcement_pretitle' => 'Duyuru Düzenle',
 'save_to_upload_media' => 'Medya yüklemek için önce duyuruyu kaydedin',
 'title_required_for_media' => 'Medya yüklemek için en az başlık alanını doldurmanız gerekiyor',
 'announcement_detail' => 'Duyuru Detayı',
@@ -41,31 +41,31 @@ return [
 'search_placeholder' => 'Ara...',
 'enter_new_title' => 'Yeni başlık giriniz',
 'items_selected' => 'öğe seçildi',
-'no_pages_found' => 'Sayfa bulunamadı',
+'no_announcements_found' => 'Sayfa bulunamadı',
 'no_results' => 'Sonuç bulunamadı',
 
 // Menu
 'menu' => 'Menü',
 'menu_title' => 'Sayfa Yönetimi',
-'edit_page' => 'Sayfa Düzenle',
-'create_page' => 'Yeni Sayfa',
+'edit_announcement' => 'Sayfa Düzenle',
+'create_announcement' => 'Yeni Sayfa',
 
 // Validation & Messages
 'title_validation_error' => 'Başlık geçersiz. Lütfen kontrol edin.',
 'title_updated' => 'başlık güncellendi',
 'title_updated_successfully' => 'Başlık başarıyla güncellendi.',
-'page_not_found' => 'Sayfa bulunamadı',
-'homepage_cannot_be_deactivated' => 'Anasayfa deaktifleştirilemez',
+'announcement_not_found' => 'Duyuru bulunamadı',
+'homeannouncement_cannot_be_deactivated' => 'Anasayfa deaktifleştirilemez',
 'operation_failed' => 'İşlem başarısız',
-'no_pages_can_be_deleted' => 'Hiç sayfa silinemez',
+'no_announcements_can_be_deleted' => 'Hiç sayfa silinemez',
 
 // Dashboard Translations
-'total_pages' => 'Toplam Sayfa',
-'all_pages' => 'Tüm Sayfalar',
-'create_page' => 'Sayfa Oluştur',
-'recent_pages' => 'Son Sayfalar',
-'no_pages_yet' => 'Henüz sayfa yok',
-'create_first_page' => 'İlk Sayfayı Oluştur',
+'total_announcements' => 'Toplam Sayfa',
+'all_announcements' => 'Tüm Sayfalar',
+'create_announcement' => 'Sayfa Oluştur',
+'recent_announcements' => 'Son Sayfalar',
+'no_announcements_yet' => 'Henüz sayfa yok',
+'create_first_announcement' => 'İlk Sayfayı Oluştur',
 'view_all' => 'Tümünü Gör',
 'manage' => 'Yönet',
 
@@ -96,11 +96,6 @@ return [
 'announcement_deleted_successfully' => 'Duyuru başarıyla silindi',
 'update_failed' => 'Güncelleme başarısız',
 'deletion_failed' => 'Silme işlemi başarısız',
-
-// Backward compatibility (deprecated)
-'page_created_successfully' => 'Duyuru başarıyla oluşturuldu',
-'page_updated_successfully' => 'Duyuru başarıyla güncellendi',
-'page_deleted_successfully' => 'Duyuru başarıyla silindi',
 
 // Content Placeholders
 'content_placeholder' => 'Sayfa içeriğinizi buraya yazın',

@@ -3,6 +3,8 @@
 namespace Modules\Announcement\App\Observers;
 
 use Modules\Announcement\App\Models\Announcement;
+use Modules\Announcement\App\Exceptions\AnnouncementValidationException;
+use Modules\Announcement\App\Exceptions\AnnouncementProtectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -143,8 +145,6 @@ class AnnouncementObserver
      */
     public function saving(Announcement $announcement): void
     {
-        // CSS/JS boyut kontrolü
-
         // Title ve slug validasyon
         if (is_array($announcement->title)) {
             foreach ($announcement->title as $locale => $title) {
@@ -181,7 +181,7 @@ class AnnouncementObserver
     public function saved(Announcement $announcement): void
     {
         // Universal SEO cache temizle
-        Cache::forget("universal_seo_page_{$announcement->announcement_id}");
+        Cache::forget("universal_seo_announcement_{$announcement->announcement_id}");
 
         // Response cache temizle
         if (function_exists('responsecache')) {

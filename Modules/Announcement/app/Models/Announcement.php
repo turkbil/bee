@@ -28,6 +28,7 @@ class Announcement extends BaseModel implements TranslatableEntity, HasMedia
         'title' => 'array',
         'slug' => 'array',
         'body' => 'array',
+        'is_active' => 'boolean',
     ];
 
     /**
@@ -246,22 +247,51 @@ class Announcement extends BaseModel implements TranslatableEntity, HasMedia
      * Media collections config
      * HasMediaManagement trait kullanır
      */
-    protected $mediaConfig = [
-        'featured_image' => [
-            'type' => 'image',
-            'single_file' => true,
-            'max_items' => 1,
-            'max_size' => 10240, // 10MB
-            'conversions' => ['thumb', 'medium', 'large', 'responsive'],
-            'sortable' => false,
-        ],
-        'gallery' => [
-            'type' => 'image',
-            'single_file' => false,
-            'max_items' => 50,
-            'max_size' => 10240,
-            'conversions' => ['thumb', 'medium', 'large', 'responsive'],
-            'sortable' => true,
-        ],
-    ];
+    protected function getMediaConfig(): array
+    {
+        return [
+            'featured_image' => [
+                'type' => 'image',
+                'single_file' => true,
+                'max_items' => config('modules.media.max_items.featured', 1),
+                'max_size' => config('modules.media.max_file_size', 10240),
+                'conversions' => array_keys(config('modules.media.conversions', ['thumb', 'medium', 'large', 'responsive'])),
+                'sortable' => false,
+            ],
+            'gallery' => [
+                'type' => 'image',
+                'single_file' => false,
+                'max_items' => config('modules.media.max_items.gallery', 50),
+                'max_size' => config('modules.media.max_file_size', 10240),
+                'conversions' => array_keys(config('modules.media.conversions', ['thumb', 'medium', 'large', 'responsive'])),
+                'sortable' => true,
+            ],
+        ];
+    }
+
+    protected $mediaConfig;
+
+    /**
+     * Announcement için locale-aware URL oluştur
+     * ItemList Schema ve diğer linkler için kullanılır
+     */
+    public function getUrl(?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        $slug = $this->getTranslated('slug', $locale);
+
+        // Modül slug'ını al (tenant tarafından özelleştirilebilir)
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Announcement', 'show');
+
+        // Varsayılan dil kontrolü
+        $defaultLocale = get_tenant_default_locale();
+
+        if ($locale === $defaultLocale) {
+            // Varsayılan dil için prefix yok
+            return url("/{$moduleSlug}/{$slug}");
+        }
+
+        // Diğer diller için prefix ekle
+        return url("/{$locale}/{$moduleSlug}/{$slug}");
+    }
 }

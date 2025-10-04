@@ -30,9 +30,9 @@ class AnnouncementController extends Controller
     }
 
     /**
-     * Ana sayfa desteği yok - Announcement modülünde homepage özelliği kaldırıldı
+     * Ana sayfa desteği yok - Announcement modülünde homeannouncement özelliği kaldırıldı
      */
-    public function homepage(SeoMetaTagService $seoService)
+    public function homeannouncement(SeoMetaTagService $seoService)
     {
         // Ana sayfa özelliği Announcement modülünde desteklenmiyor
         abort(404);
@@ -91,12 +91,14 @@ class AnnouncementController extends Controller
 
     public function show($slug, SeoMetaTagService $seoService = null)
     {
-        // Debug log ekle
-        Log::info('🔍 AnnouncementController::show called', [
-            'slug' => $slug,
-            'request_url' => request()->fullUrl(),
-            'app_locale' => app()->getLocale()
-        ]);
+        // Debug log - sadece verbose logs aktifse
+        if (config('announcement.debug.verbose_logs', false)) {
+            Log::info('🔍 AnnouncementController::show called', [
+                'slug' => $slug,
+                'request_url' => request()->fullUrl(),
+                'app_locale' => app()->getLocale()
+            ]);
+        }
 
         // Aktif dili al
         $currentLocale = app()->getLocale();
@@ -139,19 +141,26 @@ class AnnouncementController extends Controller
 
         // Canonical URL kontrolü - doğru slug kullanılıyor mu?
         $expectedSlug = $item->getTranslated('slug', $currentLocale);
-        Log::info('🔍 Canonical URL check', [
-            'slug' => $slug,
-            'expectedSlug' => $expectedSlug,
-            'currentLocale' => $currentLocale,
-            'will_redirect' => $slug !== $expectedSlug
-        ]);
+
+        if (config('announcement.debug.verbose_logs', false)) {
+            Log::info('🔍 Canonical URL check', [
+                'slug' => $slug,
+                'expectedSlug' => $expectedSlug,
+                'currentLocale' => $currentLocale,
+                'will_redirect' => $slug !== $expectedSlug
+            ]);
+        }
 
         if ($slug !== $expectedSlug) {
             $redirectUrl = $this->generatePageUrl($item, $currentLocale);
-            Log::info('🔄 Canonical redirect', [
-                'from' => request()->fullUrl(),
-                'to' => $redirectUrl
-            ]);
+
+            if (config('announcement.debug.verbose_logs', false)) {
+                Log::info('🔄 Canonical redirect', [
+                    'from' => request()->fullUrl(),
+                    'to' => $redirectUrl
+                ]);
+            }
+
             // Yanlış slug ile erişim, doğru URL'e redirect
             return redirect()->to($redirectUrl);
         }

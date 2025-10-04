@@ -14,20 +14,20 @@ class SeoSetting extends Model
     
     public $timestamps = false; // Timestamps devre dışı - Page tablosunda zaten var
     
-    protected $translatable = ['titles', 'descriptions', 'og_titles', 'og_descriptions', 'og_images', 'priority_scores', 'author_names', 'author_urls'];
+    protected $translatable = ['titles', 'descriptions', 'og_titles', 'og_descriptions', 'og_images'];
     
     protected $fillable = [
         'seoable_type', 'seoable_id', // Polymorphic relationship fields
         'titles', 'descriptions', 'canonical_url',
-        'author', 'author_names', 'author_urls', // Author fields
+        'author', 'author_url', // Author fields (VARCHAR - single value)
         'og_titles', 'og_descriptions', 'og_image', 'og_images', 'og_type',
         // Twitter Cards - OG verilerinden otomatik üretiliyor
         'robots_meta',
-        'schema_types', // 2025 SEO: Schema.org types for Rich Results
+        'schema_type', // 2025 SEO: Schema.org types for Rich Results
         'seo_score', 'seo_analysis', 'last_analyzed',
         'content_length', 'keyword_density', 'readability_score',
         'page_speed_insights', 'last_crawled', 'ai_suggestions',
-        'status', 'priority_score', 'priority_scores',
+        'status', 'priority_score',
         // AI SEO Analysis Results (optimized - removed redundant columns)
         'analysis_results', 'analysis_date', 'detailed_scores',
         'strengths', 'improvements', 'action_items'
@@ -39,11 +39,8 @@ class SeoSetting extends Model
         'og_titles' => 'array',
         'og_descriptions' => 'array',
         'og_images' => 'array',
-        'priority_scores' => 'array',
-        'author_names' => 'array',
-        'author_urls' => 'array',
         'robots_meta' => 'array',
-        'schema_types' => 'array', // 2025 SEO: {"tr": "Article", "en": "BlogPosting"}
+        'schema_type' => 'array', // 2025 SEO: {"tr": "Article", "en": "BlogPosting"}
         'seo_analysis' => 'array',
         'readability_score' => 'array',
         'page_speed_insights' => 'array',

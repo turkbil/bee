@@ -30,7 +30,7 @@ class AnnouncementResource extends JsonResource
         $fields = $request->get('fields', []);
 
         $data = [
-            'type' => 'pages',
+            'type' => 'announcements',
             'id' => $this->announcement_id,
             'attributes' => $this->getAttributes($locale, $fields),
             'relationships' => $this->getRelationships($includeRelations),
@@ -59,15 +59,15 @@ class AnnouncementResource extends JsonResource
             'title' => $this->getTranslatedAttribute('title', $locale),
             'slug' => $this->getTranslatedAttribute('slug', $locale),
             'body' => $this->when(
-                !isset($fields['pages']) || in_array('body', $fields['pages'] ?? []),
+                !isset($fields['announcements']) || in_array('body', $fields['announcements'] ?? []),
                 fn() => $this->getTranslatedAttribute('body', $locale)
             ),
             'css' => $this->when(
-                !isset($fields['pages']) || in_array('css', $fields['pages'] ?? []),
+                !isset($fields['announcements']) || in_array('css', $fields['announcements'] ?? []),
                 $this->css
             ),
             'js' => $this->when(
-                !isset($fields['pages']) || in_array('js', $fields['pages'] ?? []),
+                !isset($fields['announcements']) || in_array('js', $fields['announcements'] ?? []),
                 $this->js
             ),
             'is_active' => (bool) $this->is_active,
@@ -131,8 +131,8 @@ class AnnouncementResource extends JsonResource
         if ($this->relationLoaded('seoSetting') || in_array('seo', $includeRelations)) {
             $relationships['seo'] = [
                 'links' => [
-                    'self' => route('api.pages.relationships.seo', $this->announcement_id),
-                    'related' => route('api.pages.seo', $this->announcement_id)
+                    'self' => route('api.announcements.relationships.seo', $this->announcement_id),
+                    'related' => route('api.announcements.seo', $this->announcement_id)
                 ],
                 'data' => $this->when(
                     $this->relationLoaded('seoSetting'),
@@ -148,8 +148,8 @@ class AnnouncementResource extends JsonResource
         if (in_array('activities', $includeRelations)) {
             $relationships['activities'] = [
                 'links' => [
-                    'self' => route('api.pages.relationships.activities', $this->announcement_id),
-                    'related' => route('api.pages.activities', $this->announcement_id)
+                    'self' => route('api.announcements.relationships.activities', $this->announcement_id),
+                    'related' => route('api.announcements.activities', $this->announcement_id)
                 ],
                 'meta' => [
                     'count' => $this->whenCounted('activities')
@@ -171,7 +171,7 @@ class AnnouncementResource extends JsonResource
         $slug = $this->getTranslatedAttribute('slug', $locale);
 
         return [
-            'self' => route('api.pages.show', $this->announcement_id),
+            'self' => route('api.announcements.show', $this->announcement_id),
             'frontend' => $slug ? route('announcement.show', $slug) : null,
             'admin' => route('admin.announcement.manage', $this->announcement_id)
         ];

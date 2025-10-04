@@ -11,7 +11,7 @@ enum CacheStrategy: string
 
     public function shouldCache(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::NO_CACHE, self::ADMIN_FRESH => false,
             self::WITH_CACHE, self::PUBLIC_CACHED => true,
         };
@@ -19,7 +19,7 @@ enum CacheStrategy: string
 
     public function getCacheTtl(): int
     {
-        return match($this) {
+        return match ($this) {
             self::NO_CACHE, self::ADMIN_FRESH => 0,
             self::WITH_CACHE => 1800, // 30 minutes
             self::PUBLIC_CACHED => 3600, // 1 hour

@@ -154,26 +154,26 @@
                     <div class="card h-100">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-rocket me-2"></i>
+                                <i class="fas fa-rocket me-2"></i>
                                 {{ __('studio::admin.quick_start') }}
                             </h3>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
                                 <a href="{{ route('admin.page.manage') }}" class="btn btn-primary w-100">
-                                    <i class="ti ti-plus me-2"></i>
+                                    <i class="fas fa-plus me-2"></i>
                                     {{ __('studio::admin.create_new_page') }}
                                 </a>
                             </div>
                             <div class="mb-3">
                                 <a href="{{ route('admin.page.index') }}" class="btn btn-outline-primary w-100">
-                                    <i class="ti ti-list me-2"></i>
+                                    <i class="fas fa-list me-2"></i>
                                     {{ __('studio::admin.all_pages') }}
                                 </a>
                             </div>
                             <div class="mb-0">
                                 <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary w-100">
-                                    <i class="ti ti-components me-2"></i>
+                                    <i class="fas fa-cubes me-2"></i>
                                     {{ __('studio::admin.widget_management') }}
                                 </a>
                             </div>

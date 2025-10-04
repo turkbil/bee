@@ -6,7 +6,7 @@ class AnnouncementCreationException extends AnnouncementException
 {
     public function getErrorType(): string
     {
-        return 'page_creation_failed';
+        return 'announcement_creation_failed';
     }
 
     public static function withValidationErrors(array $errors): self

@@ -182,7 +182,7 @@
                                                 @endif
                                                 
                                                 <a href="{{ route('admin.widgetmanagement.preview.instance', $instance->id) }}" class="dropdown-item" target="_blank">
-                                                    <i class="ti ti-eye me-2"></i> {{ __('widgetmanagement::admin.preview') }}
+                                                    <i class="far fa-eye me-2"></i> {{ __('widgetmanagement::admin.preview') }}
                                                 </a>
                                                 
                                                 <div class="dropdown-divider"></div>
@@ -211,24 +211,24 @@
                                                         $itemId = $staticItem ? $staticItem->id : 0;
                                                     @endphp
                                                     <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="ti ti-file-text me-2 text-muted"></i>
+                                                        <i class="far fa-file-alt me-2 text-muted"></i>
                                                         {{ __('widgetmanagement::admin.how_to_use') }}
                                                     </a>
                                                 @else
                                                     <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="ti ti-file-text me-2 text-muted"></i>
+                                                        <i class="far fa-file-alt me-2 text-muted"></i>
                                                         {{ __('widgetmanagement::admin.how_to_use') }}
                                                     </a>
                                                 @endif
                                             @else
                                                 <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="btn btn-sm btn-outline-primary">
-                                                    <i class="ti ti-settings me-2"></i>
+                                                    <i class="fas fa-cog me-2"></i>
                                                     {{ __('widgetmanagement::admin.quick_start') }}
                                                 </a>
                                             @endif
                                             
                                             <a href="{{ route('admin.widgetmanagement.preview.instance', $instance->id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
-                                                <i class="ti ti-eye me-1"></i>
+                                                <i class="far fa-eye me-1"></i>
                                                 {{ __('widgetmanagement::admin.preview') }}
                                             </a>
 

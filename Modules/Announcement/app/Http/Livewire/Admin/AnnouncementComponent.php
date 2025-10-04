@@ -25,7 +25,7 @@ class AnnouncementComponent extends Component
     public $search = '';
 
     #[Url]
-    public $perPage = 10;
+    public $perPage;
 
     #[Url]
     public $sortField = 'announcement_id';
@@ -51,6 +51,7 @@ class AnnouncementComponent extends Component
     public function boot(AnnouncementService $announcementService): void
     {
         $this->announcementService = $announcementService;
+        $this->perPage = $this->perPage ?? config('modules.pagination.admin_per_page', 10);
     }
 
     public function refreshPageData()
@@ -211,55 +212,15 @@ class AnnouncementComponent extends Component
         $announcements = $this->announcementService->getPaginatedAnnouncements($filters, $this->perPage);
 
         return view('announcement::admin.livewire.announcement-component', [
-            'pages' => $announcements,
+            'announcements' => $announcements,
             'currentSiteLocale' => $this->siteLocale,
             'siteLanguages' => $this->availableSiteLanguages,
         ]);
     }
 
-
-    public function queueTranslation($pageId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
-    {
-        try {
-            // Session ID oluştur (UUID v4 - globally unique)
-            $sessionId = Str::uuid()->toString();
-
-            \Log::info("🚀 QUEUE Translation başlatıldı", [
-                'announcement_id' => $pageId,
-                'source' => $sourceLanguage,
-                'targets' => $targetLanguages,
-                'session_id' => $sessionId
-            ]);
-
-            // Job'ı kuyruğa ekle - sessionId ile
-            \Modules\AI\app\Jobs\TranslateEntityJob::dispatch(
-                'announcement',
-                $pageId,
-                $sourceLanguage,
-                $targetLanguages,
-                $sessionId
-            );
-
-            // JavaScript'e sessionId gönder
-            $this->dispatch('translationQueued', [
-                'sessionId' => $sessionId,
-                'success' => true,
-                'message' => 'Çeviri işlemi başlatıldı!',
-                'announcement_id' => $pageId
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('❌ Queue translation hatası', [
-                'announcement_id' => $pageId,
-                'error' => $e->getMessage()
-            ]);
-
-            $this->dispatch('translationError', 'Çeviri kuyruğu hatası: ' . $e->getMessage());
-        }
-    }
-
     /**
      * 🌍 MODAL Bridge: JavaScript'den çağrılan çeviri metodu
-     * Modal'dan gelen çeviri işlemlerini mevcut translateContent metoduna yönlendirir
+     * Modal'dan gelen çeviri işlemlerini TranslateAnnouncementJob'a yönlendirir
      */
     public function translateFromModal(array $data): array
     {
@@ -280,8 +241,8 @@ class AnnouncementComponent extends Component
             ];
 
             // TranslateAnnouncementJob kullanarak async çeviri başlat
-            $pageId = $data['entityId'] ?? null;
-            if (!$pageId) {
+            $announcementId = $data['entityId'] ?? null;
+            if (!$announcementId) {
                 throw new \Exception('Announcement ID bulunamadı');
             }
 
@@ -290,14 +251,14 @@ class AnnouncementComponent extends Component
 
             // Job'u kuyruğa ekle
             Log::info('📦 TranslateAnnouncementJob kuyruğa ekleniyor', [
-                'announcement_id' => $pageId,
+                'announcement_id' => $announcementId,
                 'source' => $translationData['sourceLanguage'],
                 'targets' => $translationData['targetLanguages'],
                 'queue_system' => 'tenant_isolated'
             ]);
 
             $job = \Modules\Announcement\App\Jobs\TranslateAnnouncementJob::dispatch(
-                [$pageId], // Array olarak gönder
+                [$announcementId], // Array olarak gönder
                 $translationData['sourceLanguage'],
                 $translationData['targetLanguages'],
                 'balanced', // quality
@@ -305,23 +266,15 @@ class AnnouncementComponent extends Component
                 $sessionId // operationId
             )->onQueue('tenant_isolated');
 
-            // 🚨 ULTRA DEBUG - Dispatch sonrası
-            Log::info('🔥 JOB DISPATCH EDİLDİ!', [
-                'job_class' => get_class($job),
-                'queue_name' => 'tenant_isolated',
-                'connection' => config('queue.default'),
-                'redis_status' => \Illuminate\Support\Facades\Redis::ping()
-            ]);
-
             Log::info('✅ TranslateAnnouncementJob başarıyla kuyruğa eklendi', [
                 'session_id' => $sessionId,
-                'announcement_id' => $pageId
+                'announcement_id' => $announcementId
             ]);
 
             // JavaScript'e translationQueued event'ini dispatch et
             $this->dispatch('translationQueued', [
                 'sessionId' => $sessionId,
-                'pageId' => $pageId,
+                'announcementId' => $announcementId,
                 'success' => true,
                 'message' => 'Çeviri kuyruğa başarıyla eklendi'
             ]);

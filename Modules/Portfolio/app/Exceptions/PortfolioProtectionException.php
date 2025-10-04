@@ -26,10 +26,10 @@ class PortfolioProtectionException extends Exception
     /**
      * Korumalı sayfa exception
      */
-    public static function protectedPage(int $portfoliod): self
+    public static function protectedPage(int $portfolioId): self
     {
         return new self(
-            "Bu sayfa sistem tarafından korunuyor: #{$portfoliod}"
+            "Bu sayfa sistem tarafından korunuyor: #{$portfolioId}"
         );
     }
 }

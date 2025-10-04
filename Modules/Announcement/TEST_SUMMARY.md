@@ -12,7 +12,7 @@
 - ✅ findByIdWithSeo (1 test)
 - ✅ findBySlug (3 test)
 - ✅ getActive (1 test)
-- ✅ getHomepage (2 test)
+- ✅ getHomeannouncement (2 test)
 - ✅ getPaginated (6 test)
 - ✅ search (1 test)
 - ✅ create (1 test)
@@ -25,10 +25,10 @@
 - ✅ eager loading (1 test)
 
 **Önemli Test Senaryoları**:
-- Homepage benzersizliği
+- Homeannouncement benzersizliği
 - Slug bazlı arama (multi-locale)
 - Inactive announcement'lerin slug aramasından hariç tutulması
-- Bulk operations'da homepage koruması
+- Bulk operations'da homeannouncement koruması
 - Cache invalidation sonrası update
 - Eager loading ile N+1 query prevention
 
@@ -41,7 +41,7 @@
 - ✅ getPage operations (2 test)
 - ✅ getPageBySlug (2 test)
 - ✅ getActivePages (1 test)
-- ✅ getHomepage (1 test)
+- ✅ getHomeannouncement (1 test)
 - ✅ createPage (3 test)
 - ✅ updatePage (2 test)
 - ✅ deletePage (3 test)
@@ -56,10 +56,10 @@
 - ✅ slug handling (2 test)
 
 **Önemli Test Senaryoları**:
-- Exception handling (AnnouncementNotFoundException, HomepageProtectionException)
+- Exception handling (AnnouncementNotFoundException, HomeannouncementProtectionException)
 - Otomatik slug generation
 - SEO data filtering (boş değerlerin temizlenmesi)
-- Homepage silme/deaktive koruma
+- Homeannouncement silme/deaktive koruma
 - Bulk operations partial success
 - Logging mekanizması
 
@@ -70,9 +70,9 @@
 
 **Test Kategorileri**:
 - ✅ slug generation (3 test)
-- ✅ homepage uniqueness (2 test)
+- ✅ homeannouncement uniqueness (2 test)
 - ✅ validation (3 test)
-- ✅ homepage protection (2 test)
+- ✅ homeannouncement protection (2 test)
 - ✅ cache operations (6 test)
 - ✅ logging (4 test)
 - ✅ SEO cleanup (2 test)
@@ -82,12 +82,12 @@
 
 **Önemli Test Senaryoları**:
 - Creating event'inde slug otomatik oluşturma
-- Updating event'inde homepage uniqueness garantisi
+- Updating event'inde homeannouncement uniqueness garantisi
 - Slug conflict'te unique slug generation
 - Title min/max length validation
 - CSS/JS size validation
-- Homepage deletion prevention
-- Cache temizleme (pages_list, homepage_data, universal_seo)
+- Homeannouncement deletion prevention
+- Cache temizleme (announcements_list, homeannouncement_data, universal_seo)
 - SEO setting cascade delete
 
 ---
@@ -111,9 +111,9 @@
 **Önemli Test Senaryoları**:
 - JSON cast'leri (title, slug, body)
 - HasTranslations trait kullanımı
-- Active/Homepage scope'ları
+- Active/Homeannouncement scope'ları
 - SEO fallback metodları (title, description, keywords, canonical, image, schema)
-- Factory states (homepage, active, inactive, withCustomStyles)
+- Factory states (homeannouncement, active, inactive, withCustomStyles)
 - TranslatableEntity interface implementation
 - getOrCreateSeoSetting() lazy loading
 
@@ -131,7 +131,7 @@
 - ✅ CRUD operations (2 test)
 - ✅ validation (3 test)
 - ✅ custom CSS/JS (2 test)
-- ✅ homepage management (2 test)
+- ✅ homeannouncement management (2 test)
 - ✅ language switching (1 test)
 - ✅ bulk selection (1 test)
 - ✅ slug handling (2 test)
@@ -146,7 +146,7 @@
 - Form validation (min/max length)
 - XSS protection (script tag temizleme)
 - CSS/JS injection koruması (behavior, eval bloklama)
-- Homepage deactivation prevention
+- Homeannouncement deactivation prevention
 - TinyMCE sync
 - SEO data save event
 
@@ -193,13 +193,13 @@
 - ✅ no-cache strategy (1 test)
 
 **Önemli Test Senaryoları**:
-- Homepage cache
+- Homeannouncement cache
 - CRUD operasyonlarında cache invalidation
 - Bulk operations sonrası cache temizleme
 - Admin-fresh strategy (cache bypass)
 - TenantCacheService kullanımı
-- Universal SEO cache ("universal_seo_page_{id}")
-- Cache tag'leri (pages, content)
+- Universal SEO cache ("universal_seo_announcement_{id}")
+- Cache tag'leri (announcements, content)
 - Cache TTL konfigürasyonu
 
 ---
@@ -210,7 +210,7 @@
 **Test Kategorileri**:
 - ✅ bulk delete (7 test)
 - ✅ bulk toggle (4 test)
-- ✅ homepage protection (3 test)
+- ✅ homeannouncement protection (3 test)
 - ✅ edge cases (4 test)
 - ✅ cache operations (1 test)
 - ✅ logging (2 test)
@@ -218,7 +218,7 @@
 
 **Önemli Test Senaryoları**:
 - Çoklu sayfa silme
-- Homepage'in bulk delete'ten korunması
+- Homeannouncement'in bulk delete'ten korunması
 - Partial success handling (bazıları skip edilirse)
 - Bulk toggle (aktif->pasif, pasif->aktif)
 - Boş array handling
@@ -248,7 +248,7 @@
 - Admin/editor/viewer/guest rolleri
 - Guest erişim reddi
 - Module permission middleware
-- Homepage deletion/deactivation protection
+- Homeannouncement deletion/deactivation protection
 - CSRF token validation
 - XSS prevention (script tag sanitization)
 - SQL injection protection
@@ -284,7 +284,7 @@ AnnouncementPermissionTest.php    →  25 test (Feature)
 ```
 CRUD Operations         →  48 test
 Cache Management        →  25 test
-Homepage Protection     →  18 test
+Homeannouncement Protection     →  18 test
 Validation              →  22 test
 Security                →  28 test
 Bulk Operations         →  24 test
@@ -300,7 +300,7 @@ Translation             →  16 test
 ### Kapsanan Özellikler
 ✅ CRUD operasyonları (Create, Read, Update, Delete)
 ✅ Bulk operations (toplu silme, toplu toggle)
-✅ Homepage management ve koruması
+✅ Homeannouncement management ve koruması
 ✅ Slug generation ve benzersizlik
 ✅ Multi-language support (tr, en, ar)
 ✅ SEO integration (fallbacks, universal tab)

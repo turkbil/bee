@@ -28,15 +28,16 @@ return new class extends Migration
             $table->json('keywords')->nullable(); // {"tr": ["anahtar"], "en": ["keyword"]}
             $table->string('canonical_url')->nullable(); // Canonical URL
             
-            // Author & Publisher Info (2025 SEO Standards)
+            // Author Info (2025 SEO Standards)
             $table->string('author')->nullable(); // Content author name
-            $table->string('publisher')->nullable(); // Publisher name
+            $table->string('author_url')->nullable(); // Author website/profile URL
             $table->string('copyright')->nullable(); // Copyright information
             
             // Open Graph - JSON support for multilingual
             $table->json('og_titles')->nullable(); // {"tr": "OG Title", "en": "OG Title"}
             $table->json('og_descriptions')->nullable(); // {"tr": "OG Description", "en": "OG Description"}
-            $table->string('og_image')->nullable(); // Featured image for social media
+            $table->json('og_images')->nullable(); // {"tr": "url", "en": "url"} - Multi-language OG images
+            $table->string('og_image')->nullable(); // Featured image for social media (legacy)
             $table->string('og_type')->default('website'); // website, article, product, etc.
             $table->string('og_locale')->nullable(); // tr_TR, en_US, etc.
             $table->string('og_site_name')->nullable(); // Site name override
@@ -50,6 +51,7 @@ return new class extends Migration
             // Advanced SEO
             $table->json('robots_meta')->nullable(); // {"index": true, "follow": true, "archive": false}
             $table->json('schema_markup')->nullable(); // Structured data
+            $table->json('schema_type')->nullable()->comment('Schema.org page types per language - {"tr": "Article", "en": "BlogPosting"}'); // 2025 SEO Standard
             $table->json('focus_keywords')->nullable(); // Dil bazında focus keywords {"tr": "anahtar", "en": "keyword"}
             $table->json('additional_keywords')->nullable(); // ["keyword1", "keyword2"]
             

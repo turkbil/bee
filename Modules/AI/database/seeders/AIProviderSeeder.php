@@ -44,7 +44,7 @@ class AIProviderSeeder extends Seeder
                     'max_tokens' => 4000,
                     'top_p' => 0.9
                 ],
-                'api_key' => 'sk-d46868413352475abdbea441ac29ff55', // GÜNCEL API KEY
+                'api_key' => env('DEEPSEEK_API_KEY'), // ENV'den alınır
                 'base_url' => 'https://api.deepseek.com',
                 'is_active' => true,
                 'is_default' => false,
@@ -86,7 +86,7 @@ class AIProviderSeeder extends Seeder
                     'max_tokens' => 4000,
                     'top_p' => 0.9
                 ],
-                'api_key' => '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', // GÜNCEL API KEY
+                'api_key' => env('OPENAI_API_KEY'), // ENV'den alınır
                 'base_url' => 'https://api.openai.com/v1',
                 'is_active' => true, // API key eklendiği için aktif
                 'is_default' => true,
@@ -123,7 +123,7 @@ class AIProviderSeeder extends Seeder
                     'temperature' => 0.7,
                     'max_tokens' => 4000
                 ],
-                'api_key' => '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', // GÜNCEL API KEY
+                'api_key' => env('ANTHROPIC_API_KEY'), // ENV'den alınır
                 'base_url' => 'https://api.anthropic.com',
                 'is_active' => true, // API key eklendiği için aktif
                 'is_default' => false,

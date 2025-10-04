@@ -3,6 +3,8 @@
 namespace Modules\Portfolio\App\Observers;
 
 use Modules\Portfolio\App\Models\Portfolio;
+use Modules\Portfolio\App\Exceptions\PortfolioValidationException;
+use Modules\Portfolio\App\Exceptions\PortfolioProtectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -24,7 +26,7 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "creating" event.
+     * Handle the Portfolio "creating" event.
      * Yeni kayıt oluşturulmadan önce çalışır
      */
     public function creating(Portfolio $portfolio): void
@@ -58,7 +60,7 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "created" event.
+     * Handle the Portfolio "created" event.
      * Kayıt oluşturulduktan sonra çalışır
      */
     public function created(Portfolio $portfolio): void
@@ -79,13 +81,15 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "updating" event.
+     * Handle the Portfolio "updating" event.
      * Güncelleme yapılmadan önce çalışır
      */
     public function updating(Portfolio $portfolio): void
     {
         // Değişen alanları tespit et
         $dirty = $portfolio->getDirty();
+
+
 
         // Slug değişiklik kontrolü - benzersizlik
         if (isset($dirty['slug'])) {
@@ -109,7 +113,7 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "updated" event.
+     * Handle the Portfolio "updated" event.
      * Güncelleme yapıldıktan sonra çalışır
      */
     public function updated(Portfolio $portfolio): void
@@ -136,25 +140,11 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "saving" event.
+     * Handle the Portfolio "saving" event.
      * Create veya Update'ten önce çalışır (her ikisinde de)
      */
     public function saving(Portfolio $portfolio): void
     {
-        // CSS/JS boyut kontrolü
-        if (config('portfolio.features.custom_css_js', true)) {
-            $maxCssSize = config('portfolio.security.max_css_size', 50000);
-            $maxJsSize = config('portfolio.security.max_js_size', 50000);
-
-            if ($portfolio->css && strlen($portfolio->css) > $maxCssSize) {
-                throw PortfolioValidationException::cssSizeExceeded($maxCssSize);
-            }
-
-            if ($portfolio->js && strlen($portfolio->js) > $maxJsSize) {
-                throw PortfolioValidationException::jsSizeExceeded($maxJsSize);
-            }
-        }
-
         // Title ve slug validasyon
         if (is_array($portfolio->title)) {
             foreach ($portfolio->title as $locale => $title) {
@@ -185,13 +175,13 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "saved" event.
+     * Handle the Portfolio "saved" event.
      * Create veya Update'ten sonra çalışır (her ikisinde de)
      */
     public function saved(Portfolio $portfolio): void
     {
         // Universal SEO cache temizle
-        Cache::forget("universal_seo_page_{$portfolio->portfolio_id}");
+        Cache::forget("universal_seo_portfolio_{$portfolio->portfolio_id}");
 
         // Response cache temizle
         if (function_exists('responsecache')) {
@@ -200,7 +190,7 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "deleting" event.
+     * Handle the Portfolio "deleting" event.
      * Silme işleminden önce çalışır
      */
     public function deleting(Portfolio $portfolio): bool
@@ -225,11 +215,15 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "deleted" event.
+     * Handle the Portfolio "deleted" event.
      * Silme işleminden sonra çalışır
      */
     public function deleted(Portfolio $portfolio): void
     {
+        // Spatie Media Library - Görselleri temizle
+        $portfolio->clearMediaCollection('featured_image');
+        $portfolio->clearMediaCollection('gallery');
+
         // Cache temizle
         $this->clearPortfolioCaches($portfolio->portfolio_id);
 
@@ -246,12 +240,13 @@ class PortfolioObserver
         Log::info('Portfolio deleted successfully', [
             'portfolio_id' => $portfolio->portfolio_id,
             'title' => $portfolio->title,
+            'media_cleaned' => true,
             'user_id' => auth()->id()
         ]);
     }
 
     /**
-     * Handle the Page "restoring" event.
+     * Handle the Portfolio "restoring" event.
      * Soft delete'ten geri dönüşte çalışır
      */
     public function restoring(Portfolio $portfolio): void
@@ -264,7 +259,7 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "restored" event.
+     * Handle the Portfolio "restored" event.
      * Soft delete'ten geri döndükten sonra çalışır
      */
     public function restored(Portfolio $portfolio): void
@@ -285,7 +280,7 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "forceDeleting" event.
+     * Handle the Portfolio "forceDeleting" event.
      * Kalıcı silme işleminden önce çalışır
      */
     public function forceDeleting(Portfolio $portfolio): bool
@@ -300,17 +295,22 @@ class PortfolioObserver
     }
 
     /**
-     * Handle the Page "forceDeleted" event.
+     * Handle the Portfolio "forceDeleted" event.
      * Kalıcı silme işleminden sonra çalışır
      */
     public function forceDeleted(Portfolio $portfolio): void
     {
+        // Spatie Media Library - Görselleri temizle
+        $portfolio->clearMediaCollection('featured_image');
+        $portfolio->clearMediaCollection('gallery');
+
         // Tüm cache'leri temizle
         $this->clearPortfolioCaches($portfolio->portfolio_id);
 
         Log::warning('Portfolio force deleted', [
             'portfolio_id' => $portfolio->portfolio_id,
             'title' => $portfolio->title,
+            'media_cleaned' => true,
             'user_id' => auth()->id()
         ]);
     }

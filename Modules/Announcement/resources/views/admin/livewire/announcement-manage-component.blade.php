@@ -2,7 +2,7 @@
     @php
         View::share(
             'pretitle',
-            $announcementId ? __('announcement::admin.edit_page_pretitle') : __('announcement::admin.new_page_pretitle'),
+            $announcementId ? __('announcement::admin.edit_announcement_pretitle') : __('announcement::admin.new_announcement_pretitle'),
         );
     @endphp
 
@@ -43,9 +43,9 @@
                                 style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
                                 <!-- Başlık ve Slug alanları -->
-                                <div class="row mb-3">
-                                    <div class="col-md-8">
-                                        <div class="form-floating">
+                                <div class="row mb-4">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating mb-3 mb-md-0">
                                             <input type="text" wire:model="multiLangInputs.{{ $lang }}.title"
                                                 class="form-control @error('multiLangInputs.' . $lang . '.title') is-invalid @enderror"
                                                 placeholder="{{ __('announcement::admin.title_field') }}">
@@ -61,24 +61,49 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control"
                                                 wire:model="multiLangInputs.{{ $lang }}.slug" maxlength="255"
                                                 placeholder="sayfa-url-slug">
                                             <label>
-                                                {{ __('admin.page_url_slug') }}
+                                                {{ __('admin.announcement_url_slug') }}
                                                 <small class="text-muted ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
                                                 <small class="text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>{{ __('admin.slug_help') }}
+                                                    {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        @endforeach
+
+                        {{-- MEDYA YÖNETİMİ --}}
+                        <div class="mb-4">
+                            <livewire:mediamanagement::universal-media
+                                wire:id="announcement-media-component"
+                                :model-id="$announcementId"
+                                model-type="announcement"
+                                model-class="Modules\Announcement\App\Models\Announcement"
+                                :collections="['featured_image', 'gallery']"
+                                :sortable="true"
+                                :set-featured-from-gallery="true"
+                                :key="'universal-media-' . ($announcementId ?? 'new')"
+                            />
+                        </div>
+
+                        @foreach ($availableLanguages as $lang)
+                            @php
+                                $langData = $multiLangInputs[$lang] ?? [];
+                                $langName = $languageNames[$lang] ?? strtoupper($lang);
+                            @endphp
+
+                            <div class="language-content" data-language="{{ $lang }}"
+                                style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
                                 {{-- İçerik editörü - AI button artık global component'te --}}
                                 @include('admin.components.content-editor', [
@@ -92,26 +117,10 @@
                             </div>
                         @endforeach
 
-                        {{-- MEDYA YÖNETİMİ --}}
-                        <div class="mb-4 mt-4">
-                            <hr class="mb-4">
-
-                            <livewire:mediamanagement::universal-media
-                                wire:id="announcement-media-component"
-                                :model-id="$announcementId"
-                                model-type="announcement"
-                                model-class="Modules\Announcement\App\Models\Announcement"
-                                :collections="['featured_image', 'gallery']"
-                                :sortable="true"
-                                :set-featured-from-gallery="true"
-                                :key="'universal-media-' . ($announcementId ?? 'new')"
-                            />
-                        </div>
-
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
                         <!-- Aktif/Pasif - sadece bir kere -->
-                        <div class="mb-3">
+                        <div class="mb-3 mt-4">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
                                     value="1"

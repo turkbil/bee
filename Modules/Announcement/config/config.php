@@ -62,9 +62,9 @@ return [
      * Pagination Ayarları
      */
     'pagination' => [
-        'admin_per_page' => env('ANNOUNCEMENT_ADMIN_PER_PAGE', 10),
-        'front_per_page' => env('ANNOUNCEMENT_FRONT_PER_PAGE', 12),
-        'max_per_page' => 100,
+        'admin_per_announcement' => env('ANNOUNCEMENT_ADMIN_PER_PAGE', 10),
+        'front_per_announcement' => env('ANNOUNCEMENT_FRONT_PER_PAGE', 12),
+        'max_per_announcement' => 100,
     ],
 
     /**
@@ -77,6 +77,16 @@ return [
         'version_control' => env('ANNOUNCEMENT_VERSION_CONTROL', false),
         'preview_mode' => env('ANNOUNCEMENT_PREVIEW_MODE', true),
         'custom_css_js' => false,
+    ],
+
+    /**
+     * Entegrasyon Ayarları
+     */
+    'integrations' => [
+        'studio' => [
+            'enabled' => env('ANNOUNCEMENT_STUDIO_ENABLED', true),
+            'component' => 'Modules\Studio\App\Http\Livewire\EditorComponent',
+        ],
     ],
 
     /**
@@ -200,5 +210,16 @@ return [
         'sanitize_html' => true,
         // NOT: allowed_tags/attributes kullanılmıyor, SecurityValidationService global olarak yönetiyor
         // NOT: CSS/JS security ayarları yok çünkü Announcement'ta custom CSS/JS desteği yok
+    ],
+
+    // ========================================
+    // DEBUG & LOGGING
+    // ========================================
+    'debug' => [
+        'enabled' => env('ANNOUNCEMENT_DEBUG_ENABLED', env('APP_DEBUG', false)),
+        'verbose_logs' => env('ANNOUNCEMENT_VERBOSE_LOGS', false),
+        'log_channel' => env('ANNOUNCEMENT_LOG_CHANNEL', 'stack'),
+        'log_queries' => env('ANNOUNCEMENT_LOG_QUERIES', false),
+        'log_routes' => env('ANNOUNCEMENT_LOG_ROUTES', false),
     ],
 ];

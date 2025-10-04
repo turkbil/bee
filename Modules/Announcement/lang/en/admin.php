@@ -2,11 +2,11 @@
 
 return [
     // General
-    'pages' => 'Pages',
-    'page_management' => 'Announcement Management',
-    'new_page' => 'New Announcement',
-    'page_detail' => 'Announcement Detail',
-    'home' => 'Homepage',
+    'announcements' => 'Pages',
+    'announcement_management' => 'Announcement Management',
+    'new_announcement' => 'New Announcement',
+    'announcement_detail' => 'Announcement Detail',
+    'home' => 'Homeannouncement',
     'title_field' => 'Title',
     'content' => 'Content',
     'slug_field' => 'Slug',
@@ -17,8 +17,8 @@ return [
     'deactivate' => 'Deactivate',
 
     // Pretitle
-    'edit_page_pretitle' => 'Edit Announcement',
-    'new_page_pretitle' => 'Add New Announcement',
+    'edit_announcement_pretitle' => 'Edit Announcement',
+    'new_announcement_pretitle' => 'Add New Announcement',
 
     // SEO
     'seo' => 'SEO',
@@ -36,31 +36,31 @@ return [
     'search_placeholder' => 'Search...',
     'enter_new_title' => 'Enter new title',
     'items_selected' => 'items selected',
-    'no_pages_found' => 'No pages found',
+    'no_announcements_found' => 'No announcements found',
     'no_results' => 'No results found',
 
     // Menu
     'menu' => 'Menu',
     'menu_title' => 'Announcement Management',
-    'edit_page' => 'Edit Announcement',
-    'create_page' => 'Create Announcement',
+    'edit_announcement' => 'Edit Announcement',
+    'create_announcement' => 'Create Announcement',
 
     // Validation & Messages
     'title_validation_error' => 'Title is invalid. Please check.',
     'title_updated' => 'title updated',
     'title_updated_successfully' => 'Title updated successfully.',
-    'page_not_found' => 'Announcement not found',
-    'homepage_cannot_be_deactivated' => 'Homepage cannot be deactivated',
+    'announcement_not_found' => 'Announcement not found',
+    'homeannouncement_cannot_be_deactivated' => 'Homeannouncement cannot be deactivated',
     'operation_failed' => 'Operation failed',
-    'no_pages_can_be_deleted' => 'No pages can be deleted',
+    'no_announcements_can_be_deleted' => 'No announcements can be deleted',
 
     // Dashboard Translations
-    'total_pages' => 'Total Pages',
-    'all_pages' => 'All Pages',
-    'create_page' => 'Create Announcement',
-    'recent_pages' => 'Recent Pages',
-    'no_pages_yet' => 'No pages yet',
-    'create_first_page' => 'Create First Announcement',
+    'total_announcements' => 'Total Pages',
+    'all_announcements' => 'All Pages',
+    'create_announcement' => 'Create Announcement',
+    'recent_announcements' => 'Recent Pages',
+    'no_announcements_yet' => 'No announcements yet',
+    'create_first_announcement' => 'Create First Announcement',
     'view_all' => 'View All',
     'manage' => 'Manage',
 
@@ -91,11 +91,6 @@ return [
     'announcement_deleted_successfully' => 'Announcement deleted successfully',
     'update_failed' => 'Update failed',
     'deletion_failed' => 'Deletion failed',
-
-    // Backward compatibility (deprecated)
-    'page_created_successfully' => 'Announcement created successfully',
-    'page_updated_successfully' => 'Announcement updated successfully',
-    'page_deleted_successfully' => 'Announcement deleted successfully',
 
     // Studio Editor
     'studio.editor' => 'Edit with Studio',

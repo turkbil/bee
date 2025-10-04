@@ -25,7 +25,7 @@ class PageComponent extends Component
     public $search = '';
 
     #[Url]
-    public $perPage = 10;
+    public $perPage;
 
     #[Url]
     public $sortField = 'page_id';
@@ -52,6 +52,7 @@ class PageComponent extends Component
     public function boot(PageService $pageService): void
     {
         $this->pageService = $pageService;
+        $this->perPage = $this->perPage ?? config('modules.pagination.admin_per_page', 10);
     }
     
     public function refreshPageData()
@@ -218,46 +219,6 @@ class PageComponent extends Component
         ]);
     }
 
-
-    public function queueTranslation($pageId, $sourceLanguage, $targetLanguages, $overwriteExisting = true)
-    {
-        try {
-            // Session ID oluştur (UUID v4 - globally unique)
-            $sessionId = Str::uuid()->toString();
-
-            \Log::info("🚀 QUEUE Translation başlatıldı", [
-                'page_id' => $pageId,
-                'source' => $sourceLanguage,
-                'targets' => $targetLanguages,
-                'session_id' => $sessionId
-            ]);
-
-            // Job'ı kuyruğa ekle - sessionId ile
-            \Modules\AI\app\Jobs\TranslateEntityJob::dispatch(
-                'page',
-                $pageId,
-                $sourceLanguage,
-                $targetLanguages,
-                $sessionId
-            );
-
-            // JavaScript'e sessionId gönder
-            $this->dispatch('translationQueued', [
-                'sessionId' => $sessionId,
-                'success' => true,
-                'message' => 'Çeviri işlemi başlatıldı!',
-                'page_id' => $pageId
-            ]);
-            
-        } catch (\Exception $e) {
-            \Log::error('❌ Queue translation hatası', [
-                'page_id' => $pageId,
-                'error' => $e->getMessage()
-            ]);
-            
-            $this->dispatch('translationError', 'Çeviri kuyruğu hatası: ' . $e->getMessage());
-        }
-    }
 
     /**
      * 🌍 MODAL Bridge: JavaScript'den çağrılan çeviri metodu

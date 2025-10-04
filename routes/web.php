@@ -26,6 +26,40 @@ Route::get('/metrics', function () {
     return response('', 204);
 })->name('metrics');
 
+// PWA Manifest - Dynamic (2025 Best Practice)
+Route::get('/manifest.json', function () {
+    $siteName = setting('site_name') ?: setting('site_title') ?: config('app.name');
+    $siteDescription = setting('site_description') ?: '';
+    $themeColor = setting('site_theme_color') ?: '#000000';
+    $themeColorLight = setting('site_theme_color_light') ?: '#ffffff';
+
+    $manifest = [
+        'name' => $siteName,
+        'short_name' => $siteName,
+        'description' => $siteDescription,
+        'start_url' => url('/'),
+        'display' => 'standalone',
+        'background_color' => $themeColorLight,
+        'theme_color' => $themeColor,
+        'orientation' => 'portrait-primary',
+        'icons' => []
+    ];
+
+    // Logo varsa icon olarak ekle
+    $siteLogo = setting('site_logo');
+    if ($siteLogo) {
+        $logoUrl = cdn($siteLogo);
+        $manifest['icons'][] = [
+            'src' => $logoUrl,
+            'sizes' => '512x512',
+            'type' => 'image/png',
+            'purpose' => 'any maskable'
+        ];
+    }
+
+    return response()->json($manifest);
+})->name('manifest');
+
 // Test SEO component
 // 🧹 SEO test route arşivlendi
 
@@ -68,6 +102,11 @@ Route::middleware([InitializeTenancy::class])->get('/sitemap.xml', function() {
         'Content-Type' => 'application/xml'
     ]);
 })->name('sitemap');
+
+// Dynamic Robots.txt - Tenant aware (2025 SEO Best Practice)
+Route::middleware([InitializeTenancy::class])
+    ->get('/robots.txt', [App\Http\Controllers\RobotsController::class, 'generate'])
+    ->name('robots');
 
 // Normal Laravel route'ları - ÖNCE tanımlanmalı
 Route::middleware('auth')->group(function () {

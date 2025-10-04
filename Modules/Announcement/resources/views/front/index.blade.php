@@ -1,14 +1,14 @@
 @extends('themes.blank.layouts.app')
 
 @section('module_content')
-    <div class="bg-white dark:bg-gray-900" x-data="pagesIndex()" x-init="init()">
+    <div class="bg-white dark:bg-gray-900" x-data="announcementsIndex()" x-init="init()">
 
         <!-- Header -->
         <div class="border-b border-gray-100 dark:border-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div class="max-w-full">
                     <h1 class="text-4xl font-semibold text-gray-900 dark:text-white mb-4">
-                        {{ __('announcement::front.general.pages') }}
+                        {{ __('announcement::front.general.announcements') }}
                     </h1>
                 </div>
             </div>
@@ -119,10 +119,10 @@
                             </svg>
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                            {{ __('announcement::front.general.no_pages_found') }}
+                            {{ __('announcement::front.general.no_announcements_found') }}
                         </h3>
                         <p class="text-gray-600 dark:text-gray-400">
-                            {{ __('announcement::front.general.no_pages_description') }}
+                            {{ __('announcement::front.general.no_announcements_description') }}
                         </p>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
     </div>
 
     <script>
-        function pagesIndex() {
+        function announcementsIndex() {
             return {
                 loaded: false,
 

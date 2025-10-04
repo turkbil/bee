@@ -65,11 +65,45 @@ trait HasUniversalTranslation
     }
     
     /**
-     * Modal'dan çeviri başlat (backward compatibility)
+     * Modal'dan çeviri başlat
+     * JavaScript'ten gelen array formatını destekler
      */
-    public function translateFromModal($entityId, $sourceLanguage, $targetLanguages)
+    public function translateFromModal(array $data): array
     {
-        return $this->queueTranslation($entityId, $sourceLanguage, $targetLanguages);
+        try {
+            $entityId = $data['entityId'] ?? null;
+            $sourceLanguage = $data['sourceLanguage'] ?? 'tr';
+            $targetLanguages = $data['targetLanguages'] ?? [];
+
+            if (!$entityId) {
+                throw new \Exception('Entity ID bulunamadı');
+            }
+
+            \Log::info('🌍 Universal Translation Modal çağrısı', [
+                'entity_type' => $this->detectEntityType(),
+                'entity_id' => $entityId,
+                'source' => $sourceLanguage,
+                'targets' => $targetLanguages
+            ]);
+
+            // Queue translation
+            $this->queueTranslation($entityId, $sourceLanguage, $targetLanguages);
+
+            return [
+                'success' => true,
+                'message' => 'Çeviri kuyruğa başarıyla eklendi'
+            ];
+        } catch (\Exception $e) {
+            \Log::error('❌ Universal Translation Modal hatası', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
     }
     
     /**

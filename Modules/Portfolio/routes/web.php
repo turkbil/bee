@@ -1,14 +1,8 @@
 <?php
 // Modules/Portfolio/routes/web.php
-use Illuminate\Support\Facades\Route;
-use Modules\Portfolio\App\Http\Controllers\Front\PortfolioController;
 
-// Ön yüz rotaları - DynamicRouteService tarafından yönetiliyor
-// NOT: Statik route'lar kaldırıldı çünkü dinamik route sistemi ile çakışıyordu
-// Tüm portfolio route'ları artık DynamicRouteService üzerinden yönetiliyor
-// Route::middleware(['web'])
-//     ->group(function () {
-//         Route::get('/portfolios', [PortfolioController::class, 'index'])->name('portfolios.index');
-//         Route::get('/portfolio/{slug}', [PortfolioController::class, 'show'])->name('portfolios.show');
-//         Route::get('/portfolio-category/{slug}', [PortfolioController::class, 'category'])->name('portfolios.category');
-//     });
+// ⚠️  FRONTEND ROUTES DynamicRouteService TARAFINDAN YÖNETİLİYOR
+// Bu dosyada sadece özel route'lar (homeportfolio gibi) tanımlanmalı
+// Normal content route'ları (index, show) DynamicRouteService'den geliyor
+
+// Ana sayfa route'u routes/web.php'de tanımlı

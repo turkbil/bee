@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Portfolio\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -7,12 +8,6 @@ use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioManageComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryManageComponent;
-use Modules\Portfolio\App\Contracts\PortfolioRepositoryInterface;
-use Modules\Portfolio\App\Contracts\PortfolioCategoryRepositoryInterface;
-use Modules\Portfolio\App\Repositories\PortfolioRepository;
-use Modules\Portfolio\App\Repositories\PortfolioCategoryRepository;
-use Modules\Portfolio\App\Services\PortfolioService;
-use Modules\Portfolio\App\Services\PortfolioCategoryService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -33,7 +28,6 @@ class PortfolioServiceProvider extends ServiceProvider
         // Portfolio Observer kaydı
         \Modules\Portfolio\App\Models\Portfolio::observe(\Modules\Portfolio\App\Observers\PortfolioObserver::class);
         \Modules\Portfolio\App\Models\PortfolioCategory::observe(\Modules\Portfolio\App\Observers\PortfolioCategoryObserver::class);
-
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
@@ -44,7 +38,7 @@ class PortfolioServiceProvider extends ServiceProvider
         // Önce rotalar yüklenir
         $this->loadRoutesFrom(module_path('Portfolio', 'routes/web.php'));
         $this->loadRoutesFrom(module_path('Portfolio', 'routes/admin.php'));
-        
+
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
         // Front themes klasörü için kontrol ekle
@@ -67,18 +61,26 @@ class PortfolioServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
-        
-        // Repository Pattern Bindings
-        $this->app->bind(PortfolioRepositoryInterface::class, PortfolioRepository::class);
-        $this->app->bind(PortfolioCategoryRepositoryInterface::class, PortfolioCategoryRepository::class);
 
-        // Service Layer Bindings
-        $this->app->singleton(PortfolioService::class, function ($app) {
-            return new PortfolioService($app->make(PortfolioRepositoryInterface::class));
-        });
-        $this->app->singleton(PortfolioCategoryService::class, function ($app) {
-            return new PortfolioCategoryService($app->make(PortfolioCategoryRepositoryInterface::class));
-        });
+        // Repository Pattern bindings
+        $this->app->bind(
+            \Modules\Portfolio\App\Contracts\PortfolioRepositoryInterface::class,
+            \Modules\Portfolio\App\Repositories\PortfolioRepository::class
+        );
+
+        $this->app->bind(
+            \Modules\Portfolio\App\Contracts\PortfolioCategoryRepositoryInterface::class,
+            \Modules\Portfolio\App\Repositories\PortfolioCategoryRepository::class
+        );
+
+        $this->app->bind(
+            \App\Contracts\GlobalSeoRepositoryInterface::class,
+            \App\Repositories\GlobalSeoRepository::class
+        );
+
+        // Service Layer bindings
+        $this->app->singleton(\Modules\Portfolio\App\Services\PortfolioService::class);
+        $this->app->singleton(\Modules\Portfolio\App\Services\PortfolioCategoryService::class);
     }
 
     /**
@@ -86,7 +88,9 @@ class PortfolioServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\Portfolio\App\Console\WarmPortfolioCacheCommand::class,
+        ]);
     }
 
     /**
@@ -111,7 +115,7 @@ class PortfolioServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($moduleLangPath);
         }
-        
+
         // Resource'daki dil dosyaları (varsa)
         $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
         if (is_dir($resourceLangPath)) {
@@ -148,11 +152,11 @@ class PortfolioServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/portfolio');
         $sourcePath = module_path('Portfolio', 'resources/views');
-    
+
         $this->publishes([
             $sourcePath => $viewPath,
         ], ['views', 'portfolio-module-views']);
-        
+
         // Tema klasörlerinin yapılandırması - YENİ YAPI
         $themeSourcePath = module_path('Portfolio', 'resources/views/front/themes');
         $themeViewPath = resource_path('views/themes/modules/portfolio');
@@ -163,7 +167,7 @@ class PortfolioServiceProvider extends ServiceProvider
                 $themeSourcePath => $themeViewPath,
             ], ['views', 'portfolio-module-theme-views']);
         }
-    
+
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'portfolio');
     }
 

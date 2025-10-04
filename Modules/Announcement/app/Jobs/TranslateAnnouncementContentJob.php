@@ -21,17 +21,17 @@ class TranslateAnnouncementContentJob implements ShouldQueue
     public array $backoff = [60, 120, 300]; // Retry delays: 1min, 2min, 5min
 
     protected array $data;
-    protected int $pageId;
+    protected int $announcementId;
     protected string $progressKey;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(array $data, int $pageId)
+    public function __construct(array $data, int $announcementId)
     {
         $this->data = $data;
-        $this->pageId = $pageId;
-        $this->progressKey = "page_translation_progress_{$pageId}_" . uniqid();
+        $this->announcementId = $announcementId;
+        $this->progressKey = "announcement_translation_progress_{$announcementId}_" . uniqid();
 
         // Tenant-isolated queue kullan
         $this->onQueue('tenant_isolated');
@@ -51,8 +51,8 @@ class TranslateAnnouncementContentJob implements ShouldQueue
             $fields = $this->data['fields'] ?? ['title', 'body'];
             $overwriteExisting = $this->data['overwriteExisting'] ?? true;
 
-            Log::info("🔄 QUEUE PAGE ÇEVİRİ BAŞLADI", [
-                'announcement_id' => $this->pageId,
+            Log::info("🔄 QUEUE ANNOUNCEMENT ÇEVİRİ BAŞLADI", [
+                'announcement_id' => $this->announcementId,
                 'source' => $sourceLanguage,
                 'targets' => $targetLanguages,
                 'fields' => $fields,
@@ -60,7 +60,7 @@ class TranslateAnnouncementContentJob implements ShouldQueue
             ]);
 
             // Sayfayı bul
-            $announcement = Announcement::findOrFail($this->pageId);
+            $announcement = Announcement::findOrFail($this->announcementId);
 
             $totalOperations = count($targetLanguages) * count($fields);
             $currentOperation = 0;
@@ -130,7 +130,7 @@ class TranslateAnnouncementContentJob implements ShouldQueue
                     $messages[] = strtoupper($targetLanguage) . ' çevirisi';
                 } catch (\Exception $e) {
                     Log::error("❌ Çeviri hatası", [
-                        'announcement_id' => $this->pageId,
+                        'announcement_id' => $this->announcementId,
                         'target_language' => $targetLanguage,
                         'error' => $e->getMessage()
                     ]);
@@ -143,33 +143,33 @@ class TranslateAnnouncementContentJob implements ShouldQueue
             // Başarı durumu
             if ($translatedCount > 0) {
                 $this->updateProgress(100, 'Çeviri tamamlandı!', true, [
-                    'announcement_id' => $this->pageId,
+                    'announcement_id' => $this->announcementId,
                     'translated_count' => $translatedCount,
                     'messages' => $messages,
                     'success' => true
                 ]);
 
-                Log::info("🎉 QUEUE PAGE ÇEVİRİ TAMAMLANDI", [
-                    'announcement_id' => $this->pageId,
+                Log::info("🎉 QUEUE ANNOUNCEMENT ÇEVİRİ TAMAMLANDI", [
+                    'announcement_id' => $this->announcementId,
                     'translated_count' => $translatedCount,
                     'messages' => $messages
                 ]);
             } else {
                 $this->updateProgress(100, 'Çeviri yapılacak içerik bulunamadı', true, [
-                    'announcement_id' => $this->pageId,
+                    'announcement_id' => $this->announcementId,
                     'success' => false,
                     'message' => 'Çeviri yapılacak içerik bulunamadı'
                 ]);
             }
         } catch (\Exception $e) {
-            Log::error("💥 QUEUE PAGE ÇEVİRİ GENEL HATA", [
-                'announcement_id' => $this->pageId,
+            Log::error("💥 QUEUE ANNOUNCEMENT ÇEVİRİ GENEL HATA", [
+                'announcement_id' => $this->announcementId,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
 
             $this->updateProgress(100, 'Çeviri hatası: ' . $e->getMessage(), true, [
-                'announcement_id' => $this->pageId,
+                'announcement_id' => $this->announcementId,
                 'success' => false,
                 'error' => $e->getMessage()
             ]);
@@ -183,14 +183,14 @@ class TranslateAnnouncementContentJob implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        Log::error("❌ QUEUE PAGE ÇEVİRİ JOB BAŞARISIZ", [
-            'announcement_id' => $this->pageId,
+        Log::error("❌ QUEUE ANNOUNCEMENT ÇEVİRİ JOB BAŞARISIZ", [
+            'announcement_id' => $this->announcementId,
             'error' => $exception->getMessage(),
             'attempts' => $this->attempts()
         ]);
 
         $this->updateProgress(100, 'Çeviri işlemi başarısız oldu', true, [
-            'announcement_id' => $this->pageId,
+            'announcement_id' => $this->announcementId,
             'success' => false,
             'error' => $exception->getMessage(),
             'failed' => true
@@ -206,7 +206,7 @@ class TranslateAnnouncementContentJob implements ShouldQueue
             'percentage' => $percentage,
             'message' => $message,
             'completed' => $completed,
-            'announcement_id' => $this->pageId,
+            'announcement_id' => $this->announcementId,
             'timestamp' => now()->toISOString(),
             'data' => $data
         ];

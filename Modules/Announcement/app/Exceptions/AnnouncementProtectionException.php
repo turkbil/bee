@@ -26,10 +26,10 @@ class AnnouncementProtectionException extends Exception
     /**
      * Korumalı sayfa exception
      */
-    public static function protectedPage(int $pageId): self
+    public static function protectedPage(int $announcementId): self
     {
         return new self(
-            "Bu sayfa sistem tarafından korunuyor: #{$pageId}"
+            "Bu sayfa sistem tarafından korunuyor: #{$announcementId}"
         );
     }
 }

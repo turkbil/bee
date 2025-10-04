@@ -11,7 +11,7 @@ use App\Services\TenantCacheService;
 use App\Services\TenantLanguageProvider;
 use Modules\Portfolio\App\Contracts\PortfolioCategoryRepositoryInterface;
 use Modules\Portfolio\App\Models\PortfolioCategory;
-use Modules\Page\App\Enums\CacheStrategy;
+use Modules\Portfolio\App\Enums\CacheStrategy;
 
 readonly class PortfolioCategoryRepository implements PortfolioCategoryRepositoryInterface
 {

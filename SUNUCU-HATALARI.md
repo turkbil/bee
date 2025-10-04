@@ -25,51 +25,37 @@
 
 ## ❌ AKTİF HATALAR
 
-### ❌ 1. MariaDB JSON Index Syntax Hatası - KRİTİK!
+### ❌ 1. Faker Class Not Found - Seeder Hatası
 
-**Durum**: MariaDB 10.3 JSON functional index'leri desteklemiyor
+**Durum**: Production'da Faker paketi yok, seeder çalışmıyor
 
 **Hata Mesajı**:
 ```
-SQLSTATE[42000]: Syntax error or access violation: 1064
-CREATE INDEX announcements_slug_tr_idx ON announcements (
-    (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) AS CHAR(255)))
-)
+In ThemesSeeder.php line 18:
+Class "Faker\Factory" not found
 ```
 
-**Sunucu Ortamı**:
-- Database: MariaDB 10.3.39 ❌ (JSON functional index YOK)
-- Gerekli: MySQL 8.0+ veya MariaDB 10.5+ ✅
-
-**Hatalı Migration**:
-- `2024_02_17_000001_create_announcements_table.php`
-- JSON field'lara functional index oluşturuluyor
-- MariaDB 10.3 bunu desteklemiyor
+**Neden**:
+- Production environment (`--no-dev` flag)
+- Faker paketi `require-dev` içinde
+- Seeder'lar Faker kullanıyor
 
 **📍 YEREL CLAUDE ÇÖZÜM ÖNERİSİ BEKLİYOR:**
 
-**Seçenek 1: Migration'ları Düzelt (ÖNERİLEN)**
-- JSON index'leri kaldır veya basit index yap
-- Tüm modül migration'larını kontrol et (Page, Portfolio, Announcement, vs.)
-- MariaDB 10.3 uyumlu hale getir
+**Seçenek 1: Seeder'ları Faker'sız Yap (ÖNERİLEN)**
+- ThemesSeeder ve diğer seeder'larda Faker kullanımını kaldır
+- Hard-coded default data kullan
+- Production-ready seeder yapısı
 
-**Seçenek 2: MariaDB Upgrade**
-- MariaDB 10.3 → 10.5+ yükselt
-- Plesk üzerinden yapılabilir mi?
-- Uyumluluk riskleri var mı?
+**Seçenek 2: Faker'ı Production'a Ekle (Tavsiye edilmez)**
+- composer.json'da Faker'ı `require` bölümüne taşı
+- Gereksiz dependency production'da
 
-**Seçenek 3: MySQL 8.0+ Geç**
-- MariaDB yerine MySQL 8.0 kullan
-- Plesk'te mümkün mü?
+**Etkilenen Seeder'lar**:
+- ThemesSeeder (doğrulandı)
+- Diğer seeder'lar kontrol edilmeli
 
-**Etkilenen Migration'lar (Muhtemel)**:
-- ✅ announcements_table (doğrulandı - hatalı)
-- ❓ pages_table (kontrol edilmeli)
-- ❓ portfolios_table (kontrol edilmeli)
-- ❓ Diğer JSON field kullanan tüm tablolar
-
-**Geçici Çözüm (Test İçin)**:
-JSON index'leri migration'lardan kaldır, sadece normal kolonlar bırak.
+**Migration Durumu**: ✅ TÜM MIGRATION'LAR BAŞARILI (75 migration)
 
 ---
 
@@ -108,6 +94,14 @@ JSON index'leri migration'lardan kaldır, sadece normal kolonlar bırak.
 - **Çözüm:** Şifreyi tırnak içine al: `DB_PASSWORD="XZ9Lhb%u8jp9#njf"`
 - **Dosya:** `.env`
 - **Sonuç:** Database bağlantısı başarılı ✅
+
+### ✅ 8. MariaDB 10.3 JSON Index Hatası → ÇÖZÜLDİ
+- **Problem:** MariaDB 10.3 JSON functional index desteklemiyor
+- **Hata:** `SQLSTATE[42000]: Syntax error - CREATE INDEX ... JSON_EXTRACT`
+- **Çözüm:** 8 migration'a MariaDB versiyon kontrolü eklendi
+- **Dosyalar:** Announcement, Page, Portfolio migration'ları (central + tenant)
+- **Yapılan:** MariaDB 10.3'te JSON index atlanır, MySQL 8.0+/MariaDB 10.5+'da oluşturulur
+- **Sonuç:** 75 migration başarıyla çalıştı ✅
 
 ---
 

@@ -57,17 +57,35 @@ class PortfolioCategoryService
     /**
      * Create new category
      */
-    public function createCategory(array $data): PortfolioCategory
+    public function createCategory(array $data): array
     {
-        $category = $this->repository->create($data);
+        try {
+            $category = $this->repository->create($data);
 
-        Log::info('Portfolio Category created', [
-            'category_id' => $category->category_id,
-            'title' => $category->title,
-            'user_id' => auth()->id()
-        ]);
+            Log::info('Portfolio Category created', [
+                'category_id' => $category->category_id,
+                'title' => $category->title,
+                'user_id' => auth()->id()
+            ]);
 
-        return $category;
+            return [
+                'success' => true,
+                'message' => __('portfolio::admin.category_created'),
+                'data' => $category
+            ];
+        } catch (\Exception $e) {
+            Log::error('Portfolio Category creation failed', [
+                'error' => $e->getMessage(),
+                'data' => $data,
+                'user_id' => auth()->id()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => __('portfolio::admin.category_create_failed'),
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     /**
@@ -90,33 +108,62 @@ class PortfolioCategoryService
     /**
      * Delete category
      */
-    public function deleteCategory(int $id): bool
+    public function deleteCategory(int $id): array
     {
-        $category = $this->repository->findById($id);
+        try {
+            $category = $this->repository->findById($id);
 
-        if (!$category) {
-            return false;
-        }
+            if (!$category) {
+                return [
+                    'success' => false,
+                    'message' => __('portfolio::admin.category_not_found')
+                ];
+            }
 
-        // Check if category has portfolios
-        if ($category->portfolios()->count() > 0) {
-            Log::warning('Cannot delete category with portfolios', [
+            // Check if category has portfolios
+            if ($category->portfolios()->count() > 0) {
+                Log::warning('Cannot delete category with portfolios', [
+                    'category_id' => $id,
+                    'portfolio_count' => $category->portfolios()->count()
+                ]);
+
+                return [
+                    'success' => false,
+                    'message' => __('portfolio::admin.category_has_portfolios')
+                ];
+            }
+
+            $result = $this->repository->delete($id);
+
+            if ($result) {
+                Log::info('Portfolio Category deleted', [
+                    'category_id' => $id,
+                    'user_id' => auth()->id()
+                ]);
+
+                return [
+                    'success' => true,
+                    'message' => __('portfolio::admin.category_deleted')
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => __('portfolio::admin.category_delete_failed')
+            ];
+        } catch (\Exception $e) {
+            Log::error('Portfolio Category deletion failed', [
                 'category_id' => $id,
-                'portfolio_count' => $category->portfolios()->count()
-            ]);
-            return false;
-        }
-
-        $result = $this->repository->delete($id);
-
-        if ($result) {
-            Log::info('Portfolio Category deleted', [
-                'category_id' => $id,
+                'error' => $e->getMessage(),
                 'user_id' => auth()->id()
             ]);
-        }
 
-        return $result;
+            return [
+                'success' => false,
+                'message' => __('portfolio::admin.category_delete_failed'),
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     /**

@@ -18,7 +18,7 @@ Bu dosyayı Nurullah sana yapıştıracak. Sen bu TODO listesindeki **TÜM ADIML
 
 **ÖNEMLİ:**
 - Sudo şifresi: `123123`
-- Domain: `[Nurullah söyleyecek]`
+- Domain: `tuufi.com`
 - Tüm komutları sen çalıştıracaksın
 - Onay sorma, direkt yap!
 
@@ -74,43 +74,36 @@ mysql --version
 
 ### ☐ 2. Domain ve Klasör Bilgisini Al
 
-**Nurullah'a SOR:**
-> "Hangi domain'e kuruyorum? (örn: example.com)"
+**Domain:** `tuufi.com`
 
-**Klasör Yolu Belirle:**
+**Klasör Yolu:**
 ```
-/var/www/vhosts/[DOMAIN]/httpdocs/
+/var/www/vhosts/tuufi.com/httpdocs/
 ```
 
 **Klasöre Git:**
 ```bash
-cd /var/www/vhosts/[DOMAIN]/httpdocs/
+cd /var/www/vhosts/tuufi.com/httpdocs/
 pwd  # Doğru yerde misin kontrol et
 ```
 
 ---
 
-### ☐ 3. Database Bilgilerini Al
+### ☐ 3. Database Oluştur (SEN YAPACAKSIN)
 
-**Nurullah'a SOR:**
-> "Database bilgilerini ver:
-> - Database name: ?
-> - Username: ?
-> - Password: ?
->
-> Yoksa ben Plesk'ten oluşturayım mı?"
+**Plesk'ten database oluştur:**
 
-**EĞER SEN OLUŞTURACAKSAN:**
-
-Nurullah'dan Plesk login bilgilerini al, Plesk UI'den database oluştur:
-```
-Plesk → Databases → Add Database
-Name: laravel_prod
-User: laravel_user
-Password: [güçlü şifre oluştur, KAYDET!]
-Charset: utf8mb4
-Collation: utf8mb4_unicode_ci
-```
+1. **Nurullah'a Plesk login bilgilerini sor**
+2. **Plesk UI'den database oluştur:**
+   ```
+   Plesk → Databases → Add Database
+   Name: laravel_prod
+   User: laravel_user
+   Password: [güçlü şifre oluştur, KAYDET!]
+   Charset: utf8mb4
+   Collation: utf8mb4_unicode_ci
+   ```
+3. **Database bilgilerini kaydet** (.env'de kullanacaksın)
 
 ---
 
@@ -118,13 +111,8 @@ Collation: utf8mb4_unicode_ci
 
 **Nurullah'a SOR:**
 > "GitHub Personal Access Token'ı ver"
-
-**VEYA:**
-
-Eğer Nurullah vermezse, şu token'ı kullan (temporary):
-```
-ghp_[Nurullah verecek]
-```
+>
+> (Nurullah'ın verdiği token'ı git clone komutunda kullanacaksın)
 
 ---
 
@@ -148,7 +136,7 @@ ls -la
 ### ☐ 6. Git Clone
 
 ```bash
-# Token ile clone
+# Token ile clone (Nurullah'dan alacaksın)
 git clone https://turkbil:[GITHUB_TOKEN]@github.com/turkbil/bee.git .
 
 # Başarılı mı kontrol
@@ -205,14 +193,14 @@ nano .env
 APP_NAME="Laravel CMS"
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://[DOMAIN]
+APP_URL=https://tuufi.com
 
 DB_CONNECTION=mysql
 DB_HOST=localhost
 DB_PORT=3306
-DB_DATABASE=[DATABASE_NAME]
-DB_USERNAME=[DATABASE_USER]
-DB_PASSWORD=[DATABASE_PASSWORD]
+DB_DATABASE=laravel_prod
+DB_USERNAME=laravel_user
+DB_PASSWORD=[Plesk'te oluşturduğun şifre]
 
 CACHE_DRIVER=redis
 SESSION_DRIVER=redis
@@ -221,10 +209,10 @@ QUEUE_CONNECTION=redis
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 
-# Nurullah'dan API key'leri al ve yapıştır:
-OPENAI_API_KEY=[Nurullah verecek]
-ANTHROPIC_API_KEY=[Nurullah verecek]
-DEEPSEEK_API_KEY=[Nurullah verecek]
+# API Keys (Nurullah'dan kopyala):
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+DEEPSEEK_API_KEY=
 
 SYSTEM_LANGUAGES=tr,en
 DEFAULT_LANGUAGE=tr
@@ -327,7 +315,7 @@ ls -la bootstrap/cache/
 **Nurullah'a SÖYLEYİP YAPTIR:**
 > "Plesk'te şunu ayarla:
 >
-> Domains → [DOMAIN] → Hosting Settings
+> Domains → tuufi.com → Hosting Settings
 > Document root: /httpdocs/public
 >
 > Mutlaka /public olmalı!"
@@ -339,7 +327,7 @@ ls -la bootstrap/cache/
 **Nurullah'a SÖYLEYİP YAPTIR:**
 > "Plesk'te şunu ayarla:
 >
-> Domains → [DOMAIN] → PHP Settings
+> Domains → tuufi.com → PHP Settings
 >
 > memory_limit: 512M
 > max_execution_time: 300
@@ -356,11 +344,11 @@ ls -la bootstrap/cache/
 > "Plesk'te Scheduled Tasks ekle:
 >
 > **Laravel Scheduler:**
-> Command: /opt/plesk/php/8.3/bin/php /var/www/vhosts/[DOMAIN]/httpdocs/artisan schedule:run >> /dev/null 2>&1
+> Command: /opt/plesk/php/8.3/bin/php /var/www/vhosts/tuufi.com/httpdocs/artisan schedule:run >> /dev/null 2>&1
 > Cron: * * * * *
 >
 > **Queue Worker (opsiyonel):**
-> Command: /opt/plesk/php/8.3/bin/php /var/www/vhosts/[DOMAIN]/httpdocs/artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+> Command: /opt/plesk/php/8.3/bin/php /var/www/vhosts/tuufi.com/httpdocs/artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
 > Run: Reboot"
 
 ---
@@ -372,7 +360,7 @@ ls -la bootstrap/cache/
 >
 > Domains → Add Subdomain
 > Subdomain: *
-> Parent: [DOMAIN]
+> Parent: tuufi.com
 > Document root: /httpdocs/public (aynı klasör)"
 
 ---
@@ -385,9 +373,9 @@ ls -la bootstrap/cache/
 > SSL/TLS → Let's Encrypt
 >
 > Domain names:
-> ☑ [DOMAIN]
-> ☑ www.[DOMAIN]
-> ☑ *.[DOMAIN]
+> ☑ tuufi.com
+> ☑ www.tuufi.com
+> ☑ *.tuufi.com
 >
 > ☑ Redirect HTTP to HTTPS"
 
@@ -397,22 +385,22 @@ ls -la bootstrap/cache/
 
 ```bash
 # Ana sayfa
-curl -I https://[DOMAIN]
+curl -I https://tuufi.com
 
 # Beklenen: HTTP/2 200
 
 # Admin
-curl -I https://[DOMAIN]/admin
+curl -I https://tuufi.com/admin
 
 # Login
-curl -I https://[DOMAIN]/login
+curl -I https://tuufi.com/login
 ```
 
 **Nurullah'a SÖYLEYİP KONTROL ETTİR:**
 > "Browser'dan şunları aç:
-> - https://[DOMAIN]
-> - https://[DOMAIN]/admin
-> - https://[DOMAIN]/login
+> - https://tuufi.com
+> - https://tuufi.com/admin
+> - https://tuufi.com/login
 >
 > Hepsi açılıyor mu?"
 
@@ -425,15 +413,15 @@ php artisan tinker
 
 # Tinker içinde:
 $tenant = \App\Models\Tenant::create(['id' => 'test', 'name' => 'Test Tenant']);
-$tenant->domains()->create(['domain' => 'test.[DOMAIN]']);
+$tenant->domains()->create(['domain' => 'test.tuufi.com']);
 exit
 
 # Test et
-curl -I https://test.[DOMAIN]
+curl -I https://test.tuufi.com
 ```
 
 **Nurullah'a SÖYLEYİP KONTROL ETTİR:**
-> "Browser'dan aç: https://test.[DOMAIN]
+> "Browser'dan aç: https://test.tuufi.com
 > Açılıyor mu?"
 
 ---
@@ -456,7 +444,7 @@ grep ERROR storage/logs/laravel.log | tail -20
 
 ```bash
 # .env erişimi engelli mi?
-curl https://[DOMAIN]/.env
+curl https://tuufi.com/.env
 # 403 veya 404 olmalı
 
 # APP_DEBUG kapalı mı?
@@ -464,7 +452,7 @@ cat .env | grep APP_DEBUG
 # false olmalı
 
 # Storage klasörü korunuyor mu?
-curl https://[DOMAIN]/storage/logs/laravel.log
+curl https://tuufi.com/storage/logs/laravel.log
 # 403 veya 404 olmalı
 ```
 

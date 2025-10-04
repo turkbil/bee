@@ -54,3 +54,4 @@ debug-*.txt
 
 # Docker volumes - veritabanı ve cache dosyaları
 /docker/volumes
+SUNUCU_BILGILERI.txt

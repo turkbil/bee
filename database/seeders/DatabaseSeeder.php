@@ -11,14 +11,22 @@ class DatabaseSeeder extends Seeder
     {
         if (TenantHelpers::isCentral()) {
             $this->command->info('=== CENTRAL DATABASE SEEDING ===');
-            
+
             // Central-only seeder'lar
             $this->call(ThemesSeeder::class);
             $this->call(\Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder::class);
-            $this->call(TenantSeeder::class);
-            
-            // TenantSeeder'dan sonra context'i AGRESIVE şekilde central'a geri döndür
-            tenancy()->end();
+
+            // TenantSeeder - sadece local/testing ortamında çalıştır
+            // Production'da CREATE DATABASE izni olmadığı için skip edilir
+            if (app()->environment(['local', 'testing'])) {
+                $this->command->info('🏠 Local/Testing environment - TenantSeeder çalıştırılıyor...');
+                $this->call(TenantSeeder::class);
+
+                // TenantSeeder'dan sonra context'i AGRESIVE şekilde central'a geri döndür
+                tenancy()->end();
+            } else {
+                $this->command->info('🚀 Production environment - TenantSeeder atlanıyor (CREATE DATABASE izni yok)');
+            }
             
             // Context durumunu kontrol et ve zorla central'a al
             if (!TenantHelpers::isCentral()) {

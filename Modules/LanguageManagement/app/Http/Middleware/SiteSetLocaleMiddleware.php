@@ -194,17 +194,20 @@ class SiteSetLocaleMiddleware
     {
         // Throttling key - aynı dil değişimi 5 saniye içinde sadece 1 kez
         $throttleKey = "language_cache_clear_{$previousLocale}_to_{$newLocale}";
-        
-        if (\Cache::has($throttleKey)) {
+
+        // Redis cache kullan (file cache yerine)
+        $cache = \Cache::store('redis');
+
+        if ($cache->has($throttleKey)) {
             \Log::debug('Language cache clear skipped (throttled)', [
                 'from' => $previousLocale,
                 'to' => $newLocale
             ]);
             return;
         }
-        
+
         // 5 saniye throttle
-        \Cache::put($throttleKey, true, 5);
+        $cache->put($throttleKey, true, 5);
         
         $this->clearLanguageRelatedCaches();
     }

@@ -25,37 +25,40 @@
 
 ## ❌ AKTİF HATALAR
 
-### ❌ 1. Faker Class Not Found - Seeder Hatası
+### ❌ 1. AdminLanguagesSeeder PSR-4 Autoload Hatası
 
-**Durum**: Production'da Faker paketi yok, seeder çalışmıyor
+**Durum**: Seeder sınıfı bulunmuyor - namespace/path uyumsuzluğu
 
 **Hata Mesajı**:
 ```
-In ThemesSeeder.php line 18:
-Class "Faker\Factory" not found
+Target class [Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder] does not exist.
+Class "Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder" does not exist
 ```
 
 **Neden**:
-- Production environment (`--no-dev` flag)
-- Faker paketi `require-dev` içinde
-- Seeder'lar Faker kullanıyor
+- PSR-4 autoloading non-compliance
+- Dosya yolu ile namespace uyuşmuyor
+- Production'da composer autoload sıkı kontrol yapıyor
+
+**Composer Autoload Uyarısı (ilgili)**:
+```
+Class Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder located in
+./Modules/LanguageManagement/database/seeders/AdminLanguagesSeeder.php
+does not comply with psr-4 autoloading standard
+```
 
 **📍 YEREL CLAUDE ÇÖZÜM ÖNERİSİ BEKLİYOR:**
 
-**Seçenek 1: Seeder'ları Faker'sız Yap (ÖNERİLEN)**
-- ThemesSeeder ve diğer seeder'larda Faker kullanımını kaldır
-- Hard-coded default data kullan
-- Production-ready seeder yapısı
+**Muhtemel Seçenekler:**
+1. Seeder namespace'ini düzelt (`Database` → `App/Database` veya dosya yolunu taşı)
+2. DatabaseSeeder'da seeder çağrımını düzelt
+3. Composer autoload rules güncelle
+4. Production için seeder'ı devre dışı bırak
 
-**Seçenek 2: Faker'ı Production'a Ekle (Tavsiye edilmez)**
-- composer.json'da Faker'ı `require` bölümüne taşı
-- Gereksiz dependency production'da
-
-**Etkilenen Seeder'lar**:
-- ThemesSeeder (doğrulandı)
-- Diğer seeder'lar kontrol edilmeli
-
-**Migration Durumu**: ✅ TÜM MIGRATION'LAR BAŞARILI (75 migration)
+**Başarılı Aşamalar**:
+- ✅ 75 migration başarılı
+- ✅ ThemesSeeder çalıştı (Faker ile)
+- ❌ AdminLanguagesSeeder sınıfı bulunamadı
 
 ---
 
@@ -102,6 +105,13 @@ Class "Faker\Factory" not found
 - **Dosyalar:** Announcement, Page, Portfolio migration'ları (central + tenant)
 - **Yapılan:** MariaDB 10.3'te JSON index atlanır, MySQL 8.0+/MariaDB 10.5+'da oluşturulur
 - **Sonuç:** 75 migration başarıyla çalıştı ✅
+
+### ✅ 9. Faker Class Not Found - Seeder Hatası → ÇÖZÜLDİ
+- **Problem:** Production'da Faker paketi yok, ThemesSeeder çalışmıyor
+- **Hata:** `Class "Faker\Factory" not found in ThemesSeeder`
+- **Çözüm:** Faker `require-dev` → `require` taşındı + ThemesSeeder Faker'sız yapıldı
+- **Dosyalar:** `composer.json`, `database/seeders/ThemesSeeder.php`
+- **Sonuç:** ThemesSeeder başarıyla çalıştı ✅
 
 ---
 

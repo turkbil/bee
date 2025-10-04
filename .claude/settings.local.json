@@ -211,7 +211,9 @@
       "Bash(git pull:*)",
       "Bash(timeout:*)",
       "Bash(then echo \"Hatalı: $dir\")",
-      "Bash(xxd:*)"
+      "Bash(xxd:*)",
+      "Bash(./module.sh)",
+      "Bash(printf:*)"
     ],
     "deny": [],
     "ask": [],

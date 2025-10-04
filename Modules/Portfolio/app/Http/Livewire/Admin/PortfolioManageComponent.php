@@ -25,7 +25,7 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
     // Dil-neutral inputs
     public $inputs = [
         'is_active' => true,
-        'category_id' => null,
+        'portfolio_category_id' => null,
     ];
 
     public $studioEnabled = false;
@@ -53,6 +53,17 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
         }
 
         return Portfolio::query()->find($this->portfolioId);
+    }
+
+    /**
+     * Get active categories for dropdown
+     */
+    #[Computed]
+    public function activeCategories()
+    {
+        return \Modules\Portfolio\App\Models\PortfolioCategory::active()
+            ->orderBy('sort_order')
+            ->get();
     }
 
     // Livewire Listeners - Universal component'lerden gelen event'ler
@@ -213,7 +224,7 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
 
         if ($portfolio) {
             // Dil-neutral alanlar
-            $this->inputs = $portfolio->only(['is_active']);
+            $this->inputs = $portfolio->only(['is_active', 'portfolio_category_id']);
 
             // Çoklu dil alanları - FALLBACK KAPALI (kullanıcı tüm dilleri boşaltabilsin)
             foreach ($this->availableLanguages as $lang) {
@@ -266,7 +277,7 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
     {
         $rules = [
             'inputs.is_active' => 'boolean',
-            'inputs.category_id' => 'nullable|exists:portfolio_categories,category_id',
+            'inputs.portfolio_category_id' => 'nullable|exists:portfolio_categories,category_id',
         ];
 
         // Çoklu dil alanları - ana dil mecburi, diğerleri opsiyonel

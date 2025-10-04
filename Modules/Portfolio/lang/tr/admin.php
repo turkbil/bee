@@ -133,6 +133,9 @@ return [
 'sort_order_hint' => 'Küçük sayı önce gelir',
 'active_category' => 'Aktif Kategori',
 'search_categories' => 'Kategorilerde ara...',
+'category_create_failed' => 'Kategori oluşturulamadı',
+'category_delete_failed' => 'Kategori silinemedi',
+'category_has_portfolios' => 'Bu kategoride portfolyolar bulunduğu için silinemez',
 
 // Media Library
 'media' => [

@@ -12,7 +12,7 @@ return [
     'domain_model' => Domain::class,
     
     'central_domains' => [
-        'laravel.test',
+        env('APP_DOMAIN', 'laravel.test'),
     ],
     
     'bootstrappers' => [

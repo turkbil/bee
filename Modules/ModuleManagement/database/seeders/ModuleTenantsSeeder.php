@@ -94,8 +94,9 @@ class ModuleTenantsSeeder extends Seeder
                 foreach ($modules as $module) {
                     if (in_array($module->name, $centralModuller)) {
                         $tenantDomain = DB::table('domains')->where('tenant_id', $tenant)->value('domain');
-                        
-                        if ($tenantDomain === 'laravel.test') {
+                        $centralDomain = env('APP_DOMAIN', 'laravel.test');
+
+                        if ($tenantDomain === $centralDomain) {
                             // Sadece central tenant'ta olsun
                             $isActive = true;
                             DB::table('module_tenants')->insert([
@@ -119,8 +120,9 @@ class ModuleTenantsSeeder extends Seeder
                         
                         // Tenant domain'ine göre özel atama kuralları
                         $tenantDomain = DB::table('domains')->where('tenant_id', $tenant)->value('domain');
-                        
-                        if ($tenantDomain === 'laravel.test') {
+                        $centralDomain = env('APP_DOMAIN', 'laravel.test');
+
+                        if ($tenantDomain === $centralDomain) {
                             // Central tenant'ta tüm özel modüller olsun
                             $shouldAdd = true;
                         } elseif ($tenantDomain === 'a.test') {

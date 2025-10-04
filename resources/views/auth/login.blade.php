@@ -182,7 +182,7 @@
                             </button>
                             
                             <!-- Domain'e özel tek kullanıcı -->
-                            @if($host === 'laravel.test')
+                            @if($host === env('APP_DOMAIN', 'laravel.test'))
                                 <button type="button" @click="autoLogin('laravel')" 
                                         class="p-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
                                     <div class="text-sm font-bold text-white">Laravel</div>

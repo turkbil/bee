@@ -47,11 +47,11 @@
                                 <div class="row mb-4">
                                     <div class="col-12">
                                         <div class="form-floating">
-                                            <select wire:model="inputs.category_id"
-                                                class="form-control @error('inputs.category_id') is-invalid @enderror"
+                                            <select wire:model="inputs.portfolio_category_id"
+                                                class="form-control @error('inputs.portfolio_category_id') is-invalid @enderror"
                                                 id="category_select">
                                                 <option value="">{{ __('portfolio::admin.select_category') }}</option>
-                                                @foreach(\Modules\Portfolio\App\Models\PortfolioCategory::active()->orderBy('sort_order')->get() as $category)
+                                                @foreach($this->activeCategories as $category)
                                                     <option value="{{ $category->category_id }}">
                                                         {{ $category->getTranslated('title', app()->getLocale()) }}
                                                     </option>
@@ -60,7 +60,7 @@
                                             <label for="category_select">
                                                 {{ __('portfolio::admin.category') }}
                                             </label>
-                                            @error('inputs.category_id')
+                                            @error('inputs.portfolio_category_id')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

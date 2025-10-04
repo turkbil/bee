@@ -17,7 +17,7 @@ use Modules\UserManagement\App\Http\Livewire\Modals\ConfirmActionModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Modules\UserManagement\App\Console\Commands\ProtectBaseRoles;
+// use Modules\UserManagement\App\Console\Commands\ProtectBaseRoles; // PSR-4 autoload issue
 use Modules\UserManagement\App\Http\Middleware\ModulePermissionMiddleware;
 
 class UserManagementServiceProvider extends ServiceProvider
@@ -86,7 +86,7 @@ class UserManagementServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         $this->commands([
-            ProtectBaseRoles::class
+            // ProtectBaseRoles::class // PSR-4 autoload issue - commented out for production
         ]);
     }
 

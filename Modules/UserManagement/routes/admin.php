@@ -23,9 +23,9 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/', [UserManagementController::class, 'index'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
-                    
+
                 // Kullanıcı yönetimi - id parametresi opsiyonel
-                Route::get('/manage/{id?}', UserManageComponent::class)
+                Route::get('/manage/{id?}', [UserManagementController::class, 'manage'])
                     ->middleware('module.permission:usermanagement,update')
                     ->name('manage');
                 

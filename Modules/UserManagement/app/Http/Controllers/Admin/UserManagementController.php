@@ -13,4 +13,12 @@ class UserManagementController extends Controller
     {
         return view('usermanagement::admin.index');
     }
+
+    /**
+     * User yönetim/düzenleme sayfası
+     */
+    public function manage($id = null)
+    {
+        return view('usermanagement::admin.manage', compact('id'));
+    }
 }

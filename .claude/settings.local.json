@@ -207,7 +207,8 @@
       "Bash(do echo \"=== $module KLASÖR YAPISI ===\")",
       "Bash(ARCHIVE_DIR=\"/Users/nurullah/Desktop/cms/laravel/readme/archive-20251004-200428\")",
       "Bash(git rm:*)",
-      "Bash(valet restart:*)"
+      "Bash(valet restart:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": [],

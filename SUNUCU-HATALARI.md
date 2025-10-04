@@ -25,6 +25,93 @@
 
 ## ❌ AKTİF HATALAR
 
+### 🔴 HATA 2: CentralTenantSeeder - Tenants Tablosunda Eksik Kolonlar
+
+**Tarih**: 2025-10-04 23:01 (Sunucu Saati)
+**Durum**: ❌ KRİTİK - CentralTenantSeeder çalışmıyor
+
+**Senaryo:**
+1. ✅ `git pull origin main` başarılı (CentralTenantSeeder.php geldi)
+2. ✅ APP_DOMAIN=tuufi.com mevcut
+3. ❌ `php artisan db:seed --class=Database\\Seeders\\CentralTenantSeeder --force` HATA
+
+**Hata Detayı:**
+```
+SQLSTATE[42S22]: Column not found: 1054 Unknown column 'address' in 'field list'
+
+SQL: insert into `tenants` (`title`, `fullname`, `email`, `phone`, `address`,
+     `tax_office`, `tax_number`, `tenant_type`, `tenant_default_locale`,
+     `tenant_ai_provider_id`, `created_at`, `updated_at`) values (...)
+```
+
+**Tenants Tablosu Gerçek Yapısı:**
+```
+id, title, tenancy_db_name, is_active, central, fullname, email, phone,
+theme_id, admin_default_locale, tenant_default_locale, data,
+ai_credits_balance, ai_last_used_at, tenant_ai_provider_id,
+tenant_ai_provider_model_id, created_at, updated_at
+```
+
+**CentralTenantSeeder.php Kullanmaya Çalıştığı Kolonlar:**
+```php
+// Line 37-50
+DB::table('tenants')->insert([
+    'title' => config('app.name', 'Laravel'),
+    'fullname' => 'Admin User',
+    'email' => 'admin@' . env('APP_DOMAIN', 'laravel.test'),
+    'phone' => '',
+    'address' => '',           // ❌ YOK
+    'tax_office' => '',        // ❌ YOK
+    'tax_number' => '',        // ❌ YOK
+    'tenant_type' => 'central', // ❌ YOK
+    'tenant_default_locale' => 'tr',
+    'tenant_ai_provider_id' => null,
+    'created_at' => now(),
+    'updated_at' => now(),
+]);
+```
+
+**Eksik/Fazla Kolonlar:**
+- ❌ `address` - tenants tablosunda YOK
+- ❌ `tax_office` - tenants tablosunda YOK
+- ❌ `tax_number` - tenants tablosunda YOK
+- ❌ `tenant_type` - tenants tablosunda YOK
+- ⚠️ `tenancy_db_name` - seeder'da YOK ama tablo yapısında ZORUNLU (NOT NULL)
+- ⚠️ `central` - seeder'da YOK ama central tenant için true olmalı
+
+**Gerekli Düzeltme:**
+CentralTenantSeeder.php dosyasını tablo yapısına uygun şekilde güncelle:
+
+```php
+DB::table('tenants')->insert([
+    'title' => config('app.name', 'Laravel'),
+    'fullname' => 'Admin User',
+    'email' => 'admin@' . env('APP_DOMAIN', 'laravel.test'),
+    'phone' => '',
+    'tenancy_db_name' => 'laravel', // ZORUNLU - central için 'laravel'
+    'central' => true,               // Central tenant işareti
+    'theme_id' => 1,
+    'admin_default_locale' => 'tr',
+    'tenant_default_locale' => 'tr',
+    'tenant_ai_provider_id' => null,
+    'data' => json_encode([]),       // JSON field
+    'created_at' => now(),
+    'updated_at' => now(),
+]);
+```
+
+**Yerel Claude için:**
+1. ✅ CentralTenantSeeder.php'yi düzelt (gerçek tablo yapısına uygun)
+2. ✅ Eksik kolonları kaldır: address, tax_office, tax_number, tenant_type
+3. ✅ Zorunlu kolonları ekle: tenancy_db_name, central, theme_id, data
+4. ✅ Push et
+
+**Sunucu Claude için:**
+- ⏸️ Fix bekleniyor
+- ⏸️ Sonraki adımlar: git pull → CentralTenantSeeder çalıştır → AISeeder çalıştır
+
+---
+
 ### 🔴 HATA 1: AI Provider Seeder Çalışmıyor - Route:List Başarısız
 
 **Tarih**: 2025-10-04 22:36 (Sunucu Saati)

@@ -209,7 +209,7 @@ class PortfolioComponent extends Component
             'currentLocale' => $this->siteLocale
         ];
 
-        $portfolios = $this->portfolioService->getPaginatedPortfolios($filters, $this->perPage);
+        $portfolios = $this->portfolioService->getPaginatedPortfolios($filters, (int) $this->perPage);
 
         return view('portfolio::admin.livewire.portfolio-component', [
             'portfolios' => $portfolios,

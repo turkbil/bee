@@ -2,15 +2,6 @@
 // Modules/UserManagement/routes/admin.php
 use Illuminate\Support\Facades\Route;
 use Modules\UserManagement\App\Http\Controllers\Admin\UserManagementController;
-use Modules\UserManagement\App\Http\Livewire\UserManageComponent;
-use Modules\UserManagement\App\Http\Livewire\RoleComponent;
-use Modules\UserManagement\App\Http\Livewire\RoleManageComponent;
-use Modules\UserManagement\App\Http\Livewire\PermissionComponent;
-use Modules\UserManagement\App\Http\Livewire\PermissionManageComponent;
-use Modules\UserManagement\App\Http\Livewire\ModulePermissionComponent;
-use Modules\UserManagement\App\Http\Livewire\UserModulePermissionComponent;
-use Modules\UserManagement\App\Http\Livewire\ActivityLogComponent;
-use Modules\UserManagement\App\Http\Livewire\UserActivityLogComponent;
 
 Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
@@ -30,52 +21,52 @@ Route::middleware(['admin', 'tenant'])
                     ->name('manage');
                 
                 // Modül bazlı izinler
-                Route::get('/module-permissions', ModulePermissionComponent::class)
+                Route::get('/module-permissions', [UserManagementController::class, 'modulePermissions'])
                     ->middleware('module.permission:usermanagement,update')
                     ->name('module.permissions');
-                    
+
                 // Kullanıcı modül izinleri
-                Route::get('/user-module-permissions/{id}', UserModulePermissionComponent::class)
+                Route::get('/user-module-permissions/{id}', [UserManagementController::class, 'userModulePermissions'])
                     ->middleware('module.permission:usermanagement,update')
                     ->where('id', '[0-9]+')
                     ->name('user.module.permissions');
-                    
+
                 // Aktivite log kayıtları
-                Route::get('/activity-logs', ActivityLogComponent::class)
+                Route::get('/activity-logs', [UserManagementController::class, 'activityLogs'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('activity.logs');
-                    
+
                 // Kullanıcı aktivite log kayıtları
-                Route::get('/user-activity-logs/{id}', UserActivityLogComponent::class)
+                Route::get('/user-activity-logs/{id}', [UserManagementController::class, 'userActivityLogs'])
                     ->middleware('module.permission:usermanagement,view')
                     ->where('id', '[0-9]+')
                     ->name('user.activity.logs');
             });
 
-        // Role Routes    
+        // Role Routes
         Route::prefix('usermanagement/role')
             ->name('usermanagement.role.')
             ->group(function () {
-                Route::get('/', RoleComponent::class)
+                Route::get('/', [UserManagementController::class, 'roleIndex'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
-                    
+
                 // Rol yönetimi - id parametresi opsiyonel
-                Route::get('/manage/{id?}', RoleManageComponent::class)
+                Route::get('/manage/{id?}', [UserManagementController::class, 'roleManage'])
                     ->middleware('module.permission:usermanagement,update')
                     ->name('manage');
             });
 
-        // Permission Routes    
+        // Permission Routes
         Route::prefix('usermanagement/permission')
             ->name('usermanagement.permission.')
             ->group(function () {
-                Route::get('/', PermissionComponent::class)
+                Route::get('/', [UserManagementController::class, 'permissionIndex'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
-                    
+
                 // İzin yönetimi - id parametresi opsiyonel
-                Route::get('/manage/{id?}', PermissionManageComponent::class)
+                Route::get('/manage/{id?}', [UserManagementController::class, 'permissionManage'])
                     ->middleware('module.permission:usermanagement,update')
                     ->name('manage');
             });

@@ -25,7 +25,34 @@
 
 ## ❌ AKTİF HATALAR
 
-*Şu an aktif hata yok - tüm sorunlar çözüldü*
+### 🚨 HATA 6: ProtectBaseRoles Command Class Not Found
+
+**Hata Mesajı**:
+```
+In Container.php line 1019:
+  Target class [Modules\UserManagement\App\Console\Commands\ProtectBaseRoles] does not exist.
+```
+
+**Dosya**: `Modules/UserManagement/app/Console/Commands/ProtectBaseRoles.php` (dosya VAR)
+**Sorun**: PSR-4 autoload uyarısı - Class yüklenemiyor
+
+**Autoload Uyarısı**:
+```
+Class Modules\UserManagement\App\Console\Commands\ProtectBaseRoles located in
+./Modules/UserManagement/app/Console/Commands/ProtectBaseRoles.php
+does not comply with psr-4 autoloading standard (rule: Modules\ => ./Modules). Skipping.
+```
+
+**Sebep**: Namespace `Modules\UserManagement\App\...` ama PSR-4 rule `Modules\...` bekliyor
+**Çakışma**: Modül namespace'leri büyük `App` kullanıyor ama PSR-4 küçük harf bekliyor
+
+**Çözüm Seçenekleri**:
+
+1. **ServiceProvider'dan command kaydını kaldır (Geçici)**
+2. **composer.json autoload rules güncelle (Kalıcı)**
+3. **Command kullanılmıyorsa sil**
+
+**DURUM**: Yerel Claude karar verecek 🟡
 
 ---
 

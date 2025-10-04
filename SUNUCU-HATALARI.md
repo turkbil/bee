@@ -25,43 +25,51 @@
 
 ## ❌ AKTİF HATALAR
 
-### ❌ 1. Database Password Escape Hatası - ÇÖZÜM BEKLİYOR
+### ❌ 1. MariaDB JSON Index Syntax Hatası - KRİTİK!
 
-**Durum**: Laravel .env dosyasında özel karakterli şifre escape edilmeli
+**Durum**: MariaDB 10.3 JSON functional index'leri desteklemiyor
 
 **Hata Mesajı**:
 ```
-SQLSTATE[HY000] [1045] Access denied for user 'tuufi_4ekim'@'localhost' (using password: YES)
+SQLSTATE[42000]: Syntax error or access violation: 1064
+CREATE INDEX announcements_slug_tr_idx ON announcements (
+    (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) AS CHAR(255)))
+)
 ```
 
-**Mevcut Durum**:
-- MySQL bağlantısı direkt çalışıyor: `mysql -h 127.0.0.1 -u tuufi_4ekim -p'XZ9Lhb%u8jp9#njf'` ✅
-- Database var: `tuufi_4ekim` ✅
-- Laravel .env'den bağlanamıyor ❌
+**Sunucu Ortamı**:
+- Database: MariaDB 10.3.39 ❌ (JSON functional index YOK)
+- Gerekli: MySQL 8.0+ veya MariaDB 10.5+ ✅
 
-**Mevcut .env**:
-```ini
-DB_PASSWORD=XZ9Lhb%u8jp9#njf
-```
-
-**Problem**: Şifrede `%` ve `#` karakterleri var, .env'de escape edilmeli
+**Hatalı Migration**:
+- `2024_02_17_000001_create_announcements_table.php`
+- JSON field'lara functional index oluşturuluyor
+- MariaDB 10.3 bunu desteklemiyor
 
 **📍 YEREL CLAUDE ÇÖZÜM ÖNERİSİ BEKLİYOR:**
-1. .env'de şifre nasıl escape edilmeli?
-2. Tırnak içine alınmalı mı? (`DB_PASSWORD="XZ9Lhb%u8jp9#njf"`)
-3. Yoksa escape karakterleri mi kullanılmalı? (`\%`, `\#`)
-4. Yoksa şifre değiştirilmeli mi (özel karakter olmadan)?
 
-**Sunucu Testi Sonuçları**:
-```bash
-# MySQL direkt bağlantı: ✅ ÇALIŞIYOR
-mysql -h 127.0.0.1 -u tuufi_4ekim -p'XZ9Lhb%u8jp9#njf' -e "SHOW DATABASES;"
-# Sonuç: tuufi_4ekim database'i görünüyor
+**Seçenek 1: Migration'ları Düzelt (ÖNERİLEN)**
+- JSON index'leri kaldır veya basit index yap
+- Tüm modül migration'larını kontrol et (Page, Portfolio, Announcement, vs.)
+- MariaDB 10.3 uyumlu hale getir
 
-# Laravel migration: ❌ ÇALIŞMIYOR
-php artisan migrate:fresh --seed --force
-# Sonuç: Access denied hatası
-```
+**Seçenek 2: MariaDB Upgrade**
+- MariaDB 10.3 → 10.5+ yükselt
+- Plesk üzerinden yapılabilir mi?
+- Uyumluluk riskleri var mı?
+
+**Seçenek 3: MySQL 8.0+ Geç**
+- MariaDB yerine MySQL 8.0 kullan
+- Plesk'te mümkün mü?
+
+**Etkilenen Migration'lar (Muhtemel)**:
+- ✅ announcements_table (doğrulandı - hatalı)
+- ❓ pages_table (kontrol edilmeli)
+- ❓ portfolios_table (kontrol edilmeli)
+- ❓ Diğer JSON field kullanan tüm tablolar
+
+**Geçici Çözüm (Test İçin)**:
+JSON index'leri migration'lardan kaldır, sadece normal kolonlar bırak.
 
 ---
 
@@ -93,6 +101,13 @@ php artisan migrate:fresh --seed --force
 - **Sebep:** Development command, production'da gerekli değil
 - **Dosya:** `Modules/UserManagement/Providers/UserManagementServiceProvider.php`
 - **Not:** Command dosyası korundu, sadece autoload kaydı kaldırıldı
+
+### ✅ 7. Database Password Escape Hatası → ÇÖZÜLDİ
+- **Problem:** .env'de özel karakterli şifre (`%`, `#`) escape edilmeliydi
+- **Hata:** `Access denied for user 'tuufi_4ekim'@'localhost'`
+- **Çözüm:** Şifreyi tırnak içine al: `DB_PASSWORD="XZ9Lhb%u8jp9#njf"`
+- **Dosya:** `.env`
+- **Sonuç:** Database bağlantısı başarılı ✅
 
 ---
 

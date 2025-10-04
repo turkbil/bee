@@ -212,8 +212,9 @@
       "Bash(timeout:*)",
       "Bash(then echo \"Hatalı: $dir\")",
       "Bash(xxd:*)",
-      "Bash(./module.sh)",
-      "Bash(printf:*)"
+      "Read(//var/log/nginx/**)",
+      "Read(//var/www/vhosts/tuufi.com/logs/**)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": [],

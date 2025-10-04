@@ -35,11 +35,14 @@ class ThemeService
     {
         try {
             // Repository ile aynı cache key'leri kullan (duplication önleme)
+            // Redis cache kullan (file cache yerine)
+            $cache = Cache::store('redis');
+
             if (function_exists('tenant') && $t = tenant()) {
                 // Tenant tema cache - Repository ile uyumlu
                 $cacheKey = "theme:tenant_{$t->id}";
 
-                $theme = Cache::remember($cacheKey, now()->addHours(1), function() use ($t) {
+                $theme = $cache->remember($cacheKey, now()->addHours(1), function() use ($t) {
                     return Theme::on('mysql')->where('name', $t->theme)
                                   ->where('is_active', true)
                                   ->first();
@@ -53,7 +56,7 @@ class ThemeService
             // Default tema cache - Repository ile uyumlu
             $cacheKey = 'theme:default';
 
-            return Cache::remember($cacheKey, now()->addHours(24), function() {
+            return $cache->remember($cacheKey, now()->addHours(24), function() {
                 // Default tema ara
                 $theme = Theme::on('mysql')
                     ->where('is_default', true)

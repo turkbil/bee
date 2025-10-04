@@ -209,7 +209,7 @@ class AnnouncementComponent extends Component
             'currentLocale' => $this->siteLocale
         ];
 
-        $announcements = $this->announcementService->getPaginatedAnnouncements($filters, $this->perPage);
+        $announcements = $this->announcementService->getPaginatedAnnouncements($filters, (int) $this->perPage);
 
         return view('announcement::admin.livewire.announcement-component', [
             'announcements' => $announcements,

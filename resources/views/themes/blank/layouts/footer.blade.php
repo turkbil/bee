@@ -213,8 +213,8 @@
     @widgetstyles
     @widgetscripts
     
-    {{-- Livewire Scripts - Deferred for Performance --}}
-    @livewireScriptConfig(['defer' => true])
+    {{-- Livewire Scripts - NO DEFER (Alpine.js dropdown fix) --}}
+    @livewireScripts
     
     {{-- Alpine.js is already loaded by Livewire, don't load it again --}}
     <script>

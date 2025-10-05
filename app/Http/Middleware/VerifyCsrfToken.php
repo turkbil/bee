@@ -45,24 +45,16 @@ class VerifyCsrfToken extends Middleware
     protected function addCookieToResponse($request, $response)
     {
         $config = config('session');
-        
-        // Tenant domain'i için cookie ayarlarını güncelle
+
+        // Session domain ile tutarlı olmalı - SESSION_DOMAIN config'den al
+        // .env'de SESSION_DOMAIN=.tuufi.com ayarı var
+        // tenant() varsa tenant domain, yoksa config'den al
         if (tenant()) {
             $config['domain'] = $request->getHost();
-        } else {
-            // Central domain için wildcard domain desteği
-            $centralDomains = config('tenancy.central_domains', []);
-            $currentHost = $request->getHost();
-            
-            // Central domain'lerden birindeyse wildcard kullan
-            foreach ($centralDomains as $centralDomain) {
-                if ($currentHost === $centralDomain || str_ends_with($currentHost, '.' . $centralDomain)) {
-                    $config['domain'] = '.' . $centralDomain; // Wildcard için nokta ekle
-                    break;
-                }
-            }
         }
-        
+        // Central domain için .env SESSION_DOMAIN kullan (wildcard support)
+        // config/session.php'de zaten SESSION_DOMAIN env var'ı okunuyor
+
         $response->headers->setCookie(
             new \Symfony\Component\HttpFoundation\Cookie(
                 'XSRF-TOKEN',
@@ -73,10 +65,10 @@ class VerifyCsrfToken extends Middleware
                 $config['secure'],
                 false,
                 false,
-                $config['same_site'] ?? null
+                $config['same_site'] ?? 'lax'
             )
         );
-        
+
         return $response;
     }
 }

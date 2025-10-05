@@ -19,13 +19,12 @@
 
     {{-- Performance Optimization - DNS Prefetch & Preconnect --}}
     <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
-    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
     {{-- Preload Critical Resources (2025 Best Practice) --}}
     <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
-    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js">
+
+    {{-- Alpine.js is included in Livewire - DO NOT load separately --}}
 
 {{-- Global SEO Meta Tags - Tek Satır --}}
 <x-seo-meta />

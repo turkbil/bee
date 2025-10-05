@@ -79,20 +79,17 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        // 🧹 LOGIN CACHE TEMİZLEME - Yeni CacheManager sistemi ile
+        // 🧹 LOGIN CACHE TEMİZLEME - Sadece user-specific cache'ler (development mode'da tüm sistem cache temizleme gereksiz)
         try {
             // Kullanıcı tercihlerine göre locale ayarla
             if ($user->tenant_locale) {
                 app()->setLocale($user->tenant_locale);
             }
-            
-            // Tüm ilgili cache'leri temizle
-            CacheManager::clearAllLanguageRelatedCaches();
-            
-            // Ek olarak guest cache'leri de temizle
+
+            // Sadece guest cache'leri temizle (auth/guest ayrımı için)
             $this->clearGuestCaches();
-            
-            \Log::info('🧹 LOGIN: CacheManager ile tüm cache temizleme tamamlandı', [
+
+            \Log::info('🧹 LOGIN: Guest cache temizleme tamamlandı', [
                 'user_id' => $user->id,
                 'user_locale' => $user->tenant_locale
             ]);
@@ -143,15 +140,12 @@ class AuthenticatedSessionController extends Controller
                 })
                 ->log("\"{$user->name}\" çıkış yaptı");
                 
-            // 🧹 AUTH CACHE TEMİZLEME - Logout sonrası CacheManager ile temizle
+            // 🧹 AUTH CACHE TEMİZLEME - Logout sonrası sadece user-specific cache'ler
             try {
                 // Kullanıcıya özel cache'leri temizle
                 $this->clearUserAuthCaches($user->id);
-                
-                // Tenant cache'lerini temizle
-                CacheManager::clearTenantCaches();
-                
-                \Log::info('🧹 LOGOUT: CacheManager ile cache temizleme tamamlandı', ['user_id' => $user->id]);
+
+                \Log::info('🧹 LOGOUT: User cache temizleme tamamlandı', ['user_id' => $user->id]);
             } catch (\Exception $e) {
                 \Log::warning('Auth cache clear error: ' . $e->getMessage());
             }

@@ -41,8 +41,6 @@ CREATE TABLE `portfolio_categories` (
   KEY `portfolio_categories_active_deleted_sort_idx` (`is_active`,`deleted_at`,`sort_order`),
   KEY `portfolio_categories_is_active_index` (`is_active`),
   KEY `portfolio_categories_sort_order_index` (`sort_order`),
-  KEY `portfolio_categories_slug_tr` (((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.tr')) as char(255) charset utf8mb4) collate utf8mb4_unicode_ci))),
-  KEY `portfolio_categories_slug_en` (((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.en')) as char(255) charset utf8mb4) collate utf8mb4_unicode_ci))),
   CONSTRAINT `portfolio_categories_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `portfolio_categories` (`category_id`) ON DELETE CASCADE
 ) AUTO_INCREMENT=1 ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

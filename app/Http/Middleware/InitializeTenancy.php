@@ -26,11 +26,16 @@ class InitializeTenancy extends BaseMiddleware
     
     public function handle($request, Closure $next)
     {
+        // Telescope route'larını skip et - tenant context'i gerektirmiyor
+        if ($request->is('telescope') || $request->is('telescope/*')) {
+            return $next($request);
+        }
+
         // Tenancy zaten başlatılmışsa tekrar başlatma
         if ($this->tenancy->initialized) {
             return $next($request);
         }
-        
+
         // API routes için header-based tenant detection
         if ($request->is('api/*')) {
             return $this->handleApiTenancy($request, $next);

@@ -12,6 +12,11 @@ class AuthorizeTelescope
      */
     public function handle(Request $request, Closure $next)
     {
+        // Local environment'ta herkesin erişimine izin ver
+        if (app()->environment('local')) {
+            return $next($request);
+        }
+
         // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
         if (!auth()->check()) {
             return redirect('/admin/login');

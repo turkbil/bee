@@ -18,6 +18,35 @@ class SiteSetLocaleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // ⚠️ AUTH ROUTE BYPASS - Login/register/logout locale detection yapmasın
+        $excludedPaths = [
+            'login',
+            'register',
+            'logout',
+            'password',
+            'forgot-password',
+            'reset-password',
+            'verify-email',
+            'email/verification-notification',
+            'confirm-password'
+        ];
+
+        foreach ($excludedPaths as $path) {
+            if ($request->is($path) || $request->is($path . '/*')) {
+                // Auth route'ları için locale detection yok, sadece varsayılan dil
+                $defaultLocale = $this->getTenantDefaultLocale();
+                app()->setLocale($defaultLocale);
+                session(['tenant_locale' => $defaultLocale]);
+
+                \Log::debug('AUTH ROUTE BYPASS - Locale forced to default', [
+                    'path' => $request->path(),
+                    'locale' => $defaultLocale
+                ]);
+
+                return $next($request);
+            }
+        }
+
         // 1. URL path'ten locale tespiti - EN BASİT VE NET YAKLAŞIM
         $segments = $request->segments();
         $defaultLocale = $this->getTenantDefaultLocale();

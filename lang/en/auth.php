@@ -32,5 +32,24 @@ return [
     'register_subtitle' => 'Create your free account',
     'name_field' => 'Full Name',
     'name_placeholder' => 'Your full name',
+    'password_field' => 'Password',
+    'password_placeholder' => 'Enter your password',
+    'password_confirmation_field' => 'Confirm Password',
+    'password_confirmation_placeholder' => 'Confirm your password',
+    'email_field' => 'Email Address',
+    'email_placeholder' => 'email@domain.com',
+    'create_account' => 'Create Account',
+    'creating_account' => 'Creating account...',
+    'already_have_account' => 'Already have an account?',
+    'login_link' => 'Login',
+
+    // Forgot Password form translations
+    'forgot_password_title' => 'Forgot Password',
+    'forgot_password_subtitle' => 'Enter your email address and we\'ll send you a password reset link',
+    'send_reset_link' => 'Send Password Reset Link',
+    'sending' => 'Sending...',
+    'remember_password' => 'Remember your password?',
+    'back_to_login' => 'Login',
+    'logged_out_success' => 'You have been logged out successfully.',
 
 ];

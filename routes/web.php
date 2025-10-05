@@ -164,30 +164,70 @@ Route::middleware(['site'])->withoutMiddleware(\Spatie\ResponseCache\Middlewares
             'tenant_id' => tenant()?->id ?? 'central'
         ]);
         
-        // 🎯 LARAVEL NATIVE ÇÖZÜM - Route bazlı dil değiştirme
-        // Request'ten model ve action bilgilerini al
-        $currentRoute = request()->route();
-        $referer = request()->header('referer', '/');
-        $defaultLocale = get_tenant_default_locale();
-        
-        // CanonicalHelper'dan alternatif link'leri al
-        $model = request()->get('_model');
-        $moduleAction = request()->get('_action', 'show');
-        
-        if ($model || str_contains($referer, '://')) {
-            // Eğer model varsa veya referer'dan geliyorsa
-            $alternateLinks = \App\Helpers\CanonicalHelper::generateAlternateLinks($model, $moduleAction);
-            
-            if (isset($alternateLinks[$locale])) {
-                // Hedef dil için URL varsa oraya yönlendir
-                $redirectUrl = $alternateLinks[$locale]['url'];
-            } else {
-                // Yoksa ana sayfaya
-                $redirectUrl = $locale === $defaultLocale ? url('/') : url("/{$locale}");
-            }
+        // 🎯 RETURN URL KONTROLÜ - Auth sayfaları için
+        $returnUrl = request()->get('return');
+
+        if ($returnUrl && filter_var($returnUrl, FILTER_VALIDATE_URL)) {
+            // Return URL varsa direkt oraya dön (auth sayfaları için)
+            $redirectUrl = $returnUrl;
         } else {
-            // Model yoksa basit ana sayfa yönlendirmesi
-            $redirectUrl = $locale === $defaultLocale ? url('/') : url("/{$locale}");
+            // Normal dil değiştirme akışı
+            $currentRoute = request()->route();
+            $referer = request()->header('referer', '/');
+            $defaultLocale = get_tenant_default_locale();
+
+            // 🔐 AUTH ROUTE DESTEĞİ - referer'dan auth sayfası kontrolü
+            $authRoutes = [
+                'login', 'register', 'logout',
+                'forgot-password', 'reset-password',
+                'password', 'confirm-password',
+                'verify-email', 'email',
+                'profile', 'dashboard'
+            ];
+
+            $isAuthPage = false;
+            $authPage = null;
+
+            foreach ($authRoutes as $route) {
+                if (str_contains($referer, '/' . $route)) {
+                    $isAuthPage = true;
+                    $authPage = $route;
+                    break;
+                }
+            }
+
+            if ($isAuthPage && $authPage) {
+                // Auth sayfası için locale-aware URL oluştur
+                $redirectUrl = $locale === $defaultLocale
+                    ? url('/' . $authPage)
+                    : url('/' . $locale . '/' . $authPage);
+
+                \Log::info('Language switch for auth page', [
+                    'auth_page' => $authPage,
+                    'locale' => $locale,
+                    'redirect_url' => $redirectUrl
+                ]);
+            } else {
+                // Normal sayfa için CanonicalHelper kullan
+                $model = request()->get('_model');
+                $moduleAction = request()->get('_action', 'show');
+
+                if ($model || str_contains($referer, '://')) {
+                    // Eğer model varsa veya referer'dan geliyorsa
+                    $alternateLinks = \App\Helpers\CanonicalHelper::generateAlternateLinks($model, $moduleAction);
+
+                    if (isset($alternateLinks[$locale])) {
+                        // Hedef dil için URL varsa oraya yönlendir
+                        $redirectUrl = $alternateLinks[$locale]['url'];
+                    } else {
+                        // Yoksa ana sayfaya
+                        $redirectUrl = $locale === $defaultLocale ? url('/') : url("/{$locale}");
+                    }
+                } else {
+                    // Model yoksa basit ana sayfa yönlendirmesi
+                    $redirectUrl = $locale === $defaultLocale ? url('/') : url("/{$locale}");
+                }
+            }
         }
         
         // Cache-busting headers ile redirect
@@ -212,27 +252,71 @@ Route::middleware([InitializeTenancy::class, 'site'])
             if (!is_valid_tenant_locale($lang)) {
                 abort(404);
             }
+
+            // ⚠️ AUTH ROUTE FALLBACK - Tüm auth sayfaları için
+            $authRoutes = [
+                'login', 'register', 'logout',
+                'forgot-password', 'reset-password',
+                'password', 'confirm-password',
+                'verify-email', 'email',
+                'profile', 'dashboard'
+            ];
+            if (in_array($slug1, $authRoutes)) {
+                // Locale set et ve auth route'una redirect
+                app()->setLocale($lang);
+                session(['tenant_locale' => $lang]);
+
+                \Log::info('AUTH ROUTE FALLBACK', [
+                    'lang' => $lang,
+                    'slug1' => $slug1,
+                    'redirect_to' => '/' . $slug1
+                ]);
+
+                return redirect('/' . $slug1)
+                    ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                    ->header('Pragma', 'no-cache')
+                    ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
+            }
+
             // App locale'i ayarla
             app()->setLocale($lang);
             session(['route_locale' => $lang]);
-            
+
             // DynamicRouteService'e locale bilgisini geç
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, null, null, $lang);
         })->where('lang', getSupportedLanguageRegex())
-         ->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$');
+         ->where('slug1', '[^/]+');
         
         Route::get('/{lang}/{slug1}/{slug2}', function($lang, $slug1, $slug2) {
             // Dil geçerliliği kontrolü
             if (!is_valid_tenant_locale($lang)) {
                 abort(404);
             }
+
+            // ⚠️ AUTH ROUTE FALLBACK - Token/ID içeren auth sayfaları için
+            $authRoutes = [
+                'reset-password',      // /reset-password/{token}
+                'verify-email',        // /verify-email/{id}/{hash}
+                'password',            // /password/*
+                'confirm-password',    // /confirm-password/*
+                'email'                // /email/*
+            ];
+            if (in_array($slug1, $authRoutes)) {
+                app()->setLocale($lang);
+                session(['tenant_locale' => $lang]);
+                return redirect('/' . $slug1 . '/' . $slug2)
+                    ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                    ->header('Pragma', 'no-cache')
+                    ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
+            }
+
             // App locale'i ayarla
             app()->setLocale($lang);
             session(['route_locale' => $lang]);
-            
+
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, null, $lang);
         })->where('lang', getSupportedLanguageRegex())
-         ->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
+         ->where('slug1', '[^/]+')
          ->where('slug2', '[^/]+');
          
         Route::get('/{lang}/{slug1}/{slug2}/{slug3}', function($lang, $slug1, $slug2, $slug3) {
@@ -240,13 +324,25 @@ Route::middleware([InitializeTenancy::class, 'site'])
             if (!is_valid_tenant_locale($lang)) {
                 abort(404);
             }
+
+            // ⚠️ AUTH ROUTE FALLBACK - /en/verify-email/id/hash gibi istekler için
+            $authRoutes = ['verify-email'];
+            if (in_array($slug1, $authRoutes)) {
+                app()->setLocale($lang);
+                session(['tenant_locale' => $lang]);
+                return redirect('/' . $slug1 . '/' . $slug2 . '/' . $slug3)
+                    ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                    ->header('Pragma', 'no-cache')
+                    ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
+            }
+
             // App locale'i ayarla
             app()->setLocale($lang);
             session(['route_locale' => $lang]);
-            
+
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3, $lang);
         })->where('lang', getSupportedLanguageRegex())
-         ->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
+         ->where('slug1', '[^/]+')
          ->where('slug2', '[^/]+')
          ->where('slug3', '[^/]+');
          

@@ -49,9 +49,16 @@ class TenantCacheProfile implements CacheProfile
             'language/*',
             'debug-lang/*',
             'debug/*',
-            'livewire/*'
+            'livewire/*',
+            '*/login',          // Tüm dillerde login
+            '*/register',       // Tüm dillerde register
+            '*/logout',         // Tüm dillerde logout
+            '*/forgot-password',
+            '*/reset-password/*',
+            '*/password/*',
+            '*/verify-email/*'
         ]);
-        
+
         foreach ($excludedPaths as $pattern) {
             if ($request->is($pattern)) {
                 return false;
@@ -74,6 +81,11 @@ class TenantCacheProfile implements CacheProfile
 
     public function shouldCacheResponse(Response $response): bool
     {
+        // Redirect response'ları cache'leme
+        if ($response->isRedirection()) {
+            return false;
+        }
+
         if ($response->isSuccessful()) {
             // Cache header'larını düzelt
             $response->setPublic();

@@ -69,23 +69,31 @@ class AdminLanguageSwitcher extends Component
         // 3 Aşamalı Hibrit Sistem ile admin dil değiştir
         if (set_user_admin_language($languageCode)) {
             $this->currentLanguage = $languageCode;
-            
+
             \Log::info('🎯 AdminLanguageSwitcher - set_user_admin_language başarılı', [
                 'new_locale' => $languageCode,
                 'session_admin_locale' => session('admin_locale'),
                 'session_tenant_locale' => session('tenant_locale')
             ]);
-            
+
+            // 🧹 ADMIN DİL DEĞİŞİMİ CACHE TEMİZLEME (Admin cache edilmiyor ama genel cache temizle)
+            try {
+                // Config cache temizle (admin dil dosyaları için)
+                \Artisan::call('config:clear');
+            } catch (\Exception $e) {
+                \Log::warning('Admin language switch cache clear error: ' . $e->getMessage());
+            }
+
             // Toast mesajı
             $this->dispatch('toast', [
                 'title' => 'Başarılı',
                 'message' => 'Admin dili değiştirildi',
                 'type' => 'success'
             ]);
-            
+
             // Kısa delay ekle loading göstermek için
             usleep(300000); // 0.3 saniye
-            
+
             // Admin panelinde kalarak sayfa yenileme
             $this->dispatch('refreshPage');
         }
@@ -126,35 +134,54 @@ class AdminLanguageSwitcher extends Component
             'user_id' => auth()->id()
         ]);
         
-        // 3 Aşamalı Hibrit Sistem ile tenant dil değiştir  
+        // 3 Aşamalı Hibrit Sistem ile tenant dil değiştir
         if (set_user_tenant_language($languageCode)) {
             $this->currentSiteLanguage = $languageCode;
-            
+
             \Log::info('🎯 AdminLanguageSwitcher - set_user_tenant_language başarılı', [
                 'new_locale' => $languageCode,
                 'session_admin_locale' => session('admin_locale'),
                 'session_tenant_locale' => session('tenant_locale')
             ]);
-            
-            // Cache temizleme (tenant-aware)
-            $tenantId = tenant('id');
-            if ($tenantId) {
-                cache()->tags(["tenant_{$tenantId}_response_cache"])->flush();
+
+            // 🧹 TENANT DİL DEĞİŞİMİ CACHE TEMİZLEME - Eski dil içerikleri gözükmesin
+            try {
+                // 1. ResponseCache tamamen temizle (eski dil içerikleri için)
+                if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                    \Spatie\ResponseCache\Facades\ResponseCache::clear();
+                }
+
+                // 2. Tenant-specific cache temizle
+                $tenantId = tenant('id');
+                if ($tenantId) {
+                    // Redis'ten tenant cache'leri temizle
+                    $redis = \Illuminate\Support\Facades\Redis::connection();
+                    $pattern = "*tenant_{$tenantId}_*";
+                    $keys = $redis->keys($pattern);
+
+                    if (!empty($keys)) {
+                        foreach ($keys as $key) {
+                            $redis->del($key);
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Tenant language switch cache clear error: ' . $e->getMessage());
             }
-            
+
             // Toast mesajı
             $this->dispatch('toast', [
                 'title' => 'Başarılı',
                 'message' => 'Veri dili değiştirildi',
                 'type' => 'success'
             ]);
-            
+
             // Page component'lerini refresh et
             $this->dispatch('refreshPageData');
-            
+
             // Kısa delay ekle loading göstermek için
             usleep(300000); // 0.3 saniye
-            
+
             // Admin panelinde kalarak sayfa yenileme
             $this->dispatch('refreshPage');
         }

@@ -13,11 +13,11 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Şifremi Unuttum</h2>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('auth.forgot_password_title') }}</h2>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ request()->getHost() }}</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Email adresinizi girin, şifre sıfırlama bağlantısı gönderelim</p>
+                        <p class="text-gray-600 dark:text-gray-400">{{ __('auth.forgot_password_subtitle') }}</p>
                     </div>
 
                     <!-- Status Messages -->
@@ -43,7 +43,7 @@
                         
                         <!-- Email Field -->
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Adresi</label>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('auth.email_field') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,8 +83,8 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span x-show="!isLoading">Şifre Sıfırlama Bağlantısı Gönder</span>
-                            <span x-show="isLoading">Gönderiliyor...</span>
+                            <span x-show="!isLoading">{{ __('auth.send_reset_link') }}</span>
+                            <span x-show="isLoading">{{ __('auth.sending') }}</span>
                             <svg x-show="!isLoading" class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                             </svg>
@@ -93,9 +93,9 @@
                         <!-- Back to Login Link -->
                         <div class="text-center">
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Şifrenizi hatırladınız mı? 
+                                {{ __('auth.remember_password') }}
                                 <a href="{{ route('login') }}" class="font-medium text-orange-600 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300">
-                                    Giriş yap
+                                    {{ __('auth.back_to_login') }}
                                 </a>
                             </p>
                         </div>
@@ -103,7 +103,7 @@
                 </div>
 
                 <!-- Right Column - SVG & Details -->
-                <div class="bg-gradient-to-br from-orange-600 to-red-700 dark:from-orange-800 dark:to-red-900 px-8 py-16 lg:px-12 flex flex-col justify-center relative overflow-hidden">
+                <div class="hidden lg:flex bg-gradient-to-br from-orange-600 to-red-700 dark:from-orange-800 dark:to-red-900 px-8 py-16 lg:px-12 flex-col justify-center relative overflow-hidden">
                     <!-- Animated Background Elements -->
                     <div class="absolute inset-0 overflow-hidden">
                         <div class="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full animate-pulse"></div>

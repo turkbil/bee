@@ -1035,10 +1035,11 @@ readonly class SeoMetaTagService
     /**
      * Otomatik çok dilli copyright oluştur - Public static metod
      */
-    public static function generateAutomaticCopyright(string $siteName, string $locale): string
+    public static function generateAutomaticCopyright(?string $siteName, string $locale): string
     {
         $currentYear = date('Y');
-        
+        $siteName = $siteName ?? 'Site';
+
         // Çok dilli copyright metinleri
         $copyrightTexts = [
             'tr' => $currentYear . ' ' . $siteName . '. Tüm hakları saklıdır.',

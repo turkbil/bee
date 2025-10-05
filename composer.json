@@ -89,6 +89,7 @@
             "Modules\\Studio\\App\\": "Modules/Studio/app/"
         },
         "files": [
+            "app/helpers.php",
             "app/Helpers/Functions.php",
             "app/Helpers/TenantHelpers.php",
             "app/Helpers/AIHelper.php",

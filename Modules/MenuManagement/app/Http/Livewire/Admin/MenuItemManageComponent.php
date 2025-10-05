@@ -482,11 +482,24 @@ class MenuItemManageComponent extends Component
 
                 // selectedModule property'sini set et
                 $this->selectedModule = $this->url_data['module'];
+
+                \Log::info('🔍 EditMenuItem - Module Set', [
+                    'selectedModule' => $this->selectedModule,
+                    'url_data[module]' => $this->url_data['module']
+                ]);
+
                 $this->moduleSelected($this->url_data['module']);
 
                 if (isset($this->url_data['type'])) {
                     // selectedUrlType property'sini set et
                     $this->selectedUrlType = $this->url_data['type'];
+
+                    \Log::info('🔍 EditMenuItem - URL Type Set', [
+                        'selectedUrlType' => $this->selectedUrlType,
+                        'url_data[type]' => $this->url_data['type'],
+                        'moduleUrlTypes' => $this->moduleUrlTypes
+                    ]);
+
                     $this->urlTypeSelected($this->url_data['type']);
 
                     // Eğer slug yoksa ama ID varsa, slug'ı bul
@@ -497,6 +510,11 @@ class MenuItemManageComponent extends Component
                             $this->url_data['slug'] = $selectedContent['slug'];
                         }
                     }
+
+                    \Log::info('🔍 EditMenuItem - Final State', [
+                        'moduleContent' => $this->moduleContent,
+                        'url_data' => $this->url_data
+                    ]);
                 }
             } elseif ($this->url_type === 'internal' || $this->url_type === 'external') {
                 // Internal/External için url_data'da url varsa direkt kullan

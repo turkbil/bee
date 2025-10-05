@@ -219,7 +219,11 @@
       "Bash(systemctl:*)",
       "Bash(npx mix:*)",
       "Bash(./node_modules/.bin/mix:*)",
-      "Bash(tailwindcss:*)"
+      "Bash(tailwindcss:*)",
+      "Bash(./export_schemas.sh:*)",
+      "Bash(./export_data.sh)",
+      "Bash(./fix_auto_increment.sh:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": [],

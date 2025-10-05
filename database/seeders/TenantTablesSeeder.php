@@ -66,13 +66,78 @@ class TenantTablesSeeder extends Seeder
                     
                     $this->command->info("Tenant {$currentTenant->id}: tenants tablosu oluşturuldu");
                 }
+
+                // Temel sayfalar ekle
+                $this->seedBasicPages();
             }
-            
+
             $this->command->info('TenantTablesSeeder tamamlandı');
         } catch (\Exception $e) {
             $message = 'TenantTablesSeeder hatası: ' . $e->getMessage();
             $this->command->error($message);
             Log::error($message);
         }
+    }
+
+    /**
+     * Temel sayfalar için basit içerik oluştur
+     */
+    private function seedBasicPages()
+    {
+        if (!Schema::hasTable('pages')) {
+            $this->command->info('Pages tablosu mevcut değil, sayfa seeding atlanıyor.');
+            return;
+        }
+
+        $pages = [
+            [
+                'title' => json_encode(['tr' => 'Anasayfa', 'en' => 'Home']),
+                'slug' => 'anasayfa',
+                'content' => json_encode(['tr' => 'Anasayfa içeriği.', 'en' => 'Home page content.']),
+                'meta_title' => json_encode(['tr' => 'Anasayfa', 'en' => 'Home']),
+                'meta_description' => json_encode(['tr' => 'Ana sayfa açıklaması', 'en' => 'Home page description']),
+                'is_active' => true,
+                'show_in_menu' => true,
+                'sort_order' => 1,
+            ],
+            [
+                'title' => json_encode(['tr' => 'Hakkımızda', 'en' => 'About Us']),
+                'slug' => 'hakkimizda',
+                'content' => json_encode(['tr' => 'Hakkımızda sayfası içeriği.', 'en' => 'About us page content.']),
+                'meta_title' => json_encode(['tr' => 'Hakkımızda', 'en' => 'About Us']),
+                'meta_description' => json_encode(['tr' => 'Hakkımızda sayfası açıklaması', 'en' => 'About us page description']),
+                'is_active' => true,
+                'show_in_menu' => true,
+                'sort_order' => 2,
+            ],
+            [
+                'title' => json_encode(['tr' => 'İletişim', 'en' => 'Contact']),
+                'slug' => 'iletisim',
+                'content' => json_encode(['tr' => 'İletişim sayfası içeriği.', 'en' => 'Contact page content.']),
+                'meta_title' => json_encode(['tr' => 'İletişim', 'en' => 'Contact']),
+                'meta_description' => json_encode(['tr' => 'İletişim sayfası açıklaması', 'en' => 'Contact page description']),
+                'is_active' => true,
+                'show_in_menu' => true,
+                'sort_order' => 3,
+            ],
+        ];
+
+        foreach ($pages as $page) {
+            DB::table('pages')->insert([
+                'title' => $page['title'],
+                'slug' => $page['slug'],
+                'content' => $page['content'],
+                'meta_title' => $page['meta_title'],
+                'meta_description' => $page['meta_description'],
+                'meta_keywords' => json_encode(['tr' => '', 'en' => '']),
+                'is_active' => $page['is_active'],
+                'show_in_menu' => $page['show_in_menu'],
+                'sort_order' => $page['sort_order'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $this->command->info('Temel sayfalar eklendi: Anasayfa, Hakkımızda, İletişim');
     }
 }

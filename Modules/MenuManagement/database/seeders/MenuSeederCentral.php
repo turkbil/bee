@@ -16,8 +16,14 @@ class MenuSeederCentral extends Seeder
 {
     public function run(): void
     {
+        // Bu seeder sadece central context'te çalışmalı
+        if (tenancy()->initialized) {
+            $this->command->warn("⚠️  MenuSeederCentral sadece central database'de çalışır. Atlanıyor...");
+            return;
+        }
+
         $this->command->info('🍔 Creating CENTRAL menus (tr, en, ar)...');
-        
+
         // Duplicate kontrolü
         $existingCount = Menu::count();
         if ($existingCount > 0) {

@@ -38,6 +38,12 @@ class PageSeederCentral extends Seeder
      */
     public function run(): void
     {
+        // Bu seeder sadece central context'te çalışmalı
+        if (tenancy()->initialized) {
+            $this->command->warn("⚠️  PageSeederCentral sadece central database'de çalışır. Atlanıyor...");
+            return;
+        }
+
         $this->command->info('🚀 Starting Central Database Page Seeding...');
         $this->command->newLine();
 

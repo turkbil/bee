@@ -14,6 +14,12 @@ class AnnouncementSeederCentral extends Seeder
 
     public function run(): void
     {
+        // Bu seeder sadece central context'te çalışmalı
+        if (tenancy()->initialized) {
+            $this->command->warn("⚠️  AnnouncementSeederCentral sadece central database'de çalışır. Atlanıyor...");
+            return;
+        }
+
         if (Announcement::count() > 0) {
             $this->command->warn("⚠️  Announcements exist. Skipping...");
             return;

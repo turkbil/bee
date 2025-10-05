@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
 use Stancl\Tenancy\Database\Models\Domain;
-use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Artisan;
 use App\Helpers\TenantHelpers;
 
@@ -37,9 +36,6 @@ class TenantSeeder extends Seeder
         Tenant::query()->delete();
         User::query()->delete(); // Central tenant'ta mevcut kullanıcıları temizle
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
-        // Faker için
-        $faker = Faker::create('tr_TR');
         
         // 1. Önce Central tenant'ı ekle
         // DOĞRUDAN SQL komutu ile ekle, model olaylarını tetiklemeden
@@ -94,15 +90,20 @@ class TenantSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
         
-        // Central için 10 rastgele kullanıcı ekle
-        foreach(range(1, 10) as $index) {
-            $firstName = $faker->firstName;
-            $lastName = $faker->lastName;
-            
+        // Central için 5 test kullanıcısı ekle
+        $testUsers = [
+            ['name' => 'Test Kullanıcı 1', 'email' => 'test1@test.com'],
+            ['name' => 'Test Kullanıcı 2', 'email' => 'test2@test.com'],
+            ['name' => 'Test Kullanıcı 3', 'email' => 'test3@test.com'],
+            ['name' => 'Test Kullanıcı 4', 'email' => 'test4@test.com'],
+            ['name' => 'Test Kullanıcı 5', 'email' => 'test5@test.com'],
+        ];
+
+        foreach($testUsers as $user) {
             User::create([
-                'name' => $firstName . ' ' . $lastName,
-                'email' => strtolower($faker->unique()->userName) . '@' . $faker->freeEmailDomain,
-                'password' => Hash::make('password'),
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'password' => Hash::make('test'),
                 'email_verified_at' => now(),
             ]);
         }
@@ -164,7 +165,7 @@ class TenantSeeder extends Seeder
             $this->prepareTenantDirectories($tenant->id);
             
             // Tenant'a geç ve kullanıcı oluştur
-            $tenant->run(function () use ($config, $faker) {
+            $tenant->run(function () use ($config) {
                 // Admin kullanıcısı
                 User::create([
                     'name' => $config['title'] . ' Yönetici',
@@ -172,7 +173,7 @@ class TenantSeeder extends Seeder
                     'password' => Hash::make('test'),
                     'email_verified_at' => now(),
                 ]);
-                
+
                 // Nurullah kullanıcısı
                 User::create([
                     'name' => 'Nurullah Okatan',
@@ -180,7 +181,7 @@ class TenantSeeder extends Seeder
                     'password' => Hash::make('test'),
                     'email_verified_at' => now(),
                 ]);
-                
+
                 // Türk Bilişim kullanıcısı
                 User::create([
                     'name' => 'Türk Bilişim',
@@ -189,15 +190,18 @@ class TenantSeeder extends Seeder
                     'email_verified_at' => now(),
                 ]);
 
-                // 10 rastgele kullanıcı ekle
-                foreach(range(1, 10) as $index) {
-                    $firstName = $faker->firstName;
-                    $lastName = $faker->lastName;
-                    
+                // 3 test kullanıcısı ekle
+                $tenantTestUsers = [
+                    ['name' => $config['title'] . ' Test 1', 'email' => 'test1@' . $config['domain']],
+                    ['name' => $config['title'] . ' Test 2', 'email' => 'test2@' . $config['domain']],
+                    ['name' => $config['title'] . ' Test 3', 'email' => 'test3@' . $config['domain']],
+                ];
+
+                foreach($tenantTestUsers as $user) {
                     User::create([
-                        'name' => $firstName . ' ' . $lastName,
-                        'email' => strtolower($faker->unique()->userName) . '@' . $faker->freeEmailDomain,
-                        'password' => Hash::make('password'),
+                        'name' => $user['name'],
+                        'email' => $user['email'],
+                        'password' => Hash::make('test'),
                         'email_verified_at' => now(),
                     ]);
                 }

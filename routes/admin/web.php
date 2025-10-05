@@ -412,14 +412,10 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
             'session_updated' => true
         ]);
         
-        // Cache temizleme
+        // 🧹 DİL DEĞİŞİMİ - Full cache clear (CacheManager)
         try {
-            $tenant = tenant();
-            if ($tenant) {
-                $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
-                \Cache::tags([$tenantTag])->flush();
-                \Log::info('🧹 Tenant cache temizlendi', ['tenant_id' => $tenant->id]);
-            }
+            \App\Services\CacheManager::clearAllLanguageRelatedCaches();
+            \Log::info('🧹 Studio dil değişimi: Tüm dil-related cache temizlendi', ['locale' => $locale]);
         } catch (\Exception $e) {
             \Log::warning('Studio cache clear error: ' . $e->getMessage());
         }
@@ -482,21 +478,10 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         // Site locale session'ını koru (değiştirme)
         // $currentSiteLocale = session('tenant_locale'); - Bu otomatik korunur
         
-        // 🧹 TENANT-AWARE RESPONSE CACHE TEMİZLEME (sadece admin interface için)
+        // 🧹 DİL DEĞİŞİMİ - Full cache clear (CacheManager)
         try {
-            if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
-                $tenant = tenant();
-                if ($tenant) {
-                    $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
-                    \Spatie\ResponseCache\Facades\ResponseCache::forget($tenantTag);
-                    \Log::info('🧹 Tenant cache temizlendi', ['tenant_id' => $tenant->id]);
-                } else {
-                    // Central domain için
-                    $centralTag = 'central_response_cache';
-                    \Spatie\ResponseCache\Facades\ResponseCache::forget($centralTag);
-                    \Log::info('🧹 Central cache temizlendi');
-                }
-            }
+            \App\Services\CacheManager::clearAllLanguageRelatedCaches();
+            \Log::info('🧹 Admin dil değişimi: Tüm dil-related cache temizlendi', ['locale' => $locale]);
         } catch (\Exception $e) {
             \Log::warning('Admin language switch cache clear error: ' . $e->getMessage());
         }

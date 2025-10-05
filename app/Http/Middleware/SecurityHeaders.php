@@ -29,18 +29,20 @@ class SecurityHeaders
         }
 
         // Cross-Origin Policies
-        $response->headers->set('Cross-Origin-Embedder-Policy', 'require-corp');
-        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
-        $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
+        // COEP: credentialless allows cross-origin resources without CORS/CORP headers
+        $response->headers->set('Cross-Origin-Embedder-Policy', 'credentialless');
+        // COOP: same-origin-allow-popups yerine - login/session sorunlarını önler
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+        $response->headers->set('Cross-Origin-Resource-Policy', 'cross-origin');
 
         // Content Security Policy - Strict but CDN-compatible
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://rsms.me",
             "img-src 'self' data: https: blob:",
             "font-src 'self' data: https:",
-            "connect-src 'self'",
+            "connect-src 'self' https://cdn.jsdelivr.net",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'"

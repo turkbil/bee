@@ -14,7 +14,7 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
     @if ($paginator->hasPages())
         <nav class="d-flex justify-items-center justify-content-between">
             <div class="d-flex justify-content-between flex-fill d-sm-none">
-                <ul class="pagination mb-0">
+                <ul class="pagination">
                     {{-- Previous Page Link --}}
                     @if ($paginator->onFirstPage())
                         <li class="page-item disabled" aria-disabled="true">
@@ -41,19 +41,19 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
 
             <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
                 <div>
-                    <p class="small text-muted mb-0">
-                        {{ __('admin.pagination_showing') }}
+                    <p class="small text-muted">
+                        {!! __('Showing') !!}
                         <span class="fw-semibold">{{ $paginator->firstItem() }}</span>
-                        {{ __('admin.pagination_to') }}
+                        {!! __('to') !!}
                         <span class="fw-semibold">{{ $paginator->lastItem() }}</span>
-                        {{ __('admin.pagination_of') }}
+                        {!! __('of') !!}
                         <span class="fw-semibold">{{ $paginator->total() }}</span>
-                        {{ __('admin.pagination_results') }}
+                        {!! __('results') !!}
                     </p>
                 </div>
 
                 <div>
-                    <ul class="pagination mb-0">
+                    <ul class="pagination">
                         {{-- Previous Page Link --}}
                         @if ($paginator->onFirstPage())
                             <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">

@@ -113,7 +113,8 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
 
         // Redis pattern matching ile tüm dynamic route cache'lerini temizle
         try {
-            $redis = Cache::getRedis();
+            // Explicit redis store kullan (FileStore'da getRedis() metodu yok)
+            $redis = Cache::store('redis')->getRedis();
             $prefix = config('database.redis.options.prefix', '');
             $pattern = $prefix . ':dynamic_route:*';
             $keys = $redis->keys($pattern);
@@ -122,7 +123,8 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                 $redis->del($keys);
             }
         } catch (\Exception $e) {
-            Log::debug('Dynamic route cache clear failed: ' . $e->getMessage());
+            // Redis kullanılmıyorsa veya hata varsa sessizce devam et
+            Log::debug('Dynamic route cache clear failed (Redis not available or error): ' . $e->getMessage());
         }
 
         if (app()->environment(['local', 'staging'])) {

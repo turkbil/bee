@@ -13,9 +13,11 @@ return [
     | framework. This connection is utilized if another isn't explicitly
     | specified when running a cache operation inside the application.
     |
+    | Backward compatibility: Önce CACHE_DRIVER, yoksa CACHE_STORE kontrol edilir
+    |
     */
 
-    'default' => env('CACHE_DRIVER', 'file'),
+    'default' => env('CACHE_DRIVER', env('CACHE_STORE', 'file')),
 
     /*
     |--------------------------------------------------------------------------

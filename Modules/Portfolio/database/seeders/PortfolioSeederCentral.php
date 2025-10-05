@@ -14,6 +14,12 @@ class PortfolioSeederCentral extends Seeder
 
     public function run(): void
     {
+        // Bu seeder sadece central context'te çalışmalı
+        if (tenancy()->initialized) {
+            $this->command->warn("⚠️  PortfolioSeederCentral sadece central database'de çalışır. Atlanıyor...");
+            return;
+        }
+
         if (Portfolio::count() > 0) {
             $this->command->warn("⚠️  Portfolios exist. Skipping...");
             return;

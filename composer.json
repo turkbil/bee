@@ -13,6 +13,7 @@
         "cviebrock/eloquent-sluggable": "^12.0",
         "cyrildewit/eloquent-viewable": "^7.0",
         "ezyang/htmlpurifier": "^4.18",
+        "fakerphp/faker": "^1.24",
         "guzzlehttp/guzzle": "^7.9",
         "illuminate/redis": "*",
         "intervention/image": "^3.11",
@@ -45,8 +46,7 @@
         "stancl/tenancy": "^3.8",
         "symfony/dom-crawler": "^7.3",
         "thiagoalessio/tesseract_ocr": "^2.13",
-        "wire-elements/modal": "^2.0",
-        "fakerphp/faker": "^1.24"
+        "wire-elements/modal": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",

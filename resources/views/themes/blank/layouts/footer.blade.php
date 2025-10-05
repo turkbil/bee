@@ -1,16 +1,7 @@
-{{-- Modern Animated Footer --}}
-<footer class="bg-white dark:bg-gray-800 shadow-inner border-t border-gray-100 dark:border-gray-700 transition-all duration-300" 
-        x-data="{ footerLoaded: false }" 
-        x-init="setTimeout(() => footerLoaded = true, 500)">
+{{-- Modern Footer - CLS Optimized --}}
+<footer class="bg-white dark:bg-gray-800 shadow-inner border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {{-- Wave Animation Background --}}
-        <!-- Footer background overlay removed - causing full-screen opacity issues -->
-        
-        <div class="relative"
-             x-show="footerLoaded"
-             x-transition:enter="transition ease-out duration-700"
-             x-transition:enter-start="opacity-0 transform translate-y-8"
-             x-transition:enter-end="opacity-100 transform translate-y-0">
+        <div class="relative">
             
             {{-- Main Footer Content --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
@@ -24,7 +15,7 @@
                     
                     <div class="flex items-center">
                         @if($siteLogo && $siteLogo !== 'Logo yok')
-                            <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" class="h-8 w-auto mr-3">
+                            <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" width="auto" height="32" class="h-8 w-auto mr-3">
                         @endif
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ $siteTitle }}</h3>
                     </div>
@@ -222,8 +213,8 @@
     @widgetstyles
     @widgetscripts
     
-    {{-- Livewire Scripts --}}
-    @livewireScripts
+    {{-- Livewire Scripts - Deferred for Performance --}}
+    @livewireScriptConfig(['defer' => true])
     
     {{-- Alpine.js is already loaded by Livewire, don't load it again --}}
     <script>
@@ -259,31 +250,30 @@
         }
     </script>
 
-    {{-- GLightbox - Image Lightbox Library --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
+    {{-- GLightbox - Image Lightbox Library (Async Loading) --}}
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css"></noscript>
+    <script defer src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js" onload="initGLightbox()"></script>
     <script>
-        // GLightbox Global Initialization
-        document.addEventListener('DOMContentLoaded', function() {
+        // GLightbox Global Initialization - Deferred
+        function initGLightbox() {
             if (typeof GLightbox !== 'undefined') {
-                setTimeout(function() {
-                    const lightbox = GLightbox({
-                        selector: '.glightbox',
-                        touchNavigation: true,
-                        loop: true,
-                        autoplayVideos: false,
-                        zoomable: true,
-                        draggable: true,
-                        skin: 'clean',
-                        closeButton: true
-                    });
-                }, 100);
+                const lightbox = GLightbox({
+                    selector: '.glightbox',
+                    touchNavigation: true,
+                    loop: true,
+                    autoplayVideos: false,
+                    zoomable: true,
+                    draggable: true,
+                    skin: 'clean',
+                    closeButton: true
+                });
             }
-        });
+        }
     </script>
 
-    {{-- Core System Scripts - Mandatory for all themes --}}
-    <script src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
+    {{-- Core System Scripts - Mandatory for all themes (Deferred) --}}
+    <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
     {{-- Dynamic Script Stack --}}
     @stack('scripts')

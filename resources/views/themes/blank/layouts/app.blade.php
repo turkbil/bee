@@ -1,6 +1,6 @@
 @include('themes.blank.layouts.header')
 
-<main class="flex-1">
+<main class="flex-1 min-h-[60vh]">
     @php
     ob_start();
     @endphp

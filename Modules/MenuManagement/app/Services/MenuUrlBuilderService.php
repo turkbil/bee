@@ -180,10 +180,32 @@ readonly class MenuUrlBuilderService
                 
             case 'detail':
             case 'show':
+                // Page modülü için özel homepage kontrolü
+                if ($module === 'Page' && $id) {
+                    $pageClass = 'Modules\Page\App\Models\Page';
+                    if (class_exists($pageClass)) {
+                        $page = $pageClass::find($id);
+                        if ($page && $page->is_homepage) {
+                            // Homepage ise sadece dil prefix
+                            if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                                return url('/' . $locale);
+                            }
+                            return url('/');
+                        }
+                    }
+                }
+
                 if ($slug) {
                     // Slug ile içeriği bul
                     $model = $this->unifiedUrlService->findContentBySlug($module, $slug, $locale);
                     if ($model) {
+                        // Page ise homepage kontrolü
+                        if ($model instanceof \Modules\Page\App\Models\Page && $model->is_homepage) {
+                            if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                                return url('/' . $locale);
+                            }
+                            return url('/');
+                        }
                         return $this->unifiedUrlService->buildUrlForModel($model, $locale);
                     }
                 } elseif ($id) {
@@ -203,6 +225,13 @@ readonly class MenuUrlBuilderService
 
                             $model = $modelClass::find($id);
                             if ($model) {
+                                // Page ise homepage kontrolü
+                                if ($model instanceof \Modules\Page\App\Models\Page && $model->is_homepage) {
+                                    if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                                        return url('/' . $locale);
+                                    }
+                                    return url('/');
+                                }
                                 return $this->unifiedUrlService->buildUrlForModel($model, $locale);
                             }
                         } catch (\Exception $e) {
@@ -325,6 +354,7 @@ readonly class MenuUrlBuilderService
     
     /**
      * Page modülü için URL oluştur
+     * Homepage kontrolü: homepage=1 ise sadece dil prefix'i göster
      */
     private function buildPageUrl(int $pageId, string $locale): string
     {
@@ -333,22 +363,32 @@ readonly class MenuUrlBuilderService
             if (class_exists($pageClass)) {
                 $page = $pageClass::find($pageId);
                 if ($page) {
+                    // Homepage kontrolü - is_homepage=1 ise sadece dil prefix
+                    if ($page->is_homepage) {
+                        // Locale prefix kontrolü
+                        if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
+                            return url('/' . $locale);
+                        }
+                        return url('/');
+                    }
+
+                    // Normal sayfa - slug ile
                     $slug = $page->getTranslated('slug', $locale);
                     $defaultLocale = get_tenant_default_locale();
-                    
+
                     // URL oluştur - prefix kontrolü ile
                     $prefix = '';
                     if (function_exists('needs_locale_prefix') && needs_locale_prefix($locale)) {
                         $prefix = '/' . $locale;
                     }
-                    
+
                     return url($prefix . '/' . ltrim($slug, '/'));
                 }
             }
         } catch (\Exception $e) {
             logger('MenuUrlBuilderService::buildPageUrl error: ' . $e->getMessage());
         }
-        
+
         return '#';
     }
     

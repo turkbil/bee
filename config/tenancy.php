@@ -31,7 +31,7 @@ return [
         'tenant_connection_driver' => 'mysql', // Tenant bağlantısı için varsayılan driver mysql olarak ayarlandı
         'managers' => [
             'sqlite' => Stancl\Tenancy\TenantDatabaseManagers\SQLiteDatabaseManager::class,
-            'mysql' => Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager::class,
+            'mysql' => Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager::class, // ✅ Back to default - CREATE permission granted
             'pgsql' => Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLDatabaseManager::class,
         ],
     ],

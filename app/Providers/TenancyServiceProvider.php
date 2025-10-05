@@ -25,7 +25,7 @@ class TenancyServiceProvider extends ServiceProvider
             Events\CreatingTenant::class => [],
             Events\TenantCreated::class => [
                 JobPipeline::make([
-                    Jobs\CreateDatabase::class,
+                    Jobs\CreateDatabase::class, // ✅ RE-ENABLED - CREATE permission granted
                     Jobs\MigrateDatabase::class,
                     // Jobs\SeedDatabase::class,
 
@@ -43,7 +43,7 @@ class TenancyServiceProvider extends ServiceProvider
             Events\DeletingTenant::class => [],
             Events\TenantDeleted::class => [
                 JobPipeline::make([
-                    Jobs\DeleteDatabase::class,
+                    Jobs\DeleteDatabase::class, // ✅ RE-ENABLED - Can delete tenant databases now
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
                 })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.

@@ -4,11 +4,12 @@ namespace Modules\MenuManagement\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Prunable;
 use App\Traits\HasTranslations;
 
 class Menu extends Model
 {
-    use HasTranslations, SoftDeletes;
+    use HasTranslations, SoftDeletes, Prunable;
 
     protected $primaryKey = 'menu_id';
 
@@ -129,6 +130,29 @@ class Menu extends Model
         }
 
         return $branch;
+    }
+
+    /**
+     * Prunable: Otomatik soft delete temizleme
+     * Global Standart: 30 gün (GDPR uyumlu + müşteri şikayetleri için yeterli)
+     * SaaS Best Practice: Stripe, Google Workspace, Shopify standartları
+     */
+    public function prunable()
+    {
+        return static::where('deleted_at', '<=', now()->subDays(30));
+    }
+
+    /**
+     * Pruning sırasında çalışacak cleanup hook
+     */
+    protected function pruning()
+    {
+        \Log::info('Menu pruned (kalıcı silindi)', [
+            'menu_id' => $this->menu_id,
+            'name' => $this->name,
+            'deleted_at' => $this->deleted_at,
+            'days_ago' => $this->deleted_at?->diffInDays(now())
+        ]);
     }
 
 }

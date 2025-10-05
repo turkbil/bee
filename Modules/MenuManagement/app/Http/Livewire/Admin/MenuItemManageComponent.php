@@ -234,22 +234,41 @@ class MenuItemManageComponent extends Component
     }
     
     
+    /**
+     * Menü öğesi kaydetme ana metodu - hem ekle hem güncelle
+     */
+    public function saveMenuItem(): void
+    {
+        if ($this->editingMenuItemId) {
+            $this->updateMenuItem();
+        } else {
+            $this->addMenuItem();
+        }
+    }
+
     public function addMenuItem(): void
     {
+        // DEBUG: url_data içeriğini kontrol et
+        \Log::info('🔍 addMenuItem BAŞLANGIÇ', [
+            'url_type' => $this->url_type,
+            'url_data' => $this->url_data,
+            'selectedModule' => $this->selectedModule,
+            'selectedUrlType' => $this->selectedUrlType
+        ]);
 
         // Validation rules
         $validationRules = [
-            'url_type' => 'required|in:internal,external,module',
+            'url_type' => 'required|in:internal,external,module,url',
             'target' => 'required|in:_self,_blank,_parent,_top',
         ];
-        
+
         // Multi-language title validation
         foreach ($this->multiLangInputs as $lang => $data) {
             if (!empty($data['title'])) {
                 $validationRules["multiLangInputs.{$lang}.title"] = 'required|string|max:255';
             }
         }
-        
+
         // En az bir dil dolu olmalı
         $hasContent = false;
         foreach ($this->multiLangInputs as $data) {
@@ -258,22 +277,35 @@ class MenuItemManageComponent extends Component
                 break;
             }
         }
-        
+
         if (!$hasContent) {
             $this->addError('multiLangInputs', 'En az bir dil için başlık girilmelidir.');
             return;
         }
-        
+
         // URL data validation based on type
-        if ($this->url_type === 'internal' || $this->url_type === 'external') {
+        if ($this->url_type === 'internal' || $this->url_type === 'external' || $this->url_type === 'url') {
             $validationRules['url_data.url'] = 'required|string';
         } elseif ($this->url_type === 'module') {
+            // KRİTİK: Validation öncesi url_data'yı güncelle
+            if (!empty($this->selectedModule)) {
+                $this->url_data['module'] = $this->selectedModule;
+            }
+            if (!empty($this->selectedUrlType)) {
+                $this->url_data['type'] = $this->selectedUrlType;
+            }
+
             $validationRules['url_data.module'] = 'required|string';
             $validationRules['url_data.type'] = 'required|string';
         }
-        
+
+        \Log::info('🔍 VALIDATION ÖNCESI url_data', [
+            'url_data' => $this->url_data,
+            'validation_rules' => $validationRules
+        ]);
+
         $this->validate($validationRules);
-        
+
         try {
             // Title array oluştur
             $titleArray = [];
@@ -282,7 +314,7 @@ class MenuItemManageComponent extends Component
                     $titleArray[$lang] = $data['title'];
                 }
             }
-            
+
             $data = [
                 'menu_id' => $this->currentHeaderMenu->menu_id,
                 'title' => $titleArray,
@@ -293,19 +325,120 @@ class MenuItemManageComponent extends Component
                 'icon' => $this->icon,
                 'is_active' => $this->is_active,
             ];
-            
+
             $result = $this->menuService->createMenuItem($data);
-            
+
             if ($result->success) {
                 $this->dispatch('toast', [
                     'title' => __('admin.success'),
                     'message' => $result->message,
                     'type' => 'success'
                 ]);
-                
+
                 $this->resetForm();
                 $this->headerMenu = null; // Reset cache
-                
+
+                // Manuel sortable refresh
+                $this->dispatch('refresh-sortable');
+            } else {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => $result->message,
+                    'type' => 'error'
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed') . ': ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    public function updateMenuItem(): void
+    {
+        if (!$this->editingMenuItemId) {
+            return;
+        }
+
+        // Validation rules - same as addMenuItem
+        $validationRules = [
+            'url_type' => 'required|in:internal,external,module,url',
+            'target' => 'required|in:_self,_blank,_parent,_top',
+        ];
+
+        // Multi-language title validation
+        foreach ($this->multiLangInputs as $lang => $data) {
+            if (!empty($data['title'])) {
+                $validationRules["multiLangInputs.{$lang}.title"] = 'required|string|max:255';
+            }
+        }
+
+        // En az bir dil dolu olmalı
+        $hasContent = false;
+        foreach ($this->multiLangInputs as $data) {
+            if (!empty($data['title'])) {
+                $hasContent = true;
+                break;
+            }
+        }
+
+        if (!$hasContent) {
+            $this->addError('multiLangInputs', 'En az bir dil için başlık girilmelidir.');
+            return;
+        }
+
+        // URL data validation based on type
+        if ($this->url_type === 'internal' || $this->url_type === 'external' || $this->url_type === 'url') {
+            $validationRules['url_data.url'] = 'required|string';
+        } elseif ($this->url_type === 'module') {
+            // KRİTİK: Validation öncesi url_data'yı güncelle
+            if (!empty($this->selectedModule)) {
+                $this->url_data['module'] = $this->selectedModule;
+            }
+            if (!empty($this->selectedUrlType)) {
+                $this->url_data['type'] = $this->selectedUrlType;
+            }
+
+            $validationRules['url_data.module'] = 'required|string';
+            $validationRules['url_data.type'] = 'required|string';
+        }
+
+        $this->validate($validationRules);
+
+        try {
+            // Title array oluştur
+            $titleArray = [];
+            foreach ($this->multiLangInputs as $lang => $data) {
+                if (!empty($data['title'])) {
+                    $titleArray[$lang] = $data['title'];
+                }
+            }
+
+            $data = [
+                'title' => $titleArray,
+                'url_type' => $this->url_type,
+                'url_data' => $this->url_data,
+                'parent_id' => $this->parent_id,
+                'target' => $this->target,
+                'icon' => $this->icon,
+                'is_active' => $this->is_active,
+            ];
+
+            $result = $this->menuService->updateMenuItem($this->editingMenuItemId, $data);
+
+            if ($result->success) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.success'),
+                    'message' => $result->message,
+                    'type' => 'success'
+                ]);
+
+                $this->resetForm();
+                $this->editingMenuItemId = null;
+                $this->headerMenu = null; // Reset cache
+
                 // Manuel sortable refresh
                 $this->dispatch('refresh-sortable');
             } else {
@@ -353,7 +486,7 @@ class MenuItemManageComponent extends Component
                     
                     // Eğer slug yoksa ama ID varsa, slug'ı bul
                     if (!isset($this->url_data['slug']) && isset($this->url_data['id'])) {
-                        $contents = $this->moduleContents;
+                        $contents = $this->moduleContent;
                         $selectedContent = collect($contents)->firstWhere('id', $this->url_data['id']);
                         if ($selectedContent && isset($selectedContent['slug'])) {
                             $this->url_data['slug'] = $selectedContent['slug'];
@@ -667,7 +800,7 @@ class MenuItemManageComponent extends Component
                 'title' => ''
             ];
         }
-        
+
         $this->url_type = '';
         $this->url_data = [];
         $this->parent_id = null;
@@ -679,6 +812,21 @@ class MenuItemManageComponent extends Component
         $this->selectedUrlType = '';
         $this->moduleUrlTypes = [];
         $this->moduleContent = [];
+        $this->editingMenuItemId = null;
+    }
+
+    /**
+     * Düzenlemeyi iptal et ve formu temizle
+     */
+    public function cancelEdit(): void
+    {
+        $this->resetForm();
+
+        $this->dispatch('toast', [
+            'title' => __('admin.info'),
+            'message' => 'Düzenleme iptal edildi',
+            'type' => 'info'
+        ]);
     }
     
     /**
@@ -849,6 +997,16 @@ class MenuItemManageComponent extends Component
         if ($propertyName === 'url_type') {
             $this->urlTypeChanged();
         }
+
+        // selectedModule değiştiğinde url_data'ya map et
+        if ($propertyName === 'selectedModule') {
+            $this->moduleSelected($this->selectedModule);
+        }
+
+        // selectedUrlType değiştiğinde url_data'ya map et
+        if ($propertyName === 'selectedUrlType') {
+            $this->urlTypeSelected($this->selectedUrlType);
+        }
     }
     
     /**
@@ -892,14 +1050,31 @@ class MenuItemManageComponent extends Component
      */
     public function moduleSelected($moduleSlug)
     {
+        // Boş değeri handle et
+        if (empty($moduleSlug)) {
+            $this->selectedModule = '';
+            $this->selectedUrlType = '';
+            $this->moduleContent = [];
+            $this->moduleUrlTypes = [];
+            unset($this->url_data['module'], $this->url_data['type']);
+            return;
+        }
+
         $this->selectedModule = $moduleSlug;
         $this->selectedUrlType = '';
         $this->moduleContent = [];
-        $this->url_data = ['module' => $moduleSlug];
-        
+
+        // url_data'yı koru, sadece module ve type'ı güncelle
+        if (!isset($this->url_data) || !is_array($this->url_data)) {
+            $this->url_data = [];
+        }
+        $this->url_data['module'] = $moduleSlug;
+        // Type'ı kaldır çünkü yeni modül seçildi
+        unset($this->url_data['type']);
+
         // Bu modülün desteklediği URL tiplerini al
         $module = collect($this->availableModules)->firstWhere('slug', $moduleSlug);
-        
+
         if ($module) {
             $this->moduleUrlTypes = $module['url_types'];
             $this->dispatch('module-url-types-loaded', [
@@ -908,18 +1083,31 @@ class MenuItemManageComponent extends Component
             ]);
         }
     }
-    
+
     /**
      * URL tipi seçildiğinde içerik yükle
      */
     public function urlTypeSelected($urlType)
     {
+        // Boş değeri handle et
+        if (empty($urlType)) {
+            $this->selectedUrlType = '';
+            $this->moduleContent = [];
+            unset($this->url_data['type']);
+            return;
+        }
+
         $this->selectedUrlType = $urlType;
+
+        // url_data'yı koru, sadece type'ı ekle
+        if (!isset($this->url_data) || !is_array($this->url_data)) {
+            $this->url_data = [];
+        }
         $this->url_data['type'] = $urlType;
-        
+
         // Bu tip için içerik seçimi gerekiyorsa yükle
         $typeConfig = collect($this->moduleUrlTypes)->firstWhere('type', $urlType);
-        
+
         if ($typeConfig && ($typeConfig['needs_selection'] ?? false)) {
             $this->moduleContent = $this->urlBuilder->getModuleContent($this->selectedModule, $urlType);
             $this->dispatch('module-content-loaded', [
@@ -939,11 +1127,11 @@ class MenuItemManageComponent extends Component
             $this->url_data = [];
             return;
         }
-        
+
         // Module content listesinden seçilen içeriği bul
-        $contents = $this->moduleContents;
+        $contents = $this->moduleContent;
         $selectedContent = collect($contents)->firstWhere('id', $contentId);
-        
+
         if ($selectedContent) {
             $this->url_data = [
                 'id' => $contentId,

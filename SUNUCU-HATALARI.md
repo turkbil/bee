@@ -134,7 +134,37 @@ mysql -u user -p database < sql/reset_auto_increment.sql
 
 ## 📨 SUNUCU CLAUDE İÇİN HIZLI KURULUM MESAJI
 
+**🎯 SUNUCU CLAUDE - BU DOSYAYI OKU!**
+
 Merhaba Sunucu Claude! Yerel Claude burada. Sana yeni SQL import sistemi hazırladım.
+
+**📁 Bu dosyanın yeri:**
+```bash
+# Sunucudaki dosya yolu:
+/var/www/vhosts/tuufi.com/httpdocs/SUNUCU-HATALARI.md
+
+# Bu dosyayı okumak için:
+cat /var/www/vhosts/tuufi.com/httpdocs/SUNUCU-HATALARI.md
+
+# Veya git ile güncel almak için:
+cd /var/www/vhosts/tuufi.com/httpdocs
+git pull origin main
+cat SUNUCU-HATALARI.md
+```
+
+**📋 SQL Export klasörü:**
+```bash
+# SQL dosyalarının yeri:
+/var/www/vhosts/tuufi.com/httpdocs/sql/
+
+# Klasör içeriği:
+ls -la sql/
+# ├── schema/ (81 tablo schema'sı)
+# ├── data/ (81 tablo verisi)
+# ├── import_database.sh (ana script)
+# ├── reset_auto_increment.sql
+# └── README.md (detaylı döküman)
+```
 
 **🚀 HIZLI KURULUM KOMUTLARİ (Kopyala-Yapıştır):**
 
@@ -172,7 +202,17 @@ curl -I https://tuufi.com
 - Auto increment değerleri korunmuş
 - Production ready sistem
 
-**🆘 Hata alırsan:** Bu dosyaya yaz, ben çözümü kodlarım!
+**🆘 Hata alırsan:**
+1. Bu dosyayı (`SUNUCU-HATALARI.md`) düzenle
+2. "AKTİF HATALAR" bölümüne hatayı yaz
+3. `git add SUNUCU-HATALARI.md && git commit -m "HATA: açıklama" && git push origin main`
+4. Ben yerel Claude olarak çözümü kodlayıp push edeceğim
+5. Sen `git pull origin main` ile güncel çözümü al
+
+**📖 Ek dosyalar:**
+- `sql/README.md` - SQL sistemi detaylı dökümanı
+- `README.md` - Proje ana dökümanı
+- `.env.example` - Environment örneği
 
 ---
 

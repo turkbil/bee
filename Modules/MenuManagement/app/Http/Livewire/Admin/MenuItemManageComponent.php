@@ -479,11 +479,16 @@ class MenuItemManageComponent extends Component
             // URL tipine göre form hazırlığı
             if ($this->url_type === 'module' && isset($this->url_data['module'])) {
                 $this->loadAvailableModules();
+
+                // selectedModule property'sini set et
+                $this->selectedModule = $this->url_data['module'];
                 $this->moduleSelected($this->url_data['module']);
-                
+
                 if (isset($this->url_data['type'])) {
+                    // selectedUrlType property'sini set et
+                    $this->selectedUrlType = $this->url_data['type'];
                     $this->urlTypeSelected($this->url_data['type']);
-                    
+
                     // Eğer slug yoksa ama ID varsa, slug'ı bul
                     if (!isset($this->url_data['slug']) && isset($this->url_data['id'])) {
                         $contents = $this->moduleContent;
@@ -493,6 +498,9 @@ class MenuItemManageComponent extends Component
                         }
                     }
                 }
+            } elseif ($this->url_type === 'internal' || $this->url_type === 'external') {
+                // Internal/External için url_data'da url varsa direkt kullan
+                // Form zaten wire:model ile bağlı
             }
             
             $this->dispatch('toast', [

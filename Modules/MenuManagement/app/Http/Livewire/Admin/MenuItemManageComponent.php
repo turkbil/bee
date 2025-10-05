@@ -461,12 +461,16 @@ class MenuItemManageComponent extends Component
     {
         try {
             $menuItem = MenuItem::findOrFail($menuItemId);
-            
+
+            // ✅ KRİTİK: editingMenuItemId'yi EN BAŞTA set et
+            // url_type set edildiğinde urlTypeChanged() tetiklenecek ve edit kontrolü yapacak
+            $this->editingMenuItemId = $menuItemId;
+
             // Form alanlarını doldur
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang]['title'] = $menuItem->getTranslated('title', $lang) ?? '';
             }
-            
+
             $this->url_type = $menuItem->url_type;
             $this->url_data = $menuItem->url_data ?? [];
             $this->target = $menuItem->target;
@@ -474,7 +478,6 @@ class MenuItemManageComponent extends Component
             $this->parent_id = $menuItem->parent_id;
             $this->icon = $menuItem->icon;
             $this->is_active = $menuItem->is_active;
-            $this->editingMenuItemId = $menuItemId;
             
             // URL tipine göre form hazırlığı
             if ($this->url_type === 'module' && isset($this->url_data['module'])) {
@@ -1040,18 +1043,27 @@ class MenuItemManageComponent extends Component
      */
     public function urlTypeChanged()
     {
+        // ✅ Edit modunda ise reset yapma
+        if ($this->editingMenuItemId) {
+            \Log::info('🔍 urlTypeChanged - SKIP (Edit Mode)', [
+                'editingMenuItemId' => $this->editingMenuItemId,
+                'url_type' => $this->url_type
+            ]);
+            return;
+        }
+
         // Reset selections
         $this->url_data = [];
         $this->selectedModule = '';
         $this->selectedUrlType = '';
         $this->moduleUrlTypes = [];
         $this->moduleContent = [];
-        
+
         // Module seçimi için hazırla
         if ($this->url_type === 'module') {
             $this->loadAvailableModules();
         }
-        
+
         $this->dispatch('url-type-changed', ['url_type' => $this->url_type]);
     }
     
@@ -1087,16 +1099,22 @@ class MenuItemManageComponent extends Component
         }
 
         $this->selectedModule = $moduleSlug;
-        $this->selectedUrlType = '';
-        $this->moduleContent = [];
 
-        // url_data'yı koru, sadece module ve type'ı güncelle
+        // ✅ Edit modunda değilse reset yap
+        if (!$this->editingMenuItemId) {
+            $this->selectedUrlType = '';
+            $this->moduleContent = [];
+            // Type'ı kaldır çünkü yeni modül seçildi
+            if (isset($this->url_data['type'])) {
+                unset($this->url_data['type']);
+            }
+        }
+
+        // url_data'yı koru, sadece module'ı güncelle
         if (!isset($this->url_data) || !is_array($this->url_data)) {
             $this->url_data = [];
         }
         $this->url_data['module'] = $moduleSlug;
-        // Type'ı kaldır çünkü yeni modül seçildi
-        unset($this->url_data['type']);
 
         // Bu modülün desteklediği URL tiplerini al
         $module = collect($this->availableModules)->firstWhere('slug', $moduleSlug);

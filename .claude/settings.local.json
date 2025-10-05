@@ -236,7 +236,17 @@
       "Bash(plesk sbin upgrade:*)",
       "Bash(plesk bin service:*)",
       "Bash(plesk bin site:*)",
-      "Bash(plesk bin domain:*)"
+      "Bash(plesk bin domain:*)",
+      "Bash(./import_database.sh:*)",
+      "Bash(plesk db:*)",
+      "Bash(do echo \"📊 $db:\")",
+      "Bash(plesk bin database:*)",
+      "Bash(do echo \"📋 $db register ediliyor...\" plesk bin database --register \"$db\" -domain tuufi.com -type mysql)",
+      "Bash(bash:*)",
+      "Bash(plesk repair db:*)",
+      "Bash(service:*)",
+      "Bash(plesk bin subscription:*)",
+      "Bash(plesk bin server_pref:*)"
     ],
     "deny": [],
     "ask": [],

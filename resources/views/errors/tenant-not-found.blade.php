@@ -85,7 +85,7 @@
         <div class="mt-12 text-center text-gray-500 text-sm">
             <p>
                 <i class="fas fa-shield-alt mr-2"></i>
-                Bu sayfa Turkbil Bee sistemi tarafından gösterilmektedir.
+                Bu sayfa Tuufi sistemi tarafından gösterilmektedir.
             </p>
             <p class="mt-2">
                 Hata Kodu: <span class="font-mono bg-gray-200 px-2 py-1 rounded">TENANT_NOT_FOUND</span>

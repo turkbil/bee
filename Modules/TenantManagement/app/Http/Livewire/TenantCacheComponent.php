@@ -170,8 +170,8 @@ class TenantCacheComponent extends Component
             // Multiple pattern support for backward compatibility
             $patterns = [
                 "*tenant_{$this->selectedTenantId}*",
-                "tenant_{$this->selectedTenantId}:*", 
-                "*bee_redis_tenant_{$this->selectedTenantId}*",
+                "tenant_{$this->selectedTenantId}:*",
+                "*tuufi_redis_tenant_{$this->selectedTenantId}*",
                 "*{$this->selectedTenantId}:*"
             ];
             
@@ -213,14 +213,14 @@ class TenantCacheComponent extends Component
                     "tenant:{$this->selectedTenantId}:cache:hits",
                     "cache:tenant_{$this->selectedTenantId}:hits",
                     "tenant_{$this->selectedTenantId}:hits",
-                    "bee_redis_tenant_{$this->selectedTenantId}:hits"
+                    "tuufi_redis_tenant_{$this->selectedTenantId}:hits"
                 ];
-                
+
                 $missCounters = [
                     "tenant:{$this->selectedTenantId}:cache:misses",
                     "cache:tenant_{$this->selectedTenantId}:misses",
                     "tenant_{$this->selectedTenantId}:misses",
-                    "bee_redis_tenant_{$this->selectedTenantId}:misses"
+                    "tuufi_redis_tenant_{$this->selectedTenantId}:misses"
                 ];
                 
                 $hits = 0;

@@ -128,13 +128,7 @@ class AuthenticatedSessionController extends Controller
     {
         $user = Auth::user();
 
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        // Çıkış log'u
+        // Çıkış log'u ÖNCE - user bilgisi kaybolmadan
         if ($user) {
             activity()
                 ->causedBy($user)
@@ -165,45 +159,18 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        // 🔐 COOKIE TEMİZLEME - 419 hatası önleme
-        $response = redirect('/');
-        $config = config('session');
+        // Session'ı invalidate et - cookie'ler otomatik temizlenecek
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        // XSRF-TOKEN cookie'sini expire et
-        $response->headers->setCookie(
-            new \Symfony\Component\HttpFoundation\Cookie(
-                'XSRF-TOKEN',
-                '',
-                1, // Expire immediately
-                $config['path'],
-                $config['domain'],
-                $config['secure'],
-                false,
-                false,
-                $config['same_site'] ?? 'lax'
-            )
-        );
-
-        // Session cookie'sini de expire et
-        $sessionName = $config['cookie'] ?? config('session.cookie', 'laravel_session');
-        $response->headers->setCookie(
-            new \Symfony\Component\HttpFoundation\Cookie(
-                $sessionName,
-                '',
-                1, // Expire immediately
-                $config['path'],
-                $config['domain'],
-                $config['secure'],
-                true, // httpOnly
-                false,
-                $config['same_site'] ?? 'lax'
-            )
-        );
-
-        return $response
+        // Fresh session için query parameter ile redirect
+        // Bu sayede browser yeni session başlatacak
+        return redirect('/?logout=1')
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
-            ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
+            ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')
+            ->header('Clear-Site-Data', '"cache", "cookies", "storage"'); // Modern browser'lar için
     }
     
     /**

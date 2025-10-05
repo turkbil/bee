@@ -55,6 +55,15 @@ class PageSeeder extends Seeder
         $this->command->info("🏢 Context: TENANT DATABASE (ID: {$tenantId})");
 
         switch ($tenantId) {
+            case 1:
+                $this->command->info('🗂️  Running: PageSeederTenant1');
+                $this->command->info('🌍 Languages: Turkish, Arabic');
+                $this->command->info('🎨 Theme: Production CMS');
+                $this->command->newLine();
+
+                $this->call(PageSeederTenant1::class);
+                break;
+
             case 2:
                 $this->command->info('🗂️  Running: PageSeederTenant2');
                 $this->command->info('🌍 Languages: Turkish, English');

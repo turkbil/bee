@@ -38,21 +38,21 @@ class SiteSetLocaleMiddleware
             $detectedLocale = $defaultLocale;
         }
         
-        // Önceki locale'i sakla
-        $previousLocale = app()->getLocale();
-        
+        // Önceki locale'i session'dan al (app locale değil!)
+        $previousLocale = session('tenant_locale', $this->getTenantDefaultLocale());
+
         // 2. Locale'i set et
         app()->setLocale($detectedLocale);
         session(['tenant_locale' => $detectedLocale]);
-        
-        // Kullanıcı ve cookie güncelle
-        if (auth()->check() && auth()->user()->tenant_locale !== $detectedLocale) {
-            auth()->user()->update(['tenant_locale' => $detectedLocale]);
-        }
-        \Cookie::queue('tenant_locale_preference', $detectedLocale, 525600);
-        
-        // Dil değişmişse cache'leri temizle (THROTTLED)
+
+        // Kullanıcı ve cookie güncelle (sadece gerçek değişimde)
         if ($previousLocale !== $detectedLocale) {
+            if (auth()->check() && auth()->user()->tenant_locale !== $detectedLocale) {
+                auth()->user()->update(['tenant_locale' => $detectedLocale]);
+            }
+            \Cookie::queue('tenant_locale_preference', $detectedLocale, 525600);
+
+            // Dil değişmişse cache'leri temizle (THROTTLED)
             $this->clearLanguageRelatedCachesThrottled($previousLocale, $detectedLocale);
         }
 

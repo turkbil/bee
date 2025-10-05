@@ -93,13 +93,14 @@ class TenantCacheProfile implements CacheProfile
     {
         $tenant = tenant();
         $tenantId = $tenant ? $tenant->id : 'central';
-        
-        // LOCALE AWARE CACHE KEY
-        $locale = app()->getLocale();
-        
-        // AUTH AWARE CACHE KEY - CRITICAL!
+
+        // URL-BASED CACHE KEY (URL zaten locale içeriyor: /en/page, /ar/announcements)
+        // Locale session'dan değil URL'den alınır - middleware sıralamasından bağımsız
+        $url = $request->fullUrl();
+
+        // AUTH AWARE CACHE KEY - GUEST için tek cache (performans!)
         $authSuffix = auth()->check() ? 'auth_' . auth()->id() : 'guest';
-        
-        return "tenant_{$tenantId}_{$authSuffix}_locale_{$locale}_" . md5($request->fullUrl());
+
+        return "tenant_{$tenantId}_{$authSuffix}_" . md5($url);
     }
 }

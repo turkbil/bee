@@ -933,6 +933,9 @@ readonly class SeoMetaTagService
     
     /**
      * Otomatik breadcrumb oluştur
+     *
+     * Google Best Practice (2025): Ana sayfa breadcrumb'a dahil edilmez
+     * https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
      */
     private function generateAutoBreadcrumbs(?Model $model, string $locale): array
     {
@@ -940,28 +943,30 @@ readonly class SeoMetaTagService
             return [];
         }
 
+        // Homepage ise breadcrumb gösterme (tek sayfa, breadcrumb anlamsız)
+        if ($this->isHomepage()) {
+            return [];
+        }
+
         $breadcrumbs = [];
-        $siteName = setting('site_title', 'Website');
-        
-        // 1. Ana sayfa (her zaman)
-        $breadcrumbs[] = [
-            'name' => $siteName,
-            'url' => url('/')
-        ];
-        
-        // 2. Model tipine göre orta seviye
         $modelClass = get_class($model);
-        
+
+        // Google Best Practice: Ana sayfa dahil ETMİYORUZ
+        // Direkt kategoriden başlıyoruz: Portfolio → Kategori → Ürün
+
         if (str_contains($modelClass, 'Page')) {
-            // Page için breadcrumb yok - direkt ana sayfa → sayfa
+            // Page için sadece sayfa başlığı (eğer homepage değilse)
+            // Breadcrumb göstermeye gerek yok - çünkü hiyerarşi yok
+            return [];
         } elseif (str_contains($modelClass, 'Portfolio')) {
+            // 1. Portfolio index
             $portfolioIndexText = __('Portfolio', [], $locale);
             $breadcrumbs[] = [
                 'name' => $portfolioIndexText,
                 'url' => url('/portfolio')
             ];
-            
-            // Portfolio kategorisi varsa
+
+            // 2. Portfolio kategorisi varsa
             if (isset($model->category) && $model->category) {
                 $categoryTitle = $model->category->getTranslated('title', $locale);
                 $breadcrumbs[] = [
@@ -969,41 +974,72 @@ readonly class SeoMetaTagService
                     'url' => url("/portfolio/category/{$model->category->id}")
                 ];
             }
-        } elseif (str_contains($modelClass, 'Announcement')) {
-            $announcementIndexText = __('Announcements', [], $locale);
-            $breadcrumbs[] = [
-                'name' => $announcementIndexText,
-                'url' => url('/announcements')
-            ];
+
+            // 3. Mevcut portfolio item
+            if (method_exists($model, 'getTranslated')) {
+                $currentTitle = $model->getTranslated('title', $locale);
+                if ($currentTitle) {
+                    $breadcrumbs[] = [
+                        'name' => $currentTitle,
+                        'url' => url()->current()
+                    ];
+                }
+            }
         } elseif (str_contains($modelClass, 'PortfolioCategory')) {
+            // 1. Portfolio index
             $portfolioIndexText = __('Portfolio', [], $locale);
             $breadcrumbs[] = [
                 'name' => $portfolioIndexText,
                 'url' => url('/portfolio')
             ];
-        }
-        
-        // 3. Mevcut sayfa (son)
-        if (method_exists($model, 'getTranslated')) {
-            $currentTitle = $model->getTranslated('title', $locale);
-            if ($currentTitle) {
-                $breadcrumbs[] = [
-                    'name' => $currentTitle,
-                    'url' => url()->current()
-                ];
+
+            // 2. Mevcut kategori
+            if (method_exists($model, 'getTranslated')) {
+                $currentTitle = $model->getTranslated('title', $locale);
+                if ($currentTitle) {
+                    $breadcrumbs[] = [
+                        'name' => $currentTitle,
+                        'url' => url()->current()
+                    ];
+                }
+            }
+        } elseif (str_contains($modelClass, 'Announcement')) {
+            // 1. Announcements index
+            $announcementIndexText = __('Announcements', [], $locale);
+            $breadcrumbs[] = [
+                'name' => $announcementIndexText,
+                'url' => url('/announcements')
+            ];
+
+            // 2. Mevcut announcement
+            if (method_exists($model, 'getTranslated')) {
+                $currentTitle = $model->getTranslated('title', $locale);
+                if ($currentTitle) {
+                    $breadcrumbs[] = [
+                        'name' => $currentTitle,
+                        'url' => url()->current()
+                    ];
+                }
             }
         }
-        
+
+        // Breadcrumb en az 2 seviye olmalı (Google tavsiyesi)
+        // Tek seviyeli breadcrumb anlamsız
+        if (count($breadcrumbs) < 2) {
+            return [];
+        }
+
         return $breadcrumbs;
     }
 
     /**
      * Otomatik çok dilli copyright oluştur - Public static metod
      */
-    public static function generateAutomaticCopyright(string $siteName, string $locale): string
+    public static function generateAutomaticCopyright(?string $siteName, string $locale): string
     {
         $currentYear = date('Y');
-        
+        $siteName = $siteName ?? 'Site';
+
         // Çok dilli copyright metinleri
         $copyrightTexts = [
             'tr' => $currentYear . ' ' . $siteName . '. Tüm hakları saklıdır.',

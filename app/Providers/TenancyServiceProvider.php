@@ -44,6 +44,7 @@ class TenancyServiceProvider extends ServiceProvider
             Events\TenantDeleted::class => [
                 JobPipeline::make([
                     Jobs\DeleteDatabase::class, // ✅ RE-ENABLED - Can delete tenant databases now
+                    // \App\Jobs\UnregisterDatabaseFromPlesk::class, // ⏸️ TEMPORARILY DISABLED FOR TESTING
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
                 })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
@@ -61,7 +62,9 @@ class TenancyServiceProvider extends ServiceProvider
 
             // Database events
             Events\DatabaseCreated::class => [],
-            Events\DatabaseMigrated::class => [],
+            Events\DatabaseMigrated::class => [
+                // \App\Listeners\RegisterTenantDatabaseToPlesk::class, // ⏸️ TEMPORARILY DISABLED FOR TESTING
+            ],
             Events\DatabaseSeeded::class => [],
             Events\DatabaseRolledBack::class => [],
             Events\DatabaseDeleted::class => [],

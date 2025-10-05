@@ -32,7 +32,25 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (TokenMismatchException $e, $request) {
-            return Redirect::to('/');
+            // CSRF token mismatch - logout sonrası veya session expire durumu
+            \Log::warning('CSRF Token Mismatch', [
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'session_token' => $request->session()->token(),
+                'request_token_header' => $request->header('X-CSRF-TOKEN'),
+                'request_token_input' => $request->input('_token')
+            ]);
+
+            // Login sayfasından geldiyse tekrar login'e yönlendir
+            if ($request->is('login') || $request->url() == route('login')) {
+                return redirect()->route('login')
+                    ->withInput($request->except('password', '_token'))
+                    ->with('error', 'Oturum süreniz dolmuş. Lütfen tekrar deneyin.');
+            }
+
+            // Diğer sayfalar için homepage'e yönlendir
+            return redirect('/')
+                ->with('error', 'Oturum süreniz dolmuş. Lütfen giriş yapın.');
         });
         
         // Tenant offline durumu için özel istisna işleyici

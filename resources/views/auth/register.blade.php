@@ -56,7 +56,7 @@
 
                         <!-- Email Field -->
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Adresi</label>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('auth.email_field') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,7 +86,7 @@
 
                         <!-- Password Field -->
                         <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Şifre</label>
+                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('auth.password_field') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@
                                     id="password"
                                     required 
                                     autocomplete="new-password"
-                                    placeholder="Şifrenizi girin"
+                                    placeholder="{{ __('auth.password_placeholder') }}"
                                     class="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-gray-100 transition-colors @error('password') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                 />
                                 <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -124,7 +124,7 @@
 
                         <!-- Password Confirmation Field -->
                         <div>
-                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Şifre Tekrarı</label>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('auth.password_confirmation_field') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +137,7 @@
                                     id="password_confirmation"
                                     required 
                                     autocomplete="new-password"
-                                    placeholder="Şifrenizi tekrar girin"
+                                    placeholder="{{ __('auth.password_confirmation_placeholder') }}"
                                     class="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-gray-100 transition-colors @error('password_confirmation') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                 />
                                 <button type="button" @click="showPasswordConfirm = !showPasswordConfirm" class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -171,8 +171,8 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span x-show="!isLoading">Hesap Oluştur</span>
-                            <span x-show="isLoading">Hesap oluşturuluyor...</span>
+                            <span x-show="!isLoading">{{ __('auth.create_account') }}</span>
+                            <span x-show="isLoading">{{ __('auth.creating_account') }}</span>
                             <svg x-show="!isLoading" class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                             </svg>
@@ -181,9 +181,9 @@
                         <!-- Login Link -->
                         <div class="text-center">
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Zaten hesabınız var mı? 
+                                {{ __('auth.already_have_account') }}
                                 <a href="{{ route('login') }}" class="font-medium text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300">
-                                    Giriş yap
+                                    {{ __('auth.login_link') }}
                                 </a>
                             </p>
                         </div>
@@ -191,7 +191,7 @@
                 </div>
 
                 <!-- Right Column - SVG & Details -->
-                <div class="bg-gradient-to-br from-green-600 to-teal-700 dark:from-green-800 dark:to-teal-900 px-8 py-16 lg:px-12 flex flex-col justify-center relative overflow-hidden">
+                <div class="hidden lg:flex bg-gradient-to-br from-green-600 to-teal-700 dark:from-green-800 dark:to-teal-900 px-8 py-16 lg:px-12 flex-col justify-center relative overflow-hidden">
                     <!-- Animated Background Elements -->
                     <div class="absolute inset-0 overflow-hidden">
                         <div class="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full animate-pulse"></div>

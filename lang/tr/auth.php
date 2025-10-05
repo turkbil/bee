@@ -32,5 +32,24 @@ return [
     'register_subtitle' => 'Ücretsiz hesabınızı oluşturun',
     'name_field' => 'Ad Soyad',
     'name_placeholder' => 'Adınız ve soyadınız',
+    'password_field' => 'Şifre',
+    'password_placeholder' => 'Şifrenizi girin',
+    'password_confirmation_field' => 'Şifre Tekrarı',
+    'password_confirmation_placeholder' => 'Şifrenizi tekrar girin',
+    'email_field' => 'Email Adresi',
+    'email_placeholder' => 'email@domain.com',
+    'create_account' => 'Hesap Oluştur',
+    'creating_account' => 'Hesap oluşturuluyor...',
+    'already_have_account' => 'Zaten hesabınız var mı?',
+    'login_link' => 'Giriş yap',
+
+    // Forgot Password form translations
+    'forgot_password_title' => 'Şifremi Unuttum',
+    'forgot_password_subtitle' => 'Email adresinizi girin, şifre sıfırlama bağlantısı gönderelim',
+    'send_reset_link' => 'Şifre Sıfırlama Bağlantısı Gönder',
+    'sending' => 'Gönderiliyor...',
+    'remember_password' => 'Şifrenizi hatırladınız mı?',
+    'back_to_login' => 'Giriş yap',
+    'logged_out_success' => 'Başarıyla çıkış yaptınız.',
 
 ];

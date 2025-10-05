@@ -27,6 +27,29 @@ class AuthenticatedSessionController extends Controller
                 ->header('Expires', '0');
         }
 
+        // Auth sayfaları için locale - session'da varsa kullan, yoksa tenant default
+        try {
+            // Önce session'daki locale'i kontrol et (redirect'ten gelebilir)
+            $sessionLocale = session('tenant_locale');
+
+            if ($sessionLocale && is_valid_tenant_locale($sessionLocale)) {
+                // Session'da locale varsa kullan
+                app()->setLocale($sessionLocale);
+            } else {
+                // Yoksa tenant default locale kullan
+                $tenant = tenant();
+                $defaultLocale = $tenant && $tenant->tenant_default_locale
+                    ? $tenant->tenant_default_locale
+                    : 'tr';
+
+                app()->setLocale($defaultLocale);
+                session(['tenant_locale' => $defaultLocale]);
+            }
+        } catch (\Exception $e) {
+            // Fallback
+            app()->setLocale('tr');
+        }
+
         // Login sayfası cache'lenmesin
         return response()
             ->view('auth.login')
@@ -139,21 +162,9 @@ class AuthenticatedSessionController extends Controller
                 })
                 ->log("\"{$user->name}\" çıkış yaptı");
 
-            // 🧹 LOGOUT CACHE TEMİZLEME - ResponseCache + User Cache
+            // 🧹 LOGOUT: Sadece user auth cache (hafif & hızlı)
             try {
-                // 1. Response Cache temizle (redirect loop önleme)
-                if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
-                    \Spatie\ResponseCache\Facades\ResponseCache::clear();
-                    \Log::info('🧹 LOGOUT: Response cache temizlendi');
-                }
-
-                // 2. Kullanıcıya özel cache'leri temizle
                 $this->clearUserAuthCaches($user->id);
-
-                // 3. Laravel cache temizle
-                \Illuminate\Support\Facades\Cache::flush();
-
-                \Log::info('🧹 LOGOUT: Tüm cache temizleme tamamlandı', ['user_id' => $user->id]);
             } catch (\Exception $e) {
                 \Log::warning('Logout cache clear error: ' . $e->getMessage());
             }
@@ -164,13 +175,13 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Fresh session için query parameter ile redirect
-        // Bu sayede browser yeni session başlatacak
-        return redirect('/?logout=1')
+        // Login sayfasına redirect - fresh session garantisi
+        // Query parameter ile logout mesajı (session invalidate sonrası with() çalışmaz)
+        return redirect('/login?logged_out=1')
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')
-            ->header('Clear-Site-Data', '"cache", "cookies", "storage"'); // Modern browser'lar için
+            ->header('Clear-Site-Data', '"cache"'); // Sadece cache temizle, cookies'i korumalı (dark mode vb.)
     }
     
     /**

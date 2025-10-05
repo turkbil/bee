@@ -12,7 +12,9 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
 
-Route::middleware([InitializeTenancy::class, 'guest'])->group(function () {
+Route::middleware([InitializeTenancy::class, 'guest'])
+    ->withoutMiddleware([\Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class])
+    ->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 

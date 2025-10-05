@@ -256,7 +256,8 @@
       "Read(//opt/**)",
       "Read(//usr/local/psa/phpMyAdmin/themes/**)",
       "Read(//usr/local/psa/phpMyAdmin/**)",
-      "Read(//var/log/**)"
+      "Read(//var/log/**)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": [],

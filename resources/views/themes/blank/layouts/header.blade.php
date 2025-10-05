@@ -291,13 +291,44 @@
                     {{-- Site Dil Değiştirici - DİREKT ALTERNATE LINKS KULLANAN --}}
                     @php
                         use App\Helpers\CanonicalHelper;
+
                         $currentModel = isset($item) ? $item : null;
                         $moduleAction = 'show';
                         if (isset($items) && !isset($item)) $moduleAction = 'index';
                         if (isset($category)) { $currentModel = $category; $moduleAction = 'category'; }
-                        
+
                         $currentLang = app()->getLocale();
-                        $languageSwitcherLinks = CanonicalHelper::getLanguageSwitcherLinks($currentModel ?? null, $moduleAction);
+
+                        // Auth sayfalarında alternate link yok, manuel oluştur
+                        $isAuthPage = request()->is('login') || request()->is('register') ||
+                                     request()->is('logout') || request()->is('password/*') ||
+                                     request()->is('forgot-password') || request()->is('reset-password');
+
+                        if ($isAuthPage) {
+                            // Auth sayfaları için /language/{locale} + return URL kullan
+                            $languageSwitcherLinks = [];
+                            $activeLanguages = \App\Services\TenantLanguageProvider::getActiveLanguages();
+                            $defaultLocale = get_tenant_default_locale();
+                            $currentPath = ltrim(request()->path(), '/'); // login, register, vb.
+
+                            foreach ($activeLanguages as $lang) {
+                                // Hedef auth URL (locale-aware)
+                                $targetUrl = $lang['code'] === $defaultLocale
+                                    ? url('/' . $currentPath)
+                                    : url('/' . $lang['code'] . '/' . $currentPath);
+
+                                // /language/{locale} route'u kullan + return parametresi
+                                $url = route('language.switch', ['locale' => $lang['code']]) . '?return=' . urlencode($targetUrl);
+
+                                $languageSwitcherLinks[$lang['code']] = [
+                                    'url' => $url,
+                                    'name' => $lang['native_name'] ?? $lang['name'],
+                                    'active' => $lang['code'] === $currentLang
+                                ];
+                            }
+                        } else {
+                            $languageSwitcherLinks = CanonicalHelper::getLanguageSwitcherLinks($currentModel ?? null, $moduleAction);
+                        }
                     @endphp
                     
                     {{-- Tek dil varsa language switcher'ı gizle --}}

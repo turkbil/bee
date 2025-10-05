@@ -44,13 +44,21 @@ class ProductionTenantSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // Domain ekle
+        // Domain ekle (with www variant)
         $domain = parse_url(config('app.url'), PHP_URL_HOST) ?: 'laravel.test';
         DB::table('domains')->insert([
-            'domain' => $domain,
-            'tenant_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+            [
+                'domain' => $domain,
+                'tenant_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'domain' => 'www.' . $domain,
+                'tenant_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
 
         // Mevcut kullanıcılar varsa atlama

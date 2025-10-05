@@ -45,9 +45,13 @@ class DatabaseSeeder extends Seeder
             
             // AI Credit Packages (central'da tutulur)
             $this->call(AICreditPackageSeeder::class);
-            
-            // AI Provider'lar ve modelleri (ModuleSeeder'da çalışır)
-            
+
+            // AI Provider'lar ve modelleri (central'da tutulur)
+            $this->call(\Modules\AI\Database\Seeders\AIProviderSeeder::class);
+
+            // ModuleManagement seeder'ı (modules tablosuna kayıt ekler - EN ÖNEMLİ!)
+            $this->call(\Modules\ModuleManagement\Database\Seeders\ModuleManagementSeeder::class);
+
             // ModuleSeeder'dan önce context'i tekrar garanti altına al
             tenancy()->end();
             if (!TenantHelpers::isCentral()) {
@@ -56,8 +60,8 @@ class DatabaseSeeder extends Seeder
                 $this->command->info('⚠️ ModuleSeeder öncesi ZORLA CENTRAL CONTEXT!');
             }
             $this->command->info('🔄 ModuleSeeder öncesi context kontrolü: ' . (TenantHelpers::isCentral() ? 'CENTRAL ✅' : 'TENANT ❌'));
-            
-            // Modül seeder'ları (central context'te)
+
+            // Modül seeder'ları (central context'te) - diğer modüllerin içerik seeder'ları
             $this->call(ModuleSeeder::class);
             
         } else {

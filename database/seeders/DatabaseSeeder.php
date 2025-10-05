@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
                 // TenantSeeder'dan sonra context'i AGRESIVE şekilde central'a geri döndür
                 tenancy()->end();
             } else {
-                $this->command->info('🚀 Production environment - TenantSeeder atlanıyor (CREATE DATABASE izni yok)');
+                $this->command->info('🚀 Production environment - Central tenant oluşturuluyor...');
+                $this->call(ProductionTenantSeeder::class);
             }
             
             // Context durumunu kontrol et ve zorla central'a al

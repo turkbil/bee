@@ -222,9 +222,57 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                     }
                 }
             }
-            
+
+            // 🔥 DİNAMİK FALLBACK: Single slug için content kontrolü
+            // Hiçbir modül index slug'ı match etmediyse, tüm modüllerde content slug ara
+            if (!$slug2 && !$slug3) {
+                foreach ($moduleRouteMap as $moduleName => $routes) {
+                    // Show action yoksa atla
+                    if (!isset($routes['show'])) {
+                        continue;
+                    }
+
+                    // Model class'ını oluştur
+                    $modelClass = "\\Modules\\{$moduleName}\\App\\Models\\{$moduleName}";
+
+                    if (!class_exists($modelClass)) {
+                        continue;
+                    }
+
+                    try {
+                        // Bu slug'a sahip aktif content var mı?
+                        $model = $modelClass::whereJsonContains("slug->{$locale}", $slug1)
+                            ->where('is_active', true)
+                            ->first();
+
+                        if ($model) {
+                            // Bulundu! Show action'ını döndür
+                            if (app()->environment(['local', 'staging'])) {
+                                Log::debug("✅ Content slug matched (fallback)", [
+                                    'module' => $moduleName,
+                                    'slug' => $slug1,
+                                    'locale' => $locale,
+                                    'model_id' => $model->getKey()
+                                ]);
+                            }
+
+                            return [
+                                'controller' => $routes['show']['controller'],
+                                'method' => $routes['show']['method'],
+                                'module' => $moduleName,
+                                'action' => 'show',
+                                'params' => [$slug1]
+                            ];
+                        }
+                    } catch (\Exception $e) {
+                        // Hata varsa devam et (örn: tablo yoksa)
+                        continue;
+                    }
+                }
+            }
+
             return null;
-            
+
         } catch (\Exception $e) {
             Log::error('Dynamic route resolution error', [
                 'slug1' => $slug1,

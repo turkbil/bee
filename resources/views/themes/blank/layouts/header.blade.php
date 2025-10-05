@@ -45,19 +45,21 @@
     @endif
 
     {{-- Tailwind CSS --}}
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Suppress production warning for Tailwind CDN
-        if (typeof console !== 'undefined' && console.warn) {
+        // Suppress Tailwind CDN production warning
+        (function() {
             const originalWarn = console.warn;
             console.warn = function(...args) {
-                const msg = args[0]?.toString() || '';
-                if (!msg.includes('cdn.tailwindcss.com') && !msg.includes('production')) {
-                    originalWarn.apply(console, args);
+                const msg = String(args[0] || '');
+                if (msg.includes('cdn.tailwindcss.com') || msg.includes('should not be used in production')) {
+                    return; // Suppress Tailwind CDN warning
                 }
+                originalWarn.apply(console, args);
             };
-        }
-
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {

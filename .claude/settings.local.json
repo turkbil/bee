@@ -246,7 +246,10 @@
       "Bash(plesk repair db:*)",
       "Bash(service:*)",
       "Bash(plesk bin subscription:*)",
-      "Bash(plesk bin server_pref:*)"
+      "Bash(plesk bin server_pref:*)",
+      "Bash(do echo \"Test $i:\")",
+      "Bash(do curl -s -o /dev/null -w \"Test $i: %{time_starttransfer}s\\n\" https://tuufi.com/)",
+      "Bash(plesk bin php_handler:*)"
     ],
     "deny": [],
     "ask": [],

@@ -52,7 +52,10 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // 5. MissingPageRedirector
         $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
-        
+
+        // 5.5. Security Headers - Performance & Security Best Practices
+        $middleware->appendToGroup('web', \App\Http\Middleware\SecurityHeaders::class);
+
         // 6. Database Pool - Connection pooling için (Tenant middleware'den sonra)
         $middleware->appendToGroup('web', \App\Http\Middleware\DatabasePoolMiddleware::class);
         $middleware->appendToGroup('api', \App\Http\Middleware\DatabasePoolMiddleware::class);
@@ -101,8 +104,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Site middleware grubu (admin olmayan rotalar için)
         $middleware->group('site', [
             'web',
-            'locale.site',
-            // \Spatie\ResponseCache\Middlewares\CacheResponse::class, // GEÇİCİ OLARAK DEVRE DIŞI - locale sorunları için
+            'locale.site', // Locale belirleme (URL parse için gerekli)
+            \Spatie\ResponseCache\Middlewares\CacheResponse::class, // ✅ Response cache (URL-based, locale'den bağımsız)
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü

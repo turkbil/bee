@@ -11,7 +11,7 @@
     <div class="row">
         <!-- Sol Sütun: Form -->
         <div class="col-lg-5 col-md-12 mb-3">
-            <form method="post" wire:submit.prevent="addMenuItem">
+            <form method="post" wire:submit.prevent="saveMenuItem">
                 <div class="card">
                     <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="menu_active_tab">
 
@@ -103,33 +103,31 @@
                                     <!-- Modül Seçimi -->
                                     @if($url_type === 'module')
                                         <div class="form-floating mb-3">
-                                            <select class="form-select @error('selectedModule') is-invalid @enderror" 
-                                                wire:model="selectedModule" 
-                                                wire:change="moduleSelected($event.target.value)">
+                                            <select class="form-select @error('url_data.module') is-invalid @enderror"
+                                                wire:model.live="selectedModule">
                                                 <option value="">{{ __('menumanagement::admin.select_module') }}</option>
                                                 @foreach($availableModules as $module)
                                                     <option value="{{ $module['slug'] }}">{{ $module['label'] }}</option>
                                                 @endforeach
                                             </select>
                                             <label>{{ __('menumanagement::admin.select_module') }}</label>
-                                            @error('selectedModule')
+                                            @error('url_data.module')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        
+
                                         <!-- URL Tipi Seçimi -->
                                         @if($selectedModule && count($moduleUrlTypes) > 0)
                                             <div class="form-floating mb-3">
-                                                <select class="form-select @error('selectedUrlType') is-invalid @enderror" 
-                                                    wire:model="selectedUrlType" 
-                                                    wire:change="urlTypeSelected($event.target.value)">
+                                                <select class="form-select @error('url_data.type') is-invalid @enderror"
+                                                    wire:model.live="selectedUrlType">
                                                     <option value="">{{ __('menumanagement::admin.select_url_type') }}</option>
                                                     @foreach($moduleUrlTypes as $type)
                                                         <option value="{{ $type['type'] }}">{{ $type['label'] }}</option>
                                                     @endforeach
                                                 </select>
                                                 <label>{{ __('menumanagement::admin.select_url_type') }}</label>
-                                                @error('selectedUrlType')
+                                                @error('url_data.type')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -223,12 +221,23 @@
                                     </div>
                                 </div>
 
-                                <!-- Kaydet Butonu -->
-                                <div class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>
-                                        {{ __('menumanagement::admin.add_menu_item') }}
-                                    </button>
+                                <!-- Kaydet/Güncelle Butonları -->
+                                <div class="d-flex justify-content-end gap-2">
+                                    @if($editingMenuItemId)
+                                        <button type="button" wire:click="cancelEdit" class="btn btn-secondary">
+                                            <i class="fas fa-times me-2"></i>
+                                            {{ __('admin.cancel') }}
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>
+                                            {{ __('admin.update') }}
+                                        </button>
+                                    @else
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>
+                                            {{ __('menumanagement::admin.add_menu_item') }}
+                                        </button>
+                                    @endif
                                 </div>
 
                             </div>

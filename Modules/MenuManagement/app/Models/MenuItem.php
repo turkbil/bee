@@ -4,13 +4,14 @@ namespace Modules\MenuManagement\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Prunable;
 use App\Traits\HasTranslations;
 use Modules\MenuManagement\App\Services\MenuUrlBuilderService;
 use Illuminate\Support\Facades\Cache;
 
 class MenuItem extends Model
 {
-    use HasTranslations, SoftDeletes;
+    use HasTranslations, SoftDeletes, Prunable;
 
     protected $primaryKey = 'item_id';
 
@@ -23,7 +24,6 @@ class MenuItem extends Model
         'target',
         'is_active',
         'sort_order',
-        'depth_level',
         'visibility',
         'icon',
     ];
@@ -33,7 +33,6 @@ class MenuItem extends Model
         'url_data' => 'array',
         'is_active' => 'boolean',
         'sort_order' => 'integer',
-        'depth_level' => 'integer',
     ];
 
     /**
@@ -101,11 +100,46 @@ class MenuItem extends Model
     }
 
     /**
-     * By depth level
+     * Calculate depth level based on parent (recursive)
+     * Portfolio pattern - accessor ile dinamik hesaplama
+     * Circular reference korumalı
      */
-    public function scopeByDepth($query, $depth)
+    public function getDepthLevelAttribute(): int
     {
-        return $query->where('depth_level', $depth);
+        return $this->calculateDepth();
+    }
+
+    private function calculateDepth(array $visited = []): int
+    {
+        // Circular reference kontrolü
+        if (in_array($this->item_id, $visited)) {
+            \Log::warning("Circular reference detected in menu item hierarchy", [
+                'item_id' => $this->item_id,
+                'visited' => $visited
+            ]);
+            return 0;
+        }
+
+        if (!$this->parent_id) {
+            return 0;
+        }
+
+        $visited[] = $this->item_id;
+        $parent = $this->parent()->first();
+
+        if (!$parent) {
+            return 0;
+        }
+
+        return $parent->calculateDepth($visited) + 1;
+    }
+
+    /**
+     * Get indent pixels for display
+     */
+    public function getIndentPxAttribute(): int
+    {
+        return $this->depth_level * 30; // 30px per level
     }
 
     /**
@@ -251,23 +285,25 @@ class MenuItem extends Model
     }
 
     /**
-     * Calculate and update depth level
+     * Prunable: Otomatik soft delete temizleme
+     * Global Standart: 30 gün (GDPR uyumlu + müşteri şikayetleri için yeterli)
+     * SaaS Best Practice: Stripe, Google Workspace, Shopify standartları
      */
-    public function updateDepthLevel()
+    public function prunable()
     {
-        $depth = 0;
-        $current = $this->parent;
+        return static::where('deleted_at', '<=', now()->subDays(30));
+    }
 
-        while ($current) {
-            $depth++;
-            $current = $current->parent;
-        }
-
-        $this->update(['depth_level' => $depth]);
-        
-        // Update children recursively
-        foreach ($this->children as $child) {
-            $child->updateDepthLevel();
-        }
+    /**
+     * Pruning sırasında çalışacak cleanup hook
+     */
+    protected function pruning()
+    {
+        \Log::info('MenuItem pruned (kalıcı silindi)', [
+            'item_id' => $this->item_id,
+            'title' => $this->title,
+            'deleted_at' => $this->deleted_at,
+            'days_ago' => $this->deleted_at?->diffInDays(now())
+        ]);
     }
 }

@@ -53,6 +53,14 @@ class Kernel extends ConsoleKernel
                  ->at('02:00')
                  ->withoutOverlapping();
 
+        // Soft Delete Cleanup - 30 gün+ eski kayıtları kalıcı sil
+        // Global Standart: GDPR uyumlu + SaaS best practices (Stripe, Google, Shopify)
+        $schedule->command('model:prune')
+                 ->daily()
+                 ->at('03:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/pruning.log'));
+
         // Horizon Snapshot - Her 15 dakika (Horizon varsa)
         if (class_exists(\Laravel\Horizon\Console\SnapshotCommand::class)) {
             $schedule->command('horizon:snapshot')

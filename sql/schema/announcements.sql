@@ -37,9 +37,7 @@ CREATE TABLE `announcements` (
   KEY `announcements_deleted_at_index` (`deleted_at`),
   KEY `announcements_active_deleted_created_idx` (`is_active`,`deleted_at`,`created_at`),
   KEY `announcements_active_deleted_idx` (`is_active`,`deleted_at`),
-  KEY `announcements_is_active_index` (`is_active`),
-  KEY `announcements_slug_tr_idx` ((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.tr')) as char(255) charset utf8mb4))),
-  KEY `announcements_slug_en_idx` ((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.en')) as char(255) charset utf8mb4)))
+  KEY `announcements_is_active_index` (`is_active`)
 ) AUTO_INCREMENT=13 ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

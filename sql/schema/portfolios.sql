@@ -40,8 +40,6 @@ CREATE TABLE `portfolios` (
   KEY `portfolios_active_deleted_idx` (`is_active`,`deleted_at`),
   KEY `portfolios_is_active_index` (`is_active`),
   KEY `portfolios_portfolio_category_id_index` (`portfolio_category_id`),
-  KEY `portfolios_slug_tr` (((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.tr')) as char(255) charset utf8mb4) collate utf8mb4_unicode_ci))),
-  KEY `portfolios_slug_en` (((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.en')) as char(255) charset utf8mb4) collate utf8mb4_unicode_ci))),
   CONSTRAINT `portfolios_portfolio_category_id_foreign` FOREIGN KEY (`portfolio_category_id`) REFERENCES `portfolio_categories` (`category_id`) ON DELETE SET NULL
 ) AUTO_INCREMENT=13 ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

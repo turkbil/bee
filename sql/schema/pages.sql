@@ -44,9 +44,7 @@ CREATE TABLE `pages` (
   KEY `pages_active_deleted_created_idx` (`is_active`,`deleted_at`,`created_at`),
   KEY `pages_active_deleted_idx` (`is_active`,`deleted_at`),
   KEY `pages_is_active_index` (`is_active`),
-  KEY `pages_is_homepage_index` (`is_homepage`),
-  KEY `pages_slug_tr_idx` ((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.tr')) as char(255) charset utf8mb4))),
-  KEY `pages_slug_en_idx` ((cast(json_unquote(json_extract(`slug`,_utf8mb4'$.en')) as char(255) charset utf8mb4)))
+  KEY `pages_is_homepage_index` (`is_homepage`)
 ) AUTO_INCREMENT=11 ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

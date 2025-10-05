@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const path = require('path');
 
 /*
  |--------------------------------------------------------------------------
@@ -60,21 +61,21 @@ if (!mix.inProduction()) {
     mix.sourceMaps();
 }
 
-// BrowserSync - tenant domain aware (opsiyonel)
-mix.browserSync({
-    proxy: 'laravel.test', // Ana domain
-    files: [
-        'app/**/*.php',
-        'resources/views/**/*.php',
-        'Modules/**/resources/views/**/*.php',
-        'public/js/**/*.js',
-        'public/css/**/*.css'
-    ],
-    ignore: [
-        'node_modules/**/*',
-        'vendor/**/*'
-    ]
-});
+// BrowserSync disabled for production
+// mix.browserSync({
+//     proxy: 'laravel.test',
+//     files: [
+//         'app/**/*.php',
+//         'resources/views/**/*.php',
+//         'Modules/**/resources/views/**/*.php',
+//         'public/js/**/*.js',
+//         'public/css/**/*.css'
+//     ],
+//     ignore: [
+//         'node_modules/**/*',
+//         'vendor/**/*'
+//     ]
+// });
 
 // Webpack configuration - tenant routing compatible
 mix.webpackConfig({

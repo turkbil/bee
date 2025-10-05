@@ -47,6 +47,17 @@
     {{-- Tailwind CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Suppress production warning for Tailwind CDN
+        if (typeof console !== 'undefined' && console.warn) {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                const msg = args[0]?.toString() || '';
+                if (!msg.includes('cdn.tailwindcss.com') && !msg.includes('production')) {
+                    originalWarn.apply(console, args);
+                }
+            };
+        }
+
         tailwind.config = {
             darkMode: 'class',
             theme: {

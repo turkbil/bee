@@ -16,6 +16,7 @@ return [
     App\Providers\TenancyProvider::class,
     App\Providers\TenancyServiceProvider::class,
     App\Providers\TokenServiceProvider::class,
+    App\Providers\VoltServiceProvider::class,
     App\Providers\WidgetServiceProvider::class,
     Nwidart\Modules\LaravelModulesServiceProvider::class,
     Spatie\MissingPageRedirector\MissingPageRedirectorServiceProvider::class,

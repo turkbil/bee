@@ -29,7 +29,6 @@ CREATE TABLE `pages` (
   `body` json DEFAULT NULL COMMENT 'Çoklu dil içerik: {"tr": "İçerik", "en": "Content"}',
   `css` text COLLATE utf8mb4_unicode_ci COMMENT 'CSS kodu - tüm dillerde ortak',
   `js` text COLLATE utf8mb4_unicode_ci COMMENT 'JavaScript kodu - tüm dillerde ortak',
-  `seo` json DEFAULT NULL COMMENT 'SEO verileri: {"tr": {"meta_title": "Başlık", "meta_description": "Açıklama", "keywords": [], "og_image": "image.jpg"}}',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `is_homepage` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,

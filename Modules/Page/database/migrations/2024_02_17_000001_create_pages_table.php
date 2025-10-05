@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('css')->nullable()->comment('CSS kodu - tüm dillerde ortak');
             $table->text('js')->nullable()->comment('JavaScript kodu - tüm dillerde ortak');
             // NOT: Eski string formatındaki veriler convert_pages_body_to_json.php ile JSON'a dönüştürülür
-            $table->json('seo')->nullable()->comment('SEO verileri: {"tr": {"meta_title": "Başlık", "meta_description": "Açıklama", "keywords": [], "og_image": "image.jpg"}}');
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('is_homepage')->default(false)->index();
             $table->timestamps();

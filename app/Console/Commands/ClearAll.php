@@ -66,13 +66,15 @@ class ClearAll extends Command
                     if (str_contains($file->getFilename(), '.log')) {
                         // Log dosyalarını güvenli şekilde temizle
                         try {
-                            // Log dosyalarının içeriğini boşalt (sil değil)
+                            // Log dosyalarının içeriğini boşalt (permission korunur)
                             if (is_writable($file->getPathname())) {
-                                // Dosya yazılabilir ise içeriğini boşalt
                                 file_put_contents($file->getPathname(), '', LOCK_EX);
                                 $this->info("{$file->getFilename()} dosyası içeriği temizlendi.");
                             } else {
-                                $this->warn("İzin hatası: {$file->getFilename()} yazılabilir değil, atlanıyor.");
+                                // Yazılabilir değilse permission düzelt
+                                chmod($file->getPathname(), 0666);
+                                file_put_contents($file->getPathname(), '', LOCK_EX);
+                                $this->info("{$file->getFilename()} permission düzeltildi ve temizlendi.");
                             }
                         } catch (\Exception $e) {
                             $this->warn("Hata: {$file->getFilename()} - " . $e->getMessage());
@@ -131,19 +133,13 @@ class ClearAll extends Command
                             try {
                                 // Dosyanın izinlerini kontrol et
                                 if (is_writable($file->getPathname())) {
-                                    // Dosya yazılabilir ise içeriğini boşalt
                                     file_put_contents($file->getPathname(), '', LOCK_EX);
                                     $this->info("Tenant {$file->getFilename()} dosyası temizlendi.");
                                 } else {
-                                    // Dosya yazılabilir değilse, silinmeye çalış
-                                    if (File::delete($file->getPathname())) {
-                                        // Silinirse yeni boş dosya oluştur doğru izinlerle
-                                        touch($file->getPathname());
-                                        chmod($file->getPathname(), 0664);
-                                        $this->info("Tenant {$file->getFilename()} dosyası silindi ve yeniden oluşturuldu.");
-                                    } else {
-                                        $this->warn("İzin hatası: Tenant {$file->getFilename()} dosyası temizlenemedi.");
-                                    }
+                                    // Yazılabilir değilse permission düzelt
+                                    chmod($file->getPathname(), 0666);
+                                    file_put_contents($file->getPathname(), '', LOCK_EX);
+                                    $this->info("Tenant {$file->getFilename()} permission düzeltildi ve temizlendi.");
                                 }
                             } catch (\Exception $e) {
                                 $this->warn("Hata: Tenant {$file->getFilename()} - " . $e->getMessage());

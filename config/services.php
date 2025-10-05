@@ -35,4 +35,27 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | AI Provider API Keys
+    |--------------------------------------------------------------------------
+    |
+    | API anahtarları .env dosyasından yüklenir ve database'de şifrelenmiş
+    | olarak saklanır. Burası sadece fallback ve sistem ayarları içindir.
+    |
+    */
+
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'organization' => env('OPENAI_ORGANIZATION'),
+    ],
+
+    'anthropic' => [
+        'api_key' => env('ANTHROPIC_API_KEY'),
+    ],
+
+    'deepseek' => [
+        'api_key' => env('DEEPSEEK_API_KEY'),
+    ],
+
 ];

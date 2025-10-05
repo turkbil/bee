@@ -132,14 +132,8 @@ class SchemaGeneratorService
         
         if (in_array($schemaType, ['Article', 'NewsArticle'])) {
             $schema['datePublished'] = $model->created_at?->toISOString();
-            $schema['author'] = [
-                '@type' => 'Organization',
-                'name' => setting('site_title', 'Website')
-            ];
-            $schema['publisher'] = [
-                '@type' => 'Organization', 
-                'name' => setting('site_title', 'Website')
-            ];
+            $schema['author'] = $this->getAuthorData($model);
+            $schema['publisher'] = $this->getPublisherData($model);
         }
 
         // E-ticaret alanları
@@ -223,10 +217,7 @@ class SchemaGeneratorService
             'url' => url("/portfolio/{$model->id}"),
             'dateCreated' => $model->created_at?->toISOString(),
             'dateModified' => $model->updated_at?->toISOString(),
-            'creator' => [
-                '@type' => 'Organization',
-                'name' => setting('site_title', 'Website')
-            ],
+            'creator' => $this->getAuthorData($model),
             'about' => $model->category ? [
                 '@type' => 'Thing',
                 'name' => $this->cleanHtmlContent($model->category->getTranslated('title', $language))
@@ -286,14 +277,8 @@ class SchemaGeneratorService
             'dateCreated' => $model->created_at?->toISOString(),
             'datePublished' => $model->created_at?->toISOString(),
             'dateModified' => $model->updated_at?->toISOString(),
-            'author' => [
-                '@type' => 'Organization',
-                'name' => $siteTitle
-            ],
-            'publisher' => [
-                '@type' => 'Organization',
-                'name' => $siteTitle
-            ],
+            'author' => $this->getAuthorData($model),
+            'publisher' => $this->getPublisherData($model),
             'mainEntityOfPage' => [
                 '@type' => 'WebPage',
                 '@id' => url("/announcement/{$model->id}")
@@ -435,5 +420,41 @@ class SchemaGeneratorService
                 setting('social_linkedin')
             ])
         ];
+    }
+
+    /**
+     * Author bilgisini al - SEO settings'den veya fallback
+     */
+    private function getAuthorData(Model $model): array
+    {
+        // SEO setting varsa ve author bilgisi doluysa kullan
+        if (method_exists($model, 'seoSetting') && $model->seoSetting) {
+            $seoSetting = $model->seoSetting;
+
+            if (!empty($seoSetting->author)) {
+                return [
+                    '@type' => 'Organization',
+                    'name' => $seoSetting->author,
+                    'url' => $seoSetting->author_url ?: url('/')
+                ];
+            }
+        }
+
+        // Fallback: site settings
+        return [
+            '@type' => 'Organization',
+            'name' => setting('site_title', 'Website'),
+            'url' => url('/')
+        ];
+    }
+
+    /**
+     * Publisher bilgisini al - SEO settings'den veya fallback
+     */
+    private function getPublisherData(Model $model): array
+    {
+        // Publisher genellikle site owner olur, author ile aynı olabilir
+        // Önce author data'yı dene, fallback olarak site settings
+        return $this->getAuthorData($model);
     }
 }

@@ -22,12 +22,14 @@ class TelescopeServiceProvider extends ServiceProvider
             $isLocal = $this->app->environment('local');
 
             Telescope::filter(function (IncomingEntry $entry) use ($isLocal) {
-                return $isLocal ||
-                       $entry->isReportableException() ||
-                       $entry->isFailedRequest() ||
-                       $entry->isFailedJob() ||
-                       $entry->isScheduledTask() ||
-                       $entry->hasMonitoredTag();
+                // Local ortamda her şeyi kaydet
+                if ($isLocal) {
+                    return true;
+                }
+
+                // Production'da da her şeyi kaydet (admin kullanıcılar için)
+                // Sadece önemli verileri filtrelemek için ignore_paths kullanacağız
+                return true;
             });
         }
     }
@@ -55,6 +57,26 @@ class TelescopeServiceProvider extends ServiceProvider
     }
 
     /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        $this->gate();
+        $this->authorization();
+    }
+
+    /**
+     * Configure the Telescope authorization services.
+     */
+    protected function authorization(): void
+    {
+        // Middleware zaten kontrol yapıyor, burada sadece true dön
+        Telescope::auth(function ($request) {
+            return true;
+        });
+    }
+
+    /**
      * Register the Telescope gate.
      *
      * This gate determines who can access Telescope in non-local environments.
@@ -62,9 +84,13 @@ class TelescopeServiceProvider extends ServiceProvider
     protected function gate(): void
     {
         Gate::define('viewTelescope', function ($user) {
-            return in_array($user->email, [
-                //
-            ]);
+            // Local ortamda herkes erişebilir
+            if (app()->environment('local')) {
+                return true;
+            }
+
+            // Root ve Admin rolüne sahip kullanıcılar erişebilir
+            return $user->hasAnyRole(['root', 'admin']);
         });
     }
 }

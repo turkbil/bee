@@ -22,6 +22,7 @@
         "laravel/horizon": "^5.33",
         "laravel/pulse": "^1.4",
         "laravel/sanctum": "*",
+        "laravel/telescope": "^5.13",
         "laravel/tinker": "^2.9",
         "league/commonmark": "^2.7",
         "league/html-to-markdown": "^5.1",
@@ -55,7 +56,6 @@
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.20",
         "laravel/sail": "^1.26",
-        "laravel/telescope": "^5.5",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^11.0.1"
@@ -89,6 +89,7 @@
             "Modules\\Studio\\App\\": "Modules/Studio/app/"
         },
         "files": [
+            "app/helpers.php",
             "app/Helpers/Functions.php",
             "app/Helpers/TenantHelpers.php",
             "app/Helpers/AIHelper.php",

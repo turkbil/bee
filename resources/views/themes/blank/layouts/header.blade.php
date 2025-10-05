@@ -13,16 +13,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-
-    {{-- Performance Optimization - DNS Prefetch & Preconnect --}}
-    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-
-    {{-- Preload Critical Resources (2025 Best Practice) --}}
-    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
 
     {{-- Alpine.js is included in Livewire - DO NOT load separately --}}
 
@@ -46,48 +36,8 @@
     <link rel="apple-touch-icon" href="{{ cdn($appleTouchIcon) }}">
     @endif
 
-    {{-- Tailwind CSS --}}
-    <script>
-        // Suppress Tailwind CDN production warning
-        (function() {
-            const originalWarn = console.warn;
-            console.warn = function(...args) {
-                const msg = String(args[0] || '');
-                if (msg.includes('cdn.tailwindcss.com') || msg.includes('should not be used in production')) {
-                    return; // Suppress Tailwind CDN warning
-                }
-                originalWarn.apply(console, args);
-            };
-        })();
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        }
-                    }
-                }
-            },
-            corePlugins: {
-                // RTL Support
-                direction: false,
-            }
-        }
-    </script>
+    {{-- Tailwind CSS - Compiled & Minified (98KB) --}}
+    <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}" media="all">
     
     {{-- RTL/LTR Direction Support --}}
     <style>
@@ -210,7 +160,7 @@
                         @endphp
                         <a href="{{ $homeUrl }}" class="inline-flex items-center text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300" title="{{ $siteTitle }}" alt="{{ $siteTitle }}">
                             @if($siteLogo && $siteLogo !== 'Logo yok')
-                                <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" title="{{ $siteTitle }}" class="h-6 sm:h-8 w-auto">
+                                <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" title="{{ $siteTitle }}" width="auto" height="32" class="h-6 sm:h-8 w-auto">
                             @else
                                 {{ $siteTitle }}
                             @endif
@@ -218,7 +168,8 @@
                     </div>
                     
                     {{-- Mobile Menu Button --}}
-                    <button class="lg:hidden ml-4 p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300" 
+                    <button aria-label="Mobil menüyü aç/kapat"
+                            class="lg:hidden ml-4 p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
                             @click="mobileMenuOpen = !mobileMenuOpen">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" :class="{ 'rotate-90': mobileMenuOpen }">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -238,7 +189,8 @@
                                 @if(!empty($menuItem['children']))
                                     {{-- Dropdown menü --}}
                                     <div class="relative dropdown-menu" x-data="{ open: false }">
-                                        <button @click="open = !open" 
+                                        <button aria-label="Menüyü aç: {{ $menuItem['title'] }}"
+                                                @click="open = !open"
                                                 class="px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors duration-300 {{ $menuItem['has_active_child'] ? 'text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30 dark:hover:bg-blue-900/40' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' }}">
                                             @if($menuItem['icon'])
                                                 <i class="{{ $menuItem['icon'] }} mr-2"></i>
@@ -293,7 +245,8 @@
                             <a href="{{ href('Portfolio', 'index') }}"
                                 class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Portfolyo</a>
                         @endif
-                        <button onclick="clearSystemCache(this)"
+                        <button aria-label="Sistem önbelleğini temizle"
+                            onclick="clearSystemCache(this)"
                             class="inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors duration-200">
                             <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
@@ -314,7 +267,8 @@
                 </div>
                 <div class="flex items-center space-x-1">
                     {{-- Dark/Light Mode Toggle --}}
-                    <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
+                    <button aria-label="Karanlık/Aydınlık mod değiştir"
+                        @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
                         class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                         <template x-if="darkMode === 'dark'">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -375,7 +329,8 @@
                             }
                         @endphp
                         
-                        <button @click="open = !open" 
+                        <button aria-label="Dil seçimi: {{ $currentLangData['name'] }}"
+                                @click="open = !open"
                                 class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                             {{ $currentLangData['flag'] }}
                         </button>
@@ -456,7 +411,8 @@
                             @if(!empty($menuItem['children']))
                                 {{-- Mobile Dropdown --}}
                                 <div x-data="{ submenuOpen: false }">
-                                    <button @click="submenuOpen = !submenuOpen" 
+                                    <button aria-label="Alt menüyü aç: {{ $menuItem['title'] }}"
+                                            @click="submenuOpen = !submenuOpen"
                                             class="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 {{ $menuItem['has_active_child'] ? 'text-blue-700 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/30' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700' }}">
                                         <span class="flex items-center">
                                             @if($menuItem['icon'])

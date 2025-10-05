@@ -17,17 +17,22 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View|RedirectResponse
+    public function create(): View|RedirectResponse|Response
     {
-        // Eğer kullanıcı zaten giriş yapmışsa profile'a yönlendir
+        // Eğer kullanıcı zaten giriş yapmışsa dashboard'a yönlendir
         if (Auth::check()) {
-            return redirect()->route('profile.edit')
+            return redirect()->route('dashboard')
                 ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                 ->header('Pragma', 'no-cache')
                 ->header('Expires', '0');
         }
-        
-        return view('auth.login');
+
+        // Login sayfası cache'lenmesin
+        return response()
+            ->view('auth.login')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
     }
 
     /**
@@ -122,13 +127,13 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         $user = Auth::user();
-        
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        
+
         // Çıkış log'u
         if ($user) {
             activity()
@@ -139,19 +144,66 @@ class AuthenticatedSessionController extends Controller
                     $activity->event = 'çıkış yaptı';
                 })
                 ->log("\"{$user->name}\" çıkış yaptı");
-                
-            // 🧹 AUTH CACHE TEMİZLEME - Logout sonrası sadece user-specific cache'ler
+
+            // 🧹 LOGOUT CACHE TEMİZLEME - ResponseCache + User Cache
             try {
-                // Kullanıcıya özel cache'leri temizle
+                // 1. Response Cache temizle (redirect loop önleme)
+                if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                    \Spatie\ResponseCache\Facades\ResponseCache::clear();
+                    \Log::info('🧹 LOGOUT: Response cache temizlendi');
+                }
+
+                // 2. Kullanıcıya özel cache'leri temizle
                 $this->clearUserAuthCaches($user->id);
 
-                \Log::info('🧹 LOGOUT: User cache temizleme tamamlandı', ['user_id' => $user->id]);
+                // 3. Laravel cache temizle
+                \Illuminate\Support\Facades\Cache::flush();
+
+                \Log::info('🧹 LOGOUT: Tüm cache temizleme tamamlandı', ['user_id' => $user->id]);
             } catch (\Exception $e) {
-                \Log::warning('Auth cache clear error: ' . $e->getMessage());
+                \Log::warning('Logout cache clear error: ' . $e->getMessage());
             }
         }
 
-        return redirect('/');
+        // 🔐 COOKIE TEMİZLEME - 419 hatası önleme
+        $response = redirect('/');
+        $config = config('session');
+
+        // XSRF-TOKEN cookie'sini expire et
+        $response->headers->setCookie(
+            new \Symfony\Component\HttpFoundation\Cookie(
+                'XSRF-TOKEN',
+                '',
+                1, // Expire immediately
+                $config['path'],
+                $config['domain'],
+                $config['secure'],
+                false,
+                false,
+                $config['same_site'] ?? 'lax'
+            )
+        );
+
+        // Session cookie'sini de expire et
+        $sessionName = $config['cookie'] ?? config('session.cookie', 'laravel_session');
+        $response->headers->setCookie(
+            new \Symfony\Component\HttpFoundation\Cookie(
+                $sessionName,
+                '',
+                1, // Expire immediately
+                $config['path'],
+                $config['domain'],
+                $config['secure'],
+                true, // httpOnly
+                false,
+                $config['same_site'] ?? 'lax'
+            )
+        );
+
+        return $response
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
     }
     
     /**
@@ -233,30 +285,36 @@ class AuthenticatedSessionController extends Controller
         if (!class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
             return;
         }
-        
-        // ResponseCache tag'li olarak temizleme yaparız
+
         // Redis'ten guest pattern'li cache'leri bul ve sil
         try {
             $redis = \Illuminate\Support\Facades\Redis::connection();
-            
-            // Guest cache pattern'leri: *_guest_*
-            $guestCacheKeys = $redis->keys('*_guest_*');
-            
+
+            // TenantCacheProfile pattern: tenant_{tenantId}_guest_*
+            $tenant = tenant();
+            $tenantId = $tenant ? $tenant->id : 'central';
+
+            // Tenant-aware guest cache pattern
+            $guestCachePattern = "*tenant_{$tenantId}_guest_*";
+            $guestCacheKeys = $redis->keys($guestCachePattern);
+
             if (!empty($guestCacheKeys)) {
                 // Her guest cache key'ini sil
                 foreach ($guestCacheKeys as $key) {
                     $redis->del($key);
                 }
-                
+
                 \Log::info('🧹 GUEST CACHE CLEAR', [
+                    'tenant_id' => $tenantId,
+                    'pattern' => $guestCachePattern,
                     'cleared_keys_count' => count($guestCacheKeys),
                     'sample_keys' => array_slice($guestCacheKeys, 0, 3)
                 ]);
             }
-            
+
         } catch (\Exception $e) {
             \Log::warning('Redis guest cache clear error: ' . $e->getMessage());
-            
+
             // Fallback: Tüm ResponseCache'i temizle
             \Spatie\ResponseCache\Facades\ResponseCache::clear();
             \Log::info('🧹 FALLBACK: Tüm ResponseCache temizlendi');
@@ -271,26 +329,33 @@ class AuthenticatedSessionController extends Controller
         if (!class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
             return;
         }
-        
+
         try {
             $redis = \Illuminate\Support\Facades\Redis::connection();
-            
-            // Auth cache pattern'leri: *_auth_{user_id}_*
-            $authCacheKeys = $redis->keys("*_auth_{$userId}_*");
-            
+
+            // TenantCacheProfile pattern: tenant_{tenantId}_auth_{userId}_*
+            $tenant = tenant();
+            $tenantId = $tenant ? $tenant->id : 'central';
+
+            // Tenant-aware auth cache pattern
+            $authCachePattern = "*tenant_{$tenantId}_auth_{$userId}_*";
+            $authCacheKeys = $redis->keys($authCachePattern);
+
             if (!empty($authCacheKeys)) {
                 // Her auth cache key'ini sil
                 foreach ($authCacheKeys as $key) {
                     $redis->del($key);
                 }
-                
+
                 \Log::info('🧹 AUTH CACHE CLEAR', [
                     'user_id' => $userId,
+                    'tenant_id' => $tenantId,
+                    'pattern' => $authCachePattern,
                     'cleared_keys_count' => count($authCacheKeys),
                     'sample_keys' => array_slice($authCacheKeys, 0, 3)
                 ]);
             }
-            
+
         } catch (\Exception $e) {
             \Log::warning("Redis auth cache clear error for user {$userId}: " . $e->getMessage());
         }

@@ -15,11 +15,46 @@
 
 ---
 
-## 🎉 DEPLOYMENT DURUMU: %100 TAMAMLANDI!
+## ⚠️ SUNUCU DURUMU: HTTP 500 - SİTE AÇILMIYOR!
 
-**Tarih**: 2025-10-05 01:10 UTC
+**Tarih**: 2025-10-05 00:07 UTC
 **Sunucu**: tuufi.com (Plesk)
-**Durum**: ✅ **TÜM SİSTEMLER ÇALIŞIYOR**
+**Durum**: ❌ **KRİTİK HATA - SİTE ÇALIŞMIYOR**
+
+---
+
+## 🔴 GÜNCEL SORUNLAR
+
+### 1. KRİTİK: Cache Driver Uyuşmazlığı
+
+**Hata:**
+```
+Call to undefined method Illuminate\Cache\FileStore::getRedis()
+```
+
+**Lokasyon:** `app/Services/DynamicRouteResolver.php:116`
+
+**SORUN TESPİTİ:**
+
+1. **config/cache.php:18** → `'default' => env('CACHE_DRIVER', 'file')`
+2. **.env dosyası** → `CACHE_STORE=redis`
+3. **Sonuç:** Config `CACHE_DRIVER` arıyor ama .env'de `CACHE_STORE` var!
+4. **Davranış:** Laravel file cache kullanıyor (redis yerine)
+5. **Hata:** DynamicRouteResolver kod Redis metodunu çağırıyor ama FileStore'da yok
+
+**LOCAL AI İÇİN TALİMAT:**
+```
+İki seçenek var:
+
+SEÇENEK 1 (Önerilen): .env dosyasını düzenle
+- .env'deki CACHE_STORE=redis → CACHE_DRIVER=redis olarak değiştir
+
+SEÇENEK 2: config/cache.php düzenle
+- config/cache.php:18 → env('CACHE_DRIVER') → env('CACHE_STORE') yap
+- VEYA → env('CACHE_DRIVER', env('CACHE_STORE', 'file')) yap (backward compat)
+
+Hangi seçeneği tercih ediyorsun?
+```
 
 ---
 
@@ -27,18 +62,16 @@
 
 | Özellik | Durum | Not |
 |---------|-------|-----|
-| **HTTPS Access** | ✅ **ÇALIŞIYOR** | HTTP/2 200 OK |
-| **Admin Panel** | ✅ **ERİŞİLEBİLİR** | /login açılıyor |
+| **HTTPS Access** | ❌ **ÇALIŞMIYOR** | HTTP/2 500 Internal Server Error |
+| **Admin Panel** | ❌ **ERİŞİLEMİYOR** | Cache hatası nedeniyle |
 | Database | ✅ OK | 75 migrations başarılı |
 | Central Tenant | ✅ OK | Tenant ID: 1, Domain: tuufi.com |
-| AI Providers | ✅ OK | 3 provider (OpenAI default, silent fail mode) |
-| Modules | ✅ OK | 15 modül aktif |
-| Routes | ✅ OK | 246 routes yüklü |
-| Redis Cache | ✅ OK | CACHE_STORE=redis aktif |
-| Storage Permissions | ✅ OK | Web server yazabiliyor |
-| Laravel Logging | ✅ OK | Log dosyası yazılıyor |
-| Auth Sistem | ✅ OK | Session + cookies çalışıyor |
-| Homepage (/) | ⚠️ 404 | Page content seed edilmemiş (optional) |
+| AI Providers | ✅ OK | 3 provider yüklendi |
+| Modules | ✅ OK | 15 modül database'de |
+| Redis Connection | ✅ OK | Redis::ping() çalışıyor |
+| Storage Permissions | ✅ OK | chown tuufi.com_2zr81hxk7cs yapıldı |
+| Laravel Logging | ✅ OK | Hatalar loglanıyor |
+| **Cache Driver** | ❌ **SORUNLU** | .env vs config uyuşmazlığı
 
 ---
 

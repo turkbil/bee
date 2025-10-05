@@ -224,6 +224,21 @@
     
     {{-- Livewire Scripts --}}
     @livewireScripts
+    <script>
+        // Force browser to fetch fresh Livewire script (bypass cache)
+        (function() {
+            const scripts = document.querySelectorAll('script[src*="livewire"]');
+            scripts.forEach(script => {
+                if (script.src && !script.src.includes('v=')) {
+                    const newSrc = script.src + (script.src.includes('?') ? '&' : '?') + 'v={{ now()->timestamp }}';
+                    const newScript = document.createElement('script');
+                    newScript.src = newSrc;
+                    newScript.setAttribute('data-navigate-once', 'true');
+                    script.parentNode.replaceChild(newScript, script);
+                }
+            });
+        })();
+    </script>
     
     {{-- Alpine.js is already loaded by Livewire, don't load it again --}}
     <script>

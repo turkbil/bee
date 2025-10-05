@@ -33,18 +33,19 @@ class PageController extends Controller
      */
     public function homepage(SeoMetaTagService $seoService)
     {
-        $isAuthenticated = auth()->check();
-        $userId = $isAuthenticated ? auth()->id() : 'guest';
-        
-        
         // Aktif ve ana sayfa olarak işaretli sayfayı al
         $page = Page::where('is_homepage', true)
             ->where('is_active', true)
-            ->firstOrFail();
-            
+            ->first();
+
+        // Homepage bulunamazsa basit hata mesajı göster
+        if (!$page) {
+            return response()->view('errors.no-homepage', [], 503);
+        }
+
         // SEO meta tags'i ayarla
         view()->share('currentModel', $page);
-        
+
         try {
             // ThemeService zaten tenant()->theme'den tema çekiyor (dinamik)
             $viewPath = $this->themeService->getThemeViewPath('show', 'page');
@@ -52,11 +53,11 @@ class PageController extends Controller
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
-            
+
             // Fallback view'a yönlendir
             return view('page::front.show', ['item' => $page, 'is_homepage' => true]);
         }
-        
+
     }
 
     public function index()

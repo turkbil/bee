@@ -7,19 +7,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Get the migration connection name.
-     */
-    public function getConnection(): ?string
-    {
-        return config('telescope.storage.database.connection');
-    }
-
-    /**
      * Run the migrations.
      */
     public function up(): void
     {
-        $schema = Schema::connection($this->getConnection());
+        $schema = Schema::connection(config('database.default'));
 
         $schema->create('telescope_entries', function (Blueprint $table) {
             $table->bigIncrements('sequence');
@@ -61,7 +53,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        $schema = Schema::connection($this->getConnection());
+        $schema = Schema::connection(config('database.default'));
 
         $schema->dropIfExists('telescope_entries_tags');
         $schema->dropIfExists('telescope_entries');

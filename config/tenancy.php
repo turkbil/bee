@@ -13,11 +13,14 @@ return [
     
     'central_domains' => [
         env('APP_DOMAIN', 'laravel.test'),
+        'tuufi.com',
+        'www.tuufi.com',
     ],
     
     'bootstrappers' => [
         Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper::class,
         \App\Tenancy\RedisTenancyBootstrapper::class,
+        \App\Tenancy\StorageTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
         \App\Tenancy\QueueTenancyBootstrapper::class,
         \App\Tenancy\SessionTenancyBootstrapper::class,

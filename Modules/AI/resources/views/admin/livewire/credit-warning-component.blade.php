@@ -28,73 +28,6 @@
     </div>
     @endif
 
-    {{-- Critical Error Modal (Intrusive for zero credits) --}}
-    @if($warningType === 'error')
-    <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.8);" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content border-danger" style="border-width: 3px;">
-                
-                <!-- Modal Header -->
-                <div class="modal-header bg-danger text-white">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-exclamation-triangle fs-2 me-3"></i>
-                        <div>
-                            <h4 class="modal-title mb-0">🚫 AI Kredisi Tükendi!</h4>
-                            <small class="opacity-75">AI özelliklerini kullanmak için kredi gerekli</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Body -->
-                <div class="modal-body p-4">
-                    <!-- Critical Warning Message -->
-                    <div class="alert alert-danger mb-4">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-exclamation-triangle fs-3 me-3"></i>
-                            <div>
-                                <h5 class="mb-1">⛔ Kredi bakiyeniz tükendi!</h5>
-                                <p class="mb-0">{{ $warningMessage }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Credit Status -->
-                    <div class="card mb-4">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">📊 Kredi Durumu</h5>
-                            <div class="fs-1 fw-bold text-danger mb-2">{{ number_format($currentBalance, 2) }}</div>
-                            <p class="text-muted">Mevcut AI Kredisi</p>
-                            
-                            <div class="progress mb-3" style="height: 8px;">
-                                <div class="progress-bar bg-danger" style="width: 0%"></div>
-                            </div>
-                            
-                            <div class="alert alert-warning">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Bilgi:</strong> AI Chat, Çeviri ve diğer AI özellikleri için kredi gereklidir.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Footer -->
-                <div class="modal-footer">
-                    <div class="w-100 d-flex justify-content-center">
-                        <button type="button" class="btn btn-danger btn-lg me-3" wire:click="buyCredits">
-                            <i class="fas fa-shopping-cart me-2"></i>
-                            Hemen Kredi Satın Al
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" wire:click="refreshCredits">
-                            <i class="fas fa-sync-alt me-2"></i>
-                            Durumu Yenile
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
 @endif
 
 {{-- Success Toast removed - kullanıcı her sayfa yüklenişinde mesaj görmek istemiyor --}}
@@ -104,9 +37,20 @@
 {{-- JavaScript for Enhanced Functionality --}}
 @push('script')
 <script>
+
+// Basit toast notification - GLOBAL
+window.showToast = function(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x mt-3`;
+    toast.style.zIndex = '99999';
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Credit Warning Component v3.0 Enhanced Scripts
-    
+
     // Auto-refresh every 2 minutes (reduced from 5 minutes for better UX)
     setInterval(() => {
         if (typeof @this !== 'undefined') {
@@ -183,34 +127,6 @@ window.refreshAICredits = function() {
     box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Pulse animation for critical states */
-@keyframes creditWarningPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
-}
-
-/* Critical error modal animations */
-.modal-content.border-danger {
-    animation: criticalPulse 2s infinite;
-    box-shadow: 0 0 30px rgba(220, 53, 69, 0.4);
-}
-
-@keyframes criticalPulse {
-    0% { 
-        box-shadow: 0 0 30px rgba(220, 53, 69, 0.4);
-        border-color: #dc3545;
-    }
-    50% { 
-        box-shadow: 0 0 40px rgba(220, 53, 69, 0.8);
-        border-color: #c82333;
-    }
-    100% { 
-        box-shadow: 0 0 30px rgba(220, 53, 69, 0.4);
-        border-color: #dc3545;
-    }
-}
-
 /* Warning banner hover effects */
 .alert:hover {
     transform: translateY(-2px);
@@ -239,10 +155,6 @@ window.refreshAICredits = function() {
     .alert {
         min-width: auto !important;
         font-size: 0.875rem;
-    }
-    
-    .modal-lg {
-        max-width: 95vw;
     }
 }
 

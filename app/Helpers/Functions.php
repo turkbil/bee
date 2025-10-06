@@ -6,39 +6,30 @@ use App\Helpers\TenantHelpers;
 
 if (!function_exists('cdn')) {
     /**
-     * Central domain üzerinden asset URL'i oluşturur
-     * 
+     * Ortak public klasöründen asset URL'i oluşturur
+     * Tüm tenant'lar aynı public klasörünü paylaşır
+     *
      * @param string $path
      * @return string
      */
     function cdn($path)
     {
+        // Boş path kontrolü
         if (empty($path)) {
             return '';
         }
-        
-        // URL'de http:// veya https:// varsa, bunları temizle
-        $path = preg_replace('#^https?://[^/]+/#', '', $path);
-        
-        // URL'in başındaki slash'leri temizle
-        $path = ltrim($path, '/');
-        
-        // Tekrar eden domain kontrolü
-        $centralDomains = config('tenancy.central_domains', []);
-        foreach ($centralDomains as $domain) {
-            // Domain adı path içinde varsa temizle
-            if (strpos($path, $domain . '/') !== false) {
-                $parts = explode($domain . '/', $path);
-                $path = end($parts);
-                break;
-            }
+
+        // Zaten tam URL ise olduğu gibi döndür
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
         }
-        
-        // APP_URL'i kullanarak central domain üzerinden URL oluştur
-        $base = rtrim(env('APP_URL'), '/');
-        
-        // Direk path'i ekle (storage/ öneki ile)
-        return $base . '/' . $path;
+
+        // Path temizleme
+        $path = ltrim($path, '/');
+
+        // Mevcut domain üzerinden asset URL oluştur
+        // (Tüm tenant'lar domain alias olarak aynı public'i kullanır)
+        return url($path);
     }
 }
 

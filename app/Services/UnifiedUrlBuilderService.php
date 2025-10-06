@@ -12,11 +12,11 @@ use App\Contracts\UrlBuilderInterface;
 
 /**
  * Unified URL Builder Service
- * 
+ *
  * Tüm URL oluşturma işlemlerini tek bir serviste toplar.
  * MenuManagement, LanguageSwitcher ve diğer sistemler bu servisi kullanır.
  */
-readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
+class UnifiedUrlBuilderService implements UrlBuilderInterface
 {
     private const CACHE_TTL = 60; // dakika
     private const CACHE_PREFIX = 'unified_url_';
@@ -28,6 +28,21 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
         private ?PerformanceMonitoringService $performanceMonitor = null
     ) {
         // Performance monitoring is handled via dependency injection
+    }
+
+    /**
+     * Tenant-aware URL builder
+     * Multi-tenant sistemde her tenant için doğru domain ile URL oluşturur
+     */
+    private function tenantUrl(string $path = ''): string
+    {
+        // Mevcut request'ten host al (ixtif.com.tr, tuufi.com vs.)
+        $host = request()->getSchemeAndHttpHost();
+
+        // Path'i normalize et
+        $path = ltrim($path, '/');
+
+        return $host . ($path ? '/' . $path : '');
     }
 
     /**
@@ -139,10 +154,10 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
 
         // Locale prefix kontrolü
         if ($locale === $defaultLocale) {
-            return url($path ?: '/');
+            return $this->tenantUrl($path);
         }
 
-        return url("{$locale}/" . ($path ?: ''));
+        return $this->tenantUrl($locale . '/' . $path);
     }
 
     /**
@@ -302,12 +317,12 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
         
         // URL oluştur
         $defaultLocale = get_tenant_default_locale();
-        
+
         if ($locale === $defaultLocale) {
-            return url("{$moduleSlug}/{$slug}");
+            return $this->tenantUrl("{$moduleSlug}/{$slug}");
         }
 
-        return url("{$locale}/{$moduleSlug}/{$slug}");
+        return $this->tenantUrl("{$locale}/{$moduleSlug}/{$slug}");
     }
 
     private function buildModuleUrl(string $moduleSlug, ?array $params, string $locale): string
@@ -320,10 +335,10 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
         }
 
         if ($locale === $defaultLocale) {
-            return url($path);
+            return $this->tenantUrl($path);
         }
 
-        return url("{$locale}/{$path}");
+        return $this->tenantUrl("{$locale}/{$path}");
     }
     
     /**
@@ -332,12 +347,12 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
     private function buildUrlWithLocale(string $path, string $locale): string
     {
         $defaultLocale = get_tenant_default_locale();
-        
+
         if ($locale === $defaultLocale) {
-            return url($path);
+            return $this->tenantUrl($path);
         }
-        
-        return url("{$locale}/{$path}");
+
+        return $this->tenantUrl("{$locale}/{$path}");
     }
 
     private function buildUrlForCurrentPath(string $locale): string
@@ -466,12 +481,12 @@ readonly class UnifiedUrlBuilderService implements UrlBuilderInterface
     private function getFallbackUrl(string $locale): string
     {
         $defaultLocale = get_tenant_default_locale();
-        
+
         if ($locale === $defaultLocale) {
-            return url('/');
+            return $this->tenantUrl('');
         }
 
-        return url("/{$locale}");
+        return $this->tenantUrl($locale);
     }
 
     private function getCacheKey(string $type, array $params): string

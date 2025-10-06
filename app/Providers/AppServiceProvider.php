@@ -98,21 +98,27 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Livewire pagination views are published and customized in resources/views/vendor/livewire/
-        
+
         // Manual module translations registration
         $this->loadModuleTranslations();
-        
+
         // Register Livewire Components
         $this->registerLivewireComponents();
-        
+
         // Register Blade Components
         $this->registerBladeComponents();
-        
-        // HTTPS zorlaması kaldırıldı - APP_URL'ye göre otomatik ayarlanır
-        // Production'da gerekirse şu şekilde aktif edilebilir:
-        // if(config('app.env') === 'production') {
-        //     URL::forceScheme('https');
-        // }
+
+        // Dinamik APP_URL - Request'e göre otomatik ayarla
+        if (!app()->runningInConsole() && request()->getHost()) {
+            $currentUrl = request()->getScheme() . '://' . request()->getHost();
+            config(['app.url' => $currentUrl]);
+            URL::forceRootUrl($currentUrl);
+        }
+
+        // HTTPS zorlaması
+        if(config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
         
         // Tenant için Redis önbellek yapılandırması
         if (TenantHelpers::isTenant()) {

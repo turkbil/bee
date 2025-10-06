@@ -10,12 +10,27 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Unified URL Service
- * 
+ *
  * Tüm URL oluşturma ve çözümleme işlemlerini tek noktadan yönetir.
  * MultiLang, fallback ve cache yönetimini sağlar.
  */
 class UnifiedUrlService
 {
+    /**
+     * Tenant-aware URL builder
+     * Multi-tenant sistemde her tenant için doğru domain ile URL oluşturur
+     */
+    private function tenantUrl(string $path = ''): string
+    {
+        // Mevcut request'ten host al (ixtif.com.tr, tuufi.com vs.)
+        $host = request()->getSchemeAndHttpHost();
+
+        // Path'i normalize et
+        $path = ltrim($path, '/');
+
+        return $host . ($path ? '/' . $path : '');
+    }
+
     /**
      * Model'den URL oluştur
      */
@@ -46,7 +61,11 @@ class UnifiedUrlService
             
             // URL oluştur - prefix kontrolü ile
             $prefix = $this->getLocalePrefix($locale);
-            return url($prefix . '/' . $moduleSlug . '/' . $contentSlug);
+            $path = ltrim($prefix, '/');
+            if ($path) {
+                $path .= '/';
+            }
+            return $this->tenantUrl($path . $moduleSlug . '/' . $contentSlug);
             
         } catch (\Exception $e) {
             Log::error('UnifiedUrlService: Failed to build URL for model', [
@@ -78,7 +97,11 @@ class UnifiedUrlService
             // Action sadece index ise
             if ($action === 'index' && empty($params)) {
                 $prefix = $this->getLocalePrefix($locale);
-                return url($prefix . '/' . $moduleSlug);
+                $path = ltrim($prefix, '/');
+                if ($path) {
+                    $path .= '/';
+                }
+                return $this->tenantUrl($path . $moduleSlug);
             }
             
             // Action slug'ını al
@@ -106,8 +129,14 @@ class UnifiedUrlService
             // URL oluştur - prefix kontrolü ile
             $prefix = $this->getLocalePrefix($locale);
             $path = implode('/', $urlParts);
-            
-            return url($prefix . '/' . $path);
+
+            $finalPath = ltrim($prefix, '/');
+            if ($finalPath) {
+                $finalPath .= '/';
+            }
+            $finalPath .= $path;
+
+            return $this->tenantUrl($finalPath);
             
         } catch (\Exception $e) {
             Log::error('UnifiedUrlService: Failed to build URL for module', [
@@ -293,13 +322,19 @@ class UnifiedUrlService
     protected function buildPageUrl(Model $page, string $locale): string
     {
         $slug = $this->getModelSlug($page, $locale);
-        
+
         if (!$slug) {
             return '#';
         }
-        
+
         $prefix = $this->getLocalePrefix($locale);
-        return url($prefix . '/' . ltrim($slug, '/'));
+        $path = ltrim($prefix, '/');
+        if ($path) {
+            $path .= '/';
+        }
+        $path .= ltrim($slug, '/');
+
+        return $this->tenantUrl($path);
     }
     
     /**

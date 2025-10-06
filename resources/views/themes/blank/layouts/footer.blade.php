@@ -17,7 +17,7 @@
                         @if($siteLogo && $siteLogo !== 'Logo yok')
                             <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" width="auto" height="32" class="h-8 w-auto mr-3">
                         @endif
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ $siteTitle }}</h3>
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $siteTitle }}</h2>
                     </div>
                     
                     <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -28,16 +28,17 @@
                     <div class="flex space-x-3">
                         @php
                             $socialLinks = [
-                                ['icon' => 'facebook', 'url' => '#', 'color' => 'hover:text-blue-600'],
-                                ['icon' => 'twitter', 'url' => '#', 'color' => 'hover:text-sky-400'],
-                                ['icon' => 'linkedin', 'url' => '#', 'color' => 'hover:text-blue-700'],
-                                ['icon' => 'instagram', 'url' => '#', 'color' => 'hover:text-pink-500']
+                                ['icon' => 'facebook', 'url' => '#', 'color' => 'hover:text-blue-600', 'label' => 'Facebook'],
+                                ['icon' => 'twitter', 'url' => '#', 'color' => 'hover:text-sky-400', 'label' => 'Twitter'],
+                                ['icon' => 'linkedin', 'url' => '#', 'color' => 'hover:text-blue-700', 'label' => 'LinkedIn'],
+                                ['icon' => 'instagram', 'url' => '#', 'color' => 'hover:text-pink-500', 'label' => 'Instagram']
                             ];
                         @endphp
-                        
+
                         @foreach($socialLinks as $social)
-                        <a href="{{ $social['url'] }}" 
-                           class="group p-2 bg-gray-100 dark:bg-gray-700 rounded-full text-gray-500 dark:text-gray-400 {{ $social['color'] }} dark:hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                        <a href="{{ $social['url'] }}"
+                           aria-label="{{ $social['label'] }} sayfamızı ziyaret edin"
+                           class="group p-2 bg-gray-100 dark:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300 {{ $social['color'] }} dark:hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg"
                            x-data="{ hovered: false }"
                            @mouseenter="hovered = true"
                            @mouseleave="hovered = false">
@@ -61,7 +62,7 @@
                 
                 {{-- Quick Links --}}
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hızlı Erişim</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Hızlı Erişim</h2>
                     @php
                         $quickLinks = [
                             ['name' => 'Anasayfa', 'url' => href('Page', 'index')],
@@ -75,8 +76,8 @@
                     <ul class="space-y-2">
                         @foreach($quickLinks as $link)
                         <li>
-                            <a href="{{ $link['url'] }}" 
-                               class="group flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                            <a href="{{ $link['url'] }}"
+                               class="group flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
                                x-data="{ linkHover: false }"
                                @mouseenter="linkHover = true"
                                @mouseleave="linkHover = false">
@@ -94,21 +95,21 @@
                 
                 {{-- Contact Info --}}
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">İletişim</h3>
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">İletişim</h2>
                     <div class="space-y-3">
-                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                             <svg class="w-4 h-4 mr-3 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                             </svg>
                             <span>İstanbul, Türkiye</span>
                         </div>
-                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                             <svg class="w-4 h-4 mr-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                             </svg>
                             <span>+90 (555) 123 45 67</span>
                         </div>
-                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                             <svg class="w-4 h-4 mr-3 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -124,22 +125,22 @@
                 <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                     {{-- Copyright --}}
                     <div class="text-center md:text-left">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
                             {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright(setting('site_title', config('app.name')), app()->getLocale()) }}
                         </p>
                     </div>
-                    
+
                     {{-- Footer Links --}}
                     <div class="flex flex-wrap justify-center md:justify-end gap-4 text-sm">
-                        <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
                             Gizlilik Politikası
                         </a>
-                        <span class="text-gray-300 dark:text-gray-600">•</span>
-                        <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                        <span class="text-gray-400 dark:text-gray-500">•</span>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
                             Kullanım Koşulları
                         </a>
-                        <span class="text-gray-300 dark:text-gray-600">•</span>
-                        <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                        <span class="text-gray-400 dark:text-gray-500">•</span>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
                             Çerez Politikası
                         </a>
                     </div>

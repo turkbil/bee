@@ -102,9 +102,10 @@
                                    data-gallery="announcement-gallery"
                                    data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
                                    data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                                    <img src="{{ $image->getUrl('thumb') }}"
-                                         alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                         class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110">
+                                    <img src="{{ $image->getUrl() }}"
+                                         alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? $image->getCustomProperty('title')[$currentLocale] ?? 'Galeri görseli' }}"
+                                         loading="lazy"
+                                         class="w-full h-48 md:h-56 bg-gray-100 dark:bg-gray-800 object-contain cursor-pointer transition-transform duration-500 group-hover:scale-110">
                                 </a>
                                 @if($image->getCustomProperty('title')[$currentLocale] ?? false)
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 pointer-events-none">

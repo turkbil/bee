@@ -45,7 +45,7 @@
         <div class="form-floating">
             <input type="url" 
                 id="{{ $fieldName }}"
-                wire:model.live="values.{{ $fieldName }}" 
+                wire:model.defer="values.{{ $fieldName }}" 
                 class="form-control @error('values.' . $fieldName) is-invalid @enderror" 
                 placeholder="{{ $placeholder ?: $fieldLabel }}"
                 @if($isRequired) required @endif>

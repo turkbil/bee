@@ -56,7 +56,7 @@
         <div class="mb-2">
             <input type="range" 
                 id="{{ $fieldName }}"
-                wire:model.live="values.{{ $fieldName }}" 
+                wire:model.defer="values.{{ $fieldName }}" 
                 class="form-range" 
                 min="{{ $min }}"
                 max="{{ $max }}"

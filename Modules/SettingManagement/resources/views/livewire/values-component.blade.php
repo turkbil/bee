@@ -50,7 +50,7 @@
                                         @switch($setting->type)
                                             @case('textarea')
                                                 <div class="form-floating mb-3">
-                                                    <textarea wire:model.live="values.{{ $setting->id }}" 
+                                                    <textarea wire:model.defer="values.{{ $setting->id }}" 
                                                         id="setting-{{ $setting->id }}"
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror" 
                                                         style="height: 100px"
@@ -65,7 +65,7 @@
                                             @case('select')
                                                 @if(is_array($setting->options))
                                                     <div class="form-floating mb-3">
-                                                        <select wire:model.live="values.{{ $setting->id }}" 
+                                                        <select wire:model.defer="values.{{ $setting->id }}" 
                                                             id="setting-{{ $setting->id }}"
                                                             class="form-select @error('values.' . $setting->id) is-invalid @enderror">
                                                             <option value="">{{ __('settingmanagement::admin.select_option') }}</option>
@@ -90,7 +90,7 @@
                                                                 <input type="checkbox" 
                                                                     id="setting-{{ $setting->id }}" 
                                                                     class="form-check-input @error('values.' . $setting->id) is-invalid @enderror" 
-                                                                    wire:model.live="values.{{ $setting->id }}"
+                                                                    wire:model.defer="values.{{ $setting->id }}"
                                                                     value="1">
                                                             </label>
                                                         </span>
@@ -186,7 +186,7 @@
                                                     <input type="color" 
                                                         id="setting-{{ $setting->id }}"
                                                         class="form-control form-control-color @error('values.' . $setting->id) is-invalid @enderror" 
-                                                        wire:model.live="values.{{ $setting->id }}"
+                                                        wire:model.defer="values.{{ $setting->id }}"
                                                         title="{{ __('settingmanagement::admin.choose_color') }}">
                                                     @error('values.' . $setting->id)
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -198,7 +198,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="date" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">
@@ -215,7 +215,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="time" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">
@@ -232,7 +232,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="number" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">{{ $setting->label }}</label>
@@ -246,7 +246,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="email" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">{{ $setting->label }}</label>
@@ -260,7 +260,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="password" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">{{ $setting->label }}</label>
@@ -274,7 +274,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="tel" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">{{ $setting->label }}</label>
@@ -288,7 +288,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="url" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">{{ $setting->label }}</label>
@@ -302,7 +302,7 @@
                                                 <div class="form-floating mb-3">
                                                     <input type="text" 
                                                         id="setting-{{ $setting->id }}"
-                                                        wire:model.live="values.{{ $setting->id }}" 
+                                                        wire:model.defer="values.{{ $setting->id }}" 
                                                         class="form-control @error('values.' . $setting->id) is-invalid @enderror"
                                                         placeholder="{{ $setting->label }}">
                                                     <label for="setting-{{ $setting->id }}">{{ $setting->label }}</label>

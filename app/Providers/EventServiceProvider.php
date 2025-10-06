@@ -40,6 +40,11 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\ModuleRemovedFromTenant::class => [
             \App\Listeners\HandleModuleTenantPermissions::class . '@handleModuleRemoved',
         ],
+
+        // Tenant database events
+        \Stancl\Tenancy\Events\DatabaseMigrated::class => [
+            \App\Listeners\RegisterTenantDatabaseToPlesk::class,
+        ],
     ];
 
     /**

@@ -31,7 +31,7 @@
                 <div class="form-group w-100">
                     <div class="mb-2">
                         <input type="color" 
-                            wire:model.live="values.{{ $settingId }}" 
+                            wire:model.defer="values.{{ $settingId }}" 
                             class="form-control form-control-color" 
                             value="{{ $values[$settingId] ?? '#066fd1' }}" 
                             title="Renginizi seçin"

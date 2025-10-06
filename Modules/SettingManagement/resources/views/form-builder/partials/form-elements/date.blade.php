@@ -35,7 +35,7 @@
                         </span>
                         <input 
                             type="date" 
-                            wire:model.live="values.{{ $settingId }}" 
+                            wire:model.defer="values.{{ $settingId }}" 
                             class="form-control w-100" 
                             placeholder="{{ $element['properties']['placeholder'] ?? 'Tarih seçin' }}"
                         >

@@ -617,7 +617,7 @@ class AIServiceWrapper
     private function getBuyCreditUrl(Tenant $tenant): string
     {
         // Admin panel kredi satın alma sayfası URL'i
-        return route('admin.ai.credits.purchase', ['tenant' => $tenant->id]);
+        return route('admin.ai.credits.purchases', ['tenant' => $tenant->id]);
     }
 
     /**

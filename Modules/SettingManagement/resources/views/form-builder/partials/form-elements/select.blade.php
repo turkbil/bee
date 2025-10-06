@@ -46,7 +46,7 @@
         <div class="form-floating">
             <select 
                 id="{{ $fieldName }}"
-                wire:model.live="values.{{ $fieldName }}" 
+                wire:model.defer="values.{{ $fieldName }}" 
                 class="form-select @error('values.' . $fieldName) is-invalid @enderror"
                 @if($isRequired) required @endif>
                 <option value="">{{ $placeholder }}</option>

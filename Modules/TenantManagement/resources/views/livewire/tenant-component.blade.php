@@ -672,30 +672,28 @@
             });
             
             // 🔥 Livewire ile Global Modal Manager'ı entegre et
-            if (window.globalModalManager) {
-                // Global Modal Manager entegrasyonu aktif
-                
-                // Livewire modal kapatma eventi
-                Livewire.on('hideModal', ({ id }) => {
-                    window.globalModalManager.closeModal(id);
-                });
-                
-                // Livewire modal açma eventi
-                Livewire.on('showModal', ({ id }) => {
-                    window.globalModalManager.openModal(id);
-                });
-            } else {
-                // Global Modal Manager bulunamadı - fallback kullanılıyor
-                
-                // Fallback modal yönetimi
-                Livewire.on('hideModal', ({ id }) => {
-                    const modal = document.getElementById(id);
-                    const modalInstance = bootstrap.Modal.getInstance(modal);
-                    if (modalInstance) {
-                        modalInstance.hide();
-                    }
-                });
-            }
+            // Modal Manager yüklenmesini bekle
+            const initModalManager = () => {
+                if (window.globalModalManager) {
+                    // Global Modal Manager entegrasyonu aktif
+
+                    // Livewire modal kapatma eventi
+                    Livewire.on('hideModal', ({ id }) => {
+                        window.globalModalManager.closeModal(id);
+                    });
+
+                    // Livewire modal açma eventi
+                    Livewire.on('showModal', ({ id }) => {
+                        window.globalModalManager.openModal(id);
+                    });
+                } else {
+                    // Modal Manager henüz yüklenmediyse 100ms sonra tekrar dene
+                    setTimeout(initModalManager, 100);
+                }
+            };
+
+            // Başlat
+            initModalManager();
         });
     </script>
     @endpush

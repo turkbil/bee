@@ -26,7 +26,7 @@
                                     }
                                     // Existing image varsa onun URL'ini kullan
                                     elseif (!empty($existingFeaturedImage)) {
-                                        $thumbUrl = $existingFeaturedImage['thumb'] ?? $existingFeaturedImage['url'];
+                                        $thumbUrl = $existingFeaturedImage['url'];
                                         $fullUrl = $existingFeaturedImage['url']; // Full size for lightbox
                                         $isTemp = false;
                                     } else {
@@ -41,7 +41,7 @@
                                         <img src="{{ $thumbUrl }}"
                                              alt="Preview"
                                              class="img-thumbnail w-100"
-                                             style="max-height: 125px; height: 125px; object-fit: cover;"
+                                             style="max-height: 125px; height: 125px; object-fit: contain;"
                                              data-fslightbox="featured-image"
                                              data-src="{{ $fullUrl }}">
 
@@ -193,10 +193,10 @@
                                  data-id="{{ $image['id'] }}"
                                  x-show="showAllGallery || {{ $actualIndex }} < {{ $galleryLimit }}">
                                 <div class="position-relative gallery-card media-hover-container">
-                                    <img src="{{ $image['thumb'] }}"
+                                    <img src="{{ $image['url'] }}"
                                          alt="{{ $image['name'] }}"
                                          class="img-thumbnail w-100"
-                                         style="aspect-ratio: {{ media_aspect_ratio('thumb') }}; object-fit: cover; cursor: move;"
+                                         style="aspect-ratio: {{ media_aspect_ratio('thumb') }}; object-fit: contain; cursor: move;"
                                          data-fslightbox="gallery"
                                          data-src="{{ $image['url'] }}">
 

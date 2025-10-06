@@ -70,7 +70,7 @@ class CreditWarningComponent extends Component
             }
 
             $this->currentBalance = ai_credit_balance($tenant);
-            $this->buyCreditUrl = route('admin.ai.credits.purchase', ['tenant' => $tenant->id]);
+            $this->buyCreditUrl = route('admin.ai.credits.purchases', ['tenant' => $tenant->id]);
             
             // Cache key for daily warning dismissal
             $cacheKey = "credit_warning_dismissed_{$tenant->id}_" . now()->format('Y-m-d');

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_context_rules', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_context_rules', function (Blueprint $table) {
             $table->id();
             $table->string('rule_key', 100)->unique();
             $table->string('rule_name', 255);
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_context_rules');
+        Schema::connection('central')->dropIfExists('ai_context_rules');
     }
 };

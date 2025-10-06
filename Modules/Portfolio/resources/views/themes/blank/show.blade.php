@@ -37,7 +37,7 @@
                                data-gallery="portfolio-gallery"
                                data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
                                data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                                <img src="{{ $featuredImage->getUrl() }}"
+                                <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
                                      alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
                                      class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
                             </a>

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_usage_analytics', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_usage_analytics', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('feature_id');
             $table->string('module_name', 50)->nullable();
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_usage_analytics');
+        Schema::connection('central')->dropIfExists('ai_usage_analytics');
     }
 };

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Cache;
 class AIProviderModel extends Model
 {
     use HasFactory;
+    protected $connection = 'central';
 
     protected $table = 'ai_provider_models';
 

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ai_conversations', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_conversations', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('type')->default('chat'); // chat, feature_test, admin_chat
@@ -44,6 +44,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('ai_conversations');
+        Schema::connection('central')->dropIfExists('ai_conversations');
     }
 };

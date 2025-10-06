@@ -27,7 +27,7 @@ readonly class ModelBasedCreditService
             return true; // System tenant has unlimited credits
         }
 
-        $currentCredits = $tenant->ai_credits ?? $tenant->credits ?? 0;
+        $currentCredits = $tenant->ai_credits_balance ?? 0;
         return $currentCredits >= $requiredCredits;
     }
 
@@ -60,7 +60,7 @@ readonly class ModelBasedCreditService
             return ['level' => 'none', 'message' => null];
         }
 
-        $currentCredits = $tenant->ai_credits ?? $tenant->credits ?? 0;
+        $currentCredits = $tenant->ai_credits_balance ?? 0;
 
         if ($currentCredits <= 10) {
             return [
@@ -106,7 +106,7 @@ readonly class ModelBasedCreditService
             return ['block' => false, 'reason' => null];
         }
 
-        $currentCredits = $tenant->ai_credits ?? $tenant->credits ?? 0;
+        $currentCredits = $tenant->ai_credits_balance ?? 0;
 
         if ($currentCredits < $requiredCredits) {
             return [
@@ -144,12 +144,12 @@ readonly class ModelBasedCreditService
             $estimatedOutputTokens
         );
 
-        $sufficient = !$requiredCredits || $tenant->credits >= $requiredCredits;
+        $sufficient = !$requiredCredits || $tenant->ai_credits_balance >= $requiredCredits;
 
         return [
             'sufficient' => $sufficient,
             'required_credits' => $requiredCredits,
-            'available_credits' => $tenant->credits,
+            'available_credits' => $tenant->ai_credits_balance,
             'model' => $model,
             'estimated_input_tokens' => $estimatedInputTokens,
             'estimated_output_tokens' => $estimatedOutputTokens
@@ -235,7 +235,7 @@ readonly class ModelBasedCreditService
             'input_tokens' => $actualInputTokens,
             'output_tokens' => $actualOutputTokens,
             'credits_used' => $usedCredits,
-            'remaining_credits' => method_exists($tenant, 'fresh') ? $tenant->fresh()->credits : ($tenant->credits ?? 0),
+            'remaining_credits' => method_exists($tenant, 'fresh') ? $tenant->fresh()->ai_credits_balance : ($tenant->ai_credits_balance ?? 0),
             'feature_type' => $featureType,
             'feature_id' => $featureId,
             'feature_name' => $featureName,

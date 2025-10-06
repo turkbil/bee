@@ -279,10 +279,16 @@ class UniversalMediaComponent extends Component
 
         $this->featuredImageFile->storeAs('', $fileName, ['disk' => 'temp_media']);
 
+        // Thumbnail oluştur
+        $thumbFileName = 'thumb_' . $fileName;
+        $thumbPath = $tempDir . '/' . $thumbFileName;
+        $this->createThumbnail($filePath, $thumbPath, 300, 200);
+
         $this->tempFeaturedImage = [
             'path' => 'temp/media/' . $fileName,
             'original_name' => $this->featuredImageFile->getClientOriginalName(),
-            'url' => asset('temp/media/' . $fileName)
+            'url' => asset('temp/media/' . $fileName),
+            'thumb' => asset('temp/media/' . $thumbFileName)
         ];
 
         $this->saveTempFilesToSession();
@@ -305,10 +311,16 @@ class UniversalMediaComponent extends Component
 
             $file->storeAs('', $fileName, ['disk' => 'temp_media']);
 
+            // Thumbnail oluştur
+            $thumbFileName = 'thumb_' . $fileName;
+            $thumbPath = $tempDir . '/' . $thumbFileName;
+            $this->createThumbnail($filePath, $thumbPath, 300, 200);
+
             $this->tempGallery[] = [
                 'path' => 'temp/media/' . $fileName,
                 'original_name' => $file->getClientOriginalName(),
-                'url' => asset('temp/media/' . $fileName)
+                'url' => asset('temp/media/' . $fileName),
+                'thumb' => asset('temp/media/' . $thumbFileName)
             ];
         }
 
@@ -343,11 +355,18 @@ class UniversalMediaComponent extends Component
         session()->forget('media_temp_featured_' . $this->modelType);
         session()->forget('media_temp_gallery_' . $this->modelType);
 
-        // Delete actual temp files
+        // Delete actual temp files and their thumbnails
         if ($this->tempFeaturedImage) {
             $filePath = public_path($this->tempFeaturedImage['path']);
             if (file_exists($filePath)) {
                 unlink($filePath);
+            }
+            // Thumbnail'i de sil
+            if (isset($this->tempFeaturedImage['thumb'])) {
+                $thumbPath = str_replace(asset(''), public_path(), $this->tempFeaturedImage['thumb']);
+                if (file_exists($thumbPath)) {
+                    unlink($thumbPath);
+                }
             }
         }
 
@@ -355,6 +374,13 @@ class UniversalMediaComponent extends Component
             $filePath = public_path($item['path']);
             if (file_exists($filePath)) {
                 unlink($filePath);
+            }
+            // Thumbnail'i de sil
+            if (isset($item['thumb'])) {
+                $thumbPath = str_replace(asset(''), public_path(), $item['thumb']);
+                if (file_exists($thumbPath)) {
+                    unlink($thumbPath);
+                }
             }
         }
 
@@ -373,6 +399,13 @@ class UniversalMediaComponent extends Component
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
+            // Thumbnail'i de sil
+            if (isset($this->tempFeaturedImage['thumb'])) {
+                $thumbPath = str_replace(asset(''), public_path(), $this->tempFeaturedImage['thumb']);
+                if (file_exists($thumbPath)) {
+                    unlink($thumbPath);
+                }
+            }
             $this->tempFeaturedImage = null;
             $this->saveTempFilesToSession();
         }
@@ -384,6 +417,13 @@ class UniversalMediaComponent extends Component
             $filePath = public_path($this->tempGallery[$index]['path']);
             if (file_exists($filePath)) {
                 unlink($filePath);
+            }
+            // Thumbnail'i de sil
+            if (isset($this->tempGallery[$index]['thumb'])) {
+                $thumbPath = str_replace(asset(''), public_path(), $this->tempGallery[$index]['thumb']);
+                if (file_exists($thumbPath)) {
+                    unlink($thumbPath);
+                }
             }
             unset($this->tempGallery[$index]);
             $this->tempGallery = array_values($this->tempGallery);
@@ -662,6 +702,101 @@ class UniversalMediaComponent extends Component
     protected function getCollectionConfig(string $collectionName): ?array
     {
         return $this->mediaService->getCollectionConfig($this->modelType, $collectionName);
+    }
+
+    /**
+     * Temp dosyalar için basit thumbnail oluştur (GD library)
+     */
+    protected function createThumbnail(string $sourcePath, string $destPath, int $maxWidth = 300, int $maxHeight = 200): bool
+    {
+        try {
+            // Dosya var mı kontrol et
+            if (!file_exists($sourcePath)) {
+                Log::warning('Thumbnail source file not found', ['path' => $sourcePath]);
+                return false;
+            }
+
+            // Görsel bilgilerini al
+            $imageInfo = getimagesize($sourcePath);
+            if (!$imageInfo) {
+                Log::warning('Invalid image file for thumbnail', ['path' => $sourcePath]);
+                return false;
+            }
+
+            list($width, $height, $type) = $imageInfo;
+
+            // Kaynak görseli yükle
+            $source = null;
+            switch ($type) {
+                case IMAGETYPE_JPEG:
+                    $source = imagecreatefromjpeg($sourcePath);
+                    break;
+                case IMAGETYPE_PNG:
+                    $source = imagecreatefrompng($sourcePath);
+                    break;
+                case IMAGETYPE_GIF:
+                    $source = imagecreatefromgif($sourcePath);
+                    break;
+                case IMAGETYPE_WEBP:
+                    $source = imagecreatefromwebp($sourcePath);
+                    break;
+                default:
+                    Log::warning('Unsupported image type for thumbnail', ['type' => $type]);
+                    return false;
+            }
+
+            if (!$source) {
+                return false;
+            }
+
+            // Thumbnail boyutlarını hesapla (aspect ratio koru)
+            $ratio = $width / $height;
+            if ($width > $height) {
+                $thumbWidth = min($maxWidth, $width);
+                $thumbHeight = (int)($thumbWidth / $ratio);
+            } else {
+                $thumbHeight = min($maxHeight, $height);
+                $thumbWidth = (int)($thumbHeight * $ratio);
+            }
+
+            // Thumbnail oluştur
+            $thumb = imagecreatetruecolor($thumbWidth, $thumbHeight);
+
+            // PNG/GIF için transparency koru
+            if ($type == IMAGETYPE_PNG || $type == IMAGETYPE_GIF) {
+                imagealphablending($thumb, false);
+                imagesavealpha($thumb, true);
+                $transparent = imagecolorallocatealpha($thumb, 255, 255, 255, 127);
+                imagefilledrectangle($thumb, 0, 0, $thumbWidth, $thumbHeight, $transparent);
+            }
+
+            // Resize
+            imagecopyresampled($thumb, $source, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $width, $height);
+
+            // WebP olarak kaydet (daha iyi performans)
+            $saved = imagewebp($thumb, $destPath, 85);
+
+            // Cleanup
+            imagedestroy($source);
+            imagedestroy($thumb);
+
+            if ($saved) {
+                Log::info('Thumbnail created successfully', [
+                    'source' => $sourcePath,
+                    'dest' => $destPath,
+                    'size' => "{$thumbWidth}x{$thumbHeight}"
+                ]);
+                return true;
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            Log::error('Thumbnail creation failed', [
+                'error' => $e->getMessage(),
+                'source' => $sourcePath
+            ]);
+            return false;
+        }
     }
 
     // ========================================

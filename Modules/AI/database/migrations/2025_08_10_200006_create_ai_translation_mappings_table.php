@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_translation_mappings', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_translation_mappings', function (Blueprint $table) {
             $table->id();
             $table->string('module_name', 50);
             $table->string('table_name', 100);
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_translation_mappings');
+        Schema::connection('central')->dropIfExists('ai_translation_mappings');
     }
 };

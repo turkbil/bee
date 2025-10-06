@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_credit_packages', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_credit_packages', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // "Başlangıç Paketi", "Pro Paket" vs.
             $table->unsignedInteger('credit_amount'); // Credit miktarı
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_credit_packages');
+        Schema::connection('central')->dropIfExists('ai_credit_packages');
     }
 };

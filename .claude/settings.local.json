@@ -257,7 +257,14 @@
       "Read(//usr/local/psa/phpMyAdmin/themes/**)",
       "Read(//usr/local/psa/phpMyAdmin/**)",
       "Read(//var/log/**)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(plesk bin subdomain:*)",
+      "Read(//var/**)",
+      "Bash(plesk bin certificate:*)",
+      "Bash(plesk bin extension:*)",
+      "Bash(do echo \"=== $file ===\" curl -sI \"https://ixtif.com.tr/$file\")",
+      "Bash(ln:*)",
+      "Bash(readlink:*)"
     ],
     "deny": [],
     "ask": [],

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ai_prompts', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_prompts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('prompt_id')->unique()->nullable()->comment('Static ID for seeder management (10001-10900 range)');
             $table->string('name');
@@ -82,6 +82,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('ai_prompts');
+        Schema::connection('central')->dropIfExists('ai_prompts');
     }
 };

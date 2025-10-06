@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_prompt_cache', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_prompt_cache', function (Blueprint $table) {
             $table->id();
             $table->string('cache_key', 255)->unique();
             $table->unsignedBigInteger('feature_id')->nullable();
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_prompt_cache');
+        Schema::connection('central')->dropIfExists('ai_prompt_cache');
     }
 };

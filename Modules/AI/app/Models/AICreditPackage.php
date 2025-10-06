@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class AICreditPackage extends Model
 {
     use HasFactory;
+    protected $connection = 'central';
     
     protected $table = 'ai_credit_packages';
     

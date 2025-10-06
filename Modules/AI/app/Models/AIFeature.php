@@ -14,6 +14,7 @@ use Illuminate\Support\Collection;
 class AIFeature extends Model
 {
     use HasFactory;
+    protected $connection = 'central';
 
     protected $table = 'ai_features';
     
@@ -21,8 +22,6 @@ class AIFeature extends Model
     {
         parent::__construct($attributes);
         
-        // AI tabloları her zaman central database'de
-        $this->setConnection('mysql');
     }
 
     protected $fillable = [

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('ai_credit_usage', function (Blueprint $table) {
+        Schema::connection('central')->table('ai_credit_usage', function (Blueprint $table) {
             // Add foreign key constraint for ai_provider_id (after ai_providers table exists)
             $table->foreign('ai_provider_id')->references('id')->on('ai_providers')->onDelete('set null');
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('ai_credit_usage', function (Blueprint $table) {
+        Schema::connection('central')->table('ai_credit_usage', function (Blueprint $table) {
             $table->dropForeign(['ai_provider_id']);
         });
     }

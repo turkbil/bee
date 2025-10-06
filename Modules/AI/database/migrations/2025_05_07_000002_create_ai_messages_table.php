@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ai_messages', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_messages', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('conversation_id');
             $table->enum('role', ['user', 'assistant']);
@@ -38,6 +38,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('ai_messages');
+        Schema::connection('central')->dropIfExists('ai_messages');
     }
 };

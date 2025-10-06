@@ -405,8 +405,8 @@ class AIService
             );
             
             // Kredi kontrolü
-            if ($requiredCredits && $tenant->credits < $requiredCredits) {
-                return "Üzgünüm, yetersiz krediniz var. Gerekli: {$requiredCredits}, Mevcut: {$tenant->credits}";
+            if ($requiredCredits && !$tenant->hasEnoughCredits($requiredCredits)) {
+                return "Üzgünüm, yetersiz krediniz var. Gerekli: {$requiredCredits}, Mevcut: {$tenant->ai_credits_balance}";
             }
         }
 
@@ -1835,13 +1835,13 @@ class AIService
                 );
                 
                 // Kredi kontrolü
-                if ($requiredCredits && $tenant->credits < $requiredCredits) {
+                if ($requiredCredits && !$tenant->hasEnoughCredits($requiredCredits)) {
                     return [
                         'success' => false,
                         'error' => 'insufficient_credits',
-                        'message' => "Yetersiz kredi. Gerekli: {$requiredCredits}, Mevcut: {$tenant->credits}",
+                        'message' => "Yetersiz kredi. Gerekli: {$requiredCredits}, Mevcut: {$tenant->ai_credits_balance}",
                         'required_credits' => $requiredCredits,
-                        'available_credits' => $tenant->credits
+                        'available_credits' => $tenant->ai_credits_balance
                     ];
                 }
             }

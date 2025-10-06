@@ -63,7 +63,7 @@ readonly class CreditWarningService
             $estimatedOutputTokens
         );
         
-        $currentCredits = $tenant->credits ?? 0;
+        $currentCredits = $tenant->ai_credits_balance ?? 0;
         $maxCredits = $tenant->max_credits ?? 1000; // Default max credit
         
         // Kredi yeterli mi?
@@ -297,8 +297,8 @@ readonly class CreditWarningService
         if (!$tenant) {
             return [];
         }
-        
-        $currentCredits = $tenant->credits ?? 0;
+
+        $currentCredits = $tenant->ai_credits_balance ?? 0;
         $maxCredits = $tenant->max_credits ?? 1000;
         $usageToday = $this->getTodayUsage($tenantId);
         $usageThisMonth = $this->getMonthUsage($tenantId);

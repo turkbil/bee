@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_feature_inputs', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_feature_inputs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('feature_id')->constrained('ai_features')->onDelete('cascade');
             $table->string('name');
@@ -48,6 +48,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_feature_inputs');
+        Schema::connection('central')->dropIfExists('ai_feature_inputs');
     }
 };

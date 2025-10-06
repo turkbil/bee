@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 class AIProvider extends Model
 {
     use HasFactory;
+    protected $connection = 'central';
 
     protected $table = 'ai_providers';
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Message extends Model
 {
     use HasFactory;
+    protected $connection = 'central';
 
     protected $table = 'ai_messages';
     
@@ -15,8 +16,6 @@ class Message extends Model
     {
         parent::__construct($attributes);
         
-        // AI tabloları her zaman central database'de
-        $this->setConnection('mysql');
     }
 
     protected $fillable = [

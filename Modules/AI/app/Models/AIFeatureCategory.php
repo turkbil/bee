@@ -10,6 +10,7 @@ use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
 class AIFeatureCategory extends Model
 {
+    protected $connection = 'central';
     use Sluggable, CentralConnection;
 
     protected $table = 'ai_feature_categories';

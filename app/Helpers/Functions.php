@@ -536,16 +536,16 @@ if (!function_exists('ai_deduct_credits_properly')) {
             }
             
             // Check if tenant has enough credits
-            if ($tenant->credits < $credits) {
+            if ($tenant->ai_credits_balance < $credits) {
                 Log::warning('Insufficient credits', [
                     'required' => $credits,
-                    'available' => $tenant->credits
+                    'available' => $tenant->ai_credits_balance
                 ]);
                 // Still process but log warning
             }
-            
+
             // Deduct credits
-            $tenant->credits -= $credits;
+            $tenant->ai_credits_balance -= $credits;
             $tenant->save();
             
             // Record transaction in new ai_credit_transactions table
@@ -570,7 +570,7 @@ if (!function_exists('ai_deduct_credits_properly')) {
             Log::info('💰 Credits deducted successfully', [
                 'tenant_id' => $tenant->id,
                 'credits_used' => $credits,
-                'remaining_credits' => $tenant->credits,
+                'remaining_credits' => $tenant->ai_credits_balance,
                 'provider' => $providerName,
                 'model' => $model,
                 'tokens' => $inputTokens + $outputTokens

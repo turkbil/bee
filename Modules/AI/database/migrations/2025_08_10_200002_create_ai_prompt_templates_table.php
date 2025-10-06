@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_prompt_templates', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_prompt_templates', function (Blueprint $table) {
             $table->id();
             $table->string('template_key', 100)->unique();
             $table->string('template_name', 255);
@@ -40,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_prompt_templates');
+        Schema::connection('central')->dropIfExists('ai_prompt_templates');
     }
 };

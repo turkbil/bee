@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('ai_provider_models', function (Blueprint $table) {
+        Schema::connection('central')->table('ai_provider_models', function (Blueprint $table) {
             // Operation-based fiyatlandırma JSON
             $table->json('operation_rates')->nullable()->after('markup_percentage')
                 ->comment('İşlem türüne göre özel fiyatlandırma (fixed, tier, token_multiplier)');
@@ -34,7 +34,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('ai_provider_models', function (Blueprint $table) {
+        Schema::connection('central')->table('ai_provider_models', function (Blueprint $table) {
             $table->dropColumn('operation_rates');
         });
     }

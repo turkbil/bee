@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AIProfileQuestion extends Model
 {
+    protected $connection = 'central';
     protected $table = 'ai_profile_questions';
     
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         
-        // AI tabloları her zaman central database'de
-        $this->setConnection('mysql');
     }
 
     protected $fillable = [

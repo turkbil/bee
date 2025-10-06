@@ -20,13 +20,13 @@
                                 @php
                                     // Session-based temp file öncelikli
                                     if (!empty($tempFeaturedImage)) {
-                                        $thumbUrl = $tempFeaturedImage['url'];
+                                        $thumbUrl = $tempFeaturedImage['thumb'] ?? $tempFeaturedImage['url'];
                                         $fullUrl = $tempFeaturedImage['url'];
                                         $isTemp = true;
                                     }
-                                    // Existing image varsa onun URL'ini kullan
+                                    // Existing image varsa thumbnail'ini kullan
                                     elseif (!empty($existingFeaturedImage)) {
-                                        $thumbUrl = $existingFeaturedImage['url'];
+                                        $thumbUrl = $existingFeaturedImage['thumb'] ?? $existingFeaturedImage['url'];
                                         $fullUrl = $existingFeaturedImage['url']; // Full size for lightbox
                                         $isTemp = false;
                                     } else {
@@ -144,7 +144,7 @@
                                  data-temp-index="{{ $index }}"
                                  x-show="showAllGallery || {{ $index }} < {{ $galleryLimit }}">
                                 <div class="position-relative gallery-card media-hover-container">
-                                    <img src="{{ $item['url'] }}"
+                                    <img src="{{ $item['thumb'] ?? $item['url'] }}"
                                          alt="Preview"
                                          class="img-thumbnail w-100"
                                          style="aspect-ratio: {{ media_aspect_ratio('thumb') }}; object-fit: cover; cursor: move;"
@@ -193,7 +193,7 @@
                                  data-id="{{ $image['id'] }}"
                                  x-show="showAllGallery || {{ $actualIndex }} < {{ $galleryLimit }}">
                                 <div class="position-relative gallery-card media-hover-container">
-                                    <img src="{{ $image['url'] }}"
+                                    <img src="{{ $image['thumb'] ?? $image['url'] }}"
                                          alt="{{ $image['name'] }}"
                                          class="img-thumbnail w-100"
                                          style="aspect-ratio: {{ media_aspect_ratio('thumb') }}; object-fit: contain; cursor: move;"

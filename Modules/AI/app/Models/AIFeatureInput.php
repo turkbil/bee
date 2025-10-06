@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AIFeatureInput extends Model
 {
+    protected $connection = 'central';
     protected $table = 'ai_feature_inputs';
     
     protected $fillable = [

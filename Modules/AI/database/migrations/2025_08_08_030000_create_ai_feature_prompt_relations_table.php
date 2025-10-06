@@ -27,7 +27,7 @@ return new class extends Migration
     {
         // Central veritabanında tablo oluştur
         TenantHelpers::central(function() {
-            Schema::create('ai_feature_prompt_relations', function (Blueprint $table) {
+            Schema::connection('central')->create('ai_feature_prompt_relations', function (Blueprint $table) {
                 $table->id();
                 
                 // Foreign Keys
@@ -92,7 +92,7 @@ return new class extends Migration
     public function down(): void
     {
         TenantHelpers::central(function() {
-            Schema::dropIfExists('ai_feature_prompt_relations');
+            Schema::connection('central')->dropIfExists('ai_feature_prompt_relations');
         });
     }
 };

@@ -14,14 +14,13 @@ use Modules\AI\App\Services\AICreditService;
 
 class AICreditPurchase extends Model
 {
+    protected $connection = 'central';
     protected $table = 'ai_credit_purchases';
     
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         
-        // AI tabloları her zaman central database'de
-        $this->setConnection('mysql');
     }
     
     protected $fillable = [

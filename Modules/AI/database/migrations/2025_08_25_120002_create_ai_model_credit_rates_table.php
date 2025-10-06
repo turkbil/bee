@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_model_credit_rates', function (Blueprint $table) {
+        Schema::connection('central')->create('ai_model_credit_rates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('provider_id')->constrained('ai_providers')->onDelete('cascade');
             $table->string('model_name');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_model_credit_rates');
+        Schema::connection('central')->dropIfExists('ai_model_credit_rates');
     }
 };

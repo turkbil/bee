@@ -1,119 +1,121 @@
- 🔧 Multi Modal Manager initialized
- ✅ Multi Modal Manager loaded
- 🔧 Minimal Translation Modal loading...
- ✅ AI Warning System Translation Modal loaded successfully
- 📦 AI Content Generation System yüklendi
- 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
- 🚀 AI SEO INTEGRATION SYSTEM LOADING...
- 📍 File Path: assets/js/ai-seo-integration.js
- ⏰ Load Time: 2025-10-06T21:27:17.109Z
- 🎯 Global debug function window.aiSeoDebug() ready!
- 🚀 AI SEO Integration system başlatılıyor...
- 🔍 DOM ready state: loading
- 🔗 attachButtonListeners ÇAĞRILDI
- 🔍 Bulunan buton sayısı: 1
- 🔍 Buton DEBUG: {classes: 'btn btn-primary ai-seo-recommendations-btn', originalHTML: '\n                        <i class="fas fa-magic me…        Yapay Zeka Önerileri\n                    ', originalText: 'Yapay Zeka Önerileri'}
- ✅ Button listeners attached successfully
- ✅ AI SEO Integration system hazır!
- 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
- 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
- 🎯 Monaco Editor Universal System başlatılıyor...
- ✅ Monaco Editor Universal System hazır!
+multi-modal-manager.js?v=1759788101:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1759788101:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1759788101:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1759788101:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1759788101:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1759788101:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1759788101:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1759788101:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1759788101:13 ⏰ Load Time: 2025-10-06T22:01:41.696Z
+ai-seo-integration.js?v=1759788101:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1759788101:3069 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1759788101:3070 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1759788101:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1759788101:564 🔍 Bulunan buton sayısı: 1
+ai-seo-integration.js?v=1759788101:568 🔍 Buton DEBUG: {classes: 'btn btn-primary ai-seo-recommendations-btn', originalHTML: '\n                        <i class="fas fa-magic me…        Yapay Zeka Önerileri\n                    ', originalText: 'Yapay Zeka Önerileri'}
+ai-seo-integration.js?v=1759788101:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1759788101:3199 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1759788101:3212 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1759788101:3241 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+monaco-editor-universal.js?v=1759788101:28 🎯 Monaco Editor Universal System başlatılıyor...
+monaco-editor-universal.js?v=1759788101:324 ✅ Monaco Editor Universal System hazır!
  🎯 Universal SEO Functions başlatılıyor...
  ✅ Universal SEO Functions yüklendi!
  🎯 Universal Language Functions başlatılıyor...
  ✅ Universal Language Functions yüklendi!
  🎯 Universal AI Content Functions başlatılıyor...
- ✅ Universal AI Content Functions yüklendi!
- ✅ Streaming translation is supported
- 🚀 Enterprise Streaming Translation System Ready!
- 🚀 Streaming Translation System initializing...
- ✅ Enterprise Streaming Translation System loaded
- ✅ Alpine.js Global Store initialized (Livewire bundled)
- ⚡ Livewire initialized
- 📊 Sortable Init: {total: 8, visible: 4}
- ✅ Gallery sortable initialized
- 🚀 AI Content Generation System DOM hazır
- 🚀 AI Content Generation System başlatılıyor...
- 📡 Event listeners kuruldu
- ✅ AI Content Generation System hazır!
- ✅ Global AI Content System instance oluşturuldu
- 🔒 attachButtonListeners SKIP - already attached
- 📋 Unified Tab System başlatılıyor, storage key: announcement_active_tab
- 🔄 Tab restore işlemi başlıyor...
- 📋 Kaydedilmiş tab: #1
- 🎯 Hedef tab element: 
- 🎯 Hedef pane element: 
- ✅ Tab restore tamamlandı: #1
- 🔄 Tab restore sonrası dil senkronizasyon: tr
- ✅ Dil değiştirildi: tr
- 🔍 UNIVERSAL SEO TAB - DEBUG START
- 📊 SEO Input sayısı: 24
-   SEO Input 0: {wireModel: 'seoDataCache.tr.seo_title', value: 'Web sitemiz açıldı...', hasValue: true, id: 'no-id', tag: 'INPUT'}
-   SEO Input 1: {wireModel: 'seoDataCache.tr.seo_description', value: 'Selam gardaşlar...', hasValue: true, id: 'no-id', tag: 'TEXTAREA'}
-   SEO Input 2: {wireModel: 'seoDataCache.tr.schema_type', value: 'WebPage...', hasValue: true, id: 'schema_type_tr', tag: 'SELECT'}
-   SEO Input 3: {wireModel: 'seoDataCache.tr.priority_score', value: '5...', hasValue: true, id: 'no-id', tag: 'INPUT'}
-   SEO Input 4: {wireModel: 'seoDataCache.tr.og_image_url', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
-   SEO Input 5: {wireModel: 'seoDataCache.tr.og_title', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
-   SEO Input 6: {wireModel: 'seoDataCache.tr.og_description', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'TEXTAREA'}
-   SEO Input 7: {wireModel: 'seoDataCache.tr.robots_meta.index', value: 'on...', hasValue: true, id: 'robots_index_tr', tag: 'INPUT'}
-   SEO Input 8: {wireModel: 'seoDataCache.tr.robots_meta.follow', value: 'on...', hasValue: true, id: 'robots_follow_tr', tag: 'INPUT'}
-   SEO Input 9: {wireModel: 'seoDataCache.tr.robots_meta.archive', value: 'on...', hasValue: true, id: 'robots_archive_tr', tag: 'INPUT'}
-   SEO Input 10: {wireModel: 'seoDataCache.tr.robots_meta.snippet', value: 'on...', hasValue: true, id: 'robots_snippet_tr', tag: 'INPUT'}
-   SEO Input 11: {wireModel: 'seoDataCache.tr.author_name', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
-   SEO Input 12: {wireModel: 'seoDataCache.tr.author_url', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
-   SEO Input 13: {wireModel: 'seoDataCache.en.seo_title', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
-   SEO Input 14: {wireModel: 'seoDataCache.en.seo_description', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'TEXTAREA'}
-   SEO Input 15: {wireModel: 'seoDataCache.en.schema_type', value: 'WebPage...', hasValue: true, id: 'schema_type_en', tag: 'SELECT'}
-   SEO Input 16: {wireModel: 'seoDataCache.en.priority_score', value: '5...', hasValue: true, id: 'no-id', tag: 'INPUT'}
-   SEO Input 17: {wireModel: 'seoDataCache.en.og_image_url', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
-   SEO Input 18: {wireModel: 'seoDataCache.en.og_title', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
-   SEO Input 19: {wireModel: 'seoDataCache.en.og_description', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'TEXTAREA'}
-   SEO Input 20: {wireModel: 'seoDataCache.en.robots_meta.index', value: 'on...', hasValue: true, id: 'robots_index_en', tag: 'INPUT'}
-   SEO Input 21: {wireModel: 'seoDataCache.en.robots_meta.follow', value: 'on...', hasValue: true, id: 'robots_follow_en', tag: 'INPUT'}
-   SEO Input 22: {wireModel: 'seoDataCache.en.robots_meta.archive', value: 'on...', hasValue: true, id: 'robots_archive_en', tag: 'INPUT'}
-   SEO Input 23: {wireModel: 'seoDataCache.en.robots_meta.snippet', value: 'on...', hasValue: true, id: 'robots_snippet_en', tag: 'INPUT'}
- ✅ Livewire Component bulundu
- 📦 seoDataCache: Proxy(Object) {tr: {…}, en: {…}}
- 🌍 currentLanguage: tr
- 📋 availableLanguages: Proxy(Array) {0: 'tr', 1: 'en'}
- 🆔 modelId: 1
- 🏷️ modelType: announcement
- 📦 modelClass: Modules\Announcement\App\Models\Announcement
- 💡 TIP: Konsola "debugSeoTab()" yaz
- 🔍 UNIVERSAL SEO TAB - DEBUG END
- 📋 Universal Language System yüklendi
- 🌍 Current Language: tr
- 🌍 Livewire Current Language: tr
- 🔍 Available Languages: (2) ['tr', 'en']
- 🔧 İlk yükleme: Dil içeriği düzenleniyor: tr
- 🌍 Dil içeriği değiştiriliyor: tr
- ✅ Dil içeriği değiştirildi: tr
- ✅ Universal AI Content System hazır!
- ✅ Universal SEO event listeners kuruldu
- ✅ Universal Language event listeners kuruldu
- 🔧 Language switching sistemi kuruluyor...
- 🔍 Bulunan language button sayısı: 4
-   0: tr - class: btn btn-link p-2 language-switch-btn text-primary
-   1: en - class: btn btn-link p-2 language-switch-btn text-muted
-   2: undefined - class: btn btn-link p-2 language-switch-btn text-muted
-   3: undefined - class: btn btn-link p-2 language-switch-btn text-muted
- 🔎 RESTORE KONTROL - sayfa başladı
- 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
- 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
- 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
- 🔍 Bulunan seo-no-enter input sayısı: 8
-   Input 0: {tag: 'INPUT', name: 'yok', placeholder: 'SEO Başlık', wireModel: 'seoDataCache.tr.seo_title', value: 'Web sitemiz açıldı...', …}
-   Input 1: {tag: 'TEXTAREA', name: 'yok', placeholder: 'SEO Açıklama', wireModel: 'seoDataCache.tr.seo_description', value: 'Selam gardaşlar...', …}
-   Input 2: {tag: 'INPUT', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel başlık", wireModel: 'seoDataCache.tr.og_title', value: '🔴 BOŞ', …}
-   Input 3: {tag: 'TEXTAREA', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel açıklama", wireModel: 'seoDataCache.tr.og_description', value: '🔴 BOŞ', …}
-   Input 4: {tag: 'INPUT', name: 'yok', placeholder: 'SEO Başlık', wireModel: 'seoDataCache.en.seo_title', value: '🔴 BOŞ', …}
-   Input 5: {tag: 'TEXTAREA', name: 'yok', placeholder: 'SEO Açıklama', wireModel: 'seoDataCache.en.seo_description', value: '🔴 BOŞ', …}
-   Input 6: {tag: 'INPUT', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel başlık", wireModel: 'seoDataCache.en.og_title', value: '🔴 BOŞ', …}
-   Input 7: {tag: 'TEXTAREA', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel açıklama", wireModel: 'seoDataCache.en.og_description', value: '🔴 BOŞ', …}
- ✅ 8 SEO input için Enter tuşu engelleme aktif
- 🚀 Enterprise Streaming Translation System Ready!
- 📝 Streaming translation not available - Using standard translation mode
+universal-ai-content-functions.js?v=1759788101:146 ✅ Universal AI Content Functions yüklendi!
+streaming-translation.js:33 ✅ Streaming translation is supported
+streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
+streaming-translation.js:15 🚀 Streaming Translation System initializing...
+streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
+monaco-editor-universal.js?v=1759788101:59 ✅ Monaco loader yüklendi
+1:3886 ✅ Alpine.js Global Store initialized (Livewire bundled)
+simple-translation-modal.js?v=1759788101:839 ⚡ Livewire initialized
+1:4238 📊 Sortable Init: {total: 8, visible: 4}
+1:4296 ✅ Gallery sortable initialized
+ai-content-system.js?v=1759788101:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1759788101:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1759788101:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1759788101:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1759788101:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1759788101:558 🔒 attachButtonListeners SKIP - already attached
+1:3952 📋 Unified Tab System başlatılıyor, storage key: announcement_active_tab
+1:3971 🔄 Tab restore işlemi başlıyor...
+1:3974 📋 Kaydedilmiş tab: #1
+1:3980 🎯 Hedef tab element: <a href=​"#1" class=​"nav-link active" data-bs-toggle=​"tab" data-tab-key=​"1" style=​"border-radius:​ 0.25rem 0.25rem 0px 0px !important;​" aria-selected=​"true" data-tab-event-attached=​"true">​…​</a>​flex
+1:3981 🎯 Hedef pane element: <div class=​"tab-pane show active" id=​"1" role=​"tabpanel" style=​"border-radius:​ 0px !important;​ overflow:​ hidden !important;​">​…​</div>​
+1:4003 ✅ Tab restore tamamlandı: #1
+1:4127 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1759788101:1469 ✅ Dil değiştirildi: tr
+1:5100 🔍 UNIVERSAL SEO TAB - DEBUG START
+1:5104 📊 SEO Input sayısı: 24
+1:5110   SEO Input 0: {wireModel: 'seoDataCache.tr.seo_title', value: 'Yeni Web Sitemizi Keşfedin...', hasValue: true, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 1: {wireModel: 'seoDataCache.tr.seo_description', value: 'Web sitemiz açıldı! İlk ziyaretçilerimize özel içe...', hasValue: true, id: 'no-id', tag: 'TEXTAREA'}
+1:5110   SEO Input 2: {wireModel: 'seoDataCache.tr.schema_type', value: 'WebPage...', hasValue: true, id: 'schema_type_tr', tag: 'SELECT'}
+1:5110   SEO Input 3: {wireModel: 'seoDataCache.tr.priority_score', value: '5...', hasValue: true, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 4: {wireModel: 'seoDataCache.tr.og_image_url', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 5: {wireModel: 'seoDataCache.tr.og_title', value: 'Web Sitemiz Açıldı! İlk Ziyaretinizi Bekliyoruz...', hasValue: true, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 6: {wireModel: 'seoDataCache.tr.og_description', value: 'Yeni web sitemiz açıldı! İlginizi çekecek içerikle...', hasValue: true, id: 'no-id', tag: 'TEXTAREA'}
+1:5110   SEO Input 7: {wireModel: 'seoDataCache.tr.robots_meta.index', value: 'on...', hasValue: true, id: 'robots_index_tr', tag: 'INPUT'}
+1:5110   SEO Input 8: {wireModel: 'seoDataCache.tr.robots_meta.follow', value: 'on...', hasValue: true, id: 'robots_follow_tr', tag: 'INPUT'}
+1:5110   SEO Input 9: {wireModel: 'seoDataCache.tr.robots_meta.archive', value: 'on...', hasValue: true, id: 'robots_archive_tr', tag: 'INPUT'}
+1:5110   SEO Input 10: {wireModel: 'seoDataCache.tr.robots_meta.snippet', value: 'on...', hasValue: true, id: 'robots_snippet_tr', tag: 'INPUT'}
+1:5110   SEO Input 11: {wireModel: 'seoDataCache.tr.author_name', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 12: {wireModel: 'seoDataCache.tr.author_url', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 13: {wireModel: 'seoDataCache.en.seo_title', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 14: {wireModel: 'seoDataCache.en.seo_description', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'TEXTAREA'}
+1:5110   SEO Input 15: {wireModel: 'seoDataCache.en.schema_type', value: 'WebPage...', hasValue: true, id: 'schema_type_en', tag: 'SELECT'}
+1:5110   SEO Input 16: {wireModel: 'seoDataCache.en.priority_score', value: '5...', hasValue: true, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 17: {wireModel: 'seoDataCache.en.og_image_url', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 18: {wireModel: 'seoDataCache.en.og_title', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+1:5110   SEO Input 19: {wireModel: 'seoDataCache.en.og_description', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'TEXTAREA'}
+1:5110   SEO Input 20: {wireModel: 'seoDataCache.en.robots_meta.index', value: 'on...', hasValue: true, id: 'robots_index_en', tag: 'INPUT'}
+1:5110   SEO Input 21: {wireModel: 'seoDataCache.en.robots_meta.follow', value: 'on...', hasValue: true, id: 'robots_follow_en', tag: 'INPUT'}
+1:5110   SEO Input 22: {wireModel: 'seoDataCache.en.robots_meta.archive', value: 'on...', hasValue: true, id: 'robots_archive_en', tag: 'INPUT'}
+1:5110   SEO Input 23: {wireModel: 'seoDataCache.en.robots_meta.snippet', value: 'on...', hasValue: true, id: 'robots_snippet_en', tag: 'INPUT'}
+1:5122 ✅ Livewire Component bulundu
+1:5123 📦 seoDataCache: Proxy(Object) {tr: {…}, en: {…}}
+1:5124 🌍 currentLanguage: tr
+1:5125 📋 availableLanguages: Proxy(Array) {0: 'tr', 1: 'en'}
+1:5126 🆔 modelId: 1
+1:5127 🏷️ modelType: announcement
+1:5128 📦 modelClass: Modules\Announcement\App\Models\Announcement
+1:5138 💡 TIP: Konsola "debugSeoTab()" yaz
+1:5143 🔍 UNIVERSAL SEO TAB - DEBUG END
+1:5187 📋 Universal Language System yüklendi
+1:5188 🌍 Current Language: tr
+1:5189 🌍 Livewire Current Language: tr
+1:5190 🔍 Available Languages: (2) ['tr', 'en']
+universal-language-functions.js?v=1759788101:73 🔧 İlk yükleme: Dil içeriği düzenleniyor: tr
+universal-language-functions.js?v=1759788101:30 🌍 Dil içeriği değiştiriliyor: tr
+universal-language-functions.js?v=1759788101:64 ✅ Dil içeriği değiştirildi: tr
+1:5214 🎯 TR dili için sosyal medya alanları dolu, switch aktifleştiriliyor
+1:5264 ✅ Universal AI Content System hazır!
+universal-seo-functions.js?v=1759788101:336 ✅ Universal SEO event listeners kuruldu
+universal-language-functions.js?v=1759788101:129 ✅ Universal Language event listeners kuruldu
+manage.js?v=1759788101:115 🔧 Language switching sistemi kuruluyor...
+manage.js?v=1759788101:118 🔍 Bulunan language button sayısı: 4
+manage.js?v=1759788101:121   0: tr - class: btn btn-link p-2 language-switch-btn text-primary
+manage.js?v=1759788101:121   1: en - class: btn btn-link p-2 language-switch-btn text-muted
+manage.js?v=1759788101:121   2: undefined - class: btn btn-link p-2 language-switch-btn text-muted
+manage.js?v=1759788101:121   3: undefined - class: btn btn-link p-2 language-switch-btn text-muted
+manage.js?v=1759788101:443 🔎 RESTORE KONTROL - sayfa başladı
+manage.js?v=1759788101:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
+manage.js?v=1759788101:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
+manage.js?v=1759788101:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
+manage.js?v=1759788101:1347 🔍 Bulunan seo-no-enter input sayısı: 8
+manage.js?v=1759788101:1353   Input 0: {tag: 'INPUT', name: 'yok', placeholder: 'SEO Başlık', wireModel: 'seoDataCache.tr.seo_title', value: 'Yeni Web Sitemizi Keşfedin...', …}
+manage.js?v=1759788101:1353   Input 1: {tag: 'TEXTAREA', name: 'yok', placeholder: 'SEO Açıklama', wireModel: 'seoDataCache.tr.seo_description', value: 'Web sitemiz açıldı! İlk ziyaretçilerimize özel içe...', …}
+manage.js?v=1759788101:1353   Input 2: {tag: 'INPUT', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel başlık", wireModel: 'seoDataCache.tr.og_title', value: 'Web Sitemiz Açıldı! İlk Ziyaretinizi Bekliyoruz...', …}
+manage.js?v=1759788101:1353   Input 3: {tag: 'TEXTAREA', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel açıklama", wireModel: 'seoDataCache.tr.og_description', value: 'Yeni web sitemiz açıldı! İlginizi çekecek içerikle...', …}
+manage.js?v=1759788101:1353   Input 4: {tag: 'INPUT', name: 'yok', placeholder: 'SEO Başlık', wireModel: 'seoDataCache.en.seo_title', value: '🔴 BOŞ', …}
+manage.js?v=1759788101:1353   Input 5: {tag: 'TEXTAREA', name: 'yok', placeholder: 'SEO Açıklama', wireModel: 'seoDataCache.en.seo_description', value: '🔴 BOŞ', …}
+manage.js?v=1759788101:1353   Input 6: {tag: 'INPUT', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel başlık", wireModel: 'seoDataCache.en.og_title', value: '🔴 BOŞ', …}
+manage.js?v=1759788101:1353   Input 7: {tag: 'TEXTAREA', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel açıklama", wireModel: 'seoDataCache.en.og_description', value: '🔴 BOŞ', …}
+manage.js?v=1759788101:1407 ✅ 8 SEO input için Enter tuşu engelleme aktif
+1:5559 🚀 Enterprise Streaming Translation System Ready!
+1:5572 📝 Streaming translation not available - Using standard translation mode
 [Violation] Added non-passive event listener to a scroll-blocking <bazı> etkinlik. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
 [Violation] Added non-passive event listener to a scroll-blocking <bazı> etkinlik. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
 [Violation] Added non-passive event listener to a scroll-blocking <bazı> etkinlik. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
@@ -122,264 +124,178 @@
 [Violation] Added non-passive event listener to a scroll-blocking <bazı> etkinlik. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
 [Violation] Added non-passive event listener to a scroll-blocking <bazı> etkinlik. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
 [Violation] Added non-passive event listener to a scroll-blocking <bazı> etkinlik. Consider marking event handler as 'passive' to make the page more responsive. See <URL>
- ✅ Monaco loader yüklendi
- 📱 Social media switches initialized
- ✅ Dil değiştirildi: tr
- 🎯 İlk yükleme - dil içeriği ayarlandı: tr
- 🔒 attachButtonListeners SKIP - already attached
- 🌍 Slug Normalization - Dinamik diller tespit edildi: (2) ['tr', 'en']
- ✅ Monaco Editor hazır
- 🔒 attachButtonListeners SKIP - already attached
- 🌍 SEO Counter - Dinamik diller tespit edildi: (2) ['tr', 'en']
- ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
- 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
- ✅ MANAGE.JS: Loading bar zorla gizlendi
- 🚀 SEO RECOMMENDATIONS START
- 🔍 collectFormData() BAŞLADI
- 🔍 Bulunan Livewire input sayısı: 31
- 📝 Field eklendi: multiLangInputs.tr.title = Web sitemiz açıldı
- 📝 Field eklendi: multiLangInputs.tr.slug = web-sitemiz-acildi
- 📝 Field eklendi: multiLangInputs.en.title = BOŞ
- 📝 Field eklendi: multiLangInputs.en.slug = BOŞ
- 📝 Field eklendi: featuredImageFile = BOŞ
- 📝 Field eklendi: galleryFiles = BOŞ
- 📝 Field eklendi: inputs.is_active = 1
- 📝 Field eklendi: seoDataCache.tr.seo_title = Web sitemiz açıldı
- 📝 Field eklendi: seoDataCache.tr.seo_description = Selam gardaşlar
- 📝 Field eklendi: seoDataCache.tr.schema_type = WebPage
- 📝 Field eklendi: seoDataCache.tr.priority_score = 5
- 📝 Field eklendi: seoDataCache.tr.og_image_url = BOŞ
- 📝 Field eklendi: seoDataCache.tr.og_title = BOŞ
- 📝 Field eklendi: seoDataCache.tr.og_description = BOŞ
- 📝 Field eklendi: seoDataCache.tr.robots_meta.index = on
- 📝 Field eklendi: seoDataCache.tr.robots_meta.follow = on
- 📝 Field eklendi: seoDataCache.tr.robots_meta.archive = on
- 📝 Field eklendi: seoDataCache.tr.robots_meta.snippet = on
- 📝 Field eklendi: seoDataCache.tr.author_name = BOŞ
- 📝 Field eklendi: seoDataCache.tr.author_url = BOŞ
- 📝 Field eklendi: seoDataCache.en.seo_title = BOŞ
- 📝 Field eklendi: seoDataCache.en.seo_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.schema_type = WebPage
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.priority_score = 5
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_image_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.index = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.follow = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.archive = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.snippet = on
-ai-seo-integration.js?v=1759786036:1289 🔍 Bulunan Quill editor sayısı: 0
-ai-seo-integration.js?v=1759786036:1357 🔍 Page detection inputs: {url: '/admin/announcement/manage/1', title: 'web sitemiz açıldı', content: ''}
-ai-seo-integration.js?v=1759786036:1308 🎯 Algılanan sayfa tipi: {type: 'general', category: 'informational', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', seo_priority: 'medium', keywords_focus: Array(4), …}
-ai-seo-integration.js?v=1759786036:1311 🔍 COLLECTED FORM DATA: {multiLangInputs.tr.title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', featuredImageFile: '', …}
-ai-seo-integration.js?v=1759786036:1312 🔍 Form data keys: (31) ['multiLangInputs.tr.title', 'multiLangInputs.tr.slug', 'multiLangInputs.en.title', 'multiLangInputs.en.slug', 'featuredImageFile', 'galleryFiles', 'inputs.is_active', 'seoDataCache.tr.seo_title', 'seoDataCache.tr.seo_description', 'seoDataCache.tr.schema_type', 'seoDataCache.tr.priority_score', 'seoDataCache.tr.og_image_url', 'seoDataCache.tr.og_title', 'seoDataCache.tr.og_description', 'seoDataCache.tr.robots_meta.index', 'seoDataCache.tr.robots_meta.follow', 'seoDataCache.tr.robots_meta.archive', 'seoDataCache.tr.robots_meta.snippet', 'seoDataCache.tr.author_name', 'seoDataCache.tr.author_url', 'seoDataCache.en.seo_title', 'seoDataCache.en.seo_description', 'seoDataCache.en.schema_type', 'seoDataCache.en.priority_score', 'seoDataCache.en.og_image_url', 'seoDataCache.en.og_title', 'seoDataCache.en.og_description', 'seoDataCache.en.robots_meta.index', 'seoDataCache.en.robots_meta.follow', 'seoDataCache.en.robots_meta.archive', 'seoDataCache.en.robots_meta.snippet']
-ai-seo-integration.js?v=1759786036:1322 ✅ MAPPING: title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1326 ✅ MAPPING: meta_description = Selam gardaşlar
-ai-seo-integration.js?v=1759786036:1340 🔍 MAPPED DATA FOR BACKEND: {multiLangInputs.tr.title: 'Web sitemiz açıldı', title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', …}
-ai-seo-integration.js?v=1759786036:1341 🎯 PAGE TYPE CONTEXT: {type: 'general', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', category: 'informational', priority: 'medium'}
-ai-seo-integration.js?v=1759786036:799 ✅ Validation geçti - Başlık var: Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:802 🔄 AI Önerileri direkt yenileniyor (alert yok)
-ai-seo-integration.js?v=1759786036:807 🔒 Buton disable edildi
-ai-seo-integration.js?v=1759786036:832 📍 Loader butonun hemen altına eklendi
-ai-seo-integration.js?v=1759786036:839 ✅ Loader gösterildi
-ai-seo-integration.js?v=1759786036:1271 🔍 collectFormData() BAŞLADI
-ai-seo-integration.js?v=1759786036:1276 🔍 Bulunan Livewire input sayısı: 31
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.tr.title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.tr.slug = web-sitemiz-acildi
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.en.title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.en.slug = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: featuredImageFile = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: galleryFiles = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: inputs.is_active = 1
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.seo_title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.seo_description = Selam gardaşlar
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.schema_type = WebPage
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.priority_score = 5
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_image_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.index = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.follow = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.archive = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.snippet = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.author_name = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.author_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.seo_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.seo_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.schema_type = WebPage
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.priority_score = 5
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_image_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.index = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.follow = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.archive = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.snippet = on
-ai-seo-integration.js?v=1759786036:1289 🔍 Bulunan Quill editor sayısı: 0
-ai-seo-integration.js?v=1759786036:1357 🔍 Page detection inputs: {url: '/admin/announcement/manage/1', title: 'web sitemiz açıldı', content: ''}
-ai-seo-integration.js?v=1759786036:1308 🎯 Algılanan sayfa tipi: {type: 'general', category: 'informational', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', seo_priority: 'medium', keywords_focus: Array(4), …}
-ai-seo-integration.js?v=1759786036:1311 🔍 COLLECTED FORM DATA: {multiLangInputs.tr.title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', featuredImageFile: '', …}
-ai-seo-integration.js?v=1759786036:1312 🔍 Form data keys: (31) ['multiLangInputs.tr.title', 'multiLangInputs.tr.slug', 'multiLangInputs.en.title', 'multiLangInputs.en.slug', 'featuredImageFile', 'galleryFiles', 'inputs.is_active', 'seoDataCache.tr.seo_title', 'seoDataCache.tr.seo_description', 'seoDataCache.tr.schema_type', 'seoDataCache.tr.priority_score', 'seoDataCache.tr.og_image_url', 'seoDataCache.tr.og_title', 'seoDataCache.tr.og_description', 'seoDataCache.tr.robots_meta.index', 'seoDataCache.tr.robots_meta.follow', 'seoDataCache.tr.robots_meta.archive', 'seoDataCache.tr.robots_meta.snippet', 'seoDataCache.tr.author_name', 'seoDataCache.tr.author_url', 'seoDataCache.en.seo_title', 'seoDataCache.en.seo_description', 'seoDataCache.en.schema_type', 'seoDataCache.en.priority_score', 'seoDataCache.en.og_image_url', 'seoDataCache.en.og_title', 'seoDataCache.en.og_description', 'seoDataCache.en.robots_meta.index', 'seoDataCache.en.robots_meta.follow', 'seoDataCache.en.robots_meta.archive', 'seoDataCache.en.robots_meta.snippet']
-ai-seo-integration.js?v=1759786036:1322 ✅ MAPPING: title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1326 ✅ MAPPING: meta_description = Selam gardaşlar
-ai-seo-integration.js?v=1759786036:1340 🔍 MAPPED DATA FOR BACKEND: {multiLangInputs.tr.title: 'Web sitemiz açıldı', title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', …}
-ai-seo-integration.js?v=1759786036:1341 🎯 PAGE TYPE CONTEXT: {type: 'general', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', category: 'informational', priority: 'medium'}
-ai-seo-integration.js?v=1759786036:846 🔍 Model ID Debug - JavaScript: {windowCurrentModelId: 1, typeOfModelId: 'number', finalModelId: 1}
-ai-seo-integration.js?v=1759786036:863 📋 Recommendations Form data: {feature_slug: 'seo-smart-recommendations', form_content: {…}, language: 'tr', page_id: 1, force_regenerate: true, …}
-ai-seo-integration.js?v=1759786036:865 🔗 Sending request to: /admin/seo/ai/recommendations
-ai-seo-integration.js?v=1759786036:875 📡 Response status: 200
-ai-seo-integration.js?v=1759786036:884 📄 Raw response: {"success":true,"data":{"recommendations":[],"total_count":0,"language":"tr","generated_at":"2025-10-06T21:27:20.861420Z","from_cache":false},"message":"SEO önerileri başarıyla oluşturuldu"}
-ai-seo-integration.js?v=1759786036:889 ✅ Parsed JSON result: {success: true, data: {…}, message: 'SEO önerileri başarıyla oluşturuldu'}
-ai-seo-integration.js?v=1759786036:897 ✅ Success - displaying recommendations: {recommendations: Array(0), total_count: 0, language: 'tr', generated_at: '2025-10-06T21:27:20.861420Z', from_cache: false}
-ai-seo-integration.js?v=1759786036:904 🗑️ Eski statik container sayısı: 2
-ai-seo-integration.js?v=1759786036:906 🗑️ Eski container 0 siliniyor...
-ai-seo-integration.js?v=1759786036:906 🗑️ Eski container 1 siliniyor...
-ai-seo-integration.js?v=1759786036:927 ✅ Yeni AI container oluşturuldu: ai-recommendations-container-tr
-ai-seo-integration.js?v=1759786036:933 🎨 Render başlıyor - result.data: {recommendations: Array(0), total_count: 0, language: 'tr', generated_at: '2025-10-06T21:27:20.861420Z', from_cache: false}
-ai-seo-integration.js?v=1759786036:675 🎨 Rendering recommendations HTML: {recommendations: Array(0), total_count: 0, language: 'tr', generated_at: '2025-10-06T21:27:20.861420Z', from_cache: false}
-ai-seo-integration.js?v=1759786036:935 🎨 Render edilen HTML uzunluğu: 252
-ai-seo-integration.js?v=1759786036:936 🎨 Render edilen HTML preview: 
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    AI önerileri bulunamadı. Yeni öneriler oluşturmak için "AI Önerileri" bu
-ai-seo-integration.js?v=1759786036:942 ✅ Container stilleri düzeltildi (cssText ile override edildi)
-ai-seo-integration.js?v=1759786036:945 ✅ Sadece AI container güncellendi: ai-recommendations-container-tr
-ai-seo-integration.js?v=1759786036:951 ✅ Loader gizlendi
-ai-seo-integration.js?v=1759786036:954 ✅ DOM direkt güncellendi - Livewire kullanılmadı
-ai-seo-integration.js?v=1759786036:955 📍 Container innerHTML uzunluğu: 252
-ai-seo-integration.js?v=1759786036:956 📍 Container görünür mü? block
-ai-seo-integration.js?v=1759786036:963 🔓 Buton enable edildi (success) - refreshed button
-ai-seo-integration.js?v=1759786036:1027 🔓 Buton enable edildi (finally) - refreshed button
-ai-seo-integration.js?v=1759786036:971 🎯 AUTO-APPLY: 1. sıra öneriler uygulanacak
-ai-seo-integration.js?v=1759786036:3379 🔍 Template-based auto-apply başlıyor...
-ai-seo-integration.js?v=1759786036:3383 🔍 Bulunan aktif öneri sayısı: 0
-ai-seo-integration.js?v=1759786036:3443 ⚠️ Hiçbir öneri uygulanamadı
-window.applyFirstAlternativesFromTemplate @ ai-seo-integration.js?v=1759786036:3443
-(anonim) @ ai-seo-integration.js?v=1759786036:972
-setTimeout
-handleSeoRecommendations @ ai-seo-integration.js?v=1759786036:970
-await in handleSeoRecommendations
-(anonim) @ ai-seo-integration.js?v=1759786036:592
-ai-seo-integration.js?v=1759786036:772 🚀 SEO RECOMMENDATIONS START
-ai-seo-integration.js?v=1759786036:1271 🔍 collectFormData() BAŞLADI
-ai-seo-integration.js?v=1759786036:1276 🔍 Bulunan Livewire input sayısı: 31
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.tr.title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.tr.slug = web-sitemiz-acildi
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.en.title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.en.slug = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: featuredImageFile = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: galleryFiles = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: inputs.is_active = 1
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.seo_title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.seo_description = Selam gardaşlar
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.schema_type = WebPage
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.priority_score = 5
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_image_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.index = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.follow = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.archive = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.snippet = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.author_name = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.author_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.seo_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.seo_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.schema_type = WebPage
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.priority_score = 5
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_image_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.index = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.follow = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.archive = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.snippet = on
-ai-seo-integration.js?v=1759786036:1289 🔍 Bulunan Quill editor sayısı: 0
-ai-seo-integration.js?v=1759786036:1357 🔍 Page detection inputs: {url: '/admin/announcement/manage/1', title: 'web sitemiz açıldı', content: ''}
-ai-seo-integration.js?v=1759786036:1308 🎯 Algılanan sayfa tipi: {type: 'general', category: 'informational', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', seo_priority: 'medium', keywords_focus: Array(4), …}
-ai-seo-integration.js?v=1759786036:1311 🔍 COLLECTED FORM DATA: {multiLangInputs.tr.title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', featuredImageFile: '', …}
-ai-seo-integration.js?v=1759786036:1312 🔍 Form data keys: (31) ['multiLangInputs.tr.title', 'multiLangInputs.tr.slug', 'multiLangInputs.en.title', 'multiLangInputs.en.slug', 'featuredImageFile', 'galleryFiles', 'inputs.is_active', 'seoDataCache.tr.seo_title', 'seoDataCache.tr.seo_description', 'seoDataCache.tr.schema_type', 'seoDataCache.tr.priority_score', 'seoDataCache.tr.og_image_url', 'seoDataCache.tr.og_title', 'seoDataCache.tr.og_description', 'seoDataCache.tr.robots_meta.index', 'seoDataCache.tr.robots_meta.follow', 'seoDataCache.tr.robots_meta.archive', 'seoDataCache.tr.robots_meta.snippet', 'seoDataCache.tr.author_name', 'seoDataCache.tr.author_url', 'seoDataCache.en.seo_title', 'seoDataCache.en.seo_description', 'seoDataCache.en.schema_type', 'seoDataCache.en.priority_score', 'seoDataCache.en.og_image_url', 'seoDataCache.en.og_title', 'seoDataCache.en.og_description', 'seoDataCache.en.robots_meta.index', 'seoDataCache.en.robots_meta.follow', 'seoDataCache.en.robots_meta.archive', 'seoDataCache.en.robots_meta.snippet']
-ai-seo-integration.js?v=1759786036:1322 ✅ MAPPING: title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1326 ✅ MAPPING: meta_description = Selam gardaşlar
-ai-seo-integration.js?v=1759786036:1340 🔍 MAPPED DATA FOR BACKEND: {multiLangInputs.tr.title: 'Web sitemiz açıldı', title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', …}
-ai-seo-integration.js?v=1759786036:1341 🎯 PAGE TYPE CONTEXT: {type: 'general', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', category: 'informational', priority: 'medium'}
-ai-seo-integration.js?v=1759786036:799 ✅ Validation geçti - Başlık var: Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:802 🔄 AI Önerileri direkt yenileniyor (alert yok)
-ai-seo-integration.js?v=1759786036:807 🔒 Buton disable edildi
-ai-seo-integration.js?v=1759786036:839 ✅ Loader gösterildi
-ai-seo-integration.js?v=1759786036:1271 🔍 collectFormData() BAŞLADI
-ai-seo-integration.js?v=1759786036:1276 🔍 Bulunan Livewire input sayısı: 31
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.tr.title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.tr.slug = web-sitemiz-acildi
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.en.title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: multiLangInputs.en.slug = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: featuredImageFile = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: galleryFiles = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: inputs.is_active = 1
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.seo_title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.seo_description = Selam gardaşlar
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.schema_type = WebPage
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.priority_score = 5
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_image_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.og_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.index = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.follow = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.archive = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.snippet = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.author_name = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.tr.author_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.seo_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.seo_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.schema_type = WebPage
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.priority_score = 5
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_image_url = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_title = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.og_description = BOŞ
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.index = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.follow = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.archive = on
-ai-seo-integration.js?v=1759786036:1283 📝 Field eklendi: seoDataCache.en.robots_meta.snippet = on
-ai-seo-integration.js?v=1759786036:1289 🔍 Bulunan Quill editor sayısı: 0
-ai-seo-integration.js?v=1759786036:1357 🔍 Page detection inputs: {url: '/admin/announcement/manage/1', title: 'web sitemiz açıldı', content: ''}
-ai-seo-integration.js?v=1759786036:1308 🎯 Algılanan sayfa tipi: {type: 'general', category: 'informational', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', seo_priority: 'medium', keywords_focus: Array(4), …}
-ai-seo-integration.js?v=1759786036:1311 🔍 COLLECTED FORM DATA: {multiLangInputs.tr.title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', featuredImageFile: '', …}
-ai-seo-integration.js?v=1759786036:1312 🔍 Form data keys: (31) ['multiLangInputs.tr.title', 'multiLangInputs.tr.slug', 'multiLangInputs.en.title', 'multiLangInputs.en.slug', 'featuredImageFile', 'galleryFiles', 'inputs.is_active', 'seoDataCache.tr.seo_title', 'seoDataCache.tr.seo_description', 'seoDataCache.tr.schema_type', 'seoDataCache.tr.priority_score', 'seoDataCache.tr.og_image_url', 'seoDataCache.tr.og_title', 'seoDataCache.tr.og_description', 'seoDataCache.tr.robots_meta.index', 'seoDataCache.tr.robots_meta.follow', 'seoDataCache.tr.robots_meta.archive', 'seoDataCache.tr.robots_meta.snippet', 'seoDataCache.tr.author_name', 'seoDataCache.tr.author_url', 'seoDataCache.en.seo_title', 'seoDataCache.en.seo_description', 'seoDataCache.en.schema_type', 'seoDataCache.en.priority_score', 'seoDataCache.en.og_image_url', 'seoDataCache.en.og_title', 'seoDataCache.en.og_description', 'seoDataCache.en.robots_meta.index', 'seoDataCache.en.robots_meta.follow', 'seoDataCache.en.robots_meta.archive', 'seoDataCache.en.robots_meta.snippet']
-ai-seo-integration.js?v=1759786036:1322 ✅ MAPPING: title = Web sitemiz açıldı
-ai-seo-integration.js?v=1759786036:1326 ✅ MAPPING: meta_description = Selam gardaşlar
-ai-seo-integration.js?v=1759786036:1340 🔍 MAPPED DATA FOR BACKEND: {multiLangInputs.tr.title: 'Web sitemiz açıldı', title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', …}
-ai-seo-integration.js?v=1759786036:1341 🎯 PAGE TYPE CONTEXT: {type: 'general', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', category: 'informational', priority: 'medium'}
-ai-seo-integration.js?v=1759786036:846 🔍 Model ID Debug - JavaScript: {windowCurrentModelId: 1, typeOfModelId: 'number', finalModelId: 1}
-ai-seo-integration.js?v=1759786036:863 📋 Recommendations Form data: {feature_slug: 'seo-smart-recommendations', form_content: {…}, language: 'tr', page_id: 1, force_regenerate: true, …}
-ai-seo-integration.js?v=1759786036:865 🔗 Sending request to: /admin/seo/ai/recommendations
-ai-seo-integration.js?v=1759786036:875 📡 Response status: 200
-ai-seo-integration.js?v=1759786036:884 📄 Raw response: {"success":true,"data":{"recommendations":[],"total_count":0,"language":"tr","generated_at":"2025-10-06T21:27:25.123828Z","from_cache":false},"message":"SEO önerileri başarıyla oluşturuldu"}
-ai-seo-integration.js?v=1759786036:889 ✅ Parsed JSON result: {success: true, data: {…}, message: 'SEO önerileri başarıyla oluşturuldu'}
-ai-seo-integration.js?v=1759786036:897 ✅ Success - displaying recommendations: {recommendations: Array(0), total_count: 0, language: 'tr', generated_at: '2025-10-06T21:27:25.123828Z', from_cache: false}
-ai-seo-integration.js?v=1759786036:904 🗑️ Eski statik container sayısı: 0
-ai-seo-integration.js?v=1759786036:929 ✅ Mevcut AI container kullanılıyor: ai-recommendations-container-tr
-ai-seo-integration.js?v=1759786036:933 🎨 Render başlıyor - result.data: {recommendations: Array(0), total_count: 0, language: 'tr', generated_at: '2025-10-06T21:27:25.123828Z', from_cache: false}
-ai-seo-integration.js?v=1759786036:675 🎨 Rendering recommendations HTML: {recommendations: Array(0), total_count: 0, language: 'tr', generated_at: '2025-10-06T21:27:25.123828Z', from_cache: false}
-ai-seo-integration.js?v=1759786036:935 🎨 Render edilen HTML uzunluğu: 252
-ai-seo-integration.js?v=1759786036:936 🎨 Render edilen HTML preview: 
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    AI önerileri bulunamadı. Yeni öneriler oluşturmak için "AI Önerileri" bu
-ai-seo-integration.js?v=1759786036:942 ✅ Container stilleri düzeltildi (cssText ile override edildi)
-ai-seo-integration.js?v=1759786036:945 ✅ Sadece AI container güncellendi: ai-recommendations-container-tr
-ai-seo-integration.js?v=1759786036:951 ✅ Loader gizlendi
-ai-seo-integration.js?v=1759786036:954 ✅ DOM direkt güncellendi - Livewire kullanılmadı
-ai-seo-integration.js?v=1759786036:955 📍 Container innerHTML uzunluğu: 252
-ai-seo-integration.js?v=1759786036:956 📍 Container görünür mü? block
-ai-seo-integration.js?v=1759786036:963 🔓 Buton enable edildi (success) - refreshed button
-ai-seo-integration.js?v=1759786036:1027 🔓 Buton enable edildi (finally) - refreshed button
-ai-seo-integration.js?v=1759786036:971 🎯 AUTO-APPLY: 1. sıra öneriler uygulanacak
-ai-seo-integration.js?v=1759786036:3379 🔍 Template-based auto-apply başlıyor...
-ai-seo-integration.js?v=1759786036:3383 🔍 Bulunan aktif öneri sayısı: 0
-ai-seo-integration.js?v=1759786036:3443 ⚠️ Hiçbir öneri uygulanamadı
-window.applyFirstAlternativesFromTemplate @ ai-seo-integration.js?v=1759786036:3443
-(anonim) @ ai-seo-integration.js?v=1759786036:972
-setTimeout
-handleSeoRecommendations @ ai-seo-integration.js?v=1759786036:970
-await in handleSeoRecommendations
-(anonim) @ ai-seo-integration.js?v=1759786036:592
+loader.js:1363 Duplicate definition of module 'vs/editor/editor.main'
+defineModule @ loader.js:1363
+_onLoad @ loader.js:1455
+(anonim) @ loader.js:1632
+triggerCallback @ loader.js:594
+(anonim) @ loader.js:588
+l @ loader.js:617
+script
+load @ loader.js:643
+load @ loader.js:588
+l @ loader.js:1627
+_loadModule @ loader.js:1639
+_resolve @ loader.js:1722
+defineModule @ loader.js:1376
+r @ loader.js:1841
+configureMonaco @ monaco-editor-universal.js?v=1759788101:98
+monacoScript.onload @ monaco-editor-universal.js?v=1759788101:60
+script
+loadMonacoLoader @ monaco-editor-universal.js?v=1759788101:54
+MonacoEditorUniversal @ monaco-editor-universal.js?v=1759788101:29
+(anonim) @ monaco-editor-universal.js?v=1759788101:305
+(anonim) @ monaco-editor-universal.js?v=1759788101:326
+universal-seo-functions.js?v=1759788101:200 📱 Social media switches initialized
+manage.js?v=1759788101:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1759788101:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
+monaco-editor-universal.js?v=1759788101:100 ✅ Monaco Editor hazır
+ai-seo-integration.js?v=1759788101:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1759788101:558 🔒 attachButtonListeners SKIP - already attached
+manage.js?v=1759788101:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: (2) ['tr', 'en']
+manage.js?v=1759788101:586 🌍 SEO Counter - Dinamik diller tespit edildi: (2) ['tr', 'en']
+1:3923 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+ai-seo-integration.js?v=1759788101:772 🚀 SEO RECOMMENDATIONS START
+ai-seo-integration.js?v=1759788101:1271 🔍 collectFormData() BAŞLADI
+ai-seo-integration.js?v=1759788101:1276 🔍 Bulunan Livewire input sayısı: 31
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.tr.title = Web sitemiz açıldı
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.tr.slug = web-sitemiz-acildi
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.en.title = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.en.slug = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: featuredImageFile = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: galleryFiles = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: inputs.is_active = 1
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.seo_title = Yeni Web Sitemizi Keşfedin
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.seo_description = Web sitemiz açıldı! İlk ziyaretçilerimize özel içerikler.
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.schema_type = WebPage
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.priority_score = 5
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.og_image_url = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.og_title = Web Sitemiz Açıldı! İlk Ziyaretinizi Bekliyoruz
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.og_description = Yeni web sitemiz açıldı! İlginizi çekecek içerikler için hemen ziyaret edin.
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.index = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.follow = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.archive = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.snippet = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.author_name = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.author_url = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.seo_title = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.seo_description = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.schema_type = WebPage
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.priority_score = 5
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.og_image_url = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.og_title = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.og_description = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.index = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.follow = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.archive = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.snippet = on
+ai-seo-integration.js?v=1759788101:1289 🔍 Bulunan Quill editor sayısı: 0
+ai-seo-integration.js?v=1759788101:1357 🔍 Page detection inputs: {url: '/admin/announcement/manage/1', title: 'web sitemiz açıldı', content: ''}
+ai-seo-integration.js?v=1759788101:1308 🎯 Algılanan sayfa tipi: {type: 'general', category: 'informational', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', seo_priority: 'medium', keywords_focus: Array(4), …}
+ai-seo-integration.js?v=1759788101:1311 🔍 COLLECTED FORM DATA: {multiLangInputs.tr.title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', featuredImageFile: '', …}
+ai-seo-integration.js?v=1759788101:1312 🔍 Form data keys: (31) ['multiLangInputs.tr.title', 'multiLangInputs.tr.slug', 'multiLangInputs.en.title', 'multiLangInputs.en.slug', 'featuredImageFile', 'galleryFiles', 'inputs.is_active', 'seoDataCache.tr.seo_title', 'seoDataCache.tr.seo_description', 'seoDataCache.tr.schema_type', 'seoDataCache.tr.priority_score', 'seoDataCache.tr.og_image_url', 'seoDataCache.tr.og_title', 'seoDataCache.tr.og_description', 'seoDataCache.tr.robots_meta.index', 'seoDataCache.tr.robots_meta.follow', 'seoDataCache.tr.robots_meta.archive', 'seoDataCache.tr.robots_meta.snippet', 'seoDataCache.tr.author_name', 'seoDataCache.tr.author_url', 'seoDataCache.en.seo_title', 'seoDataCache.en.seo_description', 'seoDataCache.en.schema_type', 'seoDataCache.en.priority_score', 'seoDataCache.en.og_image_url', 'seoDataCache.en.og_title', 'seoDataCache.en.og_description', 'seoDataCache.en.robots_meta.index', 'seoDataCache.en.robots_meta.follow', 'seoDataCache.en.robots_meta.archive', 'seoDataCache.en.robots_meta.snippet']
+ai-seo-integration.js?v=1759788101:1322 ✅ MAPPING: title = Web sitemiz açıldı
+ai-seo-integration.js?v=1759788101:1326 ✅ MAPPING: meta_description = Web sitemiz açıldı! İlk ziyaretçilerimize özel içerikler.
+ai-seo-integration.js?v=1759788101:1340 🔍 MAPPED DATA FOR BACKEND: {multiLangInputs.tr.title: 'Web sitemiz açıldı', title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', …}
+ai-seo-integration.js?v=1759788101:1341 🎯 PAGE TYPE CONTEXT: {type: 'general', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', category: 'informational', priority: 'medium'}
+ai-seo-integration.js?v=1759788101:799 ✅ Validation geçti - Başlık var: Web sitemiz açıldı
+ai-seo-integration.js?v=1759788101:802 🔄 AI Önerileri direkt yenileniyor (alert yok)
+ai-seo-integration.js?v=1759788101:807 🔒 Buton disable edildi
+ai-seo-integration.js?v=1759788101:832 📍 Loader butonun hemen altına eklendi
+ai-seo-integration.js?v=1759788101:839 ✅ Loader gösterildi
+ai-seo-integration.js?v=1759788101:1271 🔍 collectFormData() BAŞLADI
+ai-seo-integration.js?v=1759788101:1276 🔍 Bulunan Livewire input sayısı: 31
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.tr.title = Web sitemiz açıldı
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.tr.slug = web-sitemiz-acildi
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.en.title = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: multiLangInputs.en.slug = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: featuredImageFile = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: galleryFiles = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: inputs.is_active = 1
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.seo_title = Yeni Web Sitemizi Keşfedin
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.seo_description = Web sitemiz açıldı! İlk ziyaretçilerimize özel içerikler.
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.schema_type = WebPage
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.priority_score = 5
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.og_image_url = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.og_title = Web Sitemiz Açıldı! İlk Ziyaretinizi Bekliyoruz
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.og_description = Yeni web sitemiz açıldı! İlginizi çekecek içerikler için hemen ziyaret edin.
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.index = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.follow = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.archive = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.robots_meta.snippet = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.author_name = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.tr.author_url = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.seo_title = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.seo_description = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.schema_type = WebPage
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.priority_score = 5
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.og_image_url = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.og_title = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.og_description = BOŞ
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.index = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.follow = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.archive = on
+ai-seo-integration.js?v=1759788101:1283 📝 Field eklendi: seoDataCache.en.robots_meta.snippet = on
+ai-seo-integration.js?v=1759788101:1289 🔍 Bulunan Quill editor sayısı: 0
+ai-seo-integration.js?v=1759788101:1357 🔍 Page detection inputs: {url: '/admin/announcement/manage/1', title: 'web sitemiz açıldı', content: ''}
+ai-seo-integration.js?v=1759788101:1308 🎯 Algılanan sayfa tipi: {type: 'general', category: 'informational', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', seo_priority: 'medium', keywords_focus: Array(4), …}
+ai-seo-integration.js?v=1759788101:1311 🔍 COLLECTED FORM DATA: {multiLangInputs.tr.title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', featuredImageFile: '', …}
+ai-seo-integration.js?v=1759788101:1312 🔍 Form data keys: (31) ['multiLangInputs.tr.title', 'multiLangInputs.tr.slug', 'multiLangInputs.en.title', 'multiLangInputs.en.slug', 'featuredImageFile', 'galleryFiles', 'inputs.is_active', 'seoDataCache.tr.seo_title', 'seoDataCache.tr.seo_description', 'seoDataCache.tr.schema_type', 'seoDataCache.tr.priority_score', 'seoDataCache.tr.og_image_url', 'seoDataCache.tr.og_title', 'seoDataCache.tr.og_description', 'seoDataCache.tr.robots_meta.index', 'seoDataCache.tr.robots_meta.follow', 'seoDataCache.tr.robots_meta.archive', 'seoDataCache.tr.robots_meta.snippet', 'seoDataCache.tr.author_name', 'seoDataCache.tr.author_url', 'seoDataCache.en.seo_title', 'seoDataCache.en.seo_description', 'seoDataCache.en.schema_type', 'seoDataCache.en.priority_score', 'seoDataCache.en.og_image_url', 'seoDataCache.en.og_title', 'seoDataCache.en.og_description', 'seoDataCache.en.robots_meta.index', 'seoDataCache.en.robots_meta.follow', 'seoDataCache.en.robots_meta.archive', 'seoDataCache.en.robots_meta.snippet']
+ai-seo-integration.js?v=1759788101:1322 ✅ MAPPING: title = Web sitemiz açıldı
+ai-seo-integration.js?v=1759788101:1326 ✅ MAPPING: meta_description = Web sitemiz açıldı! İlk ziyaretçilerimize özel içerikler.
+ai-seo-integration.js?v=1759788101:1340 🔍 MAPPED DATA FOR BACKEND: {multiLangInputs.tr.title: 'Web sitemiz açıldı', title: 'Web sitemiz açıldı', multiLangInputs.tr.slug: 'web-sitemiz-acildi', multiLangInputs.en.title: '', multiLangInputs.en.slug: '', …}
+ai-seo-integration.js?v=1759788101:1341 🎯 PAGE TYPE CONTEXT: {type: 'general', context: 'Genel bilgi sayfası - dengeli SEO yaklaşımı, kullanıcı deneyimi odaklı', category: 'informational', priority: 'medium'}
+ai-seo-integration.js?v=1759788101:846 🔍 Model ID Debug - JavaScript: {windowCurrentModelId: 1, typeOfModelId: 'number', finalModelId: 1}
+ai-seo-integration.js?v=1759788101:863 📋 Recommendations Form data: {feature_slug: 'seo-smart-recommendations', form_content: {…}, language: 'tr', page_id: 1, force_regenerate: true, …}
+ai-seo-integration.js?v=1759788101:865 🔗 Sending request to: /admin/seo/ai/recommendations
+manage.js?v=1759788101:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
+manage.js?v=1759788101:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
+ai-seo-integration.js?v=1759788101:875 📡 Response status: 200
+ai-seo-integration.js?v=1759788101:884 📄 Raw response: {"success":true,"data":{"recommendations":[{"id":1,"type":"title","title":"SEO Başlık","description":"Arama motorlarında görünecek sayfa başlığınız","field_target":"seoDataCache.tr.seo_title","priority":"high","impact_score":95,"alternatives":[{"id":1,"value":"Yeni Web Sitemizle Tanışın","strategy":"Primary keyword","score":95,"character_count":29,"is_optimal_length":false},{"id":2,"value":"Özel İçeriklerle İlk Ziyaretçi Olun","strategy":"User intent","score":90,"character_count":40,"is_optimal_
+ai-seo-integration.js?v=1759788101:889 ✅ Parsed JSON result: {success: true, data: {…}, message: 'SEO önerileri başarıyla oluşturuldu'}
+ai-seo-integration.js?v=1759788101:897 ✅ Success - displaying recommendations: {recommendations: Array(4), total_count: 4, language: 'tr', generated_at: '2025-10-06T22:01:52.670124Z', from_cache: false}
+ai-seo-integration.js?v=1759788101:904 🗑️ Eski statik container sayısı: 2
+ai-seo-integration.js?v=1759788101:906 🗑️ Eski container 0 siliniyor...
+ai-seo-integration.js?v=1759788101:906 🗑️ Eski container 1 siliniyor...
+ai-seo-integration.js?v=1759788101:927 ✅ Yeni AI container oluşturuldu: ai-recommendations-container-tr
+ai-seo-integration.js?v=1759788101:933 🎨 Render başlıyor - result.data: {recommendations: Array(4), total_count: 4, language: 'tr', generated_at: '2025-10-06T22:01:52.670124Z', from_cache: false}
+ai-seo-integration.js?v=1759788101:675 🎨 Rendering recommendations HTML: {recommendations: Array(4), total_count: 4, language: 'tr', generated_at: '2025-10-06T22:01:52.670124Z', from_cache: false}
+ai-seo-integration.js?v=1759788101:935 🎨 Render edilen HTML uzunluğu: 8078
+ai-seo-integration.js?v=1759788101:936 🎨 Render edilen HTML preview: <div class="row mb-4">
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 clas
+ai-seo-integration.js?v=1759788101:942 ✅ Container stilleri düzeltildi (cssText ile override edildi)
+ai-seo-integration.js?v=1759788101:945 ✅ Sadece AI container güncellendi: ai-recommendations-container-tr
+ai-seo-integration.js?v=1759788101:951 ✅ Loader gizlendi
+ai-seo-integration.js?v=1759788101:954 ✅ DOM direkt güncellendi - Livewire kullanılmadı
+ai-seo-integration.js?v=1759788101:955 📍 Container innerHTML uzunluğu: 7582
+ai-seo-integration.js?v=1759788101:956 📍 Container görünür mü? block
+ai-seo-integration.js?v=1759788101:963 🔓 Buton enable edildi (success) - refreshed button
+ai-seo-integration.js?v=1759788101:1027 🔓 Buton enable edildi (finally) - refreshed button
+ai-seo-integration.js?v=1759788101:971 🎯 AUTO-APPLY: 1. sıra öneriler uygulanacak
+ai-seo-integration.js?v=1759788101:3379 🔍 Template-based auto-apply başlıyor...
+ai-seo-integration.js?v=1759788101:3383 🔍 Bulunan aktif öneri sayısı: 4
+ai-seo-integration.js?v=1759788101:3389 📝 Item 1 onclick: applyAlternativeDirectly('seoDataCache.tr.seo_title', 'Yeni Web Sitemizle Tanışın', this); return false;
+ai-seo-integration.js?v=1759788101:3399 ✅ Parse başarılı: seoDataCache.tr.seo_title = "Yeni Web Sitemizle Tanışın"
+universal-seo-functions.js?v=1759788101:105 🎯 applyAlternativeDirectly: {fieldTarget: 'seoDataCache.tr.seo_title', value: 'Yeni Web Sitemizle Tanışın'}
+universal-seo-functions.js?v=1759788101:156 ✅ Field updated: seoDataCache.tr.seo_title Yeni Web Sitemizle Tanışın
+ai-seo-integration.js?v=1759788101:3405 📝 Uygulandı: seoDataCache.tr.seo_title
+ai-seo-integration.js?v=1759788101:3389 📝 Item 2 onclick: applyAlternativeDirectly('seoDataCache.tr.seo_description', 'Web sitemiz açıldı! İlk ziyaretçilerimize özel içeriklerin tadını çıkarın.', this); return false;
+ai-seo-integration.js?v=1759788101:3399 ✅ Parse başarılı: seoDataCache.tr.seo_description = "Web sitemiz açıldı! İlk ziyaretçilerimize özel içeriklerin tadını çıkarın."
+universal-seo-functions.js?v=1759788101:105 🎯 applyAlternativeDirectly: {fieldTarget: 'seoDataCache.tr.seo_description', value: 'Web sitemiz açıldı! İlk ziyaretçilerimize özel içeriklerin tadını çıkarın.'}
+universal-seo-functions.js?v=1759788101:156 ✅ Field updated: seoDataCache.tr.seo_description Web sitemiz açıldı! İlk ziyaretçilerimize özel içeriklerin tadını çıkarın.
+ai-seo-integration.js?v=1759788101:3405 📝 Uygulandı: seoDataCache.tr.seo_description
+ai-seo-integration.js?v=1759788101:3389 📝 Item 3 onclick: applyAlternativeDirectly('seoDataCache.tr.og_title', 'Yeni Web Sitemiz Sizlerle', this); return false;
+ai-seo-integration.js?v=1759788101:3399 ✅ Parse başarılı: seoDataCache.tr.og_title = "Yeni Web Sitemiz Sizlerle"
+universal-seo-functions.js?v=1759788101:105 🎯 applyAlternativeDirectly: {fieldTarget: 'seoDataCache.tr.og_title', value: 'Yeni Web Sitemiz Sizlerle'}
+universal-seo-functions.js?v=1759788101:156 ✅ Field updated: seoDataCache.tr.og_title Yeni Web Sitemiz Sizlerle
+ai-seo-integration.js?v=1759788101:3405 📝 Uygulandı: seoDataCache.tr.og_title
+ai-seo-integration.js?v=1759788101:3389 📝 Item 4 onclick: applyAlternativeDirectly('seoDataCache.tr.og_description', 'Web sitemiz açıldı, ilk ziyaretçilere özel içerikler sizi bekliyor!', this); return false;
+ai-seo-integration.js?v=1759788101:3399 ✅ Parse başarılı: seoDataCache.tr.og_description = "Web sitemiz açıldı, ilk ziyaretçilere özel içerikler sizi bekliyor!"
+universal-seo-functions.js?v=1759788101:105 🎯 applyAlternativeDirectly: {fieldTarget: 'seoDataCache.tr.og_description', value: 'Web sitemiz açıldı, ilk ziyaretçilere özel içerikler sizi bekliyor!'}
+universal-seo-functions.js?v=1759788101:156 ✅ Field updated: seoDataCache.tr.og_description Web sitemiz açıldı, ilk ziyaretçilere özel içerikler sizi bekliyor!
+ai-seo-integration.js?v=1759788101:3405 📝 Uygulandı: seoDataCache.tr.og_description
+ai-seo-integration.js?v=1759788101:3440 ✅ Template-based auto-apply tamamlandı: 4 öneri uygulandı
+ai-seo-integration.js?v=1759788101:2141 ✅ SUCCESS: ✨ 4 AI önerisi otomatik olarak uygulandı! Dilediğiniz alternatife tıklayarak değiştirebilirsiniz.

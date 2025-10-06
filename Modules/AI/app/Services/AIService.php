@@ -393,15 +393,15 @@ class AIService
             $currentModel = $effectiveTenant?->default_ai_model ?? $this->currentProvider->default_model;
             
             // Token tahmini
-            $estimatedInputTokens = strlen($userInput) / 4;
+            $estimatedInputTokens = (int)(strlen($userInput) / 4);
             $estimatedOutputTokens = 1000; // Feature'lar için ortalama output
-            
+
             // Model bazlı kredi hesaplama
             $requiredCredits = ai_calculate_model_credits(
-                $this->currentProvider->id,
-                $currentModel,
                 $estimatedInputTokens,
-                $estimatedOutputTokens
+                $estimatedOutputTokens,
+                $this->currentProvider->name,
+                $currentModel
             );
             
             // Kredi kontrolü

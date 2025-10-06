@@ -308,26 +308,40 @@ class SeoAnalysisController extends Controller
     private function saveSeoRecommendations(int $pageId, array $recommendations, string $language): void
     {
         try {
-            // Page modelini SeoSetting ile birlikte bul
-            $page = \Modules\Page\App\Models\Page::with('seoSetting')->find($pageId);
+            // POLYMORPHIC: Tüm model tiplerini dene
+            $model = null;
+            $modelClasses = [
+                'Modules\Page\App\Models\Page',
+                'Modules\Announcement\App\Models\Announcement',
+                'Modules\Portfolio\App\Models\Portfolio',
+            ];
 
-            if (!$page) {
-                Log::warning('Page not found for SEO recommendations save', ['page_id' => $pageId]);
+            foreach ($modelClasses as $modelClass) {
+                if (class_exists($modelClass)) {
+                    $model = $modelClass::with('seoSetting')->find($pageId);
+                    if ($model) {
+                        break;
+                    }
+                }
+            }
+
+            if (!$model) {
+                Log::warning('Model not found for SEO recommendations save', ['page_id' => $pageId]);
                 return;
             }
 
             // SeoSetting yoksa oluştur
-            if (!$page->seoSetting) {
-                $page->seoSetting()->create([
+            if (!$model->seoSetting) {
+                $model->seoSetting()->create([
                     'titles' => [],
                     'descriptions' => [],
                     'keywords' => []
                 ]);
-                $page->load('seoSetting');
+                $model->load('seoSetting');
             }
 
             // Mevcut ai_suggestions'ı al
-            $aiSuggestions = $page->seoSetting->ai_suggestions ?? [];
+            $aiSuggestions = $model->seoSetting->ai_suggestions ?? [];
 
             // Bu dil için önerileri kaydet
             $aiSuggestions[$language] = [
@@ -337,21 +351,24 @@ class SeoAnalysisController extends Controller
             ];
 
             // Güncelle
-            $page->seoSetting->update([
+            $model->seoSetting->update([
                 'ai_suggestions' => $aiSuggestions
             ]);
 
             Log::info('SEO Recommendations Saved Successfully', [
-                'page_id' => $pageId,
+                'model_type' => get_class($model),
+                'model_id' => $pageId,
                 'language' => $language,
-                'recommendations_count' => count($recommendations)
+                'recommendations_count' => count($recommendations),
+                'ai_suggestions_saved' => true
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to save SEO recommendations', [
                 'page_id' => $pageId,
                 'language' => $language,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }

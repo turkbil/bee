@@ -39,6 +39,7 @@ class SecurityHeaders
         $csp = implode('; ', [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com",
+            "worker-src 'self' blob:",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://rsms.me",
             "img-src 'self' data: https: blob:",
             "font-src 'self' data: https:",

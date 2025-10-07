@@ -120,6 +120,120 @@
             </div>
         @endif
 
+        {{-- SEO OG IMAGE --}}
+        @if($hasSeoOgImage)
+            @php
+                $seoOgConfig = config('mediamanagement.collection_templates.seo_og_image', []);
+                $seoOgLabel = $seoOgConfig['label'] ?? 'Sosyal Medya Görseli';
+                $seoOgHint = $seoOgConfig['recommended_size'] ?? null;
+                $seoOgHasSiblings = $hasFeautredImage || $hasGallery;
+                $seoOgColumnClass = $seoOgHasSiblings ? 'col-md-6' : 'col-12';
+            @endphp
+
+            <div class="{{ $seoOgColumnClass }} mb-4 order-md-1">
+                <h5 class="mb-3">
+                    {{ $seoOgLabel }}
+                    @if($seoOgHint)
+                        <small class="text-muted ms-2">{{ $seoOgHint }} önerilen</small>
+                    @endif
+                    @if(!empty($existingSeoOgImage))
+                        <span class="badge bg-success ms-2">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    @endif
+                </h5>
+
+                <div class="row g-2 align-items-stretch" style="max-height: 125px;">
+                    @if(!empty($existingSeoOgImage) || !empty($tempSeoOgImage))
+                        <div class="col-lg-4">
+                            <div class="position-relative">
+                                @php
+                                    if (!empty($tempSeoOgImage)) {
+                                        $thumbUrl = $tempSeoOgImage['thumb'] ?? $tempSeoOgImage['url'];
+                                        $fullUrl = $tempSeoOgImage['url'];
+                                        $seoIsTemp = true;
+                                    } elseif (!empty($existingSeoOgImage)) {
+                                        $thumbUrl = $existingSeoOgImage['thumb'] ?? $existingSeoOgImage['url'];
+                                        $fullUrl = $existingSeoOgImage['url'];
+                                        $seoIsTemp = false;
+                                    } else {
+                                        $thumbUrl = null;
+                                        $fullUrl = null;
+                                        $seoIsTemp = false;
+                                    }
+                                @endphp
+
+                                @if($thumbUrl)
+                                    <div class="media-hover-container">
+                                        <img src="{{ $thumbUrl }}"
+                                             alt="Preview"
+                                             class="img-thumbnail w-100"
+                                             style="max-height: 125px; height: 125px; object-fit: contain;"
+                                             data-fslightbox="seo-og-image-{{ $this->getId() }}"
+                                             data-src="{{ $fullUrl }}">
+
+                                        <button type="button"
+                                                x-on:click.stop="window.Livewire.find('{{ $this->getId() }}').{{ $seoIsTemp ? 'removeTempSeoOgImage' : 'deleteSeoOgImage' }}()"
+                                                class="btn btn-danger position-absolute media-action-btn media-hover-btn"
+                                                style="top: 8px; right: 8px; padding: 0.4rem 0.65rem; z-index: 10; font-size: 0.9rem;"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="Görseli Sil">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="{{ (!empty($existingSeoOgImage) || !empty($tempSeoOgImage)) ? 'col-lg-8' : 'col-12' }}">
+                        <div x-data="{
+                                isDragging: false,
+                                handleDrop(e) {
+                                    this.isDragging = false;
+                                    const files = e.dataTransfer.files;
+                                    if (files.length > 0) {
+                                        @this.upload('seoOgImageFile', files[0]);
+                                    }
+                                }
+                            }"
+                             @dragover.prevent="isDragging = true"
+                             @dragleave.prevent="isDragging = false"
+                             @drop.prevent="handleDrop($event)"
+                             class="border rounded p-3 text-center border-dashed"
+                             :class="{ 'border-primary bg-light': isDragging }"
+                             style="cursor: pointer; display: flex; flex-direction: column; justify-content: center; height: 125px;"
+                             @click="$refs.seoOgInput.click()">
+
+                            <div class="mb-2">
+                                <i class="fas fa-share-alt fa-2x text-muted"></i>
+                            </div>
+
+                            <p class="mb-1">{{ __('mediamanagement::admin.drag_drop_file') }}</p>
+                            <p class="text-muted small mb-0">{{ __('mediamanagement::admin.max_file_size', ['size' => '10MB']) }}</p>
+
+                            <input type="file"
+                                   x-ref="seoOgInput"
+                                   wire:model="seoOgImageFile"
+                                   accept="image/jpeg,image/png,image/jpg,image/webp,image/gif"
+                                   class="d-none">
+                        </div>
+
+                        @if($seoOgHint)
+                            <div class="form-text mt-2">
+                                <small>Önerilen boyut: {{ $seoOgHint }}</small>
+                            </div>
+                        @endif
+
+                        @error('seoOgImageFile')
+                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+        @endif
+
         {{-- GALLERY - Sağ Taraf --}}
         @if($hasGallery)
             <div class="col-md-6 mb-4 order-md-2">

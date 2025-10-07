@@ -316,7 +316,7 @@
                     <div class="row mb-4">
                         {{-- Özelleştirme Switch --}}
                         <div class="col-12 col-md-6">
-                            <div class="mt-3 mb-3 mb-md-0">
+                            <div class="mt-3 mb-3 mb-lg-0">
                                 @if(isset($seoDataCache[$lang]))
                                     @php
                                         // Sosyal medya alanları doluysa otomatik checked
@@ -354,26 +354,24 @@
                             </div>
                         </div>
 
-                        {{-- OG Image - Bağımsız (Her zaman görünür) --}}
+                        {{-- OG Image Media Manager --}}
                         <div class="col-12 col-md-6">
-                            <label class="form-label">
-                                Sosyal Medya Resmi
-                                <small class="ms-2">1200x630 önerilen</small>
-                            </label>
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-outline-primary btn-sm flex-fill"
-                                    onclick="document.getElementById('og_image_file_{{ $lang }}').click()">
-                                    Resim Seç
-                                </button>
-                                <input type="url" wire:model="seoDataCache.{{ $lang }}.og_image_url"
-                                    class="form-control form-control-sm" placeholder="Veya URL girin"
-                                    style="flex: 2;">
-                            </div>
-                            <input type="file" id="og_image_file_{{ $lang }}"
-                                class="d-none" accept="image/jpeg,image/jpg,image/png,image/webp">
-                            <div class="form-text">
-                                <small>Önerilen boyut: 1200x630px (Facebook, LinkedIn için)</small>
-                            </div>
+                            @if($lang === get_tenant_default_locale())
+                                <livewire:mediamanagement::universal-media
+                                    :model-id="$modelId"
+                                    :model-type="$modelType"
+                                    :model-class="$modelClass"
+                                    :collections="['seo_og_image']"
+                                    :sortable="false"
+                                    :set-featured-from-gallery="false"
+                                    :key="'seo-og-image-' . ($modelId ?? 'new')"
+                                />
+                            @else
+                                <div class="alert alert-info py-2 px-3 mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Sosyal medya görseli tüm diller için ortaktır ve varsayılan dil üzerinden yönetilir.
+                                </div>
+                            @endif
                         </div>
                     </div>
 

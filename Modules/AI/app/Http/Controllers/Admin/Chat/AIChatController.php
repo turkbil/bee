@@ -15,6 +15,7 @@ use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AIChatController extends Controller
 {
@@ -45,7 +46,7 @@ class AIChatController extends Controller
             $request->validate([
                 'message' => 'required|string|max:2000',
                 'conversation_id' => 'nullable', // Both string session IDs and numeric IDs allowed
-                'prompt_id' => 'nullable|integer|exists:ai_prompts,id',
+                'prompt_id' => ['nullable', 'integer', Rule::exists('central.ai_prompts', 'id')],
             ]);
 
             $message = trim($request->message);

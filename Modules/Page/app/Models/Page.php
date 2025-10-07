@@ -7,10 +7,12 @@ use App\Traits\HasSeo;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Spatie\MediaLibrary\HasMedia;
 
-class Page extends BaseModel implements TranslatableEntity
+class Page extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement;
 
     protected $primaryKey = 'page_id';
 

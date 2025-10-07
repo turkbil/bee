@@ -115,21 +115,28 @@ trait HasMediaManagement
     {
         // 1. Model property (custom name to avoid conflicts)
         if (isset($this->mediaConfig) && is_array($this->mediaConfig)) {
-            return $this->mediaConfig;
+            $collections = $this->mediaConfig;
+        } else {
+            // 2. Module config
+            $moduleName = $this->getModuleName();
+            $moduleConfig = config("{$moduleName}.media.collections");
+            if (!empty($moduleConfig)) {
+                $collections = $moduleConfig;
+            } else {
+                // 3. Default templates (featured_image + gallery)
+                $collections = [
+                    'featured_image' => config('mediamanagement.collection_templates.featured_image'),
+                    'gallery' => config('mediamanagement.collection_templates.gallery'),
+                ];
+            }
         }
 
-        // 2. Module config
-        $moduleName = $this->getModuleName();
-        $moduleConfig = config("{$moduleName}.media.collections");
-        if (!empty($moduleConfig)) {
-            return $moduleConfig;
+        $seoOgConfig = config('mediamanagement.collection_templates.seo_og_image');
+        if ($seoOgConfig && !isset($collections['seo_og_image'])) {
+            $collections['seo_og_image'] = $seoOgConfig;
         }
 
-        // 3. Default templates (featured_image + gallery)
-        return [
-            'featured_image' => config('mediamanagement.collection_templates.featured_image'),
-            'gallery' => config('mediamanagement.collection_templates.gallery'),
-        ];
+        return $collections;
     }
 
     /**

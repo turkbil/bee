@@ -44,9 +44,10 @@ try {
 
 {{-- CSP for AI APIs --}}
 <meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
-               connect-src 'self' https://api.openai.com https://api.anthropic.com https://api.deepseek.com wss: ws:; 
+      content="default-src 'self';
+               connect-src 'self' https://api.openai.com https://api.anthropic.com https://api.deepseek.com wss: ws:;
                script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com;
+               worker-src 'self' blob:;
                style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                font-src 'self' https://fonts.gstatic.com;
                img-src 'self' data: blob: https:;

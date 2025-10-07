@@ -302,7 +302,9 @@ class TenantSeeder extends Seeder
         ];
 
         foreach ($paths as $path) {
-            File::ensureDirectoryExists($path, 0775, true);
+            if (!File::isDirectory($path)) {
+                File::makeDirectory($path, 0775, true, true);
+            }
         }
 
         // Public storage dizini
@@ -310,6 +312,8 @@ class TenantSeeder extends Seeder
         if (File::isDirectory($publicStoragePath)) {
             File::deleteDirectory($publicStoragePath);
         }
-        File::ensureDirectoryExists($publicStoragePath, 0775, true);
+        if (!File::isDirectory($publicStoragePath)) {
+            File::makeDirectory($publicStoragePath, 0775, true, true);
+        }
     }
 }

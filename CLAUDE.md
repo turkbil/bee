@@ -1,6 +1,6 @@
 # 🤖 CLAUDE ÇALIŞMA TALİMATLARI
 
-**Proje Giriş**: nurullah@nurullah.net / test  
+**Proje Giriş**: nurullah@nurullah.net / test
 **URL**: www.laravel.test/login
 
 
@@ -43,7 +43,7 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 - **Asla manuel işlem yapma veritabanına**
 
 ### 📝 ÖNEMLİ NOT
-Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir. 
+Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 **Detaylı teknik dökümanlar**: `readme/claude-docs/` klasöründe
 
 ### 🧪 TEST PROTOKOLÜ
@@ -61,7 +61,7 @@ php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan mod
 ## 🎨 TASARIM STANDARTLARI
 
 - **Admin**: Tabler.io + Bootstrap + Livewire
-- **Frontend**: Alpine.js + Tailwind CSS  
+- **Frontend**: Alpine.js + Tailwind CSS
 - **Framework renkleri kullan** (custom renk yok)
 
 ---

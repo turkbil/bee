@@ -25,10 +25,12 @@ return new class extends Migration
             
             // Author Info (only for blog posts)
             $table->string('author')->nullable(); // Content author name
+            $table->string('author_url')->nullable(); // Author website/profile URL
             
             // Open Graph - JSON support for multilingual
             $table->json('og_titles')->nullable(); // {"tr": "OG Title", "en": "OG Title"}
             $table->json('og_descriptions')->nullable(); // {"tr": "OG Description", "en": "OG Description"}
+            $table->json('og_images')->nullable(); // Multi-language OG images {"tr": "url", "en": "url"}
             $table->string('og_image')->nullable(); // Featured image for social media
             $table->string('og_type')->default('website'); // website, article, product, etc.
             
@@ -40,6 +42,7 @@ return new class extends Migration
             
             // Advanced SEO
             $table->json('robots_meta')->nullable(); // {"index": true, "follow": true, "archive": false}
+            $table->json('schema_type')->nullable()->comment('Schema.org page types per language');
             $table->json('focus_keywords')->nullable(); // Dil bazında focus keywords {"tr": "anahtar", "en": "keyword"}
             $table->json('additional_keywords')->nullable(); // ["keyword1", "keyword2"]
             
@@ -60,8 +63,6 @@ return new class extends Migration
             // AI SEO Analysis Results (2025 AI-powered SEO)
             $table->json('analysis_results')->nullable(); // Complete AI analysis results
             $table->timestamp('analysis_date')->nullable(); // When analysis was performed
-            $table->integer('overall_score')->nullable(); // Main SEO score (0-100)
-            $table->json('detailed_scores')->nullable(); // All category scores
             $table->json('strengths')->nullable(); // AI-generated strengths list
             $table->json('improvements')->nullable(); // AI-generated improvements list
             $table->json('action_items')->nullable(); // AI-generated action items
@@ -81,7 +82,6 @@ return new class extends Migration
             $table->index('status');
             $table->index('seo_score');
             $table->index('last_analyzed');
-            $table->index('overall_score');
             $table->index('analysis_date');
         });
     }

@@ -1,11 +1,7 @@
 @if ($paginator->hasPages())
-    <style>
-        .pagination-debug { background: yellow !important; color: black !important; font-weight: bold !important; }
-    </style>
-    <!-- CUSTOM PAGINATION VIEW LOADED - TESTING -->
     <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
         <div>
-            <p class="small text-muted pagination-debug">
+            <p class="small text-muted">
                 {{ __('admin.pagination_showing') }}
                 <span class="fw-semibold">{{ $paginator->firstItem() }}</span>
                 {{ __('admin.pagination_to') }}

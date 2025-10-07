@@ -48,7 +48,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('conversation_id')->references('id')->on('ai_conversations')->onDelete('set null');
             $table->foreign('message_id')->references('id')->on('ai_messages')->onDelete('set null');
-            // Foreign key will be added after ai_providers table is created in later migration
+            $table->foreign('ai_provider_id')->references('id')->on('ai_providers')->onDelete('set null');
             
             // Indexes for performance (AI-v2 plan)
             $table->index(['tenant_id', 'used_at'], 'idx_tenant_date');

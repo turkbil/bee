@@ -849,11 +849,18 @@
                 finalModelId: window.currentModelId || null
             });
 
+            const modelType = window.currentModuleName || window.currentModelType || null;
+
             const formData = {
                 feature_slug: 'seo-smart-recommendations', // Keep original for now
                 form_content: collectedData,
                 language: language,
-                page_id: window.currentModelId || null,  // page_id parametresi universal olarak kullanılıyor
+                model_id: window.currentModelId || null,
+                model_type: modelType,
+                module_name: modelType,
+                model_class: window.currentModelClass || null,
+                // Geriye dönük uyumluluk için page_id gönderilmeye devam ediyor
+                page_id: window.currentModelId || null,
                 force_regenerate: true,  // Her zaman yeni veri al (test için)
                 include_all_fields: true // Request all fields: title, description, and social media
             };
@@ -3025,11 +3032,17 @@
         }
 
         try {
+            const modelType = window.currentModuleName || window.currentModelType || null;
+
             const formData = {
                 feature_slug: 'seo-smart-recommendations',
                 form_content: {},
                 language: 'tr',
-                page_id: window.currentModelId
+                model_id: window.currentModelId,
+                model_type: modelType,
+                module_name: modelType,
+                model_class: window.currentModelClass || null,
+                page_id: window.currentModelId // legacy
             };
 
             const response = await fetch('/admin/seo/ai/recommendations', {

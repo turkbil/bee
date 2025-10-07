@@ -2,10 +2,13 @@
 
 namespace Modules\SeoManagement\App\Http\Livewire\Admin;
 
+use Spatie\MediaLibrary\HasMedia;
+
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Modules\SeoManagement\App\Models\SeoSetting;
 use Illuminate\Support\Facades\Log;
+
 
 /**
  * UNIVERSAL SEO TAB COMPONENT
@@ -32,6 +35,7 @@ class UniversalSeoTabComponent extends Component
     public $currentLanguage;
     public $availableLanguages = [];
     public $seoDataCache = [];
+    public bool $supportsSeoOgMedia = false;
 
     // AI Recommendations
     public $recommendationLoaders = [];
@@ -51,6 +55,7 @@ class UniversalSeoTabComponent extends Component
         $this->modelId = $modelId;
         $this->modelType = $modelType;
         $this->modelClass = $modelClass;
+        $this->supportsSeoOgMedia = $this->determineSeoOgMediaSupport();
 
         // Varsayılan dil bilgileri (cache'li helper'lar kullan)
         $this->currentLanguage = get_tenant_default_locale();
@@ -183,6 +188,8 @@ class UniversalSeoTabComponent extends Component
                 $this->recommendationLoaders[$lang] = false;
             }
         }
+
+        $this->syncOgImageFromMedia();
     }
 
     /**
@@ -215,6 +222,35 @@ class UniversalSeoTabComponent extends Component
     /**
      * Dil değişikliğini handle et
      */
+    #[On('seo-og-image-updated')]
+    public function handleOgImageUpdated($payload)
+    {
+        $data = is_array($payload) ? $payload : [];
+
+        if (!$this->supportsSeoOgMedia) {
+            return;
+        }
+
+        $eventModelType = $data['model_type'] ?? null;
+        if ($eventModelType && $eventModelType !== $this->modelType) {
+            return;
+        }
+
+        $eventModelId = $data['model_id'] ?? null;
+        if ($eventModelId && $this->modelId && (int) $eventModelId !== (int) $this->modelId) {
+            return;
+        }
+
+        $url = $data['url'] ?? '';
+
+        foreach ($this->availableLanguages as $lang) {
+            if (!isset($this->seoDataCache[$lang])) {
+                $this->seoDataCache[$lang] = $this->getEmptySeoData();
+            }
+            $this->seoDataCache[$lang]['og_image_url'] = $url;
+        }
+    }
+
     public function handleLanguageChange($language)
     {
         $this->currentLanguage = $language;
@@ -229,11 +265,63 @@ class UniversalSeoTabComponent extends Component
         return $this->seoDataCache;
     }
 
-    /**
+    protected function syncOgImageFromMedia(): void
+    {
+        if (!$this->supportsSeoOgMedia) {
+            return;
+        }
+
+        $mediaUrl = $this->getOgImageUrlFromMedia();
+        if (!$mediaUrl) {
+            return;
+        }
+
+        foreach ($this->availableLanguages as $lang) {
+            if (!isset($this->seoDataCache[$lang])) {
+                $this->seoDataCache[$lang] = $this->getEmptySeoData();
+            }
+            $this->seoDataCache[$lang]['og_image_url'] = $mediaUrl;
+        }
+    }
+
+    protected function getOgImageUrlFromMedia(): ?string
+    {
+        if (!$this->modelId || !$this->modelClass || !class_exists($this->modelClass) || !$this->supportsSeoOgMedia) {
+            return null;
+        }
+
+        try {
+            $model = $this->modelClass::find($this->modelId);
+            if (!$model || !method_exists($model, 'getFirstMediaUrl')) {
+                return null;
+            }
+
+            $url = $model->getFirstMediaUrl('seo_og_image');
+            return $url ?: null;
+        } catch (\Exception $e) {
+            Log::warning('UniversalSeoTabComponent getOgImageUrlFromMedia failed', [
+                'model_class' => $this->modelClass,
+                'model_id' => $this->modelId,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    protected function determineSeoOgMediaSupport(): bool
+    {
+        if (!$this->modelClass || !class_exists($this->modelClass)) {
+            return false;
+        }
+
+        return is_subclass_of($this->modelClass, HasMedia::class);
+    }
+
+
+/**
      * SEO verilerini kaydet
      * Parent component save olduğunda tetiklenir
      */
-    #[On('page-saved')]
     public function saveSeoData($pageId = null)
     {
         Log::info('🎯 UniversalSeoTab - saveSeoData ÇAĞRILDI!', [

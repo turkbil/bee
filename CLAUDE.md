@@ -3,7 +3,36 @@
 **Proje Giriş**: nurullah@nurullah.net / test  
 **URL**: www.laravel.test/login
 
+
+işlemler bittikten sonra tamamlandığına dair siri ile seslendir.
+
+
+
+
 ---
+Standard Workflow
+
+First think through the problem, read the codebase for relevant files, and write a plan to claudeguncel.md
+
+The plan should have a list of todo items that you can check off as you complete them
+
+Before you begin working, check in with me and I will verify the plan
+
+Then, begin working on the todo items, marking them as complete as you go
+
+Please every step of the way just give me a high level explanation of what changes you made
+
+Make every task and code change you do as simple as possible. We want to avoid making any massive or complex changes. Every change should impact as little code as possible. Everything is about simplicity
+
+Finally, add a review section to the projectplan.md file with a summary of the changes you made and any other relevant information
+
+
+- Önce sorunları iyice düşünün
+- Planları claudeguncel.md 'e yaz
+- Başlamadan önce giriş yapın
+- Yapılacaklar'ı tamamlanmış olarak işaretle
+- Değişiklikleri basit tutun
+
 
 ## 📋 ÇALIŞMA YÖNTEMİ
 
@@ -16,21 +45,6 @@
 ### 📝 ÖNEMLİ NOT
 Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir. 
 **Detaylı teknik dökümanlar**: `readme/claude-docs/` klasöründe
-
----
-
----
-
-## 🚨 KRİTİK KURALLAR
-
-### 🚫 MANUEL QUEUE İŞLEMİ YASAK
-- **ASLA** `php artisan queue:work` çalıştırma
-- **SADECE** log temizleme: `truncate -s 0 laravel.log`
-- Queue sistemleri tamamen otomatik
-
-### 🎯 SAYFA STANDARTLARI
-- Her admin sayfasının tepesinde **helper.blade.php**
-- **Tablo yapısı**: Page modülü pattern'i ile aynı
 
 ### 🧪 TEST PROTOKOLÜ
 Migration/Seeder sonrası:
@@ -64,10 +78,3 @@ php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan mod
 
 ---
 
-## 📚 DETAYLI DÖKÜMANLAR
-
-Teknik detaylar için: `readme/claude-docs/`
-- `claude_ai.md` - AI sistemleri rehberi
-- `claude_kurallari.md` - Eski çalışma kuralları
-- `claude_modulpattern.md` - Modül geliştirme pattern'leri
-- `claude_proje.md` - Proje mimarisi detayları

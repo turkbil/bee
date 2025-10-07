@@ -15,6 +15,7 @@ use App\Helpers\TenantHelpers;
 use App\Services\AITokenService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AIService
 {
@@ -1152,7 +1153,8 @@ class AIService
     {
         try {
             // Veritabanından prompt'ları çek - language ve tenant_id kolonu yok, basit sorgu
-            $prompts = \DB::table('ai_prompts')
+            $prompts = DB::connection('central')
+                ->table('ai_prompts')
                 ->where('is_active', true)
                 ->whereIn('prompt_type', ['hidden_system', 'common'])
                 ->orderBy('priority', 'asc')

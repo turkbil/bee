@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class AIController extends Controller
 {
@@ -30,7 +31,7 @@ class AIController extends Controller
             'context' => 'nullable|string',
             'module' => 'nullable|string',
             'entity_id' => 'nullable|integer',
-            'prompt_id' => 'nullable|exists:ai_prompts,id'
+            'prompt_id' => ['nullable', Rule::exists('central.ai_prompts', 'id')]
         ]);
         
         $options = [

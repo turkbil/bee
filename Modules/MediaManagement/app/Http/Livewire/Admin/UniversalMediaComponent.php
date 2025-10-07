@@ -44,6 +44,7 @@ class UniversalMediaComponent extends Component
     // FILE UPLOAD PROPERTIES
     // ========================================
     public $featuredImageFile = null;
+    public $seoOgImageFile = null;
     public $galleryFiles = [];
     public $videoFiles = [];
     public $audioFiles = [];
@@ -53,6 +54,7 @@ class UniversalMediaComponent extends Component
     // EXISTING MEDIA
     // ========================================
     public array $existingFeaturedImage = [];
+    public array $existingSeoOgImage = [];
     public array $existingGallery = [];
     public array $existingVideos = [];
     public array $existingAudio = [];
@@ -62,6 +64,7 @@ class UniversalMediaComponent extends Component
     // SESSION-BASED TEMPORARY STORAGE
     // ========================================
     public ?array $tempFeaturedImage = null; // ['path' => 'temp/xxx.jpg', 'original_name' => 'photo.jpg']
+    public ?array $tempSeoOgImage = null; // ['path' => 'temp/xxx.jpg', 'original_name' => 'photo.jpg']
     public array $tempGallery = []; // [['path' => 'temp/xxx.jpg', 'original_name' => 'photo.jpg'], ...]
 
     // ========================================
@@ -159,6 +162,9 @@ class UniversalMediaComponent extends Component
             case 'featured_image':
                 $this->existingFeaturedImage = !empty($media) ? $media[0] : [];
                 break;
+            case 'seo_og_image':
+                $this->existingSeoOgImage = !empty($media) ? $media[0] : [];
+                break;
             case 'gallery':
                 $this->existingGallery = $media;
                 break;
@@ -213,6 +219,55 @@ class UniversalMediaComponent extends Component
 
             $this->featuredImageFile = null;
             $this->loadCollection($model, 'featured_image');
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+
+    public function updatedSeoOgImageFile()
+    {
+        if (!$this->seoOgImageFile) {
+            return;
+        }
+
+        $this->validate([
+            'seoOgImageFile' => 'image|max:10240',
+        ]);
+
+        if (!$this->modelId) {
+            $this->saveSeoOgToTempStorage();
+            $this->seoOgImageFile = null;
+            return;
+        }
+
+        $model = $this->getModel();
+        if (!$model) {
+            return;
+        }
+
+        try {
+            $this->mediaService->uploadMedia($model, $this->seoOgImageFile, 'seo_og_image');
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('mediamanagement::admin.upload_success'),
+                'type' => 'success'
+            ]);
+
+            $this->seoOgImageFile = null;
+            $this->loadCollection($model, 'seo_og_image');
+
+            $this->dispatch('seo-og-image-updated', [
+                'url' => $model->getFirstMediaUrl('seo_og_image') ?: '',
+                'model_type' => $this->modelType,
+                'model_id' => $this->modelId,
+            ]);
 
         } catch (\Exception $e) {
             $this->dispatch('toast', [
@@ -298,6 +353,43 @@ class UniversalMediaComponent extends Component
         ]);
     }
 
+
+    protected function saveSeoOgToTempStorage()
+    {
+        $tempDir = public_path('temp/media');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        $fileName = uniqid() . '_' . $this->seoOgImageFile->getClientOriginalName();
+        $filePath = $tempDir . '/' . $fileName;
+
+        $this->seoOgImageFile->storeAs('', $fileName, ['disk' => 'temp_media']);
+
+        $thumbFileName = 'thumb_' . $fileName;
+        $thumbPath = $tempDir . '/' . $thumbFileName;
+        $this->createThumbnail($filePath, $thumbPath, 300, 200);
+
+        $this->tempSeoOgImage = [
+            'path' => 'temp/media/' . $fileName,
+            'original_name' => $this->seoOgImageFile->getClientOriginalName(),
+            'url' => asset('temp/media/' . $fileName),
+            'thumb' => asset('temp/media/' . $thumbFileName)
+        ];
+
+        $this->saveTempFilesToSession();
+
+        $this->dispatch('seo-og-image-updated', [
+            'url' => $this->tempSeoOgImage['url'] ?? '',
+            'model_type' => $this->modelType,
+            'model_id' => $this->modelId,
+        ]);
+
+        Log::info('📸 SEO OG image saved to temp storage', [
+            'path' => $this->tempSeoOgImage['path']
+        ]);
+    }
+
     protected function saveGalleryToTempStorage()
     {
         $tempDir = public_path('temp/media');
@@ -335,6 +427,7 @@ class UniversalMediaComponent extends Component
     {
         session([
             'media_temp_featured_' . $this->modelType => $this->tempFeaturedImage,
+            'media_temp_seo_og_' . $this->modelType => $this->tempSeoOgImage,
             'media_temp_gallery_' . $this->modelType => $this->tempGallery,
         ]);
     }
@@ -342,6 +435,7 @@ class UniversalMediaComponent extends Component
     protected function loadTempFilesFromSession()
     {
         $this->tempFeaturedImage = session('media_temp_featured_' . $this->modelType, null);
+        $this->tempSeoOgImage = session('media_temp_seo_og_' . $this->modelType, null);
         $this->tempGallery = session('media_temp_gallery_' . $this->modelType, []);
 
         Log::info('🔄 Temp files loaded from session', [
@@ -353,6 +447,7 @@ class UniversalMediaComponent extends Component
     protected function clearTempFilesFromSession()
     {
         session()->forget('media_temp_featured_' . $this->modelType);
+        session()->forget('media_temp_seo_og_' . $this->modelType);
         session()->forget('media_temp_gallery_' . $this->modelType);
 
         // Delete actual temp files and their thumbnails
@@ -364,6 +459,19 @@ class UniversalMediaComponent extends Component
             // Thumbnail'i de sil
             if (isset($this->tempFeaturedImage['thumb'])) {
                 $thumbPath = str_replace(asset(''), public_path(), $this->tempFeaturedImage['thumb']);
+                if (file_exists($thumbPath)) {
+                    unlink($thumbPath);
+                }
+            }
+        }
+
+        if ($this->tempSeoOgImage) {
+            $filePath = public_path($this->tempSeoOgImage['path']);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            if (isset($this->tempSeoOgImage['thumb'])) {
+                $thumbPath = str_replace(asset(''), public_path(), $this->tempSeoOgImage['thumb']);
                 if (file_exists($thumbPath)) {
                     unlink($thumbPath);
                 }
@@ -385,6 +493,7 @@ class UniversalMediaComponent extends Component
         }
 
         $this->tempFeaturedImage = null;
+        $this->tempSeoOgImage = null;
         $this->tempGallery = [];
     }
 
@@ -411,6 +520,30 @@ class UniversalMediaComponent extends Component
         }
     }
 
+
+    public function removeTempSeoOgImage()
+    {
+        if ($this->tempSeoOgImage) {
+            $filePath = public_path($this->tempSeoOgImage['path']);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            if (isset($this->tempSeoOgImage['thumb'])) {
+                $thumbPath = str_replace(asset(''), public_path(), $this->tempSeoOgImage['thumb']);
+                if (file_exists($thumbPath)) {
+                    unlink($thumbPath);
+                }
+            }
+            $this->tempSeoOgImage = null;
+            $this->saveTempFilesToSession();
+
+            $this->dispatch('seo-og-image-updated', [
+                'url' => '',
+                'model_type' => $this->modelType,
+                'model_id' => $this->modelId,
+            ]);
+        }
+    }
     public function removeTempGalleryFile($index)
     {
         if (isset($this->tempGallery[$index])) {
@@ -491,6 +624,50 @@ class UniversalMediaComponent extends Component
     // DELETE METHODS
     // ========================================
 
+
+    public function deleteSeoOgImage()
+    {
+        if (!$this->modelId) {
+            $this->removeTempSeoOgImage();
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('mediamanagement::admin.file_deleted'),
+                'type' => 'success'
+            ]);
+
+            return;
+        }
+
+        $model = $this->getModel();
+        if (!$model) {
+            return;
+        }
+
+        try {
+            $model->clearMediaCollection('seo_og_image');
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('mediamanagement::admin.file_deleted'),
+                'type' => 'success'
+            ]);
+
+            $this->existingSeoOgImage = [];
+            $this->dispatch('seo-og-image-updated', [
+                'url' => '',
+                'model_type' => $this->modelType,
+                'model_id' => $this->modelId,
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('mediamanagement::admin.delete_error', ['message' => $e->getMessage()]),
+                'type' => 'error'
+            ]);
+        }
+    }
     public function deleteFeaturedImage()
     {
         $model = $this->getModel();
@@ -656,6 +833,32 @@ class UniversalMediaComponent extends Component
             }
         }
 
+        // SEO OG image upload (from temp storage)
+        if ($this->tempSeoOgImage) {
+            try {
+                $filePath = public_path($this->tempSeoOgImage['path']);
+
+                if (file_exists($filePath)) {
+                    $uploadedFile = new \Illuminate\Http\UploadedFile(
+                        $filePath,
+                        $this->tempSeoOgImage['original_name'],
+                        mime_content_type($filePath),
+                        null,
+                        true
+                    );
+
+                    $this->mediaService->uploadMedia($model, $uploadedFile, 'seo_og_image');
+
+                    Log::info('📸 SEO OG image attached from temp storage', [
+                        'model_id' => $modelId,
+                        'filename' => $this->tempSeoOgImage['original_name']
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('SEO OG image attach failed', ['error' => $e->getMessage()]);
+            }
+        }
+
         // Gallery images upload (from temp storage)
         if (!empty($this->tempGallery)) {
             try {
@@ -691,7 +894,14 @@ class UniversalMediaComponent extends Component
         // Cleanup temp files
         $this->clearTempFilesFromSession();
         $this->loadCollection($model, 'featured_image');
+        $this->loadCollection($model, 'seo_og_image');
         $this->loadCollection($model, 'gallery');
+
+        $this->dispatch('seo-og-image-updated', [
+            'url' => $model->getFirstMediaUrl('seo_og_image') ?: '',
+            'model_type' => $this->modelType,
+            'model_id' => $this->modelId,
+        ]);
     }
 
     protected function hasCollection(string $collectionName): bool
@@ -971,6 +1181,7 @@ class UniversalMediaComponent extends Component
     {
         return view('mediamanagement::admin.livewire.universal-media-component', [
             'hasFeautredImage' => $this->hasCollection('featured_image'),
+            'hasSeoOgImage' => $this->hasCollection('seo_og_image'),
             'hasGallery' => $this->hasCollection('gallery'),
             'hasVideos' => $this->hasCollection('videos'),
             'hasAudio' => $this->hasCollection('audio'),

@@ -148,6 +148,16 @@ return [
             'sortable' => false,
         ],
 
+        'seo_og_image' => [
+            'type' => 'image',
+            'single_file' => true,
+            'max_items' => 1,
+            'conversions' => ['thumb', 'medium', 'large'],
+            'sortable' => false,
+            'label' => 'Sosyal Medya Görseli',
+            'recommended_size' => '1200x630',
+        ],
+
         'gallery' => [
             'type' => 'image',
             'single_file' => false,

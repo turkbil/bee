@@ -42,32 +42,6 @@
                             <div class="language-content" data-language="{{ $lang }}"
                                 style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
-                                <!-- Kategori Seçimi (Sadece ilk dilde göster) -->
-                                @if($lang === get_tenant_default_locale())
-                                <div class="row mb-4">
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <select wire:model="inputs.portfolio_category_id"
-                                                class="form-control @error('inputs.portfolio_category_id') is-invalid @enderror"
-                                                id="category_select">
-                                                <option value="">{{ __('portfolio::admin.select_category') }}</option>
-                                                @foreach($this->activeCategories as $category)
-                                                    <option value="{{ $category->category_id }}">
-                                                        {{ $category->getTranslated('title', app()->getLocale()) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <label for="category_select">
-                                                {{ __('portfolio::admin.category') }}
-                                            </label>
-                                            @error('inputs.portfolio_category_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-
                                 <!-- Başlık ve Slug alanları -->
                                 <div class="row mb-4">
                                     <div class="col-12 col-md-6">
@@ -90,9 +64,11 @@
                                     <div class="col-12 col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control"
-                                                wire:model="multiLangInputs.{{ $lang }}.slug" maxlength="255"
+                                                wire:model="multiLangInputs.{{ $lang }}.slug"
+                                                id="slug_{{ $lang }}"
+                                                maxlength="255"
                                                 placeholder="sayfa-url-slug">
-                                            <label>
+                                            <label for="slug_{{ $lang }}">
                                                 {{ __('admin.portfolio_url_slug') }}
                                                 <small class="text-muted ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
@@ -105,6 +81,32 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Kategori Seçimi (Sadece ilk dilde göster) -->
+                                @if($lang === get_tenant_default_locale())
+                                <div class="row mb-4">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating">
+                                            <select wire:model="inputs.portfolio_category_id"
+                                                class="form-control @error('inputs.portfolio_category_id') is-invalid @enderror"
+                                                id="category_select">
+                                                <option value="">{{ __('portfolio::admin.select_category') }}</option>
+                                                @foreach($this->activeCategories as $category)
+                                                    <option value="{{ $category->category_id }}">
+                                                        {{ $category->getTranslated('title', app()->getLocale()) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <label for="category_select">
+                                                {{ __('portfolio::admin.category') }}
+                                            </label>
+                                            @error('inputs.portfolio_category_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         @endforeach
 

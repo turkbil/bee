@@ -547,6 +547,7 @@ return [
     'seo_keywords' => 'Keywords',
     'canonical_url' => 'Canonical URL',
     'page_url_slug' => 'Page URL (Slug)',
+    'portfolio_url_slug' => 'Portfolio URL (Slug)',
     'menu_url_slug' => 'Menu URL (Slug)',
     'slug_auto_generated' => 'Auto-generated',
 

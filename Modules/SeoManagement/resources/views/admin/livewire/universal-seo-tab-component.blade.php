@@ -559,6 +559,30 @@
 
 @push('scripts')
 <script>
+    (function() {
+        const modelClass = @json($this->modelClass ?? null);
+        const modelType = @json($this->modelType ?? null);
+        const modelId = @json($this->modelId ?? null);
+
+        if (modelClass && (!window.currentModelClass || window.currentModelClass !== modelClass)) {
+            window.currentModelClass = modelClass;
+        }
+
+        if (modelType) {
+            if (!window.currentModelType) {
+                window.currentModelType = modelType;
+            }
+
+            if (!window.currentModuleName) {
+                window.currentModuleName = modelType;
+            }
+        }
+
+        if (modelId && !window.currentModelId) {
+            window.currentModelId = modelId;
+        }
+    })();
+
     // Social media switch'lerini AI önerilerinden sonra kontrol et
     document.addEventListener('DOMContentLoaded', function() {
         checkSocialMediaSwitches();

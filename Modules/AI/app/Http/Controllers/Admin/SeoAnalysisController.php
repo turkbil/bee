@@ -9,6 +9,7 @@ use Modules\SeoManagement\App\Services\SeoAIService;
 use Modules\SeoManagement\App\Services\SeoRecommendationsService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use App\Services\TenantLanguageProvider;
 
 /**
@@ -124,7 +125,10 @@ class SeoAnalysisController extends Controller
                 'feature_slug' => 'required|string',
                 'form_content' => 'required|array',
                 'language' => 'required|string|in:' . implode(',', $availableLanguages),
-                'page_id' => 'nullable|integer'
+                'page_id' => 'nullable|integer',
+                'model_id' => 'nullable|integer',
+                'model_type' => 'nullable|string',
+                'model_class' => 'nullable|string'
             ]);
 
             if ($validator->fails()) {
@@ -135,15 +139,18 @@ class SeoAnalysisController extends Controller
                 ], 400);
             }
 
-            $pageId = $request->input('page_id');
+            $modelId = $request->input('model_id', $request->input('page_id'));
+            $formContent = $request->input('form_content', []);
             $language = $request->input('language', TenantLanguageProvider::getDefaultLanguageCode());
+            $modelType = $this->determineModelType($request, $formContent);
+            $modelClass = $this->determineModelClass($request, $formContent, $modelType);
 
             // Force yeniden oluşturma kontrolü - query parametresi varsa cache'i atla
             $forceRegenerate = $request->input('force_regenerate', false) || $request->query('force_regenerate', false);
 
             // Sayfa ID varsa ve force regenerate değilse, önce kaydedilmiş önerileri kontrol et
-            if ($pageId && !$forceRegenerate) {
-                $existingRecommendations = $this->getExistingRecommendations($pageId, $language);
+            if ($modelId && !$forceRegenerate) {
+                $existingRecommendations = $this->getExistingRecommendations($modelId, $language, $modelType, $modelClass);
                 if ($existingRecommendations) {
                     return response()->json([
                         'success' => true,
@@ -166,7 +173,10 @@ class SeoAnalysisController extends Controller
                 $language,
                 [
                     'user_id' => auth()->id(),
-                    'page_id' => $pageId
+                    'page_id' => $modelId,
+                    'model_id' => $modelId,
+                    'model_type' => $modelType,
+                    'model_class' => $modelClass
                 ]
             );
 
@@ -176,8 +186,8 @@ class SeoAnalysisController extends Controller
                 $cleanRecommendations = $this->sanitizeUtf8($recommendationsResult['recommendations'] ?? []);
 
                 // Sayfa ID varsa sonuçları kaydet
-                if ($pageId) {
-                    $this->saveSeoRecommendations($pageId, $cleanRecommendations, $language);
+                if ($modelId) {
+                    $this->saveSeoRecommendations($modelId, $cleanRecommendations, $language, $modelType, $modelClass);
                 }
 
                 return response()->json([
@@ -265,16 +275,16 @@ class SeoAnalysisController extends Controller
     /**
      * MEVCUT AI SEO ÖNERİLERİNİ KONTROL ET
      */
-    private function getExistingRecommendations(int $pageId, string $language): ?array
+    private function getExistingRecommendations(int $modelId, string $language, ?string $modelType = null, ?string $modelClass = null): ?array
     {
         try {
-            $page = \Modules\Page\App\Models\Page::with('seoSetting')->find($pageId);
+            $model = $this->resolveSeoModel($modelId, $modelType, $modelClass);
 
-            if (!$page || !$page->seoSetting) {
+            if (!$model || !$model->seoSetting) {
                 return null;
             }
 
-            $aiSuggestions = $page->seoSetting->ai_suggestions;
+            $aiSuggestions = $model->seoSetting->ai_suggestions;
 
             if (!$aiSuggestions || !isset($aiSuggestions[$language])) {
                 return null;
@@ -294,8 +304,10 @@ class SeoAnalysisController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Failed to get existing recommendations', [
-                'page_id' => $pageId,
+                'model_id' => $modelId,
                 'language' => $language,
+                'model_type' => $modelType,
+                'model_class' => $modelClass,
                 'error' => $e->getMessage()
             ]);
             return null;
@@ -305,43 +317,24 @@ class SeoAnalysisController extends Controller
     /**
      * AI SEO ÖNERİLERİNİ VERİTABANINA KAYDET
      */
-    private function saveSeoRecommendations(int $pageId, array $recommendations, string $language): void
+    private function saveSeoRecommendations(int $modelId, array $recommendations, string $language, ?string $modelType = null, ?string $modelClass = null): void
     {
         try {
-            // POLYMORPHIC: Tüm model tiplerini dene
-            $model = null;
-            $modelClasses = [
-                'Modules\Page\App\Models\Page',
-                'Modules\Announcement\App\Models\Announcement',
-                'Modules\Portfolio\App\Models\Portfolio',
-            ];
-
-            foreach ($modelClasses as $modelClass) {
-                if (class_exists($modelClass)) {
-                    $model = $modelClass::with('seoSetting')->find($pageId);
-                    if ($model) {
-                        break;
-                    }
-                }
-            }
+            $model = $this->resolveSeoModel($modelId, $modelType, $modelClass);
 
             if (!$model) {
-                Log::warning('Model not found for SEO recommendations save', ['page_id' => $pageId]);
+                Log::warning('Model not found for SEO recommendations save', [
+                    'model_id' => $modelId,
+                    'model_type' => $modelType,
+                    'model_class' => $modelClass
+                ]);
                 return;
             }
 
-            // SeoSetting yoksa oluştur
-            if (!$model->seoSetting) {
-                $model->seoSetting()->create([
-                    'titles' => [],
-                    'descriptions' => [],
-                    'keywords' => []
-                ]);
-                $model->load('seoSetting');
-            }
+            $seoSetting = $this->ensureSeoSettingExists($model);
 
             // Mevcut ai_suggestions'ı al
-            $aiSuggestions = $model->seoSetting->ai_suggestions ?? [];
+            $aiSuggestions = $seoSetting->ai_suggestions ?? [];
 
             // Bu dil için önerileri kaydet
             $aiSuggestions[$language] = [
@@ -351,13 +344,13 @@ class SeoAnalysisController extends Controller
             ];
 
             // Güncelle
-            $model->seoSetting->update([
+            $seoSetting->update([
                 'ai_suggestions' => $aiSuggestions
             ]);
 
             Log::info('SEO Recommendations Saved Successfully', [
                 'model_type' => get_class($model),
-                'model_id' => $pageId,
+                'model_id' => $modelId,
                 'language' => $language,
                 'recommendations_count' => count($recommendations),
                 'ai_suggestions_saved' => true
@@ -365,12 +358,224 @@ class SeoAnalysisController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Failed to save SEO recommendations', [
-                'page_id' => $pageId,
+                'model_id' => $modelId,
                 'language' => $language,
+                'model_type' => $modelType,
+                'model_class' => $modelClass,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
         }
+    }
+
+    private function determineModelType(Request $request, array $formContent): ?string
+    {
+        $candidates = [
+            $request->input('model_type'),
+            $request->input('module_name'),
+            $request->input('module'),
+            $request->input('context_module'),
+            data_get($formContent, 'model_type'),
+            data_get($formContent, 'module'),
+            data_get($formContent, 'module_name'),
+            data_get($formContent, 'seoable_type'),
+            data_get($formContent, 'context_module'),
+            data_get($formContent, 'seoDataCache.model_type'),
+            data_get($formContent, 'seoDataCache.context_module'),
+            data_get($formContent, 'current_url'),
+        ];
+
+        return $this->normalizeModelTypeFromCandidates($candidates);
+    }
+
+    private function normalizeModelTypeFromCandidates(array $candidates): ?string
+    {
+        foreach ($candidates as $candidate) {
+            if (!is_string($candidate) || trim($candidate) === '') {
+                continue;
+            }
+
+            $normalized = $this->normalizeModelTypeString($candidate);
+            if ($normalized) {
+                return $normalized;
+            }
+        }
+
+        return null;
+    }
+
+    private function normalizeModelTypeString(string $value): ?string
+    {
+        $source = trim($value);
+
+        if (filter_var($source, FILTER_VALIDATE_URL)) {
+            $path = parse_url($source, PHP_URL_PATH) ?: '';
+            $source = $path ?: $source;
+        }
+
+        $source = strtolower($source);
+
+        $map = [
+            'announcement' => 'announcement',
+            'announcements' => 'announcement',
+            'modules\announcement\app\models\announcement' => 'announcement',
+            'portfolio' => 'portfolio',
+            'modules\portfolio\app\models\portfolio' => 'portfolio',
+            'page' => 'page',
+            'modules\page\app\models\page' => 'page',
+        ];
+
+        foreach ($map as $needle => $mapped) {
+            if (str_contains($source, $needle)) {
+                return $mapped;
+            }
+        }
+
+        if (str_starts_with($source, 'modules\\')) {
+            $parts = explode('\\', $source);
+            if (isset($parts[1]) && $parts[1] !== '') {
+                return Str::slug($parts[1]);
+            }
+        }
+
+        if (str_contains($source, '_')) {
+            return Str::slug(str_replace('_', ' ', $source));
+        }
+
+        return null;
+    }
+
+    private function resolveSeoModel(int $modelId, ?string $modelType = null, ?string $modelClass = null)
+    {
+        $candidateClasses = [];
+
+        if ($modelClass && is_string($modelClass)) {
+            $candidateClasses[] = $modelClass;
+        }
+
+        if ($modelType && class_exists($modelType)) {
+            $candidateClasses[] = $modelType;
+        }
+
+        $modelClassMap = [
+            'page' => \Modules\Page\App\Models\Page::class,
+            'announcement' => \Modules\Announcement\App\Models\Announcement::class,
+            'portfolio' => \Modules\Portfolio\App\Models\Portfolio::class,
+        ];
+
+        if ($modelType && isset($modelClassMap[$modelType])) {
+            $candidateClasses[] = $modelClassMap[$modelType];
+        }
+
+        // Guess class from module slug (Modules\Foo\App\Models\Foo)
+        foreach ($this->buildModelClassGuesses($modelType) as $guess) {
+            $candidateClasses[] = $guess;
+        }
+
+        // Remove duplicates
+        $candidateClasses = array_values(array_unique(array_filter($candidateClasses)));
+
+        foreach ($candidateClasses as $candidateClass) {
+            if (!is_string($candidateClass) || !class_exists($candidateClass)) {
+                continue;
+            }
+
+            $model = $candidateClass::with('seoSetting')->find($modelId);
+            if ($model) {
+                return $model;
+            }
+        }
+
+        return null;
+    }
+
+    private function determineModelClass(Request $request, array $formContent, ?string $modelType = null): ?string
+    {
+        $candidates = [
+            $request->input('model_class'),
+            $request->input('seoable_type'),
+            data_get($formContent, 'model_class'),
+            data_get($formContent, 'seoable_type'),
+            data_get($formContent, 'modelClass'),
+        ];
+
+        foreach ($candidates as $candidate) {
+            $normalized = $this->normalizeClassName($candidate);
+            if ($normalized && class_exists($normalized)) {
+                return $normalized;
+            }
+        }
+
+        foreach ($this->buildModelClassGuesses($modelType) as $guess) {
+            if (class_exists($guess)) {
+                return $guess;
+            }
+        }
+
+        return null;
+    }
+
+    private function normalizeClassName($candidate): ?string
+    {
+        if (!is_string($candidate) || trim($candidate) === '') {
+            return null;
+        }
+
+        $normalized = str_replace(['/', '\\'], '\\', trim($candidate));
+        $normalized = ltrim($normalized, '\\');
+
+        return $normalized !== '' ? $normalized : null;
+    }
+
+    private function buildModelClassGuesses(?string $modelType): array
+    {
+        if (!$modelType) {
+            return [];
+        }
+
+        $slug = Str::slug(str_replace('\\', ' ', $modelType));
+        if ($slug === '') {
+            return [];
+        }
+
+        $studly = Str::studly(str_replace('-', ' ', $slug));
+        $studly = str_replace(' ', '', $studly);
+
+        $guesses = [];
+
+        if ($studly !== '') {
+            $guesses[] = "Modules\\{$studly}\\App\\Models\\{$studly}";
+
+            $singular = Str::singular($studly);
+            if ($singular && $singular !== $studly) {
+                $guesses[] = "Modules\\{$studly}\\App\\Models\\{$singular}";
+            }
+
+            $guesses[] = "Modules\\{$studly}\\App\\Models\\{$studly}Item";
+        }
+
+        return array_unique($guesses);
+    }
+
+    private function ensureSeoSettingExists($model)
+    {
+        if (method_exists($model, 'getOrCreateSeoSetting')) {
+            return $model->getOrCreateSeoSetting();
+        }
+
+        if ($model->seoSetting) {
+            return $model->seoSetting;
+        }
+
+        $seoSetting = $model->seoSetting()->create([
+            'titles' => [],
+            'descriptions' => [],
+            'keywords' => [],
+        ]);
+
+        $model->setRelation('seoSetting', $seoSetting);
+
+        return $seoSetting;
     }
 
     /**

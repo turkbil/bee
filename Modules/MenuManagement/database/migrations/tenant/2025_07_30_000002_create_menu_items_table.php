@@ -20,7 +20,6 @@ return new class extends Migration
             $table->boolean('is_active')->default(true)->index();
             $table->string('visibility')->default('public')->comment('public, logged_in, guest');
             $table->integer('sort_order')->default(0)->comment('Parent içinde sıralama');
-            $table->tinyInteger('depth_level')->default(0)->comment('Menü derinlik seviyesi: 0,1,2,3');
             $table->timestamps();
             $table->softDeletes(); // Soft delete desteği
             
@@ -28,7 +27,6 @@ return new class extends Migration
             $table->index(['menu_id', 'parent_id', 'sort_order']);
             $table->index(['parent_id', 'sort_order']);
             $table->index(['is_active', 'sort_order']);
-            $table->index(['depth_level', 'sort_order']);
             $table->index('created_at');
             $table->index('updated_at');
         });

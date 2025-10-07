@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('credit_per_1k_output_tokens', 8, 4)->default(0.0000);
             $table->decimal('base_cost_usd', 10, 6)->default(0.000000);
             $table->decimal('markup_percentage', 5, 2)->default(0.00);
+            $table->json('operation_rates')->nullable()->comment('İşlem türüne göre özel fiyatlandırma (fixed, tier, token_multiplier)');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_default')->default(false);
             $table->integer('sort_order')->default(0); // Sıralama sütunu

@@ -21,10 +21,12 @@ return new class extends Migration
             $table->json('titles')->nullable(); // {"tr": "Başlık", "en": "Title"}
             $table->json('descriptions')->nullable(); // {"tr": "Açıklama", "en": "Description"}  
             $table->json('keywords')->nullable(); // {"tr": ["anahtar"], "en": ["keyword"]}
-            
+            $table->string('author_url')->nullable(); // Author website/profile URL
+
             // Open Graph - JSON for multi-language support
             $table->json('og_titles')->nullable(); // {"tr": "Başlık", "en": "Title"}
             $table->json('og_descriptions')->nullable(); // {"tr": "Açıklama", "en": "Description"}
+            $table->json('og_images')->nullable(); // {"tr": "url", "en": "url"} - Multi-language OG images
             $table->string('og_image')->nullable();
             $table->string('og_type')->default('website');
             
@@ -37,6 +39,7 @@ return new class extends Migration
             // Advanced SEO
             $table->string('canonical_url')->nullable();
             $table->json('robots_meta')->nullable(); // {"index": true, "follow": true, "archive": false}
+            $table->json('schema_type')->nullable()->comment('Schema.org page types per language');
             $table->json('schema_markup')->nullable(); // Structured data
             $table->json('focus_keywords')->nullable(); // Dil bazında focus keywords {"tr": "anahtar", "en": "keyword"}
             $table->json('additional_keywords')->nullable(); // ["keyword1", "keyword2"]

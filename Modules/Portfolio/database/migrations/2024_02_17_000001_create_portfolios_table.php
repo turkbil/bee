@@ -11,6 +11,7 @@ return new class extends Migration
     {
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id('portfolio_id');
+            $table->foreignId('portfolio_category_id')->nullable()->constrained('portfolio_categories', 'category_id')->nullOnDelete();
             $table->json('title')->comment('Çoklu dil başlık: {"tr": "Başlık", "en": "Title"}');
             $table->json('slug')->comment('Çoklu dil slug: {"tr": "baslik", "en": "title"}');
             $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "İçerik", "en": "Content"}');
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->softDeletes();
 
             // İlave indeksler
+            $table->index('portfolio_category_id');
             $table->index('created_at');
             $table->index('updated_at');
             $table->index('deleted_at');

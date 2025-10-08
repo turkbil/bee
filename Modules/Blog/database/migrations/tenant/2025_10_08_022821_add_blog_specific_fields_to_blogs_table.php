@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::table('blogs', function (Blueprint $table) {
             // Blog-specific fields
             $table->json('excerpt')->nullable()->after('body')->comment('Çoklu dil özet: {"tr": "Özet", "en": "Excerpt"}');
-            $table->integer('reading_time')->nullable()->after('excerpt')->comment('Okuma süresi (dakika)');
-            $table->timestamp('published_at')->nullable()->after('reading_time')->comment('Yayınlanma tarihi');
+            $table->timestamp('published_at')->nullable()->after('excerpt')->comment('Yayınlanma tarihi');
             $table->boolean('is_featured')->default(false)->after('published_at')->index()->comment('Öne çıkan yazı');
             $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft')->after('is_featured')->index()->comment('Yazı durumu');
 
@@ -42,7 +41,6 @@ return new class extends Migration
             // Kolonları drop et
             $table->dropColumn([
                 'excerpt',
-                'reading_time',
                 'published_at',
                 'is_featured',
                 'status'

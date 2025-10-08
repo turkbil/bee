@@ -31,7 +31,7 @@
         <div class="card mb-3">
             <div class="card-header">
                 <h6 class="mb-0">
-                    <i class="fab fa-facebook me-2"></i>Open Graph (Facebook/LinkedIn) - {{ strtoupper($lang) }}
+                    <i class="fa-brands fa-facebook me-2"></i>Open Graph (Facebook/LinkedIn) - {{ strtoupper($lang) }}
                 </h6>
             </div>
             <div class="card-body">

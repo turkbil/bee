@@ -38,6 +38,9 @@
 
     {{-- Tailwind CSS - Compiled & Minified (98KB) --}}
     <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}" media="all">
+
+    {{-- Font Awesome Pro --}}
+    <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">
     
     {{-- RTL/LTR Direction Support --}}
     <style>

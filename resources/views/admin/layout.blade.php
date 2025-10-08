@@ -86,7 +86,7 @@
     @else
     @endif
     <link rel="stylesheet" href="/admin-assets/css/plugins.css?v={{ time() }}" />
-    <link rel="stylesheet" href="/admin-assets/libs/fontawesome-pro@6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin-assets/libs/fontawesome-pro@7.1.0/css/all.css">
     <link rel="stylesheet" href="/admin-assets/libs/choices/choices.min.css">
     <link rel="stylesheet" href="/admin-assets/css/choices-custom.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/main.css?v={{ time() }}" />

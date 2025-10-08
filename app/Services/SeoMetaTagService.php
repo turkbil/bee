@@ -1238,12 +1238,17 @@ readonly class SeoMetaTagService
         $items = [];
 
         try {
-            // Dinamik olarak aynı model class'ından aktif kayıtları çek
-            $listItems = $modelClass::query()
-                ->where('is_active', 1)
-                ->orderBy('created_at', 'desc')
-                ->limit(10)
-                ->get();
+            // Module index placeholder modelleri için gerçek kaynak modele yönlendir
+            if (($model->is_module_index ?? false) && isset($model->module_name)) {
+                $listItems = $this->resolveModuleIndexCollection($model->module_name, $locale);
+            } else {
+                // Dinamik olarak aynı model class'ından aktif kayıtları çek
+                $listItems = $modelClass::query()
+                    ->where('is_active', 1)
+                    ->orderBy('created_at', 'desc')
+                    ->limit(10)
+                    ->get();
+            }
 
             // Her item için ListItem oluştur
             foreach ($listItems as $index => $item) {
@@ -1276,5 +1281,36 @@ readonly class SeoMetaTagService
             '@type' => 'ItemList',
             'itemListElement' => $items
         ];
+    }
+
+    /**
+     * Module index sayfası için gerçek kayıt koleksiyonunu döndür.
+     */
+    private function resolveModuleIndexCollection(string $moduleName, string $locale): \Illuminate\Support\Collection
+    {
+        return match ($moduleName) {
+            'Blog' => \Modules\Blog\App\Models\Blog::query()
+                ->published()
+                ->with('category')
+                ->orderBy('published_at', 'desc')
+                ->limit(10)
+                ->get(),
+            'Portfolio' => \Modules\Portfolio\App\Models\Portfolio::query()
+                ->where('is_active', true)
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get(),
+            'Announcement' => \Modules\Announcement\App\Models\Announcement::query()
+                ->where('is_active', true)
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get(),
+            'Page' => \Modules\Page\App\Models\Page::query()
+                ->where('is_active', true)
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get(),
+            default => collect(),
+        };
     }
 }

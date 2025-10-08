@@ -307,7 +307,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
                     <h6 class="mb-0">
-                        <i class="fab fa-facebook me-2"></i>
+                        <i class="fa-brands fa-facebook me-2"></i>
                         Sosyal Medya Bilgileri
                         <small class="ms-2">Facebook, LinkedIn, Twitter paylaşımları için</small>
                     </h6>

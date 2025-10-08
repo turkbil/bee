@@ -294,7 +294,8 @@
       "Bash(ssh:*)",
       "Bash(\"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code\" --folder-uri vscode-remote://ssh-remote+tuufi-server/var/www/vhosts/tuufi.com/httpdocs)",
       "Bash(git branch:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(git clean:*)"
     ],
     "deny": [],
     "ask": [],

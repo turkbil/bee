@@ -98,7 +98,7 @@
 
                             <!-- Fotoğraf -->
                             <div class="col-12 col-md-6 category-media-wrapper">
-                                <livewire:mediamanagement::universal-media
+                                <livewire:mediamanagement.universal-media
                                     wire:id="category-media-component"
                                     :model-id="$categoryId"
                                     model-type="blog_category"
@@ -150,7 +150,7 @@
 
                     <!-- SEO TAB - UNIVERSAL COMPONENT -->
                     <div class="tab-pane" id="1" role="tabpanel">
-                        <livewire:seomanagement::universal-seo-tab :model-id="$categoryId" model-type="blog_category"
+                        <livewire:seomanagement.universal-seo-tab :model-id="$categoryId" model-type="blog_category"
                             model-class="Modules\Blog\App\Models\BlogCategory" />
                     </div>
 

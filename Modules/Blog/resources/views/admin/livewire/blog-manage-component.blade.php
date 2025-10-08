@@ -186,7 +186,7 @@
 
                         {{-- MEDYA YÖNETİMİ --}}
                         <div class="mb-4">
-                            <livewire:mediamanagement::universal-media
+                            <livewire:mediamanagement.universal-media
                                 wire:id="blog-media-component"
                                 :model-id="$blogId"
                                 model-type="blog"
@@ -240,7 +240,7 @@
 
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
-                        <livewire:seomanagement::universal-seo-tab :model-id="$blogId" model-type="blog"
+                        <livewire:seomanagement.universal-seo-tab :model-id="$blogId" model-type="blog"
                             model-class="Modules\Blog\App\Models\Blog" />
                     </div>
 

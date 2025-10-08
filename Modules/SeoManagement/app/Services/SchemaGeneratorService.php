@@ -10,6 +10,7 @@ use Modules\Page\app\Models\Page;
 use Modules\Portfolio\app\Models\Portfolio;
 use Modules\Portfolio\app\Models\PortfolioCategory;
 use Modules\Announcement\App\Models\Announcement;
+use Modules\Blog\App\Models\Blog;
 
 /**
  * Schema.org Otomatik Oluşturma Servisi
@@ -161,6 +162,7 @@ class SchemaGeneratorService
             Portfolio::class => $this->generatePortfolioSchema($model, $language),
             PortfolioCategory::class => $this->generatePortfolioCategorySchema($model, $language),
             Announcement::class => $this->generateAnnouncementSchema($model, $language),
+            Blog::class => $this->generateBlogSchema($model, $language),
             default => $this->generateGenericSchema($model, $language)
         };
     }
@@ -263,7 +265,7 @@ class SchemaGeneratorService
     {
         $title = $model->getTranslated('title', $language) ?: $model->getTranslated('title', 'tr');
         $content = $model->getTranslated('content', $language) ?: $model->getTranslated('content', 'tr');
-        
+
         $cleanTitle = $this->cleanHtmlContent($title);
         $siteTitle = setting('site_title', 'Website');
 
@@ -285,6 +287,140 @@ class SchemaGeneratorService
             ],
             'inLanguage' => $language
         ];
+    }
+
+    /**
+     * Blog için BlogPosting schema - 2025 SEO OPTIMIZED
+     */
+    private function generateBlogSchema(Blog $model, string $language): array
+    {
+        $title = $model->getTranslated('title', $language) ?: $model->getTranslated('title', 'tr');
+        $body = $model->getTranslated('body', $language) ?: $model->getTranslated('body', 'tr');
+        $excerpt = $model->getTranslated('excerpt', $language) ?: $model->getTranslated('excerpt', 'tr');
+        $slug = $model->getTranslated('slug', $language) ?: $model->getTranslated('slug', 'tr');
+
+        $cleanTitle = $this->cleanHtmlContent($title);
+        $cleanBody = $this->cleanArticleBody($body);
+
+        // Blog URL'ini oluştur (modül slug'ını dikkate al)
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Blog', 'show');
+        $defaultLocale = get_tenant_default_locale();
+
+        $blogUrl = $language === $defaultLocale ?
+            url("/{$moduleSlug}/{$slug}") :
+            url("/{$language}/{$moduleSlug}/{$slug}");
+
+        // Base schema
+        $schema = [
+            '@type' => 'BlogPosting',
+            'name' => $cleanTitle,
+            'headline' => $cleanTitle,
+            'description' => $excerpt ? $this->cleanHtmlContent($excerpt) : $this->extractDescription($body),
+            'articleBody' => $cleanBody,
+            'url' => $blogUrl,
+            'dateCreated' => $model->created_at?->toISOString(),
+            'dateModified' => $model->updated_at?->toISOString(),
+            'author' => $this->getAuthorData($model),
+            'publisher' => $this->getPublisherData($model),
+            'mainEntityOfPage' => [
+                '@type' => 'WebPage',
+                '@id' => $blogUrl
+            ],
+            'inLanguage' => $language,
+            'isPartOf' => [
+                '@type' => 'Blog',
+                'name' => setting('site_title', 'Website') . ' Blog',
+                'url' => $language === $defaultLocale ?
+                    url("/{$moduleSlug}") :
+                    url("/{$language}/{$moduleSlug}")
+            ]
+        ];
+
+        // Published date (yayın tarihi varsa ekle)
+        if ($model->published_at && $model->isPublished()) {
+            $schema['datePublished'] = $model->published_at->toISOString();
+        } else {
+            $schema['datePublished'] = $model->created_at?->toISOString();
+        }
+
+        // Reading time (içerikten hesapla)
+        $readingTime = $model->calculateReadingTime($language);
+        if ($readingTime > 0) {
+            $schema['timeRequired'] = 'PT' . $readingTime . 'M'; // ISO 8601 duration format
+        }
+
+        // Blog category (kategori varsa ekle)
+        if ($model->category) {
+            $categoryName = $model->category->getTranslated('name', $language) ?:
+                           $model->category->getTranslated('name', 'tr');
+
+            $schema['about'] = [
+                '@type' => 'Thing',
+                'name' => $this->cleanHtmlContent($categoryName)
+            ];
+
+            // Blog kategorisini tag olarak da ekle
+            $schema['keywords'] = [$this->cleanHtmlContent($categoryName)];
+        }
+
+        // Tags (etiketler varsa ekle)
+        if (method_exists($model, 'tags')) {
+            $model->loadMissing('tags');
+            $tagNames = $model->tags
+                ->pluck('name')
+                ->filter()
+                ->map(fn ($name) => $this->cleanHtmlContent($name))
+                ->values()
+                ->all();
+
+            if (!empty($tagNames)) {
+                $existingKeywords = $schema['keywords'] ?? [];
+                $schema['keywords'] = array_values(array_unique(array_merge($existingKeywords, $tagNames)));
+            }
+        }
+
+        // Featured image (öne çıkan resim varsa ekle)
+        try {
+            $featuredImage = $model->getFirstMediaUrl('featured_image');
+            if ($featuredImage) {
+                $schema['image'] = [
+                    '@type' => 'ImageObject',
+                    'url' => $featuredImage,
+                    'caption' => $cleanTitle,
+                    'width' => 1200,
+                    'height' => 630
+                ];
+            }
+        } catch (\Exception $e) {
+            // Media yoksa sessizce devam et
+        }
+
+        // Blog content'den resim extract et (featured image yoksa)
+        if (!isset($schema['image']) && $body) {
+            preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $body, $matches);
+            if (!empty($matches[1])) {
+                $schema['image'] = [
+                    '@type' => 'ImageObject',
+                    'url' => $matches[1],
+                    'caption' => $cleanTitle
+                ];
+            }
+        }
+
+        // Comment count (yorum sayısı - eğer yorum sistemi varsa)
+        if (method_exists($model, 'comments')) {
+            $commentCount = $model->comments()->count();
+            if ($commentCount > 0) {
+                $schema['commentCount'] = $commentCount;
+                $schema['interactionStatistic'] = [
+                    '@type' => 'InteractionCounter',
+                    'interactionType' => 'https://schema.org/CommentAction',
+                    'userInteractionCount' => $commentCount
+                ];
+            }
+        }
+
+        return $schema;
     }
 
     /**

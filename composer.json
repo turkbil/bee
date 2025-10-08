@@ -70,6 +70,8 @@
             "Modules\\Page\\Database\\Seeders\\": "Modules/Page/database/seeders/",
             "Modules\\Portfolio\\App\\": "Modules/Portfolio/app/",
             "Modules\\Portfolio\\Database\\Seeders\\": "Modules/Portfolio/database/seeders/",
+            "Modules\\Blog\\App\\": "Modules/Blog/app/",
+            "Modules\\Blog\\Database\\Seeders\\": "Modules/Blog/database/seeders/",
             "Modules\\Announcement\\App\\": "Modules/Announcement/app/",
             "Modules\\Announcement\\Database\\Seeders\\": "Modules/Announcement/database/seeders/",
             "Modules\\LanguageManagement\\App\\": "Modules/LanguageManagement/app/",

@@ -63,19 +63,19 @@
                             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                                 <li class="nav-item">
                                     <a href="#html-pane" class="nav-link active" data-bs-toggle="tab">
-                                        <i class="fab fa-html5 me-2"></i>
+                                        <i class="fa-brands fa-html5 me-2"></i>
                                         {{ __('widgetmanagement::admin.html') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#css-pane" class="nav-link" data-bs-toggle="tab">
-                                        <i class="fab fa-css3-alt me-2"></i>
+                                        <i class="fa-brands fa-css3-alt me-2"></i>
                                         {{ __('widgetmanagement::admin.css') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#js-pane" class="nav-link" data-bs-toggle="tab">
-                                        <i class="fab fa-js-square me-2"></i>
+                                        <i class="fa-brands fa-js-square me-2"></i>
                                         {{ __('widgetmanagement::admin.javascript') }}
                                     </a>
                                 </li>
@@ -148,7 +148,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h4 class="card-title mb-0">
-                                            <i class="fab fa-css3-alt me-2"></i>
+                                            <i class="fa-brands fa-css3-alt me-2"></i>
                                             {{ __('widgetmanagement::admin.css_files') }}
                                         </h4>
                                         <button type="button" class="btn btn-sm btn-primary" wire:click.prevent="addCssFile">
@@ -159,7 +159,7 @@
                                 <div class="card-body">
                                     @if(empty($widget['css_files']) || count($widget['css_files']) === 0)
                                     <div class="text-center py-3 ">
-                                        <i class="fab fa-css3-alt fa-2x mb-2"></i>
+                                        <i class="fa-brands fa-css3-alt fa-2x mb-2"></i>
                                         <p class="mb-0">{{ __('widgetmanagement::admin.no_css_files_yet') }}</p>
                                     </div>
                                     @else
@@ -186,7 +186,7 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h4 class="card-title mb-0">
-                                            <i class="fab fa-js-square me-2"></i>
+                                            <i class="fa-brands fa-js-square me-2"></i>
                                             {{ __('widgetmanagement::admin.javascript_files') }}
                                         </h4>
                                         <button type="button" class="btn btn-sm btn-primary" wire:click.prevent="addJsFile">
@@ -197,7 +197,7 @@
                                 <div class="card-body">
                                     @if(empty($widget['js_files']) || count($widget['js_files']) === 0)
                                     <div class="text-center py-3 ">
-                                        <i class="fab fa-js-square fa-2x mb-2"></i>
+                                        <i class="fa-brands fa-js-square fa-2x mb-2"></i>
                                         <p class="mb-0">{{ __('widgetmanagement::admin.no_js_files_yet') }}</p>
                                     </div>
                                     @else

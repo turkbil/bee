@@ -119,7 +119,7 @@
                         <div class="col-md-4">
                             <div class="d-flex align-items-center">
                                 <div class="text-danger me-3">
-                                    <i class="fab fa-redis"></i>
+                                    <i class="fa-brands fa-redis"></i>
                                 </div>
                                 <div>
                                     <strong>{{ $systemMetrics['redis_connections'] ?? 0 }}</strong>

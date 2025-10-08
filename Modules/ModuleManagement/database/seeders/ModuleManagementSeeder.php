@@ -143,6 +143,15 @@ class ModuleManagementSeeder extends Seeder
                     'is_active' => true
                 ],
                 [
+                    'name' => 'blog',
+                    'display_name' => 'Blog',
+                    'description' => 'Blog yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'content',
+                    'is_active' => true
+                ],
+                [
                     'name' => 'languagemanagement',
                     'display_name' => 'Dil Yönetimi',
                     'description' => 'Çoklu dil yönetim sistemi',

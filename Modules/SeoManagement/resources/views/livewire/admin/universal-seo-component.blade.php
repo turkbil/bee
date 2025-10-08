@@ -182,7 +182,7 @@
                                         <div class="card border-info">
                                             <div class="card-header bg-info text-white">
                                                 <h6 class="mb-0">
-                                                    <i class="fab fa-facebook me-2"></i>Sosyal Medya Paylaşımı
+                                                    <i class="fa-brands fa-facebook me-2"></i>Sosyal Medya Paylaşımı
                                                     <small class="opacity-75 ms-2">Facebook, WhatsApp, LinkedIn</small>
                                                 </h6>
                                             </div>
@@ -270,7 +270,7 @@
                                         <div class="card border-primary">
                                             <div class="card-header bg-primary text-white">
                                                 <h6 class="mb-0">
-                                                    <i class="fab fa-twitter me-2"></i>Twitter Cards
+                                                    <i class="fa-brands fa-twitter me-2"></i>Twitter Cards
                                                     <small class="opacity-75 ms-2">Twitter'a özel ayarlar</small>
                                                 </h6>
                                             </div>

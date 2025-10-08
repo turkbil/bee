@@ -29,9 +29,9 @@ class CreateModuleTenantPermissions implements ShouldQueue
         $this->moduleId = $moduleId;
         $this->tenantId = $tenantId;
         $this->moduleData = $moduleData;
-        
-        // Queue configuration
-        $this->onQueue('module_permissions');
+
+        // Queue configuration - default queue kullan çünkü Horizon tarafından dinleniyor
+        $this->onQueue('default');
     }
     
     public function handle(): void
@@ -97,17 +97,53 @@ class CreateModuleTenantPermissions implements ShouldQueue
     }
     
     /**
-     * Modül permission'larını al
+     * Modül permission'larını al (Central database'den)
      */
     protected function getModulePermissions(string $moduleName): array
     {
-        return [
-            "{$moduleName}.view",
-            "{$moduleName}.create", 
-            "{$moduleName}.edit",
-            "{$moduleName}.delete",
-            "{$moduleName}.manage"
-        ];
+        try {
+            // Tenant context'inden çık
+            app(Tenancy::class)->end();
+
+            // Central database'den modülün tüm permission'larını al
+            $permissions = \Modules\UserManagement\App\Models\Permission::where('name', 'like', "{$moduleName}.%")
+                ->pluck('name')
+                ->toArray();
+
+            // Tenant context'ini tekrar başlat
+            $tenant = Tenant::find($this->tenantId);
+            if ($tenant) {
+                app(Tenancy::class)->initialize($tenant);
+            }
+
+            // Eğer central'da permission yoksa, standart permission'ları kullan
+            if (empty($permissions)) {
+                return [
+                    "{$moduleName}.view",
+                    "{$moduleName}.create",
+                    "{$moduleName}.edit",
+                    "{$moduleName}.delete",
+                    "{$moduleName}.manage"
+                ];
+            }
+
+            return $permissions;
+
+        } catch (\Exception $e) {
+            Log::warning('Failed to get permissions from central database, using defaults', [
+                'module' => $moduleName,
+                'error' => $e->getMessage()
+            ]);
+
+            // Hata durumunda standart permission'ları döndür
+            return [
+                "{$moduleName}.view",
+                "{$moduleName}.create",
+                "{$moduleName}.edit",
+                "{$moduleName}.delete",
+                "{$moduleName}.manage"
+            ];
+        }
     }
     
     /**
@@ -157,10 +193,14 @@ class CreateModuleTenantPermissions implements ShouldQueue
             'usermanagement' => 'Usermanagement',
             'settingmanagement' => 'Settingmanagement',
             'thememanagement' => 'Thememanagement',
+            'mediamanagement' => 'Mediamanagement',
+            'menumanagement' => 'Menumanagement',
+            'seomanagement' => 'Seomanagement',
             'studio' => 'Studio',
             'announcement' => 'Announcement',
             'page' => 'Page',
             'portfolio' => 'Portfolio',
+            'blog' => 'Blog',
             'languagemanagement' => 'Languagemanagement'
         ];
         

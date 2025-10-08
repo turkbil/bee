@@ -112,7 +112,7 @@
 
                         {{-- MEDYA YÖNETİMİ --}}
                         <div class="mb-4">
-                            <livewire:mediamanagement::universal-media
+                            <livewire:mediamanagement.universal-media
                                 wire:id="portfolio-media-component"
                                 :model-id="$portfolioId"
                                 model-type="portfolio"
@@ -166,7 +166,7 @@
 
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
-                        <livewire:seomanagement::universal-seo-tab :model-id="$portfolioId" model-type="portfolio"
+                        <livewire:seomanagement.universal-seo-tab :model-id="$portfolioId" model-type="portfolio"
                             model-class="Modules\Portfolio\App\Models\Portfolio" />
                     </div>
 

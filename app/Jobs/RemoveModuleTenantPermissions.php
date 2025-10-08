@@ -29,9 +29,9 @@ class RemoveModuleTenantPermissions implements ShouldQueue
         $this->moduleId = $moduleId;
         $this->tenantId = $tenantId;
         $this->moduleData = $moduleData;
-        
-        // Queue configuration
-        $this->onQueue('module_permissions');
+
+        // Queue configuration - default queue kullan çünkü Horizon tarafından dinleniyor
+        $this->onQueue('default');
     }
     
     public function handle(): void

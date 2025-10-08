@@ -18,7 +18,7 @@ use Modules\Studio\App\Parsers\CssParser;
 use Modules\Studio\App\Repositories\SettingsRepository;
 use Modules\Studio\App\Support\BlockManager;
 use Modules\Studio\App\Support\StudioHelper;
-use Modules\Studio\App\Http\Livewire\Admin\StudioComponent;
+use Modules\Studio\App\Http\Livewire\Admin\StudioIndexComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -51,9 +51,9 @@ class StudioServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path('Studio', 'routes/api.php'));
         
         // Livewire bileşenlerini kaydet
-        Livewire::component('studio-editor', EditorComponent::class);
-        Livewire::component('studio-widget-manager', WidgetManagerComponent::class);
-        Livewire::component('studio-component', StudioComponent::class);        
+        Livewire::component('studio.editor-component', EditorComponent::class);
+        Livewire::component('studio.widget-manager-component', WidgetManagerComponent::class);
+        Livewire::component('studio.admin.studio-index-component', StudioIndexComponent::class);        
         // Blade direktiflerini kaydet
         Blade::directive('studiocss', function () {
             return "<?php echo app('studio.asset')->renderCss(); ?>";

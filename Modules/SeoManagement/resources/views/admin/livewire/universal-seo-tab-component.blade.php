@@ -357,7 +357,7 @@
                         {{-- OG Image Media Manager --}}
                         <div class="col-12 col-md-6">
                             @if($lang === get_tenant_default_locale())
-                                <livewire:mediamanagement::universal-media
+                                <livewire:mediamanagement.universal-media
                                     :model-id="$modelId"
                                     :model-type="$modelType"
                                     :model-class="$modelClass"

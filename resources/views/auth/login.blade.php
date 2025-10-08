@@ -185,53 +185,6 @@
                         </div>
                     </form>
 
-                    <!-- Quick Demo Login -->
-                    <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">{{ __('auth.quick_test_login') }}</p>
-                        <div class="grid grid-cols-3 gap-2">
-                            @php $host = request()->getHost(); @endphp
-                            
-                            <!-- Nurullah ve Turkbil her zaman görünür -->
-                            <button type="button" @click="autoLogin('nurullah')" 
-                                    class="p-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
-                                <div class="text-sm font-bold text-white">Nurullah</div>
-                                <div class="text-xs text-yellow-100 opacity-90">Root</div>
-                            </button>
-                            
-                            <button type="button" @click="autoLogin('turkbilisim')" 
-                                    class="p-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
-                                <div class="text-sm font-bold text-white">Turkbil</div>
-                                <div class="text-xs text-purple-100 opacity-90">Admin</div>
-                            </button>
-                            
-                            <!-- Domain'e özel tek kullanıcı -->
-                            @if($host === env('APP_DOMAIN', 'laravel.test'))
-                                <button type="button" @click="autoLogin('laravel')" 
-                                        class="p-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
-                                    <div class="text-sm font-bold text-white">Laravel</div>
-                                    <div class="text-xs text-blue-100 opacity-90">Test</div>
-                                </button>
-                            @elseif($host === 'a.test')
-                                <button type="button" @click="autoLogin('a')" 
-                                        class="p-3 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
-                                    <div class="text-sm font-bold text-white">A User</div>
-                                    <div class="text-xs text-green-100 opacity-90">Test</div>
-                                </button>
-                            @elseif($host === 'b.test')
-                                <button type="button" @click="autoLogin('b')" 
-                                        class="p-3 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
-                                    <div class="text-sm font-bold text-white">B User</div>
-                                    <div class="text-xs text-red-100 opacity-90">Test</div>
-                                </button>
-                            @elseif($host === 'c.test')
-                                <button type="button" @click="autoLogin('c')" 
-                                        class="p-3 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
-                                    <div class="text-sm font-bold text-white">C User</div>
-                                    <div class="text-xs text-indigo-100 opacity-90">Test</div>
-                                </button>
-                            @endif
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Right Column - Tetris Game -->
@@ -302,53 +255,11 @@
                 validateForm() {
                     const email = document.querySelector('input[name="email"]').value;
                     const password = document.querySelector('input[name="password"]').value;
-                    
+
                     this.validateField('email', email);
                     this.validateField('password', password);
-                    
+
                     return !this.errors.email && !this.errors.password;
-                },
-                
-                autoLogin(userType) {
-                    this.isLoading = true;
-                    
-                    let email, password;
-                    
-                    switch(userType) {
-                        case 'nurullah':
-                            email = 'nurullah@nurullah.net';
-                            password = 'test';
-                            break;
-                        case 'turkbilisim':
-                            email = 'info@turkbilisim.com.tr';
-                            password = 'test';
-                            break;
-                        case 'laravel':
-                            email = 'laravel@test';
-                            password = 'test';
-                            break;
-                        case 'a':
-                            email = 'a@test';
-                            password = 'test';
-                            break;
-                        case 'b':
-                            email = 'b@test';
-                            password = 'test';
-                            break;
-                        case 'c':
-                            email = 'c@test';
-                            password = 'test';
-                            break;
-                    }
-                    
-                    // Fill form
-                    document.querySelector('input[name="email"]').value = email;
-                    document.querySelector('input[name="password"]').value = password;
-                    
-                    // Submit form after short delay
-                    setTimeout(() => {
-                        document.querySelector('form').submit();
-                    }, 500);
                 }
             }
         }

@@ -25,19 +25,15 @@ class BlogServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Blog Observer kaydı
-        \Modules\Blog\App\Models\Blog::observe(\Modules\Blog\App\Observers\BlogObserver::class);
-        \Modules\Blog\App\Models\BlogCategory::observe(\Modules\Blog\App\Observers\BlogCategoryObserver::class);
+        // Blog Observer kaydı - Geçici olarak kapatıldı (migration sonrası aktif edilecek)
+        // \Modules\Blog\App\Models\Blog::observe(\Modules\Blog\App\Observers\BlogObserver::class);
+        // \Modules\Blog\App\Models\BlogCategory::observe(\Modules\Blog\App\Observers\BlogCategoryObserver::class);
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-
-        // Önce rotalar yüklenir
-        $this->loadRoutesFrom(module_path('Blog', 'routes/web.php'));
-        $this->loadRoutesFrom(module_path('Blog', 'routes/admin.php'));
 
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
@@ -88,9 +84,10 @@ class BlogServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        $this->commands([
-            \Modules\Blog\App\Console\WarmBlogCacheCommand::class,
-        ]);
+        // Geçici olarak kapatıldı - Command dosyası oluşturulduğunda aktif edilecek
+        // $this->commands([
+        //     \Modules\Blog\App\Console\WarmBlogCacheCommand::class,
+        // ]);
     }
 
     /**

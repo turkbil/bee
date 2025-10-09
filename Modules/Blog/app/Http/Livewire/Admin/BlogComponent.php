@@ -43,7 +43,11 @@ class BlogComponent extends Component
     // Event listeners
     protected $listeners = [
         'refreshPageData' => 'refreshPageData',
-        'translationCompleted' => 'handleTranslationCompleted'
+        'translationCompleted' => 'handleTranslationCompleted',
+        'itemDeleted' => '$refresh',
+        'bulkItemsDeleted' => '$refresh',
+        'resetSelectAll' => 'resetSelectAll',
+        'removeFromSelected' => 'removeFromSelected'
     ];
 
     private BlogService $blogService;

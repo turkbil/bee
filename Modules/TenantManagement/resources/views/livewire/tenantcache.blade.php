@@ -1,5 +1,5 @@
 {{-- Modules/TenantManagement/resources/views/livewire/tenantcache.blade.php --}}
-<div wire:id="{{ $this->getId() }}" class="tenantcache-component-wrapper">
+<div class="tenantcache-component-wrapper">
     <div class="card">
         @include('tenantmanagement::helper')
         <div class="card-body p-0">

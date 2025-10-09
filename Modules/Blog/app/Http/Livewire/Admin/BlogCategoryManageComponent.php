@@ -317,7 +317,7 @@ class BlogCategoryManageComponent extends Component
 
     public function render()
     {
-        return view('blog::admin.livewire.category-manage-component', [
+        return view('blog::admin.livewire.blog-category-manage-component', [
             'jsVariables' => [
                 'currentCategoryId' => $this->categoryId ?? null,
                 'currentLanguage' => $this->currentLanguage ?? 'tr'

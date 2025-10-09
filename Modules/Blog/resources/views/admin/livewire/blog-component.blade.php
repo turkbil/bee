@@ -1,8 +1,8 @@
 @php
-    View::share('pretitle', 'Sayfa Listesi');
+    View::share('pretitle', 'Blog Listesi');
 @endphp
 
-<div wire:id="{{ $this->getId() }}" class="blog-component-wrapper">
+<div class="blog-component-wrapper">
     <div class="card">
         @include('blog::admin.helper')
         <div class="card-body p-0">
@@ -69,10 +69,10 @@
                                            class="form-check-input"
                                            id="selectAllCheckbox"
                                            x-data="{
-                                               indeterminate: {{ count($selectedItems) > 0 && !$selectAll ? 'true' : 'false' }}
+                                               indeterminate: {{ count($selectedItems ?? []) > 0 && !$selectAll ? 'true' : 'false' }}
                                            }"
                                            x-init="$el.indeterminate = indeterminate"
-                                           x-effect="$el.indeterminate = ({{ count($selectedItems) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
+                                           x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
                                            @checked($selectAll)>
                                     <button
                                         class="table-sort {{ $sortField === 'blog_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
@@ -109,7 +109,7 @@
                                                value="{{ $blog->blog_id }}"
                                                class="form-check-input hover-show"
                                                id="checkbox-{{ $blog->blog_id }}"
-                                               @checked(in_array($blog->blog_id, $selectedItems))>
+                                               @checked(in_array($blog->blog_id, $selectedItems ?? []))>
                                     </div>
                                 </td>
                                 <td wire:key="title-{{ $blog->blog_id }}" class="position-relative">

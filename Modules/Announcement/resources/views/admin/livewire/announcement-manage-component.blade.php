@@ -84,7 +84,7 @@
 
                         {{-- MEDYA YÖNETİMİ --}}
                         <div class="mb-4">
-                            <livewire:mediamanagement.universal-media
+                            <livewire:mediamanagement::universal-media
                                 wire:id="announcement-media-component"
                                 :model-id="$announcementId"
                                 model-type="announcement"
@@ -138,7 +138,7 @@
 
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
-                        <livewire:seomanagement.universal-seo-tab :model-id="$announcementId" model-type="announcement"
+                        <livewire:seomanagement::universal-seo-tab :model-id="$announcementId" model-type="announcement"
                             model-class="Modules\Announcement\App\Models\Announcement" />
                     </div>
 

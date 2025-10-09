@@ -2,7 +2,7 @@
     View::share('pretitle', 'Sayfa Listesi');
 @endphp
 
-<div wire:id="{{ $this->getId() }}" class="page-component-wrapper">
+<div class="page-component-wrapper">
     <div class="card">
         @include('page::admin.helper')
         <div class="card-body p-0">

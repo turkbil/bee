@@ -480,7 +480,7 @@ class BlogCategoryComponent extends Component
 
     public function render()
     {
-        return view('blog::admin.livewire.category-component', [
+        return view('blog::admin.livewire.blog-category-component', [
             'categories' => $this->categories,
             'availableLanguages' => $this->availableLanguages
         ]);

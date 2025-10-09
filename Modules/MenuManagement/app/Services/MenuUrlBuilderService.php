@@ -499,32 +499,28 @@ class MenuUrlBuilderService
     
     /**
      * Kullanılabilir modülleri getir
+     * Not: Tenant context'te çalışır, tenant_id'ye gerek yok
      */
     public function getAvailableModules(): array
     {
         $modules = [];
-        
-        // Tenant ID'yi al
-        $tenantId = tenant() ? tenant()->id : null;
-        
-        // ModuleService'ten tenant'a atanmış modülleri getir
-        $tenantModules = $tenantId 
-            ? $this->moduleService->getTenantModuleAssignments($tenantId)
-            : $this->moduleService->getActiveModules();
-        
+
+        // Aktif modülleri getir (zaten tenant context'teyiz)
+        $activeModules = $this->moduleService->getActiveModules();
+
         // Sadece content tipindeki modülleri filtrele
-        $contentModules = $tenantModules->filter(function ($module) {
+        $contentModules = $activeModules->filter(function ($module) {
             return $module->type === 'content';
         });
-        
+
         foreach ($contentModules as $module) {
             $moduleSlug = strtolower($module->name);
-            
+
             // Nwidart Module paketi ile de kontrol et (aktif modül olmalı)
             if (!Module::has($module->name)) {
                 continue;
             }
-            
+
             // Her modülün desteklediği URL tiplerini belirle
             $urlTypes = $this->getModuleUrlTypes($moduleSlug);
             

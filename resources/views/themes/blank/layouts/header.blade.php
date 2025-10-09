@@ -80,6 +80,36 @@
                 max-width: 100vw;
             }
         }
+
+        /* Logo Dark/Light Mode Switch */
+        /* Light mode'da sadece logo-light göster */
+        .logo-dark {
+            display: none;
+        }
+        .logo-light {
+            display: inline-block;
+        }
+
+        /* Dark mode'da sadece logo-dark göster */
+        .dark .logo-light {
+            display: none;
+        }
+        .dark .logo-dark {
+            display: inline-block;
+        }
+
+        /* Footer Logo - Adaptive (Dark mode'da beyaz filtre) */
+        .logo-footer-adaptive {
+            /* Light mode: normal göster */
+        }
+        .dark .logo-footer-adaptive {
+            /* Dark mode: beyaz filtre uygula */
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+        .dark .logo-footer-adaptive:hover {
+            opacity: 1;
+        }
     </style>
     
     {{-- Livewire Styles --}}
@@ -149,9 +179,9 @@
 <body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 flex flex-col">
 
 
-    <header class="bg-white shadow dark:bg-gray-800 transition-colors duration-300" x-data="{ mobileMenuOpen: false }">
+    <header class="sticky top-0 z-50 bg-white shadow dark:bg-gray-800 transition-colors duration-300" x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-14 sm:h-16">
+            <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         @php
@@ -159,12 +189,47 @@
                             $defaultLocale = get_tenant_default_locale();
                             $homeUrl = $currentLocale === $defaultLocale ? url('/') : url('/' . $currentLocale);
                             $siteLogo = setting('site_logo');
+                            $siteKontrastLogo = setting('site_kontrast_logo');
                             $siteTitle = setting('site_title', config('app.name'));
+
+                            // Logo var mı kontrolleri
+                            $hasLightLogo = $siteLogo && $siteLogo !== 'Logo yok';
+                            $hasDarkLogo = $siteKontrastLogo && $siteKontrastLogo !== 'Logo yok';
+                            $hasBothLogos = $hasLightLogo && $hasDarkLogo;
                         @endphp
-                        <a href="{{ $homeUrl }}" class="inline-flex items-center text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300" title="{{ $siteTitle }}" alt="{{ $siteTitle }}">
-                            @if($siteLogo && $siteLogo !== 'Logo yok')
-                                <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" title="{{ $siteTitle }}" width="auto" height="32" class="h-6 sm:h-8 w-auto">
+                        <a href="{{ $homeUrl }}" class="inline-flex items-center text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300" aria-label="{{ $siteTitle }} - Ana Sayfa">
+                            @if($hasBothLogos)
+                                {{-- Her iki logo da var - Dark/Light mode geçişi yap --}}
+                                <img src="{{ cdn($siteLogo) }}"
+                                     alt="{{ $siteTitle }} Logo"
+                                     width="120"
+                                     height="32"
+                                     class="h-6 sm:h-8 w-auto logo-light"
+                                     fetchpriority="high">
+                                <img src="{{ cdn($siteKontrastLogo) }}"
+                                     alt="{{ $siteTitle }} Logo (Karanlık Mod)"
+                                     width="120"
+                                     height="32"
+                                     class="h-6 sm:h-8 w-auto logo-dark"
+                                     fetchpriority="high">
+                            @elseif($hasLightLogo)
+                                {{-- Sadece normal logo var - Her zaman göster --}}
+                                <img src="{{ cdn($siteLogo) }}"
+                                     alt="{{ $siteTitle }} Logo"
+                                     width="120"
+                                     height="32"
+                                     class="h-6 sm:h-8 w-auto"
+                                     fetchpriority="high">
+                            @elseif($hasDarkLogo)
+                                {{-- Sadece kontrast logo var - Her zaman göster --}}
+                                <img src="{{ cdn($siteKontrastLogo) }}"
+                                     alt="{{ $siteTitle }} Logo"
+                                     width="120"
+                                     height="32"
+                                     class="h-6 sm:h-8 w-auto"
+                                     fetchpriority="high">
                             @else
+                                {{-- Hiç logo yok - Site title göster --}}
                                 {{ $siteTitle }}
                             @endif
                         </a>
@@ -248,24 +313,6 @@
                             <a href="{{ href('Portfolio', 'index') }}"
                                 class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Portfolyo</a>
                         @endif
-                        <button aria-label="Sistem önbelleğini temizle"
-                            onclick="clearSystemCache(this)"
-                            class="inline-flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors duration-200">
-                            <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="button-text">Cache</span>
-                            <svg class="h-4 w-4 ml-1 loading-spinner hidden animate-spin" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm6 14a6 6 0 100-12 6 6 0 000 12z"></path>
-                            </svg>
-                        </button>
-                        @auth
-                        @if(Auth::user()->roles->count() > 0)
-                        <a href="/admin/dashboard"
-                            class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Admin
-                            Paneli</a>
-                        @endif
-                        @endauth
                     </nav>
                 </div>
                 <div class="flex items-center space-x-1">
@@ -494,14 +541,6 @@
                         <a href="{{ href('Portfolio', 'index') }}" @click="mobileMenuOpen = false"
                             class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Portfolyo</a>
                     @endif
-                    
-                    {{-- Mobile Admin Panel Link --}}
-                    @auth
-                    @if(Auth::user()->roles->count() > 0)
-                    <a href="/admin/dashboard" @click="mobileMenuOpen = false"
-                        class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 transition-colors duration-300">Admin Paneli</a>
-                    @endif
-                    @endauth
                 </div>
             </div>
         </div>

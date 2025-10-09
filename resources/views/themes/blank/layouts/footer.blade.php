@@ -9,15 +9,51 @@
                 <div class="space-y-4">
                     @php
                         $siteLogo = setting('site_logo');
+                        $siteKontrastLogo = setting('site_kontrast_logo');
                         $siteTitle = setting('site_title', config('app.name'));
                         $siteDescription = setting('site_description', 'Modern web çözümleri ile dijital dünyanızı şekillendiriyoruz.');
+
+                        // Footer için logo mantığı
+                        $hasKontrastLogo = $siteKontrastLogo && $siteKontrastLogo !== 'Logo yok';
+                        $hasNormalLogo = $siteLogo && $siteLogo !== 'Logo yok';
+                        $hasBothLogos = $hasNormalLogo && $hasKontrastLogo;
                     @endphp
-                    
+
                     <div class="flex items-center">
-                        @if($siteLogo && $siteLogo !== 'Logo yok')
-                            <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" width="auto" height="32" class="h-8 w-auto mr-3">
+                        @if($hasBothLogos)
+                            {{-- Her iki logo da var - Dark mode'da kontrast, Light mode'da normal --}}
+                            <img src="{{ cdn($siteLogo) }}"
+                                 alt="{{ $siteTitle }}"
+                                 width="120"
+                                 height="32"
+                                 class="h-8 w-auto logo-light"
+                                 fetchpriority="low">
+                            <img src="{{ cdn($siteKontrastLogo) }}"
+                                 alt="{{ $siteTitle }}"
+                                 width="120"
+                                 height="32"
+                                 class="h-8 w-auto logo-dark"
+                                 fetchpriority="low">
+                        @elseif($hasKontrastLogo)
+                            {{-- Sadece kontrast logo var - Dark mode'da göster, Light mode'da beyaz filtre ile --}}
+                            <img src="{{ cdn($siteKontrastLogo) }}"
+                                 alt="{{ $siteTitle }}"
+                                 width="120"
+                                 height="32"
+                                 class="h-8 w-auto"
+                                 fetchpriority="low">
+                        @elseif($hasNormalLogo)
+                            {{-- Sadece normal logo var - Light mode'da normal, Dark mode'da beyaz filtre ile --}}
+                            <img src="{{ cdn($siteLogo) }}"
+                                 alt="{{ $siteTitle }}"
+                                 width="120"
+                                 height="32"
+                                 class="h-8 w-auto logo-footer-adaptive"
+                                 fetchpriority="low">
+                        @else
+                            {{-- Logo yoksa sadece başlık göster --}}
+                            <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $siteTitle }}</h2>
                         @endif
-                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $siteTitle }}</h2>
                     </div>
                     
                     <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -150,8 +186,6 @@
                 <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-gray-500 dark:text-gray-400">SEO:</span>
-                        
                             {{-- Sitemap --}}
                             <a href="{{ route('sitemap') }}" 
                                title="XML Sitemap" 
@@ -184,17 +218,18 @@
                                 Speed
                             </a>
                         
-                            {{-- Cache Clear Button --}}
-                            @if(config('responsecache.enabled'))
-                                <button onclick="clearTenantCache()" 
-                                        title="Tenant Cache Temizle" 
-                                        class="inline-flex items-center px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors cursor-pointer">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-                                    </svg>
-                                    Cache ✓
-                                </button>
-                            @endif
+                            {{-- Cache Clear Button - System Cache --}}
+                            <button onclick="clearSystemCache(this)"
+                                    title="Sistem Önbelleğini Temizle"
+                                    class="inline-flex items-center px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 transition-colors cursor-pointer">
+                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="button-text">Cache</span>
+                                <svg class="w-3 h-3 ml-1 loading-spinner hidden animate-spin" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm6 14a6 6 0 100-12 6 6 0 000 12z"/>
+                                </svg>
+                            </button>
                         
                             {{-- Theme Badge --}}
                             <span class="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded text-xs font-medium">
@@ -224,31 +259,7 @@
             // Livewire and Alpine.js initialization
         });
         
-        // Tenant Cache Clear Function
-        function clearTenantCache() {
-            if (confirm('Tenant cache temizlensin mi?')) {
-                fetch('/admin/cache/clear', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('✅ Tenant cache temizlendi!');
-                        location.reload();
-                    } else {
-                        alert('❌ Cache temizlenirken hata oluştu');
-                    }
-                })
-                .catch(error => {
-                    console.error('Cache clear error:', error);
-                    alert('❌ İstek sırasında hata oluştu');
-                });
-            }
-        }
+        // clearSystemCache function is in header.blade.php
     </script>
 
     {{-- GLightbox - Image Lightbox Library (Async Loading) --}}

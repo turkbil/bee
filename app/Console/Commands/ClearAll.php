@@ -10,7 +10,7 @@ use App\Services\TenantCacheService;
 class ClearAll extends Command
 {
     protected $signature = 'app:clear-all';
-    protected $description = 'Tüm önbellekleri ve storage içindeki yüklenen dosyaları, fotoğrafları temizler';
+    protected $description = 'Tüm önbellekleri, cache, sessions, logs ve geçici dosyaları temizler (KULLANICI DOSYALARI KORUNUR)';
 
     public function handle()
     {
@@ -45,12 +45,12 @@ class ClearAll extends Command
             }
         }
         
-        // Ana storage içindeki klasörleri temizle
+        // Ana storage içindeki klasörleri temizle (KULLANICI DOSYALARI HARİÇ!)
         $this->cleanStorageDirectories([
-            'app',
+            // 'app', // KALDIRILDI - Kullanıcı dosyaları burada!
             'debugbar',
             'framework/cache',
-            'framework/sessions', 
+            'framework/sessions',
             'framework/testing',
             'framework/views',
             'logs'
@@ -111,7 +111,7 @@ class ClearAll extends Command
         }
         foreach ($tenantDirs as $tenantDir) {
             $this->cleanStorageDirectories([
-                $tenantDir . '/app',
+                // $tenantDir . '/app', // KALDIRILDI - Tenant dosyaları burada!
                 $tenantDir . '/debugbar',
                 $tenantDir . '/framework/cache',
                 $tenantDir . '/framework/sessions',
@@ -157,46 +157,26 @@ class ClearAll extends Command
             }
         }
         
-        // Public storage içeriklerini temizle
-        if (File::exists(public_path('storage'))) {
-            $this->info('Public storage içeriği temizleniyor...');
-            $directories = File::directories(public_path('storage'));
-            
-            foreach ($directories as $directory) {
-                try {
-                    File::deleteDirectory($directory);
-                    // Klasörü yeniden oluştur
-                    File::makeDirectory($directory, 0755, true, true);
-                } catch (\Exception $e) {
-                    $this->warn("İzin hatası: {$directory} klasörü işlenemedi.");
-                }
-            }
-            
-            // Doğrudan storage altındaki dosyaları temizle (.gitignore hariç)
-            $files = File::files(public_path('storage'));
-            foreach ($files as $file) {
-                if (!str_contains($file->getFilename(), '.gitignore')) {
-                    try {
-                        File::delete($file->getPathname());
-                    } catch (\Exception $e) {
-                        $this->warn("İzin hatası: {$file->getPathname()} dosyası silinemedi.");
-                    }
-                }
-            }
-        }
+        // Public storage içeriklerini temizle - KALDIRILDI!
+        // NEDEN: Kullanıcı yüklemeleri public/storage'da saklanıyor
+        // Bu kısım logoları, resimleri, dosyaları siliyordu!
+        // if (File::exists(public_path('storage'))) {
+        //     $this->info('Public storage içeriği temizleniyor...');
+        //     ...
+        // }
         
-        // Sonradan eklenen diğer storage klasörlerini temizle
+        // Sonradan eklenen diğer storage klasörlerini temizle (KULLANICI DOSYALARI HARİÇ!)
         $extraStorageDirs = [
-            'app/public',
+            // 'app/public', // KALDIRILDI - Kullanıcı dosyaları burada!
             'app/livewire-tmp',
             'framework/cache/data',
             'framework/cache/laravel-excel',
             'framework/testing/disks'
         ];
-        
+
         $this->cleanStorageDirectories($extraStorageDirs);
         
-        $this->info('Tüm önbellekler, fotoğraflar ve yüklenen dosyalar başarıyla temizlendi!');
+        $this->info('✅ Tüm önbellekler ve geçici dosyalar başarıyla temizlendi! (Kullanıcı dosyaları korundu)');
         
         return Command::SUCCESS;
     }

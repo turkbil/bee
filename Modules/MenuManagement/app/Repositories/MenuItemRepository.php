@@ -113,36 +113,21 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
                                    ->max('sort_order') ?? -1;
             $data['sort_order'] = $maxOrder + 1;
         }
-        
-        // Depth level hesapla
-        if (!isset($data['depth_level'])) {
-            $data['depth_level'] = $this->calculateDepthLevel($data['parent_id'] ?? null);
-        }
-        
+
         $item = $this->model->create($data);
         $this->clearCache();
-        
+
         return $item;
     }
     
     public function update(int $id, array $data): bool
     {
-        // Parent değişmişse depth level'ı yeniden hesapla
-        if (isset($data['parent_id'])) {
-            $data['depth_level'] = $this->calculateDepthLevel($data['parent_id']);
-        }
-        
         $result = $this->model->where('item_id', $id)->update($data);
-        
+
         if ($result) {
             $this->clearCache();
-            
-            // Eğer parent değiştiyse çocukların depth'ini güncelle
-            if (isset($data['parent_id'])) {
-                $this->updateChildrenDepth($id);
-            }
         }
-        
+
         return (bool) $result;
     }
     
@@ -200,56 +185,46 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
     
     public function moveToParent(int $itemId, ?int $parentId): bool
     {
-        $depthLevel = $this->calculateDepthLevel($parentId);
-        
-        // Max depth kontrolü (3 seviye)
-        if ($depthLevel > 3) {
-            return false;
-        }
-        
         // Yeni parent'taki son sırayı al
         $maxOrder = $this->model->where('parent_id', $parentId)
                                ->max('sort_order') ?? 0;
-        
+
         $result = $this->model->where('item_id', $itemId)->update([
             'parent_id' => $parentId,
-            'depth_level' => $depthLevel,
             'sort_order' => $maxOrder + 1
         ]);
-        
+
         if ($result) {
             $this->clearCache();
-            $this->updateChildrenDepth($itemId);
         }
-        
+
         return (bool) $result;
     }
     
     public function reorderItems(int $menuId, array $order): bool
     {
         $updated = 0;
-        
+
         foreach ($order as $index => $itemData) {
             if (!isset($itemData['item_id'])) {
                 continue;
             }
-            
+
             $updateData = [
                 'sort_order' => $index + 1,
-                'parent_id' => $itemData['parent_id'] ?? null,
-                'depth_level' => $this->calculateDepthLevel($itemData['parent_id'] ?? null)
+                'parent_id' => $itemData['parent_id'] ?? null
             ];
-            
+
             $this->model->where('item_id', $itemData['item_id'])
                        ->where('menu_id', $menuId)
                        ->update($updateData);
             $updated++;
         }
-        
+
         if ($updated > 0) {
             $this->clearCache();
         }
-        
+
         return $updated > 0;
     }
     
@@ -286,14 +261,11 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
                 }
 
                 // Update data prepare
-                $updateData = ['sort_order' => $sortOrder];
+                $updateData = [
+                    'sort_order' => $sortOrder,
+                    'parent_id' => $parentId
+                ];
 
-                // Parent ID update (null için de geçerli)
-                $updateData['parent_id'] = $parentId;
-                
-                // Depth level hesapla
-                $updateData['depth_level'] = $this->calculateDepthLevel($parentId);
-                
                 $result = $this->model->where('item_id', $itemId)
                     ->update($updateData);
                 
@@ -307,8 +279,15 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
             }
             
             return $updated > 0;
-            
+
         } catch (\Exception $e) {
+            \Log::error('❌ MenuItemRepository::updateOrder FAILED', [
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+                'items_received' => $items
+            ]);
             return false;
         }
     }
@@ -330,31 +309,7 @@ readonly class MenuItemRepository implements MenuItemRepositoryInterface
     {
         Cache::tags($this->getCacheTags())->flush();
     }
-    
-    private function calculateDepthLevel(?int $parentId): int
-    {
-        if ($parentId === null) {
-            return 0;
-        }
-        
-        $parent = $this->model->where('item_id', $parentId)->first(['depth_level']);
-        
-        return $parent ? $parent->depth_level + 1 : 0;
-    }
-    
-    private function updateChildrenDepth(int $parentId): void
-    {
-        $children = $this->model->where('parent_id', $parentId)->get(['item_id', 'depth_level']);
-        
-        foreach ($children as $child) {
-            $newDepth = $this->calculateDepthLevel($parentId);
-            $this->model->where('item_id', $child->item_id)->update(['depth_level' => $newDepth]);
-            
-            // Recursive olarak çocukların çocuklarını da güncelle
-            $this->updateChildrenDepth($child->item_id);
-        }
-    }
-    
+
     private function deleteChildren(int $parentId): void
     {
         $children = $this->model->where('parent_id', $parentId)->get(['item_id']);

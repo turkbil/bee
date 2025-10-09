@@ -8,124 +8,113 @@ class TenantStorageHelper
     /**
      * Dosyayı tenant için doğru bir şekilde yükler
      */
-    public static function storeTenantFile($file, $relativePath, $fileName, $tenantId) 
+    public static function storeTenantFile($file, $relativePath, $fileName, $tenantId)
     {
-        if ($tenantId == 1) {
-            // CENTRAL - app/public/ altına yükle
-            $targetDir = storage_path('app/public/' . $relativePath);
-            $targetFile = $targetDir . '/' . $fileName;
-            
-            // Klasör yoksa oluştur
-            if (!file_exists($targetDir)) {
-                mkdir($targetDir, 0755, true);
+        $disk = Storage::disk('public');
+        $fullPath = $relativePath . '/' . $fileName;
+
+        try {
+            // Klasör yoksa oluştur (Laravel Storage kullanarak - tenant-aware)
+            if (!$disk->exists($relativePath)) {
+                // makeDirectory otomatik olarak tenant storage path'ini kullanır
+                $disk->makeDirectory($relativePath);
+
+                // Directory oluşturulduktan sonra permission düzelt (tenant-aware)
+                $actualPath = $disk->path($relativePath);
+                if (file_exists($actualPath)) {
+                    @chmod($actualPath, 0775);
+                }
             }
-            
+
+            // Dosyayı Laravel Storage ile yükle (tenant-aware)
+            $fileContent = file_get_contents($file->getRealPath());
+            $result = $disk->put($fullPath, $fileContent);
+
+            if (!$result) {
+                throw new \Exception("Dosya yüklenemedi: " . $fullPath);
+            }
+
+            // Dosya permission'ını düzelt (tenant-aware)
+            $actualFile = $disk->path($fullPath);
+            if (file_exists($actualFile)) {
+                @chmod($actualFile, 0664);
+            }
+
+            // Tenant prefix ile path döndür
+            if ($tenantId == 1) {
+                return 'storage/tenant1/' . $fullPath;
+            } else {
+                return "storage/tenant{$tenantId}/{$fullPath}";
+            }
+
+        } catch (\Exception $e) {
+            // Detaylı hata mesajı (tenant-aware debug info)
+            $errorMsg = "Dosya yükleme hatası (Tenant {$tenantId}): " . $e->getMessage();
+            $errorMsg .= " | Path: {$relativePath}/{$fileName}";
+
+            // Debug: Actual storage path
             try {
-                // Dosyayı kopyala
-                if (is_uploaded_file($file->getPathname())) {
-                    $result = move_uploaded_file($file->getPathname(), $targetFile);
-                } else {
-                    $result = copy($file->getPathname(), $targetFile);
-                }
-                
-                if (!$result) {
-                    throw new \Exception("Central dosya kopyalanamadı");
-                }
-                
-                return 'storage/tenant1/' . $relativePath . '/' . $fileName;
-            } catch (\Exception $e) {
-                throw $e;
+                $errorMsg .= " | Actual Storage: " . $disk->path($relativePath);
+            } catch (\Exception $ex) {
+                $errorMsg .= " | Storage path alınamadı";
             }
-        } else {
-            // TENANT - direkt app/public/ altına yükle
-            $correctDir = storage_path('app/public/' . $relativePath);
-            $correctFile = $correctDir . '/' . $fileName;
-            
-            try {
-                // Doğru klasörü oluştur
-                if (!file_exists($correctDir)) {
-                    mkdir($correctDir, 0755, true);
-                }
-                
-                // Dosyayı kopyala
-                if (is_uploaded_file($file->getPathname())) {
-                    $result = move_uploaded_file($file->getPathname(), $correctFile);
-                } else {
-                    $result = copy($file->getPathname(), $correctFile);
-                }
-                
-                if (!$result) {
-                    throw new \Exception("Tenant dosya kopyalanamadı");
-                }
-                
-                return "storage/tenant{$tenantId}/{$relativePath}/{$fileName}";
-            } catch (\Exception $e) {
-                throw $e;
-            }
+
+            throw new \Exception($errorMsg);
         }
     }
     
     /**
      * Dosyayı siler
      */
-    public static function deleteFile($path) 
+    public static function deleteFile($path)
     {
         if (empty($path)) {
             return false;
         }
-        
-        // "storage/tenant{id}" formatını kontrol et
-        if (preg_match('/^storage\/tenant(\d+)\/(.*)$/', $path, $matches)) {
-            $tenantId = $matches[1];
-            $relativePath = $matches[2];
-            
-            if ($tenantId == 1) {
-                // Central dosyası
-                $fullPath = storage_path('app/public/' . $relativePath);
-                $result = file_exists($fullPath) && unlink($fullPath);
-                
-                return $result;
-            } else {
-                // Tenant dosyası - direkt app/public altında olmalı
-                $correctPath = storage_path('app/public/' . $relativePath);
-                $result = file_exists($correctPath) && unlink($correctPath);
-                
-                // YANLIŞ yol - iç içe tenant klasöründeki dosyayı da sil
+
+        $disk = Storage::disk('public');
+
+        try {
+            // "storage/tenant{id}" formatını kontrol et
+            if (preg_match('/^storage\/tenant(\d+)\/(.*)$/', $path, $matches)) {
+                $relativePath = $matches[2];
+
+                // Laravel Storage ile sil
+                if ($disk->exists($relativePath)) {
+                    return $disk->delete($relativePath);
+                }
+
+                // Yanlış yoldaki dosyayı da kontrol et (eski hatalar için)
+                $tenantId = $matches[1];
                 $wrongPath = storage_path('tenant' . $tenantId . '/app/public/' . $relativePath);
-                $wrongResult = file_exists($wrongPath) && unlink($wrongPath);
-                
-                return $result || $wrongResult;
+                if (file_exists($wrongPath)) {
+                    return @unlink($wrongPath);
+                }
+
+                return false;
             }
-        }
-        
-        // Eski format (tenant{id}/) için destek
-        if (preg_match('/^tenant(\d+)\/(.*)$/', $path, $matches)) {
-            $tenantId = $matches[1];
-            $relativePath = $matches[2];
-            
-            if ($tenantId == 1) {
-                // Central dosyası
-                $fullPath = storage_path('app/public/' . $relativePath);
-                $result = file_exists($fullPath) && unlink($fullPath);
-                
-                return $result;
-            } else {
-                // Tenant dosyası - direkt app/public altında olmalı
-                $correctPath = storage_path('app/public/' . $relativePath);
-                $result = file_exists($correctPath) && unlink($correctPath);
-                
-                // Yanlış yol
-                $wrongPath = storage_path('tenant' . $tenantId . '/app/public/' . $relativePath);
-                $wrongResult = file_exists($wrongPath) && unlink($wrongPath);
-                
-                return $result || $wrongResult;
+
+            // Eski format (tenant{id}/) için destek
+            if (preg_match('/^tenant(\d+)\/(.*)$/', $path, $matches)) {
+                $relativePath = $matches[2];
+
+                if ($disk->exists($relativePath)) {
+                    return $disk->delete($relativePath);
+                }
+
+                return false;
             }
+
+            // Prefix olmayan yol
+            if ($disk->exists($path)) {
+                return $disk->delete($path);
+            }
+
+            return false;
+
+        } catch (\Exception $e) {
+            // Sessizce başarısız ol (log kaydı yapılabilir)
+            return false;
         }
-        
-        // Prefix olmayan yol
-        $fullPath = storage_path('app/public/' . $path);
-        $result = file_exists($fullPath) && unlink($fullPath);
-        
-        return $result;
     }
 }

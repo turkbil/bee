@@ -35,18 +35,37 @@ class StorageTenancyBootstrapper implements TenancyBootstrapper
     {
         $storagePath = storage_path("tenant{$tenantId}");
 
+        // Ana storage klasörünün owner:group bilgisini al
+        $parentStorage = storage_path();
+        $stat = @stat($parentStorage);
+        $owner = $stat ? posix_getpwuid($stat['uid'])['name'] : null;
+        $group = $stat ? posix_getgrgid($stat['gid'])['name'] : null;
+
         // Ana klasör yoksa oluştur
         if (!is_dir($storagePath)) {
             mkdir($storagePath, 0775, true);
+
+            // Ownership ve permission düzelt
+            if ($owner && $group) {
+                @chown($storagePath, $owner);
+                @chgrp($storagePath, $group);
+                @chmod($storagePath, 0775);
+            }
+
             Log::info("✅ Created storage for tenant{$tenantId}");
         }
 
         // Alt klasörleri oluştur
         $directories = [
             'framework/cache',
+            'framework/cache/data',         // Laravel cache data
             'framework/sessions',
             'framework/views',
             'app/public',
+            'app/public/widgets',            // Widget dosyaları
+            'app/livewire-tmp',              // Livewire dosya upload için gerekli
+            'media-library/temp',            // Media upload geçici dosyalar
+            'settings/files',                // Setting dosya uploads
             'logs',
         ];
 
@@ -54,6 +73,13 @@ class StorageTenancyBootstrapper implements TenancyBootstrapper
             $fullPath = "{$storagePath}/{$dir}";
             if (!is_dir($fullPath)) {
                 mkdir($fullPath, 0775, true);
+
+                // Ownership ve permission düzelt
+                if ($owner && $group) {
+                    @chown($fullPath, $owner);
+                    @chgrp($fullPath, $group);
+                    @chmod($fullPath, 0775);
+                }
             }
         }
     }

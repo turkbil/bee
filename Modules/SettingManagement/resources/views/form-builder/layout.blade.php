@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="{{ asset('admin-assets/css/tabler.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin-assets/css/tabler-vendors.min.css') }}">
     
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/admin-assets/libs/fontawesome-pro@7.1.0/css/all.css">
     
     
     <link rel="stylesheet" href="{{ asset('admin-assets/libs/form-builder/settingmanagement/css/form-builder.css') }}">

@@ -626,19 +626,18 @@ class MenuItemManageComponent extends Component
         try {
             // ID: 15'i ana kategoriye çevir
             MenuItem::where('item_id', 15)->update([
-                'parent_id' => null,
-                'depth_level' => 0
+                'parent_id' => null
             ]);
-            
+
             $this->dispatch('toast', [
                 'title' => __('admin.success'),
                 'message' => 'Circular reference problemi düzeltildi',
                 'type' => 'success'
             ]);
-            
+
             $this->loadHeaderMenu();
             $this->dispatch('refresh-sortable');
-            
+
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => __('admin.error'),

@@ -84,11 +84,8 @@ class BlogCategoryComponent extends Component
     #[Computed]
     public function categories()
     {
-        // Kategori listesi - sort_order'a göre sırala
-        // Parent-child ilişkisi zaten doğru sort_order ile yönetiliyor
-        $query = BlogCategory::withCount('blogs')
-            ->orderBy('sort_order', 'asc')
-            ->orderBy('category_id', 'asc');
+        // Kategori listesi - hiyerarşik sıralama ile
+        $query = BlogCategory::withCount('blogs');
 
         // Search filter
         if (!empty($this->search)) {
@@ -105,7 +102,45 @@ class BlogCategoryComponent extends Component
 
         $items = $query->get();
 
-        return $items;
+        // Hiyerarşik sıralama
+        return $this->buildHierarchicalList($items);
+    }
+
+    /**
+     * Kategorileri hiyerarşik olarak sırala
+     * Parent kategoriler ve onların altında childları
+     */
+    private function buildHierarchicalList($categories)
+    {
+        $result = collect([]);
+
+        // Parent kategorileri al (parent_id = null)
+        $parents = $categories->whereNull('parent_id')->sortBy('sort_order')->values();
+
+        foreach ($parents as $parent) {
+            // Parent'ı ekle
+            $result->push($parent);
+
+            // Bu parent'ın childlarını recursive olarak ekle
+            $this->addChildren($result, $categories, $parent->category_id);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Recursive olarak child kategorileri ekle
+     */
+    private function addChildren($result, $allCategories, $parentId)
+    {
+        $children = $allCategories->where('parent_id', $parentId)->sortBy('sort_order')->values();
+
+        foreach ($children as $child) {
+            $result->push($child);
+
+            // Bu child'ın da childları varsa onları da ekle
+            $this->addChildren($result, $allCategories, $child->category_id);
+        }
     }
 
     /**
@@ -115,11 +150,12 @@ class BlogCategoryComponent extends Component
     #[Computed]
     public function hierarchicalCategories()
     {
-        $categories = BlogCategory::orderBy('sort_order', 'asc')
-            ->orderBy('category_id', 'asc')
-            ->get();
+        $categories = BlogCategory::get();
 
-        return $categories->map(function($category) {
+        // Hiyerarşik sıralama
+        $sorted = $this->buildHierarchicalList($categories);
+
+        return $sorted->map(function($category) {
             $depth = $category->depth_level ?? 0;
             $prefix = str_repeat('─', $depth);
             if ($depth > 0) {

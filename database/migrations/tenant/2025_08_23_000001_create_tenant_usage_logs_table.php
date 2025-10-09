@@ -8,7 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tenant_usage_logs', function (Blueprint $table) {
+        if (!Schema::hasTable('tenant_usage_logs')) {
+            Schema::create('tenant_usage_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tenant_id');
             $table->string('resource_type'); // 'api', 'database', 'cache', 'storage', 'ai', 'cpu', 'memory'
@@ -33,7 +34,8 @@ return new class extends Migration
             $table->index(['tenant_id', 'resource_type', 'recorded_at']);
             $table->index(['resource_type', 'status']);
             $table->index(['recorded_at']); // Temizlik için
-        });
+            });
+        }
     }
 
     public function down(): void

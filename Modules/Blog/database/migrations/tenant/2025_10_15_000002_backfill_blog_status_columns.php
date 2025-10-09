@@ -7,6 +7,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Aktif yazıları yayımlanmış kabul et, yayın tarihi yoksa oluşturulma tarihini kullan
         DB::table('blogs')
             ->where(function ($query) {
                 $query->whereNull('status')
@@ -22,6 +23,7 @@ return new class extends Migration
                 'published_at' => DB::raw('COALESCE(published_at, created_at)')
             ]);
 
+        // Aktif olmayan ve statüsü boş olan kayıtları taslak olarak işaretle
         DB::table('blogs')
             ->where(function ($query) {
                 $query->whereNull('status')

@@ -33,33 +33,44 @@ return new class extends Migration
         // JSON slug arama için virtual column indexes (MySQL 8.0+ / MariaDB 10.5+)
         // Dinamik olarak system_languages'dan alınır
         if (DB::getDriverName() === 'mysql') {
-            $version = DB::selectOne('SELECT VERSION() as version')->version;
+            try {
+                $versionResult = DB::selectOne('SELECT VERSION() as version');
 
-            // MySQL 8.0+ veya MariaDB 10.5+ kontrolü
-            $isMariaDB = stripos($version, 'MariaDB') !== false;
+                if ($versionResult && isset($versionResult->version)) {
+                    $version = $versionResult->version;
 
-            if ($isMariaDB) {
-                // MariaDB için versiyon kontrolü (10.5+)
-                preg_match('/(\d+\.\d+)/', $version, $matches);
-                $mariaVersion = isset($matches[1]) ? (float) $matches[1] : 0;
-                $supportsJsonIndex = $mariaVersion >= 10.5;
-            } else {
-                // MySQL için versiyon kontrolü (8.0+)
-                $majorVersion = (int) explode('.', $version)[0];
-                $supportsJsonIndex = $majorVersion >= 8;
-            }
+                    // MySQL 8.0+ veya MariaDB 10.5+ kontrolü
+                    $isMariaDB = stripos($version, 'MariaDB') !== false;
 
-            if ($supportsJsonIndex) {
-                // Config'den sistem dillerini al
-                $systemLanguages = config('modules.system_languages', ['tr', 'en']);
+                    if ($isMariaDB) {
+                        // MariaDB için versiyon kontrolü (10.5+)
+                        preg_match('/(\d+\.\d+)/', $version, $matches);
+                        $mariaVersion = isset($matches[1]) ? (float) $matches[1] : 0;
+                        $supportsJsonIndex = $mariaVersion >= 10.5;
+                    } else {
+                        // MySQL için versiyon kontrolü (8.0+)
+                        $majorVersion = (int) explode('.', $version)[0];
+                        $supportsJsonIndex = $majorVersion >= 8;
+                    }
 
-                foreach ($systemLanguages as $locale) {
-                    DB::statement("
-                        CREATE INDEX blogs_slug_{$locale}_idx ON blogs (
-                            (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) AS CHAR(255)))
-                        )
-                    ");
+                    if ($supportsJsonIndex) {
+                        // Config'den sistem dillerini al - SABİT DİL KODU YOK!
+                        $systemLanguages = config('modules.system_languages');
+
+                        if (!empty($systemLanguages) && is_array($systemLanguages)) {
+                            foreach ($systemLanguages as $locale) {
+                                DB::statement("
+                                    ALTER TABLE blogs
+                                    ADD INDEX blogs_slug_{$locale} (
+                                        (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) AS CHAR(255)) COLLATE utf8mb4_unicode_ci)
+                                    )
+                                ");
+                            }
+                        }
+                    }
                 }
+            } catch (\Exception $e) {
+                // Pretend modda veya hata durumunda skip et
             }
         }
     }

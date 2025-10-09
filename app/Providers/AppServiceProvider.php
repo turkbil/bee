@@ -310,7 +310,7 @@ class AppServiceProvider extends ServiceProvider
     protected function isProcessRunning($pid): bool
     {
         if (empty($pid)) return false;
-        
+
         // macOS/Linux için process kontrol
         $result = shell_exec("ps -p {$pid} -o pid=");
         return !empty(trim($result));

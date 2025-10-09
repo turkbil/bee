@@ -2,7 +2,7 @@
     View::share('pretitle', 'Sayfa Listesi');
 @endphp
 
-<div wire:id="{{ $this->getId() }}" class="announcement-component-wrapper">
+<div class="announcement-component-wrapper">
     <div class="card">
         @include('announcement::admin.helper')
         <div class="card-body p-0">
@@ -69,11 +69,11 @@
                                            class="form-check-input"
                                            id="selectAllCheckbox"
                                            x-data="{
-                                               indeterminate: {{ count($selectedItems) > 0 && !$selectAll ? 'true' : 'false' }}
+                                               selectedCount: @js(count($selectedItems ?? [])),
+                                               selectAllVal: @js($selectAll ?? false)
                                            }"
-                                           x-init="$el.indeterminate = indeterminate"
-                                           x-effect="$el.indeterminate = ({{ count($selectedItems) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
-                                           @checked($selectAll)>
+                                           x-init="$el.indeterminate = (selectedCount > 0 && !selectAllVal)"
+                                           x-effect="$el.indeterminate = ($wire.selectedItems.length > 0 && !$wire.selectAll)">
                                     <button
                                         class="table-sort {{ $sortField === 'announcement_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                         wire:click="sortBy('announcement_id')">

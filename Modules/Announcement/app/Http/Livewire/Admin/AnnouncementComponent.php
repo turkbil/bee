@@ -34,8 +34,9 @@ class AnnouncementComponent extends Component
     public $sortDirection = 'desc';
 
     // Bulk actions properties (WithBulkActions trait için gerekli)
-    // Note: Bu properties WithBulkActions trait'inde de tanımlı ama Livewire component'te
-    // override edilmesi gerekiyor. Trait'teki default değerler component'e taşınmalı.
+    public $selectedItems = [];
+    public $selectAll = false;
+    public $bulkActionsEnabled = false;
 
     // Hibrit dil sistemi için dinamik dil listesi
     private ?array $availableSiteLanguages = null;
@@ -43,7 +44,11 @@ class AnnouncementComponent extends Component
     // Event listeners
     protected $listeners = [
         'refreshPageData' => 'refreshPageData',
-        'translationCompleted' => 'handleTranslationCompleted'
+        'translationCompleted' => 'handleTranslationCompleted',
+        'itemDeleted' => '$refresh',
+        'bulkItemsDeleted' => '$refresh',
+        'resetSelectAll' => 'resetSelectAll',
+        'removeFromSelected' => 'removeFromSelected'
     ];
 
     private AnnouncementService $announcementService;
@@ -215,6 +220,11 @@ class AnnouncementComponent extends Component
             'announcements' => $announcements,
             'currentSiteLocale' => $this->siteLocale,
             'siteLanguages' => $this->availableSiteLanguages,
+            'selectedItems' => $this->selectedItems,
+            'selectAll' => $this->selectAll,
+            'bulkActionsEnabled' => $this->bulkActionsEnabled,
+            'sortField' => $this->sortField,
+            'sortDirection' => $this->sortDirection,
         ]);
     }
 

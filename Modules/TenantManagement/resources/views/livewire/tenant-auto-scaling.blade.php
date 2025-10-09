@@ -1,5 +1,5 @@
 {{-- Modules/TenantManagement/resources/views/livewire/tenant-auto-scaling.blade.php --}}
-<div wire:id="{{ $this->getId() }}" class="auto-scaling-component-wrapper">
+<div class="auto-scaling-component-wrapper">
     <div class="card">
         @include('tenantmanagement::helper')
         <div class="card-body p-0">

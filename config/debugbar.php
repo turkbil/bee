@@ -23,6 +23,17 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Root Only Debug Mode
+     |--------------------------------------------------------------------------
+     |
+     | Debugbar sadece root rolündeki kullanıcılara gösterilir.
+     | Diğer kullanıcılar (admin dahil) debug bilgilerini göremez.
+     |
+     */
+    'admin_only' => true, // root only kontrolü için
+
+    /*
+     |--------------------------------------------------------------------------
      | Storage settings
      |--------------------------------------------------------------------------
      |

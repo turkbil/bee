@@ -64,6 +64,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('web', \Modules\TenantManagement\App\Http\Middleware\ResourceTrackingMiddleware::class);
         $middleware->appendToGroup('api', \Modules\TenantManagement\App\Http\Middleware\ResourceTrackingMiddleware::class);
         
+        // 8. ROOT-ONLY DEBUGBAR - Auth'tan sonra çalışmalı
+        $middleware->appendToGroup('web', \App\Http\Middleware\RootOnlyDebugbar::class);
+
         // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
@@ -83,6 +86,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'database.pool' => \App\Http\Middleware\DatabasePoolMiddleware::class,
             'tenant.rate.limit' => \Modules\TenantManagement\App\Http\Middleware\TenantRateLimitMiddleware::class,
             'auto.queue.health' => \App\Http\Middleware\AutoQueueHealthCheck::class, // 🚀 OTOMATIK QUEUE HEALTH CHECK
+            'root.debugbar' => \App\Http\Middleware\RootOnlyDebugbar::class, // 🛠️ ROOT-ONLY DEBUGBAR
         ]);
                 
         // Admin middleware grubu

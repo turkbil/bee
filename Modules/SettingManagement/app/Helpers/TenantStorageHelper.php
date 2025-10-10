@@ -16,8 +16,8 @@ class TenantStorageHelper
         try {
             // Klasör yoksa oluştur (Laravel Storage kullanarak - tenant-aware)
             if (!$disk->exists($relativePath)) {
-                // makeDirectory otomatik olarak tenant storage path'ini kullanır
-                $disk->makeDirectory($relativePath);
+                // makeDirectory nested path'leri de oluşturabilsin diye recursive true gönder
+                $disk->makeDirectory($relativePath, 0775, true);
 
                 // Directory oluşturulduktan sonra permission düzelt (tenant-aware)
                 $actualPath = $disk->path($relativePath);

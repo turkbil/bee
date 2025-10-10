@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stancl\JobPipeline\JobPipeline;
@@ -25,9 +26,9 @@ class TenancyServiceProvider extends ServiceProvider
             Events\CreatingTenant::class => [],
             Events\TenantCreated::class => [
                 JobPipeline::make([
-                    Jobs\CreateDatabase::class, // ✅ RE-ENABLED - CREATE permission granted
-                    Jobs\MigrateDatabase::class,
-                    // Jobs\SeedDatabase::class,
+                    Jobs\CreateDatabase::class, // ✅ DB oluştur
+                    Jobs\MigrateDatabase::class, // ✅ Migration çalıştır
+                    Jobs\SeedDatabase::class, // ✅ Otomatik seed: roles, users, sample data
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!
@@ -43,8 +44,8 @@ class TenancyServiceProvider extends ServiceProvider
             Events\DeletingTenant::class => [],
             Events\TenantDeleted::class => [
                 JobPipeline::make([
-                    Jobs\DeleteDatabase::class, // ✅ RE-ENABLED - Can delete tenant databases now
-                    // \App\Jobs\UnregisterDatabaseFromPlesk::class, // ⏸️ TEMPORARILY DISABLED FOR TESTING
+                    \App\Jobs\SafeDeleteDatabase::class, // ✅ Safe delete - DB yoksa hata vermez
+                    \App\Jobs\UnregisterDatabaseFromPlesk::class, // ✅ Otomatik Plesk silme aktif
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
                 })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
@@ -52,7 +53,9 @@ class TenancyServiceProvider extends ServiceProvider
 
             // Domain events
             Events\CreatingDomain::class => [],
-            Events\DomainCreated::class => [],
+            Events\DomainCreated::class => [
+                \App\Listeners\CreateTenantDomains::class, // ✅ Otomatik www.domain ekleme
+            ],
             Events\SavingDomain::class => [],
             Events\DomainSaved::class => [],
             Events\UpdatingDomain::class => [],
@@ -63,7 +66,7 @@ class TenancyServiceProvider extends ServiceProvider
             // Database events
             Events\DatabaseCreated::class => [],
             Events\DatabaseMigrated::class => [
-                // \App\Listeners\RegisterTenantDatabaseToPlesk::class, // ⏸️ TEMPORARILY DISABLED FOR TESTING
+                \App\Listeners\RegisterTenantDatabaseToPlesk::class, // ✅ Otomatik Plesk kayıt aktif
             ],
             Events\DatabaseSeeded::class => [],
             Events\DatabaseRolledBack::class => [],
@@ -73,11 +76,41 @@ class TenancyServiceProvider extends ServiceProvider
             Events\InitializingTenancy::class => [],
             Events\TenancyInitialized::class => [
                 Listeners\BootstrapTenancy::class,
+                function (Events\TenancyInitialized $event) {
+                    // 🔄 Tenant context'e geçince log yapılandırması
+                    $tenantId = tenant('id');
+                    if (!$tenantId) {
+                        return;
+                    }
+
+                    // storage_path() zaten tenant storage'ı dönüyor (storage/tenant23)
+                    $logPath = storage_path('logs/tenant.log');
+
+                    // Logs klasörü yoksa oluştur
+                    $logDir = dirname($logPath);
+                    if (!file_exists($logDir)) {
+                        mkdir($logDir, 0777, true);
+                        chmod($logDir, 0777);
+                    }
+
+                    // Tenant log path'ini güncelle
+                    config([
+                        'logging.default' => 'tenant',
+                        'logging.channels.tenant.path' => $logPath,
+                    ]);
+
+                    // Log manager'ı yeniden yükle
+                    app()->forgetInstance('log');
+                },
             ],
 
             Events\EndingTenancy::class => [],
             Events\TenancyEnded::class => [
                 Listeners\RevertToCentralContext::class,
+                function (Events\TenancyEnded $event) {
+                    // 🔄 Central context'e dönünce default log channel'ı eski haline al
+                    config(['logging.default' => env('LOG_CHANNEL', 'stack')]);
+                },
             ],
 
             Events\BootstrappingTenancy::class => [],

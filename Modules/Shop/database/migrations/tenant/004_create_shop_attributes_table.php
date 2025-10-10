@@ -71,10 +71,10 @@ return new class extends Migration
             if ($isMariaDB) {
                 preg_match('/(\d+\.\d+)/', $version, $matches);
                 $mariaVersion = isset($matches[1]) ? (float) $matches[1] : 0;
-                $supportsJsonIndex = $mariaVersion >= 10.5;
+                $supportsJsonIndex = false; // Disabled for MariaDB compatibility
             } else {
                 $majorVersion = (int) explode('.', $version)[0];
-                $supportsJsonIndex = $majorVersion >= 8;
+                $supportsJsonIndex = false; // Disabled for MySQL compatibility
             }
 
             if ($supportsJsonIndex) {

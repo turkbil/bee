@@ -47,25 +47,15 @@ return new class extends Migration
                 // MariaDB için versiyon kontrolü (10.5+)
                 preg_match('/(\d+\.\d+)/', $version, $matches);
                 $mariaVersion = isset($matches[1]) ? (float) $matches[1] : 0;
-                $supportsJsonIndex = $mariaVersion >= 10.5;
+                $supportsJsonIndex = false; // Disabled for MariaDB compatibility
             } else {
                 // MySQL için versiyon kontrolü (8.0+)
                 $majorVersion = (int) explode('.', $version)[0];
-                $supportsJsonIndex = $majorVersion >= 8;
+                $supportsJsonIndex = false; // Disabled for MySQL compatibility
             }
 
-            if ($supportsJsonIndex) {
-                // Config'den sistem dillerini al
-                $systemLanguages = config('modules.system_languages', ['tr', 'en']);
-
-                foreach ($systemLanguages as $locale) {
-                    DB::statement("
-                        CREATE INDEX pages_slug_{$locale}_idx ON pages (
-                            (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) AS CHAR(255)))
-                        )
-                    ");
-                }
-            }
+            // JSON index disabled - MariaDB/MySQL compatibility
+            // if ($supportsJsonIndex) { ... }
         }
     }
 

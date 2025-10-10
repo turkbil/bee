@@ -71,38 +71,93 @@ if (!function_exists('thumb')) {
      * Media thumbnail URL'i döndür
      *
      * @param \Spatie\MediaLibrary\MediaCollections\Models\Media|null $media
+     * @param string|array|null $conversionOrProfile
+     * @param array $overrides
      * @return string Thumbnail URL
      *
      * @example thumb($media)
+     * @example thumb($media, 'medium')
+     * @example thumb($media, ['width' => 400, 'height' => 300])
      */
-    function thumb($media): string
+    function thumb($media, string|array|null $conversionOrProfile = null, array $overrides = []): string
     {
         if (!$media) {
             return asset('admin-assets/images/placeholder.jpg');
+        }
+
+        // Dynamic thumbmaker usage when array options or overrides are provided
+        if (is_array($conversionOrProfile) || !empty($overrides)) {
+            $url = thumbmaker($media, $conversionOrProfile, $overrides);
+            return $url ?: $media->getUrl('thumb');
+        }
+
+        if ($conversionOrProfile === null) {
+            return $media->getUrl('thumb');
+        }
+
+        // When a named conversion/profile is provided
+        if (is_string($conversionOrProfile)) {
+            $url = thumbmaker($media, $conversionOrProfile, $overrides);
+            return $url ?: $media->getUrl($conversionOrProfile);
         }
 
         return $media->getUrl('thumb');
     }
 }
 
+
+if (!function_exists('thumbmaker')) {
+    /**
+     * Dinamik thumbnail URL'i üretir.
+     *
+     * @param \Spatie\MediaLibrary\MediaCollections\Models\Media|string|null $source
+     * @param array|string|null $profile Profile adı veya doğrudan seçenekler
+     * @param array $overrides Ek seçenekler
+     * @return string|null
+     */
+    function thumbmaker($source, array|string|null $profile = null, array $overrides = []): ?string
+    {
+        /** @var \Modules\MediaManagement\App\Services\ThumbnailManager $manager */
+        $manager = app(\Modules\MediaManagement\App\Services\ThumbnailManager::class);
+
+        return $manager->url($source, $profile, $overrides);
+    }
+}
+
 if (!function_exists('media_url')) {
     /**
-     * Media URL'i conversion ile döndür
+     * Media URL'i conversion veya dinamik ayarlarla döndür
      *
      * @param \Spatie\MediaLibrary\MediaCollections\Models\Media|null $media
-     * @param string $conversion Conversion adı
+     * @param string|array|null $conversionOrProfile
+     * @param array $overrides
      * @return string Media URL
      *
-     * @example media_url($media) // Original
-     * @example media_url($media, 'medium') // Medium size
+     * @example media_url($media)
+     * @example media_url($media, 'medium')
+     * @example media_url($media, ['width' => 1024, 'format' => 'webp'])
      */
-    function media_url($media, string $conversion = ''): string
+    function media_url($media, string|array|null $conversionOrProfile = null, array $overrides = []): string
     {
         if (!$media) {
             return asset('admin-assets/images/placeholder.jpg');
         }
 
-        return $media->getUrl($conversion);
+        if (is_array($conversionOrProfile) || !empty($overrides)) {
+            $url = thumbmaker($media, $conversionOrProfile, $overrides);
+            return $url ?: $media->getUrl();
+        }
+
+        if ($conversionOrProfile === null || $conversionOrProfile === '') {
+            return $media->getUrl();
+        }
+
+        if (is_string($conversionOrProfile)) {
+            $url = thumbmaker($media, $conversionOrProfile, $overrides);
+            return $url ?: $media->getUrl($conversionOrProfile);
+        }
+
+        return $media->getUrl();
     }
 }
 

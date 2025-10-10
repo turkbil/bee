@@ -26,29 +26,43 @@ class UnregisterDatabaseFromPlesk implements ShouldQueue
         $databaseName = $this->tenant->tenancy_db_name ?? null;
 
         if (!$databaseName) {
-            Log::warning("Tenant has no database name, skipping Plesk unregister");
-            return;
-        }
-
-        // Sadece production/server ortamında çalıştır
-        if (!file_exists('/usr/local/psa/bin/database')) {
-            Log::info("Plesk binary not found, skipping database unregister for: {$databaseName}");
+            Log::channel('system')->warning("⚠️ Tenant has no database name, skipping Plesk unregister");
             return;
         }
 
         try {
-            $result = Process::timeout(30)->run("plesk bin database --remove {$databaseName}");
+            // Plesk DB komutu ile sil (3 deneme)
+            $deleteSql = "DELETE FROM data_bases WHERE name = '{$databaseName}'";
+            $deleteResult = null;
+            $maxAttempts = 3;
 
-            if ($result->successful()) {
-                Log::info("Database unregistered from Plesk: {$databaseName}");
-            } else {
-                Log::warning("Failed to unregister database from Plesk: {$databaseName}", [
-                    'output' => $result->output(),
-                    'error' => $result->errorOutput(),
-                ]);
+            for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+                $deleteResult = Process::timeout(10)->run("plesk db \"{$deleteSql}\"");
+
+                if ($deleteResult->successful()) {
+                    if ($attempt > 1) {
+                        Log::channel('system')->info("✅ Plesk DB silme başarılı (deneme {$attempt}/{$maxAttempts})");
+                    }
+                    Log::channel('system')->info("✅ Plesk database kaydı silindi: {$databaseName}", [
+                        'tenant_id' => $this->tenant->id,
+                    ]);
+                    return;
+                }
+
+                if ($attempt < $maxAttempts) {
+                    Log::channel('system')->warning("⚠️ Plesk DB silme başarısız, tekrar deneniyor... ({$attempt}/{$maxAttempts})");
+                    sleep(2); // 2 saniye bekle
+                }
             }
+
+            // Tüm denemeler başarısız
+            Log::channel('system')->warning("⚠️ Plesk DB silme hatası: {$databaseName} ({$maxAttempts} deneme sonrası)", [
+                'tenant_id' => $this->tenant->id,
+                'error' => substr($deleteResult->errorOutput(), 0, 200),
+            ]);
         } catch (\Exception $e) {
-            Log::error("Exception while unregistering database from Plesk: {$databaseName}", [
+            Log::channel('system')->warning("⚠️ Plesk DB silme başarısız: {$databaseName}", [
+                'tenant_id' => $this->tenant->id,
                 'message' => $e->getMessage(),
             ]);
         }

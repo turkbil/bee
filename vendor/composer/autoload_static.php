@@ -183,29 +183,74 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'M' => 
         array (
             'Monolog\\' => 8,
+            'Modules\\WidgetManagement\\Database\\Seeders\\' => 42,
+            'Modules\\WidgetManagement\\Database\\Factories\\' => 44,
             'Modules\\WidgetManagement\\App\\' => 29,
+            'Modules\\WidgetManagement\\' => 25,
+            'Modules\\UserManagement\\Database\\Seeders\\' => 40,
+            'Modules\\UserManagement\\Database\\Factories\\' => 42,
             'Modules\\UserManagement\\App\\' => 27,
+            'Modules\\UserManagement\\' => 23,
+            'Modules\\ThemeManagement\\Database\\Seeders\\' => 41,
+            'Modules\\ThemeManagement\\Database\\Factories\\' => 43,
             'Modules\\ThemeManagement\\App\\' => 28,
+            'Modules\\ThemeManagement\\' => 24,
+            'Modules\\TenantManagement\\Database\\Seeders\\' => 42,
+            'Modules\\TenantManagement\\Database\\Factories\\' => 44,
             'Modules\\TenantManagement\\App\\' => 29,
+            'Modules\\TenantManagement\\' => 25,
+            'Modules\\Studio\\Database\\Seeders\\' => 32,
+            'Modules\\Studio\\Database\\Factories\\' => 34,
             'Modules\\Studio\\App\\' => 19,
+            'Modules\\Studio\\' => 15,
+            'Modules\\Shop\\Database\\Seeders\\' => 30,
+            'Modules\\Shop\\Database\\Factories\\' => 32,
+            'Modules\\Shop\\App\\' => 17,
+            'Modules\\Shop\\' => 13,
+            'Modules\\SettingManagement\\Database\\Seeders\\' => 43,
+            'Modules\\SettingManagement\\Database\\Factories\\' => 45,
             'Modules\\SettingManagement\\App\\' => 30,
+            'Modules\\SettingManagement\\' => 26,
+            'Modules\\SeoManagement\\Database\\Seeders\\' => 39,
+            'Modules\\SeoManagement\\Database\\Factories\\' => 41,
             'Modules\\SeoManagement\\App\\' => 26,
+            'Modules\\SeoManagement\\' => 22,
             'Modules\\Portfolio\\Database\\Seeders\\' => 35,
+            'Modules\\Portfolio\\Database\\Factories\\' => 37,
             'Modules\\Portfolio\\App\\' => 22,
+            'Modules\\Portfolio\\' => 18,
             'Modules\\Page\\Database\\Seeders\\' => 30,
+            'Modules\\Page\\Database\\Factories\\' => 32,
             'Modules\\Page\\App\\' => 17,
+            'Modules\\Page\\' => 13,
             'Modules\\ModuleManagement\\Database\\Seeders\\' => 42,
+            'Modules\\ModuleManagement\\Database\\Factories\\' => 44,
             'Modules\\ModuleManagement\\App\\' => 29,
+            'Modules\\ModuleManagement\\' => 25,
+            'Modules\\MenuManagement\\Database\\Seeders\\' => 40,
+            'Modules\\MenuManagement\\Database\\Factories\\' => 42,
             'Modules\\MenuManagement\\App\\' => 27,
+            'Modules\\MenuManagement\\' => 23,
+            'Modules\\MediaManagement\\Database\\Seeders\\' => 41,
+            'Modules\\MediaManagement\\Database\\Factories\\' => 43,
             'Modules\\MediaManagement\\App\\' => 28,
+            'Modules\\MediaManagement\\' => 24,
             'Modules\\LanguageManagement\\Database\\Seeders\\' => 44,
+            'Modules\\LanguageManagement\\Database\\Factories\\' => 46,
             'Modules\\LanguageManagement\\App\\' => 31,
+            'Modules\\LanguageManagement\\' => 27,
             'Modules\\Blog\\Database\\Seeders\\' => 30,
+            'Modules\\Blog\\Database\\Factories\\' => 32,
             'Modules\\Blog\\App\\' => 17,
+            'Modules\\Blog\\' => 13,
             'Modules\\Announcement\\Database\\Seeders\\' => 38,
+            'Modules\\Announcement\\Database\\Factories\\' => 40,
             'Modules\\Announcement\\App\\' => 25,
+            'Modules\\Announcement\\' => 21,
             'Modules\\AI\\Database\\Seeders\\' => 28,
+            'Modules\\AI\\Database\\Factories\\' => 30,
             'Modules\\AI\\App\\' => 15,
+            'Modules\\AI\\' => 11,
             'Modules\\' => 8,
             'Mockery\\' => 8,
             'Masterminds\\' => 12,
@@ -241,6 +286,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         ),
         'I' => 
         array (
+            'Intervention\\Image\\Laravel\\' => 27,
             'Intervention\\Image\\' => 19,
             'Intervention\\Gif\\' => 17,
             'Illuminate\\Support\\' => 19,
@@ -648,31 +694,131 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Modules\\WidgetManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/WidgetManagement/database/seeders',
+        ),
+        'Modules\\WidgetManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/WidgetManagement/database/factories',
+        ),
         'Modules\\WidgetManagement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/WidgetManagement/app',
+        ),
+        'Modules\\WidgetManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/WidgetManagement/app',
+        ),
+        'Modules\\UserManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/UserManagement/database/seeders',
+        ),
+        'Modules\\UserManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/UserManagement/database/factories',
         ),
         'Modules\\UserManagement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/UserManagement/app',
         ),
+        'Modules\\UserManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/UserManagement/app',
+        ),
+        'Modules\\ThemeManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/ThemeManagement/database/seeders',
+        ),
+        'Modules\\ThemeManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/ThemeManagement/database/factories',
+        ),
         'Modules\\ThemeManagement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/ThemeManagement/app',
+        ),
+        'Modules\\ThemeManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/ThemeManagement/app',
+        ),
+        'Modules\\TenantManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/TenantManagement/database/seeders',
+        ),
+        'Modules\\TenantManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/TenantManagement/database/factories',
         ),
         'Modules\\TenantManagement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/TenantManagement/app',
         ),
+        'Modules\\TenantManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/TenantManagement/app',
+        ),
+        'Modules\\Studio\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Studio/database/seeders',
+        ),
+        'Modules\\Studio\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Studio/database/factories',
+        ),
         'Modules\\Studio\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Studio/app',
+        ),
+        'Modules\\Studio\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Studio',
+        ),
+        'Modules\\Shop\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Shop/database/seeders',
+        ),
+        'Modules\\Shop\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Shop/database/factories',
+        ),
+        'Modules\\Shop\\App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Shop/app',
+        ),
+        'Modules\\Shop\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Shop',
+        ),
+        'Modules\\SettingManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/SettingManagement/database/seeders',
+        ),
+        'Modules\\SettingManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/SettingManagement/database/factories',
         ),
         'Modules\\SettingManagement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/SettingManagement/app',
         ),
+        'Modules\\SettingManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/SettingManagement/app',
+        ),
+        'Modules\\SeoManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/SeoManagement/database/seeders',
+        ),
+        'Modules\\SeoManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/SeoManagement/database/factories',
+        ),
         'Modules\\SeoManagement\\App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/SeoManagement/app',
+        ),
+        'Modules\\SeoManagement\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/SeoManagement/app',
         ),
@@ -680,31 +826,79 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         array (
             0 => __DIR__ . '/../..' . '/Modules/Portfolio/database/seeders',
         ),
+        'Modules\\Portfolio\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Portfolio/database/factories',
+        ),
         'Modules\\Portfolio\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Portfolio/app',
+        ),
+        'Modules\\Portfolio\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Portfolio',
         ),
         'Modules\\Page\\Database\\Seeders\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Page/database/seeders',
         ),
+        'Modules\\Page\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Page/database/factories',
+        ),
         'Modules\\Page\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Page/app',
+        ),
+        'Modules\\Page\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Page',
         ),
         'Modules\\ModuleManagement\\Database\\Seeders\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/ModuleManagement/database/seeders',
         ),
+        'Modules\\ModuleManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/ModuleManagement/database/factories',
+        ),
         'Modules\\ModuleManagement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/ModuleManagement/app',
+        ),
+        'Modules\\ModuleManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/ModuleManagement/app',
+        ),
+        'Modules\\MenuManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/MenuManagement/database/seeders',
+        ),
+        'Modules\\MenuManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/MenuManagement/database/factories',
         ),
         'Modules\\MenuManagement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/MenuManagement/app',
         ),
+        'Modules\\MenuManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/MenuManagement/app',
+        ),
+        'Modules\\MediaManagement\\Database\\Seeders\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/MediaManagement/database/seeders',
+        ),
+        'Modules\\MediaManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/MediaManagement/database/factories',
+        ),
         'Modules\\MediaManagement\\App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/MediaManagement/app',
+        ),
+        'Modules\\MediaManagement\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/MediaManagement/app',
         ),
@@ -712,7 +906,15 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         array (
             0 => __DIR__ . '/../..' . '/Modules/LanguageManagement/database/seeders',
         ),
+        'Modules\\LanguageManagement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/LanguageManagement/database/factories',
+        ),
         'Modules\\LanguageManagement\\App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/LanguageManagement/app',
+        ),
+        'Modules\\LanguageManagement\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/LanguageManagement/app',
         ),
@@ -720,23 +922,47 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         array (
             0 => __DIR__ . '/../..' . '/Modules/Blog/database/seeders',
         ),
+        'Modules\\Blog\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Blog/database/factories',
+        ),
         'Modules\\Blog\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Blog/app',
+        ),
+        'Modules\\Blog\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Blog',
         ),
         'Modules\\Announcement\\Database\\Seeders\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Announcement/database/seeders',
         ),
+        'Modules\\Announcement\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Announcement/database/factories',
+        ),
         'Modules\\Announcement\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Announcement/app',
+        ),
+        'Modules\\Announcement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Announcement',
         ),
         'Modules\\AI\\Database\\Seeders\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/AI/database/seeders',
         ),
+        'Modules\\AI\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/AI/database/factories',
+        ),
         'Modules\\AI\\App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/AI/app',
+        ),
+        'Modules\\AI\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/AI/app',
         ),
@@ -844,6 +1070,10 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Jaybizzle\\CrawlerDetect\\' => 
         array (
             0 => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src',
+        ),
+        'Intervention\\Image\\Laravel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/image-laravel/src',
         ),
         'Intervention\\Image\\' => 
         array (
@@ -1115,6 +1345,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Controllers\\RobotsController' => __DIR__ . '/../..' . '/app/Http/Controllers/RobotsController.php',
         'App\\Http\\Controllers\\StorageController' => __DIR__ . '/../..' . '/app/Http/Controllers/StorageController.php',
+        'App\\Http\\Controllers\\ThumbmakerLinkController' => __DIR__ . '/../..' . '/app/Http/Controllers/ThumbmakerLinkController.php',
         'App\\Http\\Controllers\\TranslationStatusController' => __DIR__ . '/../..' . '/app/Http/Controllers/TranslationStatusController.php',
         'App\\Http\\Livewire\\Admin\\CacheClearButtons' => __DIR__ . '/../..' . '/app/Http/Livewire/Admin/CacheClearButtons.php',
         'App\\Http\\Livewire\\Components\\UniversalTabSystemComponent' => __DIR__ . '/../..' . '/app/Http/Livewire/Components/UniversalTabSystemComponent.php',
@@ -1138,8 +1369,10 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
         'App\\Jobs\\CreateModuleTenantPermissions' => __DIR__ . '/../..' . '/app/Jobs/CreateModuleTenantPermissions.php',
         'App\\Jobs\\RemoveModuleTenantPermissions' => __DIR__ . '/../..' . '/app/Jobs/RemoveModuleTenantPermissions.php',
+        'App\\Jobs\\SafeDeleteDatabase' => __DIR__ . '/../..' . '/app/Jobs/SafeDeleteDatabase.php',
         'App\\Jobs\\UnregisterDatabaseFromPlesk' => __DIR__ . '/../..' . '/app/Jobs/UnregisterDatabaseFromPlesk.php',
         'App\\Listeners\\ClearModuleRouteCache' => __DIR__ . '/../..' . '/app/Listeners/ClearModuleRouteCache.php',
+        'App\\Listeners\\CreateTenantDomains' => __DIR__ . '/../..' . '/app/Listeners/CreateTenantDomains.php',
         'App\\Listeners\\HandleModuleTenantPermissions' => __DIR__ . '/../..' . '/app/Listeners/HandleModuleTenantPermissions.php',
         'App\\Listeners\\LoadModuleRoutes' => __DIR__ . '/../..' . '/app/Listeners/LoadModuleRoutes.php',
         'App\\Listeners\\RegisterTenantDatabaseToPlesk' => __DIR__ . '/../..' . '/app/Listeners/RegisterTenantDatabaseToPlesk.php',
@@ -1549,6 +1782,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Database\\Factories\\UserFactory' => __DIR__ . '/../..' . '/database/factories/UserFactory.php',
         'Database\\Seeders\\AICreditPackageSeeder' => __DIR__ . '/../..' . '/database/seeders/AICreditPackageSeeder.php',
         'Database\\Seeders\\BasicSectorSeeder' => __DIR__ . '/../..' . '/database/seeders/BasicSectorSeeder.php',
+        'Database\\Seeders\\CPD_TVL_Series_Seeder' => __DIR__ . '/../..' . '/database/seeders/CPD_TVL_Series_Seeder.php',
         'Database\\Seeders\\CentralTenantSeeder' => __DIR__ . '/../..' . '/database/seeders/CentralTenantSeeder.php',
         'Database\\Seeders\\ComprehensiveSectorSeeder' => __DIR__ . '/../..' . '/database/seeders/ComprehensiveSectorSeeder.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
@@ -1556,11 +1790,15 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Database\\Seeders\\EcommerceCategorySeeder' => __DIR__ . '/../..' . '/database/seeders/EcommerceCategorySeeder.php',
         'Database\\Seeders\\EcommerceProductSeeder' => __DIR__ . '/../..' . '/database/seeders/EcommerceProductSeeder.php',
         'Database\\Seeders\\EcommerceSeeder' => __DIR__ . '/../..' . '/database/seeders/EcommerceSeeder.php',
+        'Database\\Seeders\\F4_201_Transpalet_Seeder' => __DIR__ . '/../..' . '/database/seeders/F4_201_Transpalet_Seeder.php',
         'Database\\Seeders\\FixModelHasRolesSeeder' => __DIR__ . '/../..' . '/database/seeders/FixModelHasRolesSeeder.php',
         'Database\\Seeders\\ModulePermissionSeeder' => __DIR__ . '/../..' . '/database/seeders/ModulePermissionSeeder.php',
         'Database\\Seeders\\ModuleSeeder' => __DIR__ . '/../..' . '/database/seeders/ModuleSeeder.php',
+        'Database\\Seeders\\OtonomKategoriSeeder' => __DIR__ . '/../..' . '/database/seeders/OtonomKategoriSeeder.php',
         'Database\\Seeders\\ProductionTenantSeeder' => __DIR__ . '/../..' . '/database/seeders/ProductionTenantSeeder.php',
         'Database\\Seeders\\RolePermissionSeeder' => __DIR__ . '/../..' . '/database/seeders/RolePermissionSeeder.php',
+        'Database\\Seeders\\ShopCategorySeeder' => __DIR__ . '/../..' . '/database/seeders/ShopCategorySeeder.php',
+        'Database\\Seeders\\TenantDatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/TenantDatabaseSeeder.php',
         'Database\\Seeders\\TenantSeeder' => __DIR__ . '/../..' . '/database/seeders/TenantSeeder.php',
         'Database\\Seeders\\TenantTablesSeeder' => __DIR__ . '/../..' . '/database/seeders/TenantTablesSeeder.php',
         'Database\\Seeders\\ThemesSeeder' => __DIR__ . '/../..' . '/database/seeders/ThemesSeeder.php',
@@ -4685,6 +4923,9 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Intervention\\Image\\Interfaces\\SizeInterface' => __DIR__ . '/..' . '/intervention/image/src/Interfaces/SizeInterface.php',
         'Intervention\\Image\\Interfaces\\SpecializableInterface' => __DIR__ . '/..' . '/intervention/image/src/Interfaces/SpecializableInterface.php',
         'Intervention\\Image\\Interfaces\\SpecializedInterface' => __DIR__ . '/..' . '/intervention/image/src/Interfaces/SpecializedInterface.php',
+        'Intervention\\Image\\Laravel\\Facades\\Image' => __DIR__ . '/..' . '/intervention/image-laravel/src/Facades/Image.php',
+        'Intervention\\Image\\Laravel\\ImageResponseFactory' => __DIR__ . '/..' . '/intervention/image-laravel/src/ImageResponseFactory.php',
+        'Intervention\\Image\\Laravel\\ServiceProvider' => __DIR__ . '/..' . '/intervention/image-laravel/src/ServiceProvider.php',
         'Intervention\\Image\\MediaType' => __DIR__ . '/..' . '/intervention/image/src/MediaType.php',
         'Intervention\\Image\\ModifierStack' => __DIR__ . '/..' . '/intervention/image/src/ModifierStack.php',
         'Intervention\\Image\\Modifiers\\AbstractDrawModifier' => __DIR__ . '/..' . '/intervention/image/src/Modifiers/AbstractDrawModifier.php',
@@ -6263,6 +6504,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Announcement\\App\\Observers\\AnnouncementObserver' => __DIR__ . '/../..' . '/Modules/Announcement/app/Observers/AnnouncementObserver.php',
         'Modules\\Announcement\\App\\Repositories\\AnnouncementRepository' => __DIR__ . '/../..' . '/Modules/Announcement/app/Repositories/AnnouncementRepository.php',
         'Modules\\Announcement\\App\\Services\\AnnouncementService' => __DIR__ . '/../..' . '/Modules/Announcement/app/Services/AnnouncementService.php',
+        'Modules\\Announcement\\Database\\Factories\\AnnouncementFactory' => __DIR__ . '/../..' . '/Modules/Announcement/database/factories/AnnouncementFactory.php',
         'Modules\\Announcement\\Providers\\AnnouncementServiceProvider' => __DIR__ . '/../..' . '/Modules/Announcement/Providers/AnnouncementServiceProvider.php',
         'Modules\\Announcement\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Announcement/Providers/EventServiceProvider.php',
         'Modules\\Announcement\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/Announcement/Providers/RouteServiceProvider.php',
@@ -6306,6 +6548,8 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Blog\\App\\Repositories\\BlogRepository' => __DIR__ . '/../..' . '/Modules/Blog/app/Repositories/BlogRepository.php',
         'Modules\\Blog\\App\\Services\\BlogCategoryService' => __DIR__ . '/../..' . '/Modules/Blog/app/Services/BlogCategoryService.php',
         'Modules\\Blog\\App\\Services\\BlogService' => __DIR__ . '/../..' . '/Modules/Blog/app/Services/BlogService.php',
+        'Modules\\Blog\\Database\\Factories\\BlogCategoryFactory' => __DIR__ . '/../..' . '/Modules/Blog/database/factories/BlogCategoryFactory.php',
+        'Modules\\Blog\\Database\\Factories\\BlogFactory' => __DIR__ . '/../..' . '/Modules/Blog/database/factories/BlogFactory.php',
         'Modules\\Blog\\Database\\Seeders\\BlogCategorySeeder' => __DIR__ . '/../..' . '/Modules/Blog/database/seeders/BlogCategorySeeder.php',
         'Modules\\Blog\\Database\\Seeders\\BlogSeeder' => __DIR__ . '/../..' . '/Modules/Blog/database/seeders/BlogSeeder.php',
         'Modules\\Blog\\Providers\\BlogServiceProvider' => __DIR__ . '/../..' . '/Modules/Blog/Providers/BlogServiceProvider.php',
@@ -6350,7 +6594,9 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\MediaManagement\\App\\Providers\\MediaManagementServiceProvider' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Providers/MediaManagementServiceProvider.php',
         'Modules\\MediaManagement\\App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Providers/RouteServiceProvider.php',
         'Modules\\MediaManagement\\App\\Services\\MediaService' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Services/MediaService.php',
+        'Modules\\MediaManagement\\App\\Services\\ThumbnailManager' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Services/ThumbnailManager.php',
         'Modules\\MediaManagement\\App\\Traits\\HasMediaManagement' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Traits/HasMediaManagement.php',
+        'Modules\\MediaManagement\\Database\\Seeders\\MediaManagementDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/MediaManagement/database/seeders/MediaManagementDatabaseSeeder.php',
         'Modules\\MenuManagement\\App\\Console\\MigrateMenuItemSlugs' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Console/MigrateMenuItemSlugs.php',
         'Modules\\MenuManagement\\App\\Contracts\\MenuItemRepositoryInterface' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Contracts/MenuItemRepositoryInterface.php',
         'Modules\\MenuManagement\\App\\Contracts\\MenuRepositoryInterface' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Contracts/MenuRepositoryInterface.php',
@@ -6376,6 +6622,12 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\MenuManagement\\App\\Repositories\\MenuRepository' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Repositories/MenuRepository.php',
         'Modules\\MenuManagement\\App\\Services\\MenuService' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Services/MenuService.php',
         'Modules\\MenuManagement\\App\\Services\\MenuUrlBuilderService' => __DIR__ . '/../..' . '/Modules/MenuManagement/app/Services/MenuUrlBuilderService.php',
+        'Modules\\MenuManagement\\Database\\Seeders\\MenuManagementDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/MenuManagement/database/seeders/MenuManagementDatabaseSeeder.php',
+        'Modules\\MenuManagement\\Database\\Seeders\\MenuSeederCentral' => __DIR__ . '/../..' . '/Modules/MenuManagement/database/seeders/MenuSeederCentral.php',
+        'Modules\\MenuManagement\\Database\\Seeders\\MenuSeederTenant2' => __DIR__ . '/../..' . '/Modules/MenuManagement/database/seeders/MenuSeederTenant2.php',
+        'Modules\\MenuManagement\\Database\\Seeders\\MenuSeederTenant3' => __DIR__ . '/../..' . '/Modules/MenuManagement/database/seeders/MenuSeederTenant3.php',
+        'Modules\\MenuManagement\\Database\\Seeders\\MenuSeederTenant4' => __DIR__ . '/../..' . '/Modules/MenuManagement/database/seeders/MenuSeederTenant4.php',
+        'Modules\\MenuManagement\\Database\\Seeders\\SimpleMenuSeeder' => __DIR__ . '/../..' . '/Modules/MenuManagement/database/seeders/SimpleMenuSeeder.php',
         'Modules\\MenuManagement\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/MenuManagement/Providers/EventServiceProvider.php',
         'Modules\\MenuManagement\\Providers\\MenuManagementServiceProvider' => __DIR__ . '/../..' . '/Modules/MenuManagement/Providers/MenuManagementServiceProvider.php',
         'Modules\\MenuManagement\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/MenuManagement/Providers/RouteServiceProvider.php',
@@ -6418,6 +6670,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Page\\App\\Observers\\PageObserver' => __DIR__ . '/../..' . '/Modules/Page/app/Observers/PageObserver.php',
         'Modules\\Page\\App\\Repositories\\PageRepository' => __DIR__ . '/../..' . '/Modules/Page/app/Repositories/PageRepository.php',
         'Modules\\Page\\App\\Services\\PageService' => __DIR__ . '/../..' . '/Modules/Page/app/Services/PageService.php',
+        'Modules\\Page\\Database\\Factories\\PageFactory' => __DIR__ . '/../..' . '/Modules/Page/database/factories/PageFactory.php',
         'Modules\\Page\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Page/Providers/EventServiceProvider.php',
         'Modules\\Page\\Providers\\PageServiceProvider' => __DIR__ . '/../..' . '/Modules/Page/Providers/PageServiceProvider.php',
         'Modules\\Page\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/Page/Providers/RouteServiceProvider.php',
@@ -6462,6 +6715,8 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Portfolio\\App\\Repositories\\PortfolioRepository' => __DIR__ . '/../..' . '/Modules/Portfolio/app/Repositories/PortfolioRepository.php',
         'Modules\\Portfolio\\App\\Services\\PortfolioCategoryService' => __DIR__ . '/../..' . '/Modules/Portfolio/app/Services/PortfolioCategoryService.php',
         'Modules\\Portfolio\\App\\Services\\PortfolioService' => __DIR__ . '/../..' . '/Modules/Portfolio/app/Services/PortfolioService.php',
+        'Modules\\Portfolio\\Database\\Factories\\PortfolioCategoryFactory' => __DIR__ . '/../..' . '/Modules/Portfolio/database/factories/PortfolioCategoryFactory.php',
+        'Modules\\Portfolio\\Database\\Factories\\PortfolioFactory' => __DIR__ . '/../..' . '/Modules/Portfolio/database/factories/PortfolioFactory.php',
         'Modules\\Portfolio\\Database\\Seeders\\PortfolioCategorySeeder' => __DIR__ . '/../..' . '/Modules/Portfolio/database/seeders/PortfolioCategorySeeder.php',
         'Modules\\Portfolio\\Database\\Seeders\\PortfolioSeeder' => __DIR__ . '/../..' . '/Modules/Portfolio/database/seeders/PortfolioSeeder.php',
         'Modules\\Portfolio\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Portfolio/Providers/EventServiceProvider.php',
@@ -6477,6 +6732,8 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\SeoManagement\\App\\Services\\SeoAIService' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Services/SeoAIService.php',
         'Modules\\SeoManagement\\App\\Services\\SeoRecommendationsParser' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Services/SeoRecommendationsParser.php',
         'Modules\\SeoManagement\\App\\Services\\SeoRecommendationsService' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Services/SeoRecommendationsService.php',
+        'Modules\\SeoManagement\\Database\\Seeders\\SeoManagementDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/SeoManagement/database/seeders/SeoManagementDatabaseSeeder.php',
+        'Modules\\SeoManagement\\Http\\Controllers\\SeoManagementController' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Http/Controllers/SeoManagementController.php',
         'Modules\\SeoManagement\\Providers\\SeoManagementServiceProvider' => __DIR__ . '/../..' . '/Modules/SeoManagement/Providers/SeoManagementServiceProvider.php',
         'Modules\\SeoManagement\\app\\Http\\Livewire\\Admin\\UniversalSeoComponent' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Http/Livewire/Admin/UniversalSeoComponent.php',
         'Modules\\SeoManagement\\app\\Http\\Livewire\\Traits\\HandlesUniversalSeo' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Http/Livewire/Traits/HandlesUniversalSeo.php',
@@ -6498,12 +6755,73 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\SettingManagement\\App\\Models\\Setting' => __DIR__ . '/../..' . '/Modules/SettingManagement/app/Models/Setting.php',
         'Modules\\SettingManagement\\App\\Models\\SettingGroup' => __DIR__ . '/../..' . '/Modules/SettingManagement/app/Models/SettingGroup.php',
         'Modules\\SettingManagement\\App\\Models\\SettingValue' => __DIR__ . '/../..' . '/Modules/SettingManagement/app/Models/SettingValue.php',
+        'Modules\\SettingManagement\\Database\\Seeders\\SettingManagementSeeder' => __DIR__ . '/../..' . '/Modules/SettingManagement/database/seeders/SettingManagementSeeder.php',
+        'Modules\\SettingManagement\\Database\\Seeders\\SettingsGroupsTableSeeder' => __DIR__ . '/../..' . '/Modules/SettingManagement/database/seeders/SettingsGroupsTableSeeder.php',
+        'Modules\\SettingManagement\\Database\\Seeders\\SettingsTableSeeder' => __DIR__ . '/../..' . '/Modules/SettingManagement/database/seeders/SettingsTableSeeder.php',
+        'Modules\\SettingManagement\\Database\\Seeders\\ThemeSettingsSeeder' => __DIR__ . '/../..' . '/Modules/SettingManagement/database/seeders/ThemeSettingsSeeder.php',
         'Modules\\SettingManagement\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/SettingManagement/Providers/EventServiceProvider.php',
         'Modules\\SettingManagement\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/SettingManagement/Providers/RouteServiceProvider.php',
         'Modules\\SettingManagement\\Providers\\SettingManagementServiceProvider' => __DIR__ . '/../..' . '/Modules/SettingManagement/Providers/SettingManagementServiceProvider.php',
         'Modules\\SettingManagement\\app\\Http\\Livewire\\Traits\\WithBulkActionsQueue' => __DIR__ . '/../..' . '/Modules/SettingManagement/app/Http/Livewire/Traits/WithBulkActionsQueue.php',
         'Modules\\SettingManagement\\app\\Jobs\\BulkDeleteSettingsJob' => __DIR__ . '/../..' . '/Modules/SettingManagement/app/Jobs/BulkDeleteSettingsJob.php',
         'Modules\\SettingManagement\\app\\Jobs\\BulkUpdateSettingsJob' => __DIR__ . '/../..' . '/Modules/SettingManagement/app/Jobs/BulkUpdateSettingsJob.php',
+        'Modules\\Shop\\App\\Console\\WarmShopCacheCommand' => __DIR__ . '/../..' . '/Modules/Shop/app/Console/WarmShopCacheCommand.php',
+        'Modules\\Shop\\App\\Contracts\\ShopBrandRepositoryInterface' => __DIR__ . '/../..' . '/Modules/Shop/app/Contracts/ShopBrandRepositoryInterface.php',
+        'Modules\\Shop\\App\\Contracts\\ShopCategoryRepositoryInterface' => __DIR__ . '/../..' . '/Modules/Shop/app/Contracts/ShopCategoryRepositoryInterface.php',
+        'Modules\\Shop\\App\\Contracts\\ShopProductRepositoryInterface' => __DIR__ . '/../..' . '/Modules/Shop/app/Contracts/ShopProductRepositoryInterface.php',
+        'Modules\\Shop\\App\\Contracts\\ShopProductVariantRepositoryInterface' => __DIR__ . '/../..' . '/Modules/Shop/app/Contracts/ShopProductVariantRepositoryInterface.php',
+        'Modules\\Shop\\App\\DataTransferObjects\\BulkOperationResult' => __DIR__ . '/../..' . '/Modules/Shop/app/DataTransferObjects/BulkOperationResult.php',
+        'Modules\\Shop\\App\\DataTransferObjects\\ShopOperationResult' => __DIR__ . '/../..' . '/Modules/Shop/app/DataTransferObjects/ShopOperationResult.php',
+        'Modules\\Shop\\App\\Enums\\CacheStrategy' => __DIR__ . '/../..' . '/Modules/Shop/app/Enums/CacheStrategy.php',
+        'Modules\\Shop\\App\\Enums\\ProductCondition' => __DIR__ . '/../..' . '/Modules/Shop/app/Enums/ProductCondition.php',
+        'Modules\\Shop\\App\\Enums\\ProductType' => __DIR__ . '/../..' . '/Modules/Shop/app/Enums/ProductType.php',
+        'Modules\\Shop\\App\\Events\\TranslationCompletedEvent' => __DIR__ . '/../..' . '/Modules/Shop/app/Events/TranslationCompletedEvent.php',
+        'Modules\\Shop\\App\\Exceptions\\ShopCreationException' => __DIR__ . '/../..' . '/Modules/Shop/app/Exceptions/ShopCreationException.php',
+        'Modules\\Shop\\App\\Exceptions\\ShopException' => __DIR__ . '/../..' . '/Modules/Shop/app/Exceptions/ShopException.php',
+        'Modules\\Shop\\App\\Exceptions\\ShopNotFoundException' => __DIR__ . '/../..' . '/Modules/Shop/app/Exceptions/ShopNotFoundException.php',
+        'Modules\\Shop\\App\\Exceptions\\ShopProtectionException' => __DIR__ . '/../..' . '/Modules/Shop/app/Exceptions/ShopProtectionException.php',
+        'Modules\\Shop\\App\\Exceptions\\ShopValidationException' => __DIR__ . '/../..' . '/Modules/Shop/app/Exceptions/ShopValidationException.php',
+        'Modules\\Shop\\App\\Http\\Controllers\\Api\\ShopApiController' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Controllers/Api/ShopApiController.php',
+        'Modules\\Shop\\App\\Http\\Controllers\\Front\\ShopController' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Controllers/Front/ShopController.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopBrandComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopBrandComponent.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopBrandManageComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopBrandManageComponent.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopCategoryComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopCategoryComponent.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopCategoryManageComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopCategoryManageComponent.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopComponent.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopProductComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopProductComponent.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopProductManageComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopProductManageComponent.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Traits\\InlineEditTitle' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/InlineEditTitle.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Traits\\WithBulkActions' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/WithBulkActions.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Traits\\WithBulkActionsQueue' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/WithBulkActionsQueue.php',
+        'Modules\\Shop\\App\\Http\\Resources\\ShopCollection' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Resources/ShopCollection.php',
+        'Modules\\Shop\\App\\Http\\Resources\\ShopResource' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Resources/ShopResource.php',
+        'Modules\\Shop\\App\\Jobs\\BulkDeleteShopsJob' => __DIR__ . '/../..' . '/Modules/Shop/app/Jobs/BulkDeleteShopsJob.php',
+        'Modules\\Shop\\App\\Jobs\\BulkUpdateShopsJob' => __DIR__ . '/../..' . '/Modules/Shop/app/Jobs/BulkUpdateShopsJob.php',
+        'Modules\\Shop\\App\\Jobs\\TranslateShopContentJob' => __DIR__ . '/../..' . '/Modules/Shop/app/Jobs/TranslateShopContentJob.php',
+        'Modules\\Shop\\App\\Jobs\\TranslateShopJob' => __DIR__ . '/../..' . '/Modules/Shop/app/Jobs/TranslateShopJob.php',
+        'Modules\\Shop\\App\\Models\\Shop' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/Shop.php',
+        'Modules\\Shop\\App\\Models\\ShopBrand' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopBrand.php',
+        'Modules\\Shop\\App\\Models\\ShopCategory' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopCategory.php',
+        'Modules\\Shop\\App\\Models\\ShopProduct' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopProduct.php',
+        'Modules\\Shop\\App\\Models\\ShopProductVariant' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopProductVariant.php',
+        'Modules\\Shop\\App\\Observers\\ShopBrandObserver' => __DIR__ . '/../..' . '/Modules/Shop/app/Observers/ShopBrandObserver.php',
+        'Modules\\Shop\\App\\Observers\\ShopCategoryObserver' => __DIR__ . '/../..' . '/Modules/Shop/app/Observers/ShopCategoryObserver.php',
+        'Modules\\Shop\\App\\Observers\\ShopProductObserver' => __DIR__ . '/../..' . '/Modules/Shop/app/Observers/ShopProductObserver.php',
+        'Modules\\Shop\\App\\Repositories\\ShopBrandRepository' => __DIR__ . '/../..' . '/Modules/Shop/app/Repositories/ShopBrandRepository.php',
+        'Modules\\Shop\\App\\Repositories\\ShopCategoryRepository' => __DIR__ . '/../..' . '/Modules/Shop/app/Repositories/ShopCategoryRepository.php',
+        'Modules\\Shop\\App\\Repositories\\ShopProductRepository' => __DIR__ . '/../..' . '/Modules/Shop/app/Repositories/ShopProductRepository.php',
+        'Modules\\Shop\\App\\Repositories\\ShopProductVariantRepository' => __DIR__ . '/../..' . '/Modules/Shop/app/Repositories/ShopProductVariantRepository.php',
+        'Modules\\Shop\\App\\Services\\ShopBrandService' => __DIR__ . '/../..' . '/Modules/Shop/app/Services/ShopBrandService.php',
+        'Modules\\Shop\\App\\Services\\ShopCategoryService' => __DIR__ . '/../..' . '/Modules/Shop/app/Services/ShopCategoryService.php',
+        'Modules\\Shop\\App\\Services\\ShopProductService' => __DIR__ . '/../..' . '/Modules/Shop/app/Services/ShopProductService.php',
+        'Modules\\Shop\\App\\Services\\ShopProductVariantService' => __DIR__ . '/../..' . '/Modules/Shop/app/Services/ShopProductVariantService.php',
+        'Modules\\Shop\\App\\Services\\ShopService' => __DIR__ . '/../..' . '/Modules/Shop/app/Services/ShopService.php',
+        'Modules\\Shop\\Database\\Factories\\ShopBrandFactory' => __DIR__ . '/../..' . '/Modules/Shop/database/factories/ShopBrandFactory.php',
+        'Modules\\Shop\\Database\\Factories\\ShopCategoryFactory' => __DIR__ . '/../..' . '/Modules/Shop/database/factories/ShopCategoryFactory.php',
+        'Modules\\Shop\\Database\\Factories\\ShopProductFactory' => __DIR__ . '/../..' . '/Modules/Shop/database/factories/ShopProductFactory.php',
+        'Modules\\Shop\\Database\\Factories\\ShopProductVariantFactory' => __DIR__ . '/../..' . '/Modules/Shop/database/factories/ShopProductVariantFactory.php',
+        'Modules\\Shop\\Database\\Seeders\\ShopCategorySeeder' => __DIR__ . '/../..' . '/Modules/Shop/database/seeders/ShopCategorySeeder.php',
+        'Modules\\Shop\\Database\\Seeders\\ShopSeeder' => __DIR__ . '/../..' . '/Modules/Shop/database/seeders/ShopSeeder.php',
         'Modules\\Shop\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Shop/Providers/EventServiceProvider.php',
         'Modules\\Shop\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/Shop/Providers/RouteServiceProvider.php',
         'Modules\\Shop\\Providers\\ShopServiceProvider' => __DIR__ . '/../..' . '/Modules/Shop/Providers/ShopServiceProvider.php',
@@ -6544,6 +6862,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Studio\\App\\Support\\BlockManager' => __DIR__ . '/../..' . '/Modules/Studio/app/Support/BlockManager.php',
         'Modules\\Studio\\App\\Support\\StudioHelper' => __DIR__ . '/../..' . '/Modules/Studio/app/Support/StudioHelper.php',
         'Modules\\Studio\\App\\Traits\\HasBlocks' => __DIR__ . '/../..' . '/Modules/Studio/app/Traits/HasBlocks.php',
+        'Modules\\Studio\\Database\\Seeders\\StudioDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/Studio/database/seeders/StudioDatabaseSeeder.php',
         'Modules\\Studio\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Studio/Providers/EventServiceProvider.php',
         'Modules\\Studio\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/Studio/Providers/RouteServiceProvider.php',
         'Modules\\Studio\\Providers\\StudioServiceProvider' => __DIR__ . '/../..' . '/Modules/Studio/Providers/StudioServiceProvider.php',
@@ -6571,6 +6890,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\TenantManagement\\App\\Services\\RealTimeResourceTracker' => __DIR__ . '/../..' . '/Modules/TenantManagement/app/Services/RealTimeResourceTracker.php',
         'Modules\\TenantManagement\\App\\Services\\TenantRateLimitService' => __DIR__ . '/../..' . '/Modules/TenantManagement/app/Services/TenantRateLimitService.php',
         'Modules\\TenantManagement\\App\\Services\\TenantResourceMonitorService' => __DIR__ . '/../..' . '/Modules/TenantManagement/app/Services/TenantResourceMonitorService.php',
+        'Modules\\TenantManagement\\Database\\Seeders\\TenantManagementDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/TenantManagement/database/seeders/TenantManagementDatabaseSeeder.php',
         'Modules\\TenantManagement\\Providers\\TenantManagementServiceProvider' => __DIR__ . '/../..' . '/Modules/TenantManagement/Providers/TenantManagementServiceProvider.php',
         'Modules\\ThemeManagement\\App\\Http\\Controllers\\ThemeManagementController' => __DIR__ . '/../..' . '/Modules/ThemeManagement/app/Http/Controllers/ThemeManagementController.php',
         'Modules\\ThemeManagement\\App\\Http\\Livewire\\ThemeManagementComponent' => __DIR__ . '/../..' . '/Modules/ThemeManagement/app/Http/Livewire/ThemeManagementComponent.php',
@@ -6621,6 +6941,8 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\WidgetManagement\\App\\Http\\Livewire\\WidgetFormBuilderComponent' => __DIR__ . '/../..' . '/Modules/WidgetManagement/app/Http/Livewire/WidgetFormBuilderComponent.php',
         'Modules\\WidgetManagement\\App\\Support\\HandlebarsRenderer' => __DIR__ . '/../..' . '/Modules/WidgetManagement/app/Support/HandlebarsRenderer.php',
         'Modules\\WidgetManagement\\App\\Support\\ShortcodeParser' => __DIR__ . '/../..' . '/Modules/WidgetManagement/app/Support/ShortcodeParser.php',
+        'Modules\\WidgetManagement\\Database\\Seeders\\WidgetManagementSeeder' => __DIR__ . '/../..' . '/Modules/WidgetManagement/database/seeders/WidgetManagementSeeder.php',
+        'Modules\\WidgetManagement\\Http\\Controllers\\WidgetManagementController' => __DIR__ . '/../..' . '/Modules/WidgetManagement/app/Http/Controllers/WidgetManagementController.php',
         'Modules\\WidgetManagement\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/WidgetManagement/Providers/EventServiceProvider.php',
         'Modules\\WidgetManagement\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/WidgetManagement/Providers/RouteServiceProvider.php',
         'Modules\\WidgetManagement\\Providers\\WidgetManagementServiceProvider' => __DIR__ . '/../..' . '/Modules/WidgetManagement/Providers/WidgetManagementServiceProvider.php',
@@ -8711,13 +9033,11 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'PhpParser\\Lexer\\TokenEmulator\\KeywordEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/KeywordEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\MatchTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/MatchTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\NullsafeTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/NullsafeTokenEmulator.php',
-        'PhpParser\\Lexer\\TokenEmulator\\PipeOperatorEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/PipeOperatorEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\PropertyTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/PropertyTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\ReadonlyFunctionTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/ReadonlyFunctionTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\ReadonlyTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/ReadonlyTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\ReverseEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/ReverseEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\TokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/TokenEmulator.php',
-        'PhpParser\\Lexer\\TokenEmulator\\VoidCastEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/VoidCastEmulator.php',
         'PhpParser\\Modifiers' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Modifiers.php',
         'PhpParser\\NameContext' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/NameContext.php',
         'PhpParser\\Node' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node.php',
@@ -8785,7 +9105,6 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'PhpParser\\Node\\Expr\\BinaryOp\\Mul' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Mul.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\NotEqual' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/NotEqual.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/NotIdentical.php',
-        'PhpParser\\Node\\Expr\\BinaryOp\\Pipe' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Pipe.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\Plus' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Plus.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\Pow' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Pow.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\ShiftLeft' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/ShiftLeft.php',
@@ -8804,7 +9123,6 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'PhpParser\\Node\\Expr\\Cast\\Object_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/Object_.php',
         'PhpParser\\Node\\Expr\\Cast\\String_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/String_.php',
         'PhpParser\\Node\\Expr\\Cast\\Unset_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/Unset_.php',
-        'PhpParser\\Node\\Expr\\Cast\\Void_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/Void_.php',
         'PhpParser\\Node\\Expr\\ClassConstFetch' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/ClassConstFetch.php',
         'PhpParser\\Node\\Expr\\Clone_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Clone_.php',
         'PhpParser\\Node\\Expr\\Closure' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Closure.php',
@@ -10261,7 +10579,6 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Spatie\\Image\\Drivers\\Color' => __DIR__ . '/..' . '/spatie/image/src/Drivers/Color.php',
         'Spatie\\Image\\Drivers\\Concerns\\AddsWatermark' => __DIR__ . '/..' . '/spatie/image/src/Drivers/Concerns/AddsWatermark.php',
         'Spatie\\Image\\Drivers\\Concerns\\CalculatesCropOffsets' => __DIR__ . '/..' . '/spatie/image/src/Drivers/Concerns/CalculatesCropOffsets.php',
-        'Spatie\\Image\\Drivers\\Concerns\\CalculatesFocalCropAndResizeCoordinates' => __DIR__ . '/..' . '/spatie/image/src/Drivers/Concerns/CalculatesFocalCropAndResizeCoordinates.php',
         'Spatie\\Image\\Drivers\\Concerns\\CalculatesFocalCropCoordinates' => __DIR__ . '/..' . '/spatie/image/src/Drivers/Concerns/CalculatesFocalCropCoordinates.php',
         'Spatie\\Image\\Drivers\\Concerns\\GetsOrientationFromExif' => __DIR__ . '/..' . '/spatie/image/src/Drivers/Concerns/GetsOrientationFromExif.php',
         'Spatie\\Image\\Drivers\\Concerns\\PerformsFitCrops' => __DIR__ . '/..' . '/spatie/image/src/Drivers/Concerns/PerformsFitCrops.php',
@@ -13569,7 +13886,6 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Tests\\Feature\\Auth\\PasswordResetTest' => __DIR__ . '/../..' . '/tests/Feature/Auth/PasswordResetTest.php',
         'Tests\\Feature\\Auth\\PasswordUpdateTest' => __DIR__ . '/../..' . '/tests/Feature/Auth/PasswordUpdateTest.php',
         'Tests\\Feature\\Auth\\RegistrationTest' => __DIR__ . '/../..' . '/tests/Feature/Auth/RegistrationTest.php',
-        'Tests\\Feature\\ExampleTest' => __DIR__ . '/../..' . '/tests/Feature/ExampleTest.php',
         'Tests\\Feature\\Page\\PageManagementTest' => __DIR__ . '/../..' . '/tests/Feature/Page/PageManagementTest.php',
         'Tests\\Feature\\ProfileTest' => __DIR__ . '/../..' . '/tests/Feature/ProfileTest.php',
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
@@ -13653,7 +13969,6 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'ZipStream\\LocalFileHeader' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/LocalFileHeader.php',
         'ZipStream\\OperationMode' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/OperationMode.php',
         'ZipStream\\PackField' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/PackField.php',
-        'ZipStream\\Stream\\CallbackStreamWrapper' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Stream/CallbackStreamWrapper.php',
         'ZipStream\\Time' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Time.php',
         'ZipStream\\Version' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Version.php',
         'ZipStream\\Zip64\\DataDescriptor' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Zip64/DataDescriptor.php',

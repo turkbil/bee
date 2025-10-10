@@ -75,6 +75,37 @@ return [
             'permission' => 0666, // Auto-fix permission for web server
         ],
 
+        // 🏢 TENANT-SPECIFIC LOGS - Her tenant kendi log klasöründe
+        // Path dinamik olarak TenancyServiceProvider'da ayarlanır
+        'tenant' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/tenant-fallback.log'), // Default, runtime'da değişir
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders' => true,
+            'permission' => 0666,
+        ],
+
+        // 🔧 SYSTEM LOGS - Merkezi sistem logları
+        'system' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/system.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => env('LOG_DAILY_DAYS', 30),
+            'replace_placeholders' => true,
+            'permission' => 0666,
+        ],
+
+        // 🔐 AUTH LOGS - Merkezi auth logları
+        'auth' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/auth.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => env('LOG_DAILY_DAYS', 90), // 90 gün saklansın
+            'replace_placeholders' => true,
+            'permission' => 0666,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

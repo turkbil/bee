@@ -1,3 +1,7 @@
+SİSTEM GERÇEK SİSTEM. O YÜZDEN KESİNLİKLE BANA SORMADAN 
+MİGRATE FRESH SEED -- YAPMA!!!
+
+
 # 🤖 CLAUDE ÇALIŞMA TALİMATLARI
 
 **Proje Giriş**: nurullah@nurullah.net / test
@@ -46,11 +50,6 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 **Detaylı teknik dökümanlar**: `readme/claude-docs/` klasöründe
 
-### 🧪 TEST PROTOKOLÜ
-Migration/Seeder sonrası:
-```bash
-php artisan app:clear-all && php artisan migrate:fresh --seed && php artisan module:clear-cache && php artisan responsecache:clear && php artisan telescope:clear
-```
 
 ### 🗑️ DOSYA TEMİZLEME
 - **Log/Fotoğraf** gönderirsen: Oku → Analiz et → Boşalt → Sil

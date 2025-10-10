@@ -41,10 +41,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\HandleModuleTenantPermissions::class . '@handleModuleRemoved',
         ],
 
-        // Tenant database events
-        \Stancl\Tenancy\Events\DatabaseMigrated::class => [
-            \App\Listeners\RegisterTenantDatabaseToPlesk::class,
-        ],
+        // Tenant database events - TenancyServiceProvider'da tanımlı, buradan kaldırıldı
     ];
 
     /**

@@ -8,7 +8,6 @@ use App\Models\Tenant;
 
 class AITenantProfile extends Model
 {
-    protected $connection = 'central';
     protected $table = 'ai_tenant_profiles';
     
     public function __construct(array $attributes = [])

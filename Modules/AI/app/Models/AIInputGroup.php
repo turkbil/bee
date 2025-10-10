@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AIInputGroup extends Model
 {
-    protected $connection = 'central';
     protected $table = 'ai_input_groups';
     
     protected $fillable = [

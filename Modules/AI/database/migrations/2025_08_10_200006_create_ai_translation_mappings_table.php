@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_translation_mappings', function (Blueprint $table) {
+        Schema::create('ai_translation_mappings', function (Blueprint $table) {
             $table->id();
             $table->string('module_name', 50);
             $table->string('table_name', 100);
@@ -23,10 +23,9 @@ return new class extends Migration
             $table->json('special_rules')->nullable()->comment('Özel çeviri kuralları');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
+
             // Index'ler
             $table->unique(['module_name', 'table_name'], 'unique_module_table');
-            $table->index(['is_active'], 'idx_active');
         });
     }
 
@@ -35,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_translation_mappings');
+        Schema::dropIfExists('ai_translation_mappings');
     }
 };

@@ -58,16 +58,18 @@ class ModuleTenantsSeeder extends Seeder
                 'page',
                 'languagemanagement',
                 'seomanagement',
+                'blog',
+                'shop',
+                'mediamanagement',
+                'announcement',
+                'portfolio',
             ];
             // Sadece central tenant'a atanacak modüller
             $centralModuller = [
                 'tenantmanagement',
             ];
-            // Özel atama yapılacak modüller (tenant bazında manuel kontrol)
-            $ozelModuller = [
-                'announcement',
-                'portfolio',
-            ];
+            // Özel atama yapılacak modüller (tenant bazında manuel kontrol) - Artık gerek yok, tüm modüller zorunlu
+            $ozelModuller = [];
 
             foreach ($tenants as $tenant) {
                 $tenantSeed = crc32($tenant);

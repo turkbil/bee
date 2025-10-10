@@ -4,6 +4,7 @@ namespace Modules\AI\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\AI\App\Models\AITenantProfile;
+use App\Models\Tenant;
 use Carbon\Carbon;
 use App\Helpers\TenantHelpers;
 
@@ -24,10 +25,17 @@ class CleanAITenantProfileSeeder extends Seeder
         // Mevcut profilleri temizle
         AITenantProfile::truncate();
         
+        $centralTenant = Tenant::where('central', true)->first();
+
+        if (!$centralTenant) {
+            echo "⚠️  Central tenant bulunamadı, AI tenant profili oluşturulamadı.\n";
+            return;
+        }
+
         // SQL export'undan temiz profil verisi
         $profileData = [
             'id' => 1,
-            'tenant_id' => 1,
+            'tenant_id' => $centralTenant->id,
             'company_info' => [
                 'city' => 'İstanbul',
                 'brand_name' => 'Türk Bilişim',

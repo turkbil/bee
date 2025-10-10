@@ -272,13 +272,46 @@ class AnthropicService
      */
     public function estimateTokens($messages)
     {
+        // String olarak geldiyse direkt hesapla
+        if (is_string($messages)) {
+            return (int) (strlen($messages) / 4);
+        }
+
         $text = '';
         foreach ($messages as $message) {
             $text .= ($message['content'] ?? '') . ' ';
         }
-        
+
         // Claude token tahmini (basit hesaplama)
         return intval(strlen($text) / 4);
+    }
+
+    /**
+     * Format messages for API
+     */
+    protected function formatMessages(array $messages): array
+    {
+        return array_map(function ($message) {
+            return [
+                'role' => $message['role'],
+                'content' => $message['content']
+            ];
+        }, $messages);
+    }
+
+    /**
+     * Validate model name
+     */
+    protected function validateModel(string $model): bool
+    {
+        $validModels = [
+            'claude-3-5-sonnet-20241022',
+            'claude-3-opus-20240229',
+            'claude-3-sonnet-20240229',
+            'claude-3-haiku-20240307',
+            'claude-sonnet-4-20250514'
+        ];
+        return in_array($model, $validModels);
     }
 
     /**

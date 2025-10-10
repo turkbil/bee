@@ -21,7 +21,7 @@ return new class extends Migration
             return;
         }
         
-        Schema::connection('central')->create('ai_tenant_profiles', function (Blueprint $table) {
+        Schema::create('ai_tenant_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tenant_id')->unique()->constrained('tenants')->onDelete('cascade');
             
@@ -104,6 +104,6 @@ return new class extends Migration
             return;
         }
         
-        Schema::connection('central')->dropIfExists('ai_tenant_profiles');
+        Schema::dropIfExists('ai_tenant_profiles');
     }
 };

@@ -13,7 +13,6 @@ use Modules\AI\App\Services\AICreditService;
 
 class AICreditUsage extends Model
 {
-    protected $connection = 'central';
     protected $table = 'ai_credit_usage';
     
     public function __construct(array $attributes = [])

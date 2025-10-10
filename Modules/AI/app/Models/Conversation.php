@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Conversation extends Model
 {
     use HasFactory;
-    protected $connection = 'central';
 
     protected $table = 'ai_conversations';
     

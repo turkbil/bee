@@ -16,14 +16,16 @@ class ThemesSeeder extends Seeder
         }
 
         // Varsayılan Tema (blank)
-        Theme::create([
-            'name' => 'blank',
-            'title' => 'Blank Tema',
-            'folder_name' => 'blank',
-            'description' => 'Boş tema (blank), temel dizayn için test.',
-            'is_active' => true,
-            'is_default' => true,
-        ]);
+        Theme::updateOrCreate(
+            ['name' => 'blank'],
+            [
+                'title' => 'Blank Tema',
+                'folder_name' => 'blank',
+                'description' => 'Boş tema (blank), temel dizayn için test.',
+                'is_active' => true,
+                'is_default' => true,
+            ]
+        );
 
         // Diğer örnek temalar (production-ready, hard-coded)
         $temalar = [
@@ -54,7 +56,10 @@ class ThemesSeeder extends Seeder
         ];
 
         foreach ($temalar as $tema) {
-            Theme::create($tema);
+            Theme::updateOrCreate(
+                ['name' => $tema['name']],
+                $tema
+            );
         }
     }
 }

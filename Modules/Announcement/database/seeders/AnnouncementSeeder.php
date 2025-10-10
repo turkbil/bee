@@ -109,7 +109,7 @@ class AnnouncementSeeder extends Seeder
 
         // Create homeannouncement
         $homeannouncement = Announcement::factory()
-            ->featured()
+            ->active()
             ->create();
 
         $this->command->info('✓ Homeannouncement created');

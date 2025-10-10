@@ -27,7 +27,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_features', function (Blueprint $table) {
+        Schema::create('ai_features', function (Blueprint $table) {
             $table->id();
             
             // Feature Category ilişkisi (add_category_id_to_ai_features_table.php entegrasyonu)
@@ -126,6 +126,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_features');
+        Schema::dropIfExists('ai_features');
     }
 };

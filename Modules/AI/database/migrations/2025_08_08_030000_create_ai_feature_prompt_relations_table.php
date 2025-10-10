@@ -25,9 +25,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Central veritabanında tablo oluştur
-        TenantHelpers::central(function() {
-            Schema::connection('central')->create('ai_feature_prompt_relations', function (Blueprint $table) {
+        Schema::create('ai_feature_prompt_relations', function (Blueprint $table) {
                 $table->id();
                 
                 // Foreign Keys
@@ -82,7 +80,6 @@ return new class extends Migration
                       ->references('id')
                       ->on('ai_feature_prompts')
                       ->onDelete('cascade');
-            });
         });
     }
 
@@ -91,8 +88,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        TenantHelpers::central(function() {
-            Schema::connection('central')->dropIfExists('ai_feature_prompt_relations');
-        });
+        Schema::dropIfExists('ai_feature_prompt_relations');
     }
 };

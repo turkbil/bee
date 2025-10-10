@@ -10,7 +10,6 @@ class Prompt extends Model
     use HasFactory;
 
     protected $table = 'ai_prompts';
-    protected $connection = 'central';
 
     protected $fillable = [
         'name',

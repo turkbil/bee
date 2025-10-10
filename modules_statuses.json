@@ -1,6 +1,7 @@
 {
     "Page": true,
     "Blog": true,
+    "Shop": true,
     "Portfolio": true,
     "UserManagement": true,
     "ModuleManagement": true,

@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Simple MySQL for Development
+  mysql-dev:
+    image: mysql:8.0
+    container_name: laravel-mysql-simple
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel123
+    volumes:
+      - mysql_simple_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+      timeout: 10s
+      interval: 15s
+      retries: 5
+
+  # Simple Redis
+  redis-dev:
+    image: redis:7-alpine
+    container_name: laravel-redis-simple
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_simple_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      interval: 5s
+      retries: 3
+
+  # PhpMyAdmin (registry'den çekilemeyen durumlarda atla)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    profiles: ["phpmyadmin"]
+    container_name: laravel-phpmyadmin-simple
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql-dev
+      PMA_USER: root
+      PMA_PASSWORD: root123
+      UPLOAD_LIMIT: 100M
+    ports:
+      - "8080:80"
+    depends_on:
+      mysql-dev:
+        condition: service_healthy
+
+volumes:
+  mysql_simple_data:
+    driver: local
+  redis_simple_data:
+    driver: local
+
+networks:
+  default:
+    name: laravel-simple-network

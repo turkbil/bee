@@ -73,21 +73,25 @@ class SettingsTableSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
-            DB::table('settings')->insert([
-                'group_id' => $setting['group_id'],
-                'label' => $setting['label'],
-                'key' => $setting['key'],
-                'type' => $setting['type'],
-                'options' => $setting['options'] ?? null,
-                'default_value' => $setting['default_value'],
-                'sort_order' => $setting['sort_order'],
-                'is_active' => $setting['is_active'],
-                'is_system' => $setting['is_system'],
-                'is_required' => $setting['is_required'],
-                'help_text' => $setting['help_text'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $existing = DB::table('settings')->where('key', $setting['key'])->first();
+
+            DB::table('settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                [
+                    'group_id' => $setting['group_id'],
+                    'label' => $setting['label'],
+                    'type' => $setting['type'],
+                    'options' => $setting['options'] ?? null,
+                    'default_value' => $setting['default_value'],
+                    'sort_order' => $setting['sort_order'],
+                    'is_active' => $setting['is_active'],
+                    'is_system' => $setting['is_system'],
+                    'is_required' => $setting['is_required'],
+                    'help_text' => $setting['help_text'],
+                    'created_at' => $existing->created_at ?? now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
 }

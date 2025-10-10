@@ -68,14 +68,29 @@ readonly class PageRepository implements PageRepositoryInterface
     {
         $strategy = CacheStrategy::PUBLIC_CACHED; // Always cache for SEO
         $cacheKey = $this->getCacheKey("find_by_slug.{$slug}.{$locale}");
+        $primaryLocale = $this->sanitizeLocale($locale);
+        $fallbackLocale = $this->getDefaultLocale();
+        $searchLocales = array_values(array_unique([
+            $primaryLocale,
+            $fallbackLocale,
+            'tr',
+        ]));
         
         return Cache::tags($this->getCacheTags())
-            ->remember($cacheKey, $strategy->getCacheTtl(), fn() => 
-                $this->model->where(function ($query) use ($slug, $locale) {
-                    $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) = ?", [$slug])
-                          ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) = ?", [$slug]);
-                })->active()->first()
-            );
+            ->remember($cacheKey, $strategy->getCacheTtl(), function () use ($slug, $searchLocales) {
+                return $this->model
+                    ->where(function ($query) use ($slug, $searchLocales) {
+                        foreach ($searchLocales as $index => $localeCode) {
+                            $method = $index === 0 ? 'whereRaw' : 'orWhereRaw';
+                            $query->{$method}(
+                                $this->jsonLocaleExpression('slug', $localeCode) . ' = ?',
+                                [$slug]
+                            );
+                        }
+                    })
+                    ->active()
+                    ->first();
+            });
     }
     
     public function getActive(): Collection
@@ -111,11 +126,18 @@ readonly class PageRepository implements PageRepositoryInterface
         if (!empty($filters['search'])) {
             $searchTerm = '%' . $filters['search'] . '%';
             $locales = $filters['locales'] ?? TenantLanguageProvider::getActiveLanguageCodes();
+            $locales = array_values(array_unique(array_map(
+                fn($code) => $this->sanitizeLocale((string) $code),
+                $locales
+            )));
 
             $query->where(function ($subQuery) use ($searchTerm, $locales) {
                 foreach ($locales as $locale) {
-                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
-                            ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                    $expressionTitle = $this->jsonLocaleExpression('title', $locale);
+                    $expressionSlug = $this->jsonLocaleExpression('slug', $locale);
+
+                    $subQuery->orWhereRaw("{$expressionTitle} LIKE ?", [$searchTerm])
+                             ->orWhereRaw("{$expressionSlug} LIKE ?", [$searchTerm]);
                 }
             });
         }
@@ -127,11 +149,12 @@ readonly class PageRepository implements PageRepositoryInterface
         
         // Sorting
         $sortField = $filters['sortField'] ?? 'page_id';
-        $sortDirection = $filters['sortDirection'] ?? 'desc';
+        $sortDirection = $this->normalizeSortDirection($filters['sortDirection'] ?? 'desc');
         
         if ($sortField === 'title') {
-            $locale = $filters['currentLocale'] ?? 'tr';
-            $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) {$sortDirection}");
+            $locale = $this->sanitizeLocale($filters['currentLocale'] ?? app()->getLocale() ?? 'tr');
+            $expressionTitle = $this->jsonLocaleExpression('title', $locale);
+            $query->orderByRaw("{$expressionTitle} {$sortDirection}");
         } else {
             $query->orderBy($sortField, $sortDirection);
         }
@@ -147,11 +170,18 @@ readonly class PageRepository implements PageRepositoryInterface
         }
 
         $searchTerm = '%' . $term . '%';
+        $locales = array_values(array_unique(array_map(
+            fn($code) => $this->sanitizeLocale((string) $code),
+            $locales
+        )));
 
         return $this->model->where(function ($query) use ($searchTerm, $locales) {
             foreach ($locales as $locale) {
-                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
-                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                $expressionTitle = $this->jsonLocaleExpression('title', $locale);
+                $expressionBody = $this->jsonLocaleExpression('body', $locale);
+
+                $query->orWhereRaw("{$expressionTitle} LIKE ?", [$searchTerm])
+                      ->orWhereRaw("{$expressionBody} LIKE ?", [$searchTerm]);
             }
         })->active()->get();
     }
@@ -285,5 +315,47 @@ readonly class PageRepository implements PageRepositoryInterface
     protected function getCacheTags(): array
     {
         return $this->cache->tags([$this->cachePrefix]);
+    }
+
+    private function jsonLocaleExpression(string $column, string $locale): string
+    {
+        $locale = $this->sanitizeLocale($locale);
+        $connection = $this->model->getConnection();
+        $driver = $connection->getDriverName();
+        $wrappedColumn = $connection->getQueryGrammar()->wrap($column);
+        $jsonPath = '$."' . $locale . '"';
+
+        return match ($driver) {
+            'pgsql' => "{$wrappedColumn}::jsonb ->> '{$locale}'",
+            'sqlite' => "json_extract({$wrappedColumn}, '{$jsonPath}')",
+            default => "JSON_UNQUOTE(JSON_EXTRACT({$wrappedColumn}, '{$jsonPath}'))",
+        };
+    }
+
+    private function sanitizeLocale(string $locale): string
+    {
+        $clean = preg_replace('/[^a-z0-9_\-]/i', '', $locale) ?? '';
+
+        return $clean !== '' ? $clean : 'tr';
+    }
+
+    private function getDefaultLocale(): string
+    {
+        $defaultLocale = null;
+
+        if (function_exists('get_tenant_default_locale')) {
+            $defaultLocale = (string) get_tenant_default_locale();
+        }
+
+        if (!$defaultLocale) {
+            $defaultLocale = (string) config('app.locale', 'tr');
+        }
+
+        return $this->sanitizeLocale($defaultLocale);
+    }
+
+    private function normalizeSortDirection(string $direction): string
+    {
+        return strtolower($direction) === 'asc' ? 'asc' : 'desc';
     }
 }

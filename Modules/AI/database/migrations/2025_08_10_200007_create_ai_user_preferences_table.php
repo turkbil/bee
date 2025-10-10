@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_user_preferences', function (Blueprint $table) {
+        Schema::create('ai_user_preferences', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('feature_id')->nullable();
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_user_preferences');
+        Schema::dropIfExists('ai_user_preferences');
     }
 };

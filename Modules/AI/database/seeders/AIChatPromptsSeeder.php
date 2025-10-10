@@ -4,11 +4,24 @@ namespace Modules\AI\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\AI\app\Models\Prompt;
+use Illuminate\Support\Facades\Schema;
 
 class AIChatPromptsSeeder extends Seeder
 {
     public function run()
     {
+        $promptTable = (new Prompt())->getTable();
+
+        if (!Schema::hasTable($promptTable)) {
+            $message = '⚠️  ai_prompts tablosu bulunamadı, AIChatPromptsSeeder atlanıyor.';
+            if (isset($this->command)) {
+                $this->command->warn($message);
+            } else {
+                echo $message . PHP_EOL;
+            }
+            return;
+        }
+
         // Önce chat prompt_type'ındaki eski prompt'ları temizle
         Prompt::where('prompt_type', 'chat')->delete();
 

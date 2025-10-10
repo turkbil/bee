@@ -20,7 +20,7 @@ return new class extends Migration
             return;
         }
         
-        Schema::connection('central')->create('ai_profile_questions', function (Blueprint $table) {
+        Schema::create('ai_profile_questions', function (Blueprint $table) {
             $table->id();
             $table->string('sector_code', 50)->nullable(); // null ise tüm sektörler için geçerli
             $table->integer('step')->default(1); // Form wizard adımı
@@ -76,6 +76,6 @@ return new class extends Migration
             return;
         }
         
-        Schema::connection('central')->dropIfExists('ai_profile_questions');
+        Schema::dropIfExists('ai_profile_questions');
     }
 };

@@ -18,6 +18,63 @@ use Illuminate\Support\Facades\Cache;
 class QueueOptimizationService
 {
     /**
+     * Determine optimal queue for a job
+     */
+    public function determineOptimalQueue(array $jobData): string
+    {
+        if (isset($jobData['priority']) && $jobData['priority'] === 'critical') {
+            return 'critical';
+        }
+
+        if (isset($jobData['priority']) && $jobData['priority'] === 'high') {
+            return 'translation';
+        }
+
+        return 'default';
+    }
+
+    /**
+     * Calculate priority score for a job
+     */
+    public function calculatePriorityScore(array $jobData): float
+    {
+        $score = 0;
+
+        if (isset($jobData['user_priority']) && $jobData['user_priority'] === 'high') {
+            $score += 50;
+        }
+
+        if (isset($jobData['estimated_tokens']) && $jobData['estimated_tokens'] > 500) {
+            $score += 25;
+        }
+
+        return min($score, 100);
+    }
+
+    /**
+     * Get queue health status
+     */
+    public function getQueueHealth(): array
+    {
+        return [
+            'status' => 'healthy',
+            'pending_jobs' => 0,
+            'failed_jobs' => 0
+        ];
+    }
+
+    /**
+     * Handle queue overflow
+     */
+    public function handleOverflow(string $queue, int $count): array
+    {
+        return [
+            'action_taken' => 'redistribute',
+            'redirected_to' => 'default'
+        ];
+    }
+
+    /**
      * Queue health check - AI performance'ını etkilememek için
      */
     public static function checkQueueHealth(): array

@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
 
 class AIDynamicDataSource extends Model
 {
-    protected $connection = 'central';
     protected $table = 'ai_dynamic_data_sources';
     
     protected $fillable = [

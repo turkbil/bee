@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_credit_usage', function (Blueprint $table) {
+        Schema::create('ai_credit_usage', function (Blueprint $table) {
             $table->id();
             $table->string('tenant_id'); // String for tenant compatibility
             $table->unsignedBigInteger('user_id');
@@ -67,6 +67,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_credit_usage');
+        Schema::dropIfExists('ai_credit_usage');
     }
 };

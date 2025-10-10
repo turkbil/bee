@@ -14,7 +14,6 @@ use Illuminate\Support\Collection;
 class AIFeature extends Model
 {
     use HasFactory;
-    protected $connection = 'central';
 
     protected $table = 'ai_features';
     

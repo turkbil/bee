@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_providers', function (Blueprint $table) {
+        Schema::create('ai_providers', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // openai, claude, deepseek
             $table->string('display_name'); // OpenAI, Claude, DeepSeek
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_providers');
+        Schema::dropIfExists('ai_providers');
     }
 };

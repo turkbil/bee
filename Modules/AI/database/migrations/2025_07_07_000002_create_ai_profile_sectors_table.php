@@ -20,7 +20,7 @@ return new class extends Migration
             return;
         }
         
-        Schema::connection('central')->create('ai_profile_sectors', function (Blueprint $table) {
+        Schema::create('ai_profile_sectors', function (Blueprint $table) {
             $table->id();
             $table->string('code', 50)->unique(); // e-commerce, health, education vb.
             
@@ -57,6 +57,6 @@ return new class extends Migration
             return;
         }
         
-        Schema::connection('central')->dropIfExists('ai_profile_sectors');
+        Schema::dropIfExists('ai_profile_sectors');
     }
 };

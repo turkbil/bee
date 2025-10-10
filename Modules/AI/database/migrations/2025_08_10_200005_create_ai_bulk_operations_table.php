@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_bulk_operations', function (Blueprint $table) {
+        Schema::create('ai_bulk_operations', function (Blueprint $table) {
             $table->id();
             $table->uuid('operation_uuid')->unique();
             $table->string('operation_type', 50)->comment('bulk_translate, bulk_seo, bulk_optimize');
@@ -43,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_bulk_operations');
+        Schema::dropIfExists('ai_bulk_operations');
     }
 };

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         // ai_provider_models tablosunu oluştur (ai_model_credit_rates'in yerini alıyor)
-        Schema::connection('central')->create('ai_provider_models', function (Blueprint $table) {
+        Schema::create('ai_provider_models', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('provider_id');
             $table->string('model_name', 100);
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_provider_models');
+        Schema::dropIfExists('ai_provider_models');
     }
 };

@@ -33,9 +33,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Central veritabanında tablo oluştur
-        TenantHelpers::central(function() {
-            Schema::connection('central')->create('ai_feature_prompts', function (Blueprint $table) {
+        Schema::create('ai_feature_prompts', function (Blueprint $table) {
                 $table->id();
                 
                 // Prompt Identity
@@ -96,7 +94,6 @@ return new class extends Migration
                     $table->fullText(['name', 'description', 'personality_traits']); // Full text search genişletildi
                 }
             });
-        });
     }
 
     /**
@@ -104,8 +101,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        TenantHelpers::central(function() {
-            Schema::connection('central')->dropIfExists('ai_feature_prompts');
-        });
+        Schema::dropIfExists('ai_feature_prompts');
     }
 };

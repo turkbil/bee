@@ -1,0 +1,254 @@
+Manufacturer
+Model designation
+Drive
+Load capacity
+Load center distance
+Service weight
+Length to face of forks
+Overall width
+Fork dimensions
+Turning radius
+Max. gradeability, laden/unladen
+Battery voltage/nominal capacity
+EP
+F4 201
+Electric
+2000
+600
+140
+400
+590(695)
+50X150X1150
+1360
+8/16
+48/20
+Q
+c
+l2
+b1/b2
+s/e/l
+Wa
+kg
+mm
+kg
+mm
+mm
+mm
+mm
+%
+V/Ah
+EP EQUIPMENT CO.,LTD
+www.ep-equipment.com   
+48V system increase power and reliability 
+Reduce operator effort and increase efficiency
+Removable Li-Ion batteries maximize flexibility
+Small size (l2=400mm) and reduced weight (140kg)
+Stablizing wheel option
+Available in different forks length and width
+V2402.01
+Li-Ion Pallet 
+Truck 2.0T     
+F Series - 
+F4 201
+
+Plug in&out Li-ion batteries maximize
+ flexibility
+Power and capacity upgrade for 
+productivity boost
+F4 201 comes with two 24V/20Ah Li-ion batteries 
+which can be easily replaced via plug in&out. This 
+truck can operate more frequently thanks to fast 
+charging and zero maintenance. Plus, its ﬂip cover 
+design protects batteries from water ingress, 
+ensuring battery safety. 
+The powerful 48V electric system means the F4 201 
+achieve a load capacity up to 2 tons, which brings a 
+productivity boost allowing you to lift more and 
+move more.  
+Stabilizing wheel option to handle all 
+kind of loads
+Newly designed tiller head combining 
+both aesthetics and practicality
+The stabilizing wheels allow to handle big loads 
+while reducing the risk of falls and damages on 
+uneven ﬂoors. Such options can be oﬀered directly 
+from the factory or as retroﬁt.
+F4 201 adopts EP’s newly designed tiller head, and 
+it demonstrates clean and smooth lines. The square 
+tube is strong and ensures robustness and reliability 
+for daily operation.
+F Series - F4 201 2T 
+Big loads
+Standard loads
+
+Cost-saving operations throughout 
+the distribution cycle 
+Platform-based design to maximize 
+competitive advantage in the market
+4 units per box as standard wholesale supply 
+reduces overall spending through the entire 
+distribution process. F4 201 accommodates 164 
+units in a 40' shipping container compared to 108 
+units of EPT20-ET2L, that can reach as high as 50% 
+of ocean freight charges reduction.
+F series features the platform F, which simpliﬁes the 
+conﬁguration of the truck and allows buyers to 
+choose from diﬀerent chassis by application. The 
+product design provides value and creates a ﬂexible 
+product strategy by introducing new equipment that 
+meets various market requirements.
+Why F Series ?
+
+If there are improvements of technical parameters or configurations, no further notice will be given.
+The diagram shown may contain non-standard configurations.
+F Series - F4 201 
+Li-Ion Pallet Truck 2.0T
+1.1 Manufacturer
+1.2 Model designation
+1.3 Drive
+1.4 Operator type
+1.5 Load capacity	Q kg
+1.6 Load center distance	c mm
+1.8 Load distancecentre of drive axle to fork	x mm
+1.9 Wheelbase	y mm
+2.1 Service weight	kg
+2.2 Axle loading, laden front/rear	kg
+2.3 Axle loading, unladen front/rear	kg
+3.1 Tyre type
+3.2 Tyre size, front
+3.3 Tyre size, rear
+3.4 Additional wheels (castor wheels)	mm
+3.5 Wheels, number front/rear (x=drive wheels)	mm
+3.6.1 Tread width, front	b mm
+3.7.1 Tread width, rear	b mm
+4.4 Lift height	h mm
+4.9 Height of tiller handle in drive position min./max. h mm
+4.15 Lowered height	h mm
+4.19 Overall length	l mm
+4.20 Length to face of forks	l mm
+4.21 Overall width	b/b mm
+4.22 Fork dimensions	s×e×l mm
+4.25 Distance between fork-arms	b mm
+4.32 Ground clearance, center of wheelbase	m mm
+4.34.1 Aisle width for pallets 1000×1200 crossways	Ast mm
+4.34.2 Aisle width for pallets 800×1200 lengthways	Ast mm
+4.35 Turning radius	Wa mm
+5.1 Travel speed, laden/unladen	km/h
+5.2 Lifting
+Distinguishing mark
+Service 
+weight
+Tyres/chassis	Dimensions	Performance data	Electric-engine
+Drive/lift 
+mechanism
+ speed, laden/unladen	m/s
+5.3 Lowering speed, laden/unladen	m/s
+5.8 Max. gradeability, laden/unladen	%
+5.10 Service brake
+6.1 Drive motor rating S2 60 min	kW
+6.2 Lift motor rating at S3 15%	kW
+6.4 Battery voltage/nominal ca
+pacity	V/Ah
+6.5 Battery weight	kg
+6.6 Energy consumption according to DIN EN 16796	kWh/h
+6.7 Turnover output according to VDI 2198	t/h
+6.8 Turnover efficiency according to VDI 2198	t/kWh
+8.1 Type of drive control
+10.5 Steering design
+10.7 Sound pressure level at the driver's ear	dB(A)
+15.1 Charger output current	A
+EP
+F4 201
+Electric
+Pedestrian
+2000
+600
+950
+1180
+140
+620/1520
+100/40
+Polyurethane
+210mm×70mm
+80mmx60mm
+74mm×30mm
+1x—/4
+——
+410535
+105
+750/1190
+85
+1550
+400
+590695
+50X150X1150
+560685
+30
+2160
+2025
+1360
+4.5/5
+0.016/0.020
+0.058/0.046
+8/16
+Electromagnetic
+0.9
+0.7
+48/20
+10
+0.18 ¹
+88
+473.12
+BLDC
+Mechanical
+74
+——
+，
+，
+（ ）
+（ ）
+（ ）
+₁₀
+₁₁
+₃
+₁₄
+₁₃
+₁
+₂
+₁₂
+₅
+₂
+⁾
+
+Option:
+No. Optional items	F4 201
+1.1
+1.3
+1.6 Drive cover off the ground
+2.1
+2.2
+2.3
+2.7
+2.8
+2.9 Battery indicator
+2.16
+3.3
+3.12
+3.16
+Note  ●Standard      ○ Optional       - Inconformity
+Fork dimension
+●1150*560○900*560○1000*560○1220*560○1350*560○1500*560○900*685
+○1000*685○1150*685○1220*685○1350*685○1500*685
+Fork lowered height	●80
+●55mm
+Load wheel type	●Double○Single
+Load wheel material	●PU
+Drive wheel material	●PU
+Battery capacity	●24V/20AH×2 ○24V/20AH×4
+Charger	●24V-5A external charger X2  ○24V-10A external charger X2
+●Without time
+handle head type	●Square-tube tiller head
+Castor wheels	●No○Yes and not customized
+Buzzer	●Yes and not customized
+Turtle speed	●Yes and not customized
+：

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_module_integrations', function (Blueprint $table) {
+        Schema::create('ai_module_integrations', function (Blueprint $table) {
             $table->id();
             $table->string('module_name', 50);
             $table->enum('integration_type', ['button', 'modal', 'inline', 'bulk', 'api'])->default('button');
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_module_integrations');
+        Schema::dropIfExists('ai_module_integrations');
     }
 };

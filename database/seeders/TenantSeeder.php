@@ -34,7 +34,7 @@ class TenantSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Domain::query()->delete();
         Tenant::query()->delete();
-        User::query()->delete(); // Central tenant'ta mevcut kullanıcıları temizle
+        User::query()->forceDelete(); // Soft delete yerine kalıcı silme yaparak unique kısıtlarını temizle
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         
         // 1. Önce Central tenant'ı ekle

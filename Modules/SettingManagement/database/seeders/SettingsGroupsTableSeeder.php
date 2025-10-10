@@ -24,19 +24,23 @@ class SettingsGroupsTableSeeder extends Seeder
         foreach ($groups as $group) {
             $layout = $group['layout'] ?? null;
             unset($group['layout']);
-            
-            $groupId = DB::table('settings_groups')->insertGetId([
-                'id' => $group['id'],
-                'name' => $group['name'],
-                'slug' => Str::slug($group['name']),
-                'parent_id' => $group['parent_id'],
-                'icon' => $group['icon'],
-                'prefix' => $group['prefix'] ?? null,
-                'is_active' => true,
-                'layout' => $layout,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+
+            $existing = DB::table('settings_groups')->where('id', $group['id'])->first();
+
+            DB::table('settings_groups')->updateOrInsert(
+                ['id' => $group['id']],
+                [
+                    'name' => $group['name'],
+                    'slug' => Str::slug($group['name']),
+                    'parent_id' => $group['parent_id'],
+                    'icon' => $group['icon'],
+                    'prefix' => $group['prefix'] ?? null,
+                    'is_active' => true,
+                    'layout' => $layout,
+                    'created_at' => $existing->created_at ?? now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
     

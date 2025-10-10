@@ -12,9 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Central veritabanında tablo oluştur
-        TenantHelpers::central(function() {
-            Schema::connection('central')->create('ai_feature_categories', function (Blueprint $table) {
+        Schema::create('ai_feature_categories', function (Blueprint $table) {
                 $table->id('ai_feature_category_id');
                 $table->string('title');
                 $table->string('slug')->unique();
@@ -29,7 +27,6 @@ return new class extends Migration
                 $table->foreign('parent_id')->references('ai_feature_category_id')->on('ai_feature_categories')->onDelete('cascade');
                 $table->index(['is_active', 'order']);
                 $table->index(['parent_id']);
-            });
         });
     }
 
@@ -38,9 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Central veritabanında tabloyu sil
-        TenantHelpers::central(function() {
-            Schema::connection('central')->dropIfExists('ai_feature_categories');
-        });
+        Schema::dropIfExists('ai_feature_categories');
     }
 };

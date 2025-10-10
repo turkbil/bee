@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AIInputOption extends Model
 {
-    protected $connection = 'central';
     protected $table = 'ai_input_options';
     
     protected $fillable = [

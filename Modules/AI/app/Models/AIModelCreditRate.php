@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Cache;
 class AIModelCreditRate extends Model
 {
     use HasFactory;
-    protected $connection = 'central';
 
     protected $table = 'ai_model_credit_rates';
 

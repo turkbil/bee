@@ -6,7 +6,7 @@ namespace Modules\AI\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\AI\App\Models\AIFeature;
-use App\Helpers\TenantHelpers;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * 🎯 BLOG YAZISI OLUŞTURUCU SEEDER - V3 UNIVERSAL INPUT SYSTEM
@@ -35,6 +35,18 @@ class BlogContentFeaturesSeeder extends Seeder
      */
     public function run(): void
     {
+        $featureTable = (new AIFeature())->getTable();
+
+        if (!Schema::hasTable($featureTable)) {
+            $message = '⚠️  ai_features tablosu bulunamadı, BlogContentFeaturesSeeder atlanıyor.';
+            if (isset($this->command)) {
+                $this->command->warn($message);
+            } else {
+                echo $message . PHP_EOL;
+            }
+            return;
+        }
+
         $this->command->info('📝 Blog Yazısı Oluşturucu feature\'ı ekleniyor...');
         
         // Varolan blog feature'larını temizle (re-seed için)

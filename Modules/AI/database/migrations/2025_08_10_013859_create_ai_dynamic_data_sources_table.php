@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_dynamic_data_sources', function (Blueprint $table) {
+        Schema::create('ai_dynamic_data_sources', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_dynamic_data_sources');
+        Schema::dropIfExists('ai_dynamic_data_sources');
     }
 };

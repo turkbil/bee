@@ -169,6 +169,15 @@ class ModuleManagementSeeder extends Seeder
                     'type' => 'system',
                     'is_active' => true
                 ],
+                [
+                    'name' => 'shop',
+                    'display_name' => 'E-Ticaret',
+                    'description' => 'E-Ticaret yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'content',
+                    'is_active' => true
+                ],
             ];
 
             // Tablo var mı kontrol et

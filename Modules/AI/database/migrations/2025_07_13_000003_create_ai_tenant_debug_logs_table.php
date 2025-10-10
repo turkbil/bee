@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('central')->create('ai_tenant_debug_logs', function (Blueprint $table) {
+        Schema::create('ai_tenant_debug_logs', function (Blueprint $table) {
             $table->id();
             
             // Tenant & User Info
@@ -88,6 +88,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('central')->dropIfExists('ai_tenant_debug_logs');
+        Schema::dropIfExists('ai_tenant_debug_logs');
     }
 };

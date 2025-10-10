@@ -17,6 +17,7 @@
         "guzzlehttp/guzzle": "^7.9",
         "illuminate/redis": "*",
         "intervention/image": "^3.11",
+        "intervention/image-laravel": "^1.5",
         "laravel/breeze": "^2.3",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.33",
@@ -65,24 +66,7 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "App\\": "app/",
-            "Modules\\": "Modules/",
-            "Modules\\AI\\App\\": "Modules/AI/app/",
-            "Modules\\Page\\App\\": "Modules/Page/app/",
-            "Modules\\Blog\\App\\": "Modules/Blog/app/",
-            "Modules\\Shop\\App\\": "Modules/Shop/app/",
-            "Modules\\Portfolio\\App\\": "Modules/Portfolio/app/",
-            "Modules\\Announcement\\App\\": "Modules/Announcement/app/",
-            "Modules\\LanguageManagement\\App\\": "Modules/LanguageManagement/app/",
-            "Modules\\ModuleManagement\\App\\": "Modules/ModuleManagement/app/",
-            "Modules\\SettingManagement\\App\\": "Modules/SettingManagement/app/",
-            "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/",
-            "Modules\\WidgetManagement\\App\\": "Modules/WidgetManagement/app/",
-            "Modules\\ThemeManagement\\App\\": "Modules/ThemeManagement/app/",
-            "Modules\\MenuManagement\\App\\": "Modules/MenuManagement/app/",
-            "Modules\\MediaManagement\\App\\": "Modules/MediaManagement/app/",
-            "Modules\\UserManagement\\App\\": "Modules/UserManagement/app/",
-            "Modules\\SeoManagement\\App\\": "Modules/SeoManagement/app/",
-            "Modules\\Studio\\App\\": "Modules/Studio/app/"
+            "Modules\\": "Modules/"
         },
         "files": [
             "app/helpers.php",
@@ -105,8 +89,7 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -130,6 +113,18 @@
         ]
     },
     "extra": {
+        "merge-plugin": {
+            "include": [
+                "Modules/*/composer.json"
+            ],
+            "recurse": false,
+            "replace": false,
+            "ignore-duplicates": true,
+            "merge-dev": false,
+            "merge-extra": false,
+            "merge-extra-deep": false,
+            "merge-scripts": false
+        },
         "laravel": {
             "dont-discover": [
                 "barryvdh/laravel-ide-helper"

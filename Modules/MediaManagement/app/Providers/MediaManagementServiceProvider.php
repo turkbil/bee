@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
+use Modules\MediaManagement\App\Services\ThumbnailManager;
 use RecursiveIteratorIterator;
 
 class MediaManagementServiceProvider extends ServiceProvider
@@ -48,6 +49,10 @@ class MediaManagementServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->singleton(ThumbnailManager::class, function ($app) {
+            return new ThumbnailManager();
+        });
     }
 
     /**

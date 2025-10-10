@@ -1,6 +1,6 @@
 {
     "name": "nwidart/studio",
-    "description": "GrapesJS tabanlı görsel HTML düzenleyici",
+    "description": "GrapesJS tabanl\u0131 g\u00f6rsel HTML d\u00fczenleyici",
     "authors": [
         {
             "name": "Developer",
@@ -10,14 +10,15 @@
     "extra": {
         "laravel": {
             "providers": [],
-            "aliases": {}
+            "aliases": []
         }
     },
     "autoload": {
         "psr-4": {
             "Modules\\Studio\\": "",
             "Modules\\Studio\\Database\\Factories\\": "database/factories/",
-            "Modules\\Studio\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\Studio\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\Studio\\App\\": "app/"
         }
     },
     "autoload-dev": {

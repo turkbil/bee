@@ -12,6 +12,7 @@ use Modules\SettingManagement\App\Models\SettingValue;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Modules\MediaManagement\App\Services\ThumbnailManager;
 use Modules\SettingManagement\app\Http\Livewire\Traits\WithBulkActionsQueue;
 
 #[Layout('admin.layout')]
@@ -291,6 +292,9 @@ class ValuesComponent extends Component
                 $file = $this->temporaryImages[$settingId];
                 $type = $setting->type;
                 
+                // Normalize brand assets so oversized logos are not stored untouched
+                $this->normalizeSettingImageIfNeeded($setting, $file);
+                
                 try {
                     // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                     $tenantId = is_tenant() ? tenant_id() : 1;
@@ -461,6 +465,33 @@ class ValuesComponent extends Component
         }
     }
     
+
+    private function normalizeSettingImageIfNeeded(Setting $setting, $file): void
+    {
+        if (! $file instanceof \Illuminate\Http\UploadedFile) {
+            return;
+        }
+
+        $profile = $this->getThumbnailProfileForSetting($setting);
+        if (! $profile) {
+            return;
+        }
+
+        /** @var ThumbnailManager $thumbnail */
+        $thumbnail = app(ThumbnailManager::class);
+        $thumbnail->applyToUploadedFile($file, $profile);
+    }
+
+    private function getThumbnailProfileForSetting(Setting $setting): ?string
+    {
+        $map = config('mediamanagement.thumbmaker.setting_profiles', [
+            'site_logo' => 'logo',
+            'site_kontrast_logo' => 'logo',
+        ]);
+
+        return $map[$setting->key] ?? null;
+    }
+
     public function render()
     {
         $settings = Setting::where('group_id', $this->groupId)

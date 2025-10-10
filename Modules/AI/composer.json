@@ -10,9 +10,7 @@
     "extra": {
         "laravel": {
             "providers": [],
-            "aliases": {
-
-            }
+            "aliases": []
         }
     },
     "require": {
@@ -22,7 +20,8 @@
         "psr-4": {
             "Modules\\AI\\": "app/",
             "Modules\\AI\\Database\\Factories\\": "database/factories/",
-            "Modules\\AI\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\AI\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\AI\\App\\": "app/"
         }
     },
     "autoload-dev": {

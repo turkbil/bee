@@ -10,16 +10,15 @@
     "extra": {
         "laravel": {
             "providers": [],
-            "aliases": {
-
-            }
+            "aliases": []
         }
     },
     "autoload": {
         "psr-4": {
             "Modules\\MediaManagement\\": "app/",
             "Modules\\MediaManagement\\Database\\Factories\\": "database/factories/",
-            "Modules\\MediaManagement\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\MediaManagement\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\MediaManagement\\App\\": "app/"
         }
     },
     "autoload-dev": {

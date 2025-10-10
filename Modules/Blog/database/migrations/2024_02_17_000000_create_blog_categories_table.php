@@ -46,28 +46,15 @@ return new class extends Migration
                         // MariaDB için versiyon kontrolü (10.5+)
                         preg_match('/(\d+\.\d+)/', $version, $matches);
                         $mariaVersion = isset($matches[1]) ? (float) $matches[1] : 0;
-                        $supportsJsonIndex = $mariaVersion >= 10.5;
+                        $supportsJsonIndex = false; // Disabled for MariaDB compatibility
                     } else {
                         // MySQL için versiyon kontrolü (8.0+)
                         $majorVersion = (int) explode('.', $version)[0];
-                        $supportsJsonIndex = $majorVersion >= 8;
+                        $supportsJsonIndex = false; // Disabled for MySQL compatibility
                     }
 
-                    if ($supportsJsonIndex) {
-                        // Config'den sistem dillerini al - SABİT DİL KODU YOK!
-                        $systemLanguages = config('modules.system_languages');
-
-                        if (!empty($systemLanguages) && is_array($systemLanguages)) {
-                            foreach ($systemLanguages as $locale) {
-                                DB::statement("
-                                    ALTER TABLE blog_categories
-                                    ADD INDEX blog_categories_slug_{$locale} (
-                                        (CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) AS CHAR(255)) COLLATE utf8mb4_unicode_ci)
-                                    )
-                                ");
-                            }
-                        }
-                    }
+                    // JSON index disabled - MariaDB/MySQL compatibility
+                    // if ($supportsJsonIndex) { ... }
                 }
             } catch (\Exception $e) {
                 // Pretend modda veya hata durumunda skip et

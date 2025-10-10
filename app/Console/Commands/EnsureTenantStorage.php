@@ -12,6 +12,8 @@ class EnsureTenantStorage extends Command
 
     public function handle()
     {
+        $this->ensureCentralStorage();
+
         $tenants = Tenant::all();
 
         $this->info("🔍 Toplam {$tenants->count()} tenant bulundu");
@@ -32,6 +34,32 @@ class EnsureTenantStorage extends Command
         $this->info("🎉 Tamamlandı!");
 
         return 0;
+    }
+
+    private function ensureCentralStorage(): void
+    {
+        $basePath = storage_path('app/public');
+        $stat = @stat($basePath);
+        $owner = $stat ? posix_getpwuid($stat['uid'])['name'] : null;
+        $group = $stat ? posix_getgrgid($stat['gid'])['name'] : null;
+
+        $directories = [
+            $basePath . '/settings',
+            $basePath . '/settings/files',
+            $basePath . '/settings/images',
+        ];
+
+        foreach ($directories as $dir) {
+            if (!is_dir($dir)) {
+                mkdir($dir, 0775, true);
+
+                if ($owner && $group) {
+                    @chown($dir, $owner);
+                    @chgrp($dir, $group);
+                    @chmod($dir, 0775);
+                }
+            }
+        }
     }
 
     private function ensureStorageDirectories($tenantId): void
@@ -64,9 +92,11 @@ class EnsureTenantStorage extends Command
             'framework/views',
             'app/public',
             'app/public/widgets',            // Widget dosyaları
+            'app/public/settings/files',     // Setting dosyaları (public)
+            'app/public/settings/images',    // Logo vb. public görüntüler
             'app/livewire-tmp',              // Livewire dosya upload için gerekli
             'media-library/temp',            // Media upload geçici dosyalar
-            'settings/files',                // Setting dosya uploads
+            'settings/files',                // Legacy path, backward compatibility
             'logs',
         ];
 
@@ -99,6 +129,19 @@ class EnsureTenantStorage extends Command
 
             if (is_dir($targetPath)) {
                 symlink($targetPath, $linkPath);
+
+                $stat = @lstat(public_path('storage'));
+                $owner = $stat ? posix_getpwuid($stat['uid'])['name'] : null;
+                $group = $stat ? posix_getgrgid($stat['gid'])['name'] : null;
+
+                if ($owner) {
+                    @lchown($linkPath, $owner);
+                }
+
+                if ($group) {
+                    @lchgrp($linkPath, $group);
+                }
+
                 $this->line("  ✅ Symlink oluşturuldu");
             }
         }

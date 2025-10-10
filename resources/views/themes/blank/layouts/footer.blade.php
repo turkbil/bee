@@ -17,37 +17,56 @@
                         $hasKontrastLogo = $siteKontrastLogo && $siteKontrastLogo !== 'Logo yok';
                         $hasNormalLogo = $siteLogo && $siteLogo !== 'Logo yok';
                         $hasBothLogos = $hasNormalLogo && $hasKontrastLogo;
+
+                        $tenantId = function_exists('tenant_id') ? tenant_id() : null;
+                        $normalizePath = function ($path) use ($tenantId) {
+                            if (!$path) {
+                                return $path;
+                            }
+
+                            if ($tenantId && !str_contains($path, 'tenant'.$tenantId) && str_starts_with($path, 'storage/')) {
+                                return 'storage/tenant'.$tenantId.'/'.\Illuminate\Support\Str::after($path, 'storage/');
+                            }
+
+                            return $path;
+                        };
+
+                        $siteLogo = $normalizePath($siteLogo);
+                        $siteKontrastLogo = $normalizePath($siteKontrastLogo);
+
+                        $siteLogoUrl = $hasNormalLogo ? thumbmaker($siteLogo, 'logo') : null;
+                        $siteKontrastLogoUrl = $hasKontrastLogo ? thumbmaker($siteKontrastLogo, 'logo') : null;
                     @endphp
 
                     <div class="flex items-center">
                         @if($hasBothLogos)
                             {{-- Her iki logo da var - Dark mode'da kontrast, Light mode'da normal --}}
-                            <img src="{{ cdn($siteLogo) }}"
+                            <img src="{{ $siteLogoUrl ?? cdn($siteLogo) }}"
                                  alt="{{ $siteTitle }}"
-                                 width="120"
-                                 height="32"
-                                 class="h-8 w-auto logo-light"
+                                 width="160"
+                                 height="48"
+                                 class="h-8 w-auto block dark:hidden"
                                  fetchpriority="low">
-                            <img src="{{ cdn($siteKontrastLogo) }}"
+                            <img src="{{ $siteKontrastLogoUrl ?? cdn($siteKontrastLogo) }}"
                                  alt="{{ $siteTitle }}"
-                                 width="120"
-                                 height="32"
-                                 class="h-8 w-auto logo-dark"
+                                 width="160"
+                                 height="48"
+                                 class="h-8 w-auto hidden dark:block"
                                  fetchpriority="low">
                         @elseif($hasKontrastLogo)
                             {{-- Sadece kontrast logo var - Dark mode'da göster, Light mode'da beyaz filtre ile --}}
-                            <img src="{{ cdn($siteKontrastLogo) }}"
+                            <img src="{{ $siteKontrastLogoUrl ?? cdn($siteKontrastLogo) }}"
                                  alt="{{ $siteTitle }}"
-                                 width="120"
-                                 height="32"
+                                 width="160"
+                                 height="48"
                                  class="h-8 w-auto"
                                  fetchpriority="low">
                         @elseif($hasNormalLogo)
                             {{-- Sadece normal logo var - Light mode'da normal, Dark mode'da beyaz filtre ile --}}
-                            <img src="{{ cdn($siteLogo) }}"
+                            <img src="{{ $siteLogoUrl ?? cdn($siteLogo) }}"
                                  alt="{{ $siteTitle }}"
-                                 width="120"
-                                 height="32"
+                                 width="160"
+                                 height="48"
                                  class="h-8 w-auto logo-footer-adaptive"
                                  fetchpriority="low">
                         @else

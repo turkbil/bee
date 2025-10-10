@@ -10,7 +10,7 @@ use App\Services\TenantCacheService;
 class ClearAll extends Command
 {
     protected $signature = 'app:clear-all';
-    protected $description = 'Tüm önbellekleri, cache, sessions, logs ve geçici dosyaları temizler (KULLANICI DOSYALARI KORUNUR)';
+    protected $description = 'Tüm önbellekleri ve storage içindeki yüklenen dosyaları, fotoğrafları temizler';
 
     public function handle()
     {
@@ -45,12 +45,12 @@ class ClearAll extends Command
             }
         }
         
-        // Ana storage içindeki klasörleri temizle (KULLANICI DOSYALARI HARİÇ!)
+        // Ana storage içindeki klasörleri temizle
         $this->cleanStorageDirectories([
-            // 'app', // KALDIRILDI - Kullanıcı dosyaları burada!
+            'app',
             'debugbar',
             'framework/cache',
-            'framework/sessions',
+            'framework/sessions', 
             'framework/testing',
             'framework/views',
             'logs'
@@ -66,15 +66,13 @@ class ClearAll extends Command
                     if (str_contains($file->getFilename(), '.log')) {
                         // Log dosyalarını güvenli şekilde temizle
                         try {
-                            // Log dosyalarının içeriğini boşalt (permission korunur)
+                            // Log dosyalarının içeriğini boşalt (sil değil)
                             if (is_writable($file->getPathname())) {
+                                // Dosya yazılabilir ise içeriğini boşalt
                                 file_put_contents($file->getPathname(), '', LOCK_EX);
                                 $this->info("{$file->getFilename()} dosyası içeriği temizlendi.");
                             } else {
-                                // Yazılabilir değilse permission düzelt
-                                chmod($file->getPathname(), 0666);
-                                file_put_contents($file->getPathname(), '', LOCK_EX);
-                                $this->info("{$file->getFilename()} permission düzeltildi ve temizlendi.");
+                                $this->warn("İzin hatası: {$file->getFilename()} yazılabilir değil, atlanıyor.");
                             }
                         } catch (\Exception $e) {
                             $this->warn("Hata: {$file->getFilename()} - " . $e->getMessage());
@@ -111,7 +109,7 @@ class ClearAll extends Command
         }
         foreach ($tenantDirs as $tenantDir) {
             $this->cleanStorageDirectories([
-                // $tenantDir . '/app', // KALDIRILDI - Tenant dosyaları burada!
+                $tenantDir . '/app',
                 $tenantDir . '/debugbar',
                 $tenantDir . '/framework/cache',
                 $tenantDir . '/framework/sessions',
@@ -133,13 +131,19 @@ class ClearAll extends Command
                             try {
                                 // Dosyanın izinlerini kontrol et
                                 if (is_writable($file->getPathname())) {
+                                    // Dosya yazılabilir ise içeriğini boşalt
                                     file_put_contents($file->getPathname(), '', LOCK_EX);
                                     $this->info("Tenant {$file->getFilename()} dosyası temizlendi.");
                                 } else {
-                                    // Yazılabilir değilse permission düzelt
-                                    chmod($file->getPathname(), 0666);
-                                    file_put_contents($file->getPathname(), '', LOCK_EX);
-                                    $this->info("Tenant {$file->getFilename()} permission düzeltildi ve temizlendi.");
+                                    // Dosya yazılabilir değilse, silinmeye çalış
+                                    if (File::delete($file->getPathname())) {
+                                        // Silinirse yeni boş dosya oluştur doğru izinlerle
+                                        touch($file->getPathname());
+                                        chmod($file->getPathname(), 0664);
+                                        $this->info("Tenant {$file->getFilename()} dosyası silindi ve yeniden oluşturuldu.");
+                                    } else {
+                                        $this->warn("İzin hatası: Tenant {$file->getFilename()} dosyası temizlenemedi.");
+                                    }
                                 }
                             } catch (\Exception $e) {
                                 $this->warn("Hata: Tenant {$file->getFilename()} - " . $e->getMessage());
@@ -157,26 +161,46 @@ class ClearAll extends Command
             }
         }
         
-        // Public storage içeriklerini temizle - KALDIRILDI!
-        // NEDEN: Kullanıcı yüklemeleri public/storage'da saklanıyor
-        // Bu kısım logoları, resimleri, dosyaları siliyordu!
-        // if (File::exists(public_path('storage'))) {
-        //     $this->info('Public storage içeriği temizleniyor...');
-        //     ...
-        // }
+        // Public storage içeriklerini temizle
+        if (File::exists(public_path('storage'))) {
+            $this->info('Public storage içeriği temizleniyor...');
+            $directories = File::directories(public_path('storage'));
+            
+            foreach ($directories as $directory) {
+                try {
+                    File::deleteDirectory($directory);
+                    // Klasörü yeniden oluştur
+                    File::makeDirectory($directory, 0755, true, true);
+                } catch (\Exception $e) {
+                    $this->warn("İzin hatası: {$directory} klasörü işlenemedi.");
+                }
+            }
+            
+            // Doğrudan storage altındaki dosyaları temizle (.gitignore hariç)
+            $files = File::files(public_path('storage'));
+            foreach ($files as $file) {
+                if (!str_contains($file->getFilename(), '.gitignore')) {
+                    try {
+                        File::delete($file->getPathname());
+                    } catch (\Exception $e) {
+                        $this->warn("İzin hatası: {$file->getPathname()} dosyası silinemedi.");
+                    }
+                }
+            }
+        }
         
-        // Sonradan eklenen diğer storage klasörlerini temizle (KULLANICI DOSYALARI HARİÇ!)
+        // Sonradan eklenen diğer storage klasörlerini temizle
         $extraStorageDirs = [
-            // 'app/public', // KALDIRILDI - Kullanıcı dosyaları burada!
+            'app/public',
             'app/livewire-tmp',
             'framework/cache/data',
             'framework/cache/laravel-excel',
             'framework/testing/disks'
         ];
-
+        
         $this->cleanStorageDirectories($extraStorageDirs);
         
-        $this->info('✅ Tüm önbellekler ve geçici dosyalar başarıyla temizlendi! (Kullanıcı dosyaları korundu)');
+        $this->info('Tüm önbellekler, fotoğraflar ve yüklenen dosyalar başarıyla temizlendi!');
         
         return Command::SUCCESS;
     }

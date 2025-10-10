@@ -14,20 +14,20 @@ class DatabaseSeeder extends Seeder
 
             // Central-only seeder'lar
             $this->call(ThemesSeeder::class);
-            $this->call(\Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder::class);
+            // AdminLanguagesSeeder temporarily disabled - will be handled in ModuleSeeder
+            // $this->call(\Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder::class);
 
-            // TenantSeeder - sadece local/testing ortamında çalıştır
-            // Production'da CREATE DATABASE izni olmadığı için skip edilir
-            if (app()->environment(['local', 'testing'])) {
-                $this->command->info('🏠 Local/Testing environment - TenantSeeder çalıştırılıyor...');
-                $this->call(TenantSeeder::class);
+            // TenantSeeder - geçici olarak devre dışı (tenantlar manuel oluşturuldu)
+            // if (app()->environment(['local', 'testing'])) {
+            //     $this->command->info('🏠 Local/Testing environment - TenantSeeder çalıştırılıyor...');
+            //     $this->call(TenantSeeder::class);
+            //     tenancy()->end();
+            // } else {
+            //     $this->command->info('🚀 Production environment - Central tenant oluşturuluyor...');
+            //     $this->call(ProductionTenantSeeder::class);
+            // }
 
-                // TenantSeeder'dan sonra context'i AGRESIVE şekilde central'a geri döndür
-                tenancy()->end();
-            } else {
-                $this->command->info('🚀 Production environment - Central tenant oluşturuluyor...');
-                $this->call(ProductionTenantSeeder::class);
-            }
+            $this->command->info('⏭️ TenantSeeder skipped - Tenants already exist');
             
             // Context durumunu kontrol et ve zorla central'a al
             if (!TenantHelpers::isCentral()) {
@@ -70,17 +70,9 @@ class DatabaseSeeder extends Seeder
             
         } else {
             $this->command->info('=== TENANT DATABASE SEEDING ===');
-            
-            // Tenant-only seeder'lar
-            $this->call(\Modules\LanguageManagement\Database\Seeders\TenantLanguagesSeeder::class);
-            $this->call(RolePermissionSeeder::class); // Tenant rolleri için
-            $this->call(TenantTablesSeeder::class);
-            
-            // MenuManagement seeder (tenant context'te çalışmalı)
-            $this->call(\Modules\MenuManagement\Database\Seeders\MenuManagementSeeder::class);
-            
-            // Modül seeder'ları (tenant context'te)
-            $this->call(ModuleSeeder::class);
+
+            // Basit ve çalışan tenant seeder
+            $this->call(TenantDatabaseSeeder::class);
         }
     }
 }

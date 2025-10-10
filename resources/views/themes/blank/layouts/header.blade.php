@@ -81,23 +81,6 @@
             }
         }
 
-        /* Logo Dark/Light Mode Switch */
-        /* Light mode'da sadece logo-light göster */
-        .logo-dark {
-            display: none;
-        }
-        .logo-light {
-            display: inline-block;
-        }
-
-        /* Dark mode'da sadece logo-dark göster */
-        .dark .logo-light {
-            display: none;
-        }
-        .dark .logo-dark {
-            display: inline-block;
-        }
-
         /* Footer Logo - Adaptive (Dark mode'da beyaz filtre) */
         .logo-footer-adaptive {
             /* Light mode: normal göster */
@@ -196,37 +179,56 @@
                             $hasLightLogo = $siteLogo && $siteLogo !== 'Logo yok';
                             $hasDarkLogo = $siteKontrastLogo && $siteKontrastLogo !== 'Logo yok';
                             $hasBothLogos = $hasLightLogo && $hasDarkLogo;
+
+                            $tenantId = function_exists('tenant_id') ? tenant_id() : null;
+                            $normalizePath = function ($path) use ($tenantId) {
+                                if (!$path) {
+                                    return $path;
+                                }
+
+                                if ($tenantId && !str_contains($path, 'tenant'.$tenantId) && str_starts_with($path, 'storage/')) {
+                                    return 'storage/tenant'.$tenantId.'/'.\Illuminate\Support\Str::after($path, 'storage/');
+                                }
+
+                                return $path;
+                            };
+
+                            $siteLogo = $normalizePath($siteLogo);
+                            $siteKontrastLogo = $normalizePath($siteKontrastLogo);
+
+                            $siteLogoUrl = $hasLightLogo ? thumbmaker($siteLogo, 'logo') : null;
+                            $siteKontrastLogoUrl = $hasDarkLogo ? thumbmaker($siteKontrastLogo, 'logo') : null;
                         @endphp
                         <a href="{{ $homeUrl }}" class="inline-flex items-center text-lg sm:text-xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-300" aria-label="{{ $siteTitle }} - Ana Sayfa">
                             @if($hasBothLogos)
                                 {{-- Her iki logo da var - Dark/Light mode geçişi yap --}}
-                                <img src="{{ cdn($siteLogo) }}"
+                                <img src="{{ $siteLogoUrl ?? cdn($siteLogo) }}"
                                      alt="{{ $siteTitle }} Logo"
-                                     width="120"
-                                     height="32"
-                                     class="h-6 sm:h-8 w-auto logo-light"
+                                     width="160"
+                                     height="48"
+                                     class="h-8 sm:h-10 w-auto block dark:hidden"
                                      fetchpriority="high">
-                                <img src="{{ cdn($siteKontrastLogo) }}"
+                                <img src="{{ $siteKontrastLogoUrl ?? cdn($siteKontrastLogo) }}"
                                      alt="{{ $siteTitle }} Logo (Karanlık Mod)"
-                                     width="120"
-                                     height="32"
-                                     class="h-6 sm:h-8 w-auto logo-dark"
+                                     width="160"
+                                     height="48"
+                                     class="h-8 sm:h-10 w-auto hidden dark:block"
                                      fetchpriority="high">
                             @elseif($hasLightLogo)
                                 {{-- Sadece normal logo var - Her zaman göster --}}
-                                <img src="{{ cdn($siteLogo) }}"
+                                <img src="{{ $siteLogoUrl ?? cdn($siteLogo) }}"
                                      alt="{{ $siteTitle }} Logo"
-                                     width="120"
-                                     height="32"
-                                     class="h-6 sm:h-8 w-auto"
+                                     width="160"
+                                     height="48"
+                                     class="h-8 sm:h-10 w-auto"
                                      fetchpriority="high">
                             @elseif($hasDarkLogo)
                                 {{-- Sadece kontrast logo var - Her zaman göster --}}
-                                <img src="{{ cdn($siteKontrastLogo) }}"
+                                <img src="{{ $siteKontrastLogoUrl ?? cdn($siteKontrastLogo) }}"
                                      alt="{{ $siteTitle }} Logo"
-                                     width="120"
-                                     height="32"
-                                     class="h-6 sm:h-8 w-auto"
+                                     width="160"
+                                     height="48"
+                                     class="h-8 sm:h-10 w-auto"
                                      fetchpriority="high">
                             @else
                                 {{-- Hiç logo yok - Site title göster --}}

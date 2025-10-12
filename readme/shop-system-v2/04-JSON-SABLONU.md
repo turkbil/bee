@@ -26,26 +26,10 @@ Bu şablon AI'ya verilecek. AI, PDF'den bu yapıya uygun JSON üretecek.
   },
 
   "basic_data": {
-    "title": {
-      "tr": "F4 201 - 2 Ton 48V Li-Ion Transpalet",
-      "en": "F4 201 - 2 Ton 48V Li-Ion Transpalet",
-      "vs.": "..."
-    },
-    "slug": {
-      "tr": "f4-201-2-ton-48v-li-ion-transpalet",
-      "en": "f4-201-2-ton-48v-li-ion-transpalet",
-      "vs.": "..."
-    },
-    "short_description": {
-      "tr": "F4 201 transpalet; 48V Li-Ion güç paketi, 2 ton akülü taşıma kapasitesi ve 400 mm ultra kompakt şasi ile dar koridorlarda bile hız rekoru kıran İXTİF transpalet çözümüdür.",
-      "en": "F4 201 transpalet; 48V Li-Ion güç paketi, 2 ton akülü taşıma kapasitesi ve 400 mm ultra kompakt şasi ile dar koridorlarda bile hız rekoru kıran İXTİF transpalet çözümüdür.",
-      "vs.": "..."
-    },
-    "long_description": {
-      "tr": "<section class=\"marketing-intro\">\n    <p><strong>F4 201'i depoya soktuğunuz anda müşterileriniz "Bu transpaleti nereden aldınız?" diye soracak.</strong> Gücünü 48V Li-Ion sistemden alan bu yıldız, 140 kg gibi inanılmaz hafif servis ağırlığıyla 2 tonluk yükleri çocuk oyuncağına çeviriyor.</p>\n    <p>İXTİF mühendisleri bu modeli yalnızca yük taşımak için değil, <em>deponuzun prestijini parlatmak</em> için tasarladı.</p>\n    <ul>\n        <li><strong>Bir vardiyada iki kat iş</strong> – Lojistik maliyetleriniz %50'ye kadar düşsün.</li>\n        <li><strong>Showroom etkisi</strong> – Ultra kompakt 400 mm şasi dar koridorlarda bile vitrinde yürür gibi ilerler.</li>\n    </ul>\n</section>\n<section class=\"marketing-body\">\n    <p>Standart teslimat paketinde 2 adet 24V/20Ah Li-Ion modül bulunur...</p>\n    <p>İXTİF'in ikinci el, kiralık, yedek parça ve teknik servis programları ile F4 201 yatırımınız tam koruma altında...</p>\n    <p><strong>SEO Anahtar Kelimeleri:</strong> F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet.</p>\n    <p><strong>Şimdi İXTİF'i arayın:</strong> 0216 755 3 555 veya <strong>info@ixtif.com</strong></p>\n</section>",
-      "en": "...",
-      "vs.": "..."
-    }
+    "title": "F4 201 - 2 Ton 48V Li-Ion Transpalet",
+    "slug": "f4-201-2-ton-48v-li-ion-transpalet",
+    "short_description": "F4 201 transpalet; 48V Li-Ion güç paketi, 2 ton akülü taşıma kapasitesi ve 400 mm ultra kompakt şasi ile dar koridorlarda bile hız rekoru kıran İXTİF transpalet çözümüdür.",
+    "long_description": "<section class=\"marketing-intro\">\n    <p><strong>F4 201'i depoya soktuğunuz anda müşterileriniz "Bu transpaleti nereden aldınız?" diye soracak.</strong> Gücünü 48V Li-Ion sistemden alan bu yıldız, 140 kg gibi inanılmaz hafif servis ağırlığıyla 2 tonluk yükleri çocuk oyuncağına çeviriyor.</p>\n    <p>İXTİF mühendisleri bu modeli yalnızca yük taşımak için değil, <em>deponuzun prestijini parlatmak</em> için tasarladı.</p>\n    <ul>\n        <li><strong>Bir vardiyada iki kat iş</strong> – Lojistik maliyetleriniz %50'ye kadar düşsün.</li>\n        <li><strong>Showroom etkisi</strong> – Ultra kompakt 400 mm şasi dar koridorlarda bile vitrinde yürür gibi ilerler.</li>\n    </ul>\n</section>\n<section class=\"marketing-body\">\n    <p>Standart teslimat paketinde 2 adet 24V/20Ah Li-Ion modül bulunur...</p>\n    <p>İXTİF'in ikinci el, kiralık, yedek parça ve teknik servis programları ile F4 201 yatırımınız tam koruma altında...</p>\n    <p><strong>SEO Anahtar Kelimeleri:</strong> F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet.</p>\n    <p><strong>Şimdi İXTİF'i arayın:</strong> 0216 755 3 555 veya <strong>info@ixtif.com</strong></p>\n</section>"
   },
 
   "category_brand": {
@@ -129,22 +113,16 @@ Bu şablon AI'ya verilecek. AI, PDF'den bu yapıya uygun JSON üretecek.
   },
 
   "features": {
-    "tr": {
-      "list": [
-        "F4 201 transpalet 48V Li-Ion güç platformu ile 2 ton akülü taşıma kapasitesini dar koridor operasyonlarına taşır.",
-        "Tak-çıkar 24V/20Ah Li-Ion bataryalarla vardiya ortasında şarj molasına son verin.",
-        "140 kg servis ağırlığı ve 400 mm şasi uzunluğu sayesinde dar koridorlarda benzersiz çeviklik sağlar.",
-        "İXTİF ikinci el, kiralık, yedek parça ve teknik servis ekosistemi ile yatırımınıza 360° koruma sağlar."
-      ],
-      "branding": {
-        "slogan": "Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin.",
-        "motto": "İXTİF farkı ile 2 tonluk yükler bile hafifler.",
-        "technical_summary": "F4 201, 48V Li-Ion güç paketi, 0.9 kW BLDC sürüş motoru ve 400 mm ultra kompakt şasi kombinasyonuyla dar koridor ortamlarında yüksek tork, düşük bakım ve sürekli çalışma sunar."
-      }
-    },
-    "en": {
-      "list": ["..."],
-      "branding": {"slogan": "...", "motto": "...", "technical_summary": "..."}
+    "list": [
+      "F4 201 transpalet 48V Li-Ion güç platformu ile 2 ton akülü taşıma kapasitesini dar koridor operasyonlarına taşır.",
+      "Tak-çıkar 24V/20Ah Li-Ion bataryalarla vardiya ortasında şarj molasına son verin.",
+      "140 kg servis ağırlığı ve 400 mm şasi uzunluğu sayesinde dar koridorlarda benzersiz çeviklik sağlar.",
+      "İXTİF ikinci el, kiralık, yedek parça ve teknik servis ekosistemi ile yatırımınıza 360° koruma sağlar."
+    ],
+    "branding": {
+      "slogan": "Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin.",
+      "motto": "İXTİF farkı ile 2 tonluk yükler bile hafifler.",
+      "technical_summary": "F4 201, 48V Li-Ion güç paketi, 0.9 kW BLDC sürüş motoru ve 400 mm ultra kompakt şasi kombinasyonuyla dar koridor ortamlarında yüksek tork, düşük bakım ve sürekli çalışma sunar."
     }
   },
 
@@ -152,20 +130,20 @@ Bu şablon AI'ya verilecek. AI, PDF'den bu yapıya uygun JSON üretecek.
     {
       "icon": "bolt",
       "priority": 1,
-      "title": {"tr": "48V Güç Paketi", "en": "48V Güç Paketi", "vs.": "..."},
-      "description": {"tr": "0.9 kW BLDC sürüş motoru ve elektromanyetik fren ile 2 tonluk yükte bile yüksek tork.", "en": "...", "vs.": "..."}
+      "title": "48V Güç Paketi",
+      "description": "0.9 kW BLDC sürüş motoru ve elektromanyetik fren ile 2 tonluk yükte bile yüksek tork."
     },
     {
       "icon": "battery-full",
       "priority": 2,
-      "title": {"tr": "Tak-Çıkar Li-Ion", "en": "...", "vs.": "..."},
-      "description": {"tr": "2x 24V/20Ah modül standart, 4 modüle kadar genişletilebilir hızlı şarj sistemi.", "en": "...", "vs.": "..."}
+      "title": "Tak-Çıkar Li-Ion",
+      "description": "2x 24V/20Ah modül standart, 4 modüle kadar genişletilebilir hızlı şarj sistemi."
     },
     {
       "icon": "arrows-alt",
       "priority": 3,
-      "title": {"tr": "Ultra Kompakt Şasi", "en": "...", "vs.": "..."},
-      "description": {"tr": "400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı ile dar koridor çözümü.", "en": "...", "vs.": "..."}
+      "title": "Ultra Kompakt Şasi",
+      "description": "400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı ile dar koridor çözümü."
     }
   ],
 
@@ -176,78 +154,69 @@ Bu şablon AI'ya verilecek. AI, PDF'den bu yapıya uygun JSON üretecek.
     {"label": "Standart Çatal", "value": "1150 x 560 mm"}
   ],
 
-  "use_cases": {
-    "tr": [
-      "E-ticaret depolarında hızlı sipariş hazırlama ve sevkiyat operasyonları",
-      "Dar koridorlu perakende depolarında gece vardiyası yükleme boşaltma",
-      "Soğuk zincir lojistiğinde düşük sıcaklıklarda kesintisiz malzeme taşıma",
-      "İçecek ve FMCG dağıtım merkezlerinde yoğun palet trafiği yönetimi",
-      "Dış saha rampalarda stabilizasyon tekerleği ile güvenli taşıma",
-      "Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri"
-    ],
-    "en": ["..."]
-  },
+  "use_cases": [
+    "E-ticaret depolarında hızlı sipariş hazırlama ve sevkiyat operasyonları",
+    "Dar koridorlu perakende depolarında gece vardiyası yükleme boşaltma",
+    "Soğuk zincir lojistiğinde düşük sıcaklıklarda kesintisiz malzeme taşıma",
+    "İçecek ve FMCG dağıtım merkezlerinde yoğun palet trafiği yönetimi",
+    "Dış saha rampalarda stabilizasyon tekerleği ile güvenli taşıma",
+    "Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri"
+  ],
 
-  "competitive_advantages": {
-    "tr": [
-      "48V Li-Ion güç platformu ile segmentindeki en agresif hızlanma ve rampa performansı",
-      "140 kg'lık ultra hafif servis ağırlığı sayesinde lojistik maliyetlerinde dramatik düşüş",
-      "Tak-çıkar batarya konsepti ile 7/24 operasyonda sıfır bekleme, sıfır bakım maliyeti",
-      "Stabilizasyon tekerleği opsiyonu sayesinde bozuk zeminlerde bile devrilme riskini sıfırlar",
-      "İXTİF stoktan hızlı teslimat ve yerinde devreye alma ile son kullanıcıyı bekletmez"
-    ],
-    "en": ["..."]
-  },
+  "competitive_advantages": [
+    "48V Li-Ion güç platformu ile segmentindeki en agresif hızlanma ve rampa performansı",
+    "140 kg'lık ultra hafif servis ağırlığı sayesinde lojistik maliyetlerinde dramatik düşüş",
+    "Tak-çıkar batarya konsepti ile 7/24 operasyonda sıfır bekleme, sıfır bakım maliyeti",
+    "Stabilizasyon tekerleği opsiyonu sayesinde bozuk zeminlerde bile devrilme riskini sıfırlar",
+    "İXTİF stoktan hızlı teslimat ve yerinde devreye alma ile son kullanıcıyı bekletmez"
+  ],
 
-  "target_industries": {
-    "tr": [
-      "E-ticaret & fulfillment merkezleri",
-      "Perakende zincir depoları",
-      "Soğuk zincir ve gıda lojistiği",
-      "İçecek ve FMCG dağıtım şirketleri",
-      "Endüstriyel üretim tesisleri",
-      "3PL lojistik firmaları",
-      "İlaç ve sağlık depoları",
-      "Elektronik dağıtım merkezleri",
-      "Mobilya & beyaz eşya depolama",
-      "Otomotiv yedek parça depoları",
-      "Tarım ve tohum depolama tesisleri",
-      "Yerel belediye depoları",
-      "Enerji ve altyapı malzeme depoları",
-      "Perakende hızlı tüketim zincirleri",
-      "Liman içi malzeme taşıma operasyonları",
-      "Havaalanı kargo terminalleri",
-      "Küçük ve orta ölçekli üretim atölyeleri",
-      "Lüks perakende backstore yönetimi",
-      "Ev & yapı market stok sahaları",
-      "Kargo ve kurye transfer merkezleri"
-    ],
-    "en": ["..."]
-  },
+  "target_industries": [
+    "E-ticaret & fulfillment merkezleri",
+    "Perakende zincir depoları",
+    "Soğuk zincir ve gıda lojistiği",
+    "İçecek ve FMCG dağıtım şirketleri",
+    "Endüstriyel üretim tesisleri",
+    "3PL lojistik firmaları",
+    "İlaç ve sağlık depoları",
+    "Elektronik dağıtım merkezleri",
+    "Mobilya & beyaz eşya depolama",
+    "Otomotiv yedek parça depoları",
+    "Tarım ve tohum depolama tesisleri",
+    "Yerel belediye depoları",
+    "Enerji ve altyapı malzeme depoları",
+    "Perakende hızlı tüketim zincirleri",
+    "Liman içi malzeme taşıma operasyonları",
+    "Havaalanı kargo terminalleri",
+    "Küçük ve orta ölçekli üretim atölyeleri",
+    "Lüks perakende backstore yönetimi",
+    "Ev & yapı market stok sahaları",
+    "Kargo ve kurye transfer merkezleri"
+  ],
 
   "faq_data": [
     {
-      "question": {"tr": "F4 201 bir vardiyada kaç saate kadar çalışabilir?", "en": "...", "vs.": "..."},
-      "answer": {"tr": "Standart pakette gelen 2 adet 24V/20Ah Li-Ion modül ile tek şarjda 6 saate kadar kesintisiz çalışır...", "en": "...", "vs.": "..."},
+      "question": "F4 201 bir vardiyada kaç saate kadar çalışabilir?",
+      "answer": "Standart pakette gelen 2 adet 24V/20Ah Li-Ion modül ile tek şarjda 6 saate kadar kesintisiz çalışır...",
       "sort_order": 1,
       "category": "usage",
       "is_highlighted": true
     },
     {
-      "question": {"tr": "Dar koridorlarda manevra kabiliyeti nasıldır?", "en": "...", "vs.": "..."},
-      "answer": {"tr": "400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı sayesinde...", "en": "...", "vs.": "..."},
+      "question": "Dar koridorlarda manevra kabiliyeti nasıldır?",
+      "answer": "400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı sayesinde...",
       "sort_order": 2,
       "category": "technical"
     },
     {
-      "question": {"tr": "Garantisi ve servis desteği nasıl işliyor?", "en": "...", "vs.": "..."},
-      "answer": {"tr": "F4 201 için 24 ay tam kapsamlı garanti sunuyoruz; İXTİF Türkiye genelinde mobil servis araçları ile 7/24 destek sağlar...", "en": "...", "vs.": "..."},
+      "question": "Garantisi ve servis desteği nasıl işliyor?",
+      "answer": "F4 201 için 24 ay tam kapsamlı garanti sunuyoruz; İXTİF Türkiye genelinde mobil servis araçları ile 7/24 destek sağlar...",
       "sort_order": 5,
       "category": "warranty"
     },
     {
-      "question": {"tr": "İkinci el, kiralık veya finansman seçenekleri mevcut mu?", "en": "...", "vs.": "..."},
-      "answer": {"tr": "Evet, İXTİF olarak sıfır satışın yanı sıra ikinci el, kiralık ve operasyonel leasing çözümleri sunuyoruz... Detaylı teklif için 0216 755 3 555 numarasını arayabilir veya info@ixtif.com adresine yazabilirsiniz.", "en": "...", "vs.": "..."},
+      "question": "İkinci el, kiralık veya finansman seçenekleri mevcut mu?",
+      "answer": "Evet, İXTİF olarak sıfır satışın yanı sıra ikinci el, kiralık ve operasyonel leasing çözümleri sunuyoruz... Detaylı teklif için 0216 755 3 555 numarasını arayabilir veya info@ixtif.com adresine yazabilirsiniz.",
       "sort_order": 6,
       "category": "pricing"
     }
@@ -271,12 +240,9 @@ Bu şablon AI'ya verilecek. AI, PDF'den bu yapıya uygun JSON üretecek.
   ],
 
   "warranty_info": {
-    "tr": {
-      "duration_months": 24,
-      "coverage": "Şasi, elektrik, hidrolik ve Li-Ion batarya dahil tam garanti.",
-      "support": "İXTİF Türkiye geneli mobil servis ağı ile 7/24 destek."
-    },
-    "en": {"..."}
+    "duration_months": 24,
+    "coverage": "Şasi, elektrik, hidrolik ve Li-Ion batarya dahil tam garanti.",
+    "support": "İXTİF Türkiye geneli mobil servis ağı ile 7/24 destek."
   },
 
   "media_gallery": [
@@ -291,7 +257,7 @@ Bu şablon AI'ya verilecek. AI, PDF'den bu yapıya uygun JSON üretecek.
   "variants": [
     {
       "sku": "F4-201-STD",
-      "title": {"tr": "Standart Paket (1150mm çatal, 2x batarya)", "en": "...", "vs.": "..."},
+      "title": "Standart Paket (1150mm çatal, 2x batarya)",
       "option_values": {"fork_length": "1150mm", "battery": "2x"},
       "price_modifier": 0,
       "stock_quantity": 5,
@@ -299,7 +265,7 @@ Bu şablon AI'ya verilecek. AI, PDF'den bu yapıya uygun JSON üretecek.
     },
     {
       "sku": "F4-201-LONG",
-      "title": {"tr": "Uzun Çatal (1500mm)", "en": "...", "vs.": "..."},
+      "title": "Uzun Çatal (1500mm)",
       "option_values": {"fork_length": "1500mm", "battery": "2x"},
       "price_modifier": 10000,
       "stock_quantity": 2

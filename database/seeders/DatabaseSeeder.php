@@ -50,8 +50,9 @@ class DatabaseSeeder extends Seeder
             // AI Provider'lar ve modelleri (central'da tutulur)
             $this->call(\Modules\AI\Database\Seeders\AIProviderSeeder::class);
 
+            // Shop markası (tenant'larda tutulur - ModuleSeeder'da çalışır ama sıralama için burada not)
             // Shop kategorileri (central'da tutulur)
-            $this->call(ShopCategorySeeder::class);
+            $this->call(\Modules\Shop\Database\Seeders\ShopCategorySeeder::class);
 
             // ModuleManagement seeder'ı (modules tablosuna kayıt ekler - EN ÖNEMLİ!)
             $this->call(\Modules\ModuleManagement\Database\Seeders\ModuleManagementSeeder::class);

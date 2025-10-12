@@ -31,6 +31,11 @@ return new class extends Migration
             $table->string('model_number')->nullable()->comment('Model numarası');
             $table->string('barcode')->nullable()->comment('Barkod numarası');
 
+            // Variant System (Product-Based)
+            $table->unsignedBigInteger('parent_product_id')->nullable()->comment('Ana ürün ID (parent product)');
+            $table->boolean('is_master_product')->default(false)->comment('Ana ürün mü? (master product)');
+            $table->string('variant_type', 100)->nullable()->comment('Varyant tipi (slug-friendly: standart-catal, genis-catal, etc.)');
+
             // Basic Info - JSON çoklu dil
             $table->json('title')->comment('Ürün başlığı: {"tr": "Ürün Adı", "en": "Product Name", "vs.": "..."}');
             $table->json('slug')->comment('Çoklu dil slug: {"tr": "urun-adi", "en": "product-name", "vs.": "..."}');
@@ -75,6 +80,15 @@ return new class extends Migration
             $table->json('technical_specs')->nullable()->comment('Teknik özellikler (JSON nested object - kapasite, performans, elektrik, vb)');
             $table->json('features')->nullable()->comment('Özellikler listesi (JSON array) - Bullet points');
             $table->json('highlighted_features')->nullable()->comment('Öne çıkan özellikler: [{"icon":"battery","title":"...","description":"..."}, ...]');
+            $table->json('accessories')->nullable()->comment('Aksesuarlar ve opsiyonlar: [{"name":"...","description":"...","is_standard":false,"is_optional":true}, ...]');
+            $table->json('certifications')->nullable()->comment('Sertifikalar: [{"name":"CE","year":2021,"authority":"TÜV Rheinland","icon":"certificate"}, ...]');
+
+            // Marketing & Sales Content
+            $table->json('primary_specs')->nullable()->comment('Ana özellikler (4 tane, highlight edilmiş): [{"label":"2.0 Ton","value":"Kapasite","icon":"weight-hanging"}, ...]');
+            $table->json('use_cases')->nullable()->comment('Kullanım senaryoları (8 tane): ["E-ticaret depolarında EUR palet transferi", ...]');
+            $table->json('faq_data')->nullable()->comment('S.S.S (10-12 soru): [{"question":"...","answer":"...","category":"usage","is_highlighted":true,"sort_order":1}, ...]');
+            $table->json('competitive_advantages')->nullable()->comment('Rekabet avantajları (7 tane, ikonlu): [{"text":"Modüler Li-Ion ile minimal kesinti","icon":"battery-full"}, ...]');
+            $table->json('target_industries')->nullable()->comment('Hedef sektörler (20+ tane, ikonlu): [{"name":"E-ticaret ve Fulfillment","icon":"box-open"}, ...]');
 
             // Media
             $table->json('media_gallery')->nullable()->comment('Medya galerisi: [{"type":"image","url":"...","is_primary":true}, ...]');
@@ -105,6 +119,9 @@ return new class extends Migration
             $table->index('brand_id');
             $table->index('sku');
             $table->index('product_type');
+            $table->index('parent_product_id');
+            $table->index('is_master_product');
+            $table->index('variant_type');
             $table->index('created_at');
             $table->index('updated_at');
             $table->index('deleted_at');
@@ -124,6 +141,11 @@ return new class extends Migration
                   ->references('brand_id')
                   ->on('shop_brands')
                   ->onDelete('set null');
+
+            $table->foreign('parent_product_id')
+                  ->references('product_id')
+                  ->on('shop_products')
+                  ->onDelete('cascade');
         });
 
         // JSON slug indexes (MySQL 8.0+ / MariaDB 10.5+) - Tablo oluşturulduktan sonra

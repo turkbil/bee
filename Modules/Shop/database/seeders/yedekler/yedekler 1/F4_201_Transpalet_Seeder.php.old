@@ -1,0 +1,729 @@
+<?php
+
+namespace Modules\Shop\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * F4 201 - 2 Ton 48V Li-Ion Transpalet
+ *
+ * PDF Kaynağı: /Users/nurullah/Desktop/cms/EP PDF/2-Transpalet/F4 201/02_F4-201-brochure-CE.pdf
+ * Marka: İXTİF (brand_id = 1)
+ * Kategori: TRANSPALETLER (category_id = 165)
+ */
+class F4_201_Transpalet_Seeder extends Seeder
+{
+    public function run(): void
+    {
+        // JSON dosyasını oku
+        $jsonPath = base_path('readme/shop-system-v2/json-extracts/F4-201-transpalet.json');
+
+        if (!file_exists($jsonPath)) {
+            $this->command->error("❌ JSON dosyası bulunamadı: {$jsonPath}");
+            return;
+        }
+
+        $productData = json_decode(file_get_contents($jsonPath), true);
+
+        $this->command->info('🚀 F4 201 Li-Ion Transpalet ekleniyor...');
+
+        // 1) Marka bilgisi (İXTİF) - SADECE TÜRKÇE (JSON fields)
+        DB::table('shop_brands')->updateOrInsert(
+            ['brand_id' => 1],
+            [
+                'title' => json_encode(['tr' => 'İXTİF'], JSON_UNESCAPED_UNICODE),
+                'slug' => json_encode(['tr' => 'ixtif'], JSON_UNESCAPED_UNICODE),
+                'description' => json_encode(['tr' => "İXTİF - Türkiye'nin İstif Pazarı! Forklift, transpalet ve depolama ekipmanlarında 360° çözüm sunuyoruz."], JSON_UNESCAPED_UNICODE),
+                'logo_url' => 'brands/ixtif-logo.png',
+                'website_url' => 'https://www.ixtif.com',
+                'country_code' => 'TR',
+                'founded_year' => 1995,
+                'headquarters' => 'İstanbul, Türkiye',
+                'certifications' => json_encode([
+                    ['name' => 'CE', 'year' => 2010],
+                    ['name' => 'ISO 9001', 'year' => 2012]
+                ], JSON_UNESCAPED_UNICODE),
+                'is_active' => 1,
+                'is_featured' => 1,
+                'sort_order' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        $this->command->info('✅ İXTİF markası güncellendi');
+
+        // 2) Kategori bilgisi (Transpaletler) - SADECE TÜRKÇE (JSON fields)
+        DB::table('shop_categories')->updateOrInsert(
+            ['category_id' => 165],
+            [
+                'parent_id' => null,
+                'title' => json_encode(['tr' => 'Transpaletler'], JSON_UNESCAPED_UNICODE),
+                'slug' => json_encode(['tr' => 'transpaletler'], JSON_UNESCAPED_UNICODE),
+                'description' => json_encode(['tr' => 'Li-Ion teknolojili kompakt transpalet çözümleri ile hızlı ve güvenli taşıma.'], JSON_UNESCAPED_UNICODE),
+                'image_url' => 'categories/transpaletler.jpg',
+                'icon_class' => 'fa-solid fa-dolly',
+                'level' => 1,
+                'path' => '165',
+                'sort_order' => 3,
+                'is_active' => 1,
+                'show_in_menu' => 1,
+                'show_in_homepage' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        $this->command->info('✅ Transpalet kategorisi hazır');
+
+        // 3) Mevcut kayıtları temizle (master + child products)
+        $existingProducts = DB::table('shop_products')
+            ->where('sku', 'LIKE', 'F4-201%')
+            ->pluck('product_id');
+
+        if ($existingProducts->isNotEmpty()) {
+            DB::table('shop_product_attributes')->whereIn('product_id', $existingProducts)->delete();
+            DB::table('shop_product_variants')->whereIn('product_id', $existingProducts)->delete();
+            DB::table('shop_products')->whereIn('product_id', $existingProducts)->delete();
+            $this->command->info('🧹 Eski F4 201 kayıtları temizlendi (' . $existingProducts->count() . ' ürün)');
+        }
+
+        // 4) Ürün verileri
+        $title = [
+            'tr' => 'F4 201 - 2 Ton 48V Li-Ion Transpalet',
+            'en' => 'F4 201 - 2 Ton 48V Li-Ion Transpalet',
+        ];
+
+        $slug = [
+            'tr' => 'f4-201-2-ton-48v-li-ion-transpalet',
+            'en' => 'f4-201-2-ton-48v-li-ion-transpalet',
+        ];
+
+        $shortDescription = [
+            'tr' => "F4 201 transpalet; 48V Li-Ion güç paketi, 2 ton akülü taşıma kapasitesi ve 400 mm ultra kompakt şasi ile dar koridorlarda bile hız rekoru kıran İXTİF transpalet çözümüdür.",
+            'en' => "F4 201 transpalet; 48V Li-Ion güç paketi, 2 ton akülü taşıma kapasitesi ve 400 mm ultra kompakt şasi ile dar koridorlarda bile hız rekoru kıran İXTİF transpalet çözümüdür.",
+        ];
+
+        $longDescription = [
+            'tr' => <<<HTML
+<section class="marketing-intro">
+    <p><strong>F4 201'i depoya soktuğunuz anda müşterileriniz “Bu transpaleti nereden aldınız?” diye soracak.</strong> Gücünü 48V Li-Ion sistemden alan bu yıldız, 140 kg gibi inanılmaz hafif servis ağırlığıyla 2 tonluk yükleri çocuk oyuncağına çeviriyor. Sadece butona basarak bataryayı sökün, yenisini takın, sahaya geri dönün – kesintisiz performansın adı artık F4 201.</p>
+    <p>İXTİF mühendisleri bu modeli yalnızca yük taşımak için değil, <em>deponuzun prestijini parlatmak</em> için tasarladı. Göz alıcı kırmızı çizgiler, yeni nesil kare profilli tiller başı ve premium dokunuşlu kontrol elemanlarıyla operatörünüz kendini özel hissederken, müşterileriniz markanızın gücünü sahada yaşayacak.</p>
+    <ul>
+        <li><strong>Bir vardiyada iki kat iş</strong> – 164 adet/40’ konteyner yerleşimi ile lojistik maliyetleriniz %50’ye kadar düşsün.</li>
+        <li><strong>Showroom etkisi</strong> – Ultra kompakt 400 mm şasi dar koridorlarda bile vitrinde yürür gibi ilerler.</li>
+        <li><strong>Prestijli hizmet sözü</strong> – Placebo değil, gerçek sonuç: Türkiye genelinde 7/24 İXTİF servis ağı yanınızda.</li>
+    </ul>
+</section>
+<section class="marketing-body">
+    <p>Standart teslimat paketinde 2 adet 24V/20Ah Li-Ion modül bulunur; isterseniz 4 modüle kadar yükselterek vardiya planınızı baştan yazabilirsiniz. Stabilizasyon tekerleği opsiyonu ve elektromanyetik fren sistemi, en zorlu rampalarda bile “kayma” kelimesini sözlüğünüzden siler.</p>
+    <p>F4 201’i tercih eden işletmeler; sessiz çalışma, sıfır bakım gerektiren Li-Ion teknolojisi ve kablolara bağlı kalmadan şarj edilebilme özgürlüğü sayesinde rakiplerinin birkaç adım önünde ilerliyor.</p>
+    <p>İXTİF'in ikinci el, kiralık, yedek parça ve teknik servis programları ile F4 201 yatırımınız tam koruma altında; Türkiye genelinde mobil ekipler dakikalar içinde yanınızda.</p>
+    <p><strong>SEO Anahtar Kelimeleri:</strong> F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet çözümleri.</p>
+    <p><strong>Şimdi İXTİF’i arayın:</strong> 0216 755 3 555 veya <strong>info@ixtif.com</strong>. Bugün teklif alın, yarın F4 201’i sahaya indirin. Türkiye’nin İstif Pazarı sizi bekliyor.</p>
+</section>
+HTML,
+            'en' => <<<HTML
+<section class="marketing-intro">
+    <p><strong>F4 201'i depoya soktuğunuz anda müşterileriniz “Bu transpaleti nereden aldınız?” diye soracak.</strong> Gücünü 48V Li-Ion sistemden alan bu yıldız, 140 kg gibi inanılmaz hafif servis ağırlığıyla 2 tonluk yükleri çocuk oyuncağına çeviriyor. Sadece butona basarak bataryayı sökün, yenisini takın, sahaya geri dönün – kesintisiz performansın adı artık F4 201.</p>
+    <p>İXTİF mühendisleri bu modeli yalnızca yük taşımak için değil, <em>deponuzun prestijini parlatmak</em> için tasarladı. Göz alıcı kırmızı çizgiler, yeni nesil kare profilli tiller başı ve premium dokunuşlu kontrol elemanlarıyla operatörünüz kendini özel hissederken, müşterileriniz markanızın gücünü sahada yaşayacak.</p>
+    <ul>
+        <li><strong>Bir vardiyada iki kat iş</strong> – 164 adet/40’ konteyner yerleşimi ile lojistik maliyetleriniz %50’ye kadar düşsün.</li>
+        <li><strong>Showroom etkisi</strong> – Ultra kompakt 400 mm şasi dar koridorlarda bile vitrinde yürür gibi ilerler.</li>
+        <li><strong>Prestijli hizmet sözü</strong> – Placebo değil, gerçek sonuç: Türkiye genelinde 7/24 İXTİF servis ağı yanınızda.</li>
+    </ul>
+</section>
+<section class="marketing-body">
+    <p>Standart teslimat paketinde 2 adet 24V/20Ah Li-Ion modül bulunur; isterseniz 4 modüle kadar yükselterek vardiya planınızı baştan yazabilirsiniz. Stabilizasyon tekerleği opsiyonu ve elektromanyetik fren sistemi, en zorlu rampalarda bile “kayma” kelimesini sözlüğünüzden siler.</p>
+    <p>F4 201’i tercih eden işletmeler; sessiz çalışma, sıfır bakım gerektiren Li-Ion teknolojisi ve kablolara bağlı kalmadan şarj edilebilme özgürlüğü sayesinde rakiplerinin birkaç adım önünde ilerliyor.</p>
+    <p>İXTİF'in ikinci el, kiralık, yedek parça ve teknik servis programları ile F4 201 yatırımınız tam koruma altında; Türkiye genelinde mobil ekipler dakikalar içinde yanınızda.</p>
+    <p><strong>SEO Anahtar Kelimeleri:</strong> F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet çözümleri.</p>
+    <p><strong>Şimdi İXTİF’i arayın:</strong> 0216 755 3 555 veya <strong>info@ixtif.com</strong>. Bugün teklif alın, yarın F4 201’i sahaya indirin. Türkiye’nin İstif Pazarı sizi bekliyor.</p>
+</section>
+HTML,
+        ];
+
+        $features = [
+            'tr' => [
+                'list' => [
+                    'F4 201 transpalet 48V Li-Ion güç platformu ile 2 ton akülü taşıma kapasitesini dar koridor operasyonlarına taşır.',
+                    'Tak-çıkar 24V/20Ah Li-Ion bataryalarla vardiya ortasında şarj molasına son verin.',
+                    '140 kg servis ağırlığı ve 400 mm şasi uzunluğu sayesinde dar koridorlarda benzersiz çeviklik sağlar.',
+                    'Stabilizasyon tekerleği opsiyonu, bozuk zeminlerde bile yükünüzü sarsmadan ilerletir.',
+                    'İXTİF stoktan hızlı teslim, yerinde montaj ve son kullanıcı desteği ile operasyona anında başlarsınız.',
+                    'İXTİF ikinci el, kiralık, yedek parça ve teknik servis ekosistemi ile yatırımınıza 360° koruma sağlar.'
+                ],
+                'branding' => [
+                    'slogan' => 'Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin.',
+                    'motto' => 'İXTİF farkı ile 2 tonluk yükler bile hafifler.',
+                    'technical_summary' => 'F4 201, 48V Li-Ion güç paketi, 0.9 kW BLDC sürüş motoru ve 400 mm ultra kompakt şasi kombinasyonuyla dar koridor ortamlarında yüksek tork, düşük bakım ve sürekli çalışma sunar.'
+                ]
+            ],
+            'en' => [
+                'list' => [
+                    'F4 201 transpalet 48V Li-Ion güç platformu ile 2 ton akülü taşıma kapasitesini dar koridor operasyonlarına taşır.',
+                    'Tak-çıkar 24V/20Ah Li-Ion bataryalarla vardiya ortasında şarj molasına son verin.',
+                    '140 kg servis ağırlığı ve 400 mm şasi uzunluğu sayesinde dar koridorlarda benzersiz çeviklik sağlar.',
+                    'Stabilizasyon tekerleği opsiyonu, bozuk zeminlerde bile yükünüzü sarsmadan ilerletir.',
+                    'İXTİF stoktan hızlı teslim, yerinde montaj ve son kullanıcı desteği ile operasyona anında başlarsınız.',
+                    'İXTİF ikinci el, kiralık, yedek parça ve teknik servis ekosistemi ile yatırımınıza 360° koruma sağlar.'
+                ],
+                'branding' => [
+                    'slogan' => 'Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin.',
+                    'motto' => 'İXTİF farkı ile 2 tonluk yükler bile hafifler.',
+                    'technical_summary' => 'F4 201, 48V Li-Ion güç paketi, 0.9 kW BLDC sürüş motoru ve 400 mm ultra kompakt şasi kombinasyonuyla dar koridor ortamlarında yüksek tork, düşük bakım ve sürekli çalışma sunar.'
+                ]
+            ],
+        ];
+
+        $highlightedFeatures = [
+            [
+                'icon' => 'bolt',
+                'priority' => 1,
+                'description' => [
+                    'tr' => '0.9 kW BLDC sürüş motoru ve elektromanyetik fren ile 2 tonluk yükte bile yüksek tork.',
+                    'en' => '0.9 kW BLDC sürüş motoru ve elektromanyetik fren ile 2 tonluk yükte bile yüksek tork.',
+                ]
+            ],
+            [
+                'icon' => 'battery-full',
+                'priority' => 2,
+                'description' => [
+                    'tr' => '2x 24V/20Ah modül standart, 4 modüle kadar genişletilebilir hızlı şarj sistemi.',
+                    'en' => '2x 24V/20Ah modül standart, 4 modüle kadar genişletilebilir hızlı şarj sistemi.',
+                ]
+            ],
+            [
+                'icon' => 'arrows-alt',
+                'priority' => 3,
+                'description' => [
+                    'tr' => '400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı ile dar koridor çözümü.',
+                    'en' => '400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı ile dar koridor çözümü.',
+                ]
+            ]
+        ];
+
+        $primarySpecs = [
+            ['label' => 'Denge Tekeri', 'value' => 'Yok'],
+            ['label' => 'Li-Ion Akü', 'value' => '24V/20Ah çıkarılabilir paket'],
+            ['label' => 'Şarj Cihazı', 'value' => '24V/5A harici hızlı şarj'],
+            ['label' => 'Standart Çatal', 'value' => '1150 x 560 mm']
+        ];
+
+
+        $mediaGallery = [
+            ['type' => 'image', 'url' => 'products/f4-201/main.jpg', 'is_primary' => true, 'sort_order' => 1],
+            ['type' => 'image', 'url' => 'products/f4-201/battery-module.jpg', 'is_primary' => false, 'sort_order' => 2],
+            ['type' => 'image', 'url' => 'products/f4-201/stabilizer-wheel.jpg', 'is_primary' => false, 'sort_order' => 3],
+        ];
+
+        $useCases = [
+            'tr' => [
+                'E-ticaret depolarında hızlı sipariş hazırlama ve sevkiyat operasyonları',
+                'Dar koridorlu perakende depolarında gece vardiyası yükleme boşaltma',
+                'Soğuk zincir lojistiğinde düşük sıcaklıklarda kesintisiz malzeme taşıma',
+                'İçecek ve FMCG dağıtım merkezlerinde yoğun palet trafiği yönetimi',
+                'Dış saha rampalarda stabilizasyon tekerleği ile güvenli taşıma',
+                'Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri'
+            ],
+            'en' => [
+                'E-ticaret depolarında hızlı sipariş hazırlama ve sevkiyat operasyonları',
+                'Dar koridorlu perakende depolarında gece vardiyası yükleme boşaltma',
+                'Soğuk zincir lojistiğinde düşük sıcaklıklarda kesintisiz malzeme taşıma',
+                'İçecek ve FMCG dağıtım merkezlerinde yoğun palet trafiği yönetimi',
+                'Dış saha rampalarda stabilizasyon tekerleği ile güvenli taşıma',
+                'Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri'
+            ],
+        ];
+
+        $competitiveAdvantages = [
+            'tr' => [
+                '48V Li-Ion güç platformu ile segmentindeki en agresif hızlanma ve rampa performansı',
+                '140 kg’lık ultra hafif servis ağırlığı sayesinde lojistik maliyetlerinde dramatik düşüş',
+                'Tak-çıkar batarya konsepti ile 7/24 operasyonda sıfır bekleme, sıfır bakım maliyeti',
+                'Stabilizasyon tekerleği opsiyonu sayesinde bozuk zeminlerde bile devrilme riskini sıfırlar',
+                'İXTİF stoktan hızlı teslimat ve yerinde devreye alma ile son kullanıcıyı bekletmez',
+                'İXTİF’in Türkiye geneli mobil servis ağı, ikinci el & kiralama programları ve yedek parça tedarikiyle yatırımınızı 360° korur'
+            ],
+            'en' => [
+                '48V Li-Ion güç platformu ile segmentindeki en agresif hızlanma ve rampa performansı',
+                '140 kg’lık ultra hafif servis ağırlığı sayesinde lojistik maliyetlerinde dramatik düşüş',
+                'Tak-çıkar batarya konsepti ile 7/24 operasyonda sıfır bekleme, sıfır bakım maliyeti',
+                'Stabilizasyon tekerleği opsiyonu sayesinde bozuk zeminlerde bile devrilme riskini sıfırlar',
+                'İXTİF stoktan hızlı teslimat ve yerinde devreye alma ile son kullanıcıyı bekletmez',
+                'İXTİF’in Türkiye geneli mobil servis ağı, ikinci el & kiralama programları ve yedek parça tedarikiyle yatırımınızı 360° korur'
+            ],
+        ];
+
+        $targetIndustries = [
+            'tr' => [
+                'E-ticaret & fulfillment merkezleri',
+                'Perakende zincir depoları',
+                'Soğuk zincir ve gıda lojistiği',
+                'İçecek ve FMCG dağıtım şirketleri',
+                'Endüstriyel üretim tesisleri',
+                '3PL lojistik firmaları',
+                'İlaç ve sağlık depoları',
+                'Elektronik dağıtım merkezleri',
+                'Mobilya & beyaz eşya depolama',
+                'Otomotiv yedek parça depoları',
+                'Tarım ve tohum depolama tesisleri',
+                'Yerel belediye depoları',
+                'Enerji ve altyapı malzeme depoları',
+                'Perakende hızlı tüketim zincirleri',
+                'Liman içi malzeme taşıma operasyonları',
+                'Havaalanı kargo terminalleri',
+                'Küçük ve orta ölçekli üretim atölyeleri',
+                'Lüks perakende backstore yönetimi',
+                'Ev & yapı market stok sahaları',
+                'Kargo ve kurye transfer merkezleri'
+            ],
+            'en' => [
+                'E-ticaret & fulfillment merkezleri',
+                'Perakende zincir depoları',
+                'Soğuk zincir ve gıda lojistiği',
+                'İçecek ve FMCG dağıtım şirketleri',
+                'Endüstriyel üretim tesisleri',
+                '3PL lojistik firmaları',
+                'İlaç ve sağlık depoları',
+                'Elektronik dağıtım merkezleri',
+                'Mobilya & beyaz eşya depolama',
+                'Otomotiv yedek parça depoları',
+                'Tarım ve tohum depolama tesisleri',
+                'Yerel belediye depoları',
+                'Enerji ve altyapı malzeme depoları',
+                'Perakende hızlı tüketim zincirleri',
+                'Liman içi malzeme taşıma operasyonları',
+                'Havaalanı kargo terminalleri',
+                'Küçük ve orta ölçekli üretim atölyeleri',
+                'Lüks perakende backstore yönetimi',
+                'Ev & yapı market stok sahaları',
+                'Kargo ve kurye transfer merkezleri'
+            ],
+        ];
+
+        $faqData = [
+            [
+                'question' => [
+                    'tr' => 'F4 201 bir vardiyada kaç saate kadar çalışabilir?',
+                    'en' => 'F4 201 bir vardiyada kaç saate kadar çalışabilir?',
+                ],
+                'answer' => [
+                    'tr' => 'Standart pakette gelen 2 adet 24V/20Ah Li-Ion modül ile tek şarjda 6 saate kadar kesintisiz çalışır. Yedek modüller ile batarya değişim süresi 60 saniyeden kısa olduğu için vardiya boyunca enerji kaybı yaşamazsınız.',
+                    'en' => 'Standart pakette gelen 2 adet 24V/20Ah Li-Ion modül ile tek şarjda 6 saate kadar kesintisiz çalışır. Yedek modüller ile batarya değişim süresi 60 saniyeden kısa olduğu için vardiya boyunca enerji kaybı yaşamazsınız.',
+                ],
+                'sort_order' => 1
+            ],
+            [
+                'question' => [
+                    'tr' => 'Dar koridorlarda manevra kabiliyeti nasıldır?',
+                    'en' => 'Dar koridorlarda manevra kabiliyeti nasıldır?',
+                ],
+                'answer' => [
+                    'tr' => '400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı sayesinde 3,2 metreye kadar dar koridorlarda bile rahatlıkla döner. Özellikle yoğun raflı depolarda palet değişimini hızlandırır.',
+                    'en' => '400 mm gövde uzunluğu ve 1360 mm dönüş yarıçapı sayesinde 3,2 metreye kadar dar koridorlarda bile rahatlıkla döner. Özellikle yoğun raflı depolarda palet değişimini hızlandırır.',
+                ],
+                'sort_order' => 2
+            ],
+            [
+                'question' => [
+                    'tr' => 'Stabilizasyon tekerlekleri hangi durumlarda gerekli?',
+                    'en' => 'Stabilizasyon tekerlekleri hangi durumlarda gerekli?',
+                ],
+                'answer' => [
+                    'tr' => 'Düz olmayan zeminlerde, rampa giriş çıkışlarında veya 2 ton üzeri ağır yüklerde stabilizasyon tekerleği opsiyonu tavsiye edilir. Bu sayede şasi salınımı azalır ve yük güvenliği üst seviyeye çıkar.',
+                    'en' => 'Düz olmayan zeminlerde, rampa giriş çıkışlarında veya 2 ton üzeri ağır yüklerde stabilizasyon tekerleği opsiyonu tavsiye edilir. Bu sayede şasi salınımı azalır ve yük güvenliği üst seviyeye çıkar.',
+                ],
+                'sort_order' => 3
+            ],
+            [
+                'question' => [
+                    'tr' => 'Bataryalar nasıl şarj edilir, özel altyapı gerekir mi?',
+                    'en' => 'Bataryalar nasıl şarj edilir, özel altyapı gerekir mi?',
+                ],
+                'answer' => [
+                    'tr' => 'Harici 24V/5A şarj üniteleri ile normal 220V priz üzerinden bataryaları dışarıda şarj edebilirsiniz. Özel altyapıya veya endüstriyel prizlere gerek yoktur. Hızlı şarj isteyen filolar için 24V/10A seçenekleri sunulur.',
+                    'en' => 'Harici 24V/5A şarj üniteleri ile normal 220V priz üzerinden bataryaları dışarıda şarj edebilirsiniz. Özel altyapıya veya endüstriyel prizlere gerek yoktur. Hızlı şarj isteyen filolar için 24V/10A seçenekleri sunulur.',
+                ],
+                'sort_order' => 4
+            ],
+            [
+                'question' => [
+                    'tr' => 'Garantisi ve servis desteği nasıl işliyor?',
+                    'en' => 'Garantisi ve servis desteği nasıl işliyor?',
+                ],
+                'answer' => [
+                    'tr' => 'F4 201 için 24 ay tam kapsamlı garanti sunuyoruz; şasi, motor, elektronik ve Li-Ion bataryalar bu kapsamda. İXTİF Türkiye genelinde mobil servis araçları ile 7/24 destek sağlar, Türkiye genelinde uzman teknik servis ağımızla hızlı destek sağlanır.',
+                    'en' => 'F4 201 için 24 ay tam kapsamlı garanti sunuyoruz; şasi, motor, elektronik ve Li-Ion bataryalar bu kapsamda. İXTİF Türkiye genelinde mobil servis araçları ile 7/24 destek sağlar, Türkiye genelinde uzman teknik servis ağımızla hızlı destek sağlanır.',
+                ],
+                'sort_order' => 5
+            ],
+            [
+                'question' => [
+                    'tr' => 'İkinci el, kiralık veya finansman seçenekleri mevcut mu?',
+                    'en' => 'İkinci el, kiralık veya finansman seçenekleri mevcut mu?',
+                ],
+                'answer' => [
+                    'tr' => 'Evet, İXTİF olarak sıfır satışın yanı sıra ikinci el, kiralık ve operasyonel leasing çözümleri sunuyoruz. Filonuzun büyüklüğüne göre 12-36 ay arası ödeme planları hazırlıyor, yedek parça ve teknik servis paketlerini birlikte planlıyoruz. Detaylı teklif için 0216 755 3 555 numarasını arayabilir veya info@ixtif.com adresine yazabilirsiniz.',
+                    'en' => 'Evet, İXTİF olarak sıfır satışın yanı sıra ikinci el, kiralık ve operasyonel leasing çözümleri sunuyoruz. Filonuzun büyüklüğüne göre 12-36 ay arası ödeme planları hazırlıyor, yedek parça ve teknik servis paketlerini birlikte planlıyoruz. Detaylı teklif için 0216 755 3 555 numarasını arayabilir veya info@ixtif.com adresine yazabilirsiniz.',
+                ],
+                'sort_order' => 6
+            ],
+            [
+                'question' => [
+                    'tr' => 'Standart çatal dışında hangi ölçüler mevcut?',
+                    'en' => 'Standart çatal dışında hangi ölçüler mevcut?',
+                ],
+                'answer' => [
+                    'tr' => 'Standart 1150 x 560 mm çatalın yanı sıra 900 mm’den 1500 mm’ye kadar uzanan uzunluk seçenekleri ve 560/685 mm açıklık kombinasyonları talebe göre sunulur.',
+                    'en' => 'Standart 1150 x 560 mm çatalın yanı sıra 900 mm’den 1500 mm’ye kadar uzanan uzunluk seçenekleri ve 560/685 mm açıklık kombinasyonları talebe göre sunulur.',
+                ],
+                'sort_order' => 7
+            ],
+            [
+                'question' => [
+                    'tr' => 'İXTİF kiralık ve ikinci el seçeneklerini nasıl sunuyor?',
+                    'en' => 'İXTİF kiralık ve ikinci el seçeneklerini nasıl sunuyor?',
+                ],
+                'answer' => [
+                    'tr' => 'İXTİF, F4 201 için stoktan teslim ikinci el üniteler ve kısa/uzun dönem kiralama planları sunar; ihtiyaca göre bakım ve yedek parça paketi ile birlikte teklif edilir.',
+                    'en' => 'İXTİF, F4 201 için stoktan teslim ikinci el üniteler ve kısa/uzun dönem kiralama planları sunar; ihtiyaca göre bakım ve yedek parça paketi ile birlikte teklif edilir.',
+                ],
+                'sort_order' => 8
+            ],
+            [
+                'question' => [
+                    'tr' => 'Saha kurulumu ve operatör eğitimi veriliyor mu?',
+                    'en' => 'Saha kurulumu ve operatör eğitimi veriliyor mu?',
+                ],
+                'answer' => [
+                    'tr' => 'İXTİF uzman ekibi cihazı sahada devreye alır, operatörlerin güvenli kullanımını ve hızlı adaptasyonunu sağlayacak eğitim setini yerinde verir.',
+                    'en' => 'İXTİF uzman ekibi cihazı sahada devreye alır, operatörlerin güvenli kullanımını ve hızlı adaptasyonunu sağlayacak eğitim setini yerinde verir.',
+                ],
+                'sort_order' => 9
+            ],
+            [
+                'question' => [
+                    'tr' => 'Teknik slogan ve motto nedir?',
+                    'en' => 'Teknik slogan ve motto nedir?',
+                ],
+                'answer' => [
+                    'tr' => 'Slogan: “Depoda hız, sahada prestij.” Motto: “İXTİF farkı ile 2 tonluk yükler bile hafifler.” Bu mesajlar satış sayfasında ayrı kartlarda öne çıkar.',
+                    'en' => 'Slogan: “Depoda hız, sahada prestij.” Motto: “İXTİF farkı ile 2 tonluk yükler bile hafifler.” Bu mesajlar satış sayfasında ayrı kartlarda öne çıkar.',
+                ],
+                'sort_order' => 10
+            ]
+        ];
+
+        $technicalSpecs = [
+            'capacity' => [
+                'load_capacity' => ['value' => 2000, 'unit' => 'kg'],
+                'load_center_distance' => ['value' => 600, 'unit' => 'mm'],
+                'service_weight' => ['value' => 140, 'unit' => 'kg'],
+                'axle_load_laden' => ['front' => 620, 'rear' => 1520, 'unit' => 'kg'],
+                'axle_load_unladen' => ['front' => 100, 'rear' => 40, 'unit' => 'kg'],
+            ],
+            'dimensions' => [
+                'overall_length' => ['value' => 1550, 'unit' => 'mm'],
+                'length_to_face_of_forks' => ['value' => 400, 'unit' => 'mm'],
+                'overall_width' => ['standard' => 590, 'wide' => 695, 'unit' => 'mm'],
+                'fork_dimensions' => ['thickness' => 50, 'width' => 150, 'length' => 1150, 'unit' => 'mm'],
+                'fork_spread' => ['standard' => 560, 'wide' => 685, 'unit' => 'mm'],
+                'ground_clearance' => ['value' => 30, 'unit' => 'mm'],
+                'turning_radius' => ['value' => 1360, 'unit' => 'mm'],
+                'aisle_width_1000x1200' => ['value' => 2160, 'unit' => 'mm'],
+                'aisle_width_800x1200' => ['value' => 2025, 'unit' => 'mm'],
+                'lift_height' => ['value' => 105, 'unit' => 'mm'],
+                'lowered_height' => ['value' => 85, 'unit' => 'mm'],
+                'tiller_height' => ['min' => 750, 'max' => 1190, 'unit' => 'mm'],
+            ],
+            'performance' => [
+                'travel_speed' => ['laden' => 4.5, 'unladen' => 5.0, 'unit' => 'km/h'],
+                'lift_speed' => ['laden' => 0.016, 'unladen' => 0.020, 'unit' => 'm/s'],
+                'lowering_speed' => ['laden' => 0.058, 'unladen' => 0.046, 'unit' => 'm/s'],
+                'max_gradeability' => ['laden' => 8, 'unladen' => 16, 'unit' => '%'],
+                'turnover_output' => ['value' => 88, 'unit' => 't/h'],
+                'turnover_efficiency' => ['value' => 473.12, 'unit' => 't/kWh'],
+            ],
+            'electrical' => [
+                'drive_motor_rating' => ['value' => 0.9, 'unit' => 'kW', 'duty' => 'S2 60 min'],
+                'lift_motor_rating' => ['value' => 0.7, 'unit' => 'kW', 'duty' => 'S3 15%'],
+                'battery_system' => [
+                    'voltage' => 48,
+                    'capacity' => 20,
+                    'unit' => 'V/Ah',
+                    'configuration' => '2x 24V/20Ah değiştirilebilir Li-Ion modül (4 adede kadar genişletilebilir)'
+                ],
+                'battery_weight' => ['value' => 10, 'unit' => 'kg', 'note' => 'Her bir Li-Ion modül için'],
+                'charger_options' => [
+                    'standard' => '2x 24V-5A harici şarj ünitesi',
+                    'optional' => ['2x 24V-10A hızlı şarj ünitesi']
+                ],
+                'energy_consumption' => ['value' => 0.18, 'unit' => 'kWh/h'],
+                'drive_control' => 'BLDC sürüş kontrolü',
+                'steering_design' => 'Mekanik',
+                'noise_level' => ['value' => 74, 'unit' => 'dB(A)'],
+            ],
+            'tyres' => [
+                'type' => 'Poliüretan',
+                'drive_wheel' => '210 × 70 mm Poliüretan',
+                'load_wheel' => '80 × 60 mm Poliüretan (çift sıra standart)',
+                'caster_wheel' => '74 × 30 mm Poliüretan',
+                'wheel_configuration' => '1x / 4 (çekiş/yük)'
+            ],
+            'options' => [
+                'stabilizing_wheels' => ['standard' => false, 'optional' => true],
+                'fork_lengths_mm' => [900, 1000, 1150, 1220, 1350, 1500],
+                'fork_spreads_mm' => [560, 685],
+                'battery_expansion' => ['standard' => '2x 24V/20Ah', 'max' => '4x 24V/20Ah']
+            ]
+        ];
+
+        $warrantyInfo = '1 Yıl Garanti | 2 Yıl Akü Garantisi';
+
+        // Ürünü ekle (JSON'dan - SADECE TÜRKÇE) - MASTER PRODUCT
+        $productId = DB::table('shop_products')->insertGetId([
+            'category_id' => 165,
+            'brand_id' => 1,
+            'sku' => $productData['sku'],
+            'model_number' => $productData['model_code'],
+            'barcode' => null,
+            'parent_product_id' => null,
+            'is_master_product' => true,
+            'title' => json_encode(['tr' => (is_array($productData['name']) ? $productData['name']['tr'] : $productData['name'])], JSON_UNESCAPED_UNICODE),
+            'slug' => json_encode(['tr' => (is_array($productData['slug']) ? $productData['slug'] : $productData['slug'])], JSON_UNESCAPED_UNICODE),
+            'short_description' => json_encode(['tr' => (is_array($productData['short_description']) ? $productData['short_description']['tr'] : $productData['short_description'])], JSON_UNESCAPED_UNICODE),
+            'long_description' => json_encode(['tr' => (is_array($productData['long_description']) ? $productData['long_description']['tr'] : $productData['long_description'])], JSON_UNESCAPED_UNICODE),
+            'product_type' => 'physical',
+            'condition' => 'new',
+            'price_on_request' => 1,
+            'base_price' => null,
+            'compare_at_price' => null,
+            'cost_price' => null,
+            'currency' => 'TRY',
+            'deposit_required' => 1,
+            'deposit_amount' => null,
+            'deposit_percentage' => 30,
+            'installment_available' => 1,
+            'max_installments' => 12,
+            'stock_tracking' => 1,
+            'current_stock' => 0,
+            'low_stock_threshold' => 1,
+            'allow_backorder' => 0,
+            'lead_time_days' => 45,
+            'weight' => 140,
+            'dimensions' => json_encode(['length' => 1550, 'width' => 590, 'height' => 105, 'unit' => 'mm'], JSON_UNESCAPED_UNICODE),
+            'technical_specs' => json_encode($productData['technical_specs'], JSON_UNESCAPED_UNICODE),
+            'features' => json_encode(['tr' => (isset($productData['features']['tr']) ? $productData['features']['tr'] : $productData['features'])], JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode($highlightedFeatures, JSON_UNESCAPED_UNICODE),
+            'media_gallery' => json_encode($mediaGallery, JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode($productData['primary_specs'], JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(['tr' => (isset($productData['use_cases']['tr']) ? $productData['use_cases']['tr'] : $productData['use_cases'])], JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(['tr' => (isset($productData['competitive_advantages']['tr']) ? $productData['competitive_advantages']['tr'] : $productData['competitive_advantages'])], JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(['tr' => (isset($productData['target_industries']['tr']) ? $productData['target_industries']['tr'] : $productData['target_industries'])], JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(['tr' => array_map(function($faq) {
+                return [
+                    'question' => isset($faq['question']['tr']) ? $faq['question']['tr'] : $faq['question'],
+                    'answer' => isset($faq['answer']['tr']) ? $faq['answer']['tr'] : $faq['answer'],
+                    'sort_order' => $faq['sort_order']
+                ];
+            }, $productData['faq_data'])], JSON_UNESCAPED_UNICODE),
+            'video_url' => null,
+            'manual_pdf_url' => null,
+            'is_active' => $productData['status'] === 'active' ? 1 : 0,
+            'is_featured' => $productData['is_featured'] ? 1 : 0,
+            'is_bestseller' => 0,
+            'view_count' => 0,
+            'sales_count' => 0,
+            'published_at' => now(),
+            'warranty_info' => json_encode(['tr' => $warrantyInfo], JSON_UNESCAPED_UNICODE),
+            'tags' => json_encode([
+                'transpalet',
+                'li-ion',
+                '48v',
+                '2-ton',
+                'kompakt',
+                'ixtif',
+                'f4-201-transpalet',
+                '48v-li-ion-transpalet',
+                '2-ton-akulu-transpalet',
+                'ixtif-transpalet',
+                'dar-koridor-transpalet',
+                'ikinci-el-transpalet',
+                'kiralik-transpalet',
+                'yedek-parca',
+                'teknik-servis'
+            ], JSON_UNESCAPED_UNICODE),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->command->info("✅ MASTER Product eklendi (ID: {$productId}, SKU: F4-201-MASTER)");
+
+        // PRODUCT-BASED VARIANTS: Her varyant BAĞIMSIZ bir ürün (kendi özellikleriyle)
+        $variants = [
+            [
+                'sku' => 'F4-201-STD',
+                'title' => 'F4 201 - Standart Çatal (1150x560 mm)',
+                'slug' => 'f4-201-standart-catal-1150x560',
+                'variant_type' => 'standart-catal',
+                'short_description' => '1150x560 mm standart çatal boyutuyla F4 201, genel amaçlı palet taşıma operasyonlarında maksimum esneklik sağlar.',
+                'weight' => 140,
+                'fork_length' => 1150,
+                'fork_width' => 560,
+                'primary_specs' => [
+                    ['label' => 'Çatal Boyutu', 'value' => '1150 x 560 mm'],
+                    ['label' => 'Akü Sistemi', 'value' => 'Li-Ion 48V (2x24V/20Ah)'],
+                    ['label' => 'Servis Ağırlığı', 'value' => '140 kg'],
+                    ['label' => 'Denge Tekeri', 'value' => 'Opsiyonel']
+                ],
+                'features' => [
+                    'Standart 1150x560 mm çatal boyutu ile en yaygın EUR palet uyumluluğu',
+                    '140 kg ultra hafif gövde ile kolay manevra kabiliyeti',
+                    '2x 24V/20Ah tak-çıkar Li-Ion batarya modülü ile 6-8 saat çalışma',
+                    'Dar koridor uyumlu 400 mm şasi uzunluğu ile 2160 mm geçiş imkanı'
+                ]
+            ],
+            [
+                'sku' => 'F4-201-WIDE',
+                'title' => 'F4 201 - Geniş Çatal (1150x685 mm)',
+                'slug' => 'f4-201-genis-catal-1150x685',
+                'variant_type' => 'genis-catal',
+                'short_description' => '1150x685 mm geniş çatal açıklığıyla büyük paletlerin güvenli taşınması için tasarlanmış F4 201 varyantı.',
+                'weight' => 145,
+                'fork_length' => 1150,
+                'fork_width' => 685,
+                'primary_specs' => [
+                    ['label' => 'Çatal Boyutu', 'value' => '1150 x 685 mm'],
+                    ['label' => 'Akü Sistemi', 'value' => 'Li-Ion 48V (2x24V/20Ah)'],
+                    ['label' => 'Servis Ağırlığı', 'value' => '145 kg'],
+                    ['label' => 'Denge Tekeri', 'value' => 'Tavsiye Edilir']
+                ],
+                'features' => [
+                    'Geniş 1150x685 mm çatal açıklığı ile büyük boy palet uyumluluğu',
+                    '145 kg servis ağırlığı ile geniş çatallarda dengeli yük dağılımı',
+                    'Büyük paletlerde (1000x1200 mm ve üstü) maksimum stabilite',
+                    'Ağır yüklerde stabilizasyon tekerleği opsiyonu ile ekstra güvenlik'
+                ]
+            ],
+            [
+                'sku' => 'F4-201-SHORT',
+                'title' => 'F4 201 - Kısa Çatal (900x560 mm)',
+                'slug' => 'f4-201-kisa-catal-900x560',
+                'variant_type' => 'kisa-catal',
+                'short_description' => '900x560 mm kısa çatal uzunluğuyla dar alanlarda ve kısa paletlerde maksimum çeviklik sağlayan F4 201.',
+                'weight' => 135,
+                'fork_length' => 900,
+                'fork_width' => 560,
+                'primary_specs' => [
+                    ['label' => 'Çatal Boyutu', 'value' => '900 x 560 mm'],
+                    ['label' => 'Akü Sistemi', 'value' => 'Li-Ion 48V (2x24V/20Ah)'],
+                    ['label' => 'Servis Ağırlığı', 'value' => '135 kg'],
+                    ['label' => 'Denge Tekeri', 'value' => 'Gerekli Değil']
+                ],
+                'features' => [
+                    'Kısa 900 mm çatal uzunluğu ile küçük paletlerde maksimum kontrol',
+                    '135 kg ultra hafif gövde ile dar geçişlerde üstün manevra kabiliyeti',
+                    'Kısa paletler (800x1200 mm) için ideal çözüm',
+                    'Dar koridorlarda (2025 mm) rahat dönüş ve park imkanı'
+                ]
+            ],
+            [
+                'sku' => 'F4-201-LONG',
+                'title' => 'F4 201 - Uzun Çatal (1500x560 mm)',
+                'slug' => 'f4-201-uzun-catal-1500x560',
+                'variant_type' => 'uzun-catal',
+                'short_description' => '1500x560 mm uzun çatal boyutuyla özel boy paletlerin ve uzun yüklerin güvenli taşınması için F4 201.',
+                'weight' => 150,
+                'fork_length' => 1500,
+                'fork_width' => 560,
+                'primary_specs' => [
+                    ['label' => 'Çatal Boyutu', 'value' => '1500 x 560 mm'],
+                    ['label' => 'Akü Sistemi', 'value' => 'Li-Ion 48V (2x24V/20Ah)'],
+                    ['label' => 'Servis Ağırlığı', 'value' => '150 kg'],
+                    ['label' => 'Denge Tekeri', 'value' => 'Önerilir']
+                ],
+                'features' => [
+                    'Uzun 1500 mm çatal uzunluğu ile özel boy ve uzun paletler için tasarım',
+                    '150 kg servis ağırlığı ile uzun çatallarda dengeli yük dağılımı',
+                    'Özel boy paletlerde (1400-1600 mm) güvenli taşıma',
+                    'Uzun yüklerde stabilizasyon tekerleği ile devrilme riskini sıfırlar'
+                ]
+            ],
+            [
+                'sku' => 'F4-201-EXT-BAT',
+                'title' => 'F4 201 - Genişletilmiş Batarya (4x 24V/20Ah)',
+                'slug' => 'f4-201-genisletilmis-batarya-4x-24v-20ah',
+                'variant_type' => 'genisletilmis-batarya',
+                'short_description' => '4x 24V/20Ah Li-Ion batarya kapasitesiyle uzun vardiya operasyonlarında kesintisiz çalışma sunan F4 201.',
+                'weight' => 160,
+                'fork_length' => 1150,
+                'fork_width' => 560,
+                'primary_specs' => [
+                    ['label' => 'Çatal Boyutu', 'value' => '1150 x 560 mm'],
+                    ['label' => 'Akü Sistemi', 'value' => 'Li-Ion 48V (4x24V/20Ah)'],
+                    ['label' => 'Çalışma Süresi', 'value' => '12-16 saat'],
+                    ['label' => 'Servis Ağırlığı', 'value' => '160 kg']
+                ],
+                'features' => [
+                    'Genişletilmiş 4x 24V/20Ah batarya kapasitesi ile 12-16 saat kesintisiz çalışma',
+                    'Çift vardiya operasyonlarında batarya değişimine gerek kalmaz',
+                    'Standart 1150x560 mm çatal boyutu ile geniş uyumluluk',
+                    '160 kg servis ağırlığı ile ek batarya modüllerinin dengeli dağılımı',
+                    'Hızlı şarj sistemi (4x 24V-10A) ile 5-6 saatte tam dolum'
+                ]
+            ]
+        ];
+
+        $variantCount = 0;
+        foreach ($variants as $variantData) {
+            // Her varyant için özel teknik specs oluştur
+            $variantTechnicalSpecs = $technicalSpecs;
+            $variantTechnicalSpecs['dimensions']['fork_dimensions']['length'] = $variantData['fork_length'];
+            $variantTechnicalSpecs['dimensions']['fork_spread']['standard'] = $variantData['fork_width'];
+
+            // Genişletilmiş batarya varyantı için battery specs'i güncelle
+            if ($variantData['sku'] === 'F4-201-EXT-BAT') {
+                $variantTechnicalSpecs['electrical']['battery_system']['configuration'] = '4x 24V/20Ah değiştirilebilir Li-Ion modül';
+                $variantTechnicalSpecs['electrical']['battery_weight'] = ['value' => 40, 'unit' => 'kg', 'note' => 'Toplam batarya ağırlığı'];
+            }
+
+            $childId = DB::table('shop_products')->insertGetId([
+                'category_id' => 165,
+                'brand_id' => 1,
+                'sku' => $variantData['sku'],
+                'model_number' => $productData['model_code'],
+                'title' => json_encode(['tr' => $variantData['title']], JSON_UNESCAPED_UNICODE),
+                'slug' => json_encode(['tr' => $variantData['slug']], JSON_UNESCAPED_UNICODE),
+                'short_description' => json_encode(['tr' => $variantData['short_description']], JSON_UNESCAPED_UNICODE),
+                'long_description' => json_encode(['tr' => (is_array($productData['long_description']) ? $productData['long_description']['tr'] : $productData['long_description'])], JSON_UNESCAPED_UNICODE),
+                'parent_product_id' => $productId,
+                'is_master_product' => false,
+                'variant_type' => $variantData['variant_type'],
+                'product_type' => 'physical',
+                'condition' => 'new',
+                'price_on_request' => 1,
+                'weight' => $variantData['weight'],
+                'dimensions' => json_encode(['length' => 1550, 'width' => 590, 'height' => 105, 'unit' => 'mm'], JSON_UNESCAPED_UNICODE),
+                'technical_specs' => json_encode($variantTechnicalSpecs, JSON_UNESCAPED_UNICODE),
+                'features' => json_encode(['tr' => ['list' => $variantData['features']]], JSON_UNESCAPED_UNICODE),
+                'primary_specs' => json_encode($variantData['primary_specs'], JSON_UNESCAPED_UNICODE),
+                'use_cases' => json_encode(['tr' => $useCases['tr']], JSON_UNESCAPED_UNICODE),
+                'is_active' => 1,
+                'is_featured' => 0,
+                'published_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $variantCount++;
+            $this->command->info("  ➕ Child Product: {$variantData['title']} (ID: {$childId}, SKU: {$variantData['sku']})");
+        }
+
+        $this->command->info('🎉 F4 201 Product-Based Variant Sistemi başarıyla eklendi!');
+        $this->command->info('📊 İstatistik:');
+        $this->command->info('  - Master Product: 1');
+        $this->command->info('  - Child Products (Variants): ' . $variantCount);
+    }
+}

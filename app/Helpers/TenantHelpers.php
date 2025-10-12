@@ -284,4 +284,90 @@ class TenantHelpers
             return 1; // Hata durumunda central
         }
     }
+
+    /**
+     * Tenant dillerini al (cache'li)
+     *
+     * @param bool $activeOnly Sadece aktif dilleri getir (default: true)
+     * @param bool $asArray Array olarak döndür (default: false)
+     * @return \Illuminate\Support\Collection|array
+     */
+    public static function getTenantLanguages(bool $activeOnly = true, bool $asArray = false)
+    {
+        $cacheKey = 'tenant_languages_' . ($activeOnly ? 'active' : 'all');
+
+        $languages = Cache::remember($cacheKey, now()->addHours(24), function () use ($activeOnly) {
+            $query = DB::table('tenant_languages')->orderBy('sort_order');
+
+            if ($activeOnly) {
+                $query->where('is_active', 1);
+            }
+
+            return $query->get(['code', 'name', 'native_name', 'is_default', 'is_main_language']);
+        });
+
+        // Eğer hiç dil yoksa, fallback olarak 'tr' ekle
+        if ($languages->isEmpty()) {
+            $languages = collect([
+                (object)['code' => 'tr', 'name' => 'Türkçe', 'native_name' => 'Türkçe', 'is_default' => 1, 'is_main_language' => 1]
+            ]);
+        }
+
+        return $asArray ? $languages->toArray() : $languages;
+    }
+
+    /**
+     * Tenant dil kodlarını al
+     *
+     * @param bool $activeOnly Sadece aktif dilleri getir (default: true)
+     * @return array ['tr', 'en', 'ar']
+     */
+    public static function getTenantLanguageCodes(bool $activeOnly = true): array
+    {
+        return self::getTenantLanguages($activeOnly)->pluck('code')->toArray();
+    }
+
+    /**
+     * Default tenant dilini al
+     *
+     * @return string Default dil kodu (örn: 'tr')
+     */
+    public static function getDefaultTenantLanguage(): string
+    {
+        $defaultLang = self::getTenantLanguages(true)
+            ->where('is_default', 1)
+            ->first();
+
+        return $defaultLang ? $defaultLang->code : 'tr';
+    }
+
+    /**
+     * Çoklu dil JSON objesi oluştur
+     *
+     * @param mixed $value Değer (string veya array)
+     * @param array|null $languageCodes Dil kodları (null ise aktif diller kullanılır)
+     * @return array ['tr' => '...', 'en' => '...', ...]
+     */
+    public static function createMultilingualJson($value, ?array $languageCodes = null): array
+    {
+        if (is_null($languageCodes)) {
+            $languageCodes = self::getTenantLanguageCodes();
+        }
+
+        $result = [];
+
+        // Eğer value zaten array ise, direkt kullan
+        if (is_array($value)) {
+            foreach ($languageCodes as $code) {
+                $result[$code] = $value[$code] ?? $value[self::getDefaultTenantLanguage()] ?? '';
+            }
+        } else {
+            // String ise, tüm dillere aynı değeri ata
+            foreach ($languageCodes as $code) {
+                $result[$code] = $value;
+            }
+        }
+
+        return $result;
+    }
 }

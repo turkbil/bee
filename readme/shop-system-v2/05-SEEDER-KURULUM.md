@@ -82,6 +82,54 @@ php artisan app:clear-all
 
 ---
 
+## 🌍 DİNAMİK DİL SİSTEMİ
+
+**Önemli:** Tüm Shop seeder'ları dinamik dil sistemi kullanır!
+
+### Temel Kullanım
+
+```php
+use App\Helpers\TenantHelpers;
+
+public function run(): void
+{
+    // 1. Aktif dilleri al
+    $tenantLangs = TenantHelpers::getTenantLanguageCodes();
+    $defaultLang = TenantHelpers::getDefaultTenantLanguage();
+
+    $this->command->info('🌐 Aktif diller: ' . implode(', ', $tenantLangs) . ' (Default: ' . $defaultLang . ')');
+
+    // 2. Çoklu dil JSON oluştur
+    $title = TenantHelpers::createMultilingualJson('Ürün Adı', $tenantLangs);
+    $slug = TenantHelpers::createMultilingualJson('urun-adi', $tenantLangs);
+
+    // 3. Veritabanına kaydet
+    DB::table('shop_products')->insert([
+        'title' => json_encode($title, JSON_UNESCAPED_UNICODE),
+        'slug' => json_encode($slug, JSON_UNESCAPED_UNICODE),
+    ]);
+}
+```
+
+### JSON'dan Veri Kullanma
+
+```php
+// JSON'dan oku
+$jsonPath = base_path('readme/shop-system-v2/json-extracts/f4-201-transpalet.json');
+$productData = json_decode(file_get_contents($jsonPath), true);
+
+// Aktif dillere göre çoklu dil objesi oluştur
+$title = TenantHelpers::createMultilingualJson($productData['name'], $tenantLangs);
+$slug = TenantHelpers::createMultilingualJson($productData['slug'], $tenantLangs);
+```
+
+### Detaylı Bilgi
+
+Dil sistemi hakkında detaylı bilgi için:
+📖 **[07-DYNAMIC-LANGUAGE-SYSTEM.md](./07-DYNAMIC-LANGUAGE-SYSTEM.md)**
+
+---
+
 ## 🔄 YENİDEN YÜKLEME
 
 ### **Tüm Shop Verilerini Sıfırla:**

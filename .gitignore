@@ -49,9 +49,6 @@ Thumbs.db
 debug*.txt
 debug-*.txt
 
-# Readme klasörü - yerel dokümantasyon
-/readme
-
 # Docker volumes - veritabanı ve cache dosyaları
 /docker/volumes
 SUNUCU_BILGILERI.txt

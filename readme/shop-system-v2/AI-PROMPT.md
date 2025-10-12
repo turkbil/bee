@@ -1,5 +1,64 @@
 # 🤖 YAPAY ZEKA İÇİN SHOP SYSTEM V2 KILAVUZU
 
+## 🇹🇷 KRİTİK: %100 TÜRKÇE KURALI
+
+**🚨 EN ÖNEMLİ KURAL:**
+
+### **TÜM JSON KEY'LER VE VALUE'LER TÜRKÇE OLACAK!**
+
+```json
+❌ YANLIŞ:
+{
+  "fork_length": 1150,
+  "battery_type": "Li-Ion",
+  "load_capacity": 2000
+}
+
+✅ DOĞRU:
+{
+  "catal_uzunlugu": 1150,
+  "aku_tipi": "Li-Ion",
+  "yuk_kapasitesi": 2000
+}
+```
+
+**NEDEN?**
+- Frontend dinamik render yapacak
+- `catal_uzunlugu` → "Çatal Uzunluğu" (otomatik güzelleştirilecek)
+- Çeviri katmanı gereksiz
+- PDF'den gelen her alan direkt Türkçe key ile kaydedilecek
+
+**ÖZEL DURUMLAR:**
+- `ş, ı, ç, ü, ö, ğ` → `s, i, c, u, o, g` (slug-friendly key'ler için)
+- Örnek: `yerden_yükseklik` → `yerden_yukseklik` (key için)
+- Örnek: `Yerden Yükseklik` → Düz metin (value için - orijinal Türkçe kalır)
+
+---
+
+## 📄 LANDING PAGE ZORUNLU SECTIONS
+
+**KULLANICI İSTEĞİ:** Her ürün sayfasında **MUTLAKA** şu sections olmalıdır:
+
+1. 🔀 **Varyantlar** (Variants) - parent/child product listesi
+2. ⚡ **Özellikler** (Features) - features.list + features.branding (slogan, motto, technical_summary)
+3. 🌟 **Öne Çıkanlar** (Highlighted Features) - highlighted_features (icon, priority, title, description min 3)
+4. 📋 **Avantajlar** (Advantages) - features.branding extra vurgu
+5. 🏆 **Rekabet** (Competitive Advantages) - competitive_advantages (min 5)
+6. 🏢 **Sektörler** (Target Industries) - target_industries (min 20 - DİNAMİK: varyanta göre değişir)
+7. 🔧 **Teknik** (Technical Specs) - technical_specs (PDF'den gelen TÜM alanlar, SINIR YOK, tablo olarak geliyorsa aynen çevir)
+8. 🎯 **Kullanım** (Use Cases) - use_cases (min 6 - DİNAMİK: varyanta göre değişir)
+9. ❓ **S.S.S** (FAQ) - faq_data (min 10 soru-cevap: question, answer, sort_order)
+10. 🛠️ **Opsiyonlar** (Accessories) - accessories (PDF'den gelen opsiyonel ekipmanlar)
+11. 📜 **Sertifikalar** (Certifications) - certifications (CE, ISO vs.)
+12. 🖼️ **Medya Galerisi** (Media Gallery) - media_gallery (ALAN OLACAK AMA MANUEL EKLENİR)
+13. ✉️ **Teklif Al** (Quote Form) - contact bilgileri (0216 755 3 555, info@ixtif.com)
+
+**🚨 ZORUNLU:** Her section DOLU olmalı! Boş section ASLA olmamalı! Her ürün ve her varyant bu sections'lara sahip olmalı!
+
+**📸 MEDYA NOT:** `media_gallery` alanı sistemde olacak ama fotoğraflar MANUEL eklenecek. Placeholder URL koy veya boş array bırak.
+
+---
+
 ## 📍 PROJE YAPISI VE PATHLER
 
 ```
@@ -227,13 +286,18 @@ php artisan tinker
 - **YENİ SİSTEM DÖKÜMANLARINDAKİ KURALLARI KULLAN!**
   - ✅ `/readme/shop-system-v2/03-AI-KURALLARI.md` → YENİ, BU KURALLARI KULLAN!
   - ✅ `/readme/shop-system-v2/04-JSON-SABLONU.md` → YENİ, BU TEMPLATE'İ KULLAN!
+  - ✅ `/readme/shop-system-v2/07-DYNAMIC-LANGUAGE-SYSTEM.md` → DİNAMİK DİL SİSTEMİ!
 
 ### 🚨 KRİTİK UYARILAR:
-1. **Türkçe Zorunlu:** Her alan %100 Türkçe olmalı
-2. **"en" = Türkçe Kopyası:** İngilizce çeviri yapma, Türkçe'yi kopyala
-3. **İletişim Sabit:** `0216 755 3 555` ve `info@ixtif.com` değişmez
-4. **Minimum Sayılar:** Altına düşme (use_cases≥6, faq≥10, vs.)
-5. **Template Uyumu:** Kategori template'ini tam uygula
+1. **🇹🇷 SADECE TÜRKÇE!**
+   - **Tüm içerik %100 Türkçe yazılacak**
+   - **Çoklu dil YOK - sadece Türkçe**
+   - **Tüm JSON alanları direkt Türkçe string olacak**
+   - **Çeviri YAPMA - her şey direkt Türkçe üretilecek**
+2. **İletişim Sabit:** `0216 755 3 555` ve `info@ixtif.com` değişmez
+3. **Minimum Sayılar:** Altına düşme (use_cases≥6, faq≥10, vs.)
+4. **Template Uyumu:** Kategori template'ini tam uygula
+5. **Varyant İçerikleri:** Her varyant TAMAMEN farklı içerik gerektirir (aynı metinleri kopyalama!)
 
 ---
 
@@ -286,6 +350,778 @@ ShopProduct::whereHas('attributes', function($q) {
 
 ---
 
+## 📂 EP PDF KLASÖRLERİ VE KATEGORİLER
+
+### PDF Kaynak Klasörü
+```
+/Users/nurullah/Desktop/cms/EP PDF/
+├── 1-Forklift/                              → Kategori: forklift
+├── 2-Transpalet/                            → Kategori: transpalet
+├── 3-İstif Makineleri/                      → Kategori: istif-makinesi
+├── 4-Order Picker - Dikey Sipariş/          → Kategori: order-picker
+├── 5-Otonom/                                → Kategori: otonom
+└── 6-Reach Truck/                           → Kategori: reach-truck
+```
+
+### Her Kategori İçin ZORUNLU 4 Ana Özellik (primary_specs)
+
+Her kategoride **AYNI 4 KART** kullanılır. Landing page'de vitrin kartları olarak gösterilir.
+
+#### 1. **TRANSPALET** (2-Transpalet/)
+
+```json
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Akü Sistemi", "value": "Li-Ion [X]V"},
+  {"label": "Çatal Uzunluğu", "value": "[X] mm"},
+  {"label": "Denge Tekeri", "value": "Var/Yok"}
+]
+```
+
+#### 2. **FORKLIFT** (1-Forklift/)
+
+```json
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Mast Yüksekliği", "value": "[X] mm"},
+  {"label": "Yakıt Tipi", "value": "Elektrik/Dizel/LPG"},
+  {"label": "Kabin Tipi", "value": "Kapalı/Açık"}
+]
+```
+
+#### 3. **İSTİF MAKİNESİ** (3-İstif Makineleri/)
+
+```json
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Kaldırma Yüksekliği", "value": "[X] mm"},
+  {"label": "Kullanım Tipi", "value": "Yürüyüşlü/Sürücülü"},
+  {"label": "Akü Kapasitesi", "value": "[X]V/[X]Ah"}
+]
+```
+
+#### 4. **ORDER PICKER** (4-Order Picker/)
+
+```json
+"primary_specs": [
+  {"label": "Çalışma Yüksekliği", "value": "[X] mm"},
+  {"label": "Yük Kapasitesi", "value": "[X] kg"},
+  {"label": "Platform Tipi", "value": "Sabit/Hareketli"},
+  {"label": "Akü Voltajı", "value": "[X]V"}
+]
+```
+
+#### 5. **OTONOM** (5-Otonom/)
+
+```json
+"primary_specs": [
+  {"label": "Otomasyon Seviyesi", "value": "Tam/Yarı Otonom"},
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Navigasyon", "value": "Lazer/Kamera/QR"},
+  {"label": "Güvenlik Sistemi", "value": "Lidar/3D Kamera"}
+]
+```
+
+#### 6. **REACH TRUCK** (6-Reach Truck/)
+
+```json
+"primary_specs": [
+  {"label": "Erişim Yüksekliği", "value": "[X] mm"},
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Çatal Uzunluğu", "value": "[X] mm"},
+  {"label": "Akü Kapasitesi", "value": "[X]V/[X]Ah"}
+]
+```
+
+---
+
+## 🔀 ÜRÜN VARYANTLARI SİSTEMİ (PRODUCT-BASED VARIANTS)
+
+### Varyant Yapısı Nedir?
+
+Shop System V2, **her varyantın ayrı bir ürün olduğu** bir varyant sistemi kullanır.
+
+**Eski Sistem (KULLANMA!):**
+```
+❌ 1 Ana Ürün → shop_products
+   └── N Varyant → shop_product_variants (başka tablo)
+```
+
+**Yeni Sistem (KULLAN!):**
+```
+✅ Her varyant = Ayrı Product (shop_products tablosu)
+   └── parent_product_id ile birbirine bağlı
+```
+
+### Varyant Veri Yapısı
+
+**shop_products tablosuna eklenen kolonlar:**
+```sql
+parent_product_id    → Ana ürünün product_id'si (NULL = bağımsız ürün)
+is_master_product    → Ana ürün mü? (opsiyonel overview page için)
+variant_type         → Varyant tipi slug (örn: '1-5-ton', 'denge-tekerlekli')
+```
+
+### Kategori → primary_specs Eşleştirmesi
+
+**ÖNEMLİ:** PDF'yi okuduktan sonra kategoriyi belirle ve o kategorinin 4 kartını kullan!
+
+**Örnek:**
+```
+PDF: "/Users/nurullah/Desktop/cms/EP PDF/2-Transpalet/F4 201/..."
+  ↓
+Kategori: "transpalet"
+  ↓
+primary_specs: [
+  {"label": "Yük Kapasitesi", "value": "2 Ton"},
+  {"label": "Akü Sistemi", "value": "Li-Ion 48V"},
+  {"label": "Çatal Uzunluğu", "value": "1150 mm"},
+  {"label": "Denge Tekeri", "value": "Yok"}
+]
+```
+
+### Varyant Örnek Yapısı
+
+**Gerçek Örnek: F4 201 Transpalet Serisi (PDF'den)**
+
+F4 201 için şu varyantlar mevcut:
+- **Denge Tekeri:** Var/Yok (castor wheels)
+- **Çatal Uzunluğu:** 900mm, 1000mm, 1150mm (standart), 1220mm, 1350mm, 1500mm
+- **Çatal Genişliği:** 560mm (standart) veya 685mm (geniş)
+- **Batarya Kapasitesi:** 24V/20Ah×2 (standart) veya 24V/20Ah×4 (yüksek kapasite)
+
+**Önerilen Seeder Stratejisi:**
+
+Her **ana özellik farklılığı** için ayrı seeder:
+
+```
+Seeders/
+├── F4_201_Standart_Seeder.php           → Standart versiyon (2 ton, 1150×560mm çatal, denge tekersiz)
+├── F4_201_Denge_Tekerlekli_Seeder.php   → Denge tekerlekli versiyon (dengesiz zeminler için)
+├── F4_201_Genis_Catal_Seeder.php        → Geniş çatal (685mm) versiyon (büyük paletler için)
+├── F4_201_Uzun_Catal_Seeder.php         → Uzun çatal (1500mm) versiyon (uzun yükler için)
+└── F4_201_Yuksek_Kapasite_Seeder.php    → Yüksek batarya kapasiteli versiyon (uzun vardiya)
+```
+
+**Seeder Yapısı Örneği:**
+
+```
+Product 5: F4 201 Transpalet (Standart)
+├── product_id: 5
+├── parent_product_id: NULL
+├── is_master_product: false  (direkt satılan ürün, master değil)
+├── variant_type: 'standart'
+├── title: "F4 201 Li-Ion Akülü Transpalet"
+├── slug: "f4-201-transpalet"
+├── long_description: Standart kullanım senaryoları
+├── technical_specs:
+│   ├── capacity: 2000 kg
+│   ├── fork_dimensions: "1150×560 mm"
+│   ├── castor_wheels: false (yok)
+│   └── battery: "24V/20Ah×2"
+├── use_cases:
+│   - "Standart palet taşıma (1000×1200 mm)"
+│   - "Dar koridorlu depolarda kullanım"
+│   - "E-ticaret fulfilment merkezleri"
+│   - "Perakende mağaza arka depoları"
+└── faq_data:
+    - "Standart çatal uzunluğu yeterli mi?"
+    - "Denge tekeri olmadan güvenli mi?"
+    - "Hangi palet tiplerine uygun?"
+
+Product 6: F4 201 Transpalet (Denge Tekerlekli)
+├── product_id: 6
+├── parent_product_id: 5  (standart versiyona bağlı)
+├── is_master_product: false
+├── variant_type: 'denge-tekerlekli'
+├── title: "F4 201 Li-Ion Akülü Transpalet - Denge Tekerlekli"
+├── slug: "f4-201-transpalet-denge-tekerlekli"
+├── long_description: Denge tekerinin avantajları, dengesiz zeminlerde kullanım
+├── technical_specs:
+│   ├── capacity: 2000 kg
+│   ├── fork_dimensions: "1150×560 mm"
+│   ├── castor_wheels: true (VAR!) 👈 FARKLI
+│   └── battery: "24V/20Ah×2"
+├── use_cases: 👈 TAMAMEN FARKLI
+│   - "Dengesiz zeminlerde güvenli taşıma"
+│   - "Ağır yüklerde stabilite sağlama"
+│   - "Rampalı alanlarda kullanım"
+│   - "İnşaat sahalarında malzeme taşıma"
+│   - "Bozuk zeminde depo operasyonları"
+└── faq_data: 👈 TAMAMEN FARKLI
+    - "Denge tekeri ne işe yarar?"
+    - "Hangi zeminlerde denge tekeri gereklidir?"
+    - "Denge tekerli versiyon daha ağır mı?"
+    - "Dar koridorlarda dönüş yapabilir mi?"
+
+Product 7: F4 201 Transpalet (Geniş Çatal)
+├── product_id: 7
+├── parent_product_id: 5
+├── variant_type: 'genis-catal'
+├── title: "F4 201 Li-Ion Akülü Transpalet - Geniş Çatal (685mm)"
+├── slug: "f4-201-transpalet-genis-catal"
+├── long_description: Geniş çatalın avantajları, büyük paletler için
+├── technical_specs:
+│   ├── fork_dimensions: "1150×685 mm" 👈 FARKLI
+├── use_cases: 👈 TAMAMEN FARKLI
+│   - "Büyük boyutlu palet taşıma (1200×1400 mm)"
+│   - "Geniş taban yüzey alanı gereken yükler"
+│   - "Mobilya ve beyaz eşya depoları"
+│   - "İnşaat malzemesi lojistiği"
+└── faq_data: 👈 TAMAMEN FARKLI
+    - "Geniş çatal hangi palet tiplerine uygun?"
+    - "Standart çataldan farkı nedir?"
+    - "Dar koridorlarda kullanılabilir mi?"
+
+Product 8: F4 201 Transpalet (Uzun Çatal)
+├── product_id: 8
+├── parent_product_id: 5
+├── variant_type: 'uzun-catal-1500mm'
+├── title: "F4 201 Li-Ion Akülü Transpalet - Uzun Çatal (1500mm)"
+├── slug: "f4-201-transpalet-uzun-catal-1500mm"
+├── technical_specs:
+│   ├── fork_dimensions: "1500×560 mm" 👈 FARKLI
+├── use_cases: 👈 TAMAMEN FARKLI
+│   - "Uzun malzeme taşıma (boru, profil, kereste)"
+│   - "İki palet yan yana taşıma"
+│   - "Tekstil rulolarının taşınması"
+│   - "Halı ve zemin kaplama endüstrisi"
+└── faq_data: 👈 TAMAMEN FARKLI
+    - "1500mm çatal ne kadar yük alabilir?"
+    - "Uzun çatalla manevra kabiliyeti nasıldır?"
+    - "Hangi malzemeler için idealdir?"
+
+Product 9: F4 201 Transpalet (Yüksek Batarya Kapasiteli)
+├── product_id: 9
+├── parent_product_id: 5
+├── variant_type: 'yuksek-batarya'
+├── title: "F4 201 Li-Ion Akülü Transpalet - Yüksek Kapasite (4×20Ah)"
+├── slug: "f4-201-transpalet-yuksek-batarya"
+├── technical_specs:
+│   ├── battery: "24V/20Ah×4" 👈 FARKLI (2 kat daha fazla)
+├── use_cases: 👈 TAMAMEN FARKLI
+│   - "Uzun vardiya operasyonları (12-16 saat)"
+│   - "Yoğun kullanım gerektiren depolar"
+│   - "Çok sayıda yükleme-boşaltma işlemi"
+│   - "24/7 operasyon süren tesisler"
+│   - "Şarj istasyonuna erişimin zor olduğu alanlar"
+└── faq_data: 👈 TAMAMEN FARKLI
+    - "4 bataryalı versiyon kaç saat çalışır?"
+    - "Batarya şarj süresi ne kadar?"
+    - "Ağırlık farkı ne kadar?"
+    - "Maliyet farkı ne kadar?"
+```
+
+### Varyant Oluşturma Kuralları
+
+#### 🚨 ÖNEMLİ: HER DETAY VARYANTLARDA DA OLMALI AMA VARYANTA ÖZEL OLMALI!
+
+**Kullanıcı İsteği:** "her şey değişmeli demiştim diğerlerinde de. bağımsız bir sayfa olmalılar yeni özellikler eklenerek."
+
+#### 1. Her Varyant = TAM BİR ÜRÜN (Master Product ile AYNI Detay Seviyesinde)
+
+Her varyant şunlara sahip olmalı:
+- ✅ **Benzersiz başlık** (title) - Varyant tipini belirten
+- ✅ **Benzersiz slug** - SEO dostu URL
+- ✅ **Kendi açıklaması** (short_description, long_description) - FARKLI içerik!
+- ✅ **Kendi teknik özellikleri** (technical_specs) - Varyanta göre değişen değerler
+- ✅ **Kendi primary_specs** - Varyanta özel 4 kart
+- ✅ **Kendi features** - Varyanta özel özellik listesi
+- ✅ **Kendi highlighted_features** - Varyanta özel öne çıkan özellikler
+- ✅ **Kendi use_cases** - Varyanta özel kullanım senaryoları (min 6)
+- ✅ **Kendi competitive_advantages** - Varyanta özel rekabet avantajları (min 5)
+- ✅ **Kendi target_industries** - Varyanta özel hedef sektörler (min 20)
+- ✅ **Kendi FAQ'leri** (faq_data) - Varyanta özel sorular (min 10)
+- ✅ **Kendi görseli** (featured_image, gallery)
+- ✅ **Kendi SEO meta bilgileri**
+
+**❌ YANLIŞ:** Master product'tan kopyala-yapıştır yaparak aynı içeriği kullanmak
+**✅ DOĞRU:** Her varyant için yeni, o varyanta özel içerik üretmek
+
+#### 2. Varyant Başlıkları
+
+**❌ Yanlış:**
+```json
+{
+  "title": "F4 201 Transpalet"
+}
+```
+
+**✅ Doğru:**
+```json
+{
+  "title": "F4 201 - 1.5 Ton Transpalet"
+}
+```
+
+#### 3. Varyant Slug'ları
+
+**Slug Formatı:** `[model]-[varyant-tipi]-[kategori]`
+
+**Örnekler:**
+```
+f4-201-1-5-ton-transpalet
+f4-201-2-ton-transpalet
+f4-201-denge-tekerlekli-transpalet
+f4-201-denge-tekerleksiz-transpalet
+f5-301-elektrikli-forklift
+f5-301-dizel-forklift
+```
+
+#### 4. variant_type Değerleri
+
+**Kurallar:**
+- Slug-friendly format (küçük harf, tire ile ayrılmış)
+- Türkçe karakterler İngilizce karşılıklarına çevrilir (ş→s, ı→i, ç→c, ü→u, ö→o, ğ→g)
+- Boşluklar tire (-) ile değiştirilir
+
+**Örnekler:**
+```json
+"variant_type": "1-5-ton"
+"variant_type": "2-ton"
+"variant_type": "denge-tekerlekli"
+"variant_type": "denge-tekerleksiz"
+"variant_type": "elektrikli"
+"variant_type": "dizel"
+"variant_type": "lpg"
+```
+
+#### 5. Varyant İçerik Farklılıkları
+
+**Her varyant için farklı olmalı:**
+
+**long_description:**
+```markdown
+❌ Aynı metin: "F4 201 transpalet yüksek performanslıdır..."
+✅ Farklı metin:
+  - 1.5 ton: "1.5 ton kapasiteli F4 201, dar koridorlarda..."
+  - 2 ton: "2 ton kapasiteli F4 201, daha yüksek yüklerde..."
+  - Denge tekerlekli: "Denge tekeri sayesinde F4 201..."
+```
+
+**technical_specs:**
+```json
+❌ Aynı kapasite: {"capacity": {"value": 2000, "unit": "kg"}}
+✅ Farklı kapasite:
+  - 1.5 ton: {"capacity": {"value": 1500, "unit": "kg"}}
+  - 2 ton: {"capacity": {"value": 2000, "unit": "kg"}}
+```
+
+**faq_data:**
+```json
+❌ Genel sorular: "Transpalet nasıl kullanılır?"
+✅ Varyanta özel sorular:
+  - 1.5 ton: "1.5 ton kapasite hangi işler için yeterlidir?"
+  - Denge tekerlekli: "Denge tekeri ne işe yarar?"
+  - Denge tekerleksiz: "Denge tekerleksiz kullanım avantajları nelerdir?"
+```
+
+### Varyant JSON Şablonu
+
+**🇹🇷 SADECE TÜRKÇE - Varyant JSON Şablonu:**
+
+**✅ DOĞRU YÖNTEM (KULLAN - SADECE TÜRKÇE):**
+```json
+{
+  "title": "F4 201 Transpalet"
+}
+```
+
+**❌ YANLIŞ YÖNTEM (KULLANMA):**
+- Çoklu dil objesi kullanma
+- İngilizce alan ekleme
+- Dil kodu kullanma
+
+---
+
+**Standart Varyant Ürün (Ana varyant - parent_product_id: NULL):**
+```json
+{
+  "parent_product_id": null,
+  "is_master_product": false,
+  "variant_type": "standart",
+  "category_slug": "transpalet",
+  "model_code": "F4-201",
+  "sku": "F4-201-STD",
+  "title": "F4 201 Li-Ion Akülü Transpalet",
+  "slug": "f4-201-transpalet",
+  "short_description": "2 ton kapasiteli, Li-Ion bataryalı, kompakt transpalet. Dar koridorlar ve standart palet taşıma için ideal.",
+  "long_description": "<p>F4 201 Li-Ion Akülü Transpalet, 2 ton yük kapasitesi ile standart palet taşıma işlemleriniz için mükemmel bir çözümdür...</p>",
+  "technical_specs": {
+    "capacity": {"value": 2000, "unit": "kg"},
+    "fork_dimensions": {
+      "length": {"value": 1150, "unit": "mm"},
+      "width": {"value": 560, "unit": "mm"}
+    },
+    "castor_wheels": false,
+    "battery": {
+      "type": "Li-Ion",
+      "voltage": 48,
+      "capacity": "24V/20Ah×2"
+    }
+  },
+  "primary_specs": [
+    {"label": "Yük Kapasitesi", "value": "2 Ton"},
+    {"label": "Çatal Boyutu", "value": "1150×560 mm"},
+    {"label": "Akü Sistemi", "value": "Li-Ion 48V"},
+    {"label": "Denge Tekeri", "value": "Yok"}
+  ],
+  "faq_data": [
+    {
+      "question": "F4 201 standart versiyonu hangi işler için uygundur?",
+      "answer": "Standart palet taşıma (1000×1200 mm), dar koridorlu depo operasyonları, e-ticaret fulfilment merkezleri için idealdir...",
+      "sort_order": 1
+    },
+    {
+      "question": "Denge tekeri olmadan güvenli midir?",
+      "answer": "Evet, düz ve düzenli zeminlerde denge tekeri gerekmez. Standart versiyon 2 ton yükü güvenle taşır...",
+      "sort_order": 2
+    }
+  ],
+  "use_cases": [
+    "Standart palet taşıma işlemleri (1000×1200 mm Euro palet)",
+    "Dar koridorlu depo ve mağaza operasyonları",
+    "E-ticaret fulfilment merkezlerinde yükleme-boşaltma",
+    "Perakende mağaza arka depo stok yönetimi",
+    "Hafif-orta tonajlı ürün transferi",
+    "Günlük rutin palet hareketleri"
+  ],
+  "competitive_advantages": [
+    "Li-Ion batarya sistemi - hızlı şarj, uzun ömür",
+    "Kompakt boyut (400mm gövde uzunluğu) - dar alanlarda kullanım",
+    "140 kg hafif ağırlık - kolay manevra",
+    "48V güçlü sistem - yüksek performans",
+    "Çıkarılabilir batarya - esneklik"
+  ],
+  "target_industries": [
+    "E-ticaret ve Fulfilment Merkezleri",
+    "Perakende Zincir Mağazalar",
+    "Soğuk Hava Depoları",
+    "Gıda ve İçecek Endüstrisi",
+    "İlaç ve Medikal Lojistik",
+    "Elektronik Ürün Depoları",
+    "Tekstil ve Giyim Sektörü",
+    "Mobilya Depoları",
+    "Otomotiv Yan Sanayi",
+    "Kimyasal Madde Depolama",
+    "FMCG (Hızlı Tüketim Ürünleri)",
+    "Lojistik ve Dağıtım Merkezleri",
+    "Beyaz Eşya Depoları",
+    "Tarım Ürünleri Depolama",
+    "İnşaat Malzemesi Depoları",
+    "Belediye Hizmetleri",
+    "Enerji ve Altyapı Projeleri",
+    "Liman ve Kargo Terminalleri",
+    "Havaalanı Kargo Operasyonları",
+    "Tüketim Ürünleri Perakendesi"
+  ]
+}
+```
+
+**Denge Tekerlekli Varyant (Child - parent_product_id: [Standart ID]):**
+```json
+{
+  "parent_product_id": "[STANDART_PRODUCT_ID]",
+  "is_master_product": false,
+  "variant_type": "denge-tekerlekli",
+  "category_slug": "transpalet",
+  "model_code": "F4-201-DT",
+  "sku": "F4-201-CASTOR",
+  "title": "F4 201 Li-Ion Akülü Transpalet - Denge Tekerlekli",
+  "slug": "f4-201-transpalet-denge-tekerlekli",
+  "short_description": "Denge tekeri ile donatılmış 2 ton transpalet. Dengesiz zeminler ve ağır yükler için stabilite sağlar.",
+  "long_description": "<p>Denge tekerlekli F4 201 Transpalet, dengesiz zeminlerde ve ağır yük taşımada stabilite sağlayan özel tasarımıyla öne çıkar...</p>",
+  "technical_specs": {
+    "capacity": {"value": 2000, "unit": "kg"},
+    "fork_dimensions": {
+      "length": {"value": 1150, "unit": "mm"},
+      "width": {"value": 560, "unit": "mm"}
+    },
+    "castor_wheels": true,  ← ✅ FARKLI!
+    "battery": {
+      "type": "Li-Ion",
+      "voltage": 48,
+      "capacity": "24V/20Ah×2"
+    }
+  },
+  "primary_specs": [
+    {"label": "Yük Kapasitesi", "value": "2 Ton"},
+    {"label": "Çatal Boyutu", "value": "1150×560 mm"},
+    {"label": "Akü Sistemi", "value": "Li-Ion 48V"},
+    {"label": "Denge Tekeri", "value": "VAR"}  ← ✅ FARKLI!
+  ],
+  "faq_data": [  ← ✅ TAMAMEN FARKLI SORULAR!
+    {
+      "question": "Denge tekeri ne işe yarar?",
+      "answer": "Denge tekerleri, ağır yüklerde ve dengesiz zeminlerde transpaletin dengede kalmasını sağlar. Yükün düşme riskini azaltır ve operatör güvenliğini artırır...",
+      "sort_order": 1
+    },
+    {
+      "question": "Hangi zeminlerde denge tekeri gereklidir?",
+      "answer": "Bozuk asfalt, rampalı alanlar, eğimli yüzeyler, inşaat sahaları gibi dengesiz zeminlerde denge tekeri kullanımı önerilir...",
+      "sort_order": 2
+    },
+    {
+      "question": "Denge tekerli versiyon daha ağır mı?",
+      "answer": "Evet, yaklaşık 5-8 kg ağırlık farkı vardır. Ancak bu ağırlık stabilite için gereklidir...",
+      "sort_order": 3
+    }
+  ],
+  "use_cases": [  ← ✅ TAMAMEN FARKLI!
+    "Dengesiz ve bozuk zeminlerde güvenli palet taşıma",
+    "Rampalı alanlarda yükleme-boşaltma operasyonları",
+    "İnşaat sahalarında malzeme transferi",
+    "Açık alan depo operasyonları",
+    "Ağır yük taşımada extra stabilite gereken işler",
+    "Eğimli yüzeylerde palet hareketleri"
+  ],
+  "target_industries": [  ← ✅ SEKTÖRLER FARKLI!
+    "İnşaat ve Altyapı Projeleri",
+    "Açık Alan Depoları",
+    "Liman ve Kargo Terminalleri",
+    "İnşaat Malzemesi Tedarikçileri",
+    "Ağır Sanayi Tesisleri",
+    "Madencilik Lojistiği",
+    "Taş Ocağı ve Kum Tesisleri",
+    "Çimento ve Beton Üretimi",
+    "Demir-Çelik Endüstrisi",
+    "Büyük Ölçekli Üretim Tesisleri"
+  ]
+}
+```
+
+### Varyant Oluşturma Adımları (AI İçin)
+
+#### Adım 1: Ana Ürün (Master) Gerekli Mi?
+
+**Master Product OPSİYONEL.**
+
+**Master oluştur eğer:**
+- Tüm varyantları anlatan genel bir "overview" sayfası istiyorsanız
+- Kullanıcıların önce ürün ailesini görmesini istiyorsanız
+
+**Master oluşturma eğer:**
+- Direkt varyantları göstermek istiyorsanız
+- Varyantlar birbirinden çok farklıysa
+
+#### Adım 2: Varyantları Belirle
+
+**PDF'yi okuyup varyantları tespit et:**
+```
+F4-201 Transpalet PDF'i → Varyantlar:
+  - 1.5 ton kapasite
+  - 2 ton kapasite
+  - Denge tekerlekli versiyon
+  - Denge tekerleksiz versiyon
+```
+
+#### Adım 3: Her Varyant İçin Ayrı JSON Oluştur
+
+**Dosya yapısı:**
+```
+json-extracts/
+├── f4-201-master-transpalet.json        (opsiyonel)
+├── f4-201-1-5-ton-transpalet.json       (zorunlu)
+├── f4-201-2-ton-transpalet.json         (zorunlu)
+├── f4-201-denge-tekerlekli.json         (zorunlu)
+└── f4-201-denge-tekerleksiz.json        (zorunlu)
+```
+
+#### Adım 4: parent_product_id Bağlantısını Kur
+
+**Seeder'da yapılır (JSON'da product_id belirtme):**
+```php
+// F4_201_Transpalet_Seeder.php
+
+// 1. Master oluştur (opsiyonel)
+$master = ShopProduct::create([
+    'parent_product_id' => null,
+    'is_master_product' => true,
+    'variant_type' => null,
+    'title' => ['tr' => 'F4 201 Transpalet Serisi', 'en' => '...'],
+    // ...
+]);
+
+// 2. Varyantları oluştur
+ShopProduct::create([
+    'parent_product_id' => $master->product_id,  // Ana ürüne bağla
+    'is_master_product' => false,
+    'variant_type' => '1-5-ton',
+    'title' => ['tr' => 'F4 201 - 1.5 Ton Transpalet', 'en' => '...'],
+    // ...
+]);
+
+ShopProduct::create([
+    'parent_product_id' => $master->product_id,  // Aynı ana ürüne bağla
+    'is_master_product' => false,
+    'variant_type' => '2-ton',
+    'title' => ['tr' => 'F4 201 - 2 Ton Transpalet', 'en' => '...'],
+    // ...
+]);
+```
+
+### Varyant SEO Stratejisi
+
+#### Her Varyant Ayrı SEO'ya Sahip
+
+**1.5 Ton Varyant:**
+```
+Title: F4 201 - 1.5 Ton Transpalet | İXTİF
+Meta Description: 1.5 ton kapasiteli F4 201 transpalet. Dar koridorlar için ideal...
+Canonical URL: https://site.com/shop/f4-201-1-5-ton-transpalet
+Schema.org: Product (capacity: 1500kg)
+```
+
+**2 Ton Varyant:**
+```
+Title: F4 201 - 2 Ton Transpalet | İXTİF
+Meta Description: 2 ton kapasiteli F4 201 transpalet. Ağır yükler için güçlü...
+Canonical URL: https://site.com/shop/f4-201-2-ton-transpalet
+Schema.org: Product (capacity: 2000kg)
+```
+
+#### Schema.org Structured Data
+
+**ProductGroup (Ana Ürün):**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "ProductGroup",
+  "name": "F4 201 Transpalet Serisi",
+  "hasVariant": [
+    {
+      "@type": "Product",
+      "name": "F4 201 - 1.5 Ton Transpalet",
+      "url": "https://site.com/shop/f4-201-1-5-ton-transpalet"
+    },
+    {
+      "@type": "Product",
+      "name": "F4 201 - 2 Ton Transpalet",
+      "url": "https://site.com/shop/f4-201-2-ton-transpalet"
+    }
+  ]
+}
+```
+
+### Varyant Landing Page Tasarımı
+
+**Varyant sayfasında görünen bölümler:**
+
+1. **Hero Section** → Varyanta özel başlık ve açıklama
+2. **Varyant Switcher** → Diğer varyantlara geçiş kartları (resimli, tıklanabilir)
+3. **Technical Specs** → Varyanta özel teknik özellikler
+4. **FAQ** → Varyanta özel sorular
+5. **Ana Ürüne Dön Linki** → (eğer master varsa)
+
+**Varyant Switcher Örneği:**
+```html
+<section id="variants">
+  <h2>Diğer Varyantlar</h2>
+  <div class="variant-cards">
+    <!-- 1.5 Ton Varyant Card -->
+    <a href="/shop/f4-201-1-5-ton-transpalet">
+      <img src="1.5-ton.jpg">
+      <h3>F4 201 - 1.5 Ton</h3>
+      <p>Dar koridorlar için ideal</p>
+      <span class="variant-tag">1-5-ton</span>
+    </a>
+
+    <!-- 2 Ton Varyant Card -->
+    <a href="/shop/f4-201-2-ton-transpalet">
+      <img src="2-ton.jpg">
+      <h3>F4 201 - 2 Ton</h3>
+      <p>Ağır yükler için güçlü</p>
+      <span class="variant-tag">2-ton</span>
+    </a>
+  </div>
+</section>
+```
+
+### Varyant Kullanım Senaryoları
+
+#### Senaryo 1: Kapasite Varyantları (Transpalet, Forklift)
+
+**Varyantlar:**
+- 1.5 ton
+- 2 ton
+- 2.5 ton
+
+**Farklılıklar:**
+- Kapasite değerleri (technical_specs)
+- Kullanım senaryoları (use_cases)
+- SSS soruları ("1.5 ton yeterli mi?", "2 ton ile 2.5 ton farkı?")
+
+#### Senaryo 2: Özellik Varyantları (Denge Tekeri, Kabin)
+
+**Varyantlar:**
+- Denge tekerlekli
+- Denge tekerleksiz
+- Kapalı kabin
+- Açık kabin
+
+**Farklılıklar:**
+- Özellik açıklamaları (long_description)
+- Teknik detaylar (technical_specs → "wheels" section)
+- SSS ("Denge tekeri nedir?", "Kapalı kabin avantajları?")
+
+#### Senaryo 3: Yakıt Tipi Varyantları (Forklift)
+
+**Varyantlar:**
+- Elektrikli
+- Dizel
+- LPG
+
+**Farklılıklar:**
+- Motor özellikleri (technical_specs → "engine" section)
+- Kullanım alanları (use_cases → kapalı/açık alan)
+- Çevre bilgisi (competitive_advantages → emisyon, gürültü)
+
+### Varyant TODO Listesi Eklentisi
+
+**Her varyant için TODO'ya ekle:**
+
+```markdown
+### VARYANT BİLGİLERİ
+- [ ] Bu ürün bir varyant mı? (Evet/Hayır)
+- [ ] **EVET ise:**
+  - [ ] Ana ürün (master) oluşturuldu mu? (Evet/Hayır/Opsiyonel)
+  - [ ] Tüm varyantlar belirlendi (kaç adet: ____)
+  - [ ] Her varyant için ayrı JSON dosyası oluşturuldu
+  - [ ] Varyant başlıkları FARKLI ve açıklayıcı
+  - [ ] Varyant slug'ları benzersiz
+  - [ ] variant_type değerleri slug-friendly
+  - [ ] parent_product_id ilişkisi kurulacak (seeder'da)
+  - [ ] Her varyantın içeriği FARKLI:
+    - [ ] long_description farklı
+    - [ ] technical_specs farklı (varyanta özel değerler)
+    - [ ] faq_data farklı (varyanta özel sorular)
+    - [ ] use_cases varyanta göre uyarlandı
+  - [ ] Varyant görselleri hazırlandı (her varyant için featured_image)
+
+### VARYANT DETAYLARI
+- **Ana Ürün (Master):** [Adı] → [JSON dosya adı]
+- **Varyant 1:** [Adı] → [JSON dosya adı] → variant_type: [slug]
+- **Varyant 2:** [Adı] → [JSON dosya adı] → variant_type: [slug]
+- **Varyant 3:** [Adı] → [JSON dosya adı] → variant_type: [slug]
+```
+
+### Varyant Hızlı Kontrol Listesi
+
+```markdown
+✅ Varyant Oluşturma Kontrol:
+- [ ] Her varyantın ayrı JSON dosyası var
+- [ ] Başlıklar varyant tipini içeriyor (örn: "F4 201 - 1.5 Ton")
+- [ ] Slug'lar benzersiz (örn: f4-201-1-5-ton-transpalet)
+- [ ] variant_type slug-friendly (örn: 1-5-ton)
+- [ ] İçerikler FARKLI (aynı metin değil!)
+- [ ] Teknik özellikler varyanta göre farklı
+- [ ] SSS'ler varyanta özel sorular içeriyor
+- [ ] Her varyantın kendi görseli var
+- [ ] parent_product_id ilişkisi planlandı (seeder için)
+```
+
+---
+
 ## 🎯 AI ÇIKTI KALİTE KONTROL
 
 ### Başarılı JSON Örneği:
@@ -299,18 +1135,15 @@ ShopProduct::whereHas('attributes', function($q) {
     {"label": "Şarj Cihazı", "value": "24V/5A"},
     {"label": "Standart Çatal", "value": "1150 x 560 mm"}
   ],
-  "use_cases": {
-    "tr": [
-      "Dar koridorlarda palet taşıma",
-      "Depo içi yükleme-boşaltma",
-      "... (toplam 6+ senaryo)"
-    ],
-    "en": "[Türkçe kopya]"
-  },
+  "use_cases": [
+    "Dar koridorlarda palet taşıma",
+    "Depo içi yükleme-boşaltma",
+    "... (toplam 6+ senaryo)"
+  ],
   "faq_data": [
     {
-      "question": {"tr": "Li-Ion akü avantajları nelerdir?", "en": "[aynı]"},
-      "answer": {"tr": "Detaylı Türkçe cevap...", "en": "[aynı]"},
+      "question": "Li-Ion akü avantajları nelerdir?",
+      "answer": "Detaylı Türkçe cevap...",
       "sort_order": 1
     }
     // ... (toplam 10+ soru)
@@ -325,12 +1158,9 @@ ShopProduct::whereHas('attributes', function($q) {
 ### Hatalı JSON Örneği (Düzelt!):
 ```json
 {
-  "use_cases": {
-    "tr": ["Senaryo 1", "Senaryo 2"], // ❌ 6'dan az!
-    "en": ["Scenario 1", "Scenario 2"] // ❌ İngilizce çeviri yapılmış!
-  },
+  "use_cases": ["Senaryo 1", "Senaryo 2"], // ❌ 6'dan az!
   "faq_data": [ // ❌ 5 soru var, 10 olmalı!
-    {"question": {"tr": "..."}, "answer": {"tr": "..."}}
+    {"question": "...", "answer": "..."}
   ],
   "contact": {
     "phone": "0555 123 4567" // ❌ Yanlış numara!
@@ -436,7 +1266,13 @@ Her ürün için bu listeyi kullan. Tamamlanan maddeleri `[x]` ile işaretle:
 - [ ] Her varyant için `sku` oluşturuldu
 - [ ] Varyant farklılıkları `specifications` içinde belirtildi
 
-### 1️⃣2️⃣ ATTRIBUTES (Filtrelenebilir Özellikler)
+### 1️⃣2️⃣ WARRANTY INFO (Garanti Bilgisi) - PDF KLASÖRÜne GÖRE
+- [ ] Garanti bilgisi eklendi
+- [ ] **Forklift klasörü** (`/EP PDF/1-Forklift/`): `{"tr": "2 Yıl Ürün Garantisi | 5 Yıl Akü Garantisi"}`
+- [ ] **Tüm Diğer Klasörler** (Transpalet, İstif, vs.): `{"tr": "1 Yıl Ürün Garantisi | 2 Yıl Akü Garantisi"}`
+- [ ] **NOT:** Garanti PDF klasör adına göre otomatik belirlenecek!
+
+### 1️⃣3️⃣ ATTRIBUTES (Filtrelenebilir Özellikler)
 - [ ] `attributes.yuk_kapasitesi` belirlendi
 - [ ] `attributes.voltaj` belirlendi (varsa)
 - [ ] `attributes.batarya_tipi` belirlendi (varsa)
@@ -578,3 +1414,280 @@ faq_data → min 10
 **🎉 Artık Shop System V2 için AI üretim sürecine hazırsın!**
 
 Tüm kurallar, template'ler ve path'ler bu dosyada. Başarılar! 🚀
+
+---
+
+## 📦 SEEDER STRATEJİSİ (HER VARYANT İÇİN AYRI SEEDER)
+
+### ✅ Önerilen Yaklaşım: Her Ana Varyant İçin Ayrı Seeder
+
+**Neden?**
+- Her varyantın içeriği TAMAMEN farklı (use_cases, target_industries, faq_data)
+- Kolay yönetim ve güncelleme
+- Bağımsız test edilebilir
+- Git history takibi kolay
+
+### F4 201 İçin Seeder Yapısı
+
+```
+Modules/Shop/database/seeders/
+├── F4_201/
+│   ├── F4_201_Standart_Seeder.php          ← Ana varyant (parent_product_id: NULL)
+│   ├── F4_201_Denge_Tekerlekli_Seeder.php  ← Child (parent: Standart)
+│   ├── F4_201_Genis_Catal_Seeder.php       ← Child (parent: Standart)
+│   ├── F4_201_Uzun_Catal_Seeder.php        ← Child (parent: Standart)
+│   └── F4_201_Yuksek_Batarya_Seeder.php    ← Child (parent: Standart)
+└── ShopSeeder.php                           ← Master seeder (hepsini çağırır)
+```
+
+### Seeder İçeriği Örneği
+
+**F4_201_Standart_Seeder.php:**
+```php
+<?php
+
+namespace Modules\Shop\Database\Seeders\F4_201;
+
+use Illuminate\Database\Seeder;
+use Modules\Shop\App\Models\ShopProduct;
+use Modules\Shop\App\Models\ShopCategory;
+
+class F4_201_Standart_Seeder extends Seeder
+{
+    public function run(): void
+    {
+        $category = ShopCategory::where('slug', 'transpalet')->first();
+
+        ShopProduct::create([
+            'category_id' => $category->category_id,
+            'parent_product_id' => null,  // ANA VARYANT
+            'is_master_product' => false,
+            'variant_type' => 'standart',
+            'sku' => 'F4-201-STD',
+            'title' => 'F4 201 Li-Ion Akülü Transpalet',
+            'slug' => 'f4-201-transpalet',
+            'short_description' => '2 ton kapasiteli, Li-Ion bataryalı...',
+            'long_description' => '<p>Standart kullanım için...</p>',
+            'technical_specs' => [
+                'capacity' => ['value' => 2000, 'unit' => 'kg'],
+                'fork_dimensions' => [
+                    'length' => ['value' => 1150, 'unit' => 'mm'],
+                    'width' => ['value' => 560, 'unit' => 'mm'],
+                ],
+                'castor_wheels' => false,
+                'battery' => [
+                    'type' => 'Li-Ion',
+                    'voltage' => 48,
+                    'capacity' => '24V/20Ah×2',
+                ],
+            ],
+            'primary_specs' => [
+                ['label' => 'Yük Kapasitesi', 'value' => '2 Ton'],
+                ['label' => 'Çatal Boyutu', 'value' => '1150×560 mm'],
+                ['label' => 'Akü Sistemi', 'value' => 'Li-Ion 48V'],
+                ['label' => 'Denge Tekeri', 'value' => 'Yok'],
+            ],
+            'use_cases' => [
+                'Standart palet taşıma işlemleri',
+                'Dar koridorlu depo operasyonları',
+                'E-ticaret fulfilment merkezleri',
+                'Perakende mağaza arka depoları',
+                'Hafif-orta tonajlı ürün transferi',
+                'Günlük rutin palet hareketleri',
+            ],
+            'competitive_advantages' => [
+                'Li-Ion batarya - hızlı şarj',
+                'Kompakt boyut - 400mm gövde',
+                '140 kg hafif',
+                '48V güçlü sistem',
+                'Çıkarılabilir batarya',
+            ],
+            'target_industries' => [
+                'E-ticaret ve Fulfilment',
+                'Perakende Mağazalar',
+                'Soğuk Hava Depoları',
+                'Gıda Endüstrisi',
+                // ... 20+ sektör
+            ],
+            'faq_data' => [
+                [
+                    'question' => 'Standart versiyon hangi işler için uygundur?',
+                    'answer' => 'Standart palet taşıma, dar koridor...',
+                    'sort_order' => 1,
+                ],
+                // ... 10+ soru
+            ],
+            'is_active' => true,
+            'published_at' => now(),
+        ]);
+    }
+}
+```
+
+**F4_201_Denge_Tekerlekli_Seeder.php:**
+```php
+<?php
+
+namespace Modules\Shop\Database\Seeders\F4_201;
+
+use Illuminate\Database\Seeder;
+use Modules\Shop\App\Models\ShopProduct;
+use Modules\Shop\App\Models\ShopCategory;
+
+class F4_201_Denge_Tekerlekli_Seeder extends Seeder
+{
+    public function run(): void
+    {
+        $category = ShopCategory::where('slug', 'transpalet')->first();
+        
+        // Ana varyantı bul (standart)
+        $parentProduct = ShopProduct::where('sku', 'F4-201-STD')->first();
+
+        ShopProduct::create([
+            'category_id' => $category->category_id,
+            'parent_product_id' => $parentProduct->product_id,  // 👈 Standart'a bağlı
+            'is_master_product' => false,
+            'variant_type' => 'denge-tekerlekli',
+            'sku' => 'F4-201-CASTOR',
+            'title' => 'F4 201 Li-Ion Akülü Transpalet - Denge Tekerlekli',
+            'slug' => 'f4-201-transpalet-denge-tekerlekli',
+            'short_description' => 'Denge tekeri ile donatılmış 2 ton...',
+            'long_description' => '<p>Dengesiz zeminler için...</p>',
+            'technical_specs' => [
+                'capacity' => ['value' => 2000, 'unit' => 'kg'],
+                'fork_dimensions' => [
+                    'length' => ['value' => 1150, 'unit' => 'mm'],
+                    'width' => ['value' => 560, 'unit' => 'mm'],
+                ],
+                'castor_wheels' => true,  // 👈 FARKLI!
+                'battery' => [
+                    'type' => 'Li-Ion',
+                    'voltage' => 48,
+                    'capacity' => '24V/20Ah×2',
+                ],
+            ],
+            'primary_specs' => [
+                ['label' => 'Yük Kapasitesi', 'value' => '2 Ton'],
+                ['label' => 'Çatal Boyutu', 'value' => '1150×560 mm'],
+                ['label' => 'Akü Sistemi', 'value' => 'Li-Ion 48V'],
+                ['label' => 'Denge Tekeri', 'value' => 'VAR'],  // 👈 FARKLI!
+            ],
+            'use_cases' => [  // 👈 TAMAMEN FARKLI!
+                'Dengesiz zeminlerde güvenli taşıma',
+                'Rampalı alanlarda operasyonlar',
+                'İnşaat sahalarında malzeme transferi',
+                'Açık alan depo operasyonları',
+                'Ağır yük stabilite',
+                'Eğimli yüzeylerde kullanım',
+            ],
+            'target_industries' => [  // 👈 SEKTÖRLER FARKLI!
+                'İnşaat ve Altyapı',
+                'Açık Alan Depoları',
+                'Liman ve Kargo',
+                'İnşaat Malzemesi',
+                'Ağır Sanayi',
+                // ... 20+ sektör
+            ],
+            'faq_data' => [  // 👈 SORULAR FARKLI!
+                [
+                    'question' => 'Denge tekeri ne işe yarar?',
+                    'answer' => 'Dengesiz zeminlerde stabilite...',
+                    'sort_order' => 1,
+                ],
+                [
+                    'question' => 'Hangi zeminlerde gereklidir?',
+                    'answer' => 'Bozuk asfalt, rampalı...',
+                    'sort_order' => 2,
+                ],
+                // ... 10+ soru
+            ],
+            'is_active' => true,
+            'published_at' => now(),
+        ]);
+    }
+}
+```
+
+### ShopSeeder.php (Master Seeder)
+
+```php
+<?php
+
+namespace Modules\Shop\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+
+class ShopSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $this->call([
+            ShopCategorySeeder::class,
+            ShopAttributeSeeder::class,
+            ShopBrandSeeder::class,
+            
+            // F4 201 Transpalet Serisi
+            \Modules\Shop\Database\Seeders\F4_201\F4_201_Standart_Seeder::class,
+            \Modules\Shop\Database\Seeders\F4_201\F4_201_Denge_Tekerlekli_Seeder::class,
+            \Modules\Shop\Database\Seeders\F4_201\F4_201_Genis_Catal_Seeder::class,
+            \Modules\Shop\Database\Seeders\F4_201\F4_201_Uzun_Catal_Seeder::class,
+            \Modules\Shop\Database\Seeders\F4_201\F4_201_Yuksek_Batarya_Seeder::class,
+            
+            // F4 202 Serisi (gelecekte)
+            // ...
+        ]);
+    }
+}
+```
+
+### Test Komutları
+
+```bash
+# Tüm shop seeder'ları
+php artisan db:seed --class=Modules\\Shop\\Database\\Seeders\\ShopSeeder
+
+# Sadece F4 201 standart
+php artisan db:seed --class=Modules\\Shop\\Database\\Seeders\\F4_201\\F4_201_Standart_Seeder
+
+# Sadece F4 201 denge tekerlekli
+php artisan db:seed --class=Modules\\Shop\\Database\\Seeders\\F4_201\\F4_201_Denge_Tekerlekli_Seeder
+```
+
+---
+
+## 🎯 ÖZET: VARYANT SİSTEMİ KURALLARI
+
+### 🇹🇷 SADECE TÜRKÇE
+- ❌ Çoklu dil objesi kullanma
+- ✅ Direkt Türkçe string kullan
+- ✅ Çeviri yapma, her şey Türkçe
+
+### 📦 HER VARYANT = AYRI ÜRÜN
+- ✅ Ayrı title, slug, URL
+- ✅ Tamamen farklı içerik (use_cases, faq, industries)
+- ✅ Ayrı technical_specs
+- ✅ Ayrı SEO meta bilgileri
+
+### 🗂️ HER VARYANT = AYRI SEEDER
+- ✅ F4_201_Standart_Seeder.php → parent_product_id: NULL
+- ✅ F4_201_Denge_Tekerlekli_Seeder.php → parent_product_id: [Standart ID]
+- ✅ Her seeder bağımsız çalışabilir
+
+### 🔗 PARENT-CHILD İLİŞKİSİ
+- ✅ Ana varyant: parent_product_id = NULL
+- ✅ Diğer varyantlar: parent_product_id = [Ana varyant ID]
+- ✅ is_master_product = false (hepsi direkt satılan ürün)
+
+### 📝 İÇERİK FARKLILIKLARI
+- ✅ Use cases: Her varyant için farklı senaryolar
+- ✅ Target industries: Her varyant için farklı sektörler
+- ✅ FAQ: Her varyant için özel sorular
+- ✅ Technical specs: Varyanta özel değerler
+
+### 🎨 LANDING PAGE
+- ✅ Her varyantın kendi sayfası
+- ✅ Varyant switcher: Diğer varyantlara tıklanabilir kartlar
+- ✅ Parent product link: Ana ürüne dönüş (varsa)
+
+**🎉 Artık hazırsın! PDF'leri işle ve varyant seeder'ları oluştur!**
+

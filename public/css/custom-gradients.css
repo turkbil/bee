@@ -1,0 +1,51 @@
+/**
+ * CUSTOM GRADIENT UTILITIES - DARK MODE FIX
+ *
+ * Tailwind JIT motoru dark mode + gradient + hover kombinasyonlarını
+ * otomatik generate etmiyor. Bu CSS dosyası eksik sınıfları sağlar.
+ *
+ * Sebep: Tailwind'in safelist'i bu kadar kompleks kombinasyonları
+ * desteklemiyor ve JIT static analysis bu sınıfları tespit edemiyor.
+ */
+
+/* Base gradient colors - Light mode */
+.from-violet-700 {
+    --tw-gradient-from: #6d28d9 var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(109 40 217 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-purple-700 {
+    --tw-gradient-to: #7e22ce var(--tw-gradient-to-position);
+}
+
+.from-violet-800 {
+    --tw-gradient-from: #5b21b6 var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(91 33 182 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-purple-800 {
+    --tw-gradient-to: #6b21a8 var(--tw-gradient-to-position);
+}
+
+/* Dark mode variants */
+.dark .dark\:from-violet-700 {
+    --tw-gradient-from: #6d28d9 var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(109 40 217 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.dark .dark\:to-purple-700 {
+    --tw-gradient-to: #7e22ce var(--tw-gradient-to-position);
+}
+
+.dark .dark\:hover\:from-violet-800:hover {
+    --tw-gradient-from: #5b21b6 var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(91 33 182 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.dark .dark\:hover\:to-purple-800:hover {
+    --tw-gradient-to: #6b21a8 var(--tw-gradient-to-position);
+}

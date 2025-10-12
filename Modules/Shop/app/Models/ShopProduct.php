@@ -59,10 +59,13 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'features',
         'highlighted_features',
         'media_gallery',
+        'primary_specs',
         'use_cases',
         'competitive_advantages',
         'target_industries',
         'faq_data',
+        'accessories',
+        'certifications',
         'video_url',
         'manual_pdf_url',
         'is_active',
@@ -74,6 +77,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'warranty_info',
         'shipping_info',
         'tags',
+        'parent_product_id',
+        'is_master_product',
+        'variant_type',
     ];
 
     protected $casts = [
@@ -101,13 +107,17 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'features' => 'array',
         'highlighted_features' => 'array',
         'media_gallery' => 'array',
+        'primary_specs' => 'array',
         'use_cases' => 'array',
         'competitive_advantages' => 'array',
         'target_industries' => 'array',
         'faq_data' => 'array',
+        'accessories' => 'array',
+        'certifications' => 'array',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
         'is_bestseller' => 'boolean',
+        'is_master_product' => 'boolean',
         'view_count' => 'integer',
         'sales_count' => 'integer',
         'published_at' => 'datetime',
@@ -176,6 +186,53 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
     public function brand(): BelongsTo
     {
         return $this->belongsTo(ShopBrand::class, 'brand_id', 'brand_id');
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ShopProductVariant::class, 'product_id', 'product_id');
+    }
+
+    /**
+     * Get parent product (for variants)
+     */
+    public function parentProduct(): BelongsTo
+    {
+        return $this->belongsTo(ShopProduct::class, 'parent_product_id', 'product_id');
+    }
+
+    /**
+     * Get child products (variants of this product)
+     */
+    public function childProducts()
+    {
+        return $this->hasMany(ShopProduct::class, 'parent_product_id', 'product_id')
+            ->where('is_active', true)
+            ->orderBy('variant_type');
+    }
+
+    /**
+     * Scope: Only variant products
+     */
+    public function scopeVariantsOnly(Builder $query): Builder
+    {
+        return $query->whereNotNull('parent_product_id');
+    }
+
+    /**
+     * Scope: Only master products
+     */
+    public function scopeMasterOnly(Builder $query): Builder
+    {
+        return $query->where('is_master_product', true);
+    }
+
+    /**
+     * Check if this product is a variant
+     */
+    public function isVariant(): bool
+    {
+        return !is_null($this->parent_product_id);
     }
 
     public function getTranslatableFields(): array

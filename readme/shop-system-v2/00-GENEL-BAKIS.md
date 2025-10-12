@@ -66,14 +66,8 @@ Bu sistem **iki temel ihtiyacı** karşılar:
 {
   "faq_data": [
     {
-      "question": {
-        "tr": "F4 201 bir vardiyada kaç saat çalışır?",
-        "en": "F4 201 bir vardiyada kaç saat çalışır?"
-      },
-      "answer": {
-        "tr": "Standart 2 modül ile 6 saate kadar...",
-        "en": "Standart 2 modül ile 6 saate kadar..."
-      },
+      "question": "F4 201 bir vardiyada kaç saat çalışır?",
+      "answer": "Standart 2 modül ile 6 saate kadar...",
       "sort_order": 1
     }
   ]

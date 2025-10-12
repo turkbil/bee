@@ -36,8 +36,8 @@
     <link rel="apple-touch-icon" href="{{ cdn($appleTouchIcon) }}">
     @endif
 
-    {{-- Tailwind CSS - Compiled & Minified (98KB) --}}
-    <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}" media="all">
+    {{-- Tailwind CSS - Compiled & Minified --}}
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}" media="all">
 
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">
@@ -150,6 +150,9 @@
             });
         }
     </script>
+
+    {{-- Custom Gradient Utilities - Tailwind JIT Dark Mode Fix --}}
+    <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=1.0.0">
 
     {{-- Core System Styles - Mandatory for all themes --}}
     <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.0">

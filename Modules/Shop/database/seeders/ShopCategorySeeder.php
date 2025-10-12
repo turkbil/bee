@@ -25,23 +25,7 @@ class ShopCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // Shop kategorileri SADECE tenant database'lerde olmalı
-        if (\App\Helpers\TenantHelpers::isCentral()) {
-            $this->command->info('📁 Shop categories: sadece tenant database için, atlanıyor...');
-            return;
-        }
-
-        // Central tenant (ID=1 / laravel database) kontrolü
-        if (tenancy()->initialized && tenant('tenancy_db_name') === 'laravel') {
-            $this->command->error('❌ Central tenant detected, shop tables do not exist in central!');
-            return;
-        }
-
-        // Tenant context kontrolü
-        if (!tenancy()->initialized) {
-            $this->command->error('❌ Tenant context not initialized for Shop Categories!');
-            return;
-        }
+        // NOT: Shop kategorileri artık hem central hem tenant database'lerde çalışır
 
         // Duplicate check
         if (ShopCategory::count() > 3) {
@@ -49,11 +33,18 @@ class ShopCategorySeeder extends Seeder
             return;
         }
 
-        // Tenant dillerini al
-        $this->languages = \DB::table('tenant_languages')
-            ->where('is_active', 1)
-            ->pluck('code')
-            ->toArray();
+        // Dilleri al (central'da admin_languages, tenant'ta tenant_languages)
+        if (\App\Helpers\TenantHelpers::isCentral()) {
+            $this->languages = \DB::table('admin_languages')
+                ->where('is_active', 1)
+                ->pluck('code')
+                ->toArray();
+        } else {
+            $this->languages = \DB::table('tenant_languages')
+                ->where('is_active', 1)
+                ->pluck('code')
+                ->toArray();
+        }
 
         if (empty($this->languages)) {
             $this->languages = ['tr', 'en']; // Fallback

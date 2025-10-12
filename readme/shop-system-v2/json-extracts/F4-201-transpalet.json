@@ -1,289 +1,138 @@
 {
   "category_slug": "transpalet",
   "model_code": "F4-201",
-  "name": {
-    "tr": "F4 201 Li-Ion Akülü Transpalet 2.0 Ton",
-    "en": "F4 201 Li-Ion Akülü Transpalet 2.0 Ton"
-  },
+  "name": "F4 201 Li-Ion Akülü Transpalet 2.0 Ton",
   "slug": "f4-201-2-ton-48v-li-ion-transpalet",
   "sku": "F4-201",
-  "short_description": {
-    "tr": "48V Li-Ion güç platformu ile 2 ton taşıma kapasitesi sunan F4 201, tak-çıkar batarya sistemi ve 140 kg ultra hafif gövdesiyle dar koridor operasyonlarında yeni standartlar belirler.",
-    "en": "48V Li-Ion güç platformu ile 2 ton taşıma kapasitesi sunan F4 201, tak-çıkar batarya sistemi ve 140 kg ultra hafif gövdesiyle dar koridor operasyonlarında yeni standartlar belirler."
-  },
-  "long_description": {
-    "tr": "<section class=\"marketing-intro\">\n<p><strong>F4 201'i depoya soktuğunuz anda müşterileriniz \"Bu transpaleti nereden aldınız?\" diye soracak.</strong></p>\n<p>İXTİF mühendisleri bu modeli yalnızca yük taşımak için değil, <em>deponuzun prestijini parlatmak</em> için tasarladı. 48V Li-Ion güç platformu ile 2 ton yükü adeta havada yürüyor gibi taşıyan F4 201, dar koridorlarda bile vitrinde bir süperstar gibi parlar.</p>\n<ul>\n<li><strong>Bir vardiyada iki kat iş</strong> – Tak-çıkar batarya sistemi ile şarj molasına son verin, lojistik maliyetleriniz %50'ye kadar düşsün.</li>\n<li><strong>Showroom etkisi</strong> – Ultra kompakt 400 mm şasi, dar koridorlarda bile operatörlerinize benzersiz özgürlük sağlar.</li>\n<li><strong>140 kg hafiflik şampiyonu</strong> – Segmentindeki en hafif gövde, rampalarda inanılmaz kontrol ve enerji verimliliği demektir.</li>\n<li><strong>Stabilizasyon tekerleği opsiyonu</strong> – Bozuk zeminlerde bile devrilme riskini sıfırlayarak yatırımınızı korur.</li>\n</ul>\n</section>\n\n<section class=\"marketing-body\">\n<h3>Depoda Hız, Sahada Prestij: F4 201 ile Dar Koridorlara Hükmedin</h3>\n<p>Standart teslimat paketinde 2 adet 24V/20Ah Li-Ion modül bulunur. Her modül çıkarılabilir, dolayısıyla vardiya ortasında boş bataryayı çıkarıp dolu olanı takarak operasyonunuz hiç durmaz. Dilerseniz 4 adede kadar modül ekleyerek uzun vardiya performansını artırabilirsiniz.</p>\n\n<p><strong>48V BLDC motorlu sürüş sistemi</strong> sayesinde F4 201, %8 rampalarda yükle bile zorlanmadan çıkar. 0.9 kW sürüş motoru ve 0.7 kW kaldırma motoru kombinasyonu, elektromanyetik fren ile birleşerek size acil durumlarda bile tam kontrol sağlar.</p>\n\n<p><strong>Poliüretan çift sıra yük tekerleri</strong> ve 210×70 mm sürüş tekerleri, dar koridorlarda bile pürüzsüz hareket ve uzun ömür garanti eder. 1360 mm dönüş yarıçapı sayesinde standart paletlerinizi 2160 mm koridor genişliğinde rahatça döndürebilirsiniz.</p>\n\n<h4>İXTİF Farkı: Yatırımınıza 360° Koruma</h4>\n<p>İXTİF'in <strong>ikinci el, kiralık, yedek parça ve teknik servis</strong> ekosistemi ile F4 201 yatırımınız tam koruma altında. Türkiye genelinde mobil teknik servis ekiplerimiz 7/24 sahadır. İster alın, ister kiralayın, ister ikinci el seçeneği değerlendirin – İXTİF her senaryoda yanınızda.</p>\n\n<ul>\n<li><strong>İkinci El Güvencesi:</strong> Garanti belgeleriyle yenilenmiş F4 201 modelleri mevcut.</li>\n<li><strong>Kiralık Filolar:</strong> Kısa ve orta vadeli kiralama seçenekleri, operasyonel esneklik sağlar.</li>\n<li><strong>Yedek Parça Stoku:</strong> Orijinal EP parçaları İXTİF depolarında stoktan hemen temin edilebilir.</li>\n<li><strong>Teknik Servis:</strong> 0216 755 3 555 numaralı hattımızdan acil servis taleplerinizi iletebilirsiniz.</li>\n</ul>\n\n<h4>SEO Anahtar Kelimeleri</h4>\n<p><strong>F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet, çıkarılabilir bataryalı transpalet, ultra hafif transpalet, poliüretan tekerlekli transpalet, elektrikli transpalet fiyatları, akülü transpalet servisi.</strong></p>\n\n<h4>Şimdi İXTİF'i Arayın</h4>\n<p><strong>Telefon:</strong> 0216 755 3 555<br>\n<strong>E-posta:</strong> info@ixtif.com<br>\n<strong>Firma:</strong> İXTİF İç ve Dış Ticaret A.Ş.</p>\n<p>F4 201 ile deponuzun prestijini yükseltin, operasyonel maliyetlerinizi dramatik şekilde düşürün ve lojistik ekibinize bir showroom şampiyonu hediye edin.</p>\n</section>",
-    "en": "<section class=\"marketing-intro\">\n<p><strong>F4 201'i depoya soktuğunuz anda müşterileriniz \"Bu transpaleti nereden aldınız?\" diye soracak.</strong></p>\n<p>İXTİF mühendisleri bu modeli yalnızca yük taşımak için değil, <em>deponuzun prestijini parlatmak</em> için tasarladı. 48V Li-Ion güç platformu ile 2 ton yükü adeta havada yürüyor gibi taşıyan F4 201, dar koridorlarda bile vitrinde bir süperstar gibi parlar.</p>\n<ul>\n<li><strong>Bir vardiyada iki kat iş</strong> – Tak-çıkar batarya sistemi ile şarj molasına son verin, lojistik maliyetleriniz %50'ye kadar düşsün.</li>\n<li><strong>Showroom etkisi</strong> – Ultra kompakt 400 mm şasi, dar koridorlarda bile operatörlerinize benzersiz özgürlük sağlar.</li>\n<li><strong>140 kg hafiflik şampiyonu</strong> – Segmentindeki en hafif gövde, rampalarda inanılmaz kontrol ve enerji verimliliği demektir.</li>\n<li><strong>Stabilizasyon tekerleği opsiyonu</strong> – Bozuk zeminlerde bile devrilme riskini sıfırlayarak yatırımınızı korur.</li>\n</ul>\n</section>\n\n<section class=\"marketing-body\">\n<h3>Depoda Hız, Sahada Prestij: F4 201 ile Dar Koridorlara Hükmedin</h3>\n<p>Standart teslimat paketinde 2 adet 24V/20Ah Li-Ion modül bulunur. Her modül çıkarılabilir, dolayısıyla vardiya ortasında boş bataryayı çıkarıp dolu olanı takarak operasyonunuz hiç durmaz. Dilerseniz 4 adede kadar modül ekleyerek uzun vardiya performansını artırabilirsiniz.</p>\n\n<p><strong>48V BLDC motorlu sürüş sistemi</strong> sayesinde F4 201, %8 rampalarda yükle bile zorlanmadan çıkar. 0.9 kW sürüş motoru ve 0.7 kW kaldırma motoru kombinasyonu, elektromanyetik fren ile birleşerek size acil durumlarda bile tam kontrol sağlar.</p>\n\n<p><strong>Poliüretan çift sıra yük tekerleri</strong> ve 210×70 mm sürüş tekerleri, dar koridorlarda bile pürüzsüz hareket ve uzun ömür garanti eder. 1360 mm dönüş yarıçapı sayesinde standart paletlerinizi 2160 mm koridor genişliğinde rahatça döndürebilirsiniz.</p>\n\n<h4>İXTİF Farkı: Yatırımınıza 360° Koruma</h4>\n<p>İXTİF'in <strong>ikinci el, kiralık, yedek parça ve teknik servis</strong> ekosistemi ile F4 201 yatırımınız tam koruma altında. Türkiye genelinde mobil teknik servis ekiplerimiz 7/24 sahadır. İster alın, ister kiralayın, ister ikinci el seçeneği değerlendirin – İXTİF her senaryoda yanınızda.</p>\n\n<ul>\n<li><strong>İkinci El Güvencesi:</strong> Garanti belgeleriyle yenilenmiş F4 201 modelleri mevcut.</li>\n<li><strong>Kiralık Filolar:</strong> Kısa ve orta vadeli kiralama seçenekleri, operasyonel esneklik sağlar.</li>\n<li><strong>Yedek Parça Stoku:</strong> Orijinal EP parçaları İXTİF depolarında stoktan hemen temin edilebilir.</li>\n<li><strong>Teknik Servis:</strong> 0216 755 3 555 numaralı hattımızdan acil servis taleplerinizi iletebilirsiniz.</li>\n</ul>\n\n<h4>SEO Anahtar Kelimeleri</h4>\n<p><strong>F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet, çıkarılabilir bataryalı transpalet, ultra hafif transpalet, poliüretan tekerlekli transpalet, elektrikli transpalet fiyatları, akülü transpalet servisi.</strong></p>\n\n<h4>Şimdi İXTİF'i Arayın</h4>\n<p><strong>Telefon:</strong> 0216 755 3 555<br>\n<strong>E-posta:</strong> info@ixtif.com<br>\n<strong>Firma:</strong> İXTİF İç ve Dış Ticaret A.Ş.</p>\n<p>F4 201 ile deponuzun prestijini yükseltin, operasyonel maliyetlerinizi dramatik şekilde düşürün ve lojistik ekibinize bir showroom şampiyonu hediye edin.</p>\n</section>"
-  },
+  "short_description": "48V Li-Ion güç platformu ile 2 ton taşıma kapasitesi sunan F4 201, tak-çıkar batarya sistemi ve 140 kg ultra hafif gövdesiyle dar koridor operasyonlarında yeni standartlar belirler.",
+  "long_description": "<section class=\"marketing-intro\">\n<p><strong>F4 201'i depoya soktuğunuz anda müşterileriniz \"Bu transpaleti nereden aldınız?\" diye soracak.</strong></p>\n<p>İXTİF mühendisleri bu modeli yalnızca yük taşımak için değil, <em>deponuzun prestijini parlatmak</em> için tasarladı. 48V Li-Ion güç platformu ile 2 ton yükü adeta havada yürüyor gibi taşıyan F4 201, dar koridorlarda bile vitrinde bir süperstar gibi parlar.</p>\n<ul>\n<li><strong>Bir vardiyada iki kat iş</strong> – Tak-çıkar batarya sistemi ile şarj molasına son verin, lojistik maliyetleriniz %50'ye kadar düşsün.</li>\n<li><strong>Showroom etkisi</strong> – Ultra kompakt 400 mm şasi, dar koridorlarda bile operatörlerinize benzersiz özgürlük sağlar.</li>\n<li><strong>140 kg hafiflik şampiyonu</strong> – Segmentindeki en hafif gövde, rampalarda inanılmaz kontrol ve enerji verimliliği demektir.</li>\n<li><strong>Stabilizasyon tekerleği opsiyonu</strong> – Bozuk zeminlerde bile devrilme riskini sıfırlayarak yatırımınızı korur.</li>\n</ul>\n</section>\n\n<section class=\"marketing-body\">\n<h3>Depoda Hız, Sahada Prestij: F4 201 ile Dar Koridorlara Hükmedin</h3>\n<p>Standart teslimat paketinde 2 adet 24V/20Ah Li-Ion modül bulunur. Her modül çıkarılabilir, dolayısıyla vardiya ortasında boş bataryayı çıkarıp dolu olanı takarak operasyonunuz hiç durmaz. Dilerseniz 4 adede kadar modül ekleyerek uzun vardiya performansını artırabilirsiniz.</p>\n\n<p><strong>48V BLDC motorlu sürüş sistemi</strong> sayesinde F4 201, %8 rampalarda yükle bile zorlanmadan çıkar. 0.9 kW sürüş motoru ve 0.7 kW kaldırma motoru kombinasyonu, elektromanyetik fren ile birleşerek size acil durumlarda bile tam kontrol sağlar.</p>\n\n<p><strong>Poliüretan çift sıra yük tekerleri</strong> ve 210×70 mm sürüş tekerleri, dar koridorlarda bile pürüzsüz hareket ve uzun ömür garanti eder. 1360 mm dönüş yarıçapı sayesinde standart paletlerinizi 2160 mm koridor genişliğinde rahatça döndürebilirsiniz.</p>\n\n<h4>İXTİF Farkı: Yatırımınıza 360° Koruma</h4>\n<p>İXTİF'in <strong>ikinci el, kiralık, yedek parça ve teknik servis</strong> ekosistemi ile F4 201 yatırımınız tam koruma altında. Türkiye genelinde mobil teknik servis ekiplerimiz 7/24 sahadır. İster alın, ister kiralayın, ister ikinci el seçeneği değerlendirin – İXTİF her senaryoda yanınızda.</p>\n\n<ul>\n<li><strong>İkinci El Güvencesi:</strong> Garanti belgeleriyle yenilenmiş F4 201 modelleri mevcut.</li>\n<li><strong>Kiralık Filolar:</strong> Kısa ve orta vadeli kiralama seçenekleri, operasyonel esneklik sağlar.</li>\n<li><strong>Yedek Parça Stoku:</strong> Orijinal EP parçaları İXTİF depolarında stoktan hemen temin edilebilir.</li>\n<li><strong>Teknik Servis:</strong> 0216 755 3 555 numaralı hattımızdan acil servis taleplerinizi iletebilirsiniz.</li>\n</ul>\n\n<h4>SEO Anahtar Kelimeleri</h4>\n<p><strong>F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet, çıkarılabilir bataryalı transpalet, ultra hafif transpalet, poliüretan tekerlekli transpalet, elektrikli transpalet fiyatları, akülü transpalet servisi.</strong></p>\n\n<h4>Şimdi İXTİF'i Arayın</h4>\n<p><strong>Telefon:</strong> 0216 755 3 555<br>\n<strong>E-posta:</strong> info@ixtif.com<br>\n<strong>Firma:</strong> İXTİF İç ve Dış Ticaret A.Ş.</p>\n<p>F4 201 ile deponuzun prestijini yükseltin, operasyonel maliyetlerinizi dramatik şekilde düşürün ve lojistik ekibinize bir showroom şampiyonu hediye edin.</p>\n</section>",
   "features": {
-    "tr": {
-      "list": [
-        "F4 201 transpalet 48V Li-Ion güç platformu ile 2 ton taşıma kapasitesini dar koridor operasyonlarına taşır",
-        "Tak-çıkar 24V/20Ah Li-Ion bataryalarla vardiya ortasında şarj molasına son verin, 4 adede kadar genişletilebilir modül sistemi",
-        "140 kg ultra hafif servis ağırlığı ve 400 mm kompakt şasi uzunluğu sayesinde dar koridorlarda benzersiz çeviklik",
-        "Stabilizasyon tekerleği opsiyonu ile bozuk zeminlerde bile devrilme riskini sıfırlar",
-        "0.9 kW BLDC sürüş motoru ve elektromanyetik fren sistemi ile %8 rampalarda bile tam kontrol",
-        "İXTİF ikinci el, kiralık, yedek parça ve 7/24 teknik servis ekosistemi ile yatırımınıza 360° koruma",
-        "Poliüretan çift sıra yük tekerleri ile uzun ömür ve düşük bakım maliyeti",
-        "1360 mm dönüş yarıçapı ile standart paletleri 2160 mm koridor genişliğinde rahatça döndürme"
-      ],
-      "branding": {
-        "slogan": "Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin",
-        "motto": "İXTİF farkı ile 2 tonluk yükler bile hafifler",
-        "technical_summary": "F4 201, 48V Li-Ion güç paketi, 0.9 kW BLDC sürüş motoru ve 400 mm ultra kompakt şasi kombinasyonuyla dar koridor ortamlarında yüksek tork, düşük bakım ve sürekli çalışma sunar"
-      }
-    },
-    "en": {
-      "list": [
-        "F4 201 transpalet 48V Li-Ion güç platformu ile 2 ton taşıma kapasitesini dar koridor operasyonlarına taşır",
-        "Tak-çıkar 24V/20Ah Li-Ion bataryalarla vardiya ortasında şarj molasına son verin, 4 adede kadar genişletilebilir modül sistemi",
-        "140 kg ultra hafif servis ağırlığı ve 400 mm kompakt şasi uzunluğu sayesinde dar koridorlarda benzersiz çeviklik",
-        "Stabilizasyon tekerleği opsiyonu ile bozuk zeminlerde bile devrilme riskini sıfırlar",
-        "0.9 kW BLDC sürüş motoru ve elektromanyetik fren sistemi ile %8 rampalarda bile tam kontrol",
-        "İXTİF ikinci el, kiralık, yedek parça ve 7/24 teknik servis ekosistemi ile yatırımınıza 360° koruma",
-        "Poliüretan çift sıra yük tekerleri ile uzun ömür ve düşük bakım maliyeti",
-        "1360 mm dönüş yarıçapı ile standart paletleri 2160 mm koridor genişliğinde rahatça döndürme"
-      ],
-      "branding": {
-        "slogan": "Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin",
-        "motto": "İXTİF farkı ile 2 tonluk yükler bile hafifler",
-        "technical_summary": "F4 201, 48V Li-Ion güç paketi, 0.9 kW BLDC sürüş motoru ve 400 mm ultra kompakt şasi kombinasyonuyla dar koridor ortamlarında yüksek tork, düşük bakım ve sürekli çalışma sunar"
-      }
+    "list": [
+      "F4 201 transpalet 48V Li-Ion güç platformu ile 2 ton taşıma kapasitesini dar koridor operasyonlarına taşır",
+      "Tak-çıkar 24V/20Ah Li-Ion bataryalarla vardiya ortasında şarj molasına son verin, 4 adede kadar genişletilebilir modül sistemi",
+      "140 kg ultra hafif servis ağırlığı ve 400 mm kompakt şasi uzunluğu sayesinde dar koridorlarda benzersiz çeviklik",
+      "Stabilizasyon tekerleği opsiyonu ile bozuk zeminlerde bile devrilme riskini sıfırlar",
+      "0.9 kW BLDC sürüş motoru ve elektromanyetik fren sistemi ile %8 rampalarda bile tam kontrol",
+      "İXTİF ikinci el, kiralık, yedek parça ve 7/24 teknik servis ekosistemi ile yatırımınıza 360° koruma",
+      "Poliüretan çift sıra yük tekerleri ile uzun ömür ve düşük bakım maliyeti",
+      "1360 mm dönüş yarıçapı ile standart paletleri 2160 mm koridor genişliğinde rahatça döndürme"
+    ],
+    "branding": {
+      "slogan": "Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin",
+      "motto": "İXTİF farkı ile 2 tonluk yükler bile hafifler",
+      "technical_summary": "F4 201, 48V Li-Ion güç paketi, 0.9 kW BLDC sürüş motoru ve 400 mm ultra kompakt şasi kombinasyonuyla dar koridor ortamlarında yüksek tork, düşük bakım ve sürekli çalışma sunar"
     }
   },
   "primary_specs": [
-    {"label": "Denge Tekeri", "value": "Opsiyonel"},
-    {"label": "Li-Ion Akü", "value": "2x 24V/20Ah çıkarılabilir paket (4 adede kadar genişletilebilir)"},
-    {"label": "Şarj Cihazı", "value": "2x 24V-5A harici hızlı şarj (10A opsiyonel)"},
-    {"label": "Standart Çatal", "value": "1150 x 560 mm (50 mm kalınlık, 150 mm genişlik)"}
+    {"label": "Yük Kapasitesi", "value": "2 Ton"},
+    {"label": "Akü Sistemi", "value": "Li-Ion 48V"},
+    {"label": "Çatal Uzunluğu", "value": "1150 mm"},
+    {"label": "Denge Tekeri", "value": "Opsiyonel"}
   ],
-  "use_cases": {
-    "tr": [
-      "E-ticaret depolarında hızlı sipariş hazırlama ve sevkiyat operasyonları – dar koridorlarda yüksek verimlilik",
-      "Dar koridorlu perakende depolarında gece vardiyası yükleme boşaltma işlemleri",
-      "Soğuk zincir lojistiğinde düşük sıcaklıklarda kesintisiz malzeme taşıma – Li-Ion batarya avantajı",
-      "İçecek ve FMCG dağıtım merkezlerinde yoğun palet trafiği yönetimi ve rampa operasyonları",
-      "Dış saha rampalarda stabilizasyon tekerleği opsiyonu ile güvenli taşıma – bozuk zeminlerde devrilme riski sıfır",
-      "Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri – düşük bakım maliyeti",
-      "Küçük ve orta ölçekli işletmelerde tek operator ile çok vardiya operasyonu – tak-çıkar batarya sistemi",
-      "Darbe dayanıklı poliüretan tekerlekler ile uzun ömürlü fabrika içi malzeme taşıma"
-    ],
-    "en": [
-      "E-ticaret depolarında hızlı sipariş hazırlama ve sevkiyat operasyonları – dar koridorlarda yüksek verimlilik",
-      "Dar koridorlu perakende depolarında gece vardiyası yükleme boşaltma işlemleri",
-      "Soğuk zincir lojistiğinde düşük sıcaklıklarda kesintisiz malzeme taşıma – Li-Ion batarya avantajı",
-      "İçecek ve FMCG dağıtım merkezlerinde yoğun palet trafiği yönetimi ve rampa operasyonları",
-      "Dış saha rampalarda stabilizasyon tekerleği opsiyonu ile güvenli taşıma – bozuk zeminlerde devrilme riski sıfır",
-      "Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri – düşük bakım maliyeti",
-      "Küçük ve orta ölçekli işletmelerde tek operator ile çok vardiya operasyonu – tak-çıkar batarya sistemi",
-      "Darbe dayanıklı poliüretan tekerlekler ile uzun ömürlü fabrika içi malzeme taşıma"
-    ]
-  },
-  "competitive_advantages": {
-    "tr": [
-      "48V Li-Ion güç platformu ile segmentindeki en agresif hızlanma ve rampa performansı – %8 eğimde bile tam güç",
-      "140 kg ultra hafif servis ağırlığı sayesinde lojistik maliyetlerinde dramatik düşüş – taşıma ve kurulum kolaylığı",
-      "Tak-çıkar batarya konsepti ile 7/24 operasyonda sıfır bekleme, sıfır bakım maliyeti – vardiya ortasında değişim",
-      "Stabilizasyon tekerleği opsiyonu sayesinde bozuk zeminlerde bile devrilme riskini sıfırlar – yatırım güvenliği",
-      "İXTİF stoktan hızlı teslimat ve yerinde devreye alma ile son kullanıcıyı bekletmez – Türkiye genelinde servis",
-      "400 mm kompakt şasi ile segmentindeki en dar dönüş yarıçapı – 2160 mm koridorda 1000x1200 mm palet manevra",
-      "Poliüretan çift sıra yük tekerleri ile segmentindeki en uzun tekerlek ömrü – 5 yıla kadar değişim gerektirmez"
-    ],
-    "en": [
-      "48V Li-Ion güç platformu ile segmentindeki en agresif hızlanma ve rampa performansı – %8 eğimde bile tam güç",
-      "140 kg ultra hafif servis ağırlığı sayesinde lojistik maliyetlerinde dramatik düşüş – taşıma ve kurulum kolaylığı",
-      "Tak-çıkar batarya konsepti ile 7/24 operasyonda sıfır bekleme, sıfır bakım maliyeti – vardiya ortasında değişim",
-      "Stabilizasyon tekerleği opsiyonu sayesinde bozuk zeminlerde bile devrilme riskini sıfırlar – yatırım güvenliği",
-      "İXTİF stoktan hızlı teslimat ve yerinde devreye alma ile son kullanıcıyı bekletmez – Türkiye genelinde servis",
-      "400 mm kompakt şasi ile segmentindeki en dar dönüş yarıçapı – 2160 mm koridorda 1000x1200 mm palet manevra",
-      "Poliüretan çift sıra yük tekerleri ile segmentindeki en uzun tekerlek ömrü – 5 yıla kadar değişim gerektirmez"
-    ]
-  },
-  "target_industries": {
-    "tr": [
-      "E-ticaret ve fulfillment merkezleri",
-      "Perakende zincir depoları",
-      "Soğuk zincir ve gıda lojistiği",
-      "İçecek ve FMCG dağıtım şirketleri",
-      "Endüstriyel üretim tesisleri",
-      "3PL ve 4PL lojistik firmaları",
-      "İlaç ve sağlık ürünleri depoları",
-      "Elektronik dağıtım merkezleri",
-      "Mobilya ve beyaz eşya depolama",
-      "Otomotiv yedek parça depoları",
-      "Tekstil ve hazır giyim depoları",
-      "Kozmetik ve kişisel bakım dağıtım",
-      "Yapı market ve hırdavat zincirleri",
-      "Kitap ve kırtasiye dağıtım şirketleri",
-      "Oyuncak ve hobi ürünleri depoları",
-      "Tarım ürünleri ve tohum depoları",
-      "Kimyasal ve endüstriyel malzeme depolama",
-      "Cam ve seramik ürün depoları",
-      "Metal işleme ve döküm tesisleri",
-      "Plastik ve ambalaj malzemesi üretim tesisleri",
-      "Kağıt ve karton ürünleri depoları",
-      "Boya ve yapı kimyasalları depoları",
-      "Medikal cihaz ve ekipman depoları",
-      "Spor malzemeleri dağıtım merkezleri"
-    ],
-    "en": [
-      "E-ticaret ve fulfillment merkezleri",
-      "Perakende zincir depoları",
-      "Soğuk zincir ve gıda lojistiği",
-      "İçecek ve FMCG dağıtım şirketleri",
-      "Endüstriyel üretim tesisleri",
-      "3PL ve 4PL lojistik firmaları",
-      "İlaç ve sağlık ürünleri depoları",
-      "Elektronik dağıtım merkezleri",
-      "Mobilya ve beyaz eşya depolama",
-      "Otomotiv yedek parça depoları",
-      "Tekstil ve hazır giyim depoları",
-      "Kozmetik ve kişisel bakım dağıtım",
-      "Yapı market ve hırdavat zincirleri",
-      "Kitap ve kırtasiye dağıtım şirketleri",
-      "Oyuncak ve hobi ürünleri depoları",
-      "Tarım ürünleri ve tohum depoları",
-      "Kimyasal ve endüstriyel malzeme depolama",
-      "Cam ve seramik ürün depoları",
-      "Metal işleme ve döküm tesisleri",
-      "Plastik ve ambalaj malzemesi üretim tesisleri",
-      "Kağıt ve karton ürünleri depoları",
-      "Boya ve yapı kimyasalları depoları",
-      "Medikal cihaz ve ekipman depoları",
-      "Spor malzemeleri dağıtım merkezleri"
-    ]
-  },
+  "use_cases": [
+    "E-ticaret depolarında hızlı sipariş hazırlama ve sevkiyat operasyonları – dar koridorlarda yüksek verimlilik",
+    "Dar koridorlu perakende depolarında gece vardiyası yükleme boşaltma işlemleri",
+    "Soğuk zincir lojistiğinde düşük sıcaklıklarda kesintisiz malzeme taşıma – Li-Ion batarya avantajı",
+    "İçecek ve FMCG dağıtım merkezlerinde yoğun palet trafiği yönetimi ve rampa operasyonları",
+    "Dış saha rampalarda stabilizasyon tekerleği opsiyonu ile güvenli taşıma – bozuk zeminlerde devrilme riski sıfır",
+    "Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri – düşük bakım maliyeti",
+    "Küçük ve orta ölçekli işletmelerde tek operator ile çok vardiya operasyonu – tak-çıkar batarya sistemi",
+    "Darbe dayanıklı poliüretan tekerlekler ile uzun ömürlü fabrika içi malzeme taşıma"
+  ],
+  "competitive_advantages": [
+    "48V Li-Ion güç platformu ile segmentindeki en agresif hızlanma ve rampa performansı – %8 eğimde bile tam güç",
+    "140 kg ultra hafif servis ağırlığı sayesinde lojistik maliyetlerinde dramatik düşüş – taşıma ve kurulum kolaylığı",
+    "Tak-çıkar batarya konsepti ile 7/24 operasyonda sıfır bekleme, sıfır bakım maliyeti – vardiya ortasında değişim",
+    "Stabilizasyon tekerleği opsiyonu sayesinde bozuk zeminlerde bile devrilme riskini sıfırlar – yatırım güvenliği",
+    "İXTİF stoktan hızlı teslimat ve yerinde devreye alma ile son kullanıcıyı bekletmez – Türkiye genelinde servis",
+    "400 mm kompakt şasi ile segmentindeki en dar dönüş yarıçapı – 2160 mm koridorda 1000x1200 mm palet manevra",
+    "Poliüretan çift sıra yük tekerleri ile segmentindeki en uzun tekerlek ömrü – 5 yıla kadar değişim gerektirmez"
+  ],
+  "target_industries": [
+    "E-ticaret ve fulfillment merkezleri",
+    "Perakende zincir depoları",
+    "Soğuk zincir ve gıda lojistiği",
+    "İçecek ve FMCG dağıtım şirketleri",
+    "Endüstriyel üretim tesisleri",
+    "3PL ve 4PL lojistik firmaları",
+    "İlaç ve sağlık ürünleri depoları",
+    "Elektronik dağıtım merkezleri",
+    "Mobilya ve beyaz eşya depolama",
+    "Otomotiv yedek parça depoları",
+    "Tekstil ve hazır giyim depoları",
+    "Kozmetik ve kişisel bakım dağıtım",
+    "Yapı market ve hırdavat zincirleri",
+    "Kitap ve kırtasiye dağıtım şirketleri",
+    "Oyuncak ve hobi ürünleri depoları",
+    "Tarım ürünleri ve tohum depoları",
+    "Kimyasal ve endüstriyel malzeme depolama",
+    "Cam ve seramik ürün depoları",
+    "Metal işleme ve döküm tesisleri",
+    "Plastik ve ambalaj malzemesi üretim tesisleri",
+    "Kağıt ve karton ürünleri depoları",
+    "Boya ve yapı kimyasalları depoları",
+    "Medikal cihaz ve ekipman depoları",
+    "Spor malzemeleri dağıtım merkezleri"
+  ],
   "faq_data": [
     {
-      "question": {
-        "tr": "F4 201 transpalet bir vardiyada ne kadar süre çalışır?",
-        "en": "F4 201 transpalet bir vardiyada ne kadar süre çalışır?"
-      },
-      "answer": {
-        "tr": "Standart 2x 24V/20Ah Li-Ion batarya paketiyle F4 201, orta yoğunluklu kullanımda 6-8 saat kesintisiz çalışabilir. Dilerseniz 4 adede kadar modül ekleyerek vardiya süresini ikiye katlayabilirsiniz. Tak-çıkar batarya sistemi sayesinde boş modülü çıkarıp dolu olanı takarak operasyonunuz hiç durmaz.",
-        "en": "Standart 2x 24V/20Ah Li-Ion batarya paketiyle F4 201, orta yoğunluklu kullanımda 6-8 saat kesintisiz çalışabilir. Dilerseniz 4 adede kadar modül ekleyerek vardiya süresini ikiye katlayabilirsiniz. Tak-çıkar batarya sistemi sayesinde boş modülü çıkarıp dolu olanı takarak operasyonunuz hiç durmaz."
-      },
+      "question": "F4 201 transpalet bir vardiyada ne kadar süre çalışır?",
+      "answer": "Standart 2x 24V/20Ah Li-Ion batarya paketiyle F4 201, orta yoğunluklu kullanımda 6-8 saat kesintisiz çalışabilir. Dilerseniz 4 adede kadar modül ekleyerek vardiya süresini ikiye katlayabilirsiniz. Tak-çıkar batarya sistemi sayesinde boş modülü çıkarıp dolu olanı takarak operasyonunuz hiç durmaz.",
       "sort_order": 1
     },
     {
-      "question": {
-        "tr": "Dar koridorlarda F4 201 ne kadar manevra kabiliyeti sunar?",
-        "en": "Dar koridorlarda F4 201 ne kadar manevra kabiliyeti sunar?"
-      },
-      "answer": {
-        "tr": "F4 201'in 1360 mm dönüş yarıçapı ve 400 mm kompakt şasi uzunluğu sayesinde 2160 mm koridor genişliğinde 1000x1200 mm paletleri rahatça döndürebilirsiniz. 140 kg ultra hafif gövdesi ile operatörleriniz dar geçişlerde bile tam kontrol sağlar. Bu segmentindeki en dar dönüş yarıçapıdır.",
-        "en": "F4 201'in 1360 mm dönüş yarıçapı ve 400 mm kompakt şasi uzunluğu sayesinde 2160 mm koridor genişliğinde 1000x1200 mm paletleri rahatça döndürebilirsiniz. 140 kg ultra hafif gövdesi ile operatörleriniz dar geçişlerde bile tam kontrol sağlar. Bu segmentindeki en dar dönüş yarıçapıdır."
-      },
+      "question": "Dar koridorlarda F4 201 ne kadar manevra kabiliyeti sunar?",
+      "answer": "F4 201'in 1360 mm dönüş yarıçapı ve 400 mm kompakt şasi uzunluğu sayesinde 2160 mm koridor genişliğinde 1000x1200 mm paletleri rahatça döndürebilirsiniz. 140 kg ultra hafif gövdesi ile operatörleriniz dar geçişlerde bile tam kontrol sağlar. Bu segmentindeki en dar dönüş yarıçapıdır.",
       "sort_order": 2
     },
     {
-      "question": {
-        "tr": "Stabilizasyon tekerleği nedir, ne işe yarar?",
-        "en": "Stabilizasyon tekerleği nedir, ne işe yarar?"
-      },
-      "answer": {
-        "tr": "Stabilizasyon tekerleği, bozuk zeminlerde veya rampalarda ağır yüklerle çalışırken transpaleti dengede tutan opsiyonel bir aksesuardır. Büyük yüklerde devrilme riskini sıfırlar ve operatör güvenliğini artırır. F4 201'de fabrikadan veya sonradan retrofit olarak eklenebilir.",
-        "en": "Stabilizasyon tekerleği, bozuk zeminlerde veya rampalarda ağır yüklerle çalışırken transpaleti dengede tutan opsiyonel bir aksesuardır. Büyük yüklerde devrilme riskini sıfırlar ve operatör güvenliğini artırır. F4 201'de fabrikadan veya sonradan retrofit olarak eklenebilir."
-      },
+      "question": "Stabilizasyon tekerleği nedir, ne işe yarar?",
+      "answer": "Stabilizasyon tekerleği, bozuk zeminlerde veya rampalarda ağır yüklerle çalışırken transpaleti dengede tutan opsiyonel bir aksesuardır. Büyük yüklerde devrilme riskini sıfırlar ve operatör güvenliğini artırır. F4 201'de fabrikadan veya sonradan retrofit olarak eklenebilir.",
       "sort_order": 3
     },
     {
-      "question": {
-        "tr": "F4 201 batarya şarj süresi ne kadardır?",
-        "en": "F4 201 batarya şarj süresi ne kadardır?"
-      },
-      "answer": {
-        "tr": "Standart 2x 24V-5A harici şarj ünitesiyle her 24V/20Ah modül 4-5 saatte tam dolum sağlar. Opsiyonel 2x 24V-10A hızlı şarj ünitesiyle bu süreyi 2-3 saate düşürebilirsiniz. Li-Ion teknolojisi sayesinde ara şarj yapabilir, batarya hafızası sorunu yaşamazsınız.",
-        "en": "Standart 2x 24V-5A harici şarj ünitesiyle her 24V/20Ah modül 4-5 saatte tam dolum sağlar. Opsiyonel 2x 24V-10A hızlı şarj ünitesiyle bu süreyi 2-3 saate düşürebilirsiniz. Li-Ion teknolojisi sayesinde ara şarj yapabilir, batarya hafızası sorunu yaşamazsınız."
-      },
+      "question": "F4 201 batarya şarj süresi ne kadardır?",
+      "answer": "Standart 2x 24V-5A harici şarj ünitesiyle her 24V/20Ah modül 4-5 saatte tam dolum sağlar. Opsiyonel 2x 24V-10A hızlı şarj ünitesiyle bu süreyi 2-3 saate düşürebilirsiniz. Li-Ion teknolojisi sayesinde ara şarj yapabilir, batarya hafızası sorunu yaşamazsınız.",
       "sort_order": 4
     },
     {
-      "question": {
-        "tr": "İXTİF garanti ve teknik servis kapsamı nedir?",
-        "en": "İXTİF garanti ve teknik servis kapsamı nedir?"
-      },
-      "answer": {
-        "tr": "F4 201, standart üretici garantisi ile teslim edilir. İXTİF, Türkiye genelinde 7/24 mobil teknik servis hizmeti sunar. Yedek parçalar stoktan hemen temin edilebilir. Acil durumlarda 0216 755 3 555 numaralı hattımızdan servis talebi oluşturabilirsiniz. Ek garanti paketleri ve bakım sözleşmeleri de mevcuttur.",
-        "en": "F4 201, standart üretici garantisi ile teslim edilir. İXTİF, Türkiye genelinde 7/24 mobil teknik servis hizmeti sunar. Yedek parçalar stoktan hemen temin edilebilir. Acil durumlarda 0216 755 3 555 numaralı hattımızdan servis talebi oluşturabilirsiniz. Ek garanti paketleri ve bakım sözleşmeleri de mevcuttur."
-      },
+      "question": "İXTİF garanti ve teknik servis kapsamı nedir?",
+      "answer": "F4 201, standart üretici garantisi ile teslim edilir. İXTİF, Türkiye genelinde 7/24 mobil teknik servis hizmeti sunar. Yedek parçalar stoktan hemen temin edilebilir. Acil durumlarda 0216 755 3 555 numaralı hattımızdan servis talebi oluşturabilirsiniz. Ek garanti paketleri ve bakım sözleşmeleri de mevcuttur.",
       "sort_order": 5
     },
     {
-      "question": {
-        "tr": "İkinci el veya kiralık F4 201 seçeneği var mı?",
-        "en": "İkinci el veya kiralık F4 201 seçeneği var mı?"
-      },
-      "answer": {
-        "tr": "Evet, İXTİF hem ikinci el garanti belgeleriyle yenilenmiş F4 201 modelleri, hem de kısa ve orta vadeli kiralama seçenekleri sunar. Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri, operasyonel esneklik sağlar. Detaylı teklif için 0216 755 3 555 numaralı hattımızdan veya info@ixtif.com e-posta adresimizden bizimle iletişime geçebilirsiniz.",
-        "en": "Evet, İXTİF hem ikinci el garanti belgeleriyle yenilenmiş F4 201 modelleri, hem de kısa ve orta vadeli kiralama seçenekleri sunar. Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri, operasyonel esneklik sağlar. Detaylı teklif için 0216 755 3 555 numaralı hattımızdan veya info@ixtif.com e-posta adresimizden bizimle iletişime geçebilirsiniz."
-      },
+      "question": "İkinci el veya kiralık F4 201 seçeneği var mı?",
+      "answer": "Evet, İXTİF hem ikinci el garanti belgeleriyle yenilenmiş F4 201 modelleri, hem de kısa ve orta vadeli kiralama seçenekleri sunar. Kiralama filolarında yüksek kârlılık sağlayan Li-Ion platform çözümleri, operasyonel esneklik sağlar. Detaylı teklif için 0216 755 3 555 numaralı hattımızdan veya info@ixtif.com e-posta adresimizden bizimle iletişime geçebilirsiniz.",
       "sort_order": 6
     },
     {
-      "question": {
-        "tr": "F4 201 standart çatal boyutları dışında seçenek var mı?",
-        "en": "F4 201 standart çatal boyutları dışında seçenek var mı?"
-      },
-      "answer": {
-        "tr": "Evet, standart 1150x560 mm çatal dışında 900, 1000, 1220, 1350, 1500 mm uzunluklarında ve 685 mm genişliğinde çatal seçenekleri mevcuttur. Çatal kalınlığı 50 mm, genişliği 150 mm standarttır. İhtiyacınıza göre fabrikadan sipariş verebilir veya sonradan değiştirebilirsiniz.",
-        "en": "Evet, standart 1150x560 mm çatal dışında 900, 1000, 1220, 1350, 1500 mm uzunluklarında ve 685 mm genişliğinde çatal seçenekleri mevcuttur. Çatal kalınlığı 50 mm, genişliği 150 mm standarttır. İhtiyacınıza göre fabrikadan sipariş verebilir veya sonradan değiştirebilirsiniz."
-      },
+      "question": "F4 201 standart çatal boyutları dışında seçenek var mı?",
+      "answer": "Evet, standart 1150x560 mm çatal dışında 900, 1000, 1220, 1350, 1500 mm uzunluklarında ve 685 mm genişliğinde çatal seçenekleri mevcuttur. Çatal kalınlığı 50 mm, genişliği 150 mm standarttır. İhtiyacınıza göre fabrikadan sipariş verebilir veya sonradan değiştirebilirsiniz.",
       "sort_order": 7
     },
     {
-      "question": {
-        "tr": "Poliüretan tekerlekler ne kadar dayanıklıdır?",
-        "en": "Poliüretan tekerlekler ne kadar dayanıklıdır?"
-      },
-      "answer": {
-        "tr": "F4 201'in poliüretan çift sıra yük tekerleri (80x60 mm) ve sürüş tekerleri (210x70 mm) segmentindeki en uzun tekerlek ömrünü sunar. Normal kullanımda 5 yıla kadar değişim gerektirmez. Darbe dayanıklı yapısı sayesinde fabrika içi malzeme taşımada pürüzsüz hareket ve düşük bakım maliyeti sağlar.",
-        "en": "F4 201'in poliüretan çift sıra yük tekerleri (80x60 mm) ve sürüş tekerleri (210x70 mm) segmentindeki en uzun tekerlek ömrünü sunar. Normal kullanımda 5 yıla kadar değişim gerektirmez. Darbe dayanıklı yapısı sayesinde fabrika içi malzeme taşımada pürüzsüz hareket ve düşük bakım maliyeti sağlar."
-      },
+      "question": "Poliüretan tekerlekler ne kadar dayanıklıdır?",
+      "answer": "F4 201'in poliüretan çift sıra yük tekerleri (80x60 mm) ve sürüş tekerleri (210x70 mm) segmentindeki en uzun tekerlek ömrünü sunar. Normal kullanımda 5 yıla kadar değişim gerektirmez. Darbe dayanıklı yapısı sayesinde fabrika içi malzeme taşımada pürüzsüz hareket ve düşük bakım maliyeti sağlar.",
       "sort_order": 8
     },
     {
-      "question": {
-        "tr": "F4 201 rampalarda ne kadar performans gösterir?",
-        "en": "F4 201 rampalarda ne kadar performans gösterir?"
-      },
-      "answer": {
-        "tr": "48V BLDC motorlu sürüş sistemi sayesinde F4 201, yükle %8, yüksüz %16 rampa eğiminde zorlanmadan çıkar. 0.9 kW sürüş motoru ve elektromanyetik fren kombinasyonu, acil durumlarda bile tam kontrol sağlar. Stabilizasyon tekerleği opsiyonu ile rampalarda devrilme riski sıfırlanır.",
-        "en": "48V BLDC motorlu sürüş sistemi sayesinde F4 201, yükle %8, yüksüz %16 rampa eğiminde zorlanmadan çıkar. 0.9 kW sürüş motoru ve elektromanyetik fren kombinasyonu, acil durumlarda bile tam kontrol sağlar. Stabilizasyon tekerleği opsiyonu ile rampalarda devrilme riski sıfırlanır."
-      },
+      "question": "F4 201 rampalarda ne kadar performans gösterir?",
+      "answer": "48V BLDC motorlu sürüş sistemi sayesinde F4 201, yükle %8, yüksüz %16 rampa eğiminde zorlanmadan çıkar. 0.9 kW sürüş motoru ve elektromanyetik fren kombinasyonu, acil durumlarda bile tam kontrol sağlar. Stabilizasyon tekerleği opsiyonu ile rampalarda devrilme riski sıfırlanır.",
       "sort_order": 9
     },
     {
-      "question": {
-        "tr": "Yedek parça temini ne kadar hızlıdır?",
-        "en": "Yedek parça temini ne kadar hızlıdır?"
-      },
-      "answer": {
-        "tr": "İXTİF, orijinal EP yedek parçalarını Türkiye genelindeki depolarında stokta tutar. Acil ihtiyaçlarınızda aynı gün veya ertesi gün teslimat sağlanır. Rutin bakım parçaları için stok bulundurma önerileri ve toplu paket fiyatları mevcuttur. info@ixtif.com adresine veya 0216 755 3 555 hattına parça talebi iletebilirsiniz.",
-        "en": "İXTİF, orijinal EP yedek parçalarını Türkiye genelindeki depolarında stokta tutar. Acil ihtiyaçlarınızda aynı gün veya ertesi gün teslimat sağlanır. Rutin bakım parçaları için stok bulundurma önerileri ve toplu paket fiyatları mevcuttur. info@ixtif.com adresine veya 0216 755 3 555 hattına parça talebi iletebilirsiniz."
-      },
+      "question": "Yedek parça temini ne kadar hızlıdır?",
+      "answer": "İXTİF, orijinal EP yedek parçalarını Türkiye genelindeki depolarında stokta tutar. Acil ihtiyaçlarınızda aynı gün veya ertesi gün teslimat sağlanır. Rutin bakım parçaları için stok bulundurma önerileri ve toplu paket fiyatları mevcuttur. info@ixtif.com adresine veya 0216 755 3 555 hattına parça talebi iletebilirsiniz.",
       "sort_order": 10
     },
     {
-      "question": {
-        "tr": "F4 201 operatör eğitimi gerekir mi?",
-        "en": "F4 201 operatör eğitimi gerekir mi?"
-      },
-      "answer": {
-        "tr": "F4 201, yaya tipi transpalet kategorisindedir ve yasal olarak sürücü belgesi gerektirmez. Ancak İXTİF, ürün teslimatı sırasında temel operatör eğitimi ve güvenlik brifingi sunar. Ek eğitim talepleri için 0216 755 3 555 numaralı hattımızdan randevu alabilirsiniz.",
-        "en": "F4 201, yaya tipi transpalet kategorisindedir ve yasal olarak sürücü belgesi gerektirmez. Ancak İXTİF, ürün teslimatı sırasında temel operatör eğitimi ve güvenlik brifingi sunar. Ek eğitim talepleri için 0216 755 3 555 numaralı hattımızdan randevu alabilirsiniz."
-      },
+      "question": "F4 201 operatör eğitimi gerekir mi?",
+      "answer": "F4 201, yaya tipi transpalet kategorisindedir ve yasal olarak sürücü belgesi gerektirmez. Ancak İXTİF, ürün teslimatı sırasında temel operatör eğitimi ve güvenlik brifingi sunar. Ek eğitim talepleri için 0216 755 3 555 numaralı hattımızdan randevu alabilirsiniz.",
       "sort_order": 11
     },
     {
-      "question": {
-        "tr": "F4 201'in slogan ve mottosu nedir?",
-        "en": "F4 201'in slogan ve mottosu nedir?"
-      },
-      "answer": {
-        "tr": "F4 201'in sloganı: \"Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin.\" Mottosu ise: \"İXTİF farkı ile 2 tonluk yükler bile hafifler.\" Bu model, yalnızca yük taşımak için değil, deponuzun prestijini parlatmak için tasarlandı.",
-        "en": "F4 201'in sloganı: \"Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin.\" Mottosu ise: \"İXTİF farkı ile 2 tonluk yükler bile hafifler.\" Bu model, yalnızca yük taşımak için değil, deponuzun prestijini parlatmak için tasarlandı."
-      },
+      "question": "F4 201'in slogan ve mottosu nedir?",
+      "answer": "F4 201'in sloganı: \"Depoda hız, sahada prestij: F4 201 ile dar koridorlara hükmedin.\" Mottosu ise: \"İXTİF farkı ile 2 tonluk yükler bile hafifler.\" Bu model, yalnızca yük taşımak için değil, deponuzun prestijini parlatmak için tasarlandı.",
       "sort_order": 12
     }
   ],
@@ -455,17 +304,8 @@
   "status": "active",
   "is_featured": true,
   "meta": {
-    "title": {
-      "tr": "F4 201 Li-Ion Akülü Transpalet 2.0 Ton - 48V Güç Platformu | İXTİF",
-      "en": "F4 201 Li-Ion Akülü Transpalet 2.0 Ton - 48V Güç Platformu | İXTİF"
-    },
-    "description": {
-      "tr": "F4 201 transpalet 48V Li-Ion batarya ile 2 ton taşıma kapasitesi, tak-çıkar batarya sistemi, 140 kg ultra hafif gövde. Dar koridor operasyonlarında yeni standart. İXTİF ikinci el, kiralık ve teknik servis seçenekleriyle.",
-      "en": "F4 201 transpalet 48V Li-Ion batarya ile 2 ton taşıma kapasitesi, tak-çıkar batarya sistemi, 140 kg ultra hafif gövde. Dar koridor operasyonlarında yeni standart. İXTİF ikinci el, kiralık ve teknik servis seçenekleriyle."
-    },
-    "keywords": {
-      "tr": "F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet, çıkarılabilir bataryalı transpalet, ultra hafif transpalet, poliüretan tekerlekli transpalet, elektrikli transpalet fiyatları, akülü transpalet servisi",
-      "en": "F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet, çıkarılabilir bataryalı transpalet, ultra hafif transpalet, poliüretan tekerlekli transpalet, elektrikli transpalet fiyatları, akülü transpalet servisi"
-    }
+    "title": "F4 201 Li-Ion Akülü Transpalet 2.0 Ton - 48V Güç Platformu | İXTİF",
+    "description": "F4 201 transpalet 48V Li-Ion batarya ile 2 ton taşıma kapasitesi, tak-çıkar batarya sistemi, 140 kg ultra hafif gövde. Dar koridor operasyonlarında yeni standart. İXTİF ikinci el, kiralık ve teknik servis seçenekleriyle.",
+    "keywords": "F4 201 transpalet, 48V Li-Ion transpalet, 2 ton akülü transpalet, İXTİF transpalet, dar koridor transpalet, çıkarılabilir bataryalı transpalet, ultra hafif transpalet, poliüretan tekerlekli transpalet, elektrikli transpalet fiyatları, akülü transpalet servisi"
   }
 }

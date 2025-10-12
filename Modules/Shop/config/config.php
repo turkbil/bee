@@ -127,6 +127,16 @@ return [
         'max_file_size' => 5120, // 5MB in KB
     ],
 
+    /**
+     * Quote (Teklif) Sistemi Ayarları
+     */
+    'quote' => [
+        'enabled' => env('SHOP_QUOTE_ENABLED', true),
+        'admin_email' => env('SHOP_QUOTE_ADMIN_EMAIL', 'info@ixtif.com'),
+        'send_customer_confirmation' => env('SHOP_QUOTE_CUSTOMER_CONFIRMATION', true),
+        'send_admin_notification' => env('SHOP_QUOTE_ADMIN_NOTIFICATION', true),
+    ],
+
     // ========================================
     // CACHE YÖNETİMİ
     // ========================================

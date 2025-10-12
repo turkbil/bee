@@ -1,352 +1,217 @@
-# 📦 KATEGORİ SPECS - HER KATEGORİNİN SABİT ÖZELLİKLERİ
+# 📦 KATEGORİ SPECS - HER KATEGORİNİN SABİT 4 ÖZELLİĞİ
 
 ## 🎯 AMAÇ
 
 Her kategori için **4 ana özellik kartı** standartlaştırılır. Bu kartlar:
 - ✅ Landing page'de vitrin olarak gösterilir
 - ✅ Kategori bazlı tutarlılık sağlar
-- ✅ AI'nın her ürün için aynı yapıda JSON üretmesini garanti eder
+- ✅ Kullanıcının en çok aradığı bilgileri gösterir
 
 ---
 
 ## 📋 KATEGORİ BAZLI PRIMARY SPECS
 
-### 1️⃣ **TRANSPALET** (category_id: dinamik)
+### 1️⃣ **TRANSPALET** (2-Transpalet/)
 
+**4 Ana Özellik:**
 ```json
-{
-  "primary_specs_template": {
-    "card_1": {
-      "label": "Denge Tekeri",
-      "field_path": "options.stabilizing_wheels",
-      "icon": "fa-solid fa-circle-dot",
-      "format": "boolean_to_text",
-      "mapping": {
-        "true": "Var",
-        "false": "Yok"
-      }
-    },
-    "card_2": {
-      "label": "Li-Ion Akü",
-      "field_path": "electrical.battery_system.configuration",
-      "icon": "fa-solid fa-battery-full",
-      "format": "text"
-    },
-    "card_3": {
-      "label": "Şarj Cihazı",
-      "field_path": "electrical.charger_options.standard",
-      "icon": "fa-solid fa-plug",
-      "format": "text"
-    },
-    "card_4": {
-      "label": "Standart Çatal",
-      "field_path": "dimensions.fork_dimensions",
-      "icon": "fa-solid fa-ruler",
-      "format": "fork_dimensions"
-    }
-  }
-}
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Akü Sistemi", "value": "Li-Ion [X]V"},
+  {"label": "Çatal Uzunluğu", "value": "[X] mm"},
+  {"label": "Denge Tekeri", "value": "Var/Yok"}
+]
 ```
 
-**ÖRNEK ÇIKTI (F4 201):**
-```
-┌─────────────────┬─────────────────┬─────────────────┬─────────────────┐
-│ Denge Tekeri    │ Li-Ion Akü      │ Şarj Cihazı     │ Standart Çatal  │
-│ ● Yok           │ 🔋 24V/20Ah     │ 🔌 24V/5A       │ 📏 1150x560mm   │
-│                 │ çıkarılabilir   │ harici hızlı    │                 │
-└─────────────────┴─────────────────┴─────────────────┴─────────────────┘
-```
-
----
-
-### 2️⃣ **FORKLIFT** (category_id: dinamik)
-
+**Örnek (F4 201):**
 ```json
-{
-  "primary_specs_template": {
-    "card_1": {
-      "label": "Asansör",
-      "field_path": "dimensions.lift_height.value",
-      "icon": "fa-solid fa-up-down",
-      "format": "value_with_unit",
-      "unit": "mm"
-    },
-    "card_2": {
-      "label": "Li-Ion Akü",
-      "field_path": "electrical.battery_system.configuration",
-      "icon": "fa-solid fa-battery-full",
-      "format": "text"
-    },
-    "card_3": {
-      "label": "Şarj Cihazı",
-      "field_path": "electrical.charger_options.standard",
-      "icon": "fa-solid fa-plug",
-      "format": "text"
-    },
-    "card_4": {
-      "label": "Raf Aralığı",
-      "field_path": "dimensions.aisle_width_1000x1200.value",
-      "icon": "fa-solid fa-arrows-left-right",
-      "format": "value_with_unit",
-      "unit": "mm"
-    }
-  }
-}
-```
-
-**ÖRNEK ÇIKTI:**
-```
-┌─────────────────┬─────────────────┬─────────────────┬─────────────────┐
-│ Asansör         │ Li-Ion Akü      │ Şarj Cihazı     │ Raf Aralığı     │
-│ ⬆️ 3000 mm      │ 🔋 48V/150Ah    │ 🔌 48V/10A      │ ↔️ 2800 mm      │
-└─────────────────┴─────────────────┴─────────────────┴─────────────────┘
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "2 Ton"},
+  {"label": "Akü Sistemi", "value": "Li-Ion 48V"},
+  {"label": "Çatal Uzunluğu", "value": "1150 mm"},
+  {"label": "Denge Tekeri", "value": "Yok"}
+]
 ```
 
 ---
 
-### 3️⃣ **İSTİF MAKİNESİ** (category_id: dinamik)
+### 2️⃣ **FORKLIFT** (1-Forklift/)
 
+**4 Ana Özellik:**
 ```json
-{
-  "primary_specs_template": {
-    "card_1": {
-      "label": "Asansör",
-      "field_path": "dimensions.lift_height.value",
-      "icon": "fa-solid fa-up-down",
-      "format": "value_with_unit",
-      "unit": "mm"
-    },
-    "card_2": {
-      "label": "Akü",
-      "field_path": "electrical.battery_system.configuration",
-      "icon": "fa-solid fa-battery-full",
-      "format": "text"
-    },
-    "card_3": {
-      "label": "Şarj Cihazı",
-      "field_path": "electrical.charger_options.standard",
-      "icon": "fa-solid fa-plug",
-      "format": "text"
-    },
-    "card_4": {
-      "label": "Çatal",
-      "field_path": "dimensions.fork_dimensions",
-      "icon": "fa-solid fa-ruler",
-      "format": "fork_dimensions"
-    }
-  }
-}
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Mast Yüksekliği", "value": "[X] mm"},
+  {"label": "Yakıt Tipi", "value": "Elektrik/Dizel/LPG"},
+  {"label": "Kabin Tipi", "value": "Kapalı/Açık"}
+]
 ```
-
----
-
-### 4️⃣ **SİPARİŞ TOPLAMA MAKİNESİ** (category_id: dinamik)
-
-```json
-{
-  "primary_specs_template": {
-    "card_1": {
-      "label": "Platform Yüksekliği",
-      "field_path": "dimensions.platform_height.value",
-      "icon": "fa-solid fa-up-down",
-      "format": "value_with_unit",
-      "unit": "mm"
-    },
-    "card_2": {
-      "label": "Akü",
-      "field_path": "electrical.battery_system.configuration",
-      "icon": "fa-solid fa-battery-full",
-      "format": "text"
-    },
-    "card_3": {
-      "label": "Şarj Cihazı",
-      "field_path": "electrical.charger_options.standard",
-      "icon": "fa-solid fa-plug",
-      "format": "text"
-    },
-    "card_4": {
-      "label": "Güvenlik Sistemi",
-      "field_path": "safety_features.system",
-      "icon": "fa-solid fa-shield",
-      "format": "text"
-    }
-  }
-}
-```
-
----
-
-### 5️⃣ **OTONOM SİSTEMLER** (category_id: dinamik)
-
-```json
-{
-  "primary_specs_template": {
-    "card_1": {
-      "label": "Navigasyon",
-      "field_path": "autonomous_features.navigation",
-      "icon": "fa-solid fa-map-location-dot",
-      "format": "text"
-    },
-    "card_2": {
-      "label": "Akü",
-      "field_path": "electrical.battery_system.configuration",
-      "icon": "fa-solid fa-battery-full",
-      "format": "text"
-    },
-    "card_3": {
-      "label": "Şarj Sistemi",
-      "field_path": "electrical.charger_options.standard",
-      "icon": "fa-solid fa-plug",
-      "format": "text"
-    },
-    "card_4": {
-      "label": "Sensör Paketi",
-      "field_path": "autonomous_features.sensors",
-      "icon": "fa-solid fa-sensor",
-      "format": "text"
-    }
-  }
-}
-```
-
----
-
-### 6️⃣ **REACH TRUCK** (category_id: dinamik)
-
-```json
-{
-  "primary_specs_template": {
-    "card_1": {
-      "label": "Asansör",
-      "field_path": "dimensions.lift_height.value",
-      "icon": "fa-solid fa-up-down",
-      "format": "value_with_unit",
-      "unit": "mm"
-    },
-    "card_2": {
-      "label": "Akü",
-      "field_path": "electrical.battery_system.configuration",
-      "icon": "fa-solid fa-battery-full",
-      "format": "text"
-    },
-    "card_3": {
-      "label": "Şarj Cihazı",
-      "field_path": "electrical.charger_options.standard",
-      "icon": "fa-solid fa-plug",
-      "format": "text"
-    },
-    "card_4": {
-      "label": "Dar Koridor",
-      "field_path": "dimensions.aisle_width_1000x1200.value",
-      "icon": "fa-solid fa-arrows-left-right",
-      "format": "value_with_unit",
-      "unit": "mm"
-    }
-  }
-}
-```
-
----
-
-## 🔧 FORMAT TİPLERİ
-
-### 1. **text**
-Direkt metin gösterir.
-```php
-"2x 24V/20Ah harici şarj ünitesi"
-```
-
-### 2. **value_with_unit**
-Değer + birim birleştirir.
-```php
-Input: {"value": 3000, "unit": "mm"}
-Output: "3000 mm"
-```
-
-### 3. **boolean_to_text**
-Boolean → Türkçe metin.
-```php
-true → "Var"
-false → "Yok"
-```
-
-### 4. **fork_dimensions**
-Çatal boyutlarını birleştirir.
-```php
-Input: {"thickness": 50, "width": 150, "length": 1150, "unit": "mm"}
-Output: "1150 x 150 mm"
-```
-
----
-
-## 📊 DATABASE YAPISINA EKLEME
-
-### **shop_categories Tablosuna Yeni Kolon**
-
-```php
-// Migration
-Schema::table('shop_categories', function (Blueprint $table) {
-    $table->json('primary_specs_template')->nullable()->comment('Kategori bazlı sabit 4 kart yapısı');
-});
-```
-
-### **Seeder Örneği**
-
-```php
-DB::table('shop_categories')->where('slug->tr', 'transpalet')->update([
-    'primary_specs_template' => json_encode([
-        'card_1' => [
-            'label' => 'Denge Tekeri',
-            'field_path' => 'options.stabilizing_wheels',
-            'icon' => 'fa-solid fa-circle-dot',
-            'format' => 'boolean_to_text',
-            'mapping' => ['true' => 'Var', 'false' => 'Yok']
-        ],
-        'card_2' => [
-            'label' => 'Li-Ion Akü',
-            'field_path' => 'electrical.battery_system.configuration',
-            'icon' => 'fa-solid fa-battery-full',
-            'format' => 'text'
-        ],
-        'card_3' => [
-            'label' => 'Şarj Cihazı',
-            'field_path' => 'electrical.charger_options.standard',
-            'icon' => 'fa-solid fa-plug',
-            'format' => 'text'
-        ],
-        'card_4' => [
-            'label' => 'Standart Çatal',
-            'field_path' => 'dimensions.fork_dimensions',
-            'icon' => 'fa-solid fa-ruler',
-            'format' => 'fork_dimensions'
-        ]
-    ], JSON_UNESCAPED_UNICODE)
-]);
-```
-
----
-
-## 🎯 AI'YA TALIMAT
-
-AI'ya JSON üretirken:
-
-1. **Kategoriyi belirle** (Transpalet, Forklift, vs.)
-2. **primary_specs_template'i al** (yukarıdaki listeden)
-3. **technical_specs'ten değerleri çıkar**
-4. **primary_specs array'ine doldur**
 
 **Örnek:**
 ```json
-{
-  "primary_specs": [
-    {"label": "Denge Tekeri", "value": "Yok"},
-    {"label": "Li-Ion Akü", "value": "24V/20Ah çıkarılabilir paket"},
-    {"label": "Şarj Cihazı", "value": "24V/5A harici hızlı şarj"},
-    {"label": "Standart Çatal", "value": "1150 x 560 mm"}
-  ]
-}
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "3.5 Ton"},
+  {"label": "Mast Yüksekliği", "value": "6000 mm"},
+  {"label": "Yakıt Tipi", "value": "Elektrik"},
+  {"label": "Kabin Tipi", "value": "Kapalı"}
+]
 ```
 
 ---
 
-**ŞİMDİ FAQ SİSTEMİNİ DETAYLANDIRIYORUM...**
+### 3️⃣ **İSTİF MAKİNESİ** (3-İstif Makineleri/)
+
+**4 Ana Özellik:**
+```json
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Kaldırma Yüksekliği", "value": "[X] mm"},
+  {"label": "Kullanım Tipi", "value": "Yürüyüşlü/Sürücülü"},
+  {"label": "Akü Kapasitesi", "value": "[X]V/[X]Ah"}
+]
+```
+
+**Örnek:**
+```json
+"primary_specs": [
+  {"label": "Yük Kapasitesi", "value": "1.6 Ton"},
+  {"label": "Kaldırma Yüksekliği", "value": "5500 mm"},
+  {"label": "Kullanım Tipi", "value": "Sürücülü"},
+  {"label": "Akü Kapasitesi", "value": "48V/240Ah"}
+]
+```
+
+---
+
+### 4️⃣ **ORDER PICKER** (4-Order Picker - Dikey Sipariş/)
+
+**4 Ana Özellik:**
+```json
+"primary_specs": [
+  {"label": "Çalışma Yüksekliği", "value": "[X] mm"},
+  {"label": "Yük Kapasitesi", "value": "[X] kg"},
+  {"label": "Platform Tipi", "value": "Sabit/Hareketli"},
+  {"label": "Akü Voltajı", "value": "[X]V"}
+]
+```
+
+**Örnek:**
+```json
+"primary_specs": [
+  {"label": "Çalışma Yüksekliği", "value": "8000 mm"},
+  {"label": "Yük Kapasitesi", "value": "1200 kg"},
+  {"label": "Platform Tipi", "value": "Hareketli"},
+  {"label": "Akü Voltajı", "value": "80V"}
+]
+```
+
+---
+
+### 5️⃣ **OTONOM** (5-Otonom/)
+
+**4 Ana Özellik:**
+```json
+"primary_specs": [
+  {"label": "Otomasyon Seviyesi", "value": "Tam/Yarı Otonom"},
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Navigasyon", "value": "Lazer/Kamera/QR"},
+  {"label": "Güvenlik Sistemi", "value": "Lidar/3D Kamera"}
+]
+```
+
+**Örnek:**
+```json
+"primary_specs": [
+  {"label": "Otomasyon Seviyesi", "value": "Tam Otonom"},
+  {"label": "Yük Kapasitesi", "value": "2 Ton"},
+  {"label": "Navigasyon", "value": "Lazer + QR Kod"},
+  {"label": "Güvenlik Sistemi", "value": "3D Kamera + Lidar"}
+]
+```
+
+---
+
+### 6️⃣ **REACH TRUCK** (6-Reach Truck/)
+
+**4 Ana Özellik:**
+```json
+"primary_specs": [
+  {"label": "Erişim Yüksekliği", "value": "[X] mm"},
+  {"label": "Yük Kapasitesi", "value": "[X] Ton"},
+  {"label": "Çatal Uzunluğu", "value": "[X] mm"},
+  {"label": "Akü Kapasitesi", "value": "[X]V/[X]Ah"}
+]
+```
+
+**Örnek:**
+```json
+"primary_specs": [
+  {"label": "Erişim Yüksekliği", "value": "10000 mm"},
+  {"label": "Yük Kapasitesi", "value": "2 Ton"},
+  {"label": "Çatal Uzunluğu", "value": "1200 mm"},
+  {"label": "Akü Kapasitesi", "value": "80V/500Ah"}
+]
+```
+
+---
+
+## 🎯 AI İÇİN TALİMATLAR
+
+### PDF İşleme Adımları:
+
+1. **PDF klasörünü belirle**
+   ```
+   Örnek: "/Users/nurullah/Desktop/cms/EP PDF/2-Transpalet/F4 201/..."
+   Klasör: "2-Transpalet" → Kategori: "transpalet"
+   ```
+
+2. **Kategoriye göre 4 kartı seç**
+   ```
+   Transpalet → [Yük Kapasitesi, Akü Sistemi, Çatal Uzunluğu, Denge Tekeri]
+   ```
+
+3. **PDF'den değerleri çıkar ve doldur**
+   ```json
+   "primary_specs": [
+     {"label": "Yük Kapasitesi", "value": "2 Ton"},     // PDF'den oku
+     {"label": "Akü Sistemi", "value": "Li-Ion 48V"},   // PDF'den oku
+     {"label": "Çatal Uzunluğu", "value": "1150 mm"},   // PDF'den oku
+     {"label": "Denge Tekeri", "value": "Yok"}          // PDF'den oku (option)
+   ]
+   ```
+
+4. **Her kategoride AYNI 4 kart kullanılır!**
+   ```
+   ✅ Transpalet → Her transpalet ürünü aynı 4 kartı kullanır (sadece değerler farklı)
+   ✅ Forklift → Her forklift ürünü aynı 4 kartı kullanır (sadece değerler farklı)
+   ```
+
+---
+
+## 📊 KATEGORİ → KLASÖR EŞLEŞTIRME
+
+| PDF Klasörü | Kategori Slug | primary_specs Template |
+|------------|---------------|------------------------|
+| `1-Forklift/` | forklift | Yük Kapasitesi, Mast Yüksekliği, Yakıt Tipi, Kabin Tipi |
+| `2-Transpalet/` | transpalet | Yük Kapasitesi, Akü Sistemi, Çatal Uzunluğu, Denge Tekeri |
+| `3-İstif Makineleri/` | istif-makinesi | Yük Kapasitesi, Kaldırma Yüksekliği, Kullanım Tipi, Akü Kapasitesi |
+| `4-Order Picker - Dikey Sipariş/` | order-picker | Çalışma Yüksekliği, Yük Kapasitesi, Platform Tipi, Akü Voltajı |
+| `5-Otonom/` | otonom | Otomasyon Seviyesi, Yük Kapasitesi, Navigasyon, Güvenlik Sistemi |
+| `6-Reach Truck/` | reach-truck | Erişim Yüksekliği, Yük Kapasitesi, Çatal Uzunluğu, Akü Kapasitesi |
+
+---
+
+## ✅ KONTROL LİSTESİ
+
+AI ile JSON üretirken:
+
+- [ ] PDF klasörünü tespit et
+- [ ] Kategoriyi belirle (klasör adından)
+- [ ] O kategorinin 4 kartını al (yukarıdaki tablodan)
+- [ ] PDF'den değerleri oku
+- [ ] primary_specs array'ine doldur
+- [ ] Her kategoride AYNI 4 kart kullanıldığından emin ol
+
+---
+
+**🎉 Artık tutarlı ve standart primary_specs üretebilirsin!**

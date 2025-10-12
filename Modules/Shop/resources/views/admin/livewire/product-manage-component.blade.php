@@ -182,5 +182,20 @@
                 </div>
             </div>
         </div>
+
+        {{-- MEDYA YÖNETİMİ --}}
+        <div class="mt-4">
+            <h4 class="mb-3">{{ __('shop::admin.media_management') }}</h4>
+            <livewire:mediamanagement::universal-media
+                wire:id="product-media-component"
+                :model-id="$productId"
+                model-type="shop_product"
+                model-class="Modules\Shop\App\Models\ShopProduct"
+                :collections="['featured_image', 'gallery']"
+                :sortable="true"
+                :set-featured-from-gallery="true"
+                :key="'universal-media-' . ($productId ?? 'new')"
+            />
+        </div>
     </div>
 </div>

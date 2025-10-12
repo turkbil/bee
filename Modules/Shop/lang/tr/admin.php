@@ -117,4 +117,7 @@ return [
     'variants_deleted' => ':count varyant silindi.',
     'variant_marked_as_default' => 'Varyant varsayılan olarak ayarlandı.',
     'variant_order_updated' => 'Varyant sıralaması güncellendi.',
+
+    // Medya Yönetimi
+    'media_management' => 'Medya Yönetimi',
 ];

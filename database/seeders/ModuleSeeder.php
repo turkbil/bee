@@ -98,8 +98,8 @@ class ModuleSeeder extends Seeder
                     
                     // AI modülü özel durumları - ana seeder'da zaten çağrıldı
                     if ($moduleBaseName === 'AI' && in_array($className, [
-                        'AIPurchaseSeeder', 
-                        'AITenantSetupSeeder', 
+                        'AIPurchaseSeeder',
+                        'AITenantSetupSeeder',
                         'AIUsageUpdateSeeder',
                         'AIFeatureSeeder_Complete',
                         'AIFeatureSeeder_Master',
@@ -111,6 +111,26 @@ class ModuleSeeder extends Seeder
                         'SeoAdvancedInputSystemSeeder'  // SEO expert prompts seeder'ı dahil et
                     ])) {
                         continue;
+                    }
+
+                    // Shop modülü: Sadece temel setup seederları central'da çalışır
+                    // Ürün seederları (brand, category, attribute vb. hariç) tenant'larda çalışır
+                    if ($moduleBaseName === 'Shop') {
+                        // Central'da çalışacak seederlar (whitelist)
+                        $centralShopSeeders = [
+                            'ShopSeeder',
+                            'ShopCategorySeeder',
+                            'ShopAttributeSeeder',
+                            'ShopSettingsSeeder',
+                            'ShopTaxSeeder',
+                            'ShopWarehouseSeeder',
+                        ];
+
+                        // Bu seeder central whitelist'te değilse, tenant'a gönder
+                        if (!in_array($className, $centralShopSeeders)) {
+                            $this->command->info("Skipping Shop product seeder in central: {$className}");
+                            continue;
+                        }
                     }
                     
                     
@@ -149,7 +169,28 @@ class ModuleSeeder extends Seeder
             
             foreach ($modules as $modulePath) {
                 $moduleBaseName = basename($modulePath);
-                
+
+                // Shop modülü için önce category ve brand seeder'larını çalıştır (alfabetik sırada önce gelmesi için)
+                if ($moduleBaseName === 'Shop') {
+                    // 1. Category seeder (tenant'ta da gerekli)
+                    $shopCategorySeeder = "Modules\\Shop\\Database\\Seeders\\ShopCategorySeeder";
+                    $uniqueKeyCat = $shopCategorySeeder . '_' . $tenant->id;
+                    if (class_exists($shopCategorySeeder) && !in_array($uniqueKeyCat, $this->executedSeeders)) {
+                        $this->command->info("📁 Seeding Shop categories FIRST for tenant {$tenant->id}");
+                        $this->call($shopCategorySeeder);
+                        $this->executedSeeders[] = $uniqueKeyCat;
+                    }
+
+                    // 2. Brand seeder (category'den sonra)
+                    $shopBrandSeeder = "Modules\\Shop\\Database\\Seeders\\ShopBrandSeeder";
+                    $uniqueKeyBrand = $shopBrandSeeder . '_' . $tenant->id;
+                    if (class_exists($shopBrandSeeder) && !in_array($uniqueKeyBrand, $this->executedSeeders)) {
+                        $this->command->info("🏷️ Seeding Shop brand SECOND for tenant {$tenant->id}");
+                        $this->call($shopBrandSeeder);
+                        $this->executedSeeders[] = $uniqueKeyBrand;
+                    }
+                }
+
                 // SettingManagement modülünü tenant'larda atla
                 if ($moduleBaseName === 'SettingManagement') {
                     $this->command->info("Skipping SettingManagement module seeders for tenant: {$tenant->id}");

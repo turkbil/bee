@@ -18,6 +18,9 @@
     body {
         @apply font-sans antialiased;
     }
+
+    /* GLOBAL STILLER KALDIRILDI - SADECE PROSE İÇİNDE ÇALIŞACAK */
+    /* Bunlar header, nav gibi yerleri bozuyordu */
 }
 
 @layer components {
@@ -227,6 +230,94 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* ===== PROSE SECTION FIX - ZORUNLU STİLLER ===== */
+/* Bu stiller @layer dışında olmalı ki !important çalışsın */
+
+/* SECTION SPACING - EN ÖNEMLİ FIX */
+.prose-section-spacing > section,
+.prose section {
+    margin-bottom: 3rem !important;
+    /* 48px section'lar arası boşluk */
+}
+
+.prose section h1,
+.prose section h2,
+.prose section h3,
+.prose section h4,
+.prose section h5,
+.prose section h6 {
+    color: #111827 !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+}
+
+.prose section h2 {
+    font-size: 1.875rem !important;
+    margin-bottom: 1.25rem !important;
+}
+
+.prose section h3 {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.prose section h4 {
+    font-size: 1.25rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.prose section p {
+    font-size: 1rem !important;
+    line-height: 1.75 !important;
+    margin-bottom: 1rem !important;
+    color: #374151 !important;
+}
+
+.prose section strong {
+    font-weight: 700 !important;
+    color: #111827 !important;
+}
+
+.prose section ul,
+.prose section ol {
+    list-style-position: inside !important;
+    margin-bottom: 1rem !important;
+    padding-left: 1.5rem !important;
+}
+
+.prose section ul {
+    list-style-type: disc !important;
+}
+
+.prose section ol {
+    list-style-type: decimal !important;
+}
+
+.prose section li {
+    margin-bottom: 0.5rem !important;
+}
+
+/* Dark Mode için Section Başlık Renkleri */
+.dark .prose section h1,
+.dark .prose section h2,
+.dark .prose section h3,
+.dark .prose section h4,
+.dark .prose section h5,
+.dark .prose section h6 {
+    color: #F9FAFB !important;
+    /* gray-50 - dark mode için beyaz başlıklar */
+}
+
+.dark .prose section p {
+    color: #D1D5DB !important;
+    /* gray-300 - dark mode için açık gri metin */
+}
+
+.dark .prose section strong {
+    color: #F9FAFB !important;
+    /* gray-50 - dark mode için beyaz strong */
 }
 
 /* Dark mode support (tenant-aware) */

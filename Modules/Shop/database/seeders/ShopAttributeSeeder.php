@@ -1,25 +1,30 @@
 <?php
 
-namespace Database\Seeders;
+namespace Modules\Shop\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelpers;
 
 /**
  * Shop Attribute Seeder
  *
  * Tüm ürün tipleri için ortak filtreleme attribute'larını oluşturur:
  * - Yük Kapasitesi, Voltaj, Batarya Tipi, Asansör Yüksekliği, vb.
+ *
+ * NOT: Bu seeder sadece CENTRAL database'de çalışmalıdır!
  */
 class ShopAttributeSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->command->info('🏷️  Shop Attribute Seeder başlatılıyor...');
+        // Tenant context'te çalışmayı engelle
+        if (!TenantHelpers::isCentral()) {
+            $this->command->warn('⚠️  ShopAttributeSeeder sadece central database için, atlanıyor...');
+            return;
+        }
 
-        // Mevcut attribute'ları temizle (geliştirme için)
-        DB::table('shop_product_attributes')->truncate();
-        DB::table('shop_attributes')->truncate();
+        $this->command->info('🏷️  Shop Attribute Seeder başlatılıyor...');
 
         // 1. YÜK KAPASİTESİ (Tüm ürün tipleri)
         DB::table('shop_attributes')->insert([

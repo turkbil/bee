@@ -1,5 +1,5 @@
-SİSTEM GERÇEK SİSTEM. O YÜZDEN KESİNLİKLE BANA SORMADAN 
-MİGRATE FRESH SEED -- YAPMA!!!
+SİSTEM GERÇEK SİSTEM. O YÜZDEN KESİNLİKLE  
+MİGRATE FRESH SEED -- YAPMA!!! BEN SÖYLEMEDEN VERİTABANINA MANUEL İÇERİK EKLEME VE VERİTABANINDA DÜZENLEME YAPMA. 
 
 
 # 🤖 CLAUDE ÇALIŞMA TALİMATLARI
@@ -32,11 +32,10 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 
 
 - Önce sorunları iyice düşünün
-- Planları claudeguncel.md 'e yaz
+- Planları claudeguncel-tarih-saat-id.md 'e yaz. id:rastgele benzersiz bir veri. baska dosyalarla karısmaması için.
 - Başlamadan önce giriş yapın
 - Yapılacaklar'ı tamamlanmış olarak işaretle
 - Değişiklikleri basit tutun
-
 
 ## 📋 ÇALIŞMA YÖNTEMİ
 

@@ -278,7 +278,9 @@ class ShopContextBuilder
         try {
             return ShopController::resolveProductUrl($product, $this->locale);
         } catch (\Exception $e) {
-            return url('/shop/' . $this->translate($product->slug));
+            // FIX: Explicit concatenation to prevent URL merge issues
+            $slug = ltrim($this->translate($product->slug), '/');
+            return url('/shop/' . $slug);
         }
     }
 
@@ -287,10 +289,11 @@ class ShopContextBuilder
      */
     protected function getCategoryUrl(ShopCategory $category): string
     {
-        $slug = $this->translate($category->slug);
+        $slug = ltrim($this->translate($category->slug), '/');
         $defaultLocale = get_tenant_default_locale();
         $localePrefix = $this->locale !== $defaultLocale ? '/' . $this->locale : '';
 
+        // FIX: Explicit concatenation to prevent URL merge issues
         return url($localePrefix . '/shop/category/' . $slug);
     }
 

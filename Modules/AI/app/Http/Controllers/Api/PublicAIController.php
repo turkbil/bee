@@ -594,6 +594,18 @@ class PublicAIController extends Controller
             // Build enhanced system prompt with product context
             $enhancedSystemPrompt = $this->buildEnhancedSystemPrompt($aiContext);
 
+            // 🔍 DEBUG: Log AI context URLs to check if they're correct
+            if (!empty($aiContext['context']['modules']['shop']['all_products'])) {
+                $firstProduct = $aiContext['context']['modules']['shop']['all_products'][0] ?? null;
+                if ($firstProduct) {
+                    \Log::info('🔍 AI Context - First Product URL Check', [
+                        'title' => $firstProduct['title'] ?? 'N/A',
+                        'url' => $firstProduct['url'] ?? 'N/A',
+                        'expected_format' => 'http://laravel.test/shop/slug',
+                    ]);
+                }
+            }
+
             // 🧠 CONVERSATION MEMORY: Get last 3 messages for context (token limit koruması)
             $conversationHistory = $conversation->messages()
                 ->orderBy('created_at', 'desc')
@@ -826,16 +838,18 @@ class PublicAIController extends Controller
         $prompts[] = "";
         $prompts[] = "## 🎯 SATIŞ ODAKLI YANITLAR - MUTLAKA ÜRÜN LİNKLERİ VER!";
         $prompts[] = "**AMAÇ:** Bilgi vermek DEĞİL, SATIŞ YAPMAK! Her yanıtta ürün linklerini markdown formatında paylaş.";
-        $prompts[] = "**ZORUNLU FORMAT:** [Ürün Adı](ürün_url) - SKU: XXX - Fiyat: YYY";
-        $prompts[] = "**ÖRNEK YANIT:** \"Şantiye ortamı için **[İXTİF CPD15TVL - 1.5 Ton Forklift](https://site.com/urun/xtif-cpd15tvl)** ve **[İXTİF F2 Transpalet](https://site.com/urun/ixtif-f2)** ürünlerimizi önerebilirim. Detaylar için linklere tıklayabilirsiniz.\"";
+        $prompts[] = "**🚨 KRİTİK URL KURALI:** ASLA kendi URL üretme! SADECE aşağıdaki BAĞLAM BİLGİLERİ bölümünde verilen 'url' alanındaki linkleri kullan!";
+        $prompts[] = "**ZORUNLU FORMAT:** [Ürün Adı](context'ten_gelen_url) - Örnek: [İXTİF F2](https://ixtif.com/shop/ixtif-f2-15-ton-li-ion-transpalet)";
+        $prompts[] = "**YANLIŞ:** Kendi URL oluşturmak → https://ixtif.com/urunxtif-f2 (slash eksik) ❌";
+        $prompts[] = "**DOĞRU:** Context'teki URL'yi kullanmak → https://ixtif.com/shop/ixtif-f2-15-ton-li-ion-transpalet ✅";
         $prompts[] = "**HATIRLATMA:** Ürün adı geçtiğinde MUTLAKA tıklanabilir link ver. Sadece bilgi verme, ürüne YÖNLENDIR!";
         $prompts[] = "**ÖNEMLİ:** Tüm cümlelerine BÜYÜK HARF ile başla. Doğru Türkçe gramer ve yazım kurallarına uy.";
         $prompts[] = "";
         $prompts[] = "## 💎 SATIŞ DİLİ VE ÜRÜN ÖVGÜSÜ (COŞKULU PAZARLAMA!)";
         $prompts[] = "**ZORUNLU:** Ürünleri ÖVEREK tanıt! Kuru bilgi verme, ürünün ne kadar MÜKEMMEL olduğunu anlat!";
         $prompts[] = "**SATIŞÇI RUH:** 'Bu ürün harika!', 'Muhteşem özellikler!', 'Rakipsiz performans!', 'En çok tercih edilen model!' gibi ifadeler kullan.";
-        $prompts[] = "**ÖRNEKİXTİF F2 Transpalet'imiz gerçekten MÜKEMMEL bir seçim! Li-Ion bataryasıyla HIZLI şarj, UZUN ömür. Ergonomik tasarımıyla operatör yorulmadan SAATLERCE çalışabilir. Kompakt yapısı sayesinde dar alanlarda bile RAHATÇA manevra yaparsınız!\"";
-        $prompts[] = "**YASAK DİL:** 'iyi', 'kullanışlı', 'standart' gibi sıradan kelimeler. Bunun yerine 'HARIKA', 'MÜKEİ', 'RAKİPSİZ', 'EN İYİ' kullan!";
+        $prompts[] = "**ÖRNEK:** \"İXTİF F2 Transpalet'imiz gerçekten MÜKEMMEL bir seçim! Li-Ion bataryasıyla HIZLI şarj, UZUN ömür sunar. Daha fazla bilgi için [İXTİF F2 sayfamızı](https://ixtif.com/shop/ixtif-f2) ziyaret edebilirsiniz.\"";
+        $prompts[] = "**YASAK DİL:** 'iyi', 'kullanışlı', 'standart' gibi sıradan kelimeler. Bunun yerine 'HARIKA', 'MÜKEMMEL', 'RAKİPSİZ', 'EN İYİ' kullan!";
         $prompts[] = "**AVANTAJLARI VURGULA:** Her üründe 'Neden bu ürün?' sorusunu cevapla. Özelliklerini sayarken FAYDALARINA odaklan!";
         $prompts[] = "";
         $prompts[] = "## 🚨 KRİTİK: KULLANICI KAPASİTE/MODEL SORARSA TÜM UYGUN ÜRÜNLERİ LİSTELE!";
@@ -1022,7 +1036,7 @@ class PublicAIController extends Controller
             // ALL ACTIVE PRODUCTS (MAKSIMUM 30 ÜRÜN - Token limit koruması)
             if (!empty($shopContext['all_products'])) {
                 $formatted[] = "\n**Mevcut Ürünler (MUTLAKA LİNK VER!):**";
-                $formatted[] = "**SATIŞ KURALI:** Kullanıcı ürün sorduğunda MUTLAKA markdown link formatında yanıt ver: [Ürün Adı](url)";
+                $formatted[] = "**🚨 KRİTİK: Aşağıdaki ürünler için SADECE parantez içindeki URL'leri kullan! Kendi URL üretme!**";
                 $formatted[] = "";
 
                 // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
@@ -1042,8 +1056,9 @@ class PublicAIController extends Controller
                         $priceInfo = " - (Fiyat sorunuz)";
                     }
 
-                    // Markdown link formatında ürün bilgisi (short_description KALDIRILDI - token tasarrufu)
-                    $formatted[] = "- **[{$title}]({$url})** (SKU: {$sku}) | {$category}{$priceInfo}";
+                    // FIX: URL'yi daha net göster - AI için açık format
+                    $formatted[] = "- **{$title}** → URL: `{$url}` | SKU: {$sku} | {$category}{$priceInfo}";
+                    $formatted[] = "  → Markdown format: [{$title}]({$url})";
                 }
 
                 $formatted[] = "";

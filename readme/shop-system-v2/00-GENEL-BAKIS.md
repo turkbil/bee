@@ -31,7 +31,7 @@ Bu sistem **iki temel ihtiyacı** karşılar:
 ```json
 {
   "title": "Ürün Adı",
-  "long_description": "Marketing intro + body",
+  "body": "Marketing intro + body",
   "features": {
     "list": ["Özellik 1", "Özellik 2"],
     "branding": {

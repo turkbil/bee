@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES14_14WA_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES14_14WA_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES14-14WA')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ES14-14WA'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ES14-14WA');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>Operasyonların Ritmini Yükselten Akıllı İstif</h2>
+            'body' => json_encode(['tr' => '<section><h2>Operasyonların Ritmini Yükselten Akıllı İstif</h2>
 <p>Günün ilk sevkiyatı kapıya yanaşırken, ekip raf yenilemeye çoktan başlar. İXTİF ES14-14WA dar koridorlarda sakin ama
 emin adımlarla ilerler; AC sürüş sistemi yük altındayken bile akıcı hızlanma sağlar. 600&nbsp;mm yük merkezi ve
 1400 kg nominal kapasite dengeli istifi mümkün kılar. İki kademeli indirme, üst raflara yaklaşırken
@@ -33,7 +40,8 @@ palet tiplerine uyum verir. Opsiyon listesinde 1150/1220&nbsp;mm çatal uzunluğ
 hasar riskini düşürür, istif tekrarlarını azaltırsınız.</p></section><section><h3>Sonuç</h3>
 <p>İş gücü verimliliği artık saniyelerle ölçülüyor. İXTİF ES14-14WA, güvenlik ve hız arasında ideal dengeyi kurarak toplam
 sahip olma maliyetini düşürür. Doğru konfigürasyon için ekibimizle görüşün: <strong>0216 755 3 555</strong>.</p></section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -56,9 +64,11 @@ sahip olma maliyetini düşürür. Doğru konfigürasyon için ekibimizle görü
                         "value": "1589 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -91,9 +101,11 @@ JSON
                         "description": "Mekanik direksiyon ve modüler tasarım ile hızlı servis."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -128,9 +140,11 @@ JSON
                         "text": "Endüstriyel üretim hücrelerinde paletli yarı mamul akışı"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -153,9 +167,11 @@ JSON
                         "text": "Modüler servis erişimi ile daha kısa bakım süreleri"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -246,10 +262,12 @@ JSON
                         "text": "İnşaat Malzemeleri Depoları"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'warranty_info' => json_encode(['coverage' => 'Makine 12 ay, Li-Ion batarya 24 ay garanti.', 'duration_months' => 12, 'battery_warranty_months' => 24], JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -284,9 +302,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -295,9 +315,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Hangi mast yükseklikleri mevcut ve kapalı/açık yükseklikler nasıl değişir?",
@@ -348,8 +370,9 @@ JSON
                         "answer": "Makine 12 ay, batarya 24 ay garantilidir. İXTİF servis, yedek parça ve kiralama için 0216 755 3 555 üzerinden destek verir."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info('✅ Detailed güncellendi: ES14-14WA');

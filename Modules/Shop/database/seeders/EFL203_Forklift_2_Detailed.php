@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL203_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL203_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL203')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL203'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL203');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF EFL203: Dış sahada sağlam, içerde çevik</h2>
 <p>2000 kg kapasiteli İXTİF EFL203, içten yanmalı görünümlü fakat tamamen elektrikli altyapısıyla depo içi ve açık alan operasyonlarınızda güvenilir bir omurga sağlar. 80V 230Ah Li-Ion güç paketi kısa şarj molalarıyla vardiya sürelerini kesintisiz kılar; 14/15 km/s seyir hızı, %15/%20 tırmanma kabiliyeti ve 0.29/0.36 m/s kaldırma hızı yoğun yükleme-boşaltma döngülerinde akışı korur. Pnömatik lastikler, yüksek şasi açıklığı ve suya dayanıklı yapı ile rampalar, ıslak zeminler ve bozuk satıhlarda istikrarlı ilerler. Geniş ayak alanı, ayarlanabilir direksiyon ve kol dayamalı koltuk, operatörün tüm vardiya boyunca konforunu destekler.</p></section>
 <section><h3>Teknik güç ve görünürlük</h3>

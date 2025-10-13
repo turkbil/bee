@@ -26,7 +26,7 @@
 --}}
 
 @props([
-    'title' => 'AI Asistan ile Konuşun',
+    'title' => 'Yapay Zeka Asistanı ile Konuşun',
     'productId' => null,
     'categoryId' => null,
     'pageSlug' => null,
@@ -183,10 +183,7 @@ window.aiChatRenderMarkdown = function(text) {
             });
             @endif
 
-            // Open if initially open
-            if (this.isOpen && this.chat.messages.length === 0) {
-                this.chat.addSystemMessage(`👋 **iXtif Yapay Zeka Sistemi** iXtif.com için özel olarak geliştirilmiştir.\n\nÜrünlerimiz, hizmetlerimiz ve şirketimiz hakkında tüm sorularınızı yanıtlamak için buradayım. Size nasıl yardımcı olabilirim?`);
-            }
+            // Removed welcome message - using placeholder animation instead
 
             // Scroll to bottom after init (if open)
             if (this.isOpen) {
@@ -201,10 +198,6 @@ window.aiChatRenderMarkdown = function(text) {
             if (this.alwaysOpen) return;
 
             this.isOpen = !this.isOpen;
-
-            if (this.isOpen && this.chat.messages.length === 0) {
-                this.chat.addSystemMessage(`👋 **iXtif Yapay Zeka Sistemi** iXtif.com için özel olarak geliştirilmiştir.\n\nÜrünlerimiz, hizmetlerimiz ve şirketimiz hakkında tüm sorularınızı yanıtlamak için buradayım. Size nasıl yardımcı olabilirim?`);
-            }
 
             // Scroll to bottom when opening
             if (this.isOpen) {
@@ -279,13 +272,11 @@ window.aiChatRenderMarkdown = function(text) {
             data-ai-chat-messages
             class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900"
         >
-            {{-- Empty state --}}
-            <div x-show="!chat.hasConversation" class="text-center text-gray-500 dark:text-gray-400 mt-12">
-                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-                </svg>
-                <p class="text-sm">Henüz mesaj yok.</p>
-                <p class="text-xs mt-1">Bir mesaj yazarak başlayın!</p>
+            {{-- Placeholder Animation (V4 - Slide Up - Dynamic Product-specific) --}}
+            <div x-show="!chat.hasConversation"
+                 x-data="placeholderV4({{ $productId ? "'" . $productId . "'" : 'null' }})"
+                 x-init="await init(); await start()"
+                 class="space-y-3">
             </div>
 
             {{-- Messages --}}

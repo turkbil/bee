@@ -18,7 +18,7 @@ class AISettingsHelper
      */
     public static function getAssistantName(): string
     {
-        return setting('ai_assistant_name', 'AI Asistan');
+        return setting('ai_assistant_name', 'Yapay Zeka Asistanı');
     }
 
     /**
@@ -139,11 +139,24 @@ class AISettingsHelper
      */
     public static function buildPersonalityPrompt(): string
     {
-        $personality = self::getPersonality();
-        $company = self::getCompanyContext();
-        $tactics = self::getSalesTactics();
-        $target = self::getTargetAudience();
+        $tenantId = tenant('id');
+        $cacheKey = "ai_personality_prompt_{$tenantId}";
 
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () {
+            $personality = self::getPersonality();
+            $company = self::getCompanyContext();
+            $tactics = self::getSalesTactics();
+            $target = self::getTargetAudience();
+
+            return self::buildPersonalityPromptInternal($personality, $company, $tactics, $target);
+        });
+    }
+
+    /**
+     * Internal method for building personality prompt
+     */
+    private static function buildPersonalityPromptInternal($personality, $company, $tactics, $target): string
+    {
         $roleMapping = [
             'sales_expert' => 'Sen bir SATI^ UZMANISIN. Hevesli, ikna edici ve pazarlama odakl1 konu_ursun.',
             'technical_consultant' => 'Sen bir TEKN0K DANI^MANSIN. Teknik detaylara odaklan1r, profesyonel ve bilgi verici konu_ursun.',

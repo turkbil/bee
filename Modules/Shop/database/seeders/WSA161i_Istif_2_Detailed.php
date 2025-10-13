@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class WSA161i_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class WSA161i_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'WSA161i')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>WSA161i ile Yoğun Depolarda Hızlı ve Güvenli İstif</h2>
   <p>Günün ilk sevkiyatından gece vardiyasının son satırına kadar, WSA161i depoların ritmine ayak uydurmak için tasarlandı. Başlangıç kaldırma ve destek kolu yapısı sayesinde zemindeki eşitsizlikleri rahatça aşar, rampalardan akıcı geçiş sağlar. Çift kat palet taşıma özelliği yoğun saatlerde hattı beslerken çeviklik kazandırır; kompakt şasi ve kaplumbağa modu dar koridorlarda kontrollü manevralar sunar. Operatör, üst kapaktaki saklama bölmesi ve USB çıkış ile belgelerini düzenli tutar, mobil cihazlarını kolayca güçlendirir.</p>

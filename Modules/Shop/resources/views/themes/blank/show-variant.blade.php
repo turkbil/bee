@@ -6,7 +6,7 @@
             $currentLocale = app()->getLocale();
             $title = $item->getTranslated('title', $currentLocale);
             $shortDescription = $item->getTranslated('short_description', $currentLocale);
-            $longDescription = $item->getTranslated('long_description', $currentLocale);
+            $longDescription = $item->getTranslated('body', $currentLocale);
 
             $moduleSlugService = app(\App\Services\ModuleSlugService::class);
             $indexSlug = $moduleSlugService->getMultiLangSlug('Shop', 'index', $currentLocale);
@@ -18,15 +18,19 @@
             $galleryImages = $item->getMedia('gallery');
 
             $resolveLocalized = static function ($data) use ($currentLocale, $defaultLocale) {
-                if (!is_array($data)) return $data;
-                return $data[$currentLocale] ?? $data[$defaultLocale] ?? $data['en'] ?? reset($data);
+                if (!is_array($data)) {
+                    return $data;
+                }
+                return $data[$currentLocale] ?? ($data[$defaultLocale] ?? ($data['en'] ?? reset($data)));
             };
 
             // Use Cases (Varyanta Özel)
             $useCases = [];
             if (is_array($item->use_cases)) {
                 $resolvedUseCases = $resolveLocalized($item->use_cases);
-                if (is_array($resolvedUseCases)) $useCases = array_values(array_filter($resolvedUseCases));
+                if (is_array($resolvedUseCases)) {
+                    $useCases = array_values(array_filter($resolvedUseCases));
+                }
             }
 
             // Product-based Variants (diğer varyantlar)
@@ -36,7 +40,7 @@
         @endphp
 
         {{-- ℹ️ VARIANT INFO BOX --}}
-        @if($isVariantPage && $parentProduct)
+        @if ($isVariantPage && $parentProduct)
             <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-500">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div class="flex items-center gap-3">
@@ -46,7 +50,7 @@
                                 <strong>Bu bir varyant ürünüdür.</strong>
                                 Ana ürün:
                                 <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($parentProduct, $currentLocale) }}"
-                                   class="text-blue-600 dark:text-blue-400 hover:underline font-semibold">
+                                    class="text-blue-600 dark:text-blue-400 hover:underline font-semibold">
                                     {{ $parentProduct->getTranslated('title', $currentLocale) }}
                                 </a>
                             </p>
@@ -118,8 +122,9 @@
                     <div
                         class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
                         <div class="flex gap-2" id="toc-buttons">
-                            @if($parentProduct)
-                                <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($parentProduct, $currentLocale) }}" data-target="parent"
+                            @if ($parentProduct)
+                                <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($parentProduct, $currentLocale) }}"
+                                    data-target="parent"
                                     class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-arrow-left mr-1.5"></i>Ana Ürün
                                 </a>
@@ -154,7 +159,7 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {{-- 🎨 GALLERY --}}
-            @if($galleryImages->count() > 0)
+            @if ($galleryImages->count() > 0)
                 <section id="gallery" class="py-16">
                     <header class="text-center mb-12">
                         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">Ürün Galerisi</h2>
@@ -162,20 +167,24 @@
                     </header>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        @foreach($galleryImages as $index => $image)
+                        @foreach ($galleryImages as $index => $image)
                             @php
-                                $spanClass = match($index % 6) {
+                                $spanClass = match ($index % 6) {
                                     0 => 'md:col-span-2 md:row-span-2',
                                     3 => 'md:col-span-2',
                                     default => '',
                                 };
                             @endphp
-                            <a href="{{ $image->getUrl() }}" class="glightbox block relative overflow-hidden rounded-lg group {{ $spanClass }}" data-gallery="shop-gallery">
+                            <a href="{{ $image->getUrl() }}"
+                                class="glightbox block relative overflow-hidden rounded-lg group {{ $spanClass }}"
+                                data-gallery="shop-gallery">
                                 <img src="{{ $image->hasGeneratedConversion('medium') ? $image->getUrl('medium') : $image->getUrl() }}"
-                                     alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                    <i class="fa-solid fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                    alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                <div
+                                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                    <i
+                                        class="fa-solid fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
                             </a>
                         @endforeach
@@ -184,11 +193,12 @@
             @endif
 
             {{-- 📝 VARIANT MARKETING CONTENT --}}
-            @if($longDescription)
+            @if ($longDescription)
                 <section class="py-16">
                     <div class="grid lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2">
-                            <div class="prose prose-base md:prose-lg max-w-none dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-white prose-a:text-blue-600 dark:prose-a:text-blue-400">
+                            <div
+                                class="prose prose-base md:prose-lg max-w-none dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-white prose-a:text-blue-600 dark:prose-a:text-blue-400">
                                 @parsewidgets($longDescription)
                             </div>
                         </div>
@@ -198,7 +208,8 @@
                                 <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-6 text-white">
                                     <h3 class="text-xl font-bold mb-4">Hızlı İletişim</h3>
                                     <div class="space-y-4">
-                                        <a href="tel:02167553555" class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
+                                        <a href="tel:02167553555"
+                                            class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
                                             <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                                                 <i class="fa-solid fa-phone"></i>
                                             </div>
@@ -207,7 +218,8 @@
                                                 <div class="font-semibold">0216 755 3 555</div>
                                             </div>
                                         </a>
-                                        <a href="mailto:info@ixtif.com" class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
+                                        <a href="mailto:info@ixtif.com"
+                                            class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
                                             <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                                                 <i class="fa-solid fa-envelope"></i>
                                             </div>
@@ -217,23 +229,27 @@
                                             </div>
                                         </a>
                                     </div>
-                                    <a href="#contact-form" class="mt-6 block w-full bg-white text-blue-700 font-bold py-3 rounded-lg text-center hover:bg-blue-50 transition-colors">
+                                    <a href="#contact-form"
+                                        class="mt-6 block w-full bg-white text-blue-700 font-bold py-3 rounded-lg text-center hover:bg-blue-50 transition-colors">
                                         Teklif Formu
                                     </a>
                                 </div>
 
                                 {{-- Ana Ürüne Dön --}}
-                                @if($parentProduct)
-                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                @if ($parentProduct)
+                                    <div
+                                        class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+                                        <h3
+                                            class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                                             <i class="fa-solid fa-box text-blue-600"></i>
                                             Ana Ürün
                                         </h3>
                                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                            Detaylı teknik özellikler, SSS ve tüm bilgiler için ana ürün sayfasını ziyaret edin.
+                                            Detaylı teknik özellikler, SSS ve tüm bilgiler için ana ürün sayfasını ziyaret
+                                            edin.
                                         </p>
                                         <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($parentProduct, $currentLocale) }}"
-                                           class="block w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold py-3 rounded-lg text-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                            class="block w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold py-3 rounded-lg text-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
                                             <i class="fa-solid fa-arrow-left mr-2"></i>
                                             Ana Ürüne Git
                                         </a>
@@ -246,17 +262,20 @@
             @endif
 
             {{-- 🎯 USE CASES --}}
-            @if(!empty($useCases))
+            @if (!empty($useCases))
                 <section id="usecases" class="py-16">
                     <header class="text-center mb-12">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">Bu Varyantın Kullanım Alanları</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">Bu Varyantın Kullanım
+                            Alanları</h2>
                         <p class="text-gray-600 dark:text-gray-400">Bu varyantın öne çıktığı spesifik senaryolar</p>
                     </header>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        @foreach($useCases as $case)
-                            <div class="flex items-start gap-4 bg-blue-50 dark:bg-gray-800 p-6 rounded-lg border border-blue-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-700 hover:shadow-lg transition-all group">
-                                <div class="flex-shrink-0 w-12 h-12 bg-blue-600 dark:bg-blue-700 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        @foreach ($useCases as $case)
+                            <div
+                                class="flex items-start gap-4 bg-blue-50 dark:bg-gray-800 p-6 rounded-lg border border-blue-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-700 hover:shadow-lg transition-all group">
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 bg-blue-600 dark:bg-blue-700 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <i class="fa-solid fa-check text-white text-xl"></i>
                                 </div>
                                 <p class="text-gray-700 dark:text-gray-300 leading-relaxed pt-2">{{ $case }}</p>
@@ -267,7 +286,7 @@
             @endif
 
             {{-- 🔀 PRODUCT-BASED VARIANTS SECTION --}}
-            @if($siblingVariants->count() > 0)
+            @if ($siblingVariants->count() > 0)
                 <section id="variants" class="py-16">
                     <header class="text-center mb-12">
                         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
@@ -277,57 +296,66 @@
                     </header>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach($siblingVariants as $variant)
+                        @foreach ($siblingVariants as $variant)
                             @php
                                 $variantTitle = $variant->getTranslated('title', $currentLocale) ?? $variant->sku;
                                 $variantSlug = $variant->getTranslated('slug', $currentLocale);
                                 $variantDescription = $variant->getTranslated('short_description', $currentLocale);
-                                $variantUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($variant, $currentLocale);
+                                $variantUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl(
+                                    $variant,
+                                    $currentLocale,
+                                );
 
                                 $variantImage = $variant->getFirstMedia('featured_image');
                                 $variantImageUrl = $variantImage
-                                    ? ($variantImage->hasGeneratedConversion('thumb') ? $variantImage->getUrl('thumb') : $variantImage->getUrl())
+                                    ? ($variantImage->hasGeneratedConversion('thumb')
+                                        ? $variantImage->getUrl('thumb')
+                                        : $variantImage->getUrl())
                                     : null;
                             @endphp
                             <a href="{{ $variantUrl }}"
-                               class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                                class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
 
-                                @if($variantImageUrl)
+                                @if ($variantImageUrl)
                                     <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
-                                        <img src="{{ $variantImageUrl }}"
-                                             alt="{{ $variantTitle }}"
-                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                        <img src="{{ $variantImageUrl }}" alt="{{ $variantTitle }}"
+                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     </div>
                                 @endif
 
                                 <div class="p-6">
                                     <div class="flex items-start justify-between mb-3">
-                                        <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                        <h3
+                                            class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                             {{ $variantTitle }}
                                         </h3>
-                                        <i class="fa-solid fa-arrow-right text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                        <i
+                                            class="fa-solid fa-arrow-right text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
                                     </div>
 
-                                    @if($variantDescription)
+                                    @if ($variantDescription)
                                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                                             {{ $variantDescription }}
                                         </p>
                                     @endif
 
-                                    @if($variant->variant_type)
-                                        <div class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full mb-3">
+                                    @if ($variant->variant_type)
+                                        <div
+                                            class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full mb-3">
                                             <i class="fa-solid fa-tag"></i>
                                             <span>{{ ucfirst(str_replace('-', ' ', $variant->variant_type)) }}</span>
                                         </div>
                                     @endif
 
-                                    <div class="flex items-center gap-2 text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 px-3 py-2 rounded border border-gray-200 dark:border-slate-700">
+                                    <div
+                                        class="flex items-center gap-2 text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 px-3 py-2 rounded border border-gray-200 dark:border-slate-700">
                                         <i class="fa-solid fa-barcode"></i>
                                         <span>{{ $variant->sku }}</span>
                                     </div>
 
                                     <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
+                                        <span
+                                            class="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
                                             Detayları Görüntüle <i class="fa-solid fa-chevron-right ml-1"></i>
                                         </span>
                                     </div>
@@ -355,7 +383,8 @@
     {{-- Trust Signals - Modern 4 Column (Before Contact Form) --}}
     <section id="trust-signals" class="relative mt-32 scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
+            <div
+                class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {{-- GARANTİLİ --}}
                     <div class="flex items-center gap-4">
@@ -413,7 +442,8 @@
             <div class="flex flex-col md:flex-row gap-8 items-start">
                 {{-- SOL: FORM (7/12) --}}
                 <div class="w-full md:w-7/12">
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 md:p-10">
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 md:p-10">
                         <div class="mb-8">
                             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                                 Hemen Teklif Alın

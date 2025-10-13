@@ -336,7 +336,7 @@ class F4_201_Transpalet_2_Content_Seeder extends Seeder
         DB::table('shop_products')->where('product_id', $productId)->update([
 
             // Long Description (Marketing HTML)
-            'long_description' => json_encode(['tr' => <<<'HTML'
+            'body' => json_encode(['tr' => <<<'HTML'
 <section class="marketing-intro">
 <p><strong>[Duygusal tetikleyici açılış]</strong></p>
 <ul>
@@ -419,7 +419,7 @@ HTML
 **İçerik:**
 - Child products (3-8 varyant)
 - **🎯 YENİ STRATEJİ:** Varyantlar için **AYRI SAYFA** var! (`show-variant.blade.php`)
-- **✅ UNIQUE CONTENT:** Her varyanta ÖZEL `long_description` + `use_cases` + `short_description` yazılır (Google SEO için)
+- **✅ UNIQUE CONTENT:** Her varyanta ÖZEL `body` + `use_cases` + `short_description` yazılır (Google SEO için)
 - **🔗 INHERIT:** `features`, `faq_data`, `technical_specs`, `competitive_advantages`, `target_industries`, `warranty_info`, `accessories`, `certifications`, `highlighted_features` master'dan inherit edilir
 
 **Varyant Türleri (Örnekler):**
@@ -429,7 +429,7 @@ HTML
 - Denge tekeri tipi (poliüretan/nylon/tandem)
 
 **🔑 Varyant Sayfası Özellikleri:**
-- ✅ Varyanta ÖZEL long_description (o varyantın avantajlarını anlatan unique içerik)
+- ✅ Varyanta ÖZEL body (o varyantın avantajlarını anlatan unique içerik)
 - ✅ Varyanta ÖZEL use_cases (o varyantın kullanım alanları - 6 senaryo)
 - ✅ Varyanta ÖZEL short_description (1-2 cümle, UZUN ve AÇIKLAYICI olmalı)
 - ❌ Technical specs, features, FAQ gibi detaylı bilgiler YOK (master'da var)
@@ -472,7 +472,7 @@ class F4_201_Transpalet_3_Variants_Seeder extends Seeder
                 'short_description' => 'Standart 1150mm çatal uzunluğu ile EUR palet (1200x800mm) taşımada maksimum verimlilik. Dar koridor operasyonlarında ideal dönüş yarıçapı ve manevra özgürlüğü sunan, endüstride en yaygın tercih edilen çatal boyutu.',
 
                 // 📝 LONG DESCRIPTION: Varyanta ÖZEL unique içerik (bu varyantın AVANTAJLARI ve NEDEN TERCİH EDİLMELİ)
-                'long_description' => <<<'HTML'
+                'body' => <<<'HTML'
 <section class="variant-intro">
 <p><strong>1150mm çatal uzunluğu, F4 201 transpalet ailesinin en popüler ve yaygın kullanılan varyantıdır.</strong></p>
 <p>Standart 1200x800 mm EUR palet taşımada ideal olan 1150mm çatal, dar koridor operasyonlarında maksimum manevra kabiliyeti sağlar.</p>
@@ -509,8 +509,8 @@ HTML
                 // 📝 UZUN VE AÇIKLAYICI short_description (30-50 kelime)
                 'short_description' => 'Tek tekerlek yerine çift denge tekeri konfigürasyonu ile yük ağırlığını geniş yüzeye dağıtan stabilite sistemi. Bozuk beton, çatlak zemin, dış saha rampaları ve eşitsiz yüzeylerde devrilme riskini sıfırlayan İSG uyumlu güvenlik çözümü.',
 
-                // 📝 Varyanta ÖZEL long_description
-                'long_description' => <<<'HTML'
+                // 📝 Varyanta ÖZEL body
+                'body' => <<<'HTML'
 <section class="variant-intro">
 <p><strong>Tandem tekerlek sistemi, F4 201'in stabilite ve güvenlik standardını bozuk zeminlerde bile üst seviyeye çıkarır.</strong></p>
 <p>[Bu varyantın ÖZEL avantajları...]</p>
@@ -540,7 +540,7 @@ HTML
                 'title' => json_encode(['tr' => $v['title']], JSON_UNESCAPED_UNICODE),
                 'slug' => json_encode(['tr' => Str::slug($v['title'])], JSON_UNESCAPED_UNICODE),
                 'short_description' => json_encode(['tr' => $v['short_description']], JSON_UNESCAPED_UNICODE),
-                'long_description' => json_encode(['tr' => $v['long_description']], JSON_UNESCAPED_UNICODE),
+                'body' => json_encode(['tr' => $v['body']], JSON_UNESCAPED_UNICODE),
                 'use_cases' => json_encode($v['use_cases'], JSON_UNESCAPED_UNICODE),
 
                 // 🔗 Master'dan INHERIT edilen: features, faq_data, technical_specs, competitive_advantages, target_industries, warranty_info, accessories, certifications, highlighted_features

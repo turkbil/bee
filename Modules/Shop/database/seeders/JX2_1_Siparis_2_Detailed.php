@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class JX2_1_Siparis_2_Detailed extends Seeder {
-    public function run(): void {
+class JX2_1_Siparis_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'JX2-1')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: JX2-1'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: JX2-1');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF JX2-1 ile Zemin Seviyesinde Hızlı, Güvenli ve Akıllı Toplama</h2>
   <p><strong>Sabah vardiyası başladığında</strong> ilk paleti raftan almak için saniyeler önemlidir. İXTİF JX2-1, 31.5” kompakt gövdesi ve 58” dönüş yarıçapıyla dar koridorlarda bile akıcı manevra sağlar. Operatör, çift yönlü sürüş kumandası sayesinde çatal önde ya da arkada konumlarla ergonomik çalışır; rejeneratif frenleme ve elektromanyetik park freni, her duruşu güvenli ve kontrollü kılar. 72”e kadar kaldırma yüksekliği, alt seviye raflardan ürün toplamayı hızlandırırken 42” çatal ve 22” çatal aralığı, yaygın palet ölçülerine tam uyum sunar. İç mekân ve düzgün zemin için optimize edilen şasi, gürültüyü 74 dB(A) seviyesinde tutarak vardiya konforunu artırır. Kısacası JX2-1, düşük seviye order picking operasyonlarında ritmi yükselten, güveni artıran ve verimliliği günlük standardınız hâline getiren bir çözümdür.</p>

@@ -156,10 +156,15 @@ class SeoAIController extends Controller
         ]);
 
         try {
+            // PHP execution time'ı artır (5 dakika)
+            set_time_limit(300);
+            ini_set('max_execution_time', '300');
+
             Log::info('SEO AI Suggestions Request', [
                 'form_content_keys' => array_keys($validated['form_content']),
                 'language' => $validated['language'],
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
+                'timeout_set' => '300s'
             ]);
 
             // AI ile SEO önerileri al
@@ -168,7 +173,9 @@ class SeoAIController extends Controller
                 language: $validated['language'],
                 options: [
                     'user_id' => Auth::id(),
-                    'tenant_context' => true
+                    'tenant_context' => true,
+                    'max_tokens' => 2000, // Token limiti
+                    'timeout' => 240 // 4 dakika AI timeout
                 ]
             );
 
@@ -189,9 +196,10 @@ class SeoAIController extends Controller
         } catch (\Exception $e) {
             Log::error('SEO AI Suggestions Error', [
                 'error' => $e->getMessage(),
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'error' => 'SEO önerileri alınırken hata oluştu: ' . $e->getMessage()

@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EPL153_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class EPL153_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EPL153')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EPL153'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EPL153');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF EPL153: Kompakt gücün verimli lojistik çözümü</h2><p>İXTİF EPL153, depo içi kısa mesafe taşımalarda hız, güvenlik ve kullanım kolaylığını bir araya getirir. 1500 kg nominal kapasite ve 600 mm yük merkeziyle standart EUR paletleri rahatlıkla taşır. Kompakt şasi (l2=400 mm) ve sadece 120 kg servis ağırlığı sayesinde rampalara yaklaşma ve dar koridor dönüşlerinde operatörü yormadan çalışır. Çıkarılabilir 24V 20Ah Li-Ion batarya gün içi hızlı değişim ve harici şarj ile vardiya sürekliliği sağlar.</p></section><section><h3>Teknik</h3><p>Sürüş DC kontrol yapısı ve 0.75 kW tahrik motoru ile stabildir; 0.7 kW kaldırma motoru kontrollü kaldırma sunar. 4.5/5.0 km/s hız değerleri, 1330 mm dönüş yarıçapı ve 2050–2145 mm koridor gereksinimleri dar alan performansını belirler. Poliüretan tekerlekler düşük gürültü ve zemin koruması sağlar. 50×150×1150 mm çatal ölçüsü standarttır; 560 veya 685 mm çatal aralığı seçenekleri farklı palet tipleriyle uyumu güçlendirir. Yüklü/yüksüz tırmanma kabiliyeti %6/%16 olup elektromanyetik servis freni eğimli alanlarda güvenli durmayı destekler. İndirme işlemi manuel kontrollüdür; hassas yüklerde zarar riskini düşürür. Batarya 24V/20Ah modüldür ve yaklaşık 7 kg’dır; harici 24V-10A şarj cihazı standarttır.</p></section><section><h3>Sonuç</h3><p>Hafif ve orta yoğunluklu operasyonlar için tasarlanan EPL153, bakım kolaylığı, esnek varyant seçenekleri ve güvenilir performansı ile toplam sahip olma maliyetini düşürür. Çözüme geçmek için 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>İXTİF EPL153: Kompakt gücün verimli lojistik çözümü</h2><p>İXTİF EPL153, depo içi kısa mesafe taşımalarda hız, güvenlik ve kullanım kolaylığını bir araya getirir. 1500 kg nominal kapasite ve 600 mm yük merkeziyle standart EUR paletleri rahatlıkla taşır. Kompakt şasi (l2=400 mm) ve sadece 120 kg servis ağırlığı sayesinde rampalara yaklaşma ve dar koridor dönüşlerinde operatörü yormadan çalışır. Çıkarılabilir 24V 20Ah Li-Ion batarya gün içi hızlı değişim ve harici şarj ile vardiya sürekliliği sağlar.</p></section><section><h3>Teknik</h3><p>Sürüş DC kontrol yapısı ve 0.75 kW tahrik motoru ile stabildir; 0.7 kW kaldırma motoru kontrollü kaldırma sunar. 4.5/5.0 km/s hız değerleri, 1330 mm dönüş yarıçapı ve 2050–2145 mm koridor gereksinimleri dar alan performansını belirler. Poliüretan tekerlekler düşük gürültü ve zemin koruması sağlar. 50×150×1150 mm çatal ölçüsü standarttır; 560 veya 685 mm çatal aralığı seçenekleri farklı palet tipleriyle uyumu güçlendirir. Yüklü/yüksüz tırmanma kabiliyeti %6/%16 olup elektromanyetik servis freni eğimli alanlarda güvenli durmayı destekler. İndirme işlemi manuel kontrollüdür; hassas yüklerde zarar riskini düşürür. Batarya 24V/20Ah modüldür ve yaklaşık 7 kg’dır; harici 24V-10A şarj cihazı standarttır.</p></section><section><h3>Sonuç</h3><p>Hafif ve orta yoğunluklu operasyonlar için tasarlanan EPL153, bakım kolaylığı, esnek varyant seçenekleri ve güvenilir performansı ile toplam sahip olma maliyetini düşürür. Çözüme geçmek için 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
             'primary_specs' => json_encode([
                 ['icon' => 'weight-hanging', 'label' => 'Kapasite', 'value' => '1500 kg'],
                 ['icon' => 'battery-full', 'label' => 'Batarya', 'value' => '24V / 20Ah Li-Ion, çıkarılabilir'],

@@ -22,7 +22,7 @@ class ShopResource extends JsonResource
             'title' => $this->getTranslated('title', $locale),
             'slug' => $this->getTranslated('slug', $locale),
             'short_description' => $this->getTranslated('short_description', $locale),
-            'long_description' => $this->getTranslated('long_description', $locale),
+            'body' => $this->getTranslated('body', $locale),
             'category' => $this->whenLoaded('category', fn() => $this->category?->getTranslated('title', $locale)),
             'brand' => $this->whenLoaded('brand', fn() => $this->brand?->getTranslated('title', $locale)),
             'price_on_request' => (bool) $this->price_on_request,

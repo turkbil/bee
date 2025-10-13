@@ -192,8 +192,8 @@ def convert_json_file(filepath):
                     }
                     changes.append("✓ slug oluşturuldu")
 
-        # short_description ve long_description'a vs. ekle
-        for field in ["short_description", "long_description"]:
+        # short_description ve body'a vs. ekle
+        for field in ["short_description", "body"]:
             if field in data["basic_data"]:
                 data["basic_data"][field] = add_vs_to_json_field(data["basic_data"][field])
                 changes.append(f"✓ basic_data.{field}'a 'vs.' eklendi")

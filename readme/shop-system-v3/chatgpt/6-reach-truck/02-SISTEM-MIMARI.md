@@ -80,7 +80,7 @@ Laravel Shop System veritabanı yapısı ve alan açıklamaları.
 | `title` | JSON | Ürün başlığı | `{"tr": "F4 201 Transpalet", "en": "..."}` |
 | `slug` | JSON | URL slug | `{"tr": "f4-201-transpalet", "en": "..."}` |
 | `short_description` | JSON (nullable) | Kısa açıklama (maks 160 karakter) | `{"tr": "Kısa açıklama...", "en": "..."}` |
-| `long_description` | JSON (nullable) | Detaylı açıklama (HTML) | `{"tr": "<section>...</section>", "en": "..."}` |
+| `body` | JSON (nullable) | Detaylı açıklama (HTML) | `{"tr": "<section>...</section>", "en": "..."}` |
 
 **ÖNEMLI:**
 - Tüm JSON alanlar `JSON_UNESCAPED_UNICODE` ile encode edilmeli
@@ -477,7 +477,7 @@ Laravel Shop System veritabanı yapısı ve alan açıklamaları.
   - `title` (İXTİF + Varyant adı)
   - `slug` (Türkçe karakterli)
   - `short_description` (30-50 kelime)
-  - `long_description` (HTML içerik)
+  - `body` (HTML içerik)
   - `use_cases` (6 senaryo)
 
 **Örnek:**
@@ -493,7 +493,7 @@ Laravel Shop System veritabanı yapısı ve alan açıklamaları.
 
     'short_description' => json_encode(['tr' => 'Standart 1150mm çatal uzunluğu ile EUR palet (1200x800mm) taşımada maksimum verimlilik. Dar koridor operasyonlarında ideal dönüş yarıçapı ve manevra özgürlüğü sunan, endüstride en yaygın tercih edilen çatal boyutu.'], JSON_UNESCAPED_UNICODE),
 
-    'long_description' => json_encode(['tr' => '<section class="variant-intro">...</section>'], JSON_UNESCAPED_UNICODE),
+    'body' => json_encode(['tr' => '<section class="variant-intro">...</section>'], JSON_UNESCAPED_UNICODE),
 
     'use_cases' => json_encode([
         ['icon' => 'box-open', 'text' => 'E-ticaret fulfillment merkezlerinde standart EUR palet sevkiyat'],
@@ -576,7 +576,7 @@ $slug = Str::slug('İXTİF F4 201 - 1150mm Çatal');
 
 ### 5. Unique Content
 Her varyant için:
-- ✅ Unique `long_description`
+- ✅ Unique `body`
 - ✅ Unique `use_cases`
 - ✅ Unique `short_description`
 

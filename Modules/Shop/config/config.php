@@ -20,13 +20,13 @@ return [
         ]
     ],
 
-    // TAB SİSTEMİ - SHOP
+    // TAB SİSTEMİ - SHOP PRODUCTS
     'tabs' => [
         [
             'key' => 'content',
-            'name' => 'İçerik',
-            'icon' => 'edit',
-            'required_fields' => ['title', 'body']
+            'name' => 'Ürün Bilgileri',
+            'icon' => 'shopping-cart',
+            'required_fields' => ['title', 'sku']
         ],
         [
             'key' => 'seo',
@@ -76,7 +76,9 @@ return [
         'inline_editing' => env('SHOP_INLINE_EDITING', true),
         'version_control' => env('SHOP_VERSION_CONTROL', false),
         'preview_mode' => env('SHOP_PREVIEW_MODE', true),
-        'custom_css_js' => false,
+        'variants' => env('SHOP_VARIANTS_ENABLED', true),
+        'inventory_tracking' => env('SHOP_INVENTORY_ENABLED', false),
+        'quote_system' => env('SHOP_QUOTE_SYSTEM', true),
     ],
 
     /**
@@ -104,10 +106,11 @@ return [
      * Performans Ayarları
      */
     'performance' => [
-        'eager_loading' => ['seoSetting'],
+        'eager_loading' => ['category', 'brand', 'seoSetting', 'childProducts'],
         'chunk_size' => 100,
         'index_columns' => [
             ['is_active', 'deleted_at', 'created_at'],
+            ['category_id', 'brand_id'],
         ],
     ],
 
@@ -116,14 +119,18 @@ return [
      */
     'defaults' => [
         'is_active' => true,
+        'product_type' => 'physical',
+        'condition' => 'new',
+        'currency' => 'TRY',
+        'price_on_request' => false,
     ],
 
     /**
      * Media Ayarları
      */
     'media' => [
-        'upload_path' => 'shops',
-        'allowed_extensions' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'pdf'],
+        'upload_path' => 'shop/products',
+        'allowed_extensions' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
         'max_file_size' => 5120, // 5MB in KB
     ],
 
@@ -176,7 +183,7 @@ return [
         ],
         'schema' => [
             'enabled' => true,
-            'type' => 'WebPage',
+            'type' => 'Product',
             'include_breadcrumbs' => true,
             'include_organization' => true,
         ],
@@ -201,15 +208,26 @@ return [
                 'api',
                 'login',
                 'logout',
-                'register',
-                'dashboard',
-                'profile',
-                'settings',
-                'search'
+                'cart',
+                'checkout',
+                'account',
+                'orders',
             ],
+        ],
+        'sku' => [
+            'min' => 2,
+            'max' => 191,
+            'unique_check' => true,
+        ],
+        'short_description' => [
+            'max' => 500,
         ],
         'body' => [
             'max' => 65535, // TEXT field limit
+        ],
+        'price' => [
+            'min' => 0,
+            'max' => 999999999.99,
         ],
     ],
 

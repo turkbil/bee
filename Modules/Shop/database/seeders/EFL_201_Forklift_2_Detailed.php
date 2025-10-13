@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL_201_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL_201_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL201')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL201'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL201');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>EFL201 ile 80V Sınıfında Yeni Standart</h2><p>İXTİF EFL201, ağır hizmet depolardan açık alan sevkiyat noktalarına uzanan geniş bir operasyon yelpazesi için tasarlanmış 2.0 ton kapasiteli elektrikli karşı dengeli bir forkliftir. 80V/150Ah Li‑Ion batarya mimarisi ve entegre 80V/35A şarj cihazı sayesinde fırsat şarjı mümkün olur; bu da çok vardiyalı sahalarda makinenin gün boyunca ritmini kaybetmeden çalışmasını sağlar. Yeni tasarımlı direk yapısı, hidroliğin görüş hattını kapatan borularını azaltır; operatör yük uçlarını ve çevreyi daha net izleyerek hızlı ve güvenli manevralar yapar. 120 mm yer açıklığı ve katı lastikler, rampalı sahalarda ya da bozuk zeminlerde tutunmayı artırır, suya dayanıklı gövde ise dış mekânda her hava koşulunda güven verir.</p></section><section><h3>Teknik Güç ve Verimlilik</h3><p>EFL201 inşa itibarıyla verim odaklıdır: 6 kW S2 sürüş motoru ve 11 kW S3 kaldırma motoru, 11/14 km/s sürüş hızları ve 0.25/0.30 m/s kaldırma değerleri sunar. 2000 kg (Q) kapasite ve 500 mm yük merkezi ile dengeli taşıma sağlanır. 2020 mm kapalı direk yüksekliği ve 4028 mm açık yükseklik, 3000 mm standart kaldırma ile palet operasyonlarının çoğunu kapsar. 2100 mm dönüş yarıçapı, 3342 mm toplam uzunluk ve 1080 mm genişlik; kapalı alanlarda çeviklik sunarken açık alanda stabiliteyi korur. 3137 kg servis ağırlığı ve 4604/533 kg yüklü aks dağılımı, sağlam gövde geometrisinin göstergesidir. Hidrolik servis freni ve mekanik park freni ile yokuş başlangıçları kontrol altındadır; 12/15% tırmanma kabiliyeti ve 10000 N maks. çekiş kuvveti, rampa yaklaşımı ve çekiş gerektiren işler için güven verir.</p></section><section><h3>Sonuç</h3><p>EFL201; ergonomi, bakım kolaylığı ve enerji verimliliğini birleştirerek B2B operasyonlarda toplam sahip olma maliyetini düşürür. Fırsat şarjı ve 80V altyapı ile yoğun vardiyalarda ritmi tutar, yeni görüş alanlı direk tasarımı ise iş güvenliği kültürünü destekler. Doğru konfigürasyon ve uygulama eşleşmesi için uzman ekibimizle konuşun: 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>EFL201 ile 80V Sınıfında Yeni Standart</h2><p>İXTİF EFL201, ağır hizmet depolardan açık alan sevkiyat noktalarına uzanan geniş bir operasyon yelpazesi için tasarlanmış 2.0 ton kapasiteli elektrikli karşı dengeli bir forkliftir. 80V/150Ah Li‑Ion batarya mimarisi ve entegre 80V/35A şarj cihazı sayesinde fırsat şarjı mümkün olur; bu da çok vardiyalı sahalarda makinenin gün boyunca ritmini kaybetmeden çalışmasını sağlar. Yeni tasarımlı direk yapısı, hidroliğin görüş hattını kapatan borularını azaltır; operatör yük uçlarını ve çevreyi daha net izleyerek hızlı ve güvenli manevralar yapar. 120 mm yer açıklığı ve katı lastikler, rampalı sahalarda ya da bozuk zeminlerde tutunmayı artırır, suya dayanıklı gövde ise dış mekânda her hava koşulunda güven verir.</p></section><section><h3>Teknik Güç ve Verimlilik</h3><p>EFL201 inşa itibarıyla verim odaklıdır: 6 kW S2 sürüş motoru ve 11 kW S3 kaldırma motoru, 11/14 km/s sürüş hızları ve 0.25/0.30 m/s kaldırma değerleri sunar. 2000 kg (Q) kapasite ve 500 mm yük merkezi ile dengeli taşıma sağlanır. 2020 mm kapalı direk yüksekliği ve 4028 mm açık yükseklik, 3000 mm standart kaldırma ile palet operasyonlarının çoğunu kapsar. 2100 mm dönüş yarıçapı, 3342 mm toplam uzunluk ve 1080 mm genişlik; kapalı alanlarda çeviklik sunarken açık alanda stabiliteyi korur. 3137 kg servis ağırlığı ve 4604/533 kg yüklü aks dağılımı, sağlam gövde geometrisinin göstergesidir. Hidrolik servis freni ve mekanik park freni ile yokuş başlangıçları kontrol altındadır; 12/15% tırmanma kabiliyeti ve 10000 N maks. çekiş kuvveti, rampa yaklaşımı ve çekiş gerektiren işler için güven verir.</p></section><section><h3>Sonuç</h3><p>EFL201; ergonomi, bakım kolaylığı ve enerji verimliliğini birleştirerek B2B operasyonlarda toplam sahip olma maliyetini düşürür. Fırsat şarjı ve 80V altyapı ile yoğun vardiyalarda ritmi tutar, yeni görüş alanlı direk tasarımı ise iş güvenliği kültürünü destekler. Doğru konfigürasyon ve uygulama eşleşmesi için uzman ekibimizle konuşun: 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
 
             'primary_specs' => json_encode([
                 ['icon' => 'weight-hanging', 'label' => 'Kapasite', 'value' => '2000 kg (Q), 500 mm yük merkezi'],

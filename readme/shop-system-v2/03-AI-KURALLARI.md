@@ -11,7 +11,7 @@
 
 ## 📝 DİL VE PAZARLAMA KURALLARI
 
-### 1️⃣ **long_description** İKİ BÖLÜMDEN OLUŞMALI
+### 1️⃣ **body** İKİ BÖLÜMDEN OLUŞMALI
 
 ```html
 <section class="marketing-intro">
@@ -60,7 +60,7 @@ elektrikli transpalet fiyatları
 ```
 
 **NEREYE EKLENECEK?**
-- ✅ `long_description` → marketing-body bölümünde liste olarak
+- ✅ `body` → marketing-body bölümünde liste olarak
 - ✅ `short_description` → doğal cümleler içinde
 - ✅ `features.list` → mümkün olduğunca
 
@@ -75,7 +75,7 @@ Her ürün için **mutlaka** şunlardan bahsedilecek:
 - ✅ **Teknik servis** (7/24, Türkiye geneli mobil ekipler)
 
 **NEREYE EKLENECEK?**
-- ✅ `long_description` → marketing-body
+- ✅ `body` → marketing-body
 - ✅ `features.list` → en az 1 madde
 - ✅ `competitive_advantages` → en az 1 madde
 - ✅ `faq_data` → en az 2 soru (ikinci el/kiralık + garanti/servis)
@@ -90,7 +90,7 @@ Her ürün için **mutlaka** şunlardan bahsedilecek:
 - Firma: `İXTİF İç ve Dış Ticaret A.Ş.`
 
 **NEREYE EKLENECEK?**
-- ✅ `long_description` → marketing-body sonunda
+- ✅ `body` → marketing-body sonunda
 - ✅ `faq_data` → son sorularda ("Detaylı teklif için...")
 
 ---
@@ -360,7 +360,7 @@ Detaylar için **02-FAQ-SISTEMI.md** dosyasına bak.
 AI'dan dönen JSON'u kontrol et:
 
 - [ ] Tüm `en` alanları `tr` ile aynı mı?
-- [ ] `long_description` iki `<section>` içeriyor mu?
+- [ ] `body` iki `<section>` içeriyor mu?
 - [ ] SEO anahtar kelimeleri marketing-body'de listelenmiş mi?
 - [ ] İXTİF hizmetleri (ikinci el, kiralık, yedek parça, servis) geçiyor mu?
 - [ ] İletişim bilgileri (`0216 755 3 555`, `info@ixtif.com`) var mı?

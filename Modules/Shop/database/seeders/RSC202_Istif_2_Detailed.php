@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class RSC202_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class RSC202_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'RSC202')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (RSC202)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (RSC202)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF RSC202: Dar Koridorların Güçlü ve Hassas İstifçisi</h2>
   <p>İXTİF RSC202, 2.0 tonluk nominal kapasiteyi kompakt bir gövdede birleştirerek yoğun depo operasyonlarının ritmine uyum sağlar. 1915 mm dönüş yarıçapı, 900 mm şasi genişliği ve 116 mm yerden yükseklik; rampalarda, bozuk zemin geçişlerinde ve dar raf aralarında güvenle hareket etmenizi sağlar. Oransal kaldırma sistemi ve hassas mast eğim kabiliyeti sayesinde paletleri çok katlı raflarda nazikçe konumlandırır, ürün zararını en aza indirir ve operatörün işini kolaylaştırır. 24V/280Ah enerji sistemi ve AC tahrik mimarisi, hızlı tepki ve dengeli çekiş üretirken, elektromanyetik fren güvenliği standart olarak sunulur.</p>

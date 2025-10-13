@@ -34,7 +34,7 @@ variant_type (string)
 title (JSON) - Çoklu dil
 slug (JSON) - Çoklu dil
 short_description (JSON)
-long_description (JSON)
+body (JSON)
 
 -- ⭐ AI İÇİN SÜPER ALANLAR:
 technical_specs (JSON)

@@ -89,7 +89,7 @@ class ShopSeeder extends Seeder
                         'en' => $faker->sentence(10),
                         'ar' => $faker->sentence(10)
                     ],
-                    'long_description' => [
+                    'body' => [
                         'tr' => $this->generateContent($faker),
                         'en' => $this->generateContent($faker),
                         'ar' => $this->generateContent($faker)

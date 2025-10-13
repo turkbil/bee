@@ -162,7 +162,7 @@ ZORUNLU KURALLAR:
 - ✅ competitive_advantages ≥ 5 avantaj
 - ✅ target_industries ≥ 20 sektör
 - ✅ İletişim: 0216 755 3 555 | info@ixtif.com
-- ✅ long_description: <section class="marketing-intro"> + <section class="marketing-body">
+- ✅ body: <section class="marketing-intro"> + <section class="marketing-body">
 - ✅ İXTİF servisleri ekle: İkinci el satış, kiralama, yedek parça, teknik servis
 
 ## 4. Çıktı Formatı
@@ -258,7 +258,7 @@ AI'nın ürettiği JSON'u kontrol ederken:
 - [ ] target_industries ≥ 20 sektör mü?
 - [ ] İletişim bilgileri var mı? (0216 755 3 555, info@ixtif.com)
 - [ ] İXTİF servisleri belirtilmiş mi? (ikinci el, kiralık, yedek parça, teknik servis)
-- [ ] long_description HTML section'ları var mı?
+- [ ] body HTML section'ları var mı?
 - [ ] technical_specs detaylı ve doğru mu?
 
 ---

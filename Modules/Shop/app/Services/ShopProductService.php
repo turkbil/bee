@@ -290,7 +290,7 @@ readonly class ShopProductService extends BaseService
         $emptyData = [
             'title' => '',
             'short_description' => '',
-            'long_description' => '',
+            'body' => '',
             'slug' => '',
             'seo_title' => '',
             'seo_description' => '',
@@ -325,7 +325,7 @@ readonly class ShopProductService extends BaseService
             $rules["multiLangInputs.{$lang}.title"] = $lang === $defaultLocale ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
             $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
             $rules["multiLangInputs.{$lang}.short_description"] = 'nullable|string';
-            $rules["multiLangInputs.{$lang}.long_description"] = 'nullable|string';
+            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
         }
 
         $seoRules = $this->seoRepository->getValidationRules('shop');

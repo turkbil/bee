@@ -5,6 +5,7 @@ namespace App\Services\AI\Context;
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Http\Controllers\Front\ShopController;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Shop Context Builder
@@ -65,43 +66,49 @@ class ShopContextBuilder
 
     /**
      * Genel shop bilgisi (kategori listesi vb.)
+     * 🚀 CACHED: 1 saat
      */
     public function buildGeneralShopContext(): array
     {
-        $categories = ShopCategory::whereNull('parent_id')
-            ->where('is_active', true)
-            ->with('children')
-            ->get();
+        $tenantId = tenant('id');
+        $cacheKey = "shop_context_{$tenantId}_{$this->locale}";
 
-        $featuredProducts = ShopProduct::where('is_featured', true)
-            ->where('is_active', true)
-            ->take(10)
-            ->get();
+        return Cache::remember($cacheKey, 3600, function () {
+            $categories = ShopCategory::whereNull('parent_id')
+                ->where('is_active', true)
+                ->with('children')
+                ->get();
 
-        // Get ALL active products (summary only - not full details)
-        $allProducts = ShopProduct::where('is_active', true)
-            ->select(['product_id', 'sku', 'title', 'slug', 'short_description', 'category_id', 'base_price', 'price_on_request'])
-            ->with('category:category_id,title')
-            ->get();
+            $featuredProducts = ShopProduct::where('is_featured', true)
+                ->where('is_active', true)
+                ->take(10)
+                ->get();
 
-        return [
-            'page_type' => 'shop_general',
-            'categories' => $categories->map(fn($c) => [
-                'id' => $c->category_id,
-                'name' => $this->translate($c->title),
-                'slug' => $this->translate($c->slug),
-                'url' => $this->getCategoryUrl($c),
-                'product_count' => $c->products()->where('is_active', true)->count(),
-                'subcategories' => $c->children->map(fn($sc) => [
-                    'id' => $sc->category_id,
-                    'name' => $this->translate($sc->title),
-                    'url' => $this->getCategoryUrl($sc),
+            // Get ALL active products (summary only - not full details)
+            $allProducts = ShopProduct::where('is_active', true)
+                ->select(['product_id', 'sku', 'title', 'slug', 'short_description', 'category_id', 'base_price', 'price_on_request'])
+                ->with('category:category_id,title')
+                ->get();
+
+            return [
+                'page_type' => 'shop_general',
+                'categories' => $categories->map(fn($c) => [
+                    'id' => $c->category_id,
+                    'name' => $this->translate($c->title),
+                    'slug' => $this->translate($c->slug),
+                    'url' => $this->getCategoryUrl($c),
+                    'product_count' => $c->products()->where('is_active', true)->count(),
+                    'subcategories' => $c->children->map(fn($sc) => [
+                        'id' => $sc->category_id,
+                        'name' => $this->translate($sc->title),
+                        'url' => $this->getCategoryUrl($sc),
+                    ])->toArray(),
                 ])->toArray(),
-            ])->toArray(),
-            'featured_products' => $featuredProducts->map(fn($p) => $this->formatProduct($p))->toArray(),
-            'all_products' => $allProducts->map(fn($p) => $this->formatProductSummary($p))->toArray(),
-            'total_products' => $allProducts->count(),
-        ];
+                'featured_products' => $featuredProducts->map(fn($p) => $this->formatProduct($p))->toArray(),
+                'all_products' => $allProducts->map(fn($p) => $this->formatProductSummary($p))->toArray(),
+                'total_products' => $allProducts->count(),
+            ];
+        });
     }
 
     /**
@@ -132,7 +139,7 @@ class ShopContextBuilder
             'slug' => $this->translate($product->slug),
             'url' => $this->getProductUrl($product),
             'short_description' => $this->translate($product->short_description),
-            'long_description' => $this->sanitize($this->translate($product->long_description), 500),
+            'body' => $this->sanitize($this->translate($product->body), 500),
 
             // Fiyat bilgisi
             'price' => $this->formatPrice($product),

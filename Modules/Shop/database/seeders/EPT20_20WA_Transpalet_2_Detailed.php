@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EPT20_20WA_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class EPT20_20WA_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EPT20-20WA')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>Depoda Ağır Hizmetin Yeni Düzeyi</h2><p>Yoğun vardiya temposunda, operatörün ilk hamlesi güven ve öngörülebilirliktir. İXTİF EPT20-20WA serisi bu beklentiyi karşılamakla kalmaz, dar koridorlarda bile çevikliğiyle iş akışını hızlandırır. Uzun tiller geometrisi, otomatik hız düşürme ve elektromanyetik fren ile operatör, yükün kontrolünü hassas bir şekilde korur. <strong>2000 kg</strong> kapasitesi, 600 mm yük merkezi ve 24V enerji yapısı; rampalar, transfer alanları ve ara stok bölgelerinde standart palet akışını güvenle destekler.</p></section><section><h3>Teknik ve Performans</h3><p>AC tahrik mimarisi; 1.1 kW sürüş motoru ve 0.84 kW kaldırma motoru ile yük altında dahi sabit hızlanma sunar. 5.0/5.5 km/s sürüş hızı, 0.051/0.060 m/s kaldırma ve 0.032/0.039 m/s indirme hızları, ritmik ve tekrarlanabilir bir operasyon sağlar. Kompakt 1748 mm toplam uzunluk ve 1600 mm dönüş yarıçapı, 2255 mm koridor genişliğinde 800×1200 paletlerle verimli dönüş imkânı tanır. 55×170×1150 mm çatal ölçüleri ve 685 mm çatallar arası mesafe, Avrupa palet standardına uyumludur. Poliüretan tekerlek seti (Ø85×70/Ø230×75) ve Ø85×48 caster tekerlekler, düşük gürültü ve titreşimle zeminde iz bırakmadan çalışır. S2 60 dk sınıfında 1.1 kW sürüş motoru, frenlemede elektromanyetik çözüme eşlik eder ve enerji geri kazanımıyla uzun devriye sürelerini destekler.</p></section><section><h3>Sonuç</h3><p>İşletmenizdeki dar koridorlar ve yoğun yük akışı için optimize edilen 2000 kg sınıfı İXTİF EPT20-20WA, toplam sahip olma maliyetini düşüren dayanıklı bir platform sunar. Teknik detaylar, keşif ve teklif için arayın: <strong>0216 755 3 555</strong>.</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>Depoda Ağır Hizmetin Yeni Düzeyi</h2><p>Yoğun vardiya temposunda, operatörün ilk hamlesi güven ve öngörülebilirliktir. İXTİF EPT20-20WA serisi bu beklentiyi karşılamakla kalmaz, dar koridorlarda bile çevikliğiyle iş akışını hızlandırır. Uzun tiller geometrisi, otomatik hız düşürme ve elektromanyetik fren ile operatör, yükün kontrolünü hassas bir şekilde korur. <strong>2000 kg</strong> kapasitesi, 600 mm yük merkezi ve 24V enerji yapısı; rampalar, transfer alanları ve ara stok bölgelerinde standart palet akışını güvenle destekler.</p></section><section><h3>Teknik ve Performans</h3><p>AC tahrik mimarisi; 1.1 kW sürüş motoru ve 0.84 kW kaldırma motoru ile yük altında dahi sabit hızlanma sunar. 5.0/5.5 km/s sürüş hızı, 0.051/0.060 m/s kaldırma ve 0.032/0.039 m/s indirme hızları, ritmik ve tekrarlanabilir bir operasyon sağlar. Kompakt 1748 mm toplam uzunluk ve 1600 mm dönüş yarıçapı, 2255 mm koridor genişliğinde 800×1200 paletlerle verimli dönüş imkânı tanır. 55×170×1150 mm çatal ölçüleri ve 685 mm çatallar arası mesafe, Avrupa palet standardına uyumludur. Poliüretan tekerlek seti (Ø85×70/Ø230×75) ve Ø85×48 caster tekerlekler, düşük gürültü ve titreşimle zeminde iz bırakmadan çalışır. S2 60 dk sınıfında 1.1 kW sürüş motoru, frenlemede elektromanyetik çözüme eşlik eder ve enerji geri kazanımıyla uzun devriye sürelerini destekler.</p></section><section><h3>Sonuç</h3><p>İşletmenizdeki dar koridorlar ve yoğun yük akışı için optimize edilen 2000 kg sınıfı İXTİF EPT20-20WA, toplam sahip olma maliyetini düşüren dayanıklı bir platform sunar. Teknik detaylar, keşif ve teklif için arayın: <strong>0216 755 3 555</strong>.</p></section>'], JSON_UNESCAPED_UNICODE),
             'primary_specs' => json_encode([
                 ['icon' => 'weight-hanging', 'label' => 'Kapasite', 'value' => '2000 kg'],
                 ['icon' => 'battery-full', 'label' => 'Batarya', 'value' => '24V Li-Ion / Kurşun-asit'],

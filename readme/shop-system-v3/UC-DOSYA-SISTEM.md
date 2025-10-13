@@ -248,7 +248,7 @@ class F4_201_Transpalet_2_Content_Seeder extends Seeder
             ->where('product_id', $productId)
             ->update([
                 // Long Description (Marketing HTML)
-                'long_description' => json_encode(['tr' => <<<'HTML'
+                'body' => json_encode(['tr' => <<<'HTML'
 <section class="marketing-intro">
 <p><strong>F4 201'i depoya soktuğunuz anda...</strong></p>
 <ul>
@@ -338,7 +338,7 @@ HTML
 
 **Sorumluluğu:**
 - Child products (varyantlar)
-- **🎯 YENİ STRATEJİ:** Her varyanta ÖZEL `long_description` + `use_cases` + `short_description` yazılır (Google SEO için)
+- **🎯 YENİ STRATEJİ:** Her varyanta ÖZEL `body` + `use_cases` + `short_description` yazılır (Google SEO için)
 - **🔗 INHERIT:** `features`, `faq_data`, `technical_specs` vb. master'dan inherit edilir
 
 **ÖNEMLİ NOT:**
@@ -395,7 +395,7 @@ class F4_201_Transpalet_3_Variants_Seeder extends Seeder
                 'short_description' => 'Standart 1150mm çatal uzunluğu ile EUR palet (1200x800mm) taşımada maksimum verimlilik. Dar koridor operasyonlarında ideal dönüş yarıçapı ve manevra özgürlüğü sunan, endüstride en yaygın tercih edilen çatal boyutu.',
 
                 // 📝 LONG DESCRIPTION: Varyanta ÖZEL unique içerik
-                'long_description' => <<<'HTML'
+                'body' => <<<'HTML'
 <section class="variant-intro">
 <p><strong>1150mm çatal uzunluğu, F4 201 transpalet ailesinin en popüler varyantıdır.</strong></p>
 <p>Standart EUR palet taşımada ideal, dar koridor operasyonlarında maksimum manevra sağlar.</p>
@@ -422,8 +422,8 @@ HTML
                 // 📝 UZUN short_description (30-50 kelime)
                 'short_description' => 'Tek tekerlek yerine çift denge tekeri konfigürasyonu ile yük ağırlığını geniş yüzeye dağıtan stabilite sistemi. Bozuk beton, çatlak zemin, dış saha rampaları ve eşitsiz yüzeylerde devrilme riskini sıfırlayan İSG uyumlu güvenlik çözümü.',
 
-                // 📝 Varyanta ÖZEL long_description
-                'long_description' => <<<'HTML'
+                // 📝 Varyanta ÖZEL body
+                'body' => <<<'HTML'
 <section class="variant-intro">
 <p><strong>Tandem tekerlek sistemi, bozuk zeminlerde stabilite sağlar.</strong></p>
 <p>[... varyantın özel avantajları]</p>
@@ -452,7 +452,7 @@ HTML
                 'title' => json_encode(['tr' => $v['title']], JSON_UNESCAPED_UNICODE),
                 'slug' => json_encode(['tr' => Str::slug($v['title'])], JSON_UNESCAPED_UNICODE),
                 'short_description' => json_encode(['tr' => $v['short_description']], JSON_UNESCAPED_UNICODE),
-                'long_description' => json_encode(['tr' => $v['long_description']], JSON_UNESCAPED_UNICODE),
+                'body' => json_encode(['tr' => $v['body']], JSON_UNESCAPED_UNICODE),
                 'use_cases' => json_encode($v['use_cases'], JSON_UNESCAPED_UNICODE),
 
                 // 🔗 Master'dan INHERIT: features, faq_data, technical_specs, vb.

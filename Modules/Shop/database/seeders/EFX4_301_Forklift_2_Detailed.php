@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFX4_301_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFX4_301_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFX4-301')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFX4-301'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFX4-301');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF EFX4 301: Modüler Enerjiyle Maksimum Uptime</h2><p>İXTİF EFX4 301, 3.0 ton sınıfında modüler ve elle değiştirilebilir Li-Ion batarya mimarisiyle operasyonların ritmini yeniden tanımlar. Her biri yaklaşık 26 kg olan hafif batarya modülleri, özel yan kapıdan kolay erişimle dakikalar içinde değiştirilebilir; bu sayede şarj altyapısının sınırlı olduğu şantiyeler, açık saha projeleri veya kırsal depolar için gerçek bir çözüm sunar. Geniş görüşlü direk, ferah kabin, yeni LED farlar ve geniş fren pedalı gibi sürücü odaklı geliştirmeler konforu artırırken, suya dayanıklı gövde sahada güven verir. Opsiyonel çoklu şarj istasyonu, birden fazla bataryayı aynı anda hazırlayarak hazır güç havuzu oluşturur; kiralama ve paylaşımlı kullanım senaryolarında maliyetleri düşürür.</p></section>
 <section><h3>Teknik</h3><p>EFX4 301’in kalbinde yüksek verimliliğiyle bilinen PMS (Permanent Magnet Synchronous) tahrik motoru bulunur ve 8 kW S2-60dk gücüyle hassas, sessiz ve enerji tasarruflu sürüş sunar. 80V/100Ah nominal kapasiteli Li-Ion batarya seti (üç modül) akıllı BMS ile korunur; hızlı şarj ve uzun çevrim ömrüyle planlı duruşları kısaltır. 3.0 ton (Q=3000 kg) kapasite, 500 mm yük merkezinde güvenle sağlanır. 11/12 km/s yürüyüş hızı, 0.29/0.36 m/s kaldırma ve 0.4/0.4 m/s indirme değerleri akıcı malzeme akışını destekler. 2428 mm dönüş yarıçapı ve 1228 mm gövde genişliği dar koridor çevikliğini artırır. 2265 mm alçalmış direk, 3000 mm kaldırma ve 4096 mm yükselmiş direk yüksekliği standart mastta optimum denge sağlar. Pnömatik lastikler; 28x9-15 (ön) ve 6.5F-10 (arka) ölçüleriyle farklı zemin koşullarında güvenli yol tutuş sunar. Hidrolik servis ve mekanik park freni, 60 dB(A) kabin içi gürültü değeri ve hidrolik direksiyon ile gün boyu konfor ve güvenlik birlikte sunulur.</p></section>
 <section><h3>Sonuç</h3><p>Modüler, taşınabilir ve kiralanabilir enerji yaklaşımıyla İXTİF EFX4 301; endüstriyel tesislerden tarım sahalarına, inşaat ve uzak lokasyonlara kadar farklı ortamlarda kesintisiz çalışma sağlar. Akü setini saha dışında şarj ederek ekipman kullanımını ayırabilir, planlı vardiya döngülerini sorunsuz sürdürebilirsiniz. Teknik detaylar ve keşif için 0216 755 3 555 numaralı hattımızı arayın.</p></section>

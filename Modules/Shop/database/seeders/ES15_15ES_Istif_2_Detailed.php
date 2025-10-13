@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES15_15ES_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES15_15ES_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES15-15ES')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ES15-15ES'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ES15-15ES');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF ES15-15ES: Kompakt yapıda güvenilir 1.5 ton sınıfı istif gücü</h2>
   <p>Depo kapıları açılır açılmaz yoğun iş akışı başlar. Paletler rampa başından kabul alanına, oradan depolama raflarına akarken, her saniye ve her manevra önemlidir. İXTİF ES15-15ES, 1.5 ton kapasiteli yaya tipi elektrikli istif makinesi olarak bu akışın nabzını tutar. 24V 125Ah batarya, 5 km/s seyir hızı ve 1500 mm dönüş yarıçapı sayesinde dar koridorlarda hızlı ve kontrollü ilerler. Operatörün kol boyu tasarımlı sürüş kolu ile ergonomi, elektromanyetik fren ile güvenlik birleşir. Yoğun vardiyalarda istikrarlı kaldırma performansı sunan 3 kW kaldırma motoru ve AC sürüş sistemi, özellikle 600 mm yük merkezindeki 1500 kg yükleri güvenle istiflemenize yardımcı olur.</p>
@@ -108,7 +115,7 @@ class ES15_15ES_Istif_2_Detailed extends Seeder {
                 ['question' => 'Rampa ve eğim performansı hangi seviyededir?', 'answer' => 'Maksimum eğim kabiliyeti dolu %8, boş %16 seviyesindedir; rampa geçişlerinde yeterli tırmanma sunar.'],
                 ['question' => 'Akü kapasitesi ve ağırlığı makinenin dengesini nasıl etkiler?', 'answer' => '24V 125Ah akü 60 kg ağırlıktadır; gövde dengesini korur ve titreşimi azaltır.'],
                 ['question' => 'Hangi teker malzemesi kullanılıyor?', 'answer' => 'Sürüş ve yük tekerlerinde poliüretan (PU) kullanılır; sessiz ve zemin dostudur.'],
-                ['question' => 'Direk kapalı ve açık yükseklikleri nelerdir?', 'answer' => 'Kapalı 2128 mm, kaldırma 3227 mm, açık 3743 mm; depo raf yüksekliğine uygunluk planlaması kolaydır.' ],
+                ['question' => 'Direk kapalı ve açık yükseklikleri nelerdir?', 'answer' => 'Kapalı 2128 mm, kaldırma 3227 mm, açık 3743 mm; depo raf yüksekliğine uygunluk planlaması kolaydır.'],
                 ['question' => 'Servis freni tipi nedir ve avantajı ne sağlar?', 'answer' => 'Elektromanyetik fren kullanılır; rampa ve duruşlarda ek güvenlik ve kontrol sağlar.'],
                 ['question' => 'Koridor genişliği gereksinimleri planlamada nasıl hesaplanır?', 'answer' => '1000×1200 çaprazda 2340 mm, 800×1200 uzunlamasına 2260 mm referans alınmalıdır.'],
                 ['question' => 'Gövde koruması ve operatör konforu için hangi detaylar var?', 'answer' => 'Mekanik direksiyon, PU tekerler ve dengeli şasi titreşimi azaltır ve kullanım konforu sağlar.'],

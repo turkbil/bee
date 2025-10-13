@@ -1,16 +1,23 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class F4_201_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class F4_201_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'F4-201')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (F4-201)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (F4-201)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
 
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section class="hero-intro">
   <h2>İXTİF F4 201: 48V gücün kompakt verimlilikle buluştuğu sınıf</h2>
   <p><strong>Depoda gün henüz başlarken</strong>, dar koridorlar ve sık değişen görevler net bir çözüm ister. F4 201, yalnızca 140 kg servis ağırlığı ve <em>l2=400 mm</em> çatala kadar uzunluk ile beklenmedik bir çeviklik sunar. Çıkarılabilir iki adet 24V/20Ah Li-Ion batarya, hızlı şarj ve sıfıra yakın bakım ihtiyacı sayesinde vardiya temposuna kolayca ayak uydurur. 48V elektrik sistemi, 2.0 tona kadar yükleri güvenle taşıyacak gücü sağlarken elektromanyetik fren ve sağlam kumanda kolu operatöre güven verir. Günün sonunda F4 201, güç–ölçek–maliyet dengesini işletmenizin lehine çevirir.</p>

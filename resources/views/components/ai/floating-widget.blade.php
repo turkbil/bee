@@ -70,73 +70,103 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
 }"
 class="fixed {{ $selectedPosition }} z-50">
 
-    {{-- Chat Button with Awesome Animations --}}
+    {{-- Chat Button - V1 Classic Pulse Design --}}
+    <div x-show="!chat.floatingOpen"
+         x-transition:enter="transition-opacity ease-out duration-500"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         style="transition-delay: 0.5s;"
+         class="absolute bottom-0 right-0"
+         x-cloak>
     <button
         @click="chat.toggleFloating(); clearTimeout(autoOpenTimer);"
-        x-show="!chat.floatingOpen"
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 scale-75"
-        x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-75"
+        x-data="{
+            messages: [
+                'Merhaba! Nasıl yardımcı olabilirim? 👋',
+                'Ürünler hakkında her şeyi sorabilirsiniz',
+                'Size en uygun modeli bulabilirim',
+                'Sorularınızı anında yanıtlıyorum ⚡',
+                'Akıllı ürün karşılaştırması yapabilirim',
+                'Teknik detayları kolayca açıklıyorum',
+                'İhtiyacınıza göre öneri sunuyorum',
+                '7/24 anlık destek burada 🤖',
+                'Tüm özellikleri size anlatayım',
+                'Merak ettiklerinizi öğrenin',
+                'Ürün seçiminde yardımcı oluyorum',
+                'Karmaşık bilgileri basitleştiriyorum',
+                'Size özel çözüm öneriyorum',
+                'Her sorunuza hızlı cevap veriyorum',
+                'Doğru ürünü bulmak çok kolay',
+                'Akıllı asistan olarak buradayım',
+                'Soru sormaktan çekinmeyin',
+                'Anında bilgi alın',
+                'İhtiyacınızı anlıyor ve yönlendiriyorum',
+                'Hadi konuşalım! 💬'
+            ],
+            currentIndex: 0,
+            currentMessage: 'Merhaba! Nasıl yardımcı olabilirim? 👋',
+            bubbleVisible: true,
+
+            init() {
+                // Animation cycle: 3s total
+                // 0-0.6s (20%): fade in
+                // 0.6-2.4s (20-80%): visible
+                // 2.4-3s (80-100%): fade out
+                // Change message during fade out (at 2.4s = 80%)
+
+                setInterval(() => {
+                    // Hide bubble (opacity will fade via animation)
+                    this.bubbleVisible = false;
+
+                    // Change message after 300ms (during fade-out)
+                    setTimeout(() => {
+                        this.currentIndex = (this.currentIndex + 1) % this.messages.length;
+                        this.currentMessage = this.messages[this.currentIndex];
+                        this.bubbleVisible = true;
+                    }, 300);
+                }, 3000);
+            }
+        }"
         class="relative group"
         aria-label="Sohbeti Aç"
     >
-        {{-- Main Button Container with Ripple --}}
-        <div class="relative flex items-center justify-center">
-            {{-- Ripple Animation Circles (İÇ İÇE GEÇEN) --}}
-            <div class="absolute inset-0 flex items-center justify-center">
-                <div class="w-20 h-20 rounded-full bg-blue-400/30 dark:bg-blue-500/30 animate-ping"></div>
+        {{-- Bubble Container (Message + Arrow as one unit) --}}
+        <div
+            :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
+            class="absolute z-[101] transition-opacity duration-300"
+            style="top: -70px; right: -10px; filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
+        >
+            {{-- Bubble Message --}}
+            <div
+                x-text="currentMessage"
+                class="bg-white px-5 py-3 rounded-full text-sm font-bold whitespace-nowrap"
+                style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"
+            >
             </div>
-            <div class="absolute inset-0 flex items-center justify-center" style="animation-delay: 0.5s;">
-                <div class="w-24 h-24 rounded-full bg-purple-400/20 dark:bg-purple-500/20 animate-ping"></div>
-            </div>
 
-            {{-- Glow Effect --}}
-            <div class="absolute inset-0 flex items-center justify-center">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-75 group-hover:opacity-100 blur animate-pulse"></div>
-            </div>
-
-            {{-- Main Button (İÇTE, MERKEZİ) --}}
-            <div class="relative flex items-center gap-3 px-5 py-3 rounded-full shadow-xl {{ $selectedTheme }} hover:shadow-2xl transition-all duration-300 animate-bounce-slow z-10">
-                {{-- Wizard/Robot Icon --}}
-                <div class="relative">
-                    {{-- Sihirbaz/Robot SVG (Emoji tarzı) --}}
-                    <svg class="w-8 h-8 animate-wiggle" viewBox="0 0 64 64" fill="currentColor">
-                        {{-- Wizard Hat --}}
-                        <path d="M32 4 L28 20 L36 20 Z" fill="#FCD34D"/>
-                        <circle cx="32" cy="18" r="2" fill="#F59E0B"/>
-
-                        {{-- Face/Head --}}
-                        <circle cx="32" cy="32" r="14" fill="#60A5FA"/>
-
-                        {{-- Eyes --}}
-                        <circle cx="27" cy="30" r="2.5" fill="#1E3A8A"/>
-                        <circle cx="37" cy="30" r="2.5" fill="#1E3A8A"/>
-
-                        {{-- Happy Smile --}}
-                        <path d="M 25 36 Q 32 40 39 36" stroke="#1E3A8A" stroke-width="2" fill="none" stroke-linecap="round"/>
-
-                        {{-- Stars around --}}
-                        <text x="14" y="20" font-size="8" fill="#FCD34D">✨</text>
-                        <text x="44" y="20" font-size="8" fill="#FCD34D">✨</text>
-                    </svg>
-
-                    {{-- Online Pulse Dot --}}
-                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></span>
-                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></span>
-                </div>
-
-                <span class="font-bold text-sm hidden sm:inline animate-pulse-slow">Yapay Zeka</span>
-            </div>
+            {{-- Bubble Arrow --}}
+            <div
+                class="absolute w-0 h-0"
+                style="bottom: -10px; right: 39px; border-left: 11px solid transparent; border-right: 11px solid transparent; border-top: 11px solid white;"
+            ></div>
         </div>
 
-        {{-- Text Below --}}
-        <div class="mt-2 text-center">
-            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md">
-                Soru Sor 💬
-            </span>
+        {{-- Main Button with V1 Classic Pulse --}}
+        <div class="relative w-20 h-20 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center group-hover:scale-110 v1-classic-button"
+             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);">
+                {{-- Chatbot SVG Icon --}}
+                <svg class="w-12 h-12 transition-transform group-hover:scale-110 group-hover:rotate-6" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                    <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                    <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                    <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                    <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                    <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                    <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                </svg>
+
+            {{-- Online Dot --}}
+            <span class="absolute top-0 right-0 w-4 h-4 bg-green-400 rounded-full animate-ping"></span>
+            <span class="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full"></span>
         </div>
 
         {{-- Unread badge --}}
@@ -145,6 +175,7 @@ class="fixed {{ $selectedPosition }} z-50">
               class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg"
               x-cloak></span>
     </button>
+    </div>
 
     {{-- Chat Window --}}
     <div
@@ -298,7 +329,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
             {{-- Powered by --}}
             <p class="text-xs text-gray-400 dark:text-gray-500 text-center mt-2">
-                AI destekli müşteri asistanı
+                Yapay zeka destekli müşteri asistanı
             </p>
         </div>
     </div>
@@ -308,6 +339,44 @@ class="fixed {{ $selectedPosition }} z-50">
 [x-cloak] { display: none !important; }
 
 /* Custom Animations for AI Robot Button */
+
+/* V1 Classic Pulse - Exact copy from test page */
+.v1-classic-button::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: inherit;
+    z-index: -1;
+    animation: pulse-v1 2s infinite;
+}
+
+@keyframes pulse-v1 {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0;
+    }
+}
+
+/* Bubble Animation */
+@keyframes bubble-fade {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.85);
+    }
+    20%, 80% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 @keyframes wiggle {
     0%, 100% { transform: rotate(-5deg); }
     50% { transform: rotate(5deg); }
@@ -343,6 +412,10 @@ class="fixed {{ $selectedPosition }} z-50">
 
 .animate-pulse-slow {
     animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-bubble-fade {
+    animation: bubble-fade 3s infinite;
 }
 
 /* USER MESSAGES - Always white text (both light and dark mode) */

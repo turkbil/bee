@@ -58,4 +58,20 @@ return [
         'api_key' => env('DEEPSEEK_API_KEY'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Telegram Bot Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Telegram bot bildirimleri için gerekli ayarlar.
+    | Bot token BotFather'dan alınır.
+    | Chat ID bildirim gönderilecek kullanıcı veya grup ID'sidir.
+    |
+    */
+
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+    ],
+
 ];

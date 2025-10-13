@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ESR151_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ESR151_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ESR151')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ESR151'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ESR151');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>ESR151: Sürüş Platformlu Kompakt İstifte Güven ve Verim</h2>
   <p>İXTİF ESR151, depo operasyonlarında hız, güven ve ergonomiyi aynı gövdede toplayan 1.5 ton kapasiteli sürücülü istif makinesidir. 500 mm yük merkezine optimize edilen şasi dengesi, 1488 mm dönüş yarıçapı ve 850 mm gövde genişliğiyle dar koridorlarda bile akıcı bir akış sağlar. Günün yoğun saatlerinde operatörün ihtiyacı olan konforu katlanır ride-on pedal ile sunar; pedal kapandığında ise kaplumbağa modunda hassas ve kontrollü manevra mümkündür. 24V/15A entegre şarj cihazı saha içinde mobil şarj esnekliği vererek altyapı bağımlılığını azaltır.</p>

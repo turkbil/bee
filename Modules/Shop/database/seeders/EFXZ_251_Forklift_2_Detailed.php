@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFXZ_251_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFXZ_251_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFXZ-251')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFXZ-251'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFXZ-251');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EFXZ 251: Yeniden Üretilmiş Güç, Elektriğin Verimliliği</h2>
   <p>İXTİF EFXZ 251, içten yanmalı forklift gövdesinin sağlamlığını modern lityum iyon tahrik sistemiyle buluşturan akıllı bir dönüşüm programının ürünüdür. Gövde, karşı ağırlık ve ön aks detaylı söküm, kumlama ve boya işlemlerinden geçirilir; motor, şanzıman ve yakıt sistemi çıkarılarak yerlerine 80V Li-Ion enerji merkezi ve elektrikli aktarma grubu yerleştirilir. Sonuç, 2.5 ton kapasiteli, sessiz, sıfır emisyonlu ve bakım ihtiyacı düşük bir iş makinesidir. EFXZ 251, 11/12 km/s seyir hızıyla akışı bozmadan hat besler, 3000 mm standart kaldırma yüksekliğiyle paletleri güvenle istifler ve yeniden üretim süreci sayesinde ilk yatırım ile günlük işletme maliyetlerinde tasarruf sağlar. Yenilenmiş görünüm, sıkı testlerden geçen güvenlik ve yeni eşdeğeri garanti standartları ile işletmenize hızlı ve sürdürülebilir bir çözüm sunar.</p>

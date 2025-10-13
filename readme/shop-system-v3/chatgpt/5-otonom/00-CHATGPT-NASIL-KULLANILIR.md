@@ -175,7 +175,7 @@ http://laravel.test/shop/ixtif-f4-202-1150mm-catal (varyant örneği)
 
 ### Hata 6: Varyant Sayfası Boş
 **Sebep:** Varyantın kendi unique içeriği yok
-**Çözüm:** Her varyanta `long_description` + `use_cases` ekle (icon formatında)
+**Çözüm:** Her varyanta `body` + `use_cases` ekle (icon formatında)
 
 ---
 
@@ -251,7 +251,7 @@ http://laravel.test/shop/ixtif-f4-202-1150mm-catal (varyant örneği)
 
 ### 8️⃣ VARYANT İÇERİK KURALI
 Her varyant için **UNIQUE CONTENT** gerekli:
-- ✅ `long_description` (Bu varyantın ÖZEL avantajları)
+- ✅ `body` (Bu varyantın ÖZEL avantajları)
 - ✅ `use_cases` (Bu varyanta ÖZEL 6 senaryo - icon + text formatında)
 - ✅ `short_description` (30-50 kelime açıklayıcı)
 

@@ -161,7 +161,7 @@ INSERT INTO shop_products (
     name,
     slug,
     short_description,
-    long_description,
+    body,
     features,
     technical_specs,
     highlighted_features,
@@ -216,7 +216,7 @@ INSERT INTO shop_products (
     JSON_OBJECT('tr', 'CPD15TVL Elektrikli Forklift', 'en', 'CPD15TVL Electric Forklift'), -- name
     'cpd15tvl-elektrikli-forklift', -- slug
     JSON_OBJECT('tr', '80V Li-Ion teknolojili kompakt 3 tekerlekli elektrikli forklift', 'en', 'Compact 3-wheel dual-drive counterbalance forklift with 80V Li-Ion battery'), -- short_description
-    JSON_OBJECT('tr', 'CPD15TVL, 80 voltluk Li-Ion batarya teknolojisi etrafında tasarlanmış kompakt 3 tekerlekli elektrikli forklift...', 'en', 'CPD15TVL is a compact 3-wheel electric forklift designed around 80V Li-Ion battery technology...'), -- long_description
+    JSON_OBJECT('tr', 'CPD15TVL, 80 voltluk Li-Ion batarya teknolojisi etrafında tasarlanmış kompakt 3 tekerlekli elektrikli forklift...', 'en', 'CPD15TVL is a compact 3-wheel electric forklift designed around 80V Li-Ion battery technology...'), -- body
     JSON_OBJECT('tr', JSON_ARRAY('80V Li-Ion batarya', 'Çift sürüş AC motorları', 'Geniş bacak alanı 394mm'), 'en', JSON_ARRAY('80V Li-Ion battery', 'Dual drive AC motors', 'Big legroom 394mm')), -- features
     JSON_OBJECT(
         'capacity', JSON_OBJECT('load_capacity', JSON_OBJECT('value', 1500, 'unit', 'kg')),

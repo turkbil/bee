@@ -1,16 +1,24 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class RSC082_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class RSC082_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'RSC082')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: RSC082'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: RSC082');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => "\n<section><h2>RSC082 ile Dar Alanda Büyük İş: Kompakt, Güçlü, Hassas</h2>\n<p>Depolarda palet akışının hızlandığı, operatör verimliliğinin her geçen gün daha kritik hale geldiği bir dönemde, RSC082 kompakt gövdesi ve karşı ağırlıklı yapısıyla öne çıkar. 800 kg kaldırma kapasitesi ve 400 mm yük merkezi sayesinde farklı ebat ve tipte paletlerin güvenli istiflenmesini kolaylaştırır. 24V/210Ah akü altyapısı ile gün içindeki vardiyalarda istikrarlı performans verir; AC sürüş ve elektronik direksiyon kombinasyonuysa dar koridorlarda titreşimsiz, dengeli ve öngörülebilir kontrol sunar. 3000 mm kaldırma yüksekliği ve oransal kaldırma özelliği, raf giriş-çıkışlarında milimetrik hassasiyeti mümkün kılar.</p></section>\n<section><h3>Teknik Güç ve Şasi Dengesi</h3>\n<p>RSC082’nin çekirdeğinde 1.6 kW AC sürüş motoru ve 2.2 kW kaldırma motoru bulunur. Bu ikili, 5.5/6 km/sa yürüyüş hızlarına ulaşırken yük altında bile kontrollü hızlanma sağlar. 1760 kg servis ağırlığı ve karşı ağırlıklı şasi mimarisi, değişken yüklerde arka tekerlek tutuşunu artırır. Polüretan tekerlekler (230×90 mm ön ve 180×65 mm arka) sessiz çalışır, zeminde iz bırakmaz ve bakım ihtiyacını düşürür. 1250 mm dönüş yarıçapı ve 2404 mm toplam uzunluk, dar koridor planlarında yüksek manevra sağlar. 1334 mm çatala kadar uzunluk ve 900 mm toplam genişlik, hem EUR 1200×800 hem de 1000×1200 paletlerle uyumluluğu destekler. 60 mm mast altı boşluk ve 116 mm dingil merkezi boşluk, eşiksiz geçişlerde pürüzsüz sürüşe yardım eder.</p>\n<p>Direk kapalı yüksekliği 2061 mm ve açık yüksekliği 3908 mm olan standart 3000 mm kaldırma takımı, çok katlı raflara erişimi kolaylaştırır. Oransal kaldırma özelliği, özellikle kararsız yüklerde hassas seviyelendirme sağlar. Elektromanyetik servis/park freni, ani duruşlarda yük güvenliğini destekler. Sürüş kontrolünün AC oluşu, daha az ısı üretimi ve yüksek enerji verimi ile sonuçlanır; bu da akü döngülerinin verimli kullanılmasına yardımcı olur.</p></section>\n<section><h3>Operasyon Verimliliği ve Kullanıcı Deneyimi</h3>\n<p>Elektronik direksiyon tasarımıyla operatör kolundan gelen komutlar gecikmesiz ve öngörülebilir bir şekilde şasiye aktarılır. Bu sayede özellikle kalabalık raf aralarında hassas manevralar yapılabilir. Katlanır platform ve yan korkuluk opsiyonları, uzun mesafe sürüşlerde operatör yorgunluğunu azaltır. Ses basınç seviyesi 74 dB(A) olduğundan, yoğun vardiyalarda dahi konfor korunur. 30 A şarj cihazı akımı ile standart şarj altyapısına uyum gösterir; vardiya planlamasında esneklik yaratır. RSC082; e-ticaret, perakende dağıtım, 3PL, otomotiv yedek parça ve kimya gibi sektörlerde, inbound ve outbound akışlar arasında ara taşıma ve raf beslemede çok yönlü bir yardımcıdır.</p>\n<p>Günlük kullanımda operatör hatalarını azaltan unsurların başında tutarlı frenleme ve tahmin edilebilir hızlanma gelir. Elektromanyetik fren sistemi ve AC sürüş mimarisi birlikte çalışarak, rampa yaklaşımı ve palet hizalama gibi hassas anlarda güvenli duruş sağlar. PU tekerleklerin zemin dostu yapısı, beton zeminlerde düşük titreşim ve düşük gürültü profili ile ekipman ve operatör yorgunluğunu azaltır. Bakım tarafında, AC motorlar fırçasız yapıları sayesinde daha seyrek bakım ihtiyacı duyar.</p></section>\n<section><h3>Sonuç</h3>\n<p>Özetle RSC082, kompakt bir kasada dengeli güç, yüksek manevra ve hassas istiflemeyi birleştirir. 800 kg kapasite, 3000 mm kaldırma, 24V/210Ah akü ve AC sürüş ile depo operasyonlarınızı hızlandırırken güvenlikten ödün vermez. Detaylı bilgi ve stok durumu için 0216 755 3 555 numaralı hattan satış ekibimizle görüşebilirsiniz.</p></section>\n"], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => "\n<section><h2>RSC082 ile Dar Alanda Büyük İş: Kompakt, Güçlü, Hassas</h2>\n<p>Depolarda palet akışının hızlandığı, operatör verimliliğinin her geçen gün daha kritik hale geldiği bir dönemde, RSC082 kompakt gövdesi ve karşı ağırlıklı yapısıyla öne çıkar. 800 kg kaldırma kapasitesi ve 400 mm yük merkezi sayesinde farklı ebat ve tipte paletlerin güvenli istiflenmesini kolaylaştırır. 24V/210Ah akü altyapısı ile gün içindeki vardiyalarda istikrarlı performans verir; AC sürüş ve elektronik direksiyon kombinasyonuysa dar koridorlarda titreşimsiz, dengeli ve öngörülebilir kontrol sunar. 3000 mm kaldırma yüksekliği ve oransal kaldırma özelliği, raf giriş-çıkışlarında milimetrik hassasiyeti mümkün kılar.</p></section>\n<section><h3>Teknik Güç ve Şasi Dengesi</h3>\n<p>RSC082’nin çekirdeğinde 1.6 kW AC sürüş motoru ve 2.2 kW kaldırma motoru bulunur. Bu ikili, 5.5/6 km/sa yürüyüş hızlarına ulaşırken yük altında bile kontrollü hızlanma sağlar. 1760 kg servis ağırlığı ve karşı ağırlıklı şasi mimarisi, değişken yüklerde arka tekerlek tutuşunu artırır. Polüretan tekerlekler (230×90 mm ön ve 180×65 mm arka) sessiz çalışır, zeminde iz bırakmaz ve bakım ihtiyacını düşürür. 1250 mm dönüş yarıçapı ve 2404 mm toplam uzunluk, dar koridor planlarında yüksek manevra sağlar. 1334 mm çatala kadar uzunluk ve 900 mm toplam genişlik, hem EUR 1200×800 hem de 1000×1200 paletlerle uyumluluğu destekler. 60 mm mast altı boşluk ve 116 mm dingil merkezi boşluk, eşiksiz geçişlerde pürüzsüz sürüşe yardım eder.</p>\n<p>Direk kapalı yüksekliği 2061 mm ve açık yüksekliği 3908 mm olan standart 3000 mm kaldırma takımı, çok katlı raflara erişimi kolaylaştırır. Oransal kaldırma özelliği, özellikle kararsız yüklerde hassas seviyelendirme sağlar. Elektromanyetik servis/park freni, ani duruşlarda yük güvenliğini destekler. Sürüş kontrolünün AC oluşu, daha az ısı üretimi ve yüksek enerji verimi ile sonuçlanır; bu da akü döngülerinin verimli kullanılmasına yardımcı olur.</p></section>\n<section><h3>Operasyon Verimliliği ve Kullanıcı Deneyimi</h3>\n<p>Elektronik direksiyon tasarımıyla operatör kolundan gelen komutlar gecikmesiz ve öngörülebilir bir şekilde şasiye aktarılır. Bu sayede özellikle kalabalık raf aralarında hassas manevralar yapılabilir. Katlanır platform ve yan korkuluk opsiyonları, uzun mesafe sürüşlerde operatör yorgunluğunu azaltır. Ses basınç seviyesi 74 dB(A) olduğundan, yoğun vardiyalarda dahi konfor korunur. 30 A şarj cihazı akımı ile standart şarj altyapısına uyum gösterir; vardiya planlamasında esneklik yaratır. RSC082; e-ticaret, perakende dağıtım, 3PL, otomotiv yedek parça ve kimya gibi sektörlerde, inbound ve outbound akışlar arasında ara taşıma ve raf beslemede çok yönlü bir yardımcıdır.</p>\n<p>Günlük kullanımda operatör hatalarını azaltan unsurların başında tutarlı frenleme ve tahmin edilebilir hızlanma gelir. Elektromanyetik fren sistemi ve AC sürüş mimarisi birlikte çalışarak, rampa yaklaşımı ve palet hizalama gibi hassas anlarda güvenli duruş sağlar. PU tekerleklerin zemin dostu yapısı, beton zeminlerde düşük titreşim ve düşük gürültü profili ile ekipman ve operatör yorgunluğunu azaltır. Bakım tarafında, AC motorlar fırçasız yapıları sayesinde daha seyrek bakım ihtiyacı duyar.</p></section>\n<section><h3>Sonuç</h3>\n<p>Özetle RSC082, kompakt bir kasada dengeli güç, yüksek manevra ve hassas istiflemeyi birleştirir. 800 kg kapasite, 3000 mm kaldırma, 24V/210Ah akü ve AC sürüş ile depo operasyonlarınızı hızlandırırken güvenlikten ödün vermez. Detaylı bilgi ve stok durumu için 0216 755 3 555 numaralı hattan satış ekibimizle görüşebilirsiniz.</p></section>\n"], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -33,9 +41,11 @@ class RSC082_Istif_2_Detailed extends Seeder {
                         "value": "1250 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -68,9 +78,11 @@ JSON
                         "description": "Sessiz çalışma ve zemin dostu yapı."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -105,9 +117,11 @@ JSON
                         "text": "Kimya depolarında farklı boy paletlerin güvenli yönetimi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -130,9 +144,11 @@ JSON
                         "text": "Hassas oransal kaldırma ile raf giriş-çıkışlarında nazik hareket"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -215,17 +231,21 @@ JSON
                         "text": "Tesis içi malzeme hareketi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'warranty_info' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'warranty_info' => json_encode(json_decode(
+                <<<'JSON'
                 {
                     "coverage": "Makineye satın alım tarihinden itibaren 12 ay fabrika garantisi verilir. Li-Ion batarya modülleri ise 24 ay garanti kapsamındadır. Garanti normal kullanım koşullarında üretim kaynaklı arızaları kapsar.",
                     "duration_months": 12,
                     "battery_warranty_months": 24
                 }
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -256,9 +276,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -267,9 +289,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "800 kg kapasite altında şasi dengesi ve mast rijitliği nasıldır?",
@@ -320,8 +344,9 @@ JSON
                         "answer": "Teknik bilgi, stok ve teklif için İXTİF satış ekibine 0216 755 3 555 üzerinden ulaşabilirsiniz."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info("✅ Detailed güncellendi: RSC082");

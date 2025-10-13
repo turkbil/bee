@@ -12,7 +12,7 @@ PDF'den 3 seeder oluştur: 1_Master, 2_Detailed, 3_Variants
 
 **MARKA:** ASLA "EP"! → "İXTİF" | ❌ "EP F4 201" → ✅ "İXTİF F4 201"
 
-**VARYANT:** Her varyant UNIQUE (long_description + use_cases özel)
+**VARYANT:** Her varyant UNIQUE (body + use_cases özel)
 
 **ÇOKLU MODEL:** PDF'de 2+ model varsa (F4-201, F4-202), her biri için AYRI 3 dosya! (örn: F4_201_1/2/3 + F4_202_1/2/3)
 
@@ -71,7 +71,7 @@ class {MODEL}_{KATEGORİ}_2_Detailed extends Seeder {
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
 
             // LONG: 800-1500, 3 bölüm
-            'long_description' => json_encode(['tr' => '<section><h2>{Başlık}</h2><p>{100-150}</p></section><section><h3>Teknik</h3><p>{200-300}</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>{Başlık}</h2><p>{100-150}</p></section><section><h3>Teknik</h3><p>{200-300}</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
 
             // 4 madde
             'primary_specs' => json_encode([
@@ -145,7 +145,7 @@ class {MODEL}_{KATEGORİ}_3_Variants extends Seeder {
                 'variant_type' => 'catal-uzunlugu',
                 'title' => '{İXTİF + Model + Varyant}',
                 'short_description' => '{30-50}',
-                'long_description' => '{800-1200 HTML}',
+                'body' => '{800-1200 HTML}',
                 'use_cases' => [['icon' => 'box-open', 'text' => '...']] // 6x
             ]
         ];
@@ -160,7 +160,7 @@ class {MODEL}_{KATEGORİ}_3_Variants extends Seeder {
                 'title' => json_encode(['tr' => $v['title']], JSON_UNESCAPED_UNICODE),
                 'slug' => json_encode(['tr' => Str::slug($v['title'])], JSON_UNESCAPED_UNICODE),
                 'short_description' => json_encode(['tr' => $v['short_description']], JSON_UNESCAPED_UNICODE),
-                'long_description' => json_encode(['tr' => $v['long_description']], JSON_UNESCAPED_UNICODE),
+                'body' => json_encode(['tr' => $v['body']], JSON_UNESCAPED_UNICODE),
                 'use_cases' => json_encode($v['use_cases'], JSON_UNESCAPED_UNICODE),
                 'is_master_product' => false,
                 'is_active' => true,

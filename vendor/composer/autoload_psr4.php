@@ -89,6 +89,7 @@ return array(
     'OpenAI\\' => array($vendorDir . '/openai-php/client/src'),
     'Nwidart\\Modules\\' => array($vendorDir . '/nwidart/laravel-modules/src'),
     'NunoMaduro\\Collision\\' => array($vendorDir . '/nunomaduro/collision/src'),
+    'NotificationChannels\\Telegram\\' => array($vendorDir . '/laravel-notification-channels/telegram/src'),
     'Nette\\' => array($vendorDir . '/nette/utils/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Modules\\WidgetManagement\\Database\\Seeders\\' => array($baseDir . '/Modules/WidgetManagement/database/seeders'),

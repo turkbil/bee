@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFX5_301_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFX5_301_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFX5-301')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFX5-301'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFX5-301');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section>
+            'body' => json_encode(['tr' => '<section>
   <h2>İXTİF EFX5 301: Modüler Li-Ion ile kesintisiz verim</h2>
   <p>Depo kapıları açıldığında iş temposu başlar ve durmaz. İXTİF EFX5 301, modüler 80V Li-Ion akü mimarisi, güçlü
   AC sürüş ve yüksek görüşlü direk yapısıyla gün boyu aynı ritimde kalır. Tek modül 280Ah ile hafif-orta operasyonlar,
@@ -32,7 +39,8 @@ class EFX5_301_Forklift_2_Detailed extends Seeder {
   Depo düzeniniz, güvenlik standartlarınız ve vardiya planınız ne olursa olsun, EFX5 modern Li-Ion mimarisiyle
   yakıt/akü bakımı gerektirmeyen temiz bir operasyon sağlar. Teklif ve demo için 0216 755 3 555.</p>
 </section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -55,9 +63,11 @@ class EFX5_301_Forklift_2_Detailed extends Seeder {
                         "value": "2498 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -90,9 +100,11 @@ JSON
                         "description": "Hidrolik servis + mekanik park freni"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "warehouse",
@@ -127,9 +139,11 @@ JSON
                         "text": "Elektronik üretimde WIP taşıma ve sevkiyat hazırlığı"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -156,9 +170,11 @@ JSON
                         "text": "Modüler stok yönetimi: tek gövdede farklı dayanım"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -249,10 +265,12 @@ JSON
                         "text": "Hava Kargo Ambarları"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'warranty_info' => json_encode(['coverage' => 'Makine 12 ay, Li-Ion batarya 24 ay garanti.', 'duration_months' => 12, 'battery_warranty_months' => 24], JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -283,9 +301,11 @@ JSON
                         "price": null
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -294,9 +314,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Modüler Li-Ion batarya tek ve çift modül arasında nasıl fark yaratıyor?",
@@ -347,8 +369,9 @@ JSON
                         "answer": "İXTİF satış ekibi ile iletişime geçebilirsiniz: 0216 755 3 555. Size en uygun konfigürasyonu birlikte belirleyelim."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info("✅ Detailed güncellendi: EFX5-301");

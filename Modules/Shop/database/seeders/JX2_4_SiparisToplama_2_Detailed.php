@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class JX2_4_SiparisToplama_2_Detailed extends Seeder {
-    public function run(): void {
+class JX2_4_SiparisToplama_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'JX2-4')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (JX2-4)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (JX2-4)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section class="intro">
   <h2>İXTİF JX2-4: Dar Koridorlarda Hızı ve Güveni Yeniden Tanımlayın</h2>
   <p>Depo tavanına doğru yükselirken operatörünüzün her hareketi güvenle desteklensin: İXTİF JX2-4, 192” maksimum çatal yüksekliği, 4.5 mph seyir hızı ve yalnızca iç mekâna özel şasisiyle modern sipariş toplama operasyonlarını akıcı hale getirir. 42” çatal, 21.3” çatal aralığı ve 117.5” sağ açılı istif koridoru değeri; raf araları sıkışık, palet akışı yoğun işletmeler için ölçülebilir verimlilik sağlar. Poly tekerlek yapısı gürültüyü düşürürken, rejeneratif fren ve elektromanyetik park sistemi iniş-çıkışlarda kararlılık sunar. Çeşitli batarya seçenekleri—AGM, lityum ve kurşun-asit—farklı vardiya ve şarj politikalarına uyumlu bir enerji mimarisi oluşturur.</p>

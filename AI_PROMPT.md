@@ -695,7 +695,7 @@ public $tabCompletionStatus = [];
                         <div wire:ignore>
                             <textarea id="editor_{{ $lang }}"
                                       class="tinymce-editor"
-                                      wire:model="multiLangInputs.{{ $lang }}.long_description"></textarea>
+                                      wire:model="multiLangInputs.{{ $lang }}.body"></textarea>
                         </div>
                     </div>
                 @endforeach

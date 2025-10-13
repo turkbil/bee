@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class F2_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class F2_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'F2')->first();
-        if (!$p) { echo "❌ Master bulunamadı\n"; return; }
+        if (!$p) {
+            echo "❌ Master bulunamadı\n";
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF F2: Perakende koridorlarında akışkanlık ve verimlilik</h2>
   <p>Sabah açılışından kapanışa kadar, dar koridorlarda palet akışını duraksatmadan sürdüren kompakt bir yardımcınız olduğunu hayal edin. İXTİF F2, 1.5 ton kapasiteli elektrikli transpalet mimarisini hafif bir şasi (120 kg) ve akıllı Li‑Ion batarya ile birleştirerek market, mağaza ve küçük depolarda kesintisiz operasyon sağlar. Avuç içiyle yönetime izin veren yeni tiller başı ergonomisi sayesinde kullanıcıların başparmaklarını zorlamadan, gün boyu rahat ve tekrarlanabilir hareketlerle malzeme transferi yapmasına olanak verir. Platform F tabanlı tasarım, ekipmanın yapılandırmasını basitleştirir ve farklı şasi seçenekleri ile uygulamaya göre uyarlama yapmayı mümkün kılar.</p>

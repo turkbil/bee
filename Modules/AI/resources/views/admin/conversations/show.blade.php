@@ -58,6 +58,142 @@
             </div>
         </div>
 
+        <!-- Kişi Bilgileri (Metadata) -->
+        @php
+            $contextData = $conversation->context_data ?? [];
+            $device = $contextData['device_type'] ?? null;
+            $browser = $contextData['browser'] ?? null;
+            $os = $contextData['os'] ?? null;
+            $ip = $contextData['ip'] ?? null;
+            $userAgent = $contextData['user_agent'] ?? null;
+            $locale = $contextData['locale'] ?? null;
+            $referrer = $contextData['referrer'] ?? null;
+            $startedAt = $contextData['started_at'] ?? null;
+        @endphp
+
+        @if($device || $browser || $os || $ip)
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-user-circle me-2"></i>
+                            Kişi Bilgileri
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small">Cihaz Türü</label>
+                                    <div class="h4 mb-0">
+                                        @if($device === 'mobile')
+                                            <i class="fas fa-mobile-alt text-primary me-2"></i>Mobil
+                                        @elseif($device === 'tablet')
+                                            <i class="fas fa-tablet-alt text-info me-2"></i>Tablet
+                                        @elseif($device === 'desktop')
+                                            <i class="fas fa-desktop text-success me-2"></i>Masaüstü
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small">Tarayıcı</label>
+                                    <div class="h4 mb-0">
+                                        @if($browser === 'Chrome')
+                                            <i class="fab fa-chrome text-warning me-2"></i>
+                                        @elseif($browser === 'Safari')
+                                            <i class="fab fa-safari text-primary me-2"></i>
+                                        @elseif($browser === 'Firefox')
+                                            <i class="fab fa-firefox text-danger me-2"></i>
+                                        @elseif($browser === 'Edge')
+                                            <i class="fab fa-edge text-info me-2"></i>
+                                        @else
+                                            <i class="fas fa-browser me-2"></i>
+                                        @endif
+                                        {{ $browser ?? '-' }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small">İşletim Sistemi</label>
+                                    <div class="h4 mb-0">
+                                        @if(str_contains($os ?? '', 'Windows'))
+                                            <i class="fab fa-windows text-primary me-2"></i>
+                                        @elseif(str_contains($os ?? '', 'Mac') || str_contains($os ?? '', 'iOS'))
+                                            <i class="fab fa-apple text-secondary me-2"></i>
+                                        @elseif(str_contains($os ?? '', 'Android'))
+                                            <i class="fab fa-android text-success me-2"></i>
+                                        @elseif(str_contains($os ?? '', 'Linux'))
+                                            <i class="fab fa-linux text-dark me-2"></i>
+                                        @else
+                                            <i class="fas fa-laptop me-2"></i>
+                                        @endif
+                                        {{ $os ?? '-' }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small">IP Adresi</label>
+                                    <div class="h4 mb-0">
+                                        @if($ip)
+                                            <i class="fas fa-network-wired text-secondary me-2"></i>
+                                            <span class="badge bg-secondary-lt">{{ $ip }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($locale || $referrer || $startedAt)
+                        <div class="row mt-2">
+                            @if($locale)
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small">Dil</label>
+                                <div><span class="badge bg-azure-lt">{{ strtoupper($locale) }}</span></div>
+                            </div>
+                            @endif
+
+                            @if($referrer)
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small">Referrer</label>
+                                <div class="small text-muted" style="word-break: break-all;">{{ $referrer }}</div>
+                            </div>
+                            @endif
+
+                            @if($startedAt)
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small">Başlangıç</label>
+                                <div class="small">{{ \Carbon\Carbon::parse($startedAt)->format('d.m.Y H:i:s') }}</div>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
+
+                        @if($userAgent)
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <label class="form-label text-muted small">User Agent</label>
+                                <div class="small text-muted font-monospace" style="word-break: break-all;">{{ $userAgent }}</div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Quick Stats -->
         @if($conversation->type == 'feature_test')
         <div class="row mb-4">

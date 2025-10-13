@@ -25,22 +25,22 @@ class ShopBrandSeeder extends Seeder
             return;
         }
 
-        // Duplicate check - eğer zaten İXTİF markası varsa skip
+        // Duplicate check - eğer zaten iXtif markası varsa skip
         $existingBrand = DB::table('shop_brands')
-            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) = 'İXTİF'")
+            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) = 'iXtif'")
             ->first();
 
         if ($existingBrand) {
-            $this->command->warn("⚠️  İXTİF markası zaten mevcut (ID: {$existingBrand->brand_id}). Atlanıyor...");
+            $this->command->warn("⚠️  iXtif markası zaten mevcut (ID: {$existingBrand->brand_id}). Atlanıyor...");
             return;
         }
 
-        // İXTİF markasını ekle
+        // iXtif markasını ekle (sadece X büyük)
         $brandId = DB::table('shop_brands')->insertGetId([
             'title' => json_encode([
-                'tr' => 'İXTİF',
-                'en' => 'IXTIF',
-                'ar' => 'إكستيف'
+                'tr' => 'iXtif',
+                'en' => 'iXtif',
+                'ar' => 'iXtif'
             ], JSON_UNESCAPED_UNICODE),
 
             'slug' => json_encode([
@@ -50,13 +50,13 @@ class ShopBrandSeeder extends Seeder
             ], JSON_UNESCAPED_UNICODE),
 
             'description' => json_encode([
-                'tr' => 'İXTİF, lojistik ve depolama ekipmanlarında yenilikçi çözümler sunan lider markadır. İstif makineleri, transpaletler ve forkliftler ile güvenli ve verimli malzeme taşıma sistemleri sağlar.',
-                'en' => 'IXTIF is a leading brand offering innovative solutions in logistics and warehouse equipment. It provides safe and efficient material handling systems with stackers, pallet trucks and forklifts.',
-                'ar' => 'إكستيف هي علامة تجارية رائدة تقدم حلولاً مبتكرة في معدات اللوجستية والمستودعات. توفر أنظمة مناولة مواد آمنة وفعالة مع الرافعات الشوكية وعربات البليت والرافعات.'
+                'tr' => 'iXtif, lojistik ve depolama ekipmanlarında yenilikçi çözümler sunan lider markadır. İstif makineleri, transpaletler ve forkliftler ile güvenli ve verimli malzeme taşıma sistemleri sağlar.',
+                'en' => 'iXtif is a leading brand offering innovative solutions in logistics and warehouse equipment. It provides safe and efficient material handling systems with stackers, pallet trucks and forklifts.',
+                'ar' => 'iXtif هي علامة تجارية رائدة تقدم حلولاً مبتكرة في معدات اللوجستية والمستودعات. توفر أنظمة مناولة مواد آمنة وفعالة مع الرافعات الشوكية وعربات البليت والرافعات.'
             ], JSON_UNESCAPED_UNICODE),
 
             'logo_url' => null,
-            'website_url' => 'https://ixtif.com',
+            'website_url' => 'https://ixtif.com.tr',
             'country_code' => 'TR',
             'founded_year' => 2010,
             'headquarters' => 'İstanbul, Türkiye',
@@ -75,6 +75,6 @@ class ShopBrandSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $this->command->info("✅ İXTİF markası eklendi (ID: {$brandId})");
+        $this->command->info("✅ iXtif markası eklendi (ID: {$brandId})");
     }
 }

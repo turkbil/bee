@@ -31,7 +31,7 @@ class EcommerceProductSeeder extends Seeder
                     'tr' => '1500kg kapasiteli kompakt 80V Li-ion teknolojili 3 tekerlekli elektrikli forklift',
                     'en' => '1500kg capacity compact 3-wheel electric forklift with 80V Li-ion technology'
                 ]),
-                'long_description' => json_encode([
+                'body' => json_encode([
                     'tr' => '80V Li-ion teknolojisi ile donatılmış kompakt 3 tekerlekli forklift. Güçlü dual drive AC traction motorlar, geniş operatör alanı (394mm), ayarlanabilir direksiyon ve entegre şarj sistemi ile öne çıkar. Dar koridor kullanımına ideal.',
                     'en' => 'Compact 3 wheels truck designed around 80V Li-Ion battery. Powerful dual drive AC traction motors, big legroom (394mm) for higher operator comfort, great ergonomic design with adjustable steering wheel and single phase integrated charger.'
                 ]),
@@ -236,7 +236,7 @@ class EcommerceProductSeeder extends Seeder
                     'tr' => '1800kg kapasiteli kompakt 80V Li-ion teknolojili 3 tekerlekli elektrikli forklift',
                     'en' => '1800kg capacity compact 3-wheel electric forklift with 80V Li-ion technology'
                 ]),
-                'long_description' => json_encode([
+                'body' => json_encode([
                     'tr' => '80V Li-ion teknolojisi ile donatılmış kompakt 3 tekerlekli forklift. Güçlü dual drive AC traction motorlar, geniş operatör alanı (394mm), ayarlanabilir direksiyon ve entegre şarj sistemi ile öne çıkar. Dar koridor kullanımına ideal.',
                     'en' => 'Compact 3 wheels truck designed around 80V Li-Ion battery. Powerful dual drive AC traction motors, big legroom (394mm) for higher operator comfort, great ergonomic design with adjustable steering wheel and single phase integrated charger.'
                 ]),
@@ -313,7 +313,7 @@ class EcommerceProductSeeder extends Seeder
                     'tr' => '2000kg kapasiteli kompakt 80V Li-ion teknolojili 3 tekerlekli elektrikli forklift',
                     'en' => '2000kg capacity compact 3-wheel electric forklift with 80V Li-ion technology'
                 ]),
-                'long_description' => json_encode([
+                'body' => json_encode([
                     'tr' => '80V Li-ion teknolojisi ile donatılmış, 2000kg yük kapasiteli güçlü 3 tekerlekli forklift. Dual drive AC traction motorlar, geniş operatör alanı, ergonomik tasarım ve entegre şarj sistemi ile ağır iş yükleri için tasarlanmış.',
                     'en' => 'Powerful 3-wheel forklift with 2000kg load capacity, equipped with 80V Li-ion technology. Dual drive AC traction motors, spacious operator area, ergonomic design and integrated charging system designed for heavy-duty applications.'
                 ]),

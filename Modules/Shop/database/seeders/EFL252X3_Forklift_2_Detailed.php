@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL252X3_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL252X3_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL252X3')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL252X3'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL252X3');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EFL252X3: İç ve Dış Mekânda Tek Gövdede Çok Yönlülük</h2>
   <p>İXTİF EFL252X3; 2.5 ton nominal kapasite, 80V Li‑Ion enerji mimarisi ve modern PMSM sürüş sistemiyle, depo içi raf koridorlarından açık saha yüklemelerine kadar geniş bir kullanım bandını tek platformda birleştirir. Yüksek yerden açıklık ve büyük lastik kombinasyonu engebeli zeminlerde stabil tutunma sağlarken, 2250 mm dönüş yarıçapı dar alanlarda operatöre gerçek çeviklik sunar. Tek faz entegre şarj cihazı 16A prizle çalışır; bu sayede sahada özel altyapı gerekmeksizin fırsat şarjı yapılabilir. Ergonomik çalışma bölgesi; sadeleştirilmiş gösterge paneli, ayarlanabilir direksiyon ve konfor pedalıyla uzun vardiyalarda yorgunluğu azaltır.</p>

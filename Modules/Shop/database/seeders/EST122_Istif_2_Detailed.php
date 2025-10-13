@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EST122_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class EST122_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EST122')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EST122'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EST122');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EST122: Dar Koridorların Güvenilir İstif Gücü</h2>
   <p>Depo trafiğinin yoğunlaştığı vardiya başlangıçlarında, <strong>İXTİF EST122</strong> operatöre yüksek görüş ve hassas kontrol sunarak istiflemenin ritmini yakalar. 1.200 kg nominal kapasite ve 600 mm yük merkezi ile sınıfının temel gerekliliklerini karşılayan model, <em>kompakt duplex mast</em> ve rijit şasi kurgusu sayesinde dar raf aralarında güvenli kaldırma ve konumlandırma yapar. Uzatılmış ve offset tasarımlı tiller kolu, operatörün gövde dışına konumlanmasını sağlayarak palet uçlarını net görmesine yardım eder; kaplumbağa (crawl) butonu ise hızı sınırlayıp manevrayı inceltir. Entegre şarj cihazı, priz erişimi olan her noktayı potansiyel bir enerji istasyonuna dönüştürür; bu sayede filo sahada kalır, cihazlar gereksizce şarj odasına taşınmaz. Sade, endüstride kanıtlanmış bileşen anlayışı bakım süreçlerini kısaltır, parça tedarikini kolaylaştırır ve sahip olma maliyetini düşürür.</p>

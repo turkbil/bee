@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class RSi201_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class RSi201_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'RSi201')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: RSi201'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: RSi201');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF RSi201: Çift Katlı İstifte Maksimum Akış</h2>
   <p>Depo içinde iki paleti tek seferde hareket ettirebilmek, sipariş toplama ve hat besleme akışlarını dramatik biçimde hızlandırır. RSi201 tam da bunu yapar: çift katlı istif mimarisi sayesinde eşzamanlı taşıma, 3 kW kaldırma motorunun sağladığı 0.18 m/sn kaldırma ve 0.36 m/sn indirme hızlarıyla birleşir. Süspansiyonlu platform operatör konforu sunarken, elektrikli direksiyon ve otomatik viraj yavaşlatma yorgunluğu azaltır. 24V/205Ah Li-ion batarya fırsat şarjına uygundur; entegre 24V/30A şarj cihazı günlük rutine esneklik katarken, opsiyonel 24V/100A harici şarj cihazı iki saatte tam doluma imkan tanır.</p>

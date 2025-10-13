@@ -3,6 +3,7 @@
 namespace App\Services\AI\Context;
 
 use Modules\Page\App\Models\Page;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Page Context Builder
@@ -40,38 +41,44 @@ class PageContextBuilder
 
     /**
      * Genel sayfa bilgileri (About, Services, Contact + ALL active pages)
+     * 🚀 CACHED: 1 saat
      */
     public function buildGeneralPageContext(): array
     {
-        $context = ['page_type' => 'general'];
+        $tenantId = tenant('id');
+        $cacheKey = "page_context_{$tenantId}_{$this->locale}";
 
-        // Hakkımızda
-        $about = $this->findPageBySlug(['hakkimizda', 'about', 'about-us']);
-        if ($about) {
-            $context['about'] = $this->formatPage($about);
-        }
+        return Cache::remember($cacheKey, 3600, function () {
+            $context = ['page_type' => 'general'];
 
-        // Hizmetler
-        $services = $this->findPageBySlug(['hizmetlerimiz', 'services', 'our-services']);
-        if ($services) {
-            $context['services'] = $this->formatPage($services);
-        }
+            // Hakkımızda
+            $about = $this->findPageBySlug(['hakkimizda', 'about', 'about-us']);
+            if ($about) {
+                $context['about'] = $this->formatPage($about);
+            }
 
-        // İletişim
-        $contact = $this->findPageBySlug(['iletisim', 'contact', 'contact-us']);
-        if ($contact) {
-            $context['contact'] = $this->formatPage($contact);
-        }
+            // Hizmetler
+            $services = $this->findPageBySlug(['hizmetlerimiz', 'services', 'our-services']);
+            if ($services) {
+                $context['services'] = $this->formatPage($services);
+            }
 
-        // TÜM AKTİF SAYFALAR (AI'nin tüm sayfa bilgisine erişimi için)
-        $allPages = Page::where('is_active', true)
-            ->select(['page_id', 'title', 'slug', 'body'])
-            ->get();
+            // İletişim
+            $contact = $this->findPageBySlug(['iletisim', 'contact', 'contact-us']);
+            if ($contact) {
+                $context['contact'] = $this->formatPage($contact);
+            }
 
-        $context['all_pages'] = $allPages->map(fn($p) => $this->formatPageSummary($p))->toArray();
-        $context['total_pages'] = $allPages->count();
+            // TÜM AKTİF SAYFALAR (AI'nin tüm sayfa bilgisine erişimi için)
+            $allPages = Page::where('is_active', true)
+                ->select(['page_id', 'title', 'slug', 'body'])
+                ->get();
 
-        return $context;
+            $context['all_pages'] = $allPages->map(fn($p) => $this->formatPageSummary($p))->toArray();
+            $context['total_pages'] = $allPages->count();
+
+            return $context;
+        });
     }
 
     /**

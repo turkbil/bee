@@ -1,14 +1,21 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EPT20_15ET2H_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class EPT20_15ET2H_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EPT20-15ET2H')->first();
-        if (!$p) { echo "❌ Master bulunamadı"; return; }
+        if (!$p) {
+            echo "❌ Master bulunamadı";
+            return;
+        }
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section class="hero-intro">
   <h2>İXTİF EPT20-15ET2H: Zor Zeminlerin Güvenilir Transpaleti</h2>
   <p><strong>Günün ilk sevkiyatı.</strong> Rampalar ıslak, saha engebeli ve süre kısıtlı. Standart bir transpalet kaygan zeminde zorlanırken, EPT20-15ET2H yüksek şasi boşluğu, kauçuk tahrik tekeri ve sızdırmaz gövdesiyle güven vererek işe başlar. 1.500 kg kapasiteyi kompakt ölçülerle birleştirir; DC sürüş kontrolü ve elektromanyetik fren ile hassas manevra sağlar. Entegre şarj cihazı sahada priz bulur bulmaz tak-çalıştır esnekliği sunarken, optimize tahrik sistemi bakım aralıklarını uzatır.</p>

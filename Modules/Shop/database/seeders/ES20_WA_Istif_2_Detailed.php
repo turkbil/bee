@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES20_WA_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES20_WA_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES20-WA')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (ES20-WA)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (ES20-WA)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF ES20-WA: 2 Ton sınıfında güven, hassasiyet ve verimlilik</h2>
   <p>ES20-WA, yaya operatörler için tasarlanmış, depo içi istifleme ve transfer görevlerinde yüksek güvenlik ve tekrarlanabilir hassasiyet sağlayan bir çözümdür. 2000 kg kapasite, 600 mm yük merkezi ve kompakt gövde geometrisi, dar koridorlarda bile akıcı hareketi mümkün kılar. Operatör, iki kademeli indirme fonksiyonu sayesinde raf seviyesine yaklaşırken hızın otomatik ve yumuşak biçimde düşmesini deneyimler; bu, özellikle kırılgan ambalajlı ürünlerde hasar riskini azaltır. 1.1 kW AC sürüş motoru ve 3.0 kW kaldırma motoru birlikte çalışarak 4.5/5.0 km/s sürüş hızlarını ve 0.11/0.16 m/s kaldırma hızlarını sunar. Tüm bu değerler, yoğun vardiya saatlerinde bile yük akışının sürekli ve öngörülebilir olmasını sağlar.</p>

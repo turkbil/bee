@@ -18,9 +18,9 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '47e1160838b5e5a10346ac4084b58c23' => __DIR__ . '/..' . '/laravel/prompts/src/helpers.php',
         '35a6ad97d21e794e7e22a17d806652e4' => __DIR__ . '/..' . '/nunomaduro/termwind/src/Functions.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
@@ -178,6 +178,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         array (
             'Nwidart\\Modules\\' => 16,
             'NunoMaduro\\Collision\\' => 21,
+            'NotificationChannels\\Telegram\\' => 30,
             'Nette\\' => 6,
         ),
         'M' => 
@@ -685,6 +686,10 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'NunoMaduro\\Collision\\' => 
         array (
             0 => __DIR__ . '/..' . '/nunomaduro/collision/src',
+        ),
+        'NotificationChannels\\Telegram\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src',
         ),
         'Nette\\' => 
         array (
@@ -7450,6 +7455,22 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Nette\\Utils\\Validators' => __DIR__ . '/..' . '/nette/utils/src/Utils/Validators.php',
         'NoDiscard' => __DIR__ . '/..' . '/symfony/polyfill-php85/Resources/stubs/NoDiscard.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
+        'NotificationChannels\\Telegram\\Contracts\\TelegramSenderContract' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/Contracts/TelegramSenderContract.php',
+        'NotificationChannels\\Telegram\\Enums\\FileType' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/Enums/FileType.php',
+        'NotificationChannels\\Telegram\\Enums\\ParseMode' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/Enums/ParseMode.php',
+        'NotificationChannels\\Telegram\\Exceptions\\CouldNotSendNotification' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/Exceptions/CouldNotSendNotification.php',
+        'NotificationChannels\\Telegram\\Telegram' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/Telegram.php',
+        'NotificationChannels\\Telegram\\TelegramBase' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramBase.php',
+        'NotificationChannels\\Telegram\\TelegramChannel' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramChannel.php',
+        'NotificationChannels\\Telegram\\TelegramContact' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramContact.php',
+        'NotificationChannels\\Telegram\\TelegramFile' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramFile.php',
+        'NotificationChannels\\Telegram\\TelegramLocation' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramLocation.php',
+        'NotificationChannels\\Telegram\\TelegramMessage' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramMessage.php',
+        'NotificationChannels\\Telegram\\TelegramPoll' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramPoll.php',
+        'NotificationChannels\\Telegram\\TelegramServiceProvider' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramServiceProvider.php',
+        'NotificationChannels\\Telegram\\TelegramUpdates' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramUpdates.php',
+        'NotificationChannels\\Telegram\\TelegramVenue' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/TelegramVenue.php',
+        'NotificationChannels\\Telegram\\Traits\\HasSharedLogic' => __DIR__ . '/..' . '/laravel-notification-channels/telegram/src/Traits/HasSharedLogic.php',
         'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Laravel/CollisionServiceProvider.php',
         'NunoMaduro\\Collision\\Adapters\\Laravel\\Commands\\TestCommand' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Laravel/Commands/TestCommand.php',
         'NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php',

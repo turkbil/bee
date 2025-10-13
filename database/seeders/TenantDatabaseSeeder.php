@@ -264,17 +264,24 @@ class TenantDatabaseSeeder extends Seeder
             return;
         }
 
-        // Menüyü tenant DB'ye ekle
-        $newMenuId = DB::table('menus')->insertGetId([
-            'name' => $menu->name,
-            'slug' => $menu->slug,
-            'location' => $menu->location,
-            'is_default' => $menu->is_default,
-            'is_active' => $menu->is_active,
-            'settings' => $menu->settings,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Menüyü tenant DB'ye ekle (varsa ID'sini al)
+        $existingMenu = DB::table('menus')->where('slug', $menu->slug)->first();
+
+        if ($existingMenu) {
+            $newMenuId = $existingMenu->menu_id;
+            $this->command->info('    ℹ️  Menü zaten mevcut, atlanıyor');
+        } else {
+            $newMenuId = DB::table('menus')->insertGetId([
+                'name' => $menu->name,
+                'slug' => $menu->slug,
+                'location' => $menu->location,
+                'is_default' => $menu->is_default,
+                'is_active' => $menu->is_active,
+                'settings' => $menu->settings,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // Menu items'ları kopyala
         $menuItems = DB::connection('mysql')->table('menu_items')

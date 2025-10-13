@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EPT20_15ET2_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class EPT20_15ET2_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EPT20-15ET2')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF EPT20-15ET2: Hafif Gövdede Güçlü ve Ekonomik Taşıma</h2><p>İXTİF EPT20-15ET2, 1.5 ton kapasiteyi kompakt ve hafif gövde mimarisiyle sunar. 24V/65Ah Li-ion batarya, DC sürüş kontrolü ve PU teker kombinasyonu; iç lojistikte sessiz, ekonomik ve öngörülebilir bir operasyon sağlar. 4.5/5 km/sa hızlar ve 1475 mm dönüş yarıçapı dar koridor yaklaşımını kolaylaştırırken, 30 mm şase açıklığı eşikler ve pürüzlerde kontrollü geçişler sunar.</p></section><section><h3>Teknik</h3><p>EPT20-15ET2, 600 mm yük merkezinde 1500 kg taşıma kapasitesine sahiptir. 883/946 mm yük mesafesi, 1202/1261 mm dingil mesafesi ve 1638 mm toplam uzunluk ile raf aralarında güvenli manevra yapar. 50/150/1150 mm çatal ölçüsü standarttır; 800–2000 mm uzunluk ve 560/685/520/460/420/600 mm genişlik seçenekleriyle farklı palet tiplerine uyum sağlanır. Kaldırma/indirme hızları 0.027/0.038 ve 0.059/0.039 m/sn değerlerindedir. Sürüşte 0.75 kW, kaldırmada 0.84 kW motor kullanılır; elektromanyetik fren güvenli duruş karakteri sunar. 24V-10A dahili şarj ara şarja uygundur; batarya göstergesi zaman sayacı içerir. Opsiyon olarak iz bırakmayan Trace PU, tek yük tekeri, 75 mm kısa sürüş kolu, dikey kol modu ve elektrikli tartı, depolama kutusu, kargo sırtlığı gibi ataşmanlar mevcuttur.</p></section><section><h3>Sonuç</h3><p>Hızlı devreye alınan, düşük bakımlı ve bütçe dostu bir çözüm arıyorsanız EPT20-15ET2 dengeli mimarisiyle öne çıkar. Paketleme, besleme hatları ve cross-dock akışlarında pratik kullanım sunar. Teknik danışmanlık ve teklif için 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>İXTİF EPT20-15ET2: Hafif Gövdede Güçlü ve Ekonomik Taşıma</h2><p>İXTİF EPT20-15ET2, 1.5 ton kapasiteyi kompakt ve hafif gövde mimarisiyle sunar. 24V/65Ah Li-ion batarya, DC sürüş kontrolü ve PU teker kombinasyonu; iç lojistikte sessiz, ekonomik ve öngörülebilir bir operasyon sağlar. 4.5/5 km/sa hızlar ve 1475 mm dönüş yarıçapı dar koridor yaklaşımını kolaylaştırırken, 30 mm şase açıklığı eşikler ve pürüzlerde kontrollü geçişler sunar.</p></section><section><h3>Teknik</h3><p>EPT20-15ET2, 600 mm yük merkezinde 1500 kg taşıma kapasitesine sahiptir. 883/946 mm yük mesafesi, 1202/1261 mm dingil mesafesi ve 1638 mm toplam uzunluk ile raf aralarında güvenli manevra yapar. 50/150/1150 mm çatal ölçüsü standarttır; 800–2000 mm uzunluk ve 560/685/520/460/420/600 mm genişlik seçenekleriyle farklı palet tiplerine uyum sağlanır. Kaldırma/indirme hızları 0.027/0.038 ve 0.059/0.039 m/sn değerlerindedir. Sürüşte 0.75 kW, kaldırmada 0.84 kW motor kullanılır; elektromanyetik fren güvenli duruş karakteri sunar. 24V-10A dahili şarj ara şarja uygundur; batarya göstergesi zaman sayacı içerir. Opsiyon olarak iz bırakmayan Trace PU, tek yük tekeri, 75 mm kısa sürüş kolu, dikey kol modu ve elektrikli tartı, depolama kutusu, kargo sırtlığı gibi ataşmanlar mevcuttur.</p></section><section><h3>Sonuç</h3><p>Hızlı devreye alınan, düşük bakımlı ve bütçe dostu bir çözüm arıyorsanız EPT20-15ET2 dengeli mimarisiyle öne çıkar. Paketleme, besleme hatları ve cross-dock akışlarında pratik kullanım sunar. Teknik danışmanlık ve teklif için 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
 
             'primary_specs' => json_encode([
                 ['icon' => 'weight-hanging', 'label' => 'Kapasite', 'value' => '1500 kg (c=600 mm)'],

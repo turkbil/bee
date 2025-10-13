@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL203P_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL203P_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL203P')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL203P'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL203P');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF EFL203P: Premium sınıfta hız, güç ve görüş</h2>
 <p>EFL203P, iki versiyonlu EFL203 ailesinin en çevik ve hızlı üyesidir. 19/20 km/s sürüş, 0.48/0.54 m/s kaldırma ve %22/%28 tırmanma değerleri; yoğun rampalı, dur-kalkın sık olduğu operasyonlarda bile akışı hızlandırır. Büyük LED ekran, güçlü LED aydınlatma ve optimize hortum düzenine sahip yeni direk, yük ve çevreyi daha net görerek güvenli hızda çalışmayı mümkün kılar. Yüksek şasi açıklığı ve geniş pnömatik lastikler, dış sahada yağmurlu zeminde dahi kontrolü elinizde tutmanızı sağlar.</p></section>
 <section><h3>Teknik üstünlüklerin toplamı</h3>
@@ -42,7 +49,7 @@ class EFL203P_Forklift_2_Detailed extends Seeder {
                 ['icon' => 'snowflake', 'text' => 'Soğukta hızdan ödün vermeden malzeme akışı'],
                 ['icon' => 'flask', 'text' => 'Kimya depolarında hızlı ve güvenli ürün hareketi'],
                 ['icon' => 'store', 'text' => 'Perakende DC yoğun toplama/sürüş turu'],
-                ['icon' => 'pills', 'text' => 'İlaçta dar zaman pencereli sevkiyat'] 
+                ['icon' => 'pills', 'text' => 'İlaçta dar zaman pencereli sevkiyat']
             ], JSON_UNESCAPED_UNICODE),
 
             'competitive_advantages' => json_encode([

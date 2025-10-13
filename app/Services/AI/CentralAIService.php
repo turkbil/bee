@@ -32,36 +32,53 @@ class CentralAIService
         $usageType = $options['usage_type'] ?? 'general';
         $featureSlug = $options['feature_slug'] ?? null;
         $referenceId = $options['reference_id'] ?? null;
-        
+
+        // Override provider if specified in options
+        if (isset($options['force_provider'])) {
+            $this->forceProvider($options['force_provider']);
+        }
+
+        // Override model if specified in options
+        if (isset($options['force_model']) && $this->selectedProvider) {
+            $this->selectedProvider->default_model = $options['force_model'];
+            Log::info('🎯 Forced model override', [
+                'model' => $options['force_model']
+            ]);
+        }
+
         Log::info('🤖 Central AI Request Started', [
             'tenant_id' => $this->currentTenant?->id,
             'provider' => $this->selectedProvider?->name,
+            'model' => $this->getSelectedModel(),
             'usage_type' => $usageType,
             'feature_slug' => $featureSlug,
             'prompt_length' => strlen($prompt)
         ]);
         
+        $response = null;
+        $estimatedCost = 0;
+
         try {
             // Credit ihtiyacını hesapla (input + estimated output)
             $estimatedCost = $this->calculateEstimatedCreditCost($prompt, $options);
-            
+
             // Credit kontrolü
             if (!$this->checkCreditAvailability($estimatedCost)) {
                 throw new \Exception('Yetersiz kredi bakiyesi. Gerekli: $' . number_format($estimatedCost, 4));
             }
-            
+
             // AI provider service'ini çağır
             $response = $this->callProviderService($prompt, $options);
-            
+
             // Gerçek credit maliyetini hesapla (input + actual output tokens)
             $actualCost = $this->calculateActualCreditCost($prompt, $response, $options);
-            
+
             // Credit kullanımını kaydet
             $this->recordCreditUsage($actualCost, $usageType, $featureSlug, $referenceId, $response, $prompt);
-            
+
             $endTime = microtime(true);
             $responseTime = round(($endTime - $startTime) * 1000, 2);
-            
+
             Log::info('✅ Central AI Request Completed', [
                 'tenant_id' => $this->currentTenant?->id,
                 'provider' => $this->selectedProvider?->name,
@@ -70,7 +87,7 @@ class CentralAIService
                 'response_time_ms' => $responseTime,
                 'success' => true
             ]);
-            
+
             return [
                 'success' => true,
                 'response' => $response,
@@ -79,18 +96,19 @@ class CentralAIService
                 'response_time_ms' => $responseTime,
                 'tenant_id' => $this->currentTenant?->id
             ];
-            
+
         } catch (\Exception $e) {
             $endTime = microtime(true);
             $responseTime = round(($endTime - $startTime) * 1000, 2);
-            
+
             Log::error('🚨 Central AI Request Failed', [
                 'tenant_id' => $this->currentTenant?->id,
                 'provider' => $this->selectedProvider?->name,
                 'error' => $e->getMessage(),
-                'response_time_ms' => $responseTime
+                'response_time_ms' => $responseTime,
+                'trace' => $e->getTraceAsString()
             ]);
-            
+
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -380,21 +398,68 @@ class CentralAIService
         if (!$this->selectedProvider) {
             throw new \Exception('AI Provider seçilmedi');
         }
-        
-        // Mevcut AI service'ini kullan
-        $aiService = app(\Modules\AI\App\Services\AIService::class);
-        
-        // Provider'ı ayarla
-        $aiService->setProvider($this->selectedProvider->name);
-        
-        // AI çağrısını yap
-        $response = $aiService->ask($prompt, $options);
-        
-        return [
-            'content' => $response,
-            'provider' => $this->selectedProvider->name,
-            'timestamp' => now()->toISOString()
-        ];
+
+        // Provider'a göre doğru service'i çağır
+        $providerName = strtolower($this->selectedProvider->name);
+
+        try {
+            switch ($providerName) {
+                case 'deepseek':
+                    $service = app(\Modules\AI\App\Services\DeepSeekService::class);
+                    $messages = [['role' => 'user', 'content' => $prompt]];
+                    $response = $service->ask($messages, false, $options);
+                    break;
+
+                case 'openai':
+                    $service = app(\Modules\AI\App\Services\OpenAIService::class);
+
+                    // Model override varsa uygula
+                    if ($this->getSelectedModel() !== $service->getProviderInfo()['model']) {
+                        $service->setModel($this->getSelectedModel());
+                        Log::info('🔧 OpenAI model override applied', [
+                            'model' => $this->getSelectedModel()
+                        ]);
+                    }
+
+                    $messages = [['role' => 'user', 'content' => $prompt]];
+                    // ask() metodu string döndürür, biz streaming'den full response alacağız
+                    $streamResult = $service->generateCompletionStream($messages, null, $options);
+
+                    // Streaming result'tan gerekli bilgileri al
+                    $response = $streamResult['response'] ?? '';
+                    $usage = [
+                        'prompt_tokens' => $streamResult['input_tokens'] ?? 0,
+                        'completion_tokens' => $streamResult['output_tokens'] ?? 0,
+                        'total_tokens' => $streamResult['tokens_used'] ?? 0,
+                    ];
+                    break;
+
+                case 'anthropic':
+                case 'claude':
+                    $service = app(\Modules\AI\App\Services\AnthropicService::class);
+                    $messages = [['role' => 'user', 'content' => $prompt]];
+                    $response = $service->ask($messages, false, $options);
+                    $usage = [];
+                    break;
+
+                default:
+                    throw new \Exception("Provider '{$providerName}' desteklenmiyor");
+            }
+
+            return [
+                'content' => is_string($response) ? $response : ($response['response'] ?? ''),
+                'provider' => $this->selectedProvider->name,
+                'timestamp' => now()->toISOString(),
+                'usage' => $usage ?? []
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('❌ Provider service call failed', [
+                'provider' => $providerName,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
     
     /**
@@ -545,8 +610,31 @@ class CentralAIService
         if (!$featureSlug) {
             return 1.0;
         }
-        
+
         $multipliers = config('ai.credit_management.feature_multipliers', []);
         return $multipliers[$featureSlug] ?? $multipliers['default'] ?? 1.0;
+    }
+
+    /**
+     * Belirli bir provider kullanmaya zorla
+     */
+    private function forceProvider(string $providerName): void
+    {
+        $provider = AIProvider::where('name', $providerName)
+            ->where('is_active', true)
+            ->first();
+
+        if ($provider) {
+            $this->selectedProvider = $provider;
+
+            Log::info('🎯 Forced provider selected', [
+                'provider' => $provider->name,
+                'model' => $provider->default_model
+            ]);
+        } else {
+            Log::warning('⚠️ Forced provider not found, using default', [
+                'requested_provider' => $providerName
+            ]);
+        }
     }
 }

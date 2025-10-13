@@ -80,7 +80,7 @@ Her ürün için **bağımsız landing page** oluştur:
   <section class="marketing-content-section py-5">
     <div class="container">
       <div class="marketing-content">
-        {!! $product->getTranslated('long_description', app()->getLocale()) !!}
+        {!! $product->getTranslated('body', app()->getLocale()) !!}
       </div>
     </div>
   </section>
@@ -371,7 +371,7 @@ public function landing(string $slug)
 |-------|-------------|-------|
 | Hero | `title`, `short_description` | `shop_products` |
 | Primary Specs | `primary_specs` (4 kart) | `shop_products` |
-| Marketing | `long_description` (intro+body) | `shop_products` |
+| Marketing | `body` (intro+body) | `shop_products` |
 | Branding | `features.branding` (slogan, motto) | `shop_products` |
 | Highlighted Features | `highlighted_features` | `shop_products` |
 | Use Cases | `use_cases` (6+) | `shop_products` |

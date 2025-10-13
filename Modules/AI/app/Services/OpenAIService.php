@@ -153,13 +153,16 @@ class OpenAIService
                 $payload['temperature'] = $options['temperature'] ?? 0.7;
             }
 
-            // max_tokens - Default 4000 (rate limit aşımını önlemek için)
-            // Options'da özel değer varsa onu kullan
-            $payload['max_tokens'] = $options['max_tokens'] ?? 4000;
+            // max_tokens vs max_completion_tokens (GPT-5 uses different parameter)
+            if ($isGPT5) {
+                $payload['max_completion_tokens'] = $options['max_tokens'] ?? 4000;
+            } else {
+                $payload['max_tokens'] = $options['max_tokens'] ?? 4000;
+            }
 
             Log::info('🎯 OpenAI Request Payload', [
                 'model' => $payload['model'],
-                'max_tokens' => $payload['max_tokens'] ?? 'unlimited',
+                'max_tokens' => $payload['max_tokens'] ?? $payload['max_completion_tokens'] ?? 'unlimited',
                 'temperature' => $payload['temperature'] ?? 'default (not set for GPT-5)',
                 'messages_count' => count($payload['messages'])
             ]);
@@ -179,6 +182,27 @@ class OpenAIService
                 // GPT-5 non-streaming response (JSON)
                 if ($isGPT5) {
                     $data = $response->json();
+
+                    // DEBUG: Full JSON response'u log'la (truncated for safety)
+                    $rawBody = $response->body();
+                    Log::info('🔍 GPT-5 Full Raw JSON Response', [
+                        'raw_json_preview' => substr($rawBody, 0, 2000),
+                        'raw_json_length' => strlen($rawBody)
+                    ]);
+
+                    // Check for refusal
+                    if (!empty($data['choices'][0]['message']['refusal'])) {
+                        throw new \Exception('GPT-5 refused to respond: ' . $data['choices'][0]['message']['refusal']);
+                    }
+
+                    // Check annotations (GPT-5 might put content there)
+                    $annotations = $data['choices'][0]['message']['annotations'] ?? [];
+                    if (!empty($annotations)) {
+                        Log::warning('⚠️ GPT-5 returned annotations instead of content', [
+                            'annotations_count' => count($annotations),
+                            'annotations' => $annotations
+                        ]);
+                    }
 
                     $fullResponse = $data['choices'][0]['message']['content'] ?? '';
 

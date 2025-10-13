@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class RSB202_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class RSB202_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'RSB202')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: RSB202'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: RSB202');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF RSB202: Platformlu Li-Ion istifte çeviklik ve hassasiyet</h2><p>Orta ölçekli depoların ritmi yüksektir; palet akışı, rampa çevrimi ve raf arası sirkülasyon hiç bitmez. İXTİF RSB202, 2000 kg kapasitesi ve kompakt şasisiyle bu temponun içine zahmetsizce uyum sağlar. Elektronik güç direksiyonu sayesinde kumanda koluna çok az kuvvet uygulayarak ani manevra yapabilir, katlanır amortisörlü platform ve kol korumalarıyla gün boyu yorgunluk hissetmeden çalışabilirsiniz. Entegre şarj cihazına sahip 24V/100Ah Li-Ion akü, fırsat şarjı sayesinde vardiya arasında bekleme süresini kısaltır; oransal kaldırma fonksiyonu ise cam, kozmetik veya elektronik gibi hassas yükleri raf seviyesinde milimetrik olarak konumlandırmanıza imkan tanır.</p></section><section><h3>Teknik</h3><p>RSB202, 600 mm yük merkezinde 2000 kg’ı güvenle taşır ve 1.6 kW AC sürüş motoru ile yüksüz 6 km/s, yüklü 5.5 km/s seyir hızına ulaşır. 3.0 kW kaldırma motoru, yüklü 0.12 m/s ve yüksüz 0.2 m/s kaldırma hızları sunar. 850 mm toplam genişlik ve 1620 mm dönüş yarıçapı dar koridorlar için idealdir; 65×185×1150 mm çatallar ve 685 mm çatal dıştan dışa ölçüsü EUR palet uyumluluğu sağlar. 1900 mm kapalı direk yüksekliği ve 3470 mm açık direk yüksekliğiyle operatör görüş alanı korunurken, 25 mm yerden yükseklik eşik ve rampa geçişlerinde denge sağlar. 24V/100Ah Li-Ion akü (yaklaşık 40 kg) entegre 30A şarj cihazı ile gelir; AC sürüş kontrolü, elektromanyetik servis freni ve 74 dB(A) ses seviyesi ile güvenli ve konforlu bir çalışma sunar. Standart PU tekerlekler, 8/16% eğim performansı ve EPS ile yük altında dahi hafif direksiyon tepkisi, istif ve taşımanın aynı makinede verimli bir şekilde birleşmesini sağlar.</p></section><section><h3>Sonuç</h3><p>Hızlı, hassas ve düşük bakım ihtiyacı olan bir istif makinesi arıyorsanız, RSB202 depoda akışı hızlandırır, operatör konforunu artırır ve toplam sahip olma maliyetini düşürür. Teknik bilgi ve uygun konfigürasyon için 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>İXTİF RSB202: Platformlu Li-Ion istifte çeviklik ve hassasiyet</h2><p>Orta ölçekli depoların ritmi yüksektir; palet akışı, rampa çevrimi ve raf arası sirkülasyon hiç bitmez. İXTİF RSB202, 2000 kg kapasitesi ve kompakt şasisiyle bu temponun içine zahmetsizce uyum sağlar. Elektronik güç direksiyonu sayesinde kumanda koluna çok az kuvvet uygulayarak ani manevra yapabilir, katlanır amortisörlü platform ve kol korumalarıyla gün boyu yorgunluk hissetmeden çalışabilirsiniz. Entegre şarj cihazına sahip 24V/100Ah Li-Ion akü, fırsat şarjı sayesinde vardiya arasında bekleme süresini kısaltır; oransal kaldırma fonksiyonu ise cam, kozmetik veya elektronik gibi hassas yükleri raf seviyesinde milimetrik olarak konumlandırmanıza imkan tanır.</p></section><section><h3>Teknik</h3><p>RSB202, 600 mm yük merkezinde 2000 kg’ı güvenle taşır ve 1.6 kW AC sürüş motoru ile yüksüz 6 km/s, yüklü 5.5 km/s seyir hızına ulaşır. 3.0 kW kaldırma motoru, yüklü 0.12 m/s ve yüksüz 0.2 m/s kaldırma hızları sunar. 850 mm toplam genişlik ve 1620 mm dönüş yarıçapı dar koridorlar için idealdir; 65×185×1150 mm çatallar ve 685 mm çatal dıştan dışa ölçüsü EUR palet uyumluluğu sağlar. 1900 mm kapalı direk yüksekliği ve 3470 mm açık direk yüksekliğiyle operatör görüş alanı korunurken, 25 mm yerden yükseklik eşik ve rampa geçişlerinde denge sağlar. 24V/100Ah Li-Ion akü (yaklaşık 40 kg) entegre 30A şarj cihazı ile gelir; AC sürüş kontrolü, elektromanyetik servis freni ve 74 dB(A) ses seviyesi ile güvenli ve konforlu bir çalışma sunar. Standart PU tekerlekler, 8/16% eğim performansı ve EPS ile yük altında dahi hafif direksiyon tepkisi, istif ve taşımanın aynı makinede verimli bir şekilde birleşmesini sağlar.</p></section><section><h3>Sonuç</h3><p>Hızlı, hassas ve düşük bakım ihtiyacı olan bir istif makinesi arıyorsanız, RSB202 depoda akışı hızlandırır, operatör konforunu artırır ve toplam sahip olma maliyetini düşürür. Teknik bilgi ve uygun konfigürasyon için 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
             'primary_specs' => json_encode([
                 ['icon' => 'weight-hanging', 'label' => 'Kapasite', 'value' => '2000 kg (c=600 mm)'],
                 ['icon' => 'battery-full', 'label' => 'Batarya', 'value' => '24V / 100Ah Li-Ion, entegre şarj'],

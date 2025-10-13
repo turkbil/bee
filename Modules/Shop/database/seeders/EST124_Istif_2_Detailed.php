@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EST124_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class EST124_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EST124')->first();
-        if (!$p) { echo "❌ Master bulunamadı: EST124\n"; return; }
+        if (!$p) {
+            echo "❌ Master bulunamadı: EST124\n";
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EST124: Kompakt istifte güven, pratiklik ve sürdürülebilir performans</h2>
   <p>İXTİF EST124, günümüz depolarının pratik istifleme ihtiyaçlarına odaklanmış yürüyüş tipi bir çözümdür. 1.200 kg kapasite, 600 mm yük merkezi ve 24V/80Ah AGM aküyle birleşen 24V/10A entegre şarj cihazı; gün içi şarj kolaylığı ve esnek vardiya planlaması sağlar. Metal kapak, sağlam şasi ve pazarca kanıtlanmış sürüş-hidrolik bileşenler uzun ömür ve düşük toplam sahip olma maliyeti sunar. 2.5 metreden 3.6 metreye kadar farklı direk seçenekleriyle orta seviye raf sistemlerinde düzenli istifleme ve yerden kazanç elde edersiniz. 4.0/4.5 km/s sürüş hızları, dar koridorda 1415 mm dönüş yarıçapı ve yalnızca 925 mm gövde genişliği ile çevik operasyonlar mümkün olur.</p>

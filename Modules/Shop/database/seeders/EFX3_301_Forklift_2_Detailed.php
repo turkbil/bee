@@ -1,16 +1,24 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFX3_301_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFX3_301_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFX3-301')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFX3-301'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFX3-301');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section>\n    <h2>İXTİF EFX3 301 ile güçlü denge, akıllı enerji</h2>\n    <p>Günün ilk sevkiyatı kapıya yanaştığında, operatörün ihtiyacı olan şey güvenilir bir kalkış, tutarlı hızlanma ve \n    dar alanlarda stres yaratmayan manevradır. İXTİF EFX3 301 tam burada öne çıkar. Yüksek yerden \n    yükseklik ve iri lastikler, çukur ve bozuk zeminlerde bile titreşimi azaltır. Suya karşı korumalı gövde, hava \n    şartları değişse de işin kesintisiz devam etmesini sağlar. Çıkarılabilir Li‑Ion batarya ise gün boyu operasyonların \n    ritmine uyar; vardiya aralarında fırsat şarjı yaparak plan dışı duruşları azaltır. Ergonomik bölge tasarımı, \n    ayarlanabilir direksiyon ve rahat pedal yerleşimiyle operatör yorgunluğunu düşürür; sadeleştirilmiş panel ise \n    sık kullanılan işlevlere hızlı erişim sunar.</p>\n</section>\n<section>\n    <h3>Teknik gücün özeti</h3>\n    <p>3000 kg nominal kapasite ve 80V/150Ah (opsiyon 80V/280Ah) Li‑Ion enerji mimarisi, yüksek performansı düşük işletme \n    maliyeti ile birleştirir. PMSM tahrik, mekanik sürtünmeyi azaltan yapısı sayesinde daha yüksek verim ve daha uzun \n    çalışma süresi sağlar. 2250 mm dönüş yarıçapı, raf aralarında ve dar koridorlarda akıcı yön \n    değiştirmeye olanak verir. 3000 mm kaldırma yüksekliği ile tipik stok yüksekliklerini güvenle \n    karşılar. Yürüyüş hızı 11/12 km/s (yük/boş), kaldırma hızı 0.28/0.36 m/s ve indirme \n    hızı 0.4/0.43 m/s değerleri, ritmik yükleme/boşaltma döngülerine uyum sağlar. Li‑Ion kimya, bakım \n    gerektirmeyen yapısı ve hızlı şarj kabiliyetiyle, kurşun-asit sistemlere göre daha kararlı bir işletim vaat eder. \n    Entegre tek faz 16A şarj cihazı, ilave altyapı ihtiyacını azaltır ve sahada pratik enerji erişimi sunar.</p>\n</section>\n<section>\n    <h3>Sonuç</h3>\n    <p>İşletmeler, kaliteyi ve çevikliği aynı platformda arıyor. İXTİF EFX3 301; enerji verimli \n    PMSM motoru, çıkarılabilir Li‑Ion bataryası ve iç/dış mekâna uygun gövde korumasıyla, farklı vardiya düzenlerinde \n    güvenilir bir üretkenlik sağlar. Doğru konfigürasyon, doğru ekipman ve doğru servis ile operasyonlarınızın temposunu \n    yükseltmek için bizi arayın: 0216 755 3 555</p>\n</section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => '<section>\n    <h2>İXTİF EFX3 301 ile güçlü denge, akıllı enerji</h2>\n    <p>Günün ilk sevkiyatı kapıya yanaştığında, operatörün ihtiyacı olan şey güvenilir bir kalkış, tutarlı hızlanma ve \n    dar alanlarda stres yaratmayan manevradır. İXTİF EFX3 301 tam burada öne çıkar. Yüksek yerden \n    yükseklik ve iri lastikler, çukur ve bozuk zeminlerde bile titreşimi azaltır. Suya karşı korumalı gövde, hava \n    şartları değişse de işin kesintisiz devam etmesini sağlar. Çıkarılabilir Li‑Ion batarya ise gün boyu operasyonların \n    ritmine uyar; vardiya aralarında fırsat şarjı yaparak plan dışı duruşları azaltır. Ergonomik bölge tasarımı, \n    ayarlanabilir direksiyon ve rahat pedal yerleşimiyle operatör yorgunluğunu düşürür; sadeleştirilmiş panel ise \n    sık kullanılan işlevlere hızlı erişim sunar.</p>\n</section>\n<section>\n    <h3>Teknik gücün özeti</h3>\n    <p>3000 kg nominal kapasite ve 80V/150Ah (opsiyon 80V/280Ah) Li‑Ion enerji mimarisi, yüksek performansı düşük işletme \n    maliyeti ile birleştirir. PMSM tahrik, mekanik sürtünmeyi azaltan yapısı sayesinde daha yüksek verim ve daha uzun \n    çalışma süresi sağlar. 2250 mm dönüş yarıçapı, raf aralarında ve dar koridorlarda akıcı yön \n    değiştirmeye olanak verir. 3000 mm kaldırma yüksekliği ile tipik stok yüksekliklerini güvenle \n    karşılar. Yürüyüş hızı 11/12 km/s (yük/boş), kaldırma hızı 0.28/0.36 m/s ve indirme \n    hızı 0.4/0.43 m/s değerleri, ritmik yükleme/boşaltma döngülerine uyum sağlar. Li‑Ion kimya, bakım \n    gerektirmeyen yapısı ve hızlı şarj kabiliyetiyle, kurşun-asit sistemlere göre daha kararlı bir işletim vaat eder. \n    Entegre tek faz 16A şarj cihazı, ilave altyapı ihtiyacını azaltır ve sahada pratik enerji erişimi sunar.</p>\n</section>\n<section>\n    <h3>Sonuç</h3>\n    <p>İşletmeler, kaliteyi ve çevikliği aynı platformda arıyor. İXTİF EFX3 301; enerji verimli \n    PMSM motoru, çıkarılabilir Li‑Ion bataryası ve iç/dış mekâna uygun gövde korumasıyla, farklı vardiya düzenlerinde \n    güvenilir bir üretkenlik sağlar. Doğru konfigürasyon, doğru ekipman ve doğru servis ile operasyonlarınızın temposunu \n    yükseltmek için bizi arayın: 0216 755 3 555</p>\n</section>'], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -33,9 +41,11 @@ class EFX3_301_Forklift_2_Detailed extends Seeder {
                         "value": "2250 mm yarıçap"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -68,9 +78,11 @@ JSON
                         "description": "Tek faz 16A fiş ile altyapı gereksinimini azaltan çözüm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "warehouse",
@@ -105,9 +117,11 @@ JSON
                         "text": "E‑ticaret fulfillment merkezlerinde yüksek devirli çıkış hattı"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -134,9 +148,11 @@ JSON
                         "text": "Tek faz entegre şarj ile düşük altyapı ihtiyacı"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -219,17 +235,21 @@ JSON
                         "text": "Evcil Hayvan Ürünleri"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'warranty_info' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'warranty_info' => json_encode(json_decode(
+                <<<'JSON'
                 {
                     "coverage": "Makineye satın alım tarihinden itibaren 12 ay fabrika garantisi; Li‑Ion batarya modülleri 24 ay garanti kapsamındadır. Garanti, normal kullanım koşullarındaki üretim kusurlarını kapsar.",
                     "duration_months": 12,
                     "battery_warranty_months": 24
                 }
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -264,9 +284,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -275,9 +297,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "PMSM motorun verim avantajı işletme maliyetini nasıl etkiler?",
@@ -328,10 +352,11 @@ JSON
                         "answer": "Makine 12 ay, Li‑Ion batarya 24 ay garanti kapsamındadır. Satış ve servis için İXTİF 0216 755 3 555 ile iletişime geçebilirsiniz."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
-        $this->command->info("ℹ️ Detailed güncellendi: {$p->sku }");
+        $this->command->info("ℹ️ Detailed güncellendi: {$p->sku}");
     }
 }

@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL252X5_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL252X5_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL252X5')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL252X5'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL252X5');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>Akıcı Güç, Akıllı Enerji</h2><p>Sabah erken saatlerde rampa kapıları açılırken, EFL252X5 sessizce devreye girer. Elektrikli karşı
+            'body' => json_encode(['tr' => '<section><h2>Akıcı Güç, Akıllı Enerji</h2><p>Sabah erken saatlerde rampa kapıları açılırken, EFL252X5 sessizce devreye girer. Elektrikli karşı
 denge mimarisi ve Li‑ion enerji sistemi sayesinde gün boyunca dur‑kalklarda hız kaybetmeden akıcı
 bir akış sağlar. 2.5 ton kapasite, kompakt gövde ve modern ergonomi bir araya gelerek depo içi ve
 açık saha operasyonlarında aynı ölçüde çeviklik ve güç sunar. Operatör için geniş görüş alanı ve
@@ -25,7 +32,8 @@ farklı sektörlerde çevrim sürelerini kısaltmak için tasarlandı. Modüler 
 dönemlerde bile ritminizi korumanıza yardım eder. Uygulamanız için en doğru direk, ataşman ve
 batarya kombinasyonunu birlikte seçmek üzere ekibimizle görüşün. Detaylı bilgi ve demo planlamak
 için 0216 755 3 555 numaralı hattan bize ulaşın.</p><p>0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -48,9 +56,11 @@ için 0216 755 3 555 numaralı hattan bize ulaşın.</p><p>0216 755 3 555</p></s
                         "value": "2270 mm yarıçap"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -83,9 +93,11 @@ JSON
                         "description": "Hidrolik servis freni ve mekanik park freni"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "warehouse",
@@ -120,9 +132,11 @@ JSON
                         "text": "İlaç ve medikal kutu/palet taşıması için hassas kontrol"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -145,9 +159,11 @@ JSON
                         "text": "≤74 dB(A) gürültü ile konforlu çalışma ortamı"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -230,17 +246,21 @@ JSON
                         "text": "Ambalaj, matbaa ve karton üretimi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'warranty_info' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'warranty_info' => json_encode(json_decode(
+                <<<'JSON'
                 {
                     "coverage": "Makine 12 ay, Li‑ion batarya modülleri 24 ay garanti kapsamındadır. Garanti üretim hatalarını kapsar ve yetkili servislerce yürütülür.",
                     "duration_months": 12,
                     "battery_warranty_months": 24
                 }
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -271,9 +291,11 @@ JSON
                         "price": null
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -288,9 +310,11 @@ JSON
                         "authority": "SGS"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Günlük çift vardiya için tek batarya modülü yeterli olur mu, şarj stratejisi nasıl olmalı?",
@@ -337,8 +361,9 @@ JSON
                         "answer": "Kurulum, devreye alma ve operatör eğitimi ülke çapında planlanır. Detay ve takvim için İXTİF 0216 755 3 555 hattını arayabilirsiniz."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info("✅ Detailed güncellendi: EFL252X5");

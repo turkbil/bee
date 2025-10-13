@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class TDL201_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class TDL201_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'TDL-201')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: TDL-201'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: TDL-201');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF TDL201: Gücü Kompaktlıkla Buluşturan Li-Ion Forklift</h2><p>Günün ilk paleti rampaya geldiğinde operatör bir şey ister: güven, görünürlük ve kesintisiz güç. İXTİF TDL201, 3 tekerli çevik şasi ile dar koridorlarda milimetre hassasiyetinde manevra sağlarken, Li-Ion mimarisi sayesinde planlı molalara bağımlı kalmadan gün boyu aynı performansı korur. Ayarlanabilir direksiyon ve konforlu koltuk operatörün yorgunluğunu azaltır; geniş bacak alanı ve sağ üst köşedeki yüksek çözünürlüklü ekranla kritik bilgiler tek bakışta okunur.  Sonuç: daha güvenli, daha hızlı ve daha öngörülebilir operasyon.</p></section><section><h3>Teknik Yetkinlik</h3><p>Şasi altında çift AC tahrik motoru (5.4 kW × 2) ve 48V/405Ah batarya birlikte çalışarak yük altında dahi ivmelenmeyi kararlı tutar. 11 kW kaldırma motoru yükleri akıcı bir hızda kaldırır; yüklü/boş 0.35/0.43 m/s kaldırma ve 0.45/0.37 m/s indirme değerleri operasyon akışını tahmin edilebilir kılar. 15/16 km/s seyir hızı ve 15/17% eğim tırmanma kabiliyeti, rampalı yük akışlarında süreklilik sağlar. 3.0 m standart kaldırma yüksekliği, 2A sınıfı çatal taşıyıcı ve sağlam katı lastikler ile forklift farklı zemin koşullarında dengeli kalır. Hidrolik direksiyon sistemi mekanik basitliği korurken daha duyarlı bir hissiyat verir. Entegre 48V/50A şarj cihazı sayesinde gece boyunca dış ünite arayışına gerek kalmadan uygun prizle fırsat şarjı yapılabilir. Optimize gövde ve kabin yapısı, montaj ve sökme sürelerini kısaltarak filo yönetiminde esneklik sağlar.</p></section><section><h3>Sonuç</h3><p>Günün sonunda önemli olan toplam çevrim, enerji verimliliği ve operatör konforudur. Bu model, dar alan çevikliği ile saha üretkenliğini artırırken Li-Ion mimarisi sayesinde bakım ihtiyacını azaltır ve planlanmayan duruşları minimuma indirir. Doğru mast ve ataşman kombinasyonuyla intralojistiğinizi bir üst seviyeye taşıyın. Teknik danışmanlık ve demo için 0216 755 3 555 numarasından bize ulaşın.</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>İXTİF TDL201: Gücü Kompaktlıkla Buluşturan Li-Ion Forklift</h2><p>Günün ilk paleti rampaya geldiğinde operatör bir şey ister: güven, görünürlük ve kesintisiz güç. İXTİF TDL201, 3 tekerli çevik şasi ile dar koridorlarda milimetre hassasiyetinde manevra sağlarken, Li-Ion mimarisi sayesinde planlı molalara bağımlı kalmadan gün boyu aynı performansı korur. Ayarlanabilir direksiyon ve konforlu koltuk operatörün yorgunluğunu azaltır; geniş bacak alanı ve sağ üst köşedeki yüksek çözünürlüklü ekranla kritik bilgiler tek bakışta okunur.  Sonuç: daha güvenli, daha hızlı ve daha öngörülebilir operasyon.</p></section><section><h3>Teknik Yetkinlik</h3><p>Şasi altında çift AC tahrik motoru (5.4 kW × 2) ve 48V/405Ah batarya birlikte çalışarak yük altında dahi ivmelenmeyi kararlı tutar. 11 kW kaldırma motoru yükleri akıcı bir hızda kaldırır; yüklü/boş 0.35/0.43 m/s kaldırma ve 0.45/0.37 m/s indirme değerleri operasyon akışını tahmin edilebilir kılar. 15/16 km/s seyir hızı ve 15/17% eğim tırmanma kabiliyeti, rampalı yük akışlarında süreklilik sağlar. 3.0 m standart kaldırma yüksekliği, 2A sınıfı çatal taşıyıcı ve sağlam katı lastikler ile forklift farklı zemin koşullarında dengeli kalır. Hidrolik direksiyon sistemi mekanik basitliği korurken daha duyarlı bir hissiyat verir. Entegre 48V/50A şarj cihazı sayesinde gece boyunca dış ünite arayışına gerek kalmadan uygun prizle fırsat şarjı yapılabilir. Optimize gövde ve kabin yapısı, montaj ve sökme sürelerini kısaltarak filo yönetiminde esneklik sağlar.</p></section><section><h3>Sonuç</h3><p>Günün sonunda önemli olan toplam çevrim, enerji verimliliği ve operatör konforudur. Bu model, dar alan çevikliği ile saha üretkenliğini artırırken Li-Ion mimarisi sayesinde bakım ihtiyacını azaltır ve planlanmayan duruşları minimuma indirir. Doğru mast ve ataşman kombinasyonuyla intralojistiğinizi bir üst seviyeye taşıyın. Teknik danışmanlık ve demo için 0216 755 3 555 numarasından bize ulaşın.</p></section>'], JSON_UNESCAPED_UNICODE),
 
             'primary_specs' => json_encode([
                 ['icon' => 'weight-hanging', 'label' => 'Kapasite', 'value' => '2000 kg @ 500 mm'],

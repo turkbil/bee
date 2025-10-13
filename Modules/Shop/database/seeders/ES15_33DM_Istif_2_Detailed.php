@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES15_33DM_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES15_33DM_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES15-33DM')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ES15-33DM'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ES15-33DM');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF ES15-33DM: Geniş şase esnekliği ile 1.5 ton sınıfında çok yönlülük</h2>
   <p>Palet standartlarının değişken olduğu depolarda, ekipmanın uyum kabiliyeti verimliliğin anahtarıdır. İXTİF ES15-33DM; 1270–1470 mm teker kolu genişliği, 200–780 mm ayarlanabilir çatal aralığı ve 1070 mm çatal boyu ile farklı palet genişliklerine kolay uyum sağlar. 24V 125Ah enerji sistemi, 5 km/s seyir hızı ve 1400 mm dönüş yarıçapı sayesinde dar alanlardan geniş alanlara kadar tutarlı bir performans sunar. Geniş taban yapısı ve dengeli ağırlık dağılımı, uzun vardiya operasyonlarında operatöre güven verir.</p>

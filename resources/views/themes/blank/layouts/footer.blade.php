@@ -312,19 +312,6 @@
     {{-- Dynamic Script Stack --}}
     @stack('scripts')
 
-    {{-- Scroll to Top Button - ABOVE AI widget --}}
-    <button
-        id="scroll-to-top"
-        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-        class="fixed bottom-40 right-6 z-50 w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 opacity-0 pointer-events-none hover:scale-110 flex items-center justify-center"
-        aria-label="Sayfa başına dön"
-        title="Sayfa başına dön"
-    >
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-        </svg>
-    </button>
-
     {{-- AI Chat Components --}}
     <x-ai.chat-store />
     <x-ai.floating-widget button-text="AI Destek" theme="blue" />

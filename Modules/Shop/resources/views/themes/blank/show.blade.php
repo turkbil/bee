@@ -298,73 +298,73 @@
                         <div class="flex gap-2" id="toc-buttons">
                             @if ($galleryImages->count() > 0)
                                 <a href="#gallery" data-target="gallery"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-images mr-1.5"></i>Galeri
                                 </a>
                             @endif
                             @if ($longDescription)
                                 <a href="#description" data-target="description"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-align-left mr-1.5"></i>Açıklama
                                 </a>
                             @endif
                             @if ($highlightedFeatures->isNotEmpty() || !empty($featuresList))
                                 <a href="#features" data-target="features"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-sparkles mr-1.5"></i>Özellikler
                                 </a>
                             @endif
                             @if ($siblingVariants->count() > 0)
                                 <a href="#variants" data-target="variants"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-layer-group mr-1.5"></i>Varyantlar
                                 </a>
                             @endif
                             @if (!empty($competitiveAdvantages))
                                 <a href="#competitive" data-target="competitive"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-trophy mr-1.5"></i>Avantajlar
                                 </a>
                             @endif
                             @if (!empty($technicalSpecs))
                                 <a href="#technical" data-target="technical"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-cogs mr-1.5"></i>Teknik
                                 </a>
                             @endif
                             @if (!empty($accessories))
                                 <a href="#accessories" data-target="accessories"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-puzzle-piece mr-1.5"></i>Aksesuarlar
                                 </a>
                             @endif
                             @if (!empty($useCases))
                                 <a href="#usecases" data-target="usecases"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-bullseye mr-1.5"></i>Kullanım
                                 </a>
                             @endif
                             @if (!empty($targetIndustries))
                                 <a href="#industries" data-target="industries"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-briefcase mr-1.5"></i>Sektörler
                                 </a>
                             @endif
                             @if (!empty($certifications))
                                 <a href="#certifications" data-target="certifications"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-certificate mr-1.5"></i>Sertifikalar
                                 </a>
                             @endif
                             @if ($warrantyInfo)
                                 <a href="#warranty" data-target="warranty"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-shield-heart mr-1.5"></i>Garanti
                                 </a>
                             @endif
                             @if ($faqEntries->isNotEmpty())
                                 <a href="#faq" data-target="faq"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-question-circle mr-1.5"></i>SSS
                                 </a>
                             @endif

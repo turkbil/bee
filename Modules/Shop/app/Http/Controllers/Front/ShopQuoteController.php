@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Modules\Shop\app\Models\ShopProduct;
+use Modules\Shop\app\Notifications\QuoteRequestNotification;
 
 /**
  * Shop Quote Controller
@@ -33,10 +35,10 @@ class ShopQuoteController extends Controller
             // Product bilgilerini al
             $product = ShopProduct::findOrFail($validated['product_id']);
 
-            // Email gönder (admin'e)
-            $this->sendQuoteEmailToAdmin($validated, $product);
+            // Admin'e bildirim gönder (Mail + Telegram)
+            $this->sendAdminNotification($validated, $product);
 
-            // Email gönder (müşteriye)
+            // Müşteriye onay email'i gönder
             $this->sendQuoteConfirmationToCustomer($validated, $product);
 
             // Log kaydet
@@ -46,8 +48,11 @@ class ShopQuoteController extends Controller
                 'customer_name' => $validated['name'],
             ]);
 
-            // Success mesajı ile redirect
-            return redirect()->back()->with('success', 'Talebiniz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
+            // Success mesajı ile redirect - Query parameter kullan (Tenant session bypass)
+            $currentUrl = url()->previous();
+            $separator = parse_url($currentUrl, PHP_URL_QUERY) ? '&' : '?';
+
+            return redirect($currentUrl . $separator . 'quote_status=success');
 
         } catch (\Exception $e) {
             Log::error('Quote Submission Error', [
@@ -55,16 +60,18 @@ class ShopQuoteController extends Controller
                 'data' => $validated,
             ]);
 
-            return redirect()->back()
-                ->with('error', 'Bir hata oluştu. Lütfen daha sonra tekrar deneyin veya 0216 755 3 555 numarasını arayın.')
-                ->withInput();
+            // Error mesajı ile redirect - Query parameter kullan (Tenant session bypass)
+            $currentUrl = url()->previous();
+            $separator = parse_url($currentUrl, PHP_URL_QUERY) ? '&' : '?';
+
+            return redirect($currentUrl . $separator . 'quote_status=error');
         }
     }
 
     /**
-     * Admin'e email gönder
+     * Admin'e bildirim gönder (Mail + Telegram)
      */
-    private function sendQuoteEmailToAdmin(array $data, ShopProduct $product)
+    private function sendAdminNotification(array $data, ShopProduct $product)
     {
         if (!config('shop.quote.send_admin_notification', true)) {
             return;
@@ -72,14 +79,11 @@ class ShopQuoteController extends Controller
 
         $adminEmail = config('shop.quote.admin_email', 'info@ixtif.com');
 
-        Mail::send('shop::emails.quote-admin', [
-            'data' => $data,
-            'product' => $product,
-        ], function ($message) use ($adminEmail, $data) {
-            $message->to($adminEmail)
-                    ->subject('Yeni Teklif Talebi: ' . $data['product_title'])
-                    ->from(config('mail.from.address'), config('mail.from.name'));
-        });
+        // Notification gönder (Mail + Telegram)
+        // Laravel'in route() metodu ile anonymous notifiable kullanımı
+        Notification::route('mail', $adminEmail)
+            ->route('telegram', config('services.telegram-bot-api.chat_id'))
+            ->notify(new QuoteRequestNotification($data, $product));
     }
 
     /**

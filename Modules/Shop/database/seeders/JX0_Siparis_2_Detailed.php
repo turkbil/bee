@@ -1,16 +1,24 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class JX0_Siparis_2_Detailed extends Seeder {
-    public function run(): void {
+class JX0_Siparis_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'JX0')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: JX0'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: JX0');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>Dar Koridorlarda Hızlı ve Güvenli Toplama</h2><p>Gün boyu süren toplama operasyonlarında merdiven ve platformların yerini alan JX0 ailesi, sezgisel sürüş sistemi, mini direksiyon ve hız/yön kumandaları ile operatöre zahmetsiz bir deneyim sağlar. 1260&nbsp;mm dönüş yarıçapı ve kompakt şasi sayesinde kalabalık raf aralarında bile seri manevra yapılır. Yük tepsisi elektrik tahrikli olduğundan, operatörün üst seviye raflardan ürünü alıp tepsiye güvenle yerleştirmesi kolaylaşır. 3615&nbsp;mm kaldırma ve 4090&nbsp;mm maksimum direk yüksekliği ile 4,5&nbsp;metreye kadar etkin toplama yüksekliği sunar.</p></section><section><h3>Teknik Mimari ve Performans</h3><p>Elektrik tahrik sistemi; S2 60&nbsp;dk’da 0,65&nbsp;kW sürüş motoru ve S3&nbsp;%15 döngüde 2,2&nbsp;kW kaldırma motoru ile dengeli hızlanma ve kararlı kaldırma sağlar. 6/6,5&nbsp;km/saat seyir hızları, yoğun vardiyalar için ideal dengeyi kurar. Kaldırma (0,22/0,27&nbsp;m/s) ve indirme (0,31/0,25&nbsp;m/s) değerleri, operatörün yükseklikte geçirdiği süreyi kısaltırken yükün güvenli şekilde konumlandırılmasına imkân verir. Poliüretan/katı lastik kombinasyonu, φ210×70 ön ve φ250×100 arka teker ölçüleri ile titreşimi azaltır; φ74×48 destek tekerleri stabiliteyi artırır. 1095&nbsp;mm tekerlek tabanı ve 1440×750&nbsp;mm kompakt ölçüler, dar alanlarda riskleri minimize eder. Batarya yapılandırması 24V/135Ah Li-Ion olup, fırsat şarjını destekler. Sensörler, operatör duruş pozisyonunu ve kapı kilit durumunu izleyerek yanlış kullanımları engeller; mavi uyarı ışığı ve buzzer çevre farkındalığını artırır.</p></section><section><h3>Sonuç ve İletişim</h3><p>Operasyonunuzun hızını artırmak, iş güvenliğini yükseltmek ve bakım maliyetlerini azaltmak için JX0 ailesi ideal bir yardımcıdır. Günlük toplama akışınıza entegre edildiğinde taşıma adımlarını azaltır, zaman kazandırır ve verimliliği ölçülebilir şekilde yükseltir. Detaylı yapılandırma, demo ve fiyatlandırma için hemen arayın: 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => '<section><h2>Dar Koridorlarda Hızlı ve Güvenli Toplama</h2><p>Gün boyu süren toplama operasyonlarında merdiven ve platformların yerini alan JX0 ailesi, sezgisel sürüş sistemi, mini direksiyon ve hız/yön kumandaları ile operatöre zahmetsiz bir deneyim sağlar. 1260&nbsp;mm dönüş yarıçapı ve kompakt şasi sayesinde kalabalık raf aralarında bile seri manevra yapılır. Yük tepsisi elektrik tahrikli olduğundan, operatörün üst seviye raflardan ürünü alıp tepsiye güvenle yerleştirmesi kolaylaşır. 3615&nbsp;mm kaldırma ve 4090&nbsp;mm maksimum direk yüksekliği ile 4,5&nbsp;metreye kadar etkin toplama yüksekliği sunar.</p></section><section><h3>Teknik Mimari ve Performans</h3><p>Elektrik tahrik sistemi; S2 60&nbsp;dk’da 0,65&nbsp;kW sürüş motoru ve S3&nbsp;%15 döngüde 2,2&nbsp;kW kaldırma motoru ile dengeli hızlanma ve kararlı kaldırma sağlar. 6/6,5&nbsp;km/saat seyir hızları, yoğun vardiyalar için ideal dengeyi kurar. Kaldırma (0,22/0,27&nbsp;m/s) ve indirme (0,31/0,25&nbsp;m/s) değerleri, operatörün yükseklikte geçirdiği süreyi kısaltırken yükün güvenli şekilde konumlandırılmasına imkân verir. Poliüretan/katı lastik kombinasyonu, φ210×70 ön ve φ250×100 arka teker ölçüleri ile titreşimi azaltır; φ74×48 destek tekerleri stabiliteyi artırır. 1095&nbsp;mm tekerlek tabanı ve 1440×750&nbsp;mm kompakt ölçüler, dar alanlarda riskleri minimize eder. Batarya yapılandırması 24V/135Ah Li-Ion olup, fırsat şarjını destekler. Sensörler, operatör duruş pozisyonunu ve kapı kilit durumunu izleyerek yanlış kullanımları engeller; mavi uyarı ışığı ve buzzer çevre farkındalığını artırır.</p></section><section><h3>Sonuç ve İletişim</h3><p>Operasyonunuzun hızını artırmak, iş güvenliğini yükseltmek ve bakım maliyetlerini azaltmak için JX0 ailesi ideal bir yardımcıdır. Günlük toplama akışınıza entegre edildiğinde taşıma adımlarını azaltır, zaman kazandırır ve verimliliği ölçülebilir şekilde yükseltir. Detaylı yapılandırma, demo ve fiyatlandırma için hemen arayın: 0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -33,9 +41,11 @@ class JX0_Siparis_2_Detailed extends Seeder {
                         "value": "1260 mm yarıçap"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -68,9 +78,11 @@ JSON
                         "description": "Blue spot ve buzzer ile çevreyi uyarır, iş güvenliğini destekler."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -105,9 +117,11 @@ JSON
                         "text": "Üretim hücresi içi yarı mamul (WIP) taşıma ve toplama"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -130,9 +144,11 @@ JSON
                         "text": "Standart ve CE yapılandırmalarıyla esnek platform"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -223,10 +239,12 @@ JSON
                         "text": "Kurumsal arşiv ve dokümantasyon"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'warranty_info' => json_encode(['coverage' => 'Makine 12 ay, Li-Ion batarya 24 ay garanti.', 'duration_months' => 12, 'battery_warranty_months' => 24], JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -261,9 +279,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -272,9 +292,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Dar koridorlarda minimum dönüş açıklığı nedir ve raf aralarında nasıl avantaj sağlar?",
@@ -325,10 +347,11 @@ JSON
                         "answer": "Makine 12 ay, Li-Ion batarya 24 ay garanti kapsamındadır. Satış ve servis için İXTİF 0216 755 3 555 ile iletişime geçebilirsiniz."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now()
         ]);
-        $this->command->info("✅ Detailed güncellendi: {$p->product_id }");
+        $this->command->info("✅ Detailed güncellendi: {$p->product_id}");
     }
 }

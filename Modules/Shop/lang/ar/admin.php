@@ -35,7 +35,7 @@ return [
     'price_on_request' => 'السعر عند الطلب',
     'currency' => 'العملة',
     'short_description' => 'وصف قصير',
-    'long_description' => 'وصف مفصل',
+    'body' => 'وصف مفصل',
     'slug' => 'الرابط المختصر',
     'generate_slug' => 'إنشاء رابط',
     'sort_order' => 'ترتيب العرض',

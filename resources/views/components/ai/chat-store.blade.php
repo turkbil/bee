@@ -35,7 +35,7 @@ document.addEventListener('alpine:init', () => {
         // Config
         apiEndpoint: '{{ route('api.ai.api.v1.shop-assistant.chat') }}',
         historyEndpoint: '{{ route('api.ai.api.v1.shop-assistant.history') }}',
-        assistantName: 'iXtif Yapay Zeka Sistemi',
+        assistantName: '{{ \App\Helpers\AISettingsHelper::getAssistantName() }}',
 
         // Context data (product_id, category_id, page_slug)
         context: {
@@ -89,11 +89,6 @@ document.addEventListener('alpine:init', () => {
             // Save state to localStorage
             localStorage.setItem('ai_chat_floating_open', this.floatingOpen.toString());
 
-            if (this.floatingOpen && this.messages.length === 0) {
-                // İlk açılışta hoş geldin mesajı - YARATICI VE İLGİ ÇEKİCİ
-                this.addSystemMessage(`🎉 **Merhaba!** Ben ${this.assistantName}'nin yapay zeka asistanıyım! 🤖\n\n✨ **Size şunlarda yardımcı olabilirim:**\n- 🛍️ Ürün özellikleri ve karşılaştırmalar\n- 💰 Fiyat bilgileri ve kampanyalar\n- 📦 Stok durumu ve teslimat\n- 🔧 Teknik destek ve kullanım\n- ❓ Merak ettiğiniz her şey!\n\n💬 **Haydi, ilk sorunuzu sorun!** Sabırsızlanıyorum... 😊`);
-            }
-
             // Scroll to bottom when opening
             if (this.floatingOpen) {
                 setTimeout(() => {
@@ -108,10 +103,6 @@ document.addEventListener('alpine:init', () => {
 
             // Save state to localStorage
             localStorage.setItem('ai_chat_floating_open', 'true');
-
-            if (this.messages.length === 0) {
-                this.addSystemMessage(`🎉 **Merhaba!** Ben ${this.assistantName}'nin yapay zeka asistanıyım! 🤖\n\n✨ **Size şunlarda yardımcı olabilirim:**\n- 🛍️ Ürün özellikleri ve karşılaştırmalar\n- 💰 Fiyat bilgileri ve kampanyalar\n- 📦 Stok durumu ve teslimat\n- 🔧 Teknik destek ve kullanım\n- ❓ Merak ettiğiniz her şey!\n\n💬 **Haydi, ilk sorunuzu sorun!** Sabırsızlanıyorum... 😊`);
-            }
 
             // Scroll to bottom when opening
             setTimeout(() => {
@@ -298,7 +289,7 @@ document.addEventListener('alpine:init', () => {
                 this.sessionId = null;
                 localStorage.removeItem('ai_chat_session_id');
 
-                this.addSystemMessage(`Konuşma geçmişi silindi. Yeni bir konuşmaya başlayabilirsiniz.`);
+                // Placeholder will automatically show when messages are empty
             }
         },
 
@@ -326,6 +317,213 @@ document.addEventListener('alpine:init', () => {
         },
     });
 });
+
+/**
+ * Placeholder V4 - Slide Up Animation (Dynamic Product-specific)
+ * Loads AI-generated placeholder conversations from API or uses fallback
+ */
+window.placeholderV4 = function(productId = null) {
+    return {
+        conversation: [],
+        isLoading: true,
+        loadError: false,
+
+        async init() {
+            console.log('🔍 Placeholder init started', { productId });
+
+            if (productId) {
+                // Start with fallback, then try to load from cache
+                this.conversation = this.getFallbackConversation();
+                this.isLoading = false;
+
+                console.log('📡 Checking cache for product placeholder...');
+                // Try to load - if cached, it will be fast. If not, generate in background
+                this.loadProductPlaceholder(productId); // Don't await - run in background
+            } else {
+                console.log('⚠️ No productId provided, using fallback');
+                this.conversation = this.getFallbackConversation();
+                this.isLoading = false;
+            }
+
+            console.log('✅ Placeholder init completed (immediate)', {
+                conversationLength: this.conversation.length
+            });
+        },
+
+        async loadProductPlaceholder(productId) {
+            try {
+                const startTime = Date.now();
+                const response = await fetch(`/api/ai/v1/product-placeholder/${productId}`);
+                const data = await response.json();
+                const loadTime = Date.now() - startTime;
+
+                if (data.success && data.data.conversation) {
+                    console.log('✅ Product placeholder loaded', {
+                        from_cache: data.data.from_cache,
+                        generated_at: data.data.generated_at,
+                        load_time_ms: loadTime,
+                        note: data.data.from_cache ? 'Cached - will use next visit' : 'Generated - cached for next visit'
+                    });
+                    // Don't replace conversation on first visit - it's already showing fallback
+                    // Next visit will load from cache immediately
+                } else {
+                    throw new Error('Invalid response');
+                }
+            } catch (error) {
+                console.error('❌ Failed to load product placeholder (will retry next time):', error);
+                this.loadError = true;
+            }
+        },
+
+        getFallbackConversation() {
+            return [
+                { role: 'user', text: "Merhaba, bu ürün ne iş yapıyor?" },
+                { role: 'assistant', text: "Merhaba! Bu ürün profesyonel kullanım için tasarlanmış, yüksek performanslı bir ekipmandır. İhtiyaçlarınıza göre farklı modellerde sunulmaktadır." },
+                { role: 'user', text: "Hangi kapasitede var?" },
+                { role: 'assistant', text: "Farklı kapasite seçeneklerimiz mevcut. Size en uygun modeli belirlemek için kullanım amacınızı ve ihtiyacınızı konuşalım!" },
+                { role: 'user', text: "Neden bu modeli tercih etmeliyim?" },
+                { role: 'assistant', text: "Bu model dayanıklılığı, yüksek performansı ve kolay kullanımıyla öne çıkıyor. Detaylı teknik özellikleri ve avantajları için benimle konuşmaya başlayın!" }
+            ];
+        },
+
+        async start() {
+            const container = this.$el;
+            container.innerHTML = '';
+
+            console.log('🎬 Placeholder animation started', {
+                conversationLength: this.conversation.length,
+                conversation: this.conversation
+            });
+
+            await this.sleep(1000);
+
+            // Loop through all conversation messages
+            for (let msg of this.conversation) {
+                // Show typing indicator before assistant messages
+                if (msg.role === 'assistant') {
+                    await this.showTypingIndicator(container);
+                    await this.sleep(1500); // Wait while "typing"
+                    await this.hideTypingIndicator(container);
+                }
+
+                await this.slideUpMessage(msg.text, msg.role, container);
+                await this.sleep(1800); // Longer pause between messages
+            }
+
+            // Add final "Start chatting" message
+            await this.sleep(1000);
+            await this.showStartMessage(container);
+        },
+
+        async showTypingIndicator(container) {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'flex justify-start mb-3 typing-indicator-placeholder';
+            typingDiv.innerHTML = `
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm opacity-0 translate-y-4 transition-all duration-500">
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(typingDiv);
+            await this.sleep(50);
+
+            const bubble = typingDiv.querySelector('div');
+            bubble.classList.remove('opacity-0', 'translate-y-4');
+            bubble.classList.add('opacity-100', 'translate-y-0');
+
+            // Smooth scroll to bottom
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+        },
+
+        async hideTypingIndicator(container) {
+            const typingDiv = container.querySelector('.typing-indicator-placeholder');
+            if (typingDiv) {
+                typingDiv.remove();
+            }
+        },
+
+        async slideUpMessage(text, role, container) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-3`;
+
+            const bubble = document.createElement('div');
+            bubble.className = `max-w-[85%] rounded-2xl px-4 py-2.5 translate-y-4 transition-all duration-500 ${
+                role === 'user'
+                    ? 'bg-blue-400 dark:bg-blue-500'
+                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+            }`;
+
+            // Add text with opacity
+            const textSpan = document.createElement('span');
+            textSpan.className = role === 'user'
+                ? 'text-white opacity-50'
+                : 'text-gray-800 dark:text-white opacity-50';
+            textSpan.textContent = text;
+            bubble.appendChild(textSpan);
+
+            msgDiv.appendChild(bubble);
+            container.appendChild(msgDiv);
+
+            // Scroll immediately after adding
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+
+            await this.sleep(50);
+            bubble.classList.remove('translate-y-4');
+            bubble.classList.add('translate-y-0');
+
+            // Scroll again after animation starts
+            await this.sleep(100);
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+        },
+
+        async showStartMessage(container) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex justify-center mb-3 mt-6';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg opacity-0 scale-90 transition-all duration-500';
+            bubble.innerHTML = '💬 <strong>Yazışmak için mesajınızı yazın!</strong>';
+
+            msgDiv.appendChild(bubble);
+            container.appendChild(msgDiv);
+
+            await this.sleep(50);
+            bubble.classList.remove('opacity-0', 'scale-90');
+            bubble.classList.add('opacity-100', 'scale-100');
+
+            // Ensure final message is visible - smooth scroll to bottom
+            await this.sleep(200); // Wait for animation
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+
+            // Force scroll again after a delay to ensure visibility
+            await this.sleep(500);
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+        },
+
+        sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    };
+};
 
 /**
  * Markdown Renderer for AI Chat Messages

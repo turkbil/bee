@@ -1,16 +1,24 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CPD20FVL_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class CPD20FVL_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'CPD20FVL')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (CPD20FVL)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (CPD20FVL)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İşletmenizin temposuna ayak uyduran kompakt enerji</h2><p>Sabah vardiyası başlarken kapılar açılır ve ilk paletler rampaya yaslanır. Operasyonun kalbinde, sürücünün oturduğu anda güven veren ergonomik alan ve hassas pedallar ile İXTİF CPD20FVL, dar koridorlardan geniş yükleme alanına kadar aynı akıcılıkta hareket eder. Kompakt gövde ve küçük dönüş yarıçapı sayesinde raf aralarında bekleme ve manevra süreleri kısalır; bu da sipariş çevrim hızına doğrudan yansır. Bakım gerektirmeyen Li‑Ion mimari ve entegre şarj cihazı, enerji planlamasını kolaylaştırır.</p></section><section><h3>Teknik güç ve batarya mimarisi</h3><p>80V/205Ah Li-Ion sistem, 2×5.0 kW AC tahrik ile birlikte yüksek torku sessiz ve verimli şekilde sunar. Tipik seyir hızı 13/14 km/s, kaldırma hızı 0.33/0.45 m/s aralığındadır ve fırsat şarjına uygun kimya sayesinde çoklu vardiya koşullarında kesintisiz akış yakalanır. Güçlendirilmiş mast tasarımı, tam görüş sağlayarak yükün üst seviyelere kaldırılmasında stabilite kazandırır. Opsiyonel non-marking lastikler, iç mekanda iz bırakmadan çalışmayı mümkün kılar; kabin seçenekleri hava koşullarına karşı koruma sunar. Entegre tek faz şarj, ek altyapı yatırımı olmadan kurulumu kolaylaştırır.</p></section><section><h3>Operasyonel sonuç ve desteğe erişim</h3><p>İXTİF mühendisliği, parça erişimi kolay komponent yerleşimi ve akıllı güvenlik donanımlarıyla toplam sahip olma maliyetini düşürmeye odaklanır. Depo çıkışından üretim hattına kadar farklı görevlerde aynı forklift ile çalışmak, filo standardizasyonu ve sürücü eğitiminde hız kazandırır. Bugün daha verimli bir akış için doğru konfigürasyonu seçin; detaylar ve uzman desteği için bizi arayın: 0216 755 3 555.</p></section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => '<section><h2>İşletmenizin temposuna ayak uyduran kompakt enerji</h2><p>Sabah vardiyası başlarken kapılar açılır ve ilk paletler rampaya yaslanır. Operasyonun kalbinde, sürücünün oturduğu anda güven veren ergonomik alan ve hassas pedallar ile İXTİF CPD20FVL, dar koridorlardan geniş yükleme alanına kadar aynı akıcılıkta hareket eder. Kompakt gövde ve küçük dönüş yarıçapı sayesinde raf aralarında bekleme ve manevra süreleri kısalır; bu da sipariş çevrim hızına doğrudan yansır. Bakım gerektirmeyen Li‑Ion mimari ve entegre şarj cihazı, enerji planlamasını kolaylaştırır.</p></section><section><h3>Teknik güç ve batarya mimarisi</h3><p>80V/205Ah Li-Ion sistem, 2×5.0 kW AC tahrik ile birlikte yüksek torku sessiz ve verimli şekilde sunar. Tipik seyir hızı 13/14 km/s, kaldırma hızı 0.33/0.45 m/s aralığındadır ve fırsat şarjına uygun kimya sayesinde çoklu vardiya koşullarında kesintisiz akış yakalanır. Güçlendirilmiş mast tasarımı, tam görüş sağlayarak yükün üst seviyelere kaldırılmasında stabilite kazandırır. Opsiyonel non-marking lastikler, iç mekanda iz bırakmadan çalışmayı mümkün kılar; kabin seçenekleri hava koşullarına karşı koruma sunar. Entegre tek faz şarj, ek altyapı yatırımı olmadan kurulumu kolaylaştırır.</p></section><section><h3>Operasyonel sonuç ve desteğe erişim</h3><p>İXTİF mühendisliği, parça erişimi kolay komponent yerleşimi ve akıllı güvenlik donanımlarıyla toplam sahip olma maliyetini düşürmeye odaklanır. Depo çıkışından üretim hattına kadar farklı görevlerde aynı forklift ile çalışmak, filo standardizasyonu ve sürücü eğitiminde hız kazandırır. Bugün daha verimli bir akış için doğru konfigürasyonu seçin; detaylar ve uzman desteği için bizi arayın: 0216 755 3 555.</p></section>'], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -33,9 +41,11 @@ class CPD20FVL_Forklift_2_Detailed extends Seeder {
                         "value": "1730 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -68,9 +78,11 @@ JSON
                         "description": "Tek faz 35A entegre çözümle kolay enerji yönetimi."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "warehouse",
@@ -105,9 +117,11 @@ JSON
                         "text": "Kimya ve temizlik ürünleri depolarında güvenli taşıma"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -134,9 +148,11 @@ JSON
                         "text": "Entegre şarj cihazı ile ek altyapı gerektirmeden kullanım"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -219,10 +235,12 @@ JSON
                         "text": "Pet ürünleri ve yem"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'warranty_info' => json_encode(['coverage' => 'Makine 12 ay, Li-Ion batarya 24 ay garanti.', 'duration_months' => 12, 'battery_warranty_months' => 24], JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -253,9 +271,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -264,9 +284,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Dar koridorlarda minimum dönüş yarıçapı operasyonu nasıl etkiler?",
@@ -317,8 +339,9 @@ JSON
                         "answer": "Kurulum, eğitim, orijinal yedek parça ve servis talepleriniz için İXTİF’i arayın: 0216 755 3 555."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info("✅ Detailed: CPD20FVL");

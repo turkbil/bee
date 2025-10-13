@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EPL154_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class EPL154_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EPL154')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (EPL154)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (EPL154)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EPL154: Kompakt gövde, Li‑Ion enerji, maksimum çeviklik</h2>
   <p>İXTİF EPL154, 1.5 ton kapasiteyi yalnızca 160 kg servis ağırlığı ve <strong>l2=400 mm</strong> gövde uzunluğu ile birleştirerek dar alan verimliliğini üst seviyeye taşır. <strong>24V/30Ah</strong> çıkarılabilir Li‑Ion batarya, metal koruma kapağı ve entegre şarj cihazı sayesinde esnek enerji yönetimi sağlar. Standart endüstriyel yüzer denge tekerleri yüksek stabilite sunar; <strong>1330 mm</strong> dönüş yarıçapı ve <strong>4.5/5 km/s</strong> sürüş hızı ile raf aralarında akıcı manevra elde edilir. Kaplumbağa (creep) modu, kol dikey durumdayken hassas ve güvenli ilerleme sağlar; böylece kapı girişleri, rampalar ve sıkışık koridor geçişleri daha kontrollü hale gelir.</p>

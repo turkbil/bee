@@ -1,14 +1,21 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class WSA161_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class WSA161_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'WSA161')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: WSA161'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: WSA161');
+            return;
+        }
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF WSA161: Ağır Hizmette Hız, Hassasiyet ve Li‑Ion Konforu</h2>
 <p>Depo koridorları daralırken sipariş hacmi artıyor. WSA161, Li‑Ion teknolojisiyle tasarlanmış ağır hizmet
 yaya kumandalı istifleyici konseptini yeni bir verim standardına taşıyor. Entegre şarj, hızlı kaldırma/indirme
@@ -29,7 +36,8 @@ içinde mola şarjlarını mümkün kılar; bellek etkisi yoktur, bakım gerekti
 önceliklerken toplam sahip olma maliyetini düşürür. Mevcut raf düzenine uyum sağlayan boyutları, entegre şarj ve
 Li‑Ion ekosistemi ile yatırımı hızla geri döndüren akıllı bir tercihtir. Detaylı bilgi ve teklif için 0216 755 3 555.</p></section>
 '], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -52,9 +60,11 @@ Li‑Ion ekosistemi ile yatırımı hızla geri döndüren akıllı bir tercihti
                         "value": "1506 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -87,9 +97,11 @@ JSON
                         "description": "Raf içi akışta milimetrik hassas konumlama"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "warehouse",
@@ -124,9 +136,11 @@ JSON
                         "text": "Kimyasal depo alanlarında kontrollü ve hassas istif"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -149,9 +163,11 @@ JSON
                         "text": "Modern tasarım ve kullanıcı odaklı detaylarla verimli operasyon"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -234,17 +250,21 @@ JSON
                         "text": "Lastik ve jant depolama operasyonları"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'warranty_info' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'warranty_info' => json_encode(json_decode(
+                <<<'JSON'
                 {
                     "coverage": "Makine 12 ay, Li‑Ion batarya 24 ay garanti.",
                     "duration_months": 12,
                     "battery_warranty_months": 24
                 }
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -275,9 +295,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -286,9 +308,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Dar koridorlarda minimum dönüş alanı ne kadar olmalı?",
@@ -339,8 +363,9 @@ JSON
                         "answer": "Makine 12 ay, Li‑Ion batarya 24 ay garantilidir. İXTİF satış ve teknik destek: 0216 755 3 555."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info('✅ Detailed: WSA161 güncellendi');

@@ -1,16 +1,23 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFS151_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFS151_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFS151')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
 
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF EFS151: Kompakt gövdede 1.5 ton gücü, şehir içi depolara uygun çeviklik</h2>
 <p>Alçak tavanlı eski depo katları, dar kapılar, sıkışık rampa sahaları... EFS151 tam da bu koşullarda fark yaratmak için geliştirildi. 3 tekerli karşı dengeli mimarisi ve 1995 mm koruyucu tavan yüksekliği ile düşük kat yüksekliklerine uyum sağlar; 1535 mm dönüş yarıçapı sayesinde dar koridorlu mağaza arkaları, yük asansörleri ve mezanin alanlarında rahatça manevra eder. 1500 kg nominal kapasite ve 500 mm yük merkezi ile günlük taşıma işlerinizde dengeli performans sunar; kompakt şasi ve düşük ağırlık (2200 kg) ise binaya binen yükleri azaltır. Operatör için ayarlanabilir direksiyon ve kova tipi koltuk konfor sağlar; AC sürüş kontrolü ve tepkisel hidrolikler ise işi akıcı hale getirir.</p></section>
 <section><h3>Teknik güç: 48V Li-Ion altyapı, AC tahrik ve dengeli mast geometrisi</h3>

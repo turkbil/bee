@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ESi161_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ESi161_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ESi161')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ESi161'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ESi161');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF ESi161: Çift Katlı Verim, Kompakt Güç</h2>
   <p>Depo kapıları açılır açılmaz işler hızlanır; ESi161 tam da bu an için tasarlanmıştır. İkili kaldırma mimarisi sayesinde aynı anda iki paleti hareket ettirerek yükleme, boşaltma ve besleme işlemlerini hızlandırır. Mono direk yapısı ve şeffaf görüş paneli, operatörün çatal uçlarını net görmesini sağlar; bu da hasarı azaltır ve ilk denemede doğru konumlandırma sunar. Kompakt gövde, dar koridorlarda ve kasa içlerinde çalışmayı kolaylaştırır. Kaplumbağa (turtle) düğmesi düşük hızda hassas manevra verir; rampalar ve eşiksiz geçişler için merkez tahrik ve denge tekerleri güven veren çekiş sunar. Li-Ion batarya ile vardiya arasında kısa molalarda dahi hızlı şarj mümkün olur; entegre şarj cihazı ise priz olan her yerde şarj imkânı sağlar.</p>

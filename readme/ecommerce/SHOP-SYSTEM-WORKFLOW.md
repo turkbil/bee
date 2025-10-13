@@ -29,7 +29,7 @@
 │  DATABASE TABLOLARI                                                   │
 │  ┌────────────────────────────────────────────────────────┐          │
 │  │  shop_products (Ana Ürün + Rich Content)              │          │
-│  │  - long_description (marketing intro/body)            │          │
+│  │  - body (marketing intro/body)            │          │
 │  │  - features (list + branding: slogan/motto)           │          │
 │  │  - use_cases, competitive_advantages, faq_data        │          │
 │  │  - primary_specs (4 vitrin kartı)                     │          │
@@ -121,7 +121,7 @@ php artisan shop:process-pdf-to-json --overwrite
 
    Kurallar:
    - Tüm metinler %100 Türkçe (en alanı da Türkçe kopya)
-   - long_description: marketing-intro + marketing-body bölümleri
+   - body: marketing-intro + marketing-body bölümleri
    - features.branding: slogan, motto, technical_summary
    - use_cases: en az 6 senaryo
    - competitive_advantages: en az 5 avantaj
@@ -211,7 +211,7 @@ ShopCategoryMapper::clearCache();
 {
   "title": {"tr": "F4 201 - 2 Ton 48V Li-Ion Transpalet", "en": "...", "vs.": "..."},
   "slug": {"tr": "f4-201-transpalet", "en": "...", "vs.": "..."},
-  "long_description": {
+  "body": {
     "tr": "<section class=\"marketing-intro\">Satış odaklı açılış...</section><section class=\"marketing-body\">Teknik detaylar...</section>"
   },
   "features": {
@@ -373,7 +373,7 @@ php artisan app:clear-all
 
 ### **4. Marketing Content Stratejisi**
 
-**long_description Yapısı:**
+**body Yapısı:**
 ```html
 <section class="marketing-intro">
   <!-- Duygusal tetikleyici, "wow" faktörü -->

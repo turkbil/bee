@@ -56,7 +56,7 @@ işletmenizin verimliliğini artıracak akıllı elektrikli forklift."
 
 ---
 
-### Detaylı Açıklama (long_description)
+### Detaylı Açıklama (body)
 
 **Yapı**:
 ```

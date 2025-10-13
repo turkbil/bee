@@ -102,10 +102,31 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
 
     public function getPaginated(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
-        $query = $this->baseQuery()->with(['category', 'brand']);
+        // Sadece master productları getir (parent_product_id NULL olanlar)
+        $query = $this->baseQuery()
+            ->whereNull('parent_product_id')
+            ->with([
+                'category',
+                'brand',
+                'childProducts' => function ($query) {
+                    $query->where('is_active', true)->orderBy('variant_type')->orderBy('product_id');
+                }
+            ]);
 
         if (!empty($filters['search'])) {
-            $query = $this->applySearchFilter($query, (string) $filters['search'], $filters['locales'] ?? null);
+            $searchTerm = (string) $filters['search'];
+            $locales = $filters['locales'] ?? null;
+
+            // Hem master hem child productlarda ara
+            $query->where(function (Builder $q) use ($searchTerm, $locales) {
+                // Master product'ta ara
+                $this->applySearchFilter($q, $searchTerm, $locales);
+
+                // VEYA child productları arasında eşleşen varsa master'ı göster
+                $q->orWhereHas('childProducts', function (Builder $childQuery) use ($searchTerm, $locales) {
+                    $this->applySearchFilter($childQuery, $searchTerm, $locales);
+                });
+            });
         }
 
         if (isset($filters['category_id'])) {
@@ -160,14 +181,14 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
     public function search(string $term, array $locales = []): Collection
     {
         $locales = !empty($locales) ? $locales : TenantLanguageProvider::getActiveLanguageCodes();
-        $searchTerm = '%'.$term.'%';
+        $searchTerm = '%' . $term . '%';
 
         return $this->baseQuery()
             ->where(function (Builder $query) use ($searchTerm, $locales): void {
                 foreach ($locales as $locale) {
                     $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
                         ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(long_description, '$.\"{$locale}\"')) LIKE ?", [$searchTerm]);
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.\"{$locale}\"')) LIKE ?", [$searchTerm]);
                 }
             })
             ->active()
@@ -301,7 +322,7 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
     private function applySearchFilter(Builder $query, string $term, ?array $locales = null): Builder
     {
         $locales = $locales ?: TenantLanguageProvider::getActiveLanguageCodes();
-        $searchTerm = '%'.$term.'%';
+        $searchTerm = '%' . $term . '%';
 
         return $query->where(function (Builder $searchQuery) use ($locales, $searchTerm): void {
             foreach ($locales as $locale) {

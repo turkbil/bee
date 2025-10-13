@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class WPL202_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class WPL202_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'WPL202')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (WPL202)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (WPL202)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF WPL202: Dar Alanların Ağır İşçi Arısı</h2>
   <p>Depo kapıları açılır açılmaz operasyona hazır bir ekip üyesi gibi davranan İXTİF WPL202, çevikliğiyle sabah vardiyasından gece kapanışına kadar akışı hızlandırır. 470&nbsp;mm’lik kısa şasi ile rampa başında, kamyon içinde ve dar raf aralarında kolayca döner; 1320&nbsp;mm dönüş yarıçapı sayesinde manevralarınız daha az ileri-geri gerektirir. 2.0&nbsp;ton kapasite ve yalnızca 320&nbsp;kg servis ağırlığı, güvenli taşıma ve düşük zemin baskısı dengesini korur. Li‑Ion enerji sistemi ve entegre şarj cihazı, fırsat şarjıyla operasyona ara vermeden devam etmenizi sağlar; akü değişimi, su tamamlama ve bakım işleri gündeminizden çıkar.</p>

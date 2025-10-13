@@ -209,7 +209,7 @@ class ProcessPdfToJson extends Command
                     'en' => 'Short description here...',
                     'vs.' => '...'
                 ],
-                'long_description' => [
+                'body' => [
                     'tr' => '<section class="marketing-intro"><p>Pazarlama içeriği buraya gelecek...</p></section>',
                     'en' => '<section class="marketing-intro"><p>Marketing content here...</p></section>',
                     'vs.' => '...'

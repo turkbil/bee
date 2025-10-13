@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Widget Tasarım Versiyonları</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .version-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .version-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .version-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+            padding-right: 80px;
+        }
+
+        .preview-area {
+            min-height: 400px;
+            background: #f5f5f5;
+            border-radius: 15px;
+            position: relative;
+            border: 2px solid #e0e0e0;
+            overflow: hidden;
+        }
+
+        .start-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn.active {
+            background: #e74c3c;
+        }
+
+        /* Chat Button Base */
+        .chat-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .chat-panel {
+            position: absolute;
+            bottom: 90px;
+            right: 20px;
+            width: 320px;
+            height: 450px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 99;
+        }
+
+        .chat-panel.active {
+            display: flex;
+        }
+
+        .chat-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            font-size: 18px;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .chat-message.bot {
+            background: #e3f2fd;
+            margin-right: auto;
+        }
+
+        .chat-message.user {
+            background: #f3e5f5;
+            margin-left: auto;
+        }
+
+        .chat-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .chat-footer button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            height: auto;
+        }
+
+        /* VERSION 1: Classic Pulse */
+        .v1-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .v1-button.animated::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: inherit;
+            z-index: -1;
+            animation: pulse-v1 2s infinite;
+        }
+
+        @keyframes pulse-v1 {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0; }
+        }
+
+        .v1-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* VERSION 2: Neon Glow */
+        .v2-button {
+            background: #00ff88;
+            color: #000;
+            box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+        }
+
+        .v2-button.animated {
+            animation: neon-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes neon-glow {
+            0%, 100% { box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88; }
+            50% { box-shadow: 0 0 40px #00ff88, 0 0 80px #00ff88, 0 0 100px #00ff88; }
+        }
+
+        .v2-header {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+        }
+
+        /* VERSION 3: 3D Effect */
+        .v3-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 8px 0 #d13c4e, 0 15px 20px rgba(0,0,0,0.3);
+        }
+
+        .v3-button.animated {
+            animation: bounce-3d 1s infinite;
+        }
+
+        @keyframes bounce-3d {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); box-shadow: 0 18px 0 #d13c4e, 0 25px 30px rgba(0,0,0,0.3); }
+        }
+
+        .v3-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* VERSION 4: Gradient Spin */
+        .v4-button {
+            background: linear-gradient(45deg, #fa709a 0%, #fee140 50%, #fa709a 100%);
+            background-size: 200% 200%;
+        }
+
+        .v4-button.animated {
+            animation: gradient-spin 3s ease infinite;
+        }
+
+        @keyframes gradient-spin {
+            0% { background-position: 0% 50%; transform: rotate(0deg); }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; transform: rotate(360deg); }
+        }
+
+        .v4-header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        /* VERSION 5: Floating */
+        .v5-button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .v5-button.animated {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .v5-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* VERSION 6: Rotating Icon */
+        .v6-button {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .v6-button.animated i {
+            animation: rotate-icon 2s linear infinite;
+        }
+
+        @keyframes rotate-icon {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .v6-header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        /* VERSION 7: Bounce */
+        .v7-button {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .v7-button.animated {
+            animation: bounce-v7 1s infinite;
+        }
+
+        @keyframes bounce-v7 {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        .v7-header {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        /* VERSION 8: Morph */
+        .v8-button {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        .v8-button.animated {
+            animation: morph 2s ease-in-out infinite;
+        }
+
+        @keyframes morph {
+            0%, 100% { border-radius: 50%; transform: rotate(0deg) scale(1); }
+            25% { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
+            50% { border-radius: 50%; transform: rotate(180deg) scale(1.1); }
+            75% { border-radius: 60% 40% 40% 60% / 40% 70% 30% 60%; }
+        }
+
+        .v8-header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        /* VERSION 9: Slide In */
+        .v9-button {
+            background: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
+        }
+
+        .v9-button.animated {
+            animation: slide-in 2s ease-in-out infinite;
+        }
+
+        @keyframes slide-in {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-10px); }
+        }
+
+        .v9-header {
+            background: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
+        }
+
+        /* VERSION 10: Shake */
+        .v10-button {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+
+        .v10-button.animated {
+            animation: shake 1s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .v10-header {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+
+        /* VERSION 11: Glow Ring */
+        .v11-button {
+            background: linear-gradient(135deg, #fda085 0%, #f6d365 100%);
+            position: relative;
+        }
+
+        .v11-button.animated::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 50%;
+            border: 3px solid #f6d365;
+            animation: glow-ring 1.5s infinite;
+        }
+
+        @keyframes glow-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .v11-header {
+            background: linear-gradient(135deg, #fda085 0%, #f6d365 100%);
+        }
+
+        /* VERSION 12: Heartbeat */
+        .v12-button {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+        }
+
+        .v12-button.animated {
+            animation: heartbeat 1.3s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1); }
+        }
+
+        .v12-header {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+        }
+
+        /* VERSION 13: Wave */
+        .v13-button {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        .v13-button.animated {
+            animation: wave 1s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { border-radius: 50%; }
+            25% { border-radius: 45% 55% 50% 50% / 50% 50% 50% 50%; }
+            50% { border-radius: 50% 50% 45% 55% / 50% 50% 50% 50%; }
+            75% { border-radius: 50% 50% 50% 50% / 45% 55% 50% 50%; }
+        }
+
+        .v13-header {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        /* VERSION 14: Ripple */
+        .v14-button {
+            background: linear-gradient(135deg, #38f9d7 0%, #43e97b 100%);
+        }
+
+        .v14-button.animated::before,
+        .v14-button.animated::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            border: 2px solid #43e97b;
+            animation: ripple 2s infinite;
+        }
+
+        .v14-button.animated::after {
+            animation-delay: 1s;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .v14-header {
+            background: linear-gradient(135deg, #38f9d7 0%, #43e97b 100%);
+        }
+
+        /* VERSION 15: Pop Up */
+        .v15-button {
+            background: linear-gradient(135deg, #fa8bff 0%, #2bd2ff 90%, #2bff88 100%);
+        }
+
+        .v15-button.animated {
+            animation: popup 1s ease-in-out infinite;
+        }
+
+        @keyframes popup {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .v15-header {
+            background: linear-gradient(135deg, #fa8bff 0%, #2bd2ff 90%, #2bff88 100%);
+        }
+
+        /* VERSION 16: Swing */
+        .v16-button {
+            background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);
+            transform-origin: top center;
+        }
+
+        .v16-button.animated {
+            animation: swing 1s ease-in-out infinite;
+        }
+
+        @keyframes swing {
+            20% { transform: rotate(15deg); }
+            40% { transform: rotate(-10deg); }
+            60% { transform: rotate(5deg); }
+            80% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .v16-header {
+            background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);
+        }
+
+        /* VERSION 17: Tada */
+        .v17-button {
+            background: linear-gradient(135deg, #fddb92 0%, #d1fdff 100%);
+        }
+
+        .v17-button.animated {
+            animation: tada 1.5s ease-in-out infinite;
+        }
+
+        @keyframes tada {
+            0%, 100% { transform: scale(1) rotate(0); }
+            10%, 20% { transform: scale(0.9) rotate(-3deg); }
+            30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+            40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+        }
+
+        .v17-header {
+            background: linear-gradient(135deg, #fddb92 0%, #d1fdff 100%);
+        }
+
+        /* VERSION 18: Flash */
+        .v18-button {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        }
+
+        .v18-button.animated {
+            animation: flash 2s infinite;
+        }
+
+        @keyframes flash {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.5; }
+        }
+
+        .v18-header {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        }
+
+        /* VERSION 19: Rubber Band */
+        .v19-button {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);
+        }
+
+        .v19-button.animated {
+            animation: rubberBand 1s infinite;
+        }
+
+        @keyframes rubberBand {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scaleX(1.25) scaleY(0.75); }
+            40% { transform: scaleX(0.75) scaleY(1.25); }
+            50% { transform: scaleX(1.15) scaleY(0.85); }
+            65% { transform: scaleX(0.95) scaleY(1.05); }
+            75% { transform: scaleX(1.05) scaleY(0.95); }
+        }
+
+        .v19-header {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);
+        }
+
+        /* VERSION 20: Jello */
+        .v20-button {
+            background: linear-gradient(135deg, #b490ca 0%, #5ee7df 100%);
+        }
+
+        .v20-button.animated {
+            animation: jello 1.5s infinite;
+        }
+
+        @keyframes jello {
+            0%, 100% { transform: none; }
+            22.2% { transform: skewX(-12.5deg) skewY(-12.5deg); }
+            33.3% { transform: skewX(6.25deg) skewY(6.25deg); }
+            44.4% { transform: skewX(-3.125deg) skewY(-3.125deg); }
+            55.5% { transform: skewX(1.5625deg) skewY(1.5625deg); }
+            66.6% { transform: skewX(-0.78125deg) skewY(-0.78125deg); }
+            77.7% { transform: skewX(0.390625deg) skewY(0.390625deg); }
+            88.8% { transform: skewX(-0.1953125deg) skewY(-0.1953125deg); }
+        }
+
+        .v20-header {
+            background: linear-gradient(135deg, #b490ca 0%, #5ee7df 100%);
+        }
+
+        /* Panel Animations */
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .scale-in {
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Chat Widget Tasarım Galerisi</h1>
+
+        <div class="grid">
+            <!-- VERSION 1: Classic Pulse -->
+            <div class="version-card">
+                <div class="version-number">V1</div>
+                <h3 class="version-title">Classic Pulse</h3>
+                <div class="preview-area" id="preview-1">
+                    <button class="chat-button v1-button" onclick="toggleChat(1)">
+                        <i class="fas fa-comments"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-1">
+                        <div class="chat-header v1-header">
+                            <h3>💬 AI Asistan</h3>
+                            <button class="close-btn" onclick="toggleChat(1)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Merhaba! Size nasıl yardımcı olabilirim?</div>
+                            <div class="chat-message user">Ürün hakkında bilgi almak istiyorum</div>
+                            <div class="chat-message bot">Tabii ki! Hangi ürün hakkında bilgi almak istersiniz?</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınızı yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(1)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 2: Neon Glow -->
+            <div class="version-card">
+                <div class="version-number">V2</div>
+                <h3 class="version-title">Neon Glow</h3>
+                <div class="preview-area" id="preview-2">
+                    <button class="chat-button v2-button" onclick="toggleChat(2)">
+                        <i class="fas fa-robot"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-2">
+                        <div class="chat-header v2-header">
+                            <h3>🤖 AI Destekçi</h3>
+                            <button class="close-btn" onclick="toggleChat(2)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Hoş geldiniz! Ben AI asistanınızım.</div>
+                            <div class="chat-message user">Forklift modelleri hakkında bilgi?</div>
+                            <div class="chat-message bot">İXTİF TDL201 modelimiz 20 ton kapasitelidir.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Soru sorun...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(2)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 3: 3D Effect -->
+            <div class="version-card">
+                <div class="version-number">V3</div>
+                <h3 class="version-title">3D Button Effect</h3>
+                <div class="preview-area" id="preview-3">
+                    <button class="chat-button v3-button" onclick="toggleChat(3)">
+                        <i class="fas fa-comment-dots"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-3">
+                        <div class="chat-header v3-header">
+                            <h3>💭 Sohbet</h3>
+                            <button class="close-btn" onclick="toggleChat(3)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Size yardımcı olmak için buradayım!</div>
+                            <div class="chat-message user">Teknik özellikleri öğrenebilir miyim?</div>
+                            <div class="chat-message bot">Elbette! Hangi model ilginizi çekiyor?</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(3)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 4: Gradient Spin -->
+            <div class="version-card">
+                <div class="version-number">V4</div>
+                <h3 class="version-title">Gradient Spin</h3>
+                <div class="preview-area" id="preview-4">
+                    <button class="chat-button v4-button" onclick="toggleChat(4)">
+                        <i class="fas fa-message"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-4">
+                        <div class="chat-header v4-header">
+                            <h3>✨ Yapay Zeka</h3>
+                            <button class="close-btn" onclick="toggleChat(4)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Merhaba! Sorularınızı yanıtlamak için buradayım.</div>
+                            <div class="chat-message user">Fiyat teklifi alabilir miyim?</div>
+                            <div class="chat-message bot">Tabii! Lütfen iletişim bilgilerinizi paylaşın.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesaj...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(4)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 5: Floating -->
+            <div class="version-card">
+                <div class="version-number">V5</div>
+                <h3 class="version-title">Floating Effect</h3>
+                <div class="preview-area" id="preview-5">
+                    <button class="chat-button v5-button" onclick="toggleChat(5)">
+                        <i class="fas fa-headset"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-5">
+                        <div class="chat-header v5-header">
+                            <h3>🎧 Canlı Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(5)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">7/24 hizmetinizdeyiz!</div>
+                            <div class="chat-message user">Teslimat süresi ne kadar?</div>
+                            <div class="chat-message bot">Ortalama 15-20 iş günü içinde teslim ediyoruz.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Sorunuz...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(5)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 6: Rotating Icon -->
+            <div class="version-card">
+                <div class="version-number">V6</div>
+                <h3 class="version-title">Rotating Icon</h3>
+                <div class="preview-area" id="preview-6">
+                    <button class="chat-button v6-button" onclick="toggleChat(6)">
+                        <i class="fas fa-gear"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-6">
+                        <div class="chat-header v6-header">
+                            <h3>⚙️ Teknik Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(6)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Teknik sorularınız için buradayım!</div>
+                            <div class="chat-message user">Bakım periyodu nedir?</div>
+                            <div class="chat-message bot">Düzenli bakım 6 ayda bir önerilir.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Teknik soru...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(6)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 7: Bounce -->
+            <div class="version-card">
+                <div class="version-number">V7</div>
+                <h3 class="version-title">Bounce Animation</h3>
+                <div class="preview-area" id="preview-7">
+                    <button class="chat-button v7-button" onclick="toggleChat(7)">
+                        <i class="fas fa-comment-smile"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-7">
+                        <div class="chat-header v7-header">
+                            <h3>😊 Yardım Merkezi</h3>
+                            <button class="close-btn" onclick="toggleChat(7)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Size nasıl yardımcı olabilirim?</div>
+                            <div class="chat-message user">Ödeme seçenekleri neler?</div>
+                            <div class="chat-message bot">Nakit, kredi kartı ve havale kabul ediyoruz.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınız...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(7)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 8: Morph -->
+            <div class="version-card">
+                <div class="version-number">V8</div>
+                <h3 class="version-title">Morph Animation</h3>
+                <div class="preview-area" id="preview-8">
+                    <button class="chat-button v8-button" onclick="toggleChat(8)">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-8">
+                        <div class="chat-header v8-header">
+                            <h3>✨ Akıllı Asistan</h3>
+                            <button class="close-btn" onclick="toggleChat(8)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Akıllı asistanınız hazır!</div>
+                            <div class="chat-message user">En çok satan model hangisi?</div>
+                            <div class="chat-message bot">TDL201 modelimiz en popüler seçimdir.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Bir şeyler yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(8)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 9: Slide In -->
+            <div class="version-card">
+                <div class="version-number">V9</div>
+                <h3 class="version-title">Slide In Effect</h3>
+                <div class="preview-area" id="preview-9">
+                    <button class="chat-button v9-button" onclick="toggleChat(9)">
+                        <i class="fas fa-circle-question"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-9">
+                        <div class="chat-header v9-header">
+                            <h3>❓ Soru-Cevap</h3>
+                            <button class="close-btn" onclick="toggleChat(9)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Sorularınızı yanıtlayalım!</div>
+                            <div class="chat-message user">Garanti süresi kaç yıl?</div>
+                            <div class="chat-message bot">2 yıl kapsamlı garanti sunuyoruz.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Sorunuz...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(9)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 10: Shake -->
+            <div class="version-card">
+                <div class="version-number">V10</div>
+                <h3 class="version-title">Shake Attention</h3>
+                <div class="preview-area" id="preview-10">
+                    <button class="chat-button v10-button" onclick="toggleChat(10)">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-10">
+                        <div class="chat-header v10-header">
+                            <h3>🔔 Bildirimler</h3>
+                            <button class="close-btn" onclick="toggleChat(10)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Yeni kampanyalardan haberdar olun!</div>
+                            <div class="chat-message user">Kampanya detayları nedir?</div>
+                            <div class="chat-message bot">%15 indirim fırsatı sizi bekliyor!</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesaj yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(10)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 11: Glow Ring -->
+            <div class="version-card">
+                <div class="version-number">V11</div>
+                <h3 class="version-title">Glow Ring</h3>
+                <div class="preview-area" id="preview-11">
+                    <button class="chat-button v11-button" onclick="toggleChat(11)">
+                        <i class="fas fa-sparkles"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-11">
+                        <div class="chat-header v11-header">
+                            <h3>✨ Premium Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(11)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">VIP müşterilerimize özel hizmet!</div>
+                            <div class="chat-message user">Özel teklifler var mı?</div>
+                            <div class="chat-message bot">Size özel %20 indirim kodu: PREMIUM20</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınız...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(11)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 12: Heartbeat -->
+            <div class="version-card">
+                <div class="version-number">V12</div>
+                <h3 class="version-title">Heartbeat Pulse</h3>
+                <div class="preview-area" id="preview-12">
+                    <button class="chat-button v12-button" onclick="toggleChat(12)">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-12">
+                        <div class="chat-header v12-header">
+                            <h3>❤️ Müşteri Hizmetleri</h3>
+                            <button class="close-btn" onclick="toggleChat(12)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Müşteri memnuniyeti önceliğimiz!</div>
+                            <div class="chat-message user">Referans alabilir miyim?</div>
+                            <div class="chat-message bot">100+ mutlu müşterimiz var. Detayları paylaşabilirim.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(12)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 13: Wave -->
+            <div class="version-card">
+                <div class="version-number">V13</div>
+                <h3 class="version-title">Wave Effect</h3>
+                <div class="preview-area" id="preview-13">
+                    <button class="chat-button v13-button" onclick="toggleChat(13)">
+                        <i class="fas fa-water"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-13">
+                        <div class="chat-header v13-header">
+                            <h3>🌊 Akıcı Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(13)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Sorunsuz bir deneyim için buradayız!</div>
+                            <div class="chat-message user">Kargo ücreti ne kadar?</div>
+                            <div class="chat-message bot">Türkiye geneli ücretsiz kargo!</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesaj...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(13)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 14: Ripple -->
+            <div class="version-card">
+                <div class="version-number">V14</div>
+                <h3 class="version-title">Ripple Waves</h3>
+                <div class="preview-area" id="preview-14">
+                    <button class="chat-button v14-button" onclick="toggleChat(14)">
+                        <i class="fas fa-circle-dot"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-14">
+                        <div class="chat-header v14-header">
+                            <h3>💚 Çevre Dostu</h3>
+                            <button class="close-btn" onclick="toggleChat(14)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Elektrikli forkliftlerimiz çevre dostudur!</div>
+                            <div class="chat-message user">Enerji tasarrufu ne kadar?</div>
+                            <div class="chat-message bot">%40'a varan enerji tasarrufu sağlar.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Sorunuz...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(14)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 15: Pop Up -->
+            <div class="version-card">
+                <div class="version-number">V15</div>
+                <h3 class="version-title">Pop Up Scale</h3>
+                <div class="preview-area" id="preview-15">
+                    <button class="chat-button v15-button" onclick="toggleChat(15)">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-15">
+                        <div class="chat-header v15-header">
+                            <h3>⭐ Yıldız Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(15)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">5 yıldızlı hizmet garantisi!</div>
+                            <div class="chat-message user">Müşteri yorumlarını görebilir miyim?</div>
+                            <div class="chat-message bot">4.8/5 ortalama müşteri puanımız var!</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınız...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(15)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 16: Swing -->
+            <div class="version-card">
+                <div class="version-number">V16</div>
+                <h3 class="version-title">Swing Motion</h3>
+                <div class="preview-area" id="preview-16">
+                    <button class="chat-button v16-button" onclick="toggleChat(16)">
+                        <i class="fas fa-phone"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-16">
+                        <div class="chat-header v16-header">
+                            <h3>📞 Hızlı İletişim</h3>
+                            <button class="close-btn" onclick="toggleChat(16)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Anında yanıt için buradayız!</div>
+                            <div class="chat-message user">Telefon numaranızı alabilir miyim?</div>
+                            <div class="chat-message bot">0850 123 45 67 numarasından bize ulaşabilirsiniz.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(16)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 17: Tada -->
+            <div class="version-card">
+                <div class="version-number">V17</div>
+                <h3 class="version-title">Tada Celebration</h3>
+                <div class="preview-area" id="preview-17">
+                    <button class="chat-button v17-button" onclick="toggleChat(17)">
+                        <i class="fas fa-gift"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-17">
+                        <div class="chat-header v17-header">
+                            <h3>🎁 Hediye Kampanyası</h3>
+                            <button class="close-btn" onclick="toggleChat(17)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Sürpriz hediyeler sizi bekliyor!</div>
+                            <div class="chat-message user">Hediye ne?</div>
+                            <div class="chat-message bot">Her alışverişte ücretsiz bakım paketi!</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesaj...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(17)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 18: Flash -->
+            <div class="version-card">
+                <div class="version-number">V18</div>
+                <h3 class="version-title">Flash Blink</h3>
+                <div class="preview-area" id="preview-18">
+                    <button class="chat-button v18-button" onclick="toggleChat(18)">
+                        <i class="fas fa-bolt"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-18">
+                        <div class="chat-header v18-header">
+                            <h3>⚡ Hızlı Yanıt</h3>
+                            <button class="close-btn" onclick="toggleChat(18)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Anında çözüm için buradayız!</div>
+                            <div class="chat-message user">Acil durumda nasıl ulaşırım?</div>
+                            <div class="chat-message bot">7/24 acil destek hattımız aktif!</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Sorunuz...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(18)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 19: Rubber Band -->
+            <div class="version-card">
+                <div class="version-number">V19</div>
+                <h3 class="version-title">Rubber Band</h3>
+                <div class="preview-area" id="preview-19">
+                    <button class="chat-button v19-button" onclick="toggleChat(19)">
+                        <i class="fas fa-handshake"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-19">
+                        <div class="chat-header v19-header">
+                            <h3>🤝 Güvenilir Partner</h3>
+                            <button class="close-btn" onclick="toggleChat(19)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">İş ortağınız olmaktan mutluluk duyarız!</div>
+                            <div class="chat-message user">Kurumsal anlaşma yapabilir miyiz?</div>
+                            <div class="chat-message bot">Tabii! Kurumsal müşterilerimize özel fırsatlar sunuyoruz.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınız...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(19)">Animasyonu Başlat</button>
+            </div>
+
+            <!-- VERSION 20: Jello -->
+            <div class="version-card">
+                <div class="version-number">V20</div>
+                <h3 class="version-title">Jello Wobble</h3>
+                <div class="preview-area" id="preview-20">
+                    <button class="chat-button v20-button" onclick="toggleChat(20)">
+                        <i class="fas fa-face-smile-wink"></i>
+                    </button>
+                    <div class="chat-panel" id="panel-20">
+                        <div class="chat-header v20-header">
+                            <h3>😉 Samimi Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(20)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Merhaba! Size yardımcı olalım!</div>
+                            <div class="chat-message user">Showroom ziyareti yapabilir miyim?</div>
+                            <div class="chat-message bot">Elbette! Randevu almak için formu doldurun.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="toggleAnimation(20)">Animasyonu Başlat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle chat panel
+        function toggleChat(version) {
+            const panel = document.getElementById('panel-' + version);
+            panel.classList.toggle('active');
+
+            // Add panel animation
+            if (panel.classList.contains('active')) {
+                const animations = ['slide-up', 'fade-in', 'scale-in'];
+                const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+                panel.classList.add(randomAnim);
+
+                setTimeout(() => {
+                    panel.classList.remove(randomAnim);
+                }, 300);
+            }
+        }
+
+        // Toggle animation
+        function toggleAnimation(version) {
+            const button = document.querySelector(`#preview-${version} .chat-button`);
+            const startBtn = event.target;
+
+            if (button.classList.contains('animated')) {
+                button.classList.remove('animated');
+                startBtn.textContent = 'Animasyonu Başlat';
+                startBtn.classList.remove('active');
+            } else {
+                button.classList.add('animated');
+                startBtn.textContent = 'Animasyonu Durdur';
+                startBtn.classList.add('active');
+            }
+        }
+
+        // Close all panels when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.chat-button') &&
+                !event.target.closest('.chat-panel') &&
+                !event.target.closest('.start-btn')) {
+                document.querySelectorAll('.chat-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

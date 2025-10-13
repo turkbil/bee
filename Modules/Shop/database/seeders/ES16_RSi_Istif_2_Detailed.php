@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES16_RSi_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES16_RSi_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES16-RSi')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ES16-RSi'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ES16-RSi');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF ES16 RSi: Dar Koridorların Kontrolünü Elinize Alın</h2>
 <p>Sabah vardiyası başlarken depo kapıları açılır, rampa üzerindeki yoğunluk hızla artar. Operatörünüz ayakta konumdan geniş görüş alanıyla paletleri seçer, <em>ilk kaldırma</em> sayesinde destek kollarını yükseltir ve çift kat taşımayı devreye alır. İXTİF ES16 RSi, 2000 kg toplam yük kapasitesi ve 5,5/6 km/s seyir hızları ile kesintisiz akış sağlar. Elektronik direksiyon ve elektromanyetik fren, her manevrada güveni artırır; poliüretan tekerlekler ise zemin titreşimini sönümleyerek sessiz ve konforlu bir çalışma sağlar. Günün sonunda fark edilen şey basittir: Aynı alanda daha fazla iş, daha az efor ve daha az bekleme süresi.</p></section>
 <section><h3>Teknik Güç ve Verimlilik</h3>

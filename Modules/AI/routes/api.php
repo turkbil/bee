@@ -37,6 +37,10 @@ Route::prefix('ai/v1')->name('ai.api.v1.')->group(function () {
 
     Route::get('/shop-assistant/history', [PublicAIController::class, 'getConversationHistory'])
         ->name('shop-assistant.history');
+
+    // 🎨 Product Placeholder Endpoint (Cached AI-generated conversations)
+    Route::get('/product-placeholder/{productId}', [PublicAIController::class, 'getProductPlaceholder'])
+        ->name('product-placeholder');
     
     // 👤 Authenticated User Endpoints (Requires authentication)
     Route::middleware(['auth:sanctum'])->group(function () {

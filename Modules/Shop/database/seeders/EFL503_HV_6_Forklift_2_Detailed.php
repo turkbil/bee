@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL503_HV_6_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL503_HV_6_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL503-HV-6')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF EFL503 HV-6 - 5.0 Ton Yüksek Voltaj Elektrikli Forklift: Yüksek Voltajla Ağır İşlerin Yeni Standardı</h2>
+            'body' => json_encode(['tr' => '<section><h2>İXTİF EFL503 HV-6 - 5.0 Ton Yüksek Voltaj Elektrikli Forklift: Yüksek Voltajla Ağır İşlerin Yeni Standardı</h2>
 <p>İXTİF EFL503 HV-6 - 5.0 Ton Yüksek Voltaj Elektrikli Forklift, 5000 kg ton sınıfında yüksek voltajlı Li-ion mimariyi PMSM sürüş ile birleştirerek, ağır hizmet operasyonlarında hızlanma, dur kalk tepkisi ve rampa performansını yeniden tanımlar. 309V mimari ve gelişmiş BMS ile akü ömrü uzun, 1C hızlı şarj desteğiyle kesintiler kısadır. 600 mm mm yük merkeziyle dengeli taşıma sunarken, tek ön teker mimarisi ve kompakt şasi dar alan manevralarını kolaylaştırır.</p></section>
 <section><h3>Teknik</h3>
 <p>Gövde ve şasi tasarımında sağlamlık önceliklenmiştir; motor ve batarya için ayrı su soğutma devreleri, hidrolik için yağ soğutma ile sıcaklıklar optimumda tutulur. Yüklü/boş 24/25 km/s seyir hızına ulaşabilen sistem, mast amortisörü sayesinde yükleri sarsmadan kaldırır/indirir. VCU kontrollü dönüş hızı ve aşırı hız uyarısı, operatör güvenliği ve ekipman stabilitesini artırır. IPX4 genel koruma ve yüksek voltaj bileşenlerinde IP67, yağmur, çamur ve dış saha sıçramalarına karşı dayanım sağlar. Şarj tarafında araç tipi istasyonlara uyum ve 1-1.2 saat aralığında tam dolum vardiyalar arası verimi yükseltir.</p></section>

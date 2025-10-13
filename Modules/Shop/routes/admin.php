@@ -8,6 +8,7 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandManageComponent;
+use Modules\Shop\App\Http\Controllers\Admin\ShopFieldTemplateController;
 
 // Admin rotaları
 Route::middleware(['admin', 'tenant'])
@@ -26,13 +27,9 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:shop,view')
                     ->name('index');
 
-                Route::get('/create', ShopProductManageComponent::class)
-                    ->middleware('module.permission:shop,create')
-                    ->name('create');
-
-                Route::get('/{id}/edit', ShopProductManageComponent::class)
+                Route::get('/manage/{id?}', ShopProductManageComponent::class)
                     ->middleware('module.permission:shop,update')
-                    ->name('edit');
+                    ->name('manage');
             });
 
         Route::prefix('shop/categories')
@@ -42,13 +39,9 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:shop,view')
                     ->name('index');
 
-                Route::get('/create', ShopCategoryManageComponent::class)
-                    ->middleware('module.permission:shop,create')
-                    ->name('create');
-
-                Route::get('/{id}/edit', ShopCategoryManageComponent::class)
+                Route::get('/manage/{id?}', ShopCategoryManageComponent::class)
                     ->middleware('module.permission:shop,update')
-                    ->name('edit');
+                    ->name('manage');
             });
 
         Route::prefix('shop/brands')
@@ -58,12 +51,23 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:shop,view')
                     ->name('index');
 
-                Route::get('/create', ShopBrandManageComponent::class)
-                    ->middleware('module.permission:shop,create')
-                    ->name('create');
-
-                Route::get('/{id}/edit', ShopBrandManageComponent::class)
+                Route::get('/manage/{id?}', ShopBrandManageComponent::class)
                     ->middleware('module.permission:shop,update')
-                    ->name('edit');
+                    ->name('manage');
+            });
+
+        // Field Templates
+        Route::prefix('shop/field-templates')
+            ->name('shop.field-templates.')
+            ->middleware('module.permission:shop,update')
+            ->group(function () {
+                Route::get('/', [ShopFieldTemplateController::class, 'index'])->name('index');
+                Route::get('/create', [ShopFieldTemplateController::class, 'create'])->name('create');
+                Route::post('/', [ShopFieldTemplateController::class, 'store'])->name('store');
+                Route::get('/{id}/edit', [ShopFieldTemplateController::class, 'edit'])->name('edit');
+                Route::put('/{id}', [ShopFieldTemplateController::class, 'update'])->name('update');
+                Route::delete('/{id}', [ShopFieldTemplateController::class, 'destroy'])->name('destroy');
+                Route::post('/{id}/toggle-active', [ShopFieldTemplateController::class, 'toggleActive'])->name('toggle-active');
+                Route::post('/update-order', [ShopFieldTemplateController::class, 'updateOrder'])->name('update-order');
             });
     });

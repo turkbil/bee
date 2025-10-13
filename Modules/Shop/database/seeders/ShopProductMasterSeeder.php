@@ -152,7 +152,7 @@ class ShopProductMasterSeeder extends Seeder
             'title' => json_encode($basicData['title'] ?? [], JSON_UNESCAPED_UNICODE),
             'slug' => json_encode($basicData['slug'] ?? [], JSON_UNESCAPED_UNICODE),
             'short_description' => json_encode($basicData['short_description'] ?? [], JSON_UNESCAPED_UNICODE),
-            'long_description' => json_encode($basicData['long_description'] ?? [], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode($basicData['body'] ?? [], JSON_UNESCAPED_UNICODE),
             'product_type' => $productInfo['product_type'] ?? 'physical',
             'condition' => $productInfo['condition'] ?? 'new',
             'price_on_request' => $pricing['price_on_request'] ?? true,

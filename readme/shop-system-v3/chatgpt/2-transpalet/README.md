@@ -59,9 +59,9 @@ ChatGPT prompt'a göre **otomatik:**
 2. ✅ Kategori ID'yi hardcode eder (Transpalet=2, Forklift=1, vs.)
 3. ✅ PHP array syntax kullanır: `['key' => 'value']` (JavaScript değil!)
 4. ✅ **Master short_description: 30-50 kelime** detaylı açıklama
-5. ✅ **Detailed long_description: 800-1500 kelime** HTML içerik (placeholder YASAK!)
+5. ✅ **Detailed body: 800-1500 kelime** HTML içerik (placeholder YASAK!)
 6. ✅ **Variant short_description: 30-50 kelime** her varyant için
-7. ✅ **Variant long_description: 800-1200 kelime** her varyant için UNIQUE
+7. ✅ **Variant body: 800-1200 kelime** her varyant için UNIQUE
 8. ✅ 10-12 detaylı FAQ üretir:
    - Soru: 10-15 kelime (müşteri derdini anlatır)
    - Yanıt: 20-40 kelime (teknik/sayısal bilgi)
@@ -90,7 +90,7 @@ ChatGPT artık **bu hataları YAPMAZ:**
 | ❌ Sonda `?>` var | ✅ PHP kapatma tag'i yok |
 | ❌ Placeholder içerik: "Yer tutucu" | ✅ Gerçek ürün içeriği |
 | ❌ Kısa short_description (15 kel) | ✅ 30-50 kelime detaylı |
-| ❌ Kısa long_description (placeholder) | ✅ Master 800-1500 kel, Varyant 800-1200 kel |
+| ❌ Kısa body (placeholder) | ✅ Master 800-1500 kel, Varyant 800-1200 kel |
 
 ---
 

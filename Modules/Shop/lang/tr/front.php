@@ -10,6 +10,7 @@ return [
         'category' => 'Kategori',
         'brand' => 'Marka',
         'sku' => 'Stok Kodu',
+        'features' => 'Özellikler',
         'updated_at' => 'Son Güncelleme',
         'published_at' => 'Yayın Tarihi',
     ],

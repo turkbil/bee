@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES12_12ES_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES12_12ES_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES12-12ES')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ES12-12ES'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ES12-12ES');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF ES12-12ES: Dar Alanlarda Güçlü ve Kontrollü İstif</h2><p>Depo kapıları açıldığında, ilk hareketin akıcı ve güvenli olması tüm günün ritmini belirler. İXTİF ES12-12ES, yaya kumandalı tasarımıyla operatörün doğal yürüyüş tempo­suna uyum sağlar ve 1.2 ton kapasiteyi 600 mm yük merkezinde güvenle yönetir. 3015 mm’ye ulaşan maksimum kaldırma yüksekliği sayesinde orta ve yüksek raf uygulamalarında etkili, 1408 mm dönüş yarıçapı ile de dar koridorlarda pratik çözümler sunar. Ergonomik tiller kolu, dengeli hızlanma karakteristiği ve elektromanyetik fren, ürün akışını güvenle hızlandırır.</p></section>
 <section><h3>Teknik Yetkinlik ve Dayanıklılık</h3><p>ES12-12ES, DC sürüş kontrol mimarisiyle 4.0/4.5 km/s hız aralığında stabil ve öngörülebilir bir sürüş sağlar. 0.65 kW S2 sürüş motoru ve 2.2 kW S3 kaldırma motoru, 1200 kg yüke dahi kontrollü kaldırma/indirme hızları (0.12/0.22 m/s ve 0.12/0.11 m/s) sunar. 2×12V/105Ah akü paketiyle beslenen sistem, vardiya boyunca planlı operasyonu destekler; poliüretan tekerlek seti (Ø210×70 ön, Ø80×60 arka, Ø130×55 destek) düşük zemin aşınması ile sessiz ve titreşimsiz bir hareket sağlar. 1740 mm toplam uzunluk, 800 mm genişlik ve 590 mm yük yüzüne kadar uzunluk ölçüleri; 2225 mm (1000×1200) ve 2150 mm (800×1200) koridor gereksinimleri ile raf arası akışlarda optimum dengeyi kurar. 2056 mm kapalı direk yüksekliği, 3521 mm açık direk yüksekliği ve 88 mm alçaltılmış çatal seviyesi, platformlar ve kapılar arasında engelsiz geçişe yardım eder.</p></section>
 <section><h3>Sonuç</h3><p>ES12-12ES, güvenli frenleme, öngörülebilir manevra ve bakımı kolay tasarımıyla depo operasyonlarının temposuna uyum sağlar. Proje keşfi, test ve teklif talepleriniz için bizi arayın: 0216 755 3 555.</p></section>

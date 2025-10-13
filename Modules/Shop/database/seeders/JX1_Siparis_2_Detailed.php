@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class JX1_Siparis_2_Detailed extends Seeder {
-    public function run(): void {
+class JX1_Siparis_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'JX1')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (JX1)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (JX1)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section class=intro">
   <h2>İXTİF JX1: Raf Arası Hız, Operatör İçin Konfor</h2>
   <p>Depoda sabah ilk vardiya başlarken, raf araları henüz boş ve sipariş listeleri uzundur. JX1, kompakt gövdesi ve geniş çalışma platformu ile operatörün yükseğe güvenle erişmesini, ürünleri ön platformda düzenlemesini ve hat beslemeyi kesintisiz sürdürmesini sağlar. 180° eklemli tahrik hattı, dar dönüşlerde raftan rafa akıcı manevra imkânı verir; sezgisel kumandalar ve anti‑yorgunluk mat ise gün boyu konforu standart hâle getirir. İç mekân kullanımına özel tasarlanan yapı, düz ve pürüzsüz zeminlerde risksiz çalışmayı hedefler; hız profili 3.4 mph standart, 5 mph opsiyon ile güvenlikten ödün vermeden tempoyu yükseltir.</p>

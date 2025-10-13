@@ -10,6 +10,7 @@ return [
         'category' => 'Category',
         'brand' => 'Brand',
         'sku' => 'SKU',
+        'features' => 'Features',
         'updated_at' => 'Last Updated',
         'published_at' => 'Published At',
     ],

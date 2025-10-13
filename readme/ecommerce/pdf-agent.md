@@ -178,7 +178,7 @@ ON DUPLICATE KEY UPDATE updated_at = NOW();
 INSERT INTO shop_products (
     product_id, category_id, brand_id,
     sku, model_number,
-    title, slug, short_description, long_description,
+    title, slug, short_description, body,
     technical_specs, features, highlighted_features,
     base_price, currency, price_on_request,
     weight, dimensions,

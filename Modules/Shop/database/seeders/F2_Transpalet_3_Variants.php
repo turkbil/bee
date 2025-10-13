@@ -1,13 +1,20 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class F2_Transpalet_3_Variants extends Seeder {
-    public function run(): void {
+class F2_Transpalet_3_Variants extends Seeder
+{
+    public function run(): void
+    {
         $m = DB::table('shop_products')->where('sku', 'F2')->first();
-        if (!$m) { echo "❌ Master bulunamadı\n"; return; }
+        if (!$m) {
+            echo "❌ Master bulunamadı\n";
+            return;
+        }
 
         $variants = [
             [
@@ -82,7 +89,7 @@ class F2_Transpalet_3_Variants extends Seeder {
                 'title' => json_encode(['tr' => $v['title']], JSON_UNESCAPED_UNICODE),
                 'slug' => json_encode(['tr' => Str::slug($v['title'])], JSON_UNESCAPED_UNICODE),
                 'short_description' => json_encode(['tr' => $v['short']], JSON_UNESCAPED_UNICODE),
-                'long_description' => json_encode(['tr' => $v['long']], JSON_UNESCAPED_UNICODE),
+                'body' => json_encode(['tr' => $v['long']], JSON_UNESCAPED_UNICODE),
                 'use_cases' => json_encode($v['use_cases'], JSON_UNESCAPED_UNICODE),
                 'is_master_product' => false,
                 'is_active' => true,

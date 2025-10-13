@@ -65,7 +65,7 @@ php artisan app:clear-all
    - Detay: `shop_products` (tek query)
 
 2. **LANDING PAGE**
-   - Marketing: `long_description` (intro + body)
+   - Marketing: `body` (intro + body)
    - Vitrin Kartları: `primary_specs` (4 kart)
    - Branding: `features.branding` (slogan, motto, technical_summary)
    - Kullanım Alanları: `use_cases` (6+)

@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EXP15_Otonom_2_Detailed extends Seeder {
-    public function run(): void {
+class EXP15_Otonom_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EXP15')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EXP15'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EXP15');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EXP15: “Sadelikle Otomasyon” felsefesinin somut hali</h2>
   <p>İXTİF EXP15, dünyadaki ilk otomatik palet transpaleti sınıfının öncüsü olarak, malzeme akışını karmaşıklıktan arındırır. Tek bir çalışanın beş dakikada öğrenebileceği beş tuşlu basit arayüz, otomasyonu herkesin erişimine açar. WiFi ya da karmaşık BT altyapısı gerektirmeyen kurulumuyla, başlangıç ve bitiş noktalarına yerleştirilen reflektörler üzerinden 50 metreye kadar hatlar hızla devreye alınır. İş gücü yoğun ve tekrarlı taşıma görevleri otomatikleşirken, personel daha değerli işlere odaklanır. 1500 kg kapasiteli şasi, 1.1/1.25 m/s sürüş hızları ve 1400 mm dönüş yarıçapı ile depo koridorlarında çeviklik ve süreklilik sunar.</p>

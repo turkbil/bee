@@ -1,5 +1,8 @@
 @include('themes.blank.layouts.header')
 
+{{-- Universal Notification System --}}
+@include('themes.blank.layouts.notification')
+
 <main class="flex-1 min-h-[60vh]">
     @php
     ob_start();

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
  * F4-202 DETAILED SEEDER
  *
  * Sorumluluğu: Detaylı içerik ekler
- * - long_description (HTML)
+ * - body (HTML)
  * - features (array)
  * - faq_data (array)
  * - technical_specs (object)
@@ -194,7 +194,7 @@ HTML;
         // ========================================
 
         DB::table('shop_products')->where('product_id', $product->product_id)->update([
-            'long_description' => json_encode(['tr' => $longDescription], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => $longDescription], JSON_UNESCAPED_UNICODE),
             'features' => json_encode($features, JSON_UNESCAPED_UNICODE),
             'faq_data' => json_encode($faqData, JSON_UNESCAPED_UNICODE),
             'technical_specs' => json_encode($technicalSpecs, JSON_UNESCAPED_UNICODE),

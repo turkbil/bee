@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL302X4_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL302X4_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL302X4')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL302X4'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL302X4');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EFL302X4: Sahada Elektriğin En Esnek Hali</h2>
   <p>İXTİF EFL302X4; 3.0 ton kapasiteli, karşı denge sınıfında modüler Li-Ion batarya konseptini gerçek operasyona indiren yeni nesil bir forklift. Her biri yalnızca 26 kg olan batarya modülleri operatör tarafından el ile sökülüp takılabildiği için, şarj altyapısının kısıtlı olduğu inşaat, tarım veya saha çalışmalarında araç yerinde kalırken enerji uzaktan yönetilebilir. Geniş görüşlü direk, ferah kabin, genişletilmiş fren pedalı ve büyük LED ekran; güvenlik ve ergonomiyi günlük iş akışının doğal parçası yapar. 80V/100Ah standart batarya paketi, akıllı BMS ve yüksek verimli PMS sürüş sistemi ile birleşerek düşük bakım ve yüksek çevrim ömrü sağlar.</p>

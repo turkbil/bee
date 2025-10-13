@@ -78,7 +78,7 @@ class CPD_TVL_Series_Seeder extends Seeder
                 'tr' => 'Dar alanlarda bile rahatça manevra yapabileceğiniz, günde sadece bir kez şarj ederek 6 saat kesintisiz çalışan, işletmenizin verimliliğini artıracak akıllı elektrikli forklift.',
                 'en' => 'Smart electric forklift that works 6 hours continuously with just one charge per day.'
             ]),
-            'long_description' => json_encode([
+            'body' => json_encode([
                 'tr' => 'Deponuzda alan sıkıntısı mı çekiyorsunuz? CPD15TVL, tam da bu sorunlara akıllı çözümler sunan bir elektrikli forklift.
 
 🔋 Gün Boyu Kesintisiz Çalışma
@@ -357,7 +357,7 @@ C: Normal 220V evsel prize takabilirsiniz. Özel elektrik gerekmez!
                 'tr' => 'Daha ağır yükleri rahatça taşıyın! 1800 kg kapasiteyle güçlü, 205Ah lityum bataryasıyla uzun ömürlü, işletmenizin büyüyen ihtiyaçlarına mükemmel yanıt veren elektrikli forklift.',
                 'en' => 'Powerful electric forklift with 1800 kg capacity and 205Ah lithium battery.'
             ]),
-            'long_description' => json_encode([
+            'body' => json_encode([
                 'tr' => 'İşleriniz büyüdükçe taşıma kapasitesi ihtiyacınız da artıyor mu? CPD18TVL tam size göre!
 
 🔋 Süper Güçlü Batarya
@@ -510,7 +510,7 @@ C: Evet! %15\'e kadar eğimli rampalarda güvenle çalışır.
                 'tr' => 'Serideki en güçlüsü! 2000 kg kapasiteyle en ağır yükleri bile rahatça taşıyın. 205Ah lityum batarya, güçlü çift motor sistemi ve profesyonel performans bir arada!',
                 'en' => 'The most powerful in the series! 2000 kg capacity with lithium battery.'
             ]),
-            'long_description' => json_encode([
+            'body' => json_encode([
                 'tr' => 'En ağır işler için tasarlandı! CPD20TVL, TVL serisinin en güçlü modeli.
 
 💪 Maksimum Güç

@@ -1,16 +1,24 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES18_40WA_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES18_40WA_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES18-40WA')->first();
-        if (!$p) {$this->command->error('❌ Master ürün bulunamadı: ES18-40WA'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master ürün bulunamadı: ES18-40WA');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => "<section><h2>ES18-40WA ile Güvenli İstifin Akıllı Yolu</h2>\n<p>Depo ritmi gün boyunca hiç durmaz; dar koridorlar, farklı ölçülerde paletler ve zamanla yarışan ekipler. ES18-40WA tam bu gerçekliğe göre tasarlandı. Geniş bacaklı straddle şasi, değişken palet tabanlarına uyum sağlarken, kaplumbağa hızı modu operatöre raf ağzında hassas kontrol verir. Oransal kaldırma sayesinde milimetre seviyesinde konumlandırma mümkün olur, elektromanyetik fren sistemi de rampalarda güvenli iniş garantiler. 24V/280Ah akü ve Li‑Ion seçenek, vardiya akışınızı kesmeden esnek bir enerji yönetimi sunar.</p></section>\n<section><h3>Teknik Güç ve Operasyonel Verim</h3>\n<p>ES18-40WA, 600 mm yük merkezinde 1800 kg kapasiteyi AC çekiş sistemi ile birleştirir. 1.1 kW sürüş ve 3.0 kW kaldırma motoru, yüklüde 4.5 km/s, yüksüzde 5.0 km/s hız değerlerine ulaşır; 0.127/0.23 m/s kaldırma ve 0.26/0.20 m/s indirme hızlarıyla dengeli bir hız/denge profili sunar. 1645 mm dönüş yarıçapı ve 2560 mm koridor gereksinimi, dar alanlarda bile kontrollü manevra sağlar. Poliüretan tekerlekler titreşimi azaltıp zemini korur; 990–1500 mm arası ayarlanabilir tiller kolu ise farklı boydaki operatörlere ergonomi sağlar. Çatal ölçüleri 45/100/1070 mm’dir; 920/1150/1220 mm alternatifleri ve 1070/1170/1270 mm teker kolu aralıklarıyla farklı paketleme standartlarına uyarlanabilir. Mast tarafında 3.0 m’den 5.0 m’ye kadar h3 yükseklik seçenekleri mevcuttur; buna bağlı olarak kapalı (h1) ve açık (h4) mast yükseklikleri de değişir.</p>\n<p>Enerji tarafında 24V/280Ah kurşun-asit standart paket kullanım sürekliliği sağlar; 205Ah Li‑Ion seçenek ise fırsat şarjı, daha hızlı toparlanma ve düşük bakım sayesinde toplam sahip olma maliyetini düşürür. Harici 24V-30A/50A şarj çözümleri günlük planlara uyum sağlarken, Li‑Ion için 24V-100A hızlı şarj opsiyonu yoğun vardiyalar için yüksek çevrim verimi sunar. Elektromanyetik servis freni, eğimde park ve ani duruşlarda güvenliği artırır.</p></section>\n<section><h3>Sonuç ve İletişim</h3>\n<p>Sonuç olarak ES18-40WA, farklı palet ölçülerini aynı sahada yöneten işletmeler için güvenli, uyarlanabilir ve ekonomik bir istif çözümüdür. Operasyon planınıza uygun mast ve çatal kombinasyonlarıyla esneklik kazanır; AC sürüş ve oransal hidrolik ise üretkenliği yukarı taşır. Detaylı teknik bilgi ve keşif için bizi arayın: 0216 755 3 555.</p></section>"], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => "<section><h2>ES18-40WA ile Güvenli İstifin Akıllı Yolu</h2>\n<p>Depo ritmi gün boyunca hiç durmaz; dar koridorlar, farklı ölçülerde paletler ve zamanla yarışan ekipler. ES18-40WA tam bu gerçekliğe göre tasarlandı. Geniş bacaklı straddle şasi, değişken palet tabanlarına uyum sağlarken, kaplumbağa hızı modu operatöre raf ağzında hassas kontrol verir. Oransal kaldırma sayesinde milimetre seviyesinde konumlandırma mümkün olur, elektromanyetik fren sistemi de rampalarda güvenli iniş garantiler. 24V/280Ah akü ve Li‑Ion seçenek, vardiya akışınızı kesmeden esnek bir enerji yönetimi sunar.</p></section>\n<section><h3>Teknik Güç ve Operasyonel Verim</h3>\n<p>ES18-40WA, 600 mm yük merkezinde 1800 kg kapasiteyi AC çekiş sistemi ile birleştirir. 1.1 kW sürüş ve 3.0 kW kaldırma motoru, yüklüde 4.5 km/s, yüksüzde 5.0 km/s hız değerlerine ulaşır; 0.127/0.23 m/s kaldırma ve 0.26/0.20 m/s indirme hızlarıyla dengeli bir hız/denge profili sunar. 1645 mm dönüş yarıçapı ve 2560 mm koridor gereksinimi, dar alanlarda bile kontrollü manevra sağlar. Poliüretan tekerlekler titreşimi azaltıp zemini korur; 990–1500 mm arası ayarlanabilir tiller kolu ise farklı boydaki operatörlere ergonomi sağlar. Çatal ölçüleri 45/100/1070 mm’dir; 920/1150/1220 mm alternatifleri ve 1070/1170/1270 mm teker kolu aralıklarıyla farklı paketleme standartlarına uyarlanabilir. Mast tarafında 3.0 m’den 5.0 m’ye kadar h3 yükseklik seçenekleri mevcuttur; buna bağlı olarak kapalı (h1) ve açık (h4) mast yükseklikleri de değişir.</p>\n<p>Enerji tarafında 24V/280Ah kurşun-asit standart paket kullanım sürekliliği sağlar; 205Ah Li‑Ion seçenek ise fırsat şarjı, daha hızlı toparlanma ve düşük bakım sayesinde toplam sahip olma maliyetini düşürür. Harici 24V-30A/50A şarj çözümleri günlük planlara uyum sağlarken, Li‑Ion için 24V-100A hızlı şarj opsiyonu yoğun vardiyalar için yüksek çevrim verimi sunar. Elektromanyetik servis freni, eğimde park ve ani duruşlarda güvenliği artırır.</p></section>\n<section><h3>Sonuç ve İletişim</h3>\n<p>Sonuç olarak ES18-40WA, farklı palet ölçülerini aynı sahada yöneten işletmeler için güvenli, uyarlanabilir ve ekonomik bir istif çözümüdür. Operasyon planınıza uygun mast ve çatal kombinasyonlarıyla esneklik kazanır; AC sürüş ve oransal hidrolik ise üretkenliği yukarı taşır. Detaylı teknik bilgi ve keşif için bizi arayın: 0216 755 3 555.</p></section>"], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -33,9 +41,11 @@ class ES18_40WA_Istif_2_Detailed extends Seeder {
                         "value": "1645 mm dönüş yarıçapı"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -68,9 +78,11 @@ JSON
                         "description": "İnişlerde kontrollü ve güvenli duruş."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -105,9 +117,11 @@ JSON
                         "text": "Yarı mamul (WIP) akışlarında hücre içi taşıma"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -134,9 +148,11 @@ JSON
                         "text": "Geniş mast ve çatal opsiyon yelpazesi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -227,17 +243,21 @@ JSON
                         "text": "Kurumsal Depolama ve Arşiv"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'warranty_info' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'warranty_info' => json_encode(json_decode(
+                <<<'JSON'
                 {
                     "coverage": "Makineye satın alım tarihinden itibaren 12 ay fabrika garantisi verilir. Li‑Ion batarya modülleri ise satın alım tarihinden itibaren 24 ay garanti kapsamındadır. Garanti, normal kullanım koşullarında üretim hatalarını kapsar.",
                     "duration_months": 12,
                     "battery_warranty_months": 24
                 }
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -272,9 +292,11 @@ JSON
                         "price": null
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -283,9 +305,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "1800 kg kapasite hangi yük merkezinde ve güvenlik payı nedir?",
@@ -336,8 +360,9 @@ JSON
                         "answer": "Makine 12 ay, batarya 24 ay garanti kapsamındadır. Satış ve servis için İXTİF 0216 755 3 555 hattından ulaşabilirsiniz."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info("✅ Detailed güncellendi: ES18-40WA");

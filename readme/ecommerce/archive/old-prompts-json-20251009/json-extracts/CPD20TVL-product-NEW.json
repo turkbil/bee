@@ -1,988 +1,993 @@
 {
-  "product_info": {
-    "sku": "CPD20TVL",
-    "model_number": "CPD20TVL",
-    "series_name": "CPD TVL Series",
-    "product_type": "physical",
-    "condition": "new"
-  },
-  "basic_data": {
-    "name": {
-      "tr": "CPD20TVL Elektrikli Forklift",
-      "en": "CPD20TVL Electric Forklift"
+    "product_info": {
+        "sku": "CPD20TVL",
+        "model_number": "CPD20TVL",
+        "series_name": "CPD TVL Series",
+        "product_type": "physical",
+        "condition": "new"
     },
-    "slug": "cpd20tvl-elektrikli-forklift",
-    "short_description": {
-      "tr": "2000kg kapasiteli, 80V Li-Ion bataryalı, 3 tekerlekli yüksek kapasiteli elektrikli forklift",
-      "en": "2000kg capacity, 80V Li-Ion battery, 3-wheel high-capacity electric forklift"
-    },
-    "long_description": {
-      "tr": "CPD20TVL, 2000 kg yük kapasitesiyle ağır yük taşıma operasyonları için tasarlanmış profesyonel bir forklift çözümüdür. 80V Li-Ion batarya teknolojisi ve çift tahrik motorlu tasarımı sayesinde yüksek verimlilik ve kesintisiz çalışma süresi sunar. 1585mm dönüş yarıçapı ile dar ve orta genişlikteki koridorlarda güvenli manevra kabiliyeti sağlar. Güçlendirilmiş fork yapısı (122mm kalınlık) ve geniş taban (1170mm) ile maksimum stabilite ve güvenlik sunar.",
-      "en": "CPD20TVL is a professional forklift solution designed for heavy-duty handling operations with 2000 kg load capacity. With 80V Li-Ion battery technology and dual drive motor design, it offers high efficiency and continuous operating time. With 1585mm turning radius, it provides safe maneuverability in narrow and medium-width aisles. Offers maximum stability and safety with reinforced fork structure (122mm thickness) and wide base (1170mm)."
-    }
-  },
-  "pricing": {
-    "price_on_request": true,
-    "display_price": null,
-    "cost_price": null,
-    "compare_at_price": null,
-    "tax_included": false
-  },
-  "inventory": {
-    "stock_tracking": true,
-    "current_stock": 0,
-    "low_stock_threshold": 1,
-    "backorder_allowed": true
-  },
-  "technical_specs": {
-    "capacity": {
-      "load_capacity": {
-        "value": 2000,
-        "unit": "kg"
-      },
-      "load_center_distance": {
-        "value": 500,
-        "unit": "mm"
-      },
-      "service_weight": {
-        "value": 3429,
-        "unit": "kg"
-      }
-    },
-    "electrical": {
-      "battery_voltage": {
-        "value": 80,
-        "unit": "V"
-      },
-      "battery_capacity": {
-        "value": 205,
-        "unit": "Ah"
-      },
-      "battery_type": "Li-Ion",
-      "battery_weight": {
-        "value": 185,
-        "unit": "kg"
-      },
-      "drive_motor_rating": {
-        "value": 5.0,
-        "unit": "kW",
-        "quantity": 2,
-        "note": "Dual 5.0kW AC motors"
-      },
-      "lift_motor_rating": {
-        "value": 11,
-        "unit": "kW",
-        "note": "S3 15% duty cycle"
-      },
-      "charger_type": {
-        "standard": "80V-35A single-phase integrated",
-        "options": ["80V-60A 3-phase integrated", "80V-35A single-phase external", "80V-65A 3-phase external", "80V-130A 3-phase external"]
-      }
-    },
-    "dimensions": {
-      "retracted_mast_height": {
-        "value": 2075,
-        "unit": "mm"
-      },
-      "lift_height": {
-        "value": 3000,
-        "unit": "mm"
-      },
-      "height_mast_extended": {
-        "value": 4055,
-        "unit": "mm"
-      },
-      "length_to_face_of_forks": {
-        "value": 1950,
-        "unit": "mm"
-      },
-      "overall_length": {
-        "value": 3020,
-        "unit": "mm"
-      },
-      "overall_width": {
-        "value": 1170,
-        "unit": "mm",
-        "note": "Wider base for enhanced stability with 2000kg capacity"
-      },
-      "fork_dimensions": {
-        "thickness": {
-          "value": 40,
-          "unit": "mm"
+    "basic_data": {
+        "name": {
+            "tr": "CPD20TVL Elektrikli Forklift",
+            "en": "CPD20TVL Electric Forklift"
         },
-        "width": {
-          "value": 122,
-          "unit": "mm",
-          "note": "Reinforced fork width for heavy-duty applications"
+        "slug": "cpd20tvl-elektrikli-forklift",
+        "short_description": {
+            "tr": "2000kg kapasiteli, 80V Li-Ion bataryalı, 3 tekerlekli yüksek kapasiteli elektrikli forklift",
+            "en": "2000kg capacity, 80V Li-Ion battery, 3-wheel high-capacity electric forklift"
         },
-        "length": {
-          "value": 1070,
-          "unit": "mm"
+        "body": {
+            "tr": "CPD20TVL, 2000 kg yük kapasitesiyle ağır yük taşıma operasyonları için tasarlanmış profesyonel bir forklift çözümüdür. 80V Li-Ion batarya teknolojisi ve çift tahrik motorlu tasarımı sayesinde yüksek verimlilik ve kesintisiz çalışma süresi sunar. 1585mm dönüş yarıçapı ile dar ve orta genişlikteki koridorlarda güvenli manevra kabiliyeti sağlar. Güçlendirilmiş fork yapısı (122mm kalınlık) ve geniş taban (1170mm) ile maksimum stabilite ve güvenlik sunar.",
+            "en": "CPD20TVL is a professional forklift solution designed for heavy-duty handling operations with 2000 kg load capacity. With 80V Li-Ion battery technology and dual drive motor design, it offers high efficiency and continuous operating time. With 1585mm turning radius, it provides safe maneuverability in narrow and medium-width aisles. Offers maximum stability and safety with reinforced fork structure (122mm thickness) and wide base (1170mm)."
         }
-      },
-      "turning_radius": {
-        "value": 1585,
-        "unit": "mm"
-      },
-      "wheelbase": {
-        "value": 1330,
-        "unit": "mm"
-      },
-      "ground_clearance_laden": {
-        "value": 89,
-        "unit": "mm"
-      },
-      "seat_height": {
-        "value": 1050,
-        "unit": "mm"
-      },
-      "overhead_guard_height": {
-        "value": 2078,
-        "unit": "mm"
-      }
     },
-    "performance": {
-      "travel_speed_laden": {
-        "value": 13,
-        "unit": "km/h"
-      },
-      "travel_speed_unladen": {
-        "value": 14,
-        "unit": "km/h"
-      },
-      "lifting_speed_laden": {
-        "value": 0.30,
-        "unit": "m/s"
-      },
-      "lifting_speed_unladen": {
-        "value": 0.40,
-        "unit": "m/s"
-      },
-      "lowering_speed_laden": {
-        "value": 0.38,
-        "unit": "m/s"
-      },
-      "lowering_speed_unladen": {
-        "value": 0.40,
-        "unit": "m/s"
-      },
-      "max_gradeability_laden": {
-        "value": 10,
-        "unit": "%"
-      },
-      "max_gradeability_unladen": {
-        "value": 15,
-        "unit": "%"
-      }
+    "pricing": {
+        "price_on_request": true,
+        "display_price": null,
+        "cost_price": null,
+        "compare_at_price": null,
+        "tax_included": false
     },
-    "wheels_tyres": {
-      "wheel_configuration": "3-wheel (2 front drive wheels + 1 rear)",
-      "front_tyre_type": "Solid rubber",
-      "front_tyre_size": "200/50-10",
-      "rear_tyre_type": "Solid rubber",
-      "rear_tyre_size": "140/55-9",
-      "tread_width_front": {
-        "value": 969,
-        "unit": "mm"
-      },
-      "tread_width_rear": {
-        "value": 210,
-        "unit": "mm"
-      }
+    "inventory": {
+        "stock_tracking": true,
+        "current_stock": 0,
+        "low_stock_threshold": 1,
+        "backorder_allowed": true
     },
-    "safety": {
-      "service_brake": "Hydraulic",
-      "parking_brake": "Mechanical",
-      "sound_pressure_level": {
-        "value": 74,
-        "unit": "dB(A)",
-        "note": "At driver's ear"
-      },
-      "overhead_guard": "Standard",
-      "ops_system": true
+    "technical_specs": {
+        "capacity": {
+            "load_capacity": {
+                "value": 2000,
+                "unit": "kg"
+            },
+            "load_center_distance": {
+                "value": 500,
+                "unit": "mm"
+            },
+            "service_weight": {
+                "value": 3429,
+                "unit": "kg"
+            }
+        },
+        "electrical": {
+            "battery_voltage": {
+                "value": 80,
+                "unit": "V"
+            },
+            "battery_capacity": {
+                "value": 205,
+                "unit": "Ah"
+            },
+            "battery_type": "Li-Ion",
+            "battery_weight": {
+                "value": 185,
+                "unit": "kg"
+            },
+            "drive_motor_rating": {
+                "value": 5.0,
+                "unit": "kW",
+                "quantity": 2,
+                "note": "Dual 5.0kW AC motors"
+            },
+            "lift_motor_rating": {
+                "value": 11,
+                "unit": "kW",
+                "note": "S3 15% duty cycle"
+            },
+            "charger_type": {
+                "standard": "80V-35A single-phase integrated",
+                "options": [
+                    "80V-60A 3-phase integrated",
+                    "80V-35A single-phase external",
+                    "80V-65A 3-phase external",
+                    "80V-130A 3-phase external"
+                ]
+            }
+        },
+        "dimensions": {
+            "retracted_mast_height": {
+                "value": 2075,
+                "unit": "mm"
+            },
+            "lift_height": {
+                "value": 3000,
+                "unit": "mm"
+            },
+            "height_mast_extended": {
+                "value": 4055,
+                "unit": "mm"
+            },
+            "length_to_face_of_forks": {
+                "value": 1950,
+                "unit": "mm"
+            },
+            "overall_length": {
+                "value": 3020,
+                "unit": "mm"
+            },
+            "overall_width": {
+                "value": 1170,
+                "unit": "mm",
+                "note": "Wider base for enhanced stability with 2000kg capacity"
+            },
+            "fork_dimensions": {
+                "thickness": {
+                    "value": 40,
+                    "unit": "mm"
+                },
+                "width": {
+                    "value": 122,
+                    "unit": "mm",
+                    "note": "Reinforced fork width for heavy-duty applications"
+                },
+                "length": {
+                    "value": 1070,
+                    "unit": "mm"
+                }
+            },
+            "turning_radius": {
+                "value": 1585,
+                "unit": "mm"
+            },
+            "wheelbase": {
+                "value": 1330,
+                "unit": "mm"
+            },
+            "ground_clearance_laden": {
+                "value": 89,
+                "unit": "mm"
+            },
+            "seat_height": {
+                "value": 1050,
+                "unit": "mm"
+            },
+            "overhead_guard_height": {
+                "value": 2078,
+                "unit": "mm"
+            }
+        },
+        "performance": {
+            "travel_speed_laden": {
+                "value": 13,
+                "unit": "km/h"
+            },
+            "travel_speed_unladen": {
+                "value": 14,
+                "unit": "km/h"
+            },
+            "lifting_speed_laden": {
+                "value": 0.3,
+                "unit": "m/s"
+            },
+            "lifting_speed_unladen": {
+                "value": 0.4,
+                "unit": "m/s"
+            },
+            "lowering_speed_laden": {
+                "value": 0.38,
+                "unit": "m/s"
+            },
+            "lowering_speed_unladen": {
+                "value": 0.4,
+                "unit": "m/s"
+            },
+            "max_gradeability_laden": {
+                "value": 10,
+                "unit": "%"
+            },
+            "max_gradeability_unladen": {
+                "value": 15,
+                "unit": "%"
+            }
+        },
+        "wheels_tyres": {
+            "wheel_configuration": "3-wheel (2 front drive wheels + 1 rear)",
+            "front_tyre_type": "Solid rubber",
+            "front_tyre_size": "200/50-10",
+            "rear_tyre_type": "Solid rubber",
+            "rear_tyre_size": "140/55-9",
+            "tread_width_front": {
+                "value": 969,
+                "unit": "mm"
+            },
+            "tread_width_rear": {
+                "value": 210,
+                "unit": "mm"
+            }
+        },
+        "safety": {
+            "service_brake": "Hydraulic",
+            "parking_brake": "Mechanical",
+            "sound_pressure_level": {
+                "value": 74,
+                "unit": "dB(A)",
+                "note": "At driver's ear"
+            },
+            "overhead_guard": "Standard",
+            "ops_system": true
+        },
+        "aisle_requirements": {
+            "aisle_width_pallet_1000x1200_crossways": {
+                "value": 3315,
+                "unit": "mm"
+            },
+            "aisle_width_pallet_800x1200_lengthways": {
+                "value": 3435,
+                "unit": "mm"
+            }
+        }
     },
-    "aisle_requirements": {
-      "aisle_width_pallet_1000x1200_crossways": {
-        "value": 3315,
-        "unit": "mm"
-      },
-      "aisle_width_pallet_800x1200_lengthways": {
-        "value": 3435,
-        "unit": "mm"
-      }
-    }
-  },
-  "features": {
-    "primary": [
-      {
-        "tr": "2000 kg yüksek yük kapasitesi ile ağır malzeme taşıma",
-        "en": "Heavy material handling with 2000 kg high load capacity"
-      },
-      {
-        "tr": "80V Li-Ion batarya sistemi ile şarj başına 6 saat çalışma süresi",
-        "en": "80V Li-Ion battery system with 6 hours operating time per charge"
-      },
-      {
-        "tr": "Çift 5.0kW AC tahrik motoru ile güçlü performans",
-        "en": "Powerful performance with dual 5.0kW AC drive motors"
-      },
-      {
-        "tr": "122mm kalınlığında güçlendirilmiş fork yapısı",
-        "en": "Reinforced fork structure with 122mm thickness"
-      },
-      {
-        "tr": "1170mm geniş taban ile üstün stabilite ve güvenlik",
-        "en": "Superior stability and safety with 1170mm wide base"
-      },
-      {
-        "tr": "1585mm dönüş yarıçapı ile orta genişlikteki koridorlara uygun",
-        "en": "Suitable for medium-width aisles with 1585mm turning radius"
-      },
-      {
-        "tr": "CPD20L2 ile aynı yüksek mukavemetli mast yapısı",
-        "en": "Same high-strength mast structure as CPD20L2"
-      },
-      {
-        "tr": "394mm geniş ayak alanı ile ergonomik çalışma ortamı",
-        "en": "Ergonomic working environment with 394mm large legroom"
-      }
+    "features": {
+        "primary": [
+            {
+                "tr": "2000 kg yüksek yük kapasitesi ile ağır malzeme taşıma",
+                "en": "Heavy material handling with 2000 kg high load capacity"
+            },
+            {
+                "tr": "80V Li-Ion batarya sistemi ile şarj başına 6 saat çalışma süresi",
+                "en": "80V Li-Ion battery system with 6 hours operating time per charge"
+            },
+            {
+                "tr": "Çift 5.0kW AC tahrik motoru ile güçlü performans",
+                "en": "Powerful performance with dual 5.0kW AC drive motors"
+            },
+            {
+                "tr": "122mm kalınlığında güçlendirilmiş fork yapısı",
+                "en": "Reinforced fork structure with 122mm thickness"
+            },
+            {
+                "tr": "1170mm geniş taban ile üstün stabilite ve güvenlik",
+                "en": "Superior stability and safety with 1170mm wide base"
+            },
+            {
+                "tr": "1585mm dönüş yarıçapı ile orta genişlikteki koridorlara uygun",
+                "en": "Suitable for medium-width aisles with 1585mm turning radius"
+            },
+            {
+                "tr": "CPD20L2 ile aynı yüksek mukavemetli mast yapısı",
+                "en": "Same high-strength mast structure as CPD20L2"
+            },
+            {
+                "tr": "394mm geniş ayak alanı ile ergonomik çalışma ortamı",
+                "en": "Ergonomic working environment with 394mm large legroom"
+            }
+        ],
+        "secondary": [
+            {
+                "tr": "AC sürücü kontrol sistemi",
+                "en": "AC drive control system"
+            },
+            {
+                "tr": "Hidrolik direksiyon",
+                "en": "Hydraulic steering"
+            },
+            {
+                "tr": "LED ön farlar standart",
+                "en": "LED front lights standard"
+            },
+            {
+                "tr": "Telematik sistem desteği",
+                "en": "Telematics system support"
+            },
+            {
+                "tr": "Çeşitli kabin seçenekleri (yarı kapalı, tam kapalı)",
+                "en": "Various cabin options (semi-enclosed, fully enclosed)"
+            },
+            {
+                "tr": "35A tek fazlı entegre şarj cihazı ile esnek şarj",
+                "en": "Flexible charging with 35A single-phase integrated charger"
+            }
+        ]
+    },
+    "highlighted_features": [
+        {
+            "icon": "weight",
+            "priority": 1,
+            "category": "capacity",
+            "title": {
+                "tr": "2000kg Yüksek Kapasite",
+                "en": "2000kg High Capacity"
+            },
+            "description": {
+                "tr": "Ağır yük taşıma operasyonları için optimize edilmiş kapasite",
+                "en": "Optimized capacity for heavy-duty handling operations"
+            }
+        },
+        {
+            "icon": "battery-charging",
+            "priority": 2,
+            "category": "power",
+            "title": {
+                "tr": "80V Li-Ion Teknoloji",
+                "en": "80V Li-Ion Technology"
+            },
+            "description": {
+                "tr": "205Ah kapasiteli batarya ile şarj başına 6 saat çalışma",
+                "en": "6 hours operation per charge with 205Ah battery"
+            }
+        },
+        {
+            "icon": "cpu",
+            "priority": 3,
+            "category": "performance",
+            "title": {
+                "tr": "Çift Motor Sistemi",
+                "en": "Dual Motor System"
+            },
+            "description": {
+                "tr": "2x5.0kW AC tahrik motoru ile güçlü performans",
+                "en": "Powerful performance with 2x5.0kW AC drive motors"
+            }
+        },
+        {
+            "icon": "shield-check",
+            "priority": 4,
+            "category": "safety",
+            "title": {
+                "tr": "Maksimum Stabilite",
+                "en": "Maximum Stability"
+            },
+            "description": {
+                "tr": "1170mm geniş taban ve 122mm güçlendirilmiş fork",
+                "en": "1170mm wide base and 122mm reinforced fork"
+            }
+        },
+        {
+            "icon": "rotate-3d",
+            "priority": 5,
+            "category": "maneuverability",
+            "title": {
+                "tr": "1585mm Dönüş Yarıçapı",
+                "en": "1585mm Turning Radius"
+            },
+            "description": {
+                "tr": "Orta genişlikteki koridorlarda rahat manevra",
+                "en": "Easy maneuvering in medium-width aisles"
+            }
+        },
+        {
+            "icon": "eye",
+            "priority": 6,
+            "category": "visibility",
+            "title": {
+                "tr": "Gelişmiş Görüş Alanı",
+                "en": "Enhanced Visibility"
+            },
+            "description": {
+                "tr": "Her yönden optimum görüş ve yüksek stabilite",
+                "en": "Optimal all-around visibility and high stability"
+            }
+        }
     ],
-    "secondary": [
-      {
-        "tr": "AC sürücü kontrol sistemi",
-        "en": "AC drive control system"
-      },
-      {
-        "tr": "Hidrolik direksiyon",
-        "en": "Hydraulic steering"
-      },
-      {
-        "tr": "LED ön farlar standart",
-        "en": "LED front lights standard"
-      },
-      {
-        "tr": "Telematik sistem desteği",
-        "en": "Telematics system support"
-      },
-      {
-        "tr": "Çeşitli kabin seçenekleri (yarı kapalı, tam kapalı)",
-        "en": "Various cabin options (semi-enclosed, fully enclosed)"
-      },
-      {
-        "tr": "35A tek fazlı entegre şarj cihazı ile esnek şarj",
-        "en": "Flexible charging with 35A single-phase integrated charger"
-      }
-    ]
-  },
-  "highlighted_features": [
-    {
-      "icon": "weight",
-      "priority": 1,
-      "category": "capacity",
-      "title": {
-        "tr": "2000kg Yüksek Kapasite",
-        "en": "2000kg High Capacity"
-      },
-      "description": {
-        "tr": "Ağır yük taşıma operasyonları için optimize edilmiş kapasite",
-        "en": "Optimized capacity for heavy-duty handling operations"
-      }
-    },
-    {
-      "icon": "battery-charging",
-      "priority": 2,
-      "category": "power",
-      "title": {
-        "tr": "80V Li-Ion Teknoloji",
-        "en": "80V Li-Ion Technology"
-      },
-      "description": {
-        "tr": "205Ah kapasiteli batarya ile şarj başına 6 saat çalışma",
-        "en": "6 hours operation per charge with 205Ah battery"
-      }
-    },
-    {
-      "icon": "cpu",
-      "priority": 3,
-      "category": "performance",
-      "title": {
-        "tr": "Çift Motor Sistemi",
-        "en": "Dual Motor System"
-      },
-      "description": {
-        "tr": "2x5.0kW AC tahrik motoru ile güçlü performans",
-        "en": "Powerful performance with 2x5.0kW AC drive motors"
-      }
-    },
-    {
-      "icon": "shield-check",
-      "priority": 4,
-      "category": "safety",
-      "title": {
-        "tr": "Maksimum Stabilite",
-        "en": "Maximum Stability"
-      },
-      "description": {
-        "tr": "1170mm geniş taban ve 122mm güçlendirilmiş fork",
-        "en": "1170mm wide base and 122mm reinforced fork"
-      }
-    },
-    {
-      "icon": "rotate-3d",
-      "priority": 5,
-      "category": "maneuverability",
-      "title": {
-        "tr": "1585mm Dönüş Yarıçapı",
-        "en": "1585mm Turning Radius"
-      },
-      "description": {
-        "tr": "Orta genişlikteki koridorlarda rahat manevra",
-        "en": "Easy maneuvering in medium-width aisles"
-      }
-    },
-    {
-      "icon": "eye",
-      "priority": 6,
-      "category": "visibility",
-      "title": {
-        "tr": "Gelişmiş Görüş Alanı",
-        "en": "Enhanced Visibility"
-      },
-      "description": {
-        "tr": "Her yönden optimum görüş ve yüksek stabilite",
-        "en": "Optimal all-around visibility and high stability"
-      }
-    }
-  ],
-  "variants": [
-    {
-      "sku": "CPD20TVL-3000-205",
-      "name": {
-        "tr": "3000mm Mast + 205Ah Batarya (Standart)",
-        "en": "3000mm Mast + 205Ah Battery (Standard)"
-      },
-      "option_values": {
-        "mast_height": "3000mm",
-        "battery_capacity": "205Ah",
-        "charger_type": "35A Single-phase"
-      },
-      "price_modifier": 0,
-      "weight_modifier": 0,
-      "is_default": true,
-      "stock": 0
-    },
-    {
-      "sku": "CPD20TVL-3600-205",
-      "name": {
-        "tr": "3600mm Mast + 205Ah Batarya",
-        "en": "3600mm Mast + 205Ah Battery"
-      },
-      "option_values": {
-        "mast_height": "3600mm",
-        "battery_capacity": "205Ah",
-        "charger_type": "35A Single-phase"
-      },
-      "price_modifier": 0,
-      "weight_modifier": 0,
-      "is_default": false,
-      "stock": 0
-    },
-    {
-      "sku": "CPD20TVL-4000-205",
-      "name": {
-        "tr": "4000mm Mast + 205Ah Batarya",
-        "en": "4000mm Mast + 205Ah Battery"
-      },
-      "option_values": {
-        "mast_height": "4000mm",
-        "battery_capacity": "205Ah",
-        "charger_type": "35A Single-phase"
-      },
-      "price_modifier": 0,
-      "weight_modifier": 0,
-      "is_default": false,
-      "stock": 0
-    },
-    {
-      "sku": "CPD20TVL-5500-205",
-      "name": {
-        "tr": "5500mm Mast + 205Ah Batarya",
-        "en": "5500mm Mast + 205Ah Battery"
-      },
-      "option_values": {
-        "mast_height": "5500mm",
-        "battery_capacity": "205Ah",
-        "charger_type": "35A Single-phase"
-      },
-      "price_modifier": 0,
-      "weight_modifier": 0,
-      "is_default": false,
-      "stock": 0
-    },
-    {
-      "sku": "CPD20TVL-6000-205",
-      "name": {
-        "tr": "6000mm Mast + 205Ah Batarya",
-        "en": "6000mm Mast + 205Ah Battery"
-      },
-      "option_values": {
-        "mast_height": "6000mm",
-        "battery_capacity": "205Ah",
-        "charger_type": "35A Single-phase"
-      },
-      "price_modifier": 0,
-      "weight_modifier": 0,
-      "is_default": false,
-      "stock": 0
-    }
-  ],
-  "options": [
-    {
-      "name": {
-        "tr": "Kabin Tipi",
-        "en": "Cabin Type"
-      },
-      "type": "radio",
-      "required": false,
-      "values": [
+    "variants": [
         {
-          "label": {
-            "tr": "Kabin Yok (Standart)",
-            "en": "No Cabin (Standard)"
-          },
-          "price_modifier": 0
+            "sku": "CPD20TVL-3000-205",
+            "name": {
+                "tr": "3000mm Mast + 205Ah Batarya (Standart)",
+                "en": "3000mm Mast + 205Ah Battery (Standard)"
+            },
+            "option_values": {
+                "mast_height": "3000mm",
+                "battery_capacity": "205Ah",
+                "charger_type": "35A Single-phase"
+            },
+            "price_modifier": 0,
+            "weight_modifier": 0,
+            "is_default": true,
+            "stock": 0
         },
         {
-          "label": {
-            "tr": "Temel Yarı Kapalı Kabin",
-            "en": "Basic Semi-Enclosed Cabin"
-          },
-          "price_modifier": 0
+            "sku": "CPD20TVL-3600-205",
+            "name": {
+                "tr": "3600mm Mast + 205Ah Batarya",
+                "en": "3600mm Mast + 205Ah Battery"
+            },
+            "option_values": {
+                "mast_height": "3600mm",
+                "battery_capacity": "205Ah",
+                "charger_type": "35A Single-phase"
+            },
+            "price_modifier": 0,
+            "weight_modifier": 0,
+            "is_default": false,
+            "stock": 0
         },
         {
-          "label": {
-            "tr": "Gelişmiş Yarı Kapalı Kabin",
-            "en": "Upgrade Semi-Enclosed Cabin"
-          },
-          "price_modifier": 0
+            "sku": "CPD20TVL-4000-205",
+            "name": {
+                "tr": "4000mm Mast + 205Ah Batarya",
+                "en": "4000mm Mast + 205Ah Battery"
+            },
+            "option_values": {
+                "mast_height": "4000mm",
+                "battery_capacity": "205Ah",
+                "charger_type": "35A Single-phase"
+            },
+            "price_modifier": 0,
+            "weight_modifier": 0,
+            "is_default": false,
+            "stock": 0
         },
         {
-          "label": {
-            "tr": "Tam Kapalı Kabin",
-            "en": "Full Cabin"
-          },
-          "price_modifier": 0
+            "sku": "CPD20TVL-5500-205",
+            "name": {
+                "tr": "5500mm Mast + 205Ah Batarya",
+                "en": "5500mm Mast + 205Ah Battery"
+            },
+            "option_values": {
+                "mast_height": "5500mm",
+                "battery_capacity": "205Ah",
+                "charger_type": "35A Single-phase"
+            },
+            "price_modifier": 0,
+            "weight_modifier": 0,
+            "is_default": false,
+            "stock": 0
+        },
+        {
+            "sku": "CPD20TVL-6000-205",
+            "name": {
+                "tr": "6000mm Mast + 205Ah Batarya",
+                "en": "6000mm Mast + 205Ah Battery"
+            },
+            "option_values": {
+                "mast_height": "6000mm",
+                "battery_capacity": "205Ah",
+                "charger_type": "35A Single-phase"
+            },
+            "price_modifier": 0,
+            "weight_modifier": 0,
+            "is_default": false,
+            "stock": 0
         }
-      ]
-    },
-    {
-      "name": {
-        "tr": "Koltuk Tipi",
-        "en": "Seat Type"
-      },
-      "type": "radio",
-      "required": false,
-      "values": [
+    ],
+    "options": [
         {
-          "label": {
-            "tr": "Standart Koltuk",
-            "en": "Regular Seat"
-          },
-          "price_modifier": 0
+            "name": {
+                "tr": "Kabin Tipi",
+                "en": "Cabin Type"
+            },
+            "type": "radio",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "Kabin Yok (Standart)",
+                        "en": "No Cabin (Standard)"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Temel Yarı Kapalı Kabin",
+                        "en": "Basic Semi-Enclosed Cabin"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Gelişmiş Yarı Kapalı Kabin",
+                        "en": "Upgrade Semi-Enclosed Cabin"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Tam Kapalı Kabin",
+                        "en": "Full Cabin"
+                    },
+                    "price_modifier": 0
+                }
+            ]
         },
         {
-          "label": {
-            "tr": "Premium Koltuk",
-            "en": "Premium Seat"
-          },
-          "price_modifier": 0
+            "name": {
+                "tr": "Koltuk Tipi",
+                "en": "Seat Type"
+            },
+            "type": "radio",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "Standart Koltuk",
+                        "en": "Regular Seat"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Premium Koltuk",
+                        "en": "Premium Seat"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Süspansiyonlu Koltuk",
+                        "en": "Suspension Seat"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Süspansiyonlu + Emniyet Kemeri Kilidi",
+                        "en": "Suspension + Seatbelt Logic Switch"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Kolçaklı Süspansiyonlu Koltuk (KL01)",
+                        "en": "Suspension Seat with Armrest (KL01)"
+                    },
+                    "price_modifier": 0
+                }
+            ]
         },
         {
-          "label": {
-            "tr": "Süspansiyonlu Koltuk",
-            "en": "Suspension Seat"
-          },
-          "price_modifier": 0
+            "name": {
+                "tr": "Şarj Cihazı",
+                "en": "Charger"
+            },
+            "type": "radio",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "80V-35A Tek Faz Entegre (Standart)",
+                        "en": "80V-35A Single-phase Integrated (Standard)"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "80V-60A 3 Faz Entegre",
+                        "en": "80V-60A 3-phase Integrated"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "80V-35A Tek Faz Harici",
+                        "en": "80V-35A Single-phase External"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "80V-65A 3 Faz Harici",
+                        "en": "80V-65A 3-phase External"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "80V-130A 3 Faz Harici",
+                        "en": "80V-130A 3-phase External"
+                    },
+                    "price_modifier": 0
+                }
+            ]
         },
         {
-          "label": {
-            "tr": "Süspansiyonlu + Emniyet Kemeri Kilidi",
-            "en": "Suspension + Seatbelt Logic Switch"
-          },
-          "price_modifier": 0
+            "name": {
+                "tr": "Ataşman",
+                "en": "Attachments"
+            },
+            "type": "radio",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "Yok (Standart)",
+                        "en": "None (Standard)"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Entegre Yan Kaydırıcı",
+                        "en": "Built-in Sideshift"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Harici Yan Kaydırıcı",
+                        "en": "External Sideshift"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Ayarlanabilir Forklift",
+                        "en": "Adjustable Fork"
+                    },
+                    "price_modifier": 0
+                }
+            ]
         },
         {
-          "label": {
-            "tr": "Kolçaklı Süspansiyonlu Koltuk (KL01)",
-            "en": "Suspension Seat with Armrest (KL01)"
-          },
-          "price_modifier": 0
+            "name": {
+                "tr": "Ön Tekerlek Malzemesi",
+                "en": "Front Wheel Material"
+            },
+            "type": "radio",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "Solid (Standart)",
+                        "en": "Solid (Standard)"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "İz Bırakmayan Solid",
+                        "en": "Non-marking Solid"
+                    },
+                    "price_modifier": 0
+                }
+            ]
+        },
+        {
+            "name": {
+                "tr": "Arka Tekerlek Malzemesi",
+                "en": "Rear Wheel Material"
+            },
+            "type": "radio",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "Solid (Standart)",
+                        "en": "Solid (Standard)"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "İz Bırakmayan Solid",
+                        "en": "Non-marking Solid"
+                    },
+                    "price_modifier": 0
+                }
+            ]
+        },
+        {
+            "name": {
+                "tr": "Aydınlatma Paketi",
+                "en": "Lighting Package"
+            },
+            "type": "checkbox",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "LED Arka Lamba",
+                        "en": "LED Rear Lamp"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "2 Ön Mavi Lamba",
+                        "en": "2 Front Blue Lamps"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "1 Arka Mavi Lamba",
+                        "en": "1 Rear Blue Lamp"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "2 Ön + 1 Arka Mavi Lamba",
+                        "en": "2 Front + 1 Rear Blue Lamp"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Alan Uyarı Lambası (1 Sol + 1 Sağ Kırmızı)",
+                        "en": "Area Warning Lamp (1 Left + 1 Right Red)"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "İki Yandan Dikiz Aynası",
+                        "en": "Rearview Mirrors on Both Sides"
+                    },
+                    "price_modifier": 0
+                }
+            ]
+        },
+        {
+            "name": {
+                "tr": "Ekstra Donanımlar",
+                "en": "Extra Equipment"
+            },
+            "type": "checkbox",
+            "required": false,
+            "values": [
+                {
+                    "label": {
+                        "tr": "Çekme Pimi",
+                        "en": "Traction Pin"
+                    },
+                    "price_modifier": 0
+                },
+                {
+                    "label": {
+                        "tr": "Isıtıcı",
+                        "en": "Heater"
+                    },
+                    "price_modifier": 0
+                }
+            ]
         }
-      ]
-    },
-    {
-      "name": {
-        "tr": "Şarj Cihazı",
-        "en": "Charger"
-      },
-      "type": "radio",
-      "required": false,
-      "values": [
+    ],
+    "media_gallery": [
         {
-          "label": {
-            "tr": "80V-35A Tek Faz Entegre (Standart)",
-            "en": "80V-35A Single-phase Integrated (Standard)"
-          },
-          "price_modifier": 0
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-main.jpg",
+            "alt": {
+                "tr": "CPD20TVL Elektrikli Forklift - Ana Görsel",
+                "en": "CPD20TVL Electric Forklift - Main Image"
+            },
+            "is_primary": true,
+            "sort_order": 1
         },
         {
-          "label": {
-            "tr": "80V-60A 3 Faz Entegre",
-            "en": "80V-60A 3-phase Integrated"
-          },
-          "price_modifier": 0
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-side.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Yan Görünüm",
+                "en": "CPD20TVL - Side View"
+            },
+            "is_primary": false,
+            "sort_order": 2
         },
         {
-          "label": {
-            "tr": "80V-35A Tek Faz Harici",
-            "en": "80V-35A Single-phase External"
-          },
-          "price_modifier": 0
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-front.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Ön Görünüm",
+                "en": "CPD20TVL - Front View"
+            },
+            "is_primary": false,
+            "sort_order": 3
         },
         {
-          "label": {
-            "tr": "80V-65A 3 Faz Harici",
-            "en": "80V-65A 3-phase External"
-          },
-          "price_modifier": 0
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-rear.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Arka Görünüm",
+                "en": "CPD20TVL - Rear View"
+            },
+            "is_primary": false,
+            "sort_order": 4
         },
         {
-          "label": {
-            "tr": "80V-130A 3 Faz Harici",
-            "en": "80V-130A 3-phase External"
-          },
-          "price_modifier": 0
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-cabin.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Kabin İçi ve Ergonomik Tasarım",
+                "en": "CPD20TVL - Cabin Interior and Ergonomic Design"
+            },
+            "is_primary": false,
+            "sort_order": 5
+        },
+        {
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-fork.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Güçlendirilmiş Fork Yapısı (122mm)",
+                "en": "CPD20TVL - Reinforced Fork Structure (122mm)"
+            },
+            "is_primary": false,
+            "sort_order": 6
+        },
+        {
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-mast.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Yüksek Mukavemetli Mast",
+                "en": "CPD20TVL - High-Strength Mast"
+            },
+            "is_primary": false,
+            "sort_order": 7
+        },
+        {
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-action.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Ağır Yük Taşıma",
+                "en": "CPD20TVL - Heavy-Duty Handling"
+            },
+            "is_primary": false,
+            "sort_order": 8
+        },
+        {
+            "type": "image",
+            "url": "products/forklift/cpd20tvl/cpd20tvl-dimensions.jpg",
+            "alt": {
+                "tr": "CPD20TVL - Teknik Çizim ve Ölçüler",
+                "en": "CPD20TVL - Technical Drawing and Dimensions"
+            },
+            "is_primary": false,
+            "sort_order": 9
+        },
+        {
+            "type": "pdf",
+            "url": "products/forklift/cpd-tvl-series/CPD15-18-20TVL-EN-Brochure.pdf",
+            "title": {
+                "tr": "CPD TVL Serisi Broşür (İngilizce)",
+                "en": "CPD TVL Series Brochure (English)"
+            },
+            "sort_order": 10
+        },
+        {
+            "type": "video",
+            "url": "https://www.youtube.com/watch?v=SAMPLE_CPD20TVL",
+            "thumbnail": "products/forklift/cpd20tvl/video-thumb.jpg",
+            "title": {
+                "tr": "CPD20TVL Tanıtım Videosu",
+                "en": "CPD20TVL Introduction Video"
+            },
+            "sort_order": 11
         }
-      ]
+    ],
+    "seo_data": {
+        "meta_title": {
+            "tr": "CPD20TVL Elektrikli Forklift 2000kg | EP Equipment",
+            "en": "CPD20TVL Electric Forklift 2000kg | EP Equipment"
+        },
+        "meta_description": {
+            "tr": "CPD20TVL 2000kg elektrikli forklift. 80V Li-Ion, çift motor, güçlendirilmiş fork. Ağır yük taşıma için ideal. Fiyat teklifi alın.",
+            "en": "CPD20TVL 2000kg electric forklift. 80V Li-Ion, dual motor, reinforced fork. Ideal for heavy-duty handling. Get a quote."
+        },
+        "meta_keywords": {
+            "tr": "cpd20tvl, elektrikli forklift, 2000kg forklift, li-ion forklift, ağır yük forklift, 3 tekerlekli forklift, ep equipment",
+            "en": "cpd20tvl, electric forklift, 2000kg forklift, li-ion forklift, heavy-duty forklift, 3-wheel forklift, ep equipment"
+        },
+        "canonical_url": {
+            "tr": "/urunler/forklift/cpd20tvl-elektrikli-forklift",
+            "en": "/products/forklift/cpd20tvl-electric-forklift"
+        },
+        "og_title": {
+            "tr": "CPD20TVL Elektrikli Forklift - 2000kg Yüksek Kapasite",
+            "en": "CPD20TVL Electric Forklift - 2000kg High Capacity"
+        },
+        "og_description": {
+            "tr": "2000kg kapasiteli CPD20TVL ile ağır yük taşıma operasyonlarınızı kolaylaştırın. 80V Li-Ion, güçlendirilmiş yapı.",
+            "en": "Facilitate your heavy-duty handling operations with 2000kg capacity CPD20TVL. 80V Li-Ion, reinforced structure."
+        },
+        "og_image": "products/forklift/cpd20tvl/cpd20tvl-og-image.jpg"
     },
-    {
-      "name": {
-        "tr": "Ataşman",
-        "en": "Attachments"
-      },
-      "type": "radio",
-      "required": false,
-      "values": [
+    "faq_data": [
         {
-          "label": {
-            "tr": "Yok (Standart)",
-            "en": "None (Standard)"
-          },
-          "price_modifier": 0
+            "question": {
+                "tr": "CPD20TVL'nin CPD18TVL'den farkları nelerdir?",
+                "en": "What are the differences between CPD20TVL and CPD18TVL?"
+            },
+            "answer": {
+                "tr": "CPD20TVL, CPD18TVL'ye göre 200kg daha fazla yük kapasitesine (2000kg) sahiptir. Ayrıca 122mm kalınlığında güçlendirilmiş fork yapısı (CPD18TVL'de 100mm), 1170mm daha geniş taban (CPD18TVL'de 1070mm), 1950mm uzunluk (CPD18TVL'de 1913mm) ve 200/50-10 ön lastik boyutu (CPD18TVL'de 18X7-8) ile donatılmıştır. Her iki model de aynı 80V/205Ah batarya sistemini paylaşır.",
+                "en": "CPD20TVL has 200kg more load capacity (2000kg) compared to CPD18TVL. It also features 122mm thick reinforced fork structure (100mm in CPD18TVL), 1170mm wider base (1070mm in CPD18TVL), 1950mm length (1913mm in CPD18TVL) and 200/50-10 front tire size (18X7-8 in CPD18TVL). Both models share the same 80V/205Ah battery system."
+            },
+            "sort_order": 1
         },
         {
-          "label": {
-            "tr": "Entegre Yan Kaydırıcı",
-            "en": "Built-in Sideshift"
-          },
-          "price_modifier": 0
+            "question": {
+                "tr": "Neden fork kalınlığı 122mm?",
+                "en": "Why is the fork thickness 122mm?"
+            },
+            "answer": {
+                "tr": "CPD20TVL'nin 2000kg yüksek yük kapasitesini güvenli bir şekilde taşıyabilmesi için fork kalınlığı 40mm'den 122mm'ye yükseltilmiştir. Bu güçlendirilmiş yapı, ağır yüklerin taşınması sırasında maksimum dayanıklılık ve emniyeti sağlar. Ayrıca fork genişliği de 40mm'den 122mm'ye çıkarılarak yükün dağılımı iyileştirilmiştir.",
+                "en": "To safely handle CPD20TVL's 2000kg high load capacity, fork thickness has been increased from 40mm to 122mm. This reinforced structure provides maximum durability and safety when handling heavy loads. Additionally, fork width has been increased from 40mm to 122mm to improve load distribution."
+            },
+            "sort_order": 2
         },
         {
-          "label": {
-            "tr": "Harici Yan Kaydırıcı",
-            "en": "External Sideshift"
-          },
-          "price_modifier": 0
+            "question": {
+                "tr": "Hangi mast yüksekliği seçenekleri mevcuttur?",
+                "en": "What mast height options are available?"
+            },
+            "answer": {
+                "tr": "CPD20TVL için standart 3000mm'den başlayarak 3600mm, 4000mm, 4300mm, 4500mm, 4800mm, 5000mm, 5500mm ve 6000mm'ye kadar çeşitli mast yüksekliği seçenekleri mevcuttur. Özellikle 5.5m ve 6m yüksek mast seçenekleri CPD18TVL ve CPD20TVL için özel olarak sunulmaktadır.",
+                "en": "Various mast height options are available for CPD20TVL, starting from standard 3000mm up to 3600mm, 4000mm, 4300mm, 4500mm, 4800mm, 5000mm, 5500mm and 6000mm. Especially 5.5m and 6m high mast options are specifically offered for CPD18TVL and CPD20TVL."
+            },
+            "sort_order": 3
         },
         {
-          "label": {
-            "tr": "Ayarlanabilir Forklift",
-            "en": "Adjustable Fork"
-          },
-          "price_modifier": 0
+            "question": {
+                "tr": "Minimum koridor genişliği nedir?",
+                "en": "What is the minimum aisle width?"
+            },
+            "answer": {
+                "tr": "CPD20TVL, 1000x1200mm paletlerin enine yerleştirildiği koridorlarda minimum 3315mm, 800x1200mm paletlerin boyuna yerleştirildiği koridorlarda ise minimum 3435mm genişlikte rahatça çalışabilir. 1585mm dönüş yarıçapı sayesinde orta genişlikteki koridorlarda güvenli manevra kabiliyeti sunar.",
+                "en": "CPD20TVL can work comfortably in minimum 3315mm width for aisles with 1000x1200mm pallets placed crossways, and minimum 3435mm for aisles with 800x1200mm pallets placed lengthways. With 1585mm turning radius, it offers safe maneuverability in medium-width aisles."
+            },
+            "sort_order": 4
+        },
+        {
+            "question": {
+                "tr": "CPD20TVL hangi uygulamalar için idealdir?",
+                "en": "What applications is CPD20TVL ideal for?"
+            },
+            "answer": {
+                "tr": "CPD20TVL, 2000kg yük kapasitesi ile ağır yük taşıma gerektiren uygulamalar için idealdir: İnşaat malzemeleri depolama, ağır metal ve makine parçaları taşıma, paketlenmiş ürün paletleme, soğuk hava deposu operasyonları, konteyner yükleme/boşaltma ve genel ağır malzeme elleçleme. Güçlendirilmiş fork yapısı ve geniş taban ile yüksek stabilite gerektirir operasyonlarda tercih edilir.",
+                "en": "CPD20TVL is ideal for applications requiring heavy-duty handling with 2000kg load capacity: Construction material storage, heavy metal and machine parts handling, packaged product palletizing, cold storage operations, container loading/unloading, and general heavy material handling. Preferred for operations requiring high stability with reinforced fork structure and wide base."
+            },
+            "sort_order": 5
+        },
+        {
+            "question": {
+                "tr": "Garanti süresi ne kadardır?",
+                "en": "What is the warranty period?"
+            },
+            "answer": {
+                "tr": "CPD20TVL elektrikli forklift için standart 2 yıl veya 2000 saat garanti sunulmaktadır (hangisi önce dolarsa). Li-Ion batarya için ise 5 yıl veya 3000 çevrim garantisi mevcuttur. Opsiyonel genişletilmiş garanti paketleri için bayiniz ile iletişime geçebilirsiniz.",
+                "en": "Standard 2-year or 2000-hour warranty (whichever comes first) is provided for CPD20TVL electric forklift. For Li-Ion battery, there is a 5-year or 3000-cycle warranty. Contact your dealer for optional extended warranty packages."
+            },
+            "sort_order": 6
         }
-      ]
-    },
-    {
-      "name": {
-        "tr": "Ön Tekerlek Malzemesi",
-        "en": "Front Wheel Material"
-      },
-      "type": "radio",
-      "required": false,
-      "values": [
+    ],
+    "categories": [
         {
-          "label": {
-            "tr": "Solid (Standart)",
-            "en": "Solid (Standard)"
-          },
-          "price_modifier": 0
-        },
-        {
-          "label": {
-            "tr": "İz Bırakmayan Solid",
-            "en": "Non-marking Solid"
-          },
-          "price_modifier": 0
+            "id": 11,
+            "name": {
+                "tr": "Akülü Forklift",
+                "en": "Electric Forklift"
+            },
+            "path": "1.2.11"
         }
-      ]
-    },
-    {
-      "name": {
-        "tr": "Arka Tekerlek Malzemesi",
-        "en": "Rear Wheel Material"
-      },
-      "type": "radio",
-      "required": false,
-      "values": [
-        {
-          "label": {
-            "tr": "Solid (Standart)",
-            "en": "Solid (Standard)"
-          },
-          "price_modifier": 0
-        },
-        {
-          "label": {
-            "tr": "İz Bırakmayan Solid",
-            "en": "Non-marking Solid"
-          },
-          "price_modifier": 0
+    ],
+    "brand": {
+        "id": 1,
+        "name": {
+            "tr": "EP Equipment",
+            "en": "EP Equipment"
         }
-      ]
     },
-    {
-      "name": {
-        "tr": "Aydınlatma Paketi",
-        "en": "Lighting Package"
-      },
-      "type": "checkbox",
-      "required": false,
-      "values": [
+    "tags": [
         {
-          "label": {
-            "tr": "LED Arka Lamba",
-            "en": "LED Rear Lamp"
-          },
-          "price_modifier": 0
+            "tr": "elektrikli forklift",
+            "en": "electric forklift"
         },
         {
-          "label": {
-            "tr": "2 Ön Mavi Lamba",
-            "en": "2 Front Blue Lamps"
-          },
-          "price_modifier": 0
+            "tr": "li-ion",
+            "en": "li-ion"
         },
         {
-          "label": {
-            "tr": "1 Arka Mavi Lamba",
-            "en": "1 Rear Blue Lamp"
-          },
-          "price_modifier": 0
+            "tr": "3 tekerlekli",
+            "en": "3-wheel"
         },
         {
-          "label": {
-            "tr": "2 Ön + 1 Arka Mavi Lamba",
-            "en": "2 Front + 1 Rear Blue Lamp"
-          },
-          "price_modifier": 0
+            "tr": "ağır yük",
+            "en": "heavy-duty"
         },
         {
-          "label": {
-            "tr": "Alan Uyarı Lambası (1 Sol + 1 Sağ Kırmızı)",
-            "en": "Area Warning Lamp (1 Left + 1 Right Red)"
-          },
-          "price_modifier": 0
+            "tr": "80v",
+            "en": "80v"
         },
         {
-          "label": {
-            "tr": "İki Yandan Dikiz Aynası",
-            "en": "Rearview Mirrors on Both Sides"
-          },
-          "price_modifier": 0
+            "tr": "2000kg",
+            "en": "2000kg"
         }
-      ]
-    },
-    {
-      "name": {
-        "tr": "Ekstra Donanımlar",
-        "en": "Extra Equipment"
-      },
-      "type": "checkbox",
-      "required": false,
-      "values": [
+    ],
+    "certifications": [
         {
-          "label": {
-            "tr": "Çekme Pimi",
-            "en": "Traction Pin"
-          },
-          "price_modifier": 0
-        },
-        {
-          "label": {
-            "tr": "Isıtıcı",
-            "en": "Heater"
-          },
-          "price_modifier": 0
+            "name": "CE",
+            "logo_url": "certifications/ce-mark.png"
         }
-      ]
-    }
-  ],
-  "media_gallery": [
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-main.jpg",
-      "alt": {
-        "tr": "CPD20TVL Elektrikli Forklift - Ana Görsel",
-        "en": "CPD20TVL Electric Forklift - Main Image"
-      },
-      "is_primary": true,
-      "sort_order": 1
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-side.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Yan Görünüm",
-        "en": "CPD20TVL - Side View"
-      },
-      "is_primary": false,
-      "sort_order": 2
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-front.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Ön Görünüm",
-        "en": "CPD20TVL - Front View"
-      },
-      "is_primary": false,
-      "sort_order": 3
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-rear.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Arka Görünüm",
-        "en": "CPD20TVL - Rear View"
-      },
-      "is_primary": false,
-      "sort_order": 4
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-cabin.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Kabin İçi ve Ergonomik Tasarım",
-        "en": "CPD20TVL - Cabin Interior and Ergonomic Design"
-      },
-      "is_primary": false,
-      "sort_order": 5
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-fork.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Güçlendirilmiş Fork Yapısı (122mm)",
-        "en": "CPD20TVL - Reinforced Fork Structure (122mm)"
-      },
-      "is_primary": false,
-      "sort_order": 6
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-mast.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Yüksek Mukavemetli Mast",
-        "en": "CPD20TVL - High-Strength Mast"
-      },
-      "is_primary": false,
-      "sort_order": 7
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-action.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Ağır Yük Taşıma",
-        "en": "CPD20TVL - Heavy-Duty Handling"
-      },
-      "is_primary": false,
-      "sort_order": 8
-    },
-    {
-      "type": "image",
-      "url": "products/forklift/cpd20tvl/cpd20tvl-dimensions.jpg",
-      "alt": {
-        "tr": "CPD20TVL - Teknik Çizim ve Ölçüler",
-        "en": "CPD20TVL - Technical Drawing and Dimensions"
-      },
-      "is_primary": false,
-      "sort_order": 9
-    },
-    {
-      "type": "pdf",
-      "url": "products/forklift/cpd-tvl-series/CPD15-18-20TVL-EN-Brochure.pdf",
-      "title": {
-        "tr": "CPD TVL Serisi Broşür (İngilizce)",
-        "en": "CPD TVL Series Brochure (English)"
-      },
-      "sort_order": 10
-    },
-    {
-      "type": "video",
-      "url": "https://www.youtube.com/watch?v=SAMPLE_CPD20TVL",
-      "thumbnail": "products/forklift/cpd20tvl/video-thumb.jpg",
-      "title": {
-        "tr": "CPD20TVL Tanıtım Videosu",
-        "en": "CPD20TVL Introduction Video"
-      },
-      "sort_order": 11
-    }
-  ],
-  "seo_data": {
-    "meta_title": {
-      "tr": "CPD20TVL Elektrikli Forklift 2000kg | EP Equipment",
-      "en": "CPD20TVL Electric Forklift 2000kg | EP Equipment"
-    },
-    "meta_description": {
-      "tr": "CPD20TVL 2000kg elektrikli forklift. 80V Li-Ion, çift motor, güçlendirilmiş fork. Ağır yük taşıma için ideal. Fiyat teklifi alın.",
-      "en": "CPD20TVL 2000kg electric forklift. 80V Li-Ion, dual motor, reinforced fork. Ideal for heavy-duty handling. Get a quote."
-    },
-    "meta_keywords": {
-      "tr": "cpd20tvl, elektrikli forklift, 2000kg forklift, li-ion forklift, ağır yük forklift, 3 tekerlekli forklift, ep equipment",
-      "en": "cpd20tvl, electric forklift, 2000kg forklift, li-ion forklift, heavy-duty forklift, 3-wheel forklift, ep equipment"
-    },
-    "canonical_url": {
-      "tr": "/urunler/forklift/cpd20tvl-elektrikli-forklift",
-      "en": "/products/forklift/cpd20tvl-electric-forklift"
-    },
-    "og_title": {
-      "tr": "CPD20TVL Elektrikli Forklift - 2000kg Yüksek Kapasite",
-      "en": "CPD20TVL Electric Forklift - 2000kg High Capacity"
-    },
-    "og_description": {
-      "tr": "2000kg kapasiteli CPD20TVL ile ağır yük taşıma operasyonlarınızı kolaylaştırın. 80V Li-Ion, güçlendirilmiş yapı.",
-      "en": "Facilitate your heavy-duty handling operations with 2000kg capacity CPD20TVL. 80V Li-Ion, reinforced structure."
-    },
-    "og_image": "products/forklift/cpd20tvl/cpd20tvl-og-image.jpg"
-  },
-  "faq_data": [
-    {
-      "question": {
-        "tr": "CPD20TVL'nin CPD18TVL'den farkları nelerdir?",
-        "en": "What are the differences between CPD20TVL and CPD18TVL?"
-      },
-      "answer": {
-        "tr": "CPD20TVL, CPD18TVL'ye göre 200kg daha fazla yük kapasitesine (2000kg) sahiptir. Ayrıca 122mm kalınlığında güçlendirilmiş fork yapısı (CPD18TVL'de 100mm), 1170mm daha geniş taban (CPD18TVL'de 1070mm), 1950mm uzunluk (CPD18TVL'de 1913mm) ve 200/50-10 ön lastik boyutu (CPD18TVL'de 18X7-8) ile donatılmıştır. Her iki model de aynı 80V/205Ah batarya sistemini paylaşır.",
-        "en": "CPD20TVL has 200kg more load capacity (2000kg) compared to CPD18TVL. It also features 122mm thick reinforced fork structure (100mm in CPD18TVL), 1170mm wider base (1070mm in CPD18TVL), 1950mm length (1913mm in CPD18TVL) and 200/50-10 front tire size (18X7-8 in CPD18TVL). Both models share the same 80V/205Ah battery system."
-      },
-      "sort_order": 1
-    },
-    {
-      "question": {
-        "tr": "Neden fork kalınlığı 122mm?",
-        "en": "Why is the fork thickness 122mm?"
-      },
-      "answer": {
-        "tr": "CPD20TVL'nin 2000kg yüksek yük kapasitesini güvenli bir şekilde taşıyabilmesi için fork kalınlığı 40mm'den 122mm'ye yükseltilmiştir. Bu güçlendirilmiş yapı, ağır yüklerin taşınması sırasında maksimum dayanıklılık ve emniyeti sağlar. Ayrıca fork genişliği de 40mm'den 122mm'ye çıkarılarak yükün dağılımı iyileştirilmiştir.",
-        "en": "To safely handle CPD20TVL's 2000kg high load capacity, fork thickness has been increased from 40mm to 122mm. This reinforced structure provides maximum durability and safety when handling heavy loads. Additionally, fork width has been increased from 40mm to 122mm to improve load distribution."
-      },
-      "sort_order": 2
-    },
-    {
-      "question": {
-        "tr": "Hangi mast yüksekliği seçenekleri mevcuttur?",
-        "en": "What mast height options are available?"
-      },
-      "answer": {
-        "tr": "CPD20TVL için standart 3000mm'den başlayarak 3600mm, 4000mm, 4300mm, 4500mm, 4800mm, 5000mm, 5500mm ve 6000mm'ye kadar çeşitli mast yüksekliği seçenekleri mevcuttur. Özellikle 5.5m ve 6m yüksek mast seçenekleri CPD18TVL ve CPD20TVL için özel olarak sunulmaktadır.",
-        "en": "Various mast height options are available for CPD20TVL, starting from standard 3000mm up to 3600mm, 4000mm, 4300mm, 4500mm, 4800mm, 5000mm, 5500mm and 6000mm. Especially 5.5m and 6m high mast options are specifically offered for CPD18TVL and CPD20TVL."
-      },
-      "sort_order": 3
-    },
-    {
-      "question": {
-        "tr": "Minimum koridor genişliği nedir?",
-        "en": "What is the minimum aisle width?"
-      },
-      "answer": {
-        "tr": "CPD20TVL, 1000x1200mm paletlerin enine yerleştirildiği koridorlarda minimum 3315mm, 800x1200mm paletlerin boyuna yerleştirildiği koridorlarda ise minimum 3435mm genişlikte rahatça çalışabilir. 1585mm dönüş yarıçapı sayesinde orta genişlikteki koridorlarda güvenli manevra kabiliyeti sunar.",
-        "en": "CPD20TVL can work comfortably in minimum 3315mm width for aisles with 1000x1200mm pallets placed crossways, and minimum 3435mm for aisles with 800x1200mm pallets placed lengthways. With 1585mm turning radius, it offers safe maneuverability in medium-width aisles."
-      },
-      "sort_order": 4
-    },
-    {
-      "question": {
-        "tr": "CPD20TVL hangi uygulamalar için idealdir?",
-        "en": "What applications is CPD20TVL ideal for?"
-      },
-      "answer": {
-        "tr": "CPD20TVL, 2000kg yük kapasitesi ile ağır yük taşıma gerektiren uygulamalar için idealdir: İnşaat malzemeleri depolama, ağır metal ve makine parçaları taşıma, paketlenmiş ürün paletleme, soğuk hava deposu operasyonları, konteyner yükleme/boşaltma ve genel ağır malzeme elleçleme. Güçlendirilmiş fork yapısı ve geniş taban ile yüksek stabilite gerektirir operasyonlarda tercih edilir.",
-        "en": "CPD20TVL is ideal for applications requiring heavy-duty handling with 2000kg load capacity: Construction material storage, heavy metal and machine parts handling, packaged product palletizing, cold storage operations, container loading/unloading, and general heavy material handling. Preferred for operations requiring high stability with reinforced fork structure and wide base."
-      },
-      "sort_order": 5
-    },
-    {
-      "question": {
-        "tr": "Garanti süresi ne kadardır?",
-        "en": "What is the warranty period?"
-      },
-      "answer": {
-        "tr": "CPD20TVL elektrikli forklift için standart 2 yıl veya 2000 saat garanti sunulmaktadır (hangisi önce dolarsa). Li-Ion batarya için ise 5 yıl veya 3000 çevrim garantisi mevcuttur. Opsiyonel genişletilmiş garanti paketleri için bayiniz ile iletişime geçebilirsiniz.",
-        "en": "Standard 2-year or 2000-hour warranty (whichever comes first) is provided for CPD20TVL electric forklift. For Li-Ion battery, there is a 5-year or 3000-cycle warranty. Contact your dealer for optional extended warranty packages."
-      },
-      "sort_order": 6
-    }
-  ],
-  "categories": [
-    {
-      "id": 11,
-      "name": {
-        "tr": "Akülü Forklift",
-        "en": "Electric Forklift"
-      },
-      "path": "1.2.11"
-    }
-  ],
-  "brand": {
-    "id": 1,
-    "name": {
-      "tr": "EP Equipment",
-      "en": "EP Equipment"
-    }
-  },
-  "tags": [
-    {
-      "tr": "elektrikli forklift",
-      "en": "electric forklift"
-    },
-    {
-      "tr": "li-ion",
-      "en": "li-ion"
-    },
-    {
-      "tr": "3 tekerlekli",
-      "en": "3-wheel"
-    },
-    {
-      "tr": "ağır yük",
-      "en": "heavy-duty"
-    },
-    {
-      "tr": "80v",
-      "en": "80v"
-    },
-    {
-      "tr": "2000kg",
-      "en": "2000kg"
-    }
-  ],
-  "certifications": [
-    {
-      "name": "CE",
-      "logo_url": "certifications/ce-mark.png"
-    }
-  ],
-  "related_products": ["CPD15TVL", "CPD18TVL", "CPD30L2", "CPD25L2"],
-  "pdf_source": "/Users/nurullah/Downloads/Nurullah/EP/02_CPD15-18-20TVL-EN-Brochure.pdf"
+    ],
+    "related_products": ["CPD15TVL", "CPD18TVL", "CPD30L2", "CPD25L2"],
+    "pdf_source": "/Users/nurullah/Downloads/Nurullah/EP/02_CPD15-18-20TVL-EN-Brochure.pdf"
 }

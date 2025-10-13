@@ -196,7 +196,7 @@ class {MODEL}_{KATEGORİ}_2_Detailed extends Seeder {
             // 2. TEKNİK GELİŞME: Profesyonel, detaylı özellikler
             // 3. SICAK SONUÇ: Satışa yönlendiren, harekete geçiren
 
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section class="hero-intro">
     <h2>{Çarpıcı başlık - örn: İXTİF F4 201: Lojistiğin Yeni Nabzı}</h2>
     <p><strong>Sabah 06:00.</strong> Depo kapıları açılıyor... {Hikaye anlatımı, duygusal bağ kurma, müşterinin kendini içinde görmesi. 100-150 kelime. Ürünün getirdiği değişimi betimle.}</p>
@@ -395,7 +395,7 @@ class {MODEL}_{KATEGORİ}_3_Variants extends Seeder {
                 'variant_type' => 'catal-uzunlugu', // Türkçe kebab-case
                 'title' => '{İXTİF + Model + Varyant özelliği}',
                 'short_description' => '{30-50 kelime varyant özellikleri}',
-                'long_description' => '{800-1200 kelime HTML - varyanta özel detaylar}',
+                'body' => '{800-1200 kelime HTML - varyanta özel detaylar}',
                 'use_cases' => [
                     ['icon' => 'box-open', 'text' => '{Varyanta özel kullanım 1}'],
                     ['icon' => 'store', 'text' => '{Varyanta özel kullanım 2}'],
@@ -417,7 +417,7 @@ class {MODEL}_{KATEGORİ}_3_Variants extends Seeder {
                 'title' => json_encode(['tr' => $v['title']], JSON_UNESCAPED_UNICODE),
                 'slug' => json_encode(['tr' => Str::slug($v['title'])], JSON_UNESCAPED_UNICODE),
                 'short_description' => json_encode(['tr' => $v['short_description']], JSON_UNESCAPED_UNICODE),
-                'long_description' => json_encode(['tr' => $v['long_description']], JSON_UNESCAPED_UNICODE),
+                'body' => json_encode(['tr' => $v['body']], JSON_UNESCAPED_UNICODE),
                 'use_cases' => json_encode($v['use_cases'], JSON_UNESCAPED_UNICODE),
                 'is_master_product' => false,
                 'product_type' => 'physical',

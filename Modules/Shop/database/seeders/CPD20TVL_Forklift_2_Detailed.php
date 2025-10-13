@@ -1,14 +1,19 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CPD20TVL_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class CPD20TVL_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'CPD20TVL')->first();
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF CPD20TVL - Li-Ion Forklift</h2><p>Kompakt gövdeli, Li-Ion bataryalı üç tekerlekli elektrikli forklift; dar koridorlarda yüksek manevra ve gün boyu verimlilik için tasarlandı. Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm.</p></section><section><h3>Teknik</h3><p>AC tahrik ve hassas kontrol ile yük kaldırma ve indirme hareketleri yumuşaktır. Enerji yönetim sistemi akü sağlığını korurken, rejeneratif frenleme menzili uzatır. Operatör bölgesi, titreşimi azaltan yerleşim ve ergonomik kumandalarla uzun vardiyalarda konfor sağlar.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => '<section><h2>İXTİF CPD20TVL - Li-Ion Forklift</h2><p>Kompakt gövdeli, Li-Ion bataryalı üç tekerlekli elektrikli forklift; dar koridorlarda yüksek manevra ve gün boyu verimlilik için tasarlandı. Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm.</p></section><section><h3>Teknik</h3><p>AC tahrik ve hassas kontrol ile yük kaldırma ve indirme hareketleri yumuşaktır. Enerji yönetim sistemi akü sağlığını korurken, rejeneratif frenleme menzili uzatır. Operatör bölgesi, titreşimi azaltan yerleşim ve ergonomik kumandalarla uzun vardiyalarda konfor sağlar.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -31,9 +36,11 @@ class CPD20TVL_Forklift_2_Detailed extends Seeder {
                         "value": "1500 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -66,9 +73,11 @@ JSON
                         "description": "Modüler yapı ile servis süreleri kısalır."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -103,9 +112,11 @@ JSON
                         "text": "Kısa mesafe yük transferi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -128,9 +139,11 @@ JSON
                         "text": "Enerji geri kazanımı ile daha uzun sürüş süresi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -217,17 +230,21 @@ JSON
                         "text": "Kamu Depoları"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'warranty_info' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'warranty_info' => json_encode(json_decode(
+                <<<'JSON'
                 {
                     "coverage": "Makine 12 ay, Li-Ion batarya 24 ay garanti.",
                     "duration_months": 12,
                     "battery_warranty_months": 24
                 }
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -258,9 +275,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -269,9 +288,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Şarj süresi nedir?",
@@ -318,8 +339,9 @@ JSON
                         "answer": "Makine 12 ay, akü 24 ay. İXTİF 0216 755 3 555."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
     }

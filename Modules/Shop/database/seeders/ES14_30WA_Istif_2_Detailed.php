@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES14_30WA_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES14_30WA_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES14-30WA')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (ES14-30WA)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (ES14-30WA)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section>
+            'body' => json_encode(['tr' => '<section>
   <h2>Hassas İstifin Güvenilir Standardı: ES14-30WA</h2>
   <p>Depoda hız, güven ve esneklik tek bir makinede buluştuğunda, operatörün tüm odağı akışa kayar. İXTİF ES14-30WA bu akış için üretildi: 1400 kg taşıma kapasitesi, 600 mm yük merkezi ve ayarlanabilir geniş bacak (straddle) mimarisi ile farklı palet ölçülerine uyum sağlar. 1545 mm dönüş yarıçapı, kaplumbağa hız moduyla birleştiğinde, kalabalık alanlarda bile hatasız manevra yapılır. Standart oransal kaldırma sistemi, raf seviyesinde milimetrik hassasiyet sunarken elektromanyetik fren, eğimli rampalarda bile güven hissini korur. 24V/210Ah akü sistemi gün boyunca istikrar sağlarken Li-ion alternatif, hızlı şarj ve bakım kolaylığıyla toplam sahip olma maliyetini aşağı çeker. Günün sonunda ES14-30WA, istif operasyonlarının en çok ihtiyaç duyduğu şeyi verir: öngörülebilir, tekrar edilebilir performans.</p>
 </section>

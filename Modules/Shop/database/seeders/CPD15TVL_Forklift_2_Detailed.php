@@ -1,13 +1,17 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CPD15TVL_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class CPD15TVL_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'CPD15TVL')->first();
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF CPD15TVL - Li-Ion Forklift</h2><p>Kompakt gövdeli, Li-Ion bataryalı üç tekerlekli elektrikli forklift; dar koridorlarda yüksek manevra ve gün boyu verimlilik için tasarlandı. Kapasite 1500 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm.</p></section><section><h3>Teknik</h3><p>AC tahrik ve hassas kontrol ile yük kaldırma ve indirme hareketleri yumuşaktır. Enerji yönetim sistemi akü sağlığını korurken, rejeneratif frenleme menzili uzatır. Operatör bölgesi, titreşimi azaltan yerleşim ve ergonomik kumandalarla uzun vardiyalarda konfor sağlar.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>İXTİF CPD15TVL - Li-Ion Forklift</h2><p>Kompakt gövdeli, Li-Ion bataryalı üç tekerlekli elektrikli forklift; dar koridorlarda yüksek manevra ve gün boyu verimlilik için tasarlandı. Kapasite 1500 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm.</p></section><section><h3>Teknik</h3><p>AC tahrik ve hassas kontrol ile yük kaldırma ve indirme hareketleri yumuşaktır. Enerji yönetim sistemi akü sağlığını korurken, rejeneratif frenleme menzili uzatır. Operatör bölgesi, titreşimi azaltan yerleşim ve ergonomik kumandalarla uzun vardiyalarda konfor sağlar.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>'], JSON_UNESCAPED_UNICODE),
             'primary_specs' => json_encode([
                 ['icon' => 'weight-hanging', 'label' => 'Kapasite', 'value' => '1500 kg'],
                 ['icon' => 'battery-full', 'label' => 'Batarya', 'value' => '48 V / 360 Ah'],

@@ -35,16 +35,16 @@ return new class extends Migration
             $table->json('title')->comment('Ürün başlığı: {"tr": "Ürün Adı", "en": "Product Name", "vs.": "..."}');
             $table->json('slug')->comment('Çoklu dil slug: {"tr": "urun-adi", "en": "product-name", "vs.": "..."}');
             $table->json('short_description')->nullable()->comment('Kısa açıklama (maksimum 160 karakter): {"tr": "Kısa açıklama", "en": "Short description", "vs.": "..."}');
-            $table->json('long_description')->nullable()->comment('Detaylı açıklama (Rich text HTML): {"tr": "<p>Detaylı açıklama</p>", "en": "<p>Detailed description</p>", "vs.": "..."}');
+            $table->json('body')->nullable()->comment('Detaylı açıklama (Rich text HTML): {"tr": "<p>Detaylı açıklama</p>", "en": "<p>Detailed description</p>", "vs.": "..."}');
 
             // Product Type & Condition
             $table->enum('product_type', ['physical', 'digital', 'service', 'membership', 'bundle'])
-                  ->default('physical')
-                  ->comment('Ürün tipi: physical=Fiziksel, digital=Dijital, service=Hizmet, membership=Üyelik, bundle=Paket');
+                ->default('physical')
+                ->comment('Ürün tipi: physical=Fiziksel, digital=Dijital, service=Hizmet, membership=Üyelik, bundle=Paket');
 
             $table->enum('condition', ['new', 'used', 'refurbished'])
-                  ->default('new')
-                  ->comment('Ürün durumu: new=Sıfır, used=İkinci el, refurbished=Yenilenmiş');
+                ->default('new')
+                ->comment('Ürün durumu: new=Sıfır, used=İkinci el, refurbished=Yenilenmiş');
 
             // Pricing
             $table->boolean('price_on_request')->default(false)->index()->comment('Fiyat sorunuz aktif mi? (B2B için)');
@@ -116,14 +116,14 @@ return new class extends Migration
 
             // Foreign Keys
             $table->foreign('category_id')
-                  ->references('category_id')
-                  ->on('shop_categories')
-                  ->onDelete('restrict');
+                ->references('category_id')
+                ->on('shop_categories')
+                ->onDelete('restrict');
 
             $table->foreign('brand_id')
-                  ->references('brand_id')
-                  ->on('shop_brands')
-                  ->onDelete('set null');
+                ->references('brand_id')
+                ->on('shop_brands')
+                ->onDelete('set null');
         });
 
         // JSON slug indexes (MySQL 8.0+ / MariaDB 10.5+) - Tablo oluşturulduktan sonra

@@ -18,7 +18,7 @@ PDF'ini analiz et ve aşağıdaki kurallara göre Phase 1 formatında ürün JSO
 
 ### Dil ve Pazarlama Kuralları
 1. Tüm içerikler %100 Türkçe olmalı. `en` alanları Türkçe metnin aynısı.
-2. `long_description` iki bloktan oluşmalı:
+2. `body` iki bloktan oluşmalı:
    - `<section class="marketing-intro">` → abartılı, duygusal satış açılışı
    - `<section class="marketing-body">` → teknik faydalar, garanti, iletişim, **SEO anahtar kelimeleri** listesi
 3. SEO anahtar kelimelerini mutlaka geçir:
@@ -45,13 +45,13 @@ PDF'ini analiz et ve aşağıdaki kurallara göre Phase 1 formatında ürün JSO
 ### SQL Üretimi
 - `shop_products`, `shop_brands`, `shop_categories`, `shop_product_variants`, `shop_settings` sıralamasına uyan tek bir SQL dosyası üret.
 - `JSON_OBJECT` içindeki tüm metinler Türkçe. `en` değerleri `tr` ile aynı.
-- `long_description` HTML olarak JSON içine gömülecek.
+- `body` HTML olarak JSON içine gömülecek.
 - `faq_data`, `use_cases`, `competitive_advantages`, `target_industries` gibi alanlar JSON olarak `shop_products` tablosuna eklenmeli.
 
 ---
 
 ## 🧾 İPUÇLARI
-- Pazarlama tonunda emoji kullanımı serbest (özellikle `long_description` ve `features` için).
+- Pazarlama tonunda emoji kullanımı serbest (özellikle `body` ve `features` için).
 - Duygusal tetikleyiciler: “prestij”, “şampiyon”, “hız rekoru”, “yatırımınızın vitrini”.
 - AI’nın senaryoyu daha iyi anlaması için PDF’den çektiği teknik tabloları bullet listesinde tekrar kullan.
 - Çıktıyı üretmeden önce, tüm İngilizce kelimelerin Türkçe karşılıklarına çevrildiğinden emin ol.
@@ -59,13 +59,13 @@ PDF'ini analiz et ve aşağıdaki kurallara göre Phase 1 formatında ürün JSO
 ---
 
 ## ✅ Kontrol Listesi
-- [ ] `long_description` iki HTML section ile başlıyor mu?
+- [ ] `body` iki HTML section ile başlıyor mu?
 - [ ] SEO anahtar kelimeleri hem kısa hem uzun açıklamada geçiyor mu?
 - [ ] `use_cases` ≥ 6, `competitive_advantages` ≥ 5, `target_industries` ≥ 20, `faq_data` ≥ 10 mı?
 - [ ] Tüm `en` alanları Türkçe metni aynen taşıyor mu?
 - [ ] Teknik spesifikasyon değerleri PDF ile uyumlu mu?
 - [ ] SQL dosyası; marka, kategori, ürün, varyant, ayar sıralamasında mı?
 
-Bu prompt `.md` dosyası AI operatörleri / otomasyonlar tarafından direkt kullanılabilir. Savunma hattı: “Tüm metinler Türkçe, `en` alanı Türkçe kopya, SEO kelimeleri unutulmayacak.” 
+Bu prompt `.md` dosyası AI operatörleri / otomasyonlar tarafından direkt kullanılabilir. Savunma hattı: “Tüm metinler Türkçe, `en` alanı Türkçe kopya, SEO kelimeleri unutulmayacak.”
 
 Hazırsan F4 201 transpaletiyle depoda yeni bir vitrin açıyoruz! 🚀

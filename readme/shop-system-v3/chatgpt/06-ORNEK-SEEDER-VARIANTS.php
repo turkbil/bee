@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
  *   * title (İXTİF + Varyant adı)
  *   * slug (Türkçe karakterli)
  *   * short_description (30-50 kelime)
- *   * long_description (HTML içerik)
+ *   * body (HTML içerik)
  *   * use_cases (6 senaryo)
  *
  * ÖNEMLİ NOTLAR:
@@ -52,7 +52,7 @@ class F4_202_Transpalet_Variants extends Seeder
                 'title' => 'İXTİF F4 202 - 1150mm Çatal',
                 'short_description' => 'Standart 1150mm çatal uzunluğu ile EUR palet (1200x800mm) taşımada yüksek performans. Endüstriyel depolarda dar koridor operasyonlarında mükemmel manevra kabiliyeti sunan, 2.5 ton kapasiteli güç platformu.',
 
-                'long_description' => <<<'HTML'
+                'body' => <<<'HTML'
 <section class="variant-intro">
 <p><strong>1150mm çatal uzunluğu, F4 202'nin en yaygın kullanılan varyantıdır.</strong></p>
 <p>EUR palet standardına tam uyum sağlar ve dar koridor operasyonlarında maksimum verimlilik sunar.</p>
@@ -70,8 +70,7 @@ class F4_202_Transpalet_Variants extends Seeder
 <h4>Teknik Özellikler</h4>
 <p>Bu varyant, standart F4 202 teknik özelliklerine sahiptir. Çatal uzunluğu 1150mm olarak optimize edilmiştir.</p>
 </section>
-HTML
-,
+HTML,
 
                 'use_cases' => [
                     'Endüstriyel depolarda EUR palet (1200x800mm) sevkiyat operasyonları',
@@ -90,7 +89,7 @@ HTML
                 'title' => 'İXTİF F4 202 - 1220mm Çatal',
                 'short_description' => 'Uzun 1220mm çatal ile endüstriyel palet (1200x1000mm) ve IBC tank taşımada üstün performans. Kimya, inşaat ve ağır sanayi uygulamalarında güvenli ve stabil operasyon sağlayan güçlü varyant.',
 
-                'long_description' => <<<'HTML'
+                'body' => <<<'HTML'
 <section class="variant-intro">
 <p><strong>1220mm çatal uzunluğu, endüstriyel paletler için optimize edilmiştir.</strong></p>
 <p>IBC tank ve ağır yük uygulamalarında maksimum stabilite sağlar.</p>
@@ -108,8 +107,7 @@ HTML
 <h4>IBC Tank Taşıma</h4>
 <p>1000 litrelik IBC tankların güvenli taşınması için uzun çatal gereklidir. Bu varyant, tank paletlerinin tam desteğini sağlar.</p>
 </section>
-HTML
-,
+HTML,
 
                 'use_cases' => [
                     'Kimya tesislerinde IBC tank (1000L) ve varil paletlerinin güvenli taşınması',
@@ -128,7 +126,7 @@ HTML
                 'title' => 'İXTİF F4 202 - Extended Battery',
                 'short_description' => 'Genişletilmiş 4 modül Li-Ion batarya sistemi (200Ah) ile 12-16 saat kesintisiz operasyon kapasitesi. Çift vardiya ve yoğun operasyonlar için tasarlanmış, uzun çalışma süresi gerektiren uygulamalarda ideal çözüm.',
 
-                'long_description' => <<<'HTML'
+                'body' => <<<'HTML'
 <section class="variant-intro">
 <p><strong>Extended Battery varyantı, uzun vardiya operasyonları için geliştirilmiştir.</strong></p>
 <p>4 modül (4x 24V/25Ah = 200Ah) Li-Ion batarya sistemi ile 12-16 saat kesintisiz çalışma sunar.</p>
@@ -149,8 +147,7 @@ HTML
 <h4>Operasyonel Verimlilik</h4>
 <p>Çift vardiya çalışan depolarda, ara şarj ihtiyacı olmadan 12-16 saat kesintisiz operasyon sağlar. Bu, lojistik maliyetlerinizi düşürür ve verimliliği artırır.</p>
 </section>
-HTML
-,
+HTML,
 
                 'use_cases' => [
                     '24 saat aktif e-ticaret fulfillment merkezlerinde çift vardiya operasyonları',
@@ -183,7 +180,7 @@ HTML
                 'title' => json_encode(['tr' => $v['title']], JSON_UNESCAPED_UNICODE),
                 'slug' => json_encode(['tr' => Str::slug($v['title'])], JSON_UNESCAPED_UNICODE),
                 'short_description' => json_encode(['tr' => $v['short_description']], JSON_UNESCAPED_UNICODE),
-                'long_description' => json_encode(['tr' => $v['long_description']], JSON_UNESCAPED_UNICODE),
+                'body' => json_encode(['tr' => $v['body']], JSON_UNESCAPED_UNICODE),
                 'use_cases' => json_encode($v['use_cases'], JSON_UNESCAPED_UNICODE),
 
                 // Relations (same as master)

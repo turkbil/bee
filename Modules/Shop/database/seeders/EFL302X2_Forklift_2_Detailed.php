@@ -1,16 +1,24 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL302X2_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL302X2_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL-302X2')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL-302X2'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL-302X2');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF EFL302X2 - 3.0 Ton Li-Ion Denge Ağırlıklı Forklift: Basit, Güçlü ve Her Yerde Hazır</h2><p>Depo kapıları açıldığında ilk hareket eden ekipman güven verir. Li-ion çekirdeğiyle anında uyanan bu model, dahili şarj cihazı sayesinde vardiya aralarında prize dokunup fırsat şarjı alır; bakım ve gaz emisyonu derdini ortadan kaldırır. Yüksek yerden açıklık ve büyük lastikler bozuk zeminleri sorun olmaktan çıkarırken, oransal kaldırma sistemi istifte milimetre hassasiyet sağlar. Ayarlanabilir direksiyon ve süspansiyonlu koltuk ise uzun vardiyalarda operatör konforunu üst seviyeye taşır.</p></section><section><h3>Teknik Güç ve Ölçüler</h3><p>3000 kg nominal kapasite ve 500 mm yük merkez mesafesi ile sınıfının çoğu uygulamasını karşılar. 80V 100Ah Li-Ion batarya, 8 kW sürüş ve 16 kW kaldırma motorlarıyla stabil güç çıkışı sağlar. Maksimum hız 11/12 km/h, yükle/boş 0.28/0.36 m/s kaldırma ve 0.4/0.43 m/s indirme hızları, rutin iş akışlarında net verimlilik kazandırır. 15/15 % eğim tırmanma kabiliyeti rampalarda güven verir. Şasi ölçülerinde 2514 mm çatal yüzüne uzunluk, 1154 mm toplam genişlik ve 2258 mm dönüş yarıçapı dar koridorlarda çeviklik sunar. Direk kapalı yüksekliği 2060 mm, kaldırma yüksekliği 3000 mm ve tepe noktası 4095 mm ile raf yapılarına uyumlu çalışır.</p><p>Pnömatik lastikler (Ön 7.00-12-16PR, Arka 18x7-8-14PR), hidrolik direksiyon ve 74 dB(A) altında sürücü kulağı gürültü seviyesi, operasyon alanlarında konforlu ve kontrollü sürüş sağlar. Sürüş kontrolünde PMSM mimarisi, enerji verimliliğini ve tepkiselliği artırır.</p></section><section><h3>Sonuç ve İletişim</h3><p>İçten yanmalı muadillerine ekonomik bir alternatif arayan işletmeler için, sürdürülebilir ve çevik bir çözüm sunar. Basit mimarisi, dahili şarjı ve suya dayanıklı gövdesiyle saha gerçeklerine göre tasarlanmıştır. Daha fazla bilgi ve keşif görüşmesi için bizi arayın: <strong>0216 755 3 555</strong>.</p></section>'], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => '<section><h2>İXTİF EFL302X2 - 3.0 Ton Li-Ion Denge Ağırlıklı Forklift: Basit, Güçlü ve Her Yerde Hazır</h2><p>Depo kapıları açıldığında ilk hareket eden ekipman güven verir. Li-ion çekirdeğiyle anında uyanan bu model, dahili şarj cihazı sayesinde vardiya aralarında prize dokunup fırsat şarjı alır; bakım ve gaz emisyonu derdini ortadan kaldırır. Yüksek yerden açıklık ve büyük lastikler bozuk zeminleri sorun olmaktan çıkarırken, oransal kaldırma sistemi istifte milimetre hassasiyet sağlar. Ayarlanabilir direksiyon ve süspansiyonlu koltuk ise uzun vardiyalarda operatör konforunu üst seviyeye taşır.</p></section><section><h3>Teknik Güç ve Ölçüler</h3><p>3000 kg nominal kapasite ve 500 mm yük merkez mesafesi ile sınıfının çoğu uygulamasını karşılar. 80V 100Ah Li-Ion batarya, 8 kW sürüş ve 16 kW kaldırma motorlarıyla stabil güç çıkışı sağlar. Maksimum hız 11/12 km/h, yükle/boş 0.28/0.36 m/s kaldırma ve 0.4/0.43 m/s indirme hızları, rutin iş akışlarında net verimlilik kazandırır. 15/15 % eğim tırmanma kabiliyeti rampalarda güven verir. Şasi ölçülerinde 2514 mm çatal yüzüne uzunluk, 1154 mm toplam genişlik ve 2258 mm dönüş yarıçapı dar koridorlarda çeviklik sunar. Direk kapalı yüksekliği 2060 mm, kaldırma yüksekliği 3000 mm ve tepe noktası 4095 mm ile raf yapılarına uyumlu çalışır.</p><p>Pnömatik lastikler (Ön 7.00-12-16PR, Arka 18x7-8-14PR), hidrolik direksiyon ve 74 dB(A) altında sürücü kulağı gürültü seviyesi, operasyon alanlarında konforlu ve kontrollü sürüş sağlar. Sürüş kontrolünde PMSM mimarisi, enerji verimliliğini ve tepkiselliği artırır.</p></section><section><h3>Sonuç ve İletişim</h3><p>İçten yanmalı muadillerine ekonomik bir alternatif arayan işletmeler için, sürdürülebilir ve çevik bir çözüm sunar. Basit mimarisi, dahili şarjı ve suya dayanıklı gövdesiyle saha gerçeklerine göre tasarlanmıştır. Daha fazla bilgi ve keşif görüşmesi için bizi arayın: <strong>0216 755 3 555</strong>.</p></section>'], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -33,9 +41,11 @@ class EFL302X2_Forklift_2_Detailed extends Seeder {
                         "value": "2258 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "battery-full",
@@ -68,9 +78,11 @@ JSON
                         "description": "Bakım gerektirmeyen batarya ile toplam sahip olma maliyeti düşer"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "warehouse",
@@ -105,9 +117,11 @@ JSON
                         "text": "Üretim hücreleri arasında WIP akışı ve hat besleme"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -134,9 +148,11 @@ JSON
                         "text": "Enerji tasarrufu %10-15 ve %10’a kadar uzun çalışma süresi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -219,10 +235,12 @@ JSON
                         "text": "Pet Ürünleri ve Yem"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'warranty_info' => json_encode(['coverage' => 'Makineye satın alım tarihinden itibaren 12 ay fabrika garantisi verilir. Li-Ion batarya modülleri ise satın alım tarihinden itibaren 24 ay garanti kapsamındadır. Garanti, normal kullanım koşullarında üretim hatalarını kapsar.', 'duration_months' => 12, 'battery_warranty_months' => 24], JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -253,9 +271,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -264,9 +284,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "Gerçek taşıma kapasitesi farklı direk yüksekliklerinde nasıl değişir?",
@@ -317,8 +339,9 @@ JSON
                         "answer": "Makine 12 ay, Li-Ion batarya 24 ay garantilidir. Satış ve servis için İXTİF destek hattı 0216 755 3 555 üzerinden bilgi alabilirsiniz."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info("ℹ️ Detailed güncellendi: EFL-302X2");

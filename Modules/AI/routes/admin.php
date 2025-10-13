@@ -859,6 +859,11 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                 // Analytics Admin Pages
                 Route::prefix('analytics')->name('analytics.')->group(function() {
                     Route::get('/dashboard', [\Modules\AI\App\Http\Controllers\Admin\Analytics\AnalyticsController::class, 'index'])->name('dashboard');
+
+                    // 📊 Conversation Analytics - Metadata Tracking
+                    Route::get('/conversations', [\Modules\AI\App\Http\Controllers\Admin\Analytics\ConversationAnalyticsController::class, 'index'])
+                        ->middleware('module.permission:ai,view')
+                        ->name('conversations');
                 });
                 
                 // PHASE 4: Model Credit Rate Management Pages

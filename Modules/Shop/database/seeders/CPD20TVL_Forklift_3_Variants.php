@@ -1,20 +1,25 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class CPD20TVL_Forklift_3_Variants extends Seeder {
-    public function run(): void {
+class CPD20TVL_Forklift_3_Variants extends Seeder
+{
+    public function run(): void
+    {
         $m = DB::table('shop_products')->where('sku', 'CPD20TVL')->first();
-        $variants = json_decode(<<<'JSON'
+        $variants = json_decode(
+            <<<'JSON'
             [
                 {
                     "sku": "CPD20TVL-CATAL-1070",
                     "variant_type": "catal-uzunlugu",
                     "title": "İXTİF CPD20TVL 1070 mm Çatal",
                     "short_description": "Kısa çatal ile dar koridorda üstün çeviklik.",
-                    "long_description": "<section><h2>İXTİF CPD20TVL 1070 mm Çatal</h2><p>Kısa çatal seçeneği özellikle dar dönüş alanlarında çevik hareket sağlar. Kompakt şasi, dengeli ağırlık dağılımı ve hassas kontrol algoritmaları ile dar alan manevraları güvenle yapılır.</p></section><section><h3>Teknik</h3><p>Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm. Li-Ion 48 V / 360 Ah ve rejeneratif frenleme ile uzun çalışma süresi elde edilir.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>",
+                    "body": "<section><h2>İXTİF CPD20TVL 1070 mm Çatal</h2><p>Kısa çatal seçeneği özellikle dar dönüş alanlarında çevik hareket sağlar. Kompakt şasi, dengeli ağırlık dağılımı ve hassas kontrol algoritmaları ile dar alan manevraları güvenle yapılır.</p></section><section><h3>Teknik</h3><p>Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm. Li-Ion 48 V / 360 Ah ve rejeneratif frenleme ile uzun çalışma süresi elde edilir.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>",
                     "use_cases": [
                         {
                             "icon": "box-open",
@@ -47,7 +52,7 @@ class CPD20TVL_Forklift_3_Variants extends Seeder {
                     "variant_type": "catal-uzunlugu",
                     "title": "İXTİF CPD20TVL 1150 mm Çatal",
                     "short_description": "Standart Avrupa paleti için ideal uzunluk.",
-                    "long_description": "<section><h2>İXTİF CPD20TVL 1150 mm Çatal</h2><p>Standart palet boyutlarında denge ve erişim için optimum uzunluk sunar. Kompakt şasi, dengeli ağırlık dağılımı ve hassas kontrol algoritmaları ile dar alan manevraları güvenle yapılır.</p></section><section><h3>Teknik</h3><p>Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm. Li-Ion 48 V / 360 Ah ve rejeneratif frenleme ile uzun çalışma süresi elde edilir.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>",
+                    "body": "<section><h2>İXTİF CPD20TVL 1150 mm Çatal</h2><p>Standart palet boyutlarında denge ve erişim için optimum uzunluk sunar. Kompakt şasi, dengeli ağırlık dağılımı ve hassas kontrol algoritmaları ile dar alan manevraları güvenle yapılır.</p></section><section><h3>Teknik</h3><p>Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm. Li-Ion 48 V / 360 Ah ve rejeneratif frenleme ile uzun çalışma süresi elde edilir.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>",
                     "use_cases": [
                         {
                             "icon": "box-open",
@@ -80,7 +85,7 @@ class CPD20TVL_Forklift_3_Variants extends Seeder {
                     "variant_type": "mast-yuksekligi",
                     "title": "İXTİF CPD20TVL 3300 mm Mast",
                     "short_description": "Orta seviye raflar için dengeli çözüm.",
-                    "long_description": "<section><h2>İXTİF CPD20TVL 3300 mm Mast</h2><p>Orta seviye raf erişimi için kaldırma kapasitesi ve stabiliteyi birleştirir. Kompakt şasi, dengeli ağırlık dağılımı ve hassas kontrol algoritmaları ile dar alan manevraları güvenle yapılır.</p></section><section><h3>Teknik</h3><p>Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm. Li-Ion 48 V / 360 Ah ve rejeneratif frenleme ile uzun çalışma süresi elde edilir.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>",
+                    "body": "<section><h2>İXTİF CPD20TVL 3300 mm Mast</h2><p>Orta seviye raf erişimi için kaldırma kapasitesi ve stabiliteyi birleştirir. Kompakt şasi, dengeli ağırlık dağılımı ve hassas kontrol algoritmaları ile dar alan manevraları güvenle yapılır.</p></section><section><h3>Teknik</h3><p>Kapasite 2000 kg, yük merkezi 500 mm, standart kaldırma yüksekliği 3000 mm. Li-Ion 48 V / 360 Ah ve rejeneratif frenleme ile uzun çalışma süresi elde edilir.</p></section><section><h3>Sonuç</h3><p>0216 755 3 555</p></section>",
                     "use_cases": [
                         {
                             "icon": "box-open",
@@ -109,8 +114,9 @@ class CPD20TVL_Forklift_3_Variants extends Seeder {
                     ]
                 }
             ]
-JSON
-        , true);
+JSON,
+            true
+        );
 
         foreach ($variants as $v) {
             DB::table('shop_products')->updateOrInsert(['sku' => $v['sku']], [
@@ -122,7 +128,7 @@ JSON
                 'title' => json_encode(['tr' => $v['title']], JSON_UNESCAPED_UNICODE),
                 'slug' => json_encode(['tr' => Str::slug($v['title'])], JSON_UNESCAPED_UNICODE),
                 'short_description' => json_encode(['tr' => $v['short_description']], JSON_UNESCAPED_UNICODE),
-                'long_description' => json_encode(['tr' => $v['long_description']], JSON_UNESCAPED_UNICODE),
+                'body' => json_encode(['tr' => $v['body']], JSON_UNESCAPED_UNICODE),
                 'use_cases' => json_encode($v['use_cases'], JSON_UNESCAPED_UNICODE),
                 'is_master_product' => false,
                 'is_active' => true,

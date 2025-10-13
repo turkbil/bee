@@ -21,13 +21,13 @@ use Modules\AI\App\Models\AIMessage;
 
 /**
  * 🌐 PUBLIC AI CONTROLLER V2 - Frontend API Entegrasyonu
- * 
+ *
  * Bu controller public erişim için AI özelliklerini API olarak sunar:
  * - Guest user access (rate limited)
  * - Authenticated user access (credit system)
  * - Public chat widget support
  * - Rate limiting and security
- * 
+ *
  * ENDPOINTS:
  * - POST /api/ai/v1/chat - Public chat access
  * - POST /api/ai/v1/feature/{slug} - Public feature access
@@ -50,7 +50,7 @@ class PublicAIController extends Controller
 
     /**
      * 💬 Public Chat Endpoint - Guest users with rate limiting
-     * 
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -59,7 +59,7 @@ class PublicAIController extends Controller
         try {
             // Rate limiting check
             $rateLimitKey = 'public-ai-chat:' . $request->ip();
-            
+
             if (RateLimiter::tooManyAttempts($rateLimitKey, 10)) { // 10 requests per hour
                 return response()->json([
                     'success' => false,
@@ -85,7 +85,7 @@ class PublicAIController extends Controller
                     ->where('is_public', true)
                     ->where('is_active', true)
                     ->first();
-                    
+
                 if (!$feature) {
                     return response()->json([
                         'success' => false,
@@ -134,7 +134,6 @@ class PublicAIController extends Controller
                     'response_id' => $response['id'] ?? null,
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('PublicAIController.publicChat failed', [
                 'error' => $e->getMessage(),
@@ -151,7 +150,7 @@ class PublicAIController extends Controller
 
     /**
      * 🎯 Public Feature Endpoint - Specific AI feature access
-     * 
+     *
      * @param Request $request
      * @param string $slug
      * @return JsonResponse
@@ -161,7 +160,7 @@ class PublicAIController extends Controller
         try {
             // Rate limiting check
             $rateLimitKey = 'public-ai-feature:' . $request->ip() . ':' . $slug;
-            
+
             if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) { // 5 feature requests per hour
                 return response()->json([
                     'success' => false,
@@ -231,7 +230,6 @@ class PublicAIController extends Controller
                     'execution_time' => $response['execution_time'] ?? null,
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('PublicAIController.publicFeature failed', [
                 'error' => $e->getMessage(),
@@ -248,14 +246,14 @@ class PublicAIController extends Controller
 
     /**
      * 📋 Get Public Features List
-     * 
+     *
      * @return JsonResponse
      */
     public function getPublicFeatures(): JsonResponse
     {
         try {
             $cacheKey = 'public_ai_features_list';
-            
+
             $features = Cache::remember($cacheKey, now()->addHours(6), function () {
                 return AIFeature::where('is_public', true)
                     ->where('is_active', true)
@@ -279,7 +277,6 @@ class PublicAIController extends Controller
                     'total' => $features->count(),
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('PublicAIController.getPublicFeatures failed', [
                 'error' => $e->getMessage()
@@ -294,7 +291,7 @@ class PublicAIController extends Controller
 
     /**
      * 👤 Authenticated User Chat
-     * 
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -302,7 +299,7 @@ class PublicAIController extends Controller
     {
         try {
             $user = $request->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'success' => false,
@@ -313,7 +310,7 @@ class PublicAIController extends Controller
             // Check user credits
             $creditService = app(\Modules\AI\App\Services\AICreditService::class);
             $userCredits = $creditService->getUserCredits($user->id);
-            
+
             if ($userCredits < 1) {
                 return response()->json([
                     'success' => false,
@@ -382,7 +379,6 @@ class PublicAIController extends Controller
                     'response_id' => $response['id'] ?? null,
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('PublicAIController.userChat failed', [
                 'error' => $e->getMessage(),
@@ -398,7 +394,7 @@ class PublicAIController extends Controller
 
     /**
      * 💰 Get User Credit Balance
-     * 
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -406,7 +402,7 @@ class PublicAIController extends Controller
     {
         try {
             $user = $request->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'success' => false,
@@ -433,7 +429,6 @@ class PublicAIController extends Controller
                     ]
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('PublicAIController.getCreditBalance failed', [
                 'error' => $e->getMessage(),
@@ -473,7 +468,6 @@ class PublicAIController extends Controller
                 ],
                 'created_at' => now(),
             ]);
-
         } catch (\Exception $e) {
             Log::warning('Failed to log public usage', ['error' => $e->getMessage()]);
         }
@@ -503,7 +497,6 @@ class PublicAIController extends Controller
                 ],
                 'created_at' => now(),
             ]);
-
         } catch (\Exception $e) {
             Log::warning('Failed to log public feature usage', ['error' => $e->getMessage()]);
         }
@@ -568,14 +561,25 @@ class PublicAIController extends Controller
                 [
                     'user_id' => auth()->id(),
                     'feature_slug' => 'shop-assistant',
-                    'context_data' => [
-                        'ip' => $request->ip(),
-                        'user_agent' => $request->userAgent(),
-                        'locale' => app()->getLocale(),
-                    ],
                     'is_active' => true,
                 ]
             );
+
+            // METADATA KAYDI: Her zaman güncel metadata'yı kaydet (firstOrCreate'ten sonra)
+            if ($conversation->wasRecentlyCreated || empty($conversation->context_data)) {
+                $conversation->context_data = [
+                    'tenant_id' => $conversation->tenant_id, // Conversation'daki tenant_id'yi kullan
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'locale' => app()->getLocale(),
+                    'device_type' => $this->detectDeviceType($request),
+                    'browser' => $this->detectBrowser($request),
+                    'os' => $this->detectOS($request),
+                    'referrer' => $request->header('referer'),
+                    'started_at' => now()->toIso8601String(),
+                ];
+                $conversation->save();
+            }
 
             // Build context options for orchestrator
             $contextOptions = [
@@ -642,11 +646,11 @@ class PublicAIController extends Controller
                 $aiResponseText = $this->aiService->ask($validated['message'], [
                     'temperature' => 0.7,
                     'custom_prompt' => $enhancedSystemPrompt,
-                    'conversation_history' => $conversationHistory, // 🧠 Last 3 messages (token limit)
+                    'conversation_history' => $conversationHistory, // 🧠 Last 20 messages
                 ]);
             } catch (\Exception $aiError) {
                 // 🔄 FALLBACK LAYER 1: GPT-5 → GPT-4o-mini
-                if (str_contains($aiError->getMessage(), '429') || str_contains($aiError->getMessage(), 'Rate limit')) {
+                if (str_contains($aiError->getMessage(), '429') || str_contains($aiError->getMessage(), 'Rate limit') || str_contains($aiError->getMessage(), 'rate_limit')) {
                     Log::warning('🔴 GPT-5 rate limit hit, falling back to GPT-4o-mini', [
                         'error' => $aiError->getMessage()
                     ]);
@@ -817,7 +821,6 @@ class PublicAIController extends Controller
                     'tokens_used' => $aiResponse['usage']['total_tokens'] ?? 0,
                 ],
             ]);
-
         } catch (\Exception $e) {
             Log::error('PublicAIController.shopAssistantChat failed', [
                 'error' => $e->getMessage(),
@@ -846,6 +849,90 @@ class PublicAIController extends Controller
         ];
 
         return md5(implode('|', $data));
+    }
+
+    /**
+     * 📱 Detect device type from user agent
+     */
+    private function detectDeviceType(Request $request): string
+    {
+        $userAgent = strtolower($request->userAgent() ?? '');
+
+        // Mobile patterns
+        $mobilePatterns = ['mobile', 'android', 'iphone', 'ipod', 'blackberry', 'windows phone'];
+        foreach ($mobilePatterns as $pattern) {
+            if (str_contains($userAgent, $pattern)) {
+                return 'mobile';
+            }
+        }
+
+        // Tablet patterns
+        $tabletPatterns = ['tablet', 'ipad', 'kindle', 'playbook'];
+        foreach ($tabletPatterns as $pattern) {
+            if (str_contains($userAgent, $pattern)) {
+                return 'tablet';
+            }
+        }
+
+        return 'desktop';
+    }
+
+    /**
+     * 🌐 Detect browser from user agent
+     */
+    private function detectBrowser(Request $request): string
+    {
+        $userAgent = strtolower($request->userAgent() ?? '');
+
+        $browsers = [
+            'edge' => 'Edge',
+            'edg' => 'Edge',
+            'opr' => 'Opera',
+            'opera' => 'Opera',
+            'chrome' => 'Chrome',
+            'safari' => 'Safari',
+            'firefox' => 'Firefox',
+            'msie' => 'Internet Explorer',
+            'trident' => 'Internet Explorer',
+        ];
+
+        foreach ($browsers as $key => $name) {
+            if (str_contains($userAgent, $key)) {
+                return $name;
+            }
+        }
+
+        return 'Unknown';
+    }
+
+    /**
+     * 💻 Detect OS from user agent
+     */
+    private function detectOS(Request $request): string
+    {
+        $userAgent = strtolower($request->userAgent() ?? '');
+
+        $osList = [
+            'windows nt 10' => 'Windows 10',
+            'windows nt 11' => 'Windows 11',
+            'windows nt 6.3' => 'Windows 8.1',
+            'windows nt 6.2' => 'Windows 8',
+            'windows nt 6.1' => 'Windows 7',
+            'mac os x' => 'macOS',
+            'iphone' => 'iOS',
+            'ipad' => 'iOS',
+            'android' => 'Android',
+            'linux' => 'Linux',
+            'ubuntu' => 'Ubuntu',
+        ];
+
+        foreach ($osList as $key => $name) {
+            if (str_contains($userAgent, $key)) {
+                return $name;
+            }
+        }
+
+        return 'Unknown';
     }
 
     /**
@@ -960,8 +1047,8 @@ class PublicAIController extends Controller
                 $formatted[] = "**Kısa Açıklama:** {$descStr}";
             }
 
-            if (!empty($product['long_description'])) {
-                $descStr = is_array($product['long_description']) ? json_encode($product['long_description'], JSON_UNESCAPED_UNICODE) : $product['long_description'];
+            if (!empty($product['body'])) {
+                $descStr = is_array($product['body']) ? json_encode($product['body'], JSON_UNESCAPED_UNICODE) : $product['body'];
                 $formatted[] = "**Detaylı Açıklama:** {$descStr}";
             }
 
@@ -1253,7 +1340,6 @@ class PublicAIController extends Controller
                     'last_message_at' => $conversation->last_message_at?->toIso8601String(),
                 ],
             ]);
-
         } catch (\Exception $e) {
             Log::error('PublicAIController.getConversationHistory failed', [
                 'error' => $e->getMessage(),
@@ -1367,5 +1453,43 @@ class PublicAIController extends Controller
         ]);
 
         return $content;
+    }
+
+    /**
+     * 🎨 Get Product Placeholder Conversation
+     *
+     * Returns cached or AI-generated placeholder conversation for product chat widget
+     *
+     * @param string $productId
+     * @return JsonResponse
+     */
+    public function getProductPlaceholder(string $productId): JsonResponse
+    {
+        try {
+            // Get placeholder service
+            $placeholderService = app(\App\Services\AI\ProductPlaceholderService::class);
+
+            // Get or generate placeholder
+            $result = $placeholderService->getPlaceholder($productId);
+
+            return response()->json([
+                'success' => $result['success'],
+                'data' => [
+                    'conversation' => $result['conversation'],
+                    'from_cache' => $result['from_cache'] ?? false,
+                    'generated_at' => $result['generated_at'] ?? null,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('PublicAIController.getProductPlaceholder failed', [
+                'product_id' => $productId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Placeholder yüklenemedi',
+            ], 500);
+        }
     }
 }

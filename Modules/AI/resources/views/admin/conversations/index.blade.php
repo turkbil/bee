@@ -317,6 +317,7 @@
                                 </button>
                             </th>
                             <th>Kullanıcı</th>
+                            <th>Kişi Bilgileri</th>
                             <th>Tenant</th>
                             <th>
                                 <button class="table-sort {{ request('sort') === 'is_demo' ? (request('direction') === 'asc' ? 'asc' : 'desc') : '' }}"
@@ -380,6 +381,43 @@
                                     @endif
                                 @else
                                     <span class="text-secondary">Sistem</span>
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $contextData = $conversation->context_data ?? [];
+                                    $device = $contextData['device_type'] ?? null;
+                                    $browser = $contextData['browser'] ?? null;
+                                    $os = $contextData['os'] ?? null;
+                                    $ip = $contextData['ip'] ?? null;
+                                @endphp
+                                @if($device || $browser || $os || $ip)
+                                    <div class="small">
+                                        @if($device)
+                                            <div class="mb-1">
+                                                @if($device === 'mobile')
+                                                    <i class="fas fa-mobile-alt text-primary me-1"></i>
+                                                @elseif($device === 'tablet')
+                                                    <i class="fas fa-tablet-alt text-info me-1"></i>
+                                                @else
+                                                    <i class="fas fa-desktop text-success me-1"></i>
+                                                @endif
+                                                <span class="text-muted">{{ $browser ?? 'Unknown' }}</span>
+                                            </div>
+                                        @endif
+                                        @if($os || $ip)
+                                            <div class="text-muted small">
+                                                @if($os)
+                                                    {{ $os }}
+                                                @endif
+                                                @if($ip)
+                                                    <span class="badge bg-secondary-lt ms-1" title="{{ $ip }}">{{ substr($ip, -8) }}</span>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                @else
+                                    <span class="text-muted small">-</span>
                                 @endif
                             </td>
                             <td>

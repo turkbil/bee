@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ESA121_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ESA121_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ESA121')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ESA121'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ESA121');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF ESA121: Kompakt gövdede sınıfının en dengeli istifi</h2>
   <p>Depoda ilk vardiya başlarken, kapılar açılır açılmaz rafların ritmi başlar. Paletler, siparişler, tedarik ve sevkiyat arasında akış kesintisiz olmalıdır. İXTİF ESA121 işte bu akışı sağlamlaştırmak için tasarlanmış, 1.2 ton kapasiteli elektrikli yaya tipi istif makinesidir. H-kesit direk mimarisi ve iki yandan konumlandırılan kaldırma silindirleri, özellikle yüksek kaldırma seviyelerinde şasiyi burulmaya karşı dirençli kılar; operatöre geniş görüş açısı sunarken yük altında stabiliteyi hissedilir biçimde artırır. 24V/105Ah batarya mimarisi AGM veya Li-ion seçenekleriyle gelir; entegre şarj cihazı sayesinde makine her prizde kolayca şarj olur. 3.0 kW\'a yükseltilen kaldırma motoru, daha hızlı kaldırma ve indirme hızlarıyla çevrim süresini kısaltır; elektromanyetik servis freni ise güvenliği otomatik hale getirir.</p>

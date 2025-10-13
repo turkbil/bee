@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CQE15S_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class CQE15S_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'CQE15S')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: CQE15S'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: CQE15S');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '<section><h2>İXTİF CQE15S: Dar Koridorlarda Uzakları Yakın Eden Walkie Reach</h2><p>Depoda koridorların daraldığı, stok çeşitliliğinin arttığı bir dönemde esneklik her zamankinden daha değerlidir. İXTİF CQE15S, pantograf erişimi sayesinde straddle bacaklarını aşarak çift derin palet konumlarına güvenle uzanır. Standart güç direksiyonu, yanak kaydırma ve tilt fonksiyonları ile operatör yükü azaltır; ofset tiller tasarımı ise ileri görüş açısı sağlayarak güveni yükseltir. 3000 lb temel kapasite ve 189 inçe kadar kaldırma seçenekleriyle CQE15S, e-ticaretten 3PL depolarına kadar farklı operasyonların ortak çözüm ortağıdır.</p></section><section><h3>Teknik</h3><p>Elektrikli tahrik ile yürüyen tip bir reach istif makinesi olan CQE15S, 24 inç yük merkezinde 3000 lb taşıma kapasitesi sunar. Direğe bağlı olarak maksimum çatal yüksekliği 126, 157 veya 189 inçtir; direk yükseldiğinde yükseklik sırasıyla 162.8, 195.25 ve 227 inç değerlerine ulaşır. Şasi uzunluğu 88.6 inç, yük yüzüne kadar uzunluk 46.6 inç ve dönüş yarıçapı 62.6 inçtir. 23 inç erişim mesafesi (pantograf) ile çift derine uzanırken, 3.1/3.4 mph yüklü/boş seyir hızı, 20/26 fpm kaldırma ve 52/33 fpm indirme hızları akıcı operasyon sağlar. S2 60 dk sürüş motoru 4.4 HP, S3 15% kaldırma motoru ise 5.4 kW gücündedir. Enerji tarafında 24V/170Ah veya 205Ah Li-ion, 24V/224Ah AGM ve 24V/255Ah ya da 510Ah kurşun-asit seçenekleri bulunur. Elektromanyetik servis ve park frenleri, poliüretan teker yapısı ve elektrik direksiyon, yaya tipi kullanımda güven ve kontrolü bir araya getirir.</p></section><section><h3>Sonuç</h3><p>İXTİF CQE15S, dar alanlarda yüksek raf erişimi gerektiren dağıtım merkezleri için pratik bir çözümdür. Esnek akü seçenekleri sayesinde farklı vardiya yapılarıyla uyum sağlar; standart yanak kaydırma ve tilt sayesinde palet hizalama süresini kısaltır. Çift derin erişim ve 189 inçe uzanan kaldırma ile daha az manevrada daha fazla iş çıkarırsınız. Tüm teknik sorularınız ve fiyatlandırma için 0216 755 3 555 üzerinden satış ekibimize ulaşabilirsiniz.</p></section>'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode(['tr' => '<section><h2>İXTİF CQE15S: Dar Koridorlarda Uzakları Yakın Eden Walkie Reach</h2><p>Depoda koridorların daraldığı, stok çeşitliliğinin arttığı bir dönemde esneklik her zamankinden daha değerlidir. İXTİF CQE15S, pantograf erişimi sayesinde straddle bacaklarını aşarak çift derin palet konumlarına güvenle uzanır. Standart güç direksiyonu, yanak kaydırma ve tilt fonksiyonları ile operatör yükü azaltır; ofset tiller tasarımı ise ileri görüş açısı sağlayarak güveni yükseltir. 3000 lb temel kapasite ve 189 inçe kadar kaldırma seçenekleriyle CQE15S, e-ticaretten 3PL depolarına kadar farklı operasyonların ortak çözüm ortağıdır.</p></section><section><h3>Teknik</h3><p>Elektrikli tahrik ile yürüyen tip bir reach istif makinesi olan CQE15S, 24 inç yük merkezinde 3000 lb taşıma kapasitesi sunar. Direğe bağlı olarak maksimum çatal yüksekliği 126, 157 veya 189 inçtir; direk yükseldiğinde yükseklik sırasıyla 162.8, 195.25 ve 227 inç değerlerine ulaşır. Şasi uzunluğu 88.6 inç, yük yüzüne kadar uzunluk 46.6 inç ve dönüş yarıçapı 62.6 inçtir. 23 inç erişim mesafesi (pantograf) ile çift derine uzanırken, 3.1/3.4 mph yüklü/boş seyir hızı, 20/26 fpm kaldırma ve 52/33 fpm indirme hızları akıcı operasyon sağlar. S2 60 dk sürüş motoru 4.4 HP, S3 15% kaldırma motoru ise 5.4 kW gücündedir. Enerji tarafında 24V/170Ah veya 205Ah Li-ion, 24V/224Ah AGM ve 24V/255Ah ya da 510Ah kurşun-asit seçenekleri bulunur. Elektromanyetik servis ve park frenleri, poliüretan teker yapısı ve elektrik direksiyon, yaya tipi kullanımda güven ve kontrolü bir araya getirir.</p></section><section><h3>Sonuç</h3><p>İXTİF CQE15S, dar alanlarda yüksek raf erişimi gerektiren dağıtım merkezleri için pratik bir çözümdür. Esnek akü seçenekleri sayesinde farklı vardiya yapılarıyla uyum sağlar; standart yanak kaydırma ve tilt sayesinde palet hizalama süresini kısaltır. Çift derin erişim ve 189 inçe uzanan kaldırma ile daha az manevrada daha fazla iş çıkarırsınız. Tüm teknik sorularınız ve fiyatlandırma için 0216 755 3 555 üzerinden satış ekibimize ulaşabilirsiniz.</p></section>'], JSON_UNESCAPED_UNICODE),
 
             'primary_specs' => json_encode([
                 ['icon' => 'industry', 'label' => 'Kapasite', 'value' => '3000 lb (24 inç LC)'],

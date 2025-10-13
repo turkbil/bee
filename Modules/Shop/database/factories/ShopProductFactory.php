@@ -51,7 +51,7 @@ class ShopProductFactory extends Factory
                 'tr' => $this->faker->sentence(),
                 'en' => $this->faker->sentence(),
             ],
-            'long_description' => [
+            'body' => [
                 'tr' => '<p>' . implode('</p><p>', $this->faker->paragraphs(3)) . '</p>',
                 'en' => '<p>' . implode('</p><p>', $this->faker->paragraphs(3)) . '</p>',
             ],

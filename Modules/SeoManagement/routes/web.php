@@ -27,6 +27,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'tenant']], functio
             ->name('generate');
         Route::post('suggestions', [SeoAIController::class, 'getSuggestions'])
             ->name('suggestions');
+        Route::post('recommendations', [SeoAIController::class, 'getSuggestions'])
+            ->name('recommendations'); // Alias for suggestions
         Route::post('save', [SeoAIController::class, 'saveSeoData'])
             ->name('save');
         Route::get('history', [SeoAIController::class, 'getAnalysisHistory'])

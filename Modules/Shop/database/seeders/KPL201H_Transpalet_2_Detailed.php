@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class KPL201H_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class KPL201H_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'KPL201H')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF KPL201H: Hız, kontrol ve dayanıklılık bir arada</h2>
   <p>Depo kapıları açıldığında ilk hareketi başlatan ekipman güven verir. KPL201H, 2.0 ton sınıfında Li-Ion enerjiyle çalışan ağır hizmet tipi sürücülü transpalet olarak, yoğun vardiyalarda bile ivmesini kaybetmeyen bir akış sağlar. Yükte 9 km/s, yüksüz 12 km/s hıza ulaşan makine; kısa şasi, düşük ağırlık merkezi ve güç destekli direksiyon sayesinde dar koridorlarda dahi dengeli ve öngörülebilir bir sürüş sunar. Yarı kapalı operatör bölmesi, dolgulu sırt dayama ve süspansiyonlu platform, operatör yorgunluğunu azaltarak vardiya sonunda bile tutarlı performans sağlar.</p>

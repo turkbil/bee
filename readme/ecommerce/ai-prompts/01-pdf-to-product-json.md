@@ -55,7 +55,7 @@
       "en": "Kısa açıklama buraya gelir",
       "vs.": "..."
     },
-    "long_description": {
+    "body": {
       "tr": "<section class=\"marketing-intro\">İkna edici, satış odaklı açılış paragrafı...</section><section class=\"marketing-body\">Devamı...</section>",
       "en": "<section class=\"marketing-intro\">İkna edici, satış odaklı açılış paragrafı...</section><section class=\"marketing-body\">Devamı...</section>",
       "vs.": "..."
@@ -269,15 +269,15 @@
 
 ### 🎤 Pazarlama Açılış Metni (Zorunlu)
 
-- `long_description.tr` alanı mutlaka iki bölümden oluşmalı:
+- `body.tr` alanı mutlaka iki bölümden oluşmalı:
   1. `<section class="marketing-intro">` içinde aşırı ikna edici, duygusal ve satış odaklı açılış (müşteriye “bu ürünü almalıyım” dedirtmeli)
   2. `<section class="marketing-body">` içinde teknik artıları ve faydaları detaylandıran tamamlayıcı içerik
-- `long_description.en` alanına aynı Türkçe HTML bloklarını kopyala (çift dil gereksinimi şimdilik Türkçe yürütülüyor)
+- `body.en` alanına aynı Türkçe HTML bloklarını kopyala (çift dil gereksinimi şimdilik Türkçe yürütülüyor)
 - Pazarlama tonunda abartı, övgü ve güçlü sıfatlar kullan; mesaj tamamen Türkçe olsun
 
 ### 🧠 AI Öneri İçgörüleri
 
-- `long_description`, `features`, `competitive_advantages` ve `faq_data` içinde İXTİF'in **ikinci el, kiralık, yedek parça ve teknik servis** hizmetlerine mutlaka yer ver.
+- `body`, `features`, `competitive_advantages` ve `faq_data` içinde İXTİF'in **ikinci el, kiralık, yedek parça ve teknik servis** hizmetlerine mutlaka yer ver.
 - İletişim satırı: `0216 755 3 555` telefonu ve `info@ixtif.com` e-postası kullanılacak.
 - Son kullanıcı odaklı anlat; konteyner yerleşimi, toplu sevkiyat, wholesale/packaging gibi B2B detaylardan bahsetme.
 - `primary_specs` alanı dört karttan oluşmalı; transpalet ürünleri için Denge Tekeri, Li-Ion Akü, Şarj Cihazı, Standart Çatal başlıklarını kullan. Forkliftlerde Asansör, Li-Ion Akü, Şarj Cihazı, Raf Aralığı; istif makinelerinde Asansör, Akü, Şarj Cihazı, Çatal başlıklarını kullan. Değerleri ürün verisinden doldur.
@@ -353,7 +353,7 @@ Bu PDF'de 3 farklı model var. Her biri için AYRI JSON üret:
 
 #### a) Ürün Açıklamaları (Bizim Yazdıklarımız)
 ```json
-"long_description": {
+"body": {
   "tr": "Detaylı ürün açıklaması...",
   "en": "Detailed product description...",
   "vs.": "..."

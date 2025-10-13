@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL252_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL252_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL252')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL252'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL252');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EFL252: 2.5 Ton Sınıfında Li-Ion Gücü ve Kompakt Çeviklik</h2>
   <p>İXTİF EFL252, geleneksel dizel forkliftlerin alışıldık gücünü modern LFP Li-ion teknolojisinin verimliliğiyle birleştirir. 2.5 ton nominal kapasite, 500 mm yük merkezi ve yalnızca 3573 mm toplam uzunluk ile dar koridorlarda güven ve çeviklik sunar. Fırsat şarjına uygun 80V 205Ah Li-ion batarya gün içinde kısa molalarda doldurularak vardiya planlarını aksatmadan üretkenliği yüksek tutar. IPX4 su koruması dış mekânda yağmur altında bile sürekliliği destekler; 74 dB(A) düşük gürültü seviyesi operatör konforuna katkı sağlar.</p>

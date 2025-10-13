@@ -513,7 +513,7 @@ Product 5: F4 201 Transpalet (Standart)
 ├── variant_type: 'standart'
 ├── title: "F4 201 Li-Ion Akülü Transpalet"
 ├── slug: "f4-201-transpalet"
-├── long_description: Standart kullanım senaryoları
+├── body: Standart kullanım senaryoları
 ├── technical_specs:
 │   ├── capacity: 2000 kg
 │   ├── fork_dimensions: "1150×560 mm"
@@ -536,7 +536,7 @@ Product 6: F4 201 Transpalet (Denge Tekerlekli)
 ├── variant_type: 'denge-tekerlekli'
 ├── title: "F4 201 Li-Ion Akülü Transpalet - Denge Tekerlekli"
 ├── slug: "f4-201-transpalet-denge-tekerlekli"
-├── long_description: Denge tekerinin avantajları, dengesiz zeminlerde kullanım
+├── body: Denge tekerinin avantajları, dengesiz zeminlerde kullanım
 ├── technical_specs:
 │   ├── capacity: 2000 kg
 │   ├── fork_dimensions: "1150×560 mm"
@@ -560,7 +560,7 @@ Product 7: F4 201 Transpalet (Geniş Çatal)
 ├── variant_type: 'genis-catal'
 ├── title: "F4 201 Li-Ion Akülü Transpalet - Geniş Çatal (685mm)"
 ├── slug: "f4-201-transpalet-genis-catal"
-├── long_description: Geniş çatalın avantajları, büyük paletler için
+├── body: Geniş çatalın avantajları, büyük paletler için
 ├── technical_specs:
 │   ├── fork_dimensions: "1150×685 mm" 👈 FARKLI
 ├── use_cases: 👈 TAMAMEN FARKLI
@@ -623,7 +623,7 @@ Product 9: F4 201 Transpalet (Yüksek Batarya Kapasiteli)
 Her varyant şunlara sahip olmalı:
 - ✅ **Benzersiz başlık** (title) - Varyant tipini belirten
 - ✅ **Benzersiz slug** - SEO dostu URL
-- ✅ **Kendi açıklaması** (short_description, long_description) - FARKLI içerik!
+- ✅ **Kendi açıklaması** (short_description, body) - FARKLI içerik!
 - ✅ **Kendi teknik özellikleri** (technical_specs) - Varyanta göre değişen değerler
 - ✅ **Kendi primary_specs** - Varyanta özel 4 kart
 - ✅ **Kendi features** - Varyanta özel özellik listesi
@@ -690,7 +690,7 @@ f5-301-dizel-forklift
 
 **Her varyant için farklı olmalı:**
 
-**long_description:**
+**body:**
 ```markdown
 ❌ Aynı metin: "F4 201 transpalet yüksek performanslıdır..."
 ✅ Farklı metin:
@@ -746,7 +746,7 @@ f5-301-dizel-forklift
   "title": "F4 201 Li-Ion Akülü Transpalet",
   "slug": "f4-201-transpalet",
   "short_description": "2 ton kapasiteli, Li-Ion bataryalı, kompakt transpalet. Dar koridorlar ve standart palet taşıma için ideal.",
-  "long_description": "<p>F4 201 Li-Ion Akülü Transpalet, 2 ton yük kapasitesi ile standart palet taşıma işlemleriniz için mükemmel bir çözümdür...</p>",
+  "body": "<p>F4 201 Li-Ion Akülü Transpalet, 2 ton yük kapasitesi ile standart palet taşıma işlemleriniz için mükemmel bir çözümdür...</p>",
   "technical_specs": {
     "capacity": {"value": 2000, "unit": "kg"},
     "fork_dimensions": {
@@ -830,7 +830,7 @@ f5-301-dizel-forklift
   "title": "F4 201 Li-Ion Akülü Transpalet - Denge Tekerlekli",
   "slug": "f4-201-transpalet-denge-tekerlekli",
   "short_description": "Denge tekeri ile donatılmış 2 ton transpalet. Dengesiz zeminler ve ağır yükler için stabilite sağlar.",
-  "long_description": "<p>Denge tekerlekli F4 201 Transpalet, dengesiz zeminlerde ve ağır yük taşımada stabilite sağlayan özel tasarımıyla öne çıkar...</p>",
+  "body": "<p>Denge tekerlekli F4 201 Transpalet, dengesiz zeminlerde ve ağır yük taşımada stabilite sağlayan özel tasarımıyla öne çıkar...</p>",
   "technical_specs": {
     "capacity": {"value": 2000, "unit": "kg"},
     "fork_dimensions": {
@@ -1060,7 +1060,7 @@ Schema.org: Product (capacity: 2000kg)
 - Açık kabin
 
 **Farklılıklar:**
-- Özellik açıklamaları (long_description)
+- Özellik açıklamaları (body)
 - Teknik detaylar (technical_specs → "wheels" section)
 - SSS ("Denge tekeri nedir?", "Kapalı kabin avantajları?")
 
@@ -1092,7 +1092,7 @@ Schema.org: Product (capacity: 2000kg)
   - [ ] variant_type değerleri slug-friendly
   - [ ] parent_product_id ilişkisi kurulacak (seeder'da)
   - [ ] Her varyantın içeriği FARKLI:
-    - [ ] long_description farklı
+    - [ ] body farklı
     - [ ] technical_specs farklı (varyanta özel değerler)
     - [ ] faq_data farklı (varyanta özel sorular)
     - [ ] use_cases varyanta göre uyarlandı
@@ -1467,7 +1467,7 @@ class F4_201_Standart_Seeder extends Seeder
             'title' => 'F4 201 Li-Ion Akülü Transpalet',
             'slug' => 'f4-201-transpalet',
             'short_description' => '2 ton kapasiteli, Li-Ion bataryalı...',
-            'long_description' => '<p>Standart kullanım için...</p>',
+            'body' => '<p>Standart kullanım için...</p>',
             'technical_specs' => [
                 'capacity' => ['value' => 2000, 'unit' => 'kg'],
                 'fork_dimensions' => [
@@ -1539,7 +1539,7 @@ class F4_201_Denge_Tekerlekli_Seeder extends Seeder
     public function run(): void
     {
         $category = ShopCategory::where('slug', 'transpalet')->first();
-        
+
         // Ana varyantı bul (standart)
         $parentProduct = ShopProduct::where('sku', 'F4-201-STD')->first();
 
@@ -1552,7 +1552,7 @@ class F4_201_Denge_Tekerlekli_Seeder extends Seeder
             'title' => 'F4 201 Li-Ion Akülü Transpalet - Denge Tekerlekli',
             'slug' => 'f4-201-transpalet-denge-tekerlekli',
             'short_description' => 'Denge tekeri ile donatılmış 2 ton...',
-            'long_description' => '<p>Dengesiz zeminler için...</p>',
+            'body' => '<p>Dengesiz zeminler için...</p>',
             'technical_specs' => [
                 'capacity' => ['value' => 2000, 'unit' => 'kg'],
                 'fork_dimensions' => [
@@ -1625,14 +1625,14 @@ class ShopSeeder extends Seeder
             ShopCategorySeeder::class,
             ShopAttributeSeeder::class,
             ShopBrandSeeder::class,
-            
+
             // F4 201 Transpalet Serisi
             \Modules\Shop\Database\Seeders\F4_201\F4_201_Standart_Seeder::class,
             \Modules\Shop\Database\Seeders\F4_201\F4_201_Denge_Tekerlekli_Seeder::class,
             \Modules\Shop\Database\Seeders\F4_201\F4_201_Genis_Catal_Seeder::class,
             \Modules\Shop\Database\Seeders\F4_201\F4_201_Uzun_Catal_Seeder::class,
             \Modules\Shop\Database\Seeders\F4_201\F4_201_Yuksek_Batarya_Seeder::class,
-            
+
             // F4 202 Serisi (gelecekte)
             // ...
         ]);

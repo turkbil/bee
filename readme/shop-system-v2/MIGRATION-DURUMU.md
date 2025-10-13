@@ -44,7 +44,7 @@
 | `title` | ✅ Var | JSON çoklu dil |
 | `slug` | ✅ Var | JSON çoklu dil |
 | `short_description` | ✅ Var | JSON çoklu dil |
-| `long_description` | ✅ Var | JSON çoklu dil (marketing intro + body) |
+| `body` | ✅ Var | JSON çoklu dil (marketing intro + body) |
 | `technical_specs` | ✅ Var | JSON nested object |
 | `features` | ✅ Var | JSON array |
 | `highlighted_features` | ✅ Var | JSON array |

@@ -12,7 +12,7 @@ PDF broşürlerinden **direkt SQL INSERT** sorgusu oluşturmak - Phase 1 standar
 
 - Tüm metinler %100 Türkçe olacak; İngilizce çeviri üretme.
 - `JSON_OBJECT('tr', ... 'en', ...)` alanlarında `en` değeri, `tr` içeriğinin birebir kopyası olmalı.
-- `long_description` alanı iki HTML bölümünden oluşacak:
+- `body` alanı iki HTML bölümünden oluşacak:
   - `<section class="marketing-intro">` → etkileyici, abartılı, satış/pazarlama ağırlıklı açılış.
   - `<section class="marketing-body">` → teknik üstünlükleri ve faydaları detaylandıran devam.
 - İkna edici ve duygusal bir ton kullan; müşteriye “bu ürünü hemen almalıyım” hissini ver.
@@ -215,7 +215,7 @@ bir kez şarj ederek 6 saat kesintisiz çalışan, işletmenizin
 verimliliğini artıracak akıllı elektrikli forklift."
 ```
 
-### Detaylı Açıklama (long_description) Yapısı
+### Detaylı Açıklama (body) Yapısı
 
 - HTML kullan: iki ana blok şart
   1. `<section class="marketing-intro">` → müşteri sorununa değinen, duygusal, abartılı satış girişi
@@ -463,7 +463,7 @@ INSERT INTO shop_products (
     title,
     slug,
     short_description,
-    long_description,
+    body,
     features,
     technical_specs,
     highlighted_features,
@@ -517,7 +517,7 @@ INSERT INTO shop_products (
     JSON_OBJECT('tr', 'Ürün Başlığı', 'en', 'Product Title'), -- title (JSON)
     JSON_OBJECT('tr', 'urun-basligi', 'en', 'product-title'), -- slug (JSON)
     JSON_OBJECT('tr', 'Kısa açıklama', 'en', 'Short description'), -- short_description
-    JSON_OBJECT('tr', 'Detaylı ürün açıklaması...', 'en', 'Detailed product description...'), -- long_description
+    JSON_OBJECT('tr', 'Detaylı ürün açıklaması...', 'en', 'Detailed product description...'), -- body
     JSON_OBJECT(
         'tr', JSON_ARRAY('Özellik 1', 'Özellik 2', 'Özellik 3'),
         'en', JSON_ARRAY('Feature 1', 'Feature 2', 'Feature 3')

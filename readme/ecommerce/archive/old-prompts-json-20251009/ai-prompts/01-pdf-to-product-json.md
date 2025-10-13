@@ -45,7 +45,7 @@ EP Equipment broşür PDF'lerini analiz edip, yeni SHOP modülümüz için uygun
       "tr": "80V Li-Ion teknolojili kompakt 3 tekerlekli elektrikli forklift",
       "en": "Compact 3-wheel dual-drive counterbalance forklift with 80V Li-Ion battery"
     },
-    "long_description": {
+    "body": {
       "tr": "CPD15TVL, 80 voltluk Li-Ion batarya teknolojisi etrafında tasarlanmış kompakt 3 tekerlekli elektrikli forklift. Güçlü çift sürüş AC çekiş motorları, geniş bacak alanı (394mm) ve ayarlanabilir direksiyon simidi ile üstün operatör konforu sunar.",
       "en": "CPD15TVL is a compact 3-wheel electric forklift designed around 80V Li-Ion battery technology. Features powerful dual drive AC traction motors, big legroom (394mm) and adjustable steering wheel for superior operator comfort."
     }
@@ -421,7 +421,7 @@ Bu PDF'de 3 farklı model var. Her biri için AYRI JSON üret:
 
 #### a) Ürün Açıklamaları (Bizim Yazdıklarımız)
 ```json
-"long_description": {
+"body": {
   "tr": "CPD15TVL, 80 voltluk Li-Ion batarya...",
   "en": "CPD15TVL is a compact 3-wheel..."
 }

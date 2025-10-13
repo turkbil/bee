@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Widget - Tüm Versiyonlar + SVG İkonlar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .version-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .version-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 10;
+        }
+
+        .version-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #333;
+            padding-right: 80px;
+            font-weight: 600;
+        }
+
+        .version-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .combo-badge {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin: 2px;
+            color: #555;
+        }
+
+        .preview-area {
+            min-height: 450px;
+            background: #f5f5f5;
+            border-radius: 15px;
+            position: relative;
+            border: 2px solid #e0e0e0;
+            overflow: hidden;
+        }
+
+        /* Chat Button Base */
+        .chat-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .chat-button svg {
+            transition: transform 0.3s ease;
+        }
+
+        .chat-button:hover svg {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .chat-panel {
+            position: absolute;
+            bottom: 105px;
+            right: 20px;
+            width: 340px;
+            height: 480px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 99;
+        }
+
+        .chat-panel.active {
+            display: flex;
+        }
+
+        .chat-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            font-size: 18px;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .chat-message.bot {
+            background: #e3f2fd;
+            margin-right: auto;
+        }
+
+        .chat-message.user {
+            background: #f3e5f5;
+            margin-left: auto;
+        }
+
+        .chat-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .chat-footer button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            height: auto;
+        }
+
+        /* Baloncuk Yazılar - Tüm Versiyonlar */
+        .chat-bubble {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #667eea;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+            opacity: 0;
+            animation: bubbleFade 3s infinite;
+            white-space: nowrap;
+            z-index: 101;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 11px solid transparent;
+            border-right: 11px solid transparent;
+            border-top: 11px solid white;
+            filter: drop-shadow(0 3px 4px rgba(0,0,0,0.15));
+        }
+
+        @keyframes bubbleFade {
+            0%, 100% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.85); }
+            20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+
+        /* VERSION STYLES */
+        .v1-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .v1-button.animated::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: inherit;
+            z-index: -1;
+            animation: pulse-v1 2s infinite;
+        }
+
+        @keyframes pulse-v1 {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0; }
+        }
+
+        .v1-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .v2-button {
+            background: #00ff88;
+            color: #000;
+            box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+        }
+
+        .v2-button.animated {
+            animation: neon-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes neon-glow {
+            0%, 100% { box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88; }
+            50% { box-shadow: 0 0 40px #00ff88, 0 0 80px #00ff88, 0 0 100px #00ff88; }
+        }
+
+        .v2-header {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+        }
+
+        .v3-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 8px 0 #d13c4e, 0 15px 20px rgba(0,0,0,0.3);
+        }
+
+        .v3-button.animated {
+            animation: bounce-3d 1s infinite;
+        }
+
+        @keyframes bounce-3d {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); box-shadow: 0 18px 0 #d13c4e, 0 25px 30px rgba(0,0,0,0.3); }
+        }
+
+        .v3-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .v21-button {
+            background: linear-gradient(135deg, #667eea 0%, #00ff88 100%);
+            box-shadow: 0 0 25px #667eea, 0 0 50px #00ff88;
+        }
+
+        .v21-button.animated {
+            animation: v21-combo 2s infinite;
+        }
+
+        .v21-button.animated::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #00ff88 100%);
+            z-index: -1;
+            animation: pulse-neon 2s infinite;
+        }
+
+        @keyframes v21-combo {
+            0%, 100% { box-shadow: 0 0 25px #667eea, 0 0 50px #00ff88; }
+            50% { box-shadow: 0 0 50px #667eea, 0 0 100px #00ff88, 0 0 150px #667eea; }
+        }
+
+        @keyframes pulse-neon {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0; }
+        }
+
+        .v21-header {
+            background: linear-gradient(135deg, #667eea 0%, #00ff88 100%);
+            color: white;
+        }
+
+        .v22-button {
+            background: linear-gradient(135deg, #00ff88 0%, #f093fb 50%, #f5576c 100%);
+            box-shadow: 0 8px 0 #00cc6a, 0 0 30px #00ff88, 0 0 50px #f093fb;
+        }
+
+        .v22-button.animated {
+            animation: v22-combo 1.5s infinite;
+        }
+
+        @keyframes v22-combo {
+            0%, 100% {
+                transform: translateY(0);
+                box-shadow: 0 8px 0 #00cc6a, 0 0 30px #00ff88, 0 0 50px #f093fb;
+            }
+            50% {
+                transform: translateY(-12px);
+                box-shadow: 0 20px 0 #00cc6a, 0 0 80px #00ff88, 0 0 120px #f093fb;
+            }
+        }
+
+        .v22-header {
+            background: linear-gradient(135deg, #00ff88 0%, #f093fb 50%, #f5576c 100%);
+            color: white;
+        }
+
+        .v23-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
+            box-shadow: 0 10px 0 #5a3c8d, 0 20px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .v23-button.animated {
+            animation: v23-combo 1.8s infinite;
+        }
+
+        .v23-button.animated::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: inherit;
+            z-index: -1;
+            animation: pulse-3d 1.8s infinite;
+        }
+
+        @keyframes v23-combo {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 10px 0 #5a3c8d, 0 20px 30px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                transform: translateY(-15px) scale(1.05);
+                box-shadow: 0 25px 0 #5a3c8d, 0 35px 40px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        @keyframes pulse-3d {
+            0%, 100% { transform: scale(1) translateY(0); opacity: 0.7; }
+            50% { transform: scale(1.2) translateY(-5px); opacity: 0; }
+        }
+
+        .v23-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 75%, #f5576c 100%);
+        }
+
+        .v24-button {
+            background: linear-gradient(135deg, #667eea 0%, #00ff88 33%, #f093fb 66%, #f5576c 100%);
+            background-size: 200% 200%;
+            box-shadow:
+                0 0 30px #667eea,
+                0 0 50px #00ff88,
+                0 10px 0 #5a3c8d,
+                0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .v24-button.animated {
+            animation: v24-ultimate 3s infinite;
+        }
+
+        .v24-button.animated::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #00ff88 33%, #f093fb 66%, #f5576c 100%);
+            background-size: 200% 200%;
+            z-index: -1;
+            animation: ultimate-pulse 3s infinite;
+        }
+
+        @keyframes v24-ultimate {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                background-position: 0% 50%;
+                box-shadow:
+                    0 0 30px #667eea,
+                    0 0 50px #00ff88,
+                    0 10px 0 #5a3c8d,
+                    0 20px 40px rgba(0,0,0,0.4);
+            }
+            50% {
+                transform: translateY(-15px) scale(1.1) rotate(0deg);
+                background-position: 100% 50%;
+                box-shadow:
+                    0 0 80px #f093fb,
+                    0 0 120px #f5576c,
+                    0 25px 0 #5a3c8d,
+                    0 35px 60px rgba(0,0,0,0.6);
+            }
+            100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                background-position: 0% 50%;
+                box-shadow:
+                    0 0 30px #667eea,
+                    0 0 50px #00ff88,
+                    0 10px 0 #5a3c8d,
+                    0 20px 40px rgba(0,0,0,0.4);
+            }
+        }
+
+        @keyframes ultimate-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+                background-position: 0% 50%;
+            }
+            50% {
+                transform: scale(1.25);
+                opacity: 0;
+                background-position: 100% 50%;
+            }
+        }
+
+        .v24-header {
+            background: linear-gradient(135deg, #667eea 0%, #00ff88 33%, #f093fb 66%, #f5576c 100%);
+            background-size: 200% 200%;
+            animation: header-gradient 3s infinite;
+        }
+
+        @keyframes header-gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 AI Chat Widget - Final Edition</h1>
+        <p class="subtitle">Tüm versiyonlar + SVG İkonlar + Sempatik Baloncuk Mesajlar</p>
+
+        <div class="grid">
+            <!-- V1: Classic Pulse -->
+            <div class="version-card">
+                <div class="version-number">V1</div>
+                <h3 class="version-title">🟣 Classic Pulse</h3>
+                <div class="version-desc">
+                    <div class="combo-badge">Profesyonel</div>
+                    <div class="combo-badge">Güvenilir</div>
+                </div>
+                <div class="preview-area">
+                    <button class="chat-button v1-button" onclick="toggleChat(1)">
+                        <div class="chat-bubble" data-messages='["Merhaba! Nasıl yardımcı olabilirim? 👋","Ürünler hakkında her şeyi sorabilirsiniz","Size en uygun modeli bulabilirim","Sorularınızı anında yanıtlıyorum ⚡","Akıllı ürün karşılaştırması yapabilirim","Teknik detayları kolayca açıklıyorum","İhtiyacınıza göre öneri sunuyorum","7/24 anlık destek burada 🤖","Tüm özellikleri size anlatayım","Merak ettiklerinizi öğrenin","Ürün seçiminde yardımcı oluyorum","Karmaşık bilgileri basitleştiriyorum","Size özel çözüm öneriyorum","Her sorunuza hızlı cevap veriyorum","Doğru ürünü bulmak çok kolay","Akıllı asistan olarak buradayım","Soru sormaktan çekinmeyin","Anında bilgi alın","İhtiyacınızı anlıyor ve yönlendiriyorum","Hadi konuşalım! 💬"]' id="bubble-1">Merhaba! Nasıl yardımcı olabilirim? 👋</div>
+                        <svg width="50" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                            <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                            <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                            <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                            <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                        </svg>
+                    </button>
+                    <div class="chat-panel" id="panel-1">
+                        <div class="chat-header v1-header">
+                            <h3>💬 Profesyonel Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(1)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Merhaba! Siz değerli müşterilerimize profesyonel destek sağlamaktan mutluluk duyarız.</div>
+                            <div class="chat-message user">Ürünleriniz hakkında detaylı bilgi alabilir miyim?</div>
+                            <div class="chat-message bot">Tabii ki! Hangi ürün kategorisi ilginizi çekiyor?</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınızı yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V2: Neon Glow -->
+            <div class="version-card">
+                <div class="version-number">V2</div>
+                <h3 class="version-title">🟢 Neon Glow</h3>
+                <div class="version-desc">
+                    <div class="combo-badge">Modern</div>
+                    <div class="combo-badge">Teknolojik</div>
+                </div>
+                <div class="preview-area">
+                    <button class="chat-button v2-button" onclick="toggleChat(2)">
+                        <div class="chat-bubble" data-messages='["Ben bir AI asistanım 🤖","Teknoloji merak ettiriyor mu? 🔮","Hızlı cevaplar burada ⚡","Dijital dönüşüm başlıyor 🚀","Akıllı çözümler 💡","Yenilikçi destek ✨"]' id="bubble-2">Ben bir AI asistanım 🤖</div>
+                        <svg width="50" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="#000">
+                            <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                            <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                            <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                            <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                        </svg>
+                    </button>
+                    <div class="chat-panel" id="panel-2">
+                        <div class="chat-header v2-header">
+                            <h3>🤖 AI Teknoloji</h3>
+                            <button class="close-btn" onclick="toggleChat(2)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Merhaba! Yapay zeka destekli hizmetimize hoş geldiniz.</div>
+                            <div class="chat-message user">AI teknolojiniz nasıl çalışıyor?</div>
+                            <div class="chat-message bot">En son AI modellerini kullanarak anında ve doğru yanıtlar veriyorum!</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Soru sorun...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V3: 3D Effect -->
+            <div class="version-card">
+                <div class="version-number">V3</div>
+                <h3 class="version-title">🌸 3D Effect</h3>
+                <div class="version-desc">
+                    <div class="combo-badge">Eğlenceli</div>
+                    <div class="combo-badge">Canlı</div>
+                </div>
+                <div class="preview-area">
+                    <button class="chat-button v3-button" onclick="toggleChat(3)">
+                        <div class="chat-bubble" data-messages='["Konuşalım mı? 😊","Size yardım edebilirim 🎉","Merak etme, buradayım! 💖","Hadi sohbet edelim 🌈","Her şey çok kolay ✨","Tıkla, başlayalım! 🎊"]' id="bubble-3">Konuşalım mı? 😊</div>
+                        <svg width="50" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                            <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                            <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                            <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                            <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                        </svg>
+                    </button>
+                    <div class="chat-panel" id="panel-3">
+                        <div class="chat-header v3-header">
+                            <h3>💭 Samimi Sohbet</h3>
+                            <button class="close-btn" onclick="toggleChat(3)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Merhaba! Sizinle sohbet etmek çok güzel olacak 😊</div>
+                            <div class="chat-message user">Çok samimi bir atmosfer var!</div>
+                            <div class="chat-message bot">Teşekkürler! Size en iyi deneyimi sunmak için buradayım 🎉</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V21: V1+V2 Combo -->
+            <div class="version-card">
+                <div class="version-number">V21</div>
+                <h3 class="version-title">🔮 Hybrid AI</h3>
+                <div class="version-desc">
+                    <div class="combo-badge">Profesyonel + Teknolojik</div>
+                </div>
+                <div class="preview-area">
+                    <button class="chat-button v21-button" onclick="toggleChat(21)">
+                        <div class="chat-bubble" data-messages='["Profesyonel AI desteği 💼🤖","Akıllı çözümler burada ⚡","Teknoloji + Deneyim 🚀","Size özel yanıtlar 🎯","Güvenilir + Hızlı ✅","İnovasyon ile tanışın 💡"]' id="bubble-21">Profesyonel AI desteği 💼🤖</div>
+                        <svg width="50" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                            <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                            <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                            <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                            <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                        </svg>
+                    </button>
+                    <div class="chat-panel" id="panel-21">
+                        <div class="chat-header v21-header">
+                            <h3>🔮 Hybrid Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(21)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Profesyonellik ve teknolojinin mükemmel birleşimi!</div>
+                            <div class="chat-message user">Bu kombinasyon harika!</div>
+                            <div class="chat-message bot">Evet! En iyi iki dünyayı bir araya getirdik.</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınızı yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V22: V2+V3 Combo -->
+            <div class="version-card">
+                <div class="version-number">V22</div>
+                <h3 class="version-title">💎 Premium AI</h3>
+                <div class="version-desc">
+                    <div class="combo-badge">Teknolojik + Samimi</div>
+                </div>
+                <div class="preview-area">
+                    <button class="chat-button v22-button" onclick="toggleChat(22)">
+                        <div class="chat-bubble" data-messages='["Premium deneyim sizi bekliyor 💎","Akıllı + Samimi = Mükemmel 🌟","VIP destek hazır 👑","Özel hizmet burada ✨","Teknoloji + Kalp ❤️🤖","En iyisini hak ediyorsunuz! 🎁"]' id="bubble-22">Premium deneyim sizi bekliyor 💎</div>
+                        <svg width="50" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                            <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                            <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                            <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                            <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                        </svg>
+                    </button>
+                    <div class="chat-panel" id="panel-22">
+                        <div class="chat-header v22-header">
+                            <h3>💎 Premium Hizmet</h3>
+                            <button class="close-btn" onclick="toggleChat(22)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Premium müşterilerimize özel hizmet!</div>
+                            <div class="chat-message user">Gerçekten özel hissettim!</div>
+                            <div class="chat-message bot">Size layık olan kaliteli hizmeti sunuyoruz 💎</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınızı yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V23: V1+V3 Combo -->
+            <div class="version-card">
+                <div class="version-number">V23</div>
+                <h3 class="version-title">🎭 Royal AI</h3>
+                <div class="version-desc">
+                    <div class="combo-badge">Profesyonel + Samimi</div>
+                </div>
+                <div class="preview-area">
+                    <button class="chat-button v23-button" onclick="toggleChat(23)">
+                        <div class="chat-bubble" data-messages='["Merhaba! 👋","Hello! 👋","Привет! 👋","Ciao! 👋","Hola! 👋","Bonjour! 👋","你好! 👋","こんにちは! 👋"]' id="bubble-23">Merhaba! 👋</div>
+                        <svg width="50" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                            <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                            <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                            <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                            <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                        </svg>
+                    </button>
+                    <div class="chat-panel" id="panel-23">
+                        <div class="chat-header v23-header">
+                            <h3>🎭 Royal Destek</h3>
+                            <button class="close-btn" onclick="toggleChat(23)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">Kraliyet misafirlerimize özel hizmet!</div>
+                            <div class="chat-message user">Lüks bir deneyim!</div>
+                            <div class="chat-message bot">Size en iyisini sunmak için buradayız 👑</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınızı yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V24: ULTIMATE -->
+            <div class="version-card" style="grid-column: span 2;">
+                <div class="version-number">V24 🔥</div>
+                <h3 class="version-title">🌟 ULTIMATE AI</h3>
+                <div class="version-desc">
+                    <div class="combo-badge">Tüm Özellikler</div>
+                    <div class="combo-badge">Maksimum Güç</div>
+                </div>
+                <div class="preview-area" style="min-height: 500px;">
+                    <button class="chat-button v24-button" onclick="toggleChat(24)">
+                        <div class="chat-bubble" data-messages='["🔥 ULTIMATE Güç!","🚀 Sınırsız Potansiyel","⚡ Maksimum Hız","💎 Premium Deneyim","🎯 Kusursuz Hizmet","🌟 Mükemmellik Burada"]' id="bubble-24">🔥 ULTIMATE Güç!</div>
+                        <svg width="55" height="55" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
+                            <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
+                            <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
+                            <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
+                            <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
+                            <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
+                        </svg>
+                    </button>
+                    <div class="chat-panel" id="panel-24">
+                        <div class="chat-header v24-header">
+                            <h3>🌟 ULTIMATE Deneyim</h3>
+                            <button class="close-btn" onclick="toggleChat(24)">×</button>
+                        </div>
+                        <div class="chat-body">
+                            <div class="chat-message bot">🔥 ULTIMATE deneyime hoş geldiniz!</div>
+                            <div class="chat-message user">WOW! Bu inanılmaz!</div>
+                            <div class="chat-message bot">Tüm özelliklerin bir arada olduğu kusursuz hizmet!</div>
+                            <div class="chat-message user">Kesinlikle en iyisi!</div>
+                            <div class="chat-message bot">Size en iyisini sunmak için tasarlandı 🌟</div>
+                        </div>
+                        <div class="chat-footer">
+                            <input type="text" placeholder="Mesajınızı yazın...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle chat panel
+        function toggleChat(version) {
+            const panel = document.getElementById('panel-' + version);
+            panel.classList.toggle('active');
+
+            if (panel.classList.contains('active')) {
+                panel.classList.add('slide-up');
+                setTimeout(() => {
+                    panel.classList.remove('slide-up');
+                }, 300);
+            }
+        }
+
+        // Close panels when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.chat-button') &&
+                !event.target.closest('.chat-panel')) {
+                document.querySelectorAll('.chat-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+            }
+        });
+
+        // Auto start animations and bubble rotations
+        window.addEventListener('DOMContentLoaded', () => {
+            // Animate all buttons
+            const allButtons = document.querySelectorAll('.chat-button');
+            allButtons.forEach(button => {
+                button.classList.add('animated');
+            });
+
+            // Rotate bubble messages for each version
+            [1, 2, 3, 21, 22, 23, 24].forEach(version => {
+                const bubble = document.getElementById('bubble-' + version);
+                if (bubble) {
+                    const messages = JSON.parse(bubble.getAttribute('data-messages'));
+                    let currentIndex = 0;
+
+                    setInterval(() => {
+                        currentIndex = (currentIndex + 1) % messages.length;
+                        bubble.textContent = messages[currentIndex];
+                    }, 3000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

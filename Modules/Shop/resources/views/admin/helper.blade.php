@@ -34,8 +34,8 @@
                     </a>
                 @endhasmoduleaccess
 
-                @hasmoduleaccess('shop', 'create')
-                    <a href="{{ route('admin.shop.products.create') }}" class="dropdown-module-item btn btn-primary">
+                @hasmoduleaccess('shop', 'update')
+                    <a href="{{ route('admin.shop.products.manage') }}" class="dropdown-module-item btn btn-primary">
                         {{ __('shop::admin.new_product') }}
                     </a>
                 @endhasmoduleaccess

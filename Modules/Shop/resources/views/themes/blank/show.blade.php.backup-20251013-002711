@@ -8,7 +8,7 @@
             $currentLocale = app()->getLocale();
             $title = $item->getTranslated('title', $currentLocale);
             $shortDescription = $item->getTranslated('short_description', $currentLocale);
-            $longDescription = $item->getTranslated('long_description', $currentLocale);
+            $longDescription = $item->getTranslated('body', $currentLocale);
 
             $moduleSlugService = app(\App\Services\ModuleSlugService::class);
             $indexSlug = $moduleSlugService->getMultiLangSlug('Shop', 'index', $currentLocale);

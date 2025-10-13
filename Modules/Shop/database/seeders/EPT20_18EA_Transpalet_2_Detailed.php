@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EPT20_18EA_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class EPT20_18EA_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EPT20-18EA')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section><h2>İXTİF EPT20-18EA: Dar Koridorların Pratik Gücü</h2>
 <p>Depo kapıları açıldığında öncelik hız ve güvenliktir. İXTİF EPT20-18EA, 1.800 kg kapasiteyi kompakt bir gövdede birleştirerek vardiya başından sonuna kadar akıcı malzeme akışı sağlar. 85 mm düşük çatal yüksekliği rampalarda ve yükleme alanlarında avantaj yaratırken, 1457 mm dönüş yarıçapı dar koridorlarda rahat manevra imkânı sunar. AC sürüş kontrolü ve elektromanyetik frenin uyumu, operatörün yorgunluğunu azaltır; Polyurethane tekerlekler titreşimi düşürerek sessiz ve kontrollü ilerleme sağlar. E-ticaret, perakende ve 3PL operasyonlarının “hızlı çevirim” ihtiyacı için tasarlanmış bu model, bakım kolaylığı ve güven veren performansıyla günlük operasyonun doğal bir uzantısı hâline gelir.</p></section>
 <section><h3>Teknik Güç ve Verimlilik</h3>

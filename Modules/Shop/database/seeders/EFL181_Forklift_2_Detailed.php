@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EFL181_Forklift_2_Detailed extends Seeder {
-    public function run(): void {
+class EFL181_Forklift_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'EFL181')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: EFL181'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: EFL181');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF EFL181: Kompakt gücün akıllı enerjisi</h2>
   <p>Günün ilk sevkiyatında dar kapı eşiğinden raf aralarına, rampadan açık sahaya geçişleriniz hızlı ve kesintisiz olmalı. EFL181 tam da bu senaryolar için tasarlandı: I/C şasi esinli kompakt gövde, 48V Li-Ion enerji mimarisi ve entegre tek faz şarj cihazı sayesinde esnek kullanım sunar. 1.8 ton nominal kapasite, 3000 mm standart kaldırma ve 8.5/9 km/s seyir hızı ile düşük vardiya sürelerinde dahi yüksek verim elde edersiniz.</p>

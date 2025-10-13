@@ -15,14 +15,12 @@ use Modules\Shop\App\Models\ShopBrand;
 
 class ShopController extends Controller
 {
-    public function __construct(private readonly ThemeService $themeService)
-    {
-    }
+    public function __construct(private readonly ThemeService $themeService) {}
 
     public function index()
     {
         $products = ShopProduct::query()
-            ->with(['category', 'brand', 'childProducts' => function($q) {
+            ->with(['category', 'brand', 'childProducts' => function ($q) {
                 $q->active()->published()->orderBy('variant_type')->orderBy('product_id');
             }])
             ->whereNull('parent_product_id') // Sadece ana ürünler (varyant olmayanlar)
@@ -77,7 +75,7 @@ class ShopController extends Controller
             if ($parentProduct) {
                 // ✅ CONTENT INHERITANCE: Varyant içeriği yoksa parent'tan inherit et
                 $fieldsToInherit = [
-                    'long_description',
+                    'body',
                     'features',
                     'faq_data',
                     'use_cases',
@@ -288,7 +286,7 @@ class ShopController extends Controller
             $isVariantPage = true;
 
             if ($parentProduct) {
-                $fieldsToInherit = ['long_description', 'features', 'faq_data', 'use_cases', 'competitive_advantages', 'target_industries', 'warranty_info', 'accessories', 'certifications', 'technical_specs', 'primary_specs', 'highlighted_features'];
+                $fieldsToInherit = ['body', 'features', 'faq_data', 'use_cases', 'competitive_advantages', 'target_industries', 'warranty_info', 'accessories', 'certifications', 'technical_specs', 'primary_specs', 'highlighted_features'];
                 foreach ($fieldsToInherit as $field) {
                     if (empty($product->{$field}) && !empty($parentProduct->{$field})) {
                         $product->{$field} = $parentProduct->{$field};

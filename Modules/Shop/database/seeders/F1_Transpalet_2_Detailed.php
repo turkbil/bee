@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class F1_Transpalet_2_Detailed extends Seeder {
-    public function run(): void {
+class F1_Transpalet_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'F1')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (F1)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (F1)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section class="intro">
   <h2>İXTİF F1: Dağıtım döngüsünde net tasarruf, sahada gerçek dayanıklılık</h2>
   <p><strong>Depo vardiyası başlıyor.</strong> İlk palet rampa başına yanaşırken, F1 kompakt gövdesi ve dengeli ağırlık dağılımıyla operatörün kol hareketini anında torka çevirir. Platform tabanlı F mimarisi, filoda aynı kumanda kolu ve ortak bakım parçaları ile yönetimi kolaylaştırır. Entegre 24V/10A şarj cihazı ve 24V/65Ah AGM akü, fişe tak & şarj et pratikliği sunar; gün içinde dağınık şarjlarla 5–6 saatlik gerçek çalışma süresi yakalanır. Standart kasalama ile tek kolide 3 ünite sevkiyat, 40’ konteynerde 132 üniteye kadar optimizasyon sağlayarak toplam nakliye maliyetini düşürür.</p>

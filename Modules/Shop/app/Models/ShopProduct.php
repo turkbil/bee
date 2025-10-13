@@ -35,7 +35,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'title',
         'slug',
         'short_description',
-        'long_description',
+        'body',
         'product_type',
         'condition',
         'price_on_request',
@@ -86,7 +86,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'title' => 'array',
         'slug' => 'array',
         'short_description' => 'array',
-        'long_description' => 'array',
+        'body' => 'array',
         'price_on_request' => 'boolean',
         'base_price' => 'decimal:2',
         'compare_at_price' => 'decimal:2',
@@ -130,7 +130,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'title',
         'slug',
         'short_description',
-        'long_description',
+        'body',
     ];
 
     protected $appends = [
@@ -240,7 +240,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         return [
             'title' => 'text',
             'short_description' => 'text',
-            'long_description' => 'html',
+            'body' => 'html',
             'slug' => 'auto',
         ];
     }
@@ -352,9 +352,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             return Str::limit($fullDescription, 160);
         }
 
-        // Fallback: long_description (eğer short description yoksa)
-        $longDesc = $this->getTranslated('long_description', $locale)
-            ?? ($this->long_description[$locale] ?? null);
+        // Fallback: body (eğer short description yoksa)
+        $longDesc = $this->getTranslated('body', $locale)
+            ?? ($this->body[$locale] ?? null);
 
         if (is_string($longDesc) && !empty(trim(strip_tags($longDesc)))) {
             $cleanLongDesc = strip_tags($longDesc);
@@ -448,7 +448,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         $locale = app()->getLocale();
         $title = $this->getTranslated('title', $locale);
         $description = $this->getTranslated('short_description', $locale);
-        $longDescription = $this->getTranslated('long_description', $locale);
+        $longDescription = $this->getTranslated('body', $locale);
 
         // Base Product Schema
         $productSchema = [
@@ -459,7 +459,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             'url' => $this->getSeoFallbackCanonicalUrl(),
         ];
 
-        // Rich Text Content - Full Product Description (long_description + features + use_cases)
+        // Rich Text Content - Full Product Description (body + features + use_cases)
         $richTextParts = [];
 
         // 1. Long Description (Ana detaylı açıklama)
@@ -842,7 +842,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
      */
     private function getConditionSchemaUrl(): string
     {
-        return match($this->condition) {
+        return match ($this->condition) {
             'new' => 'https://schema.org/NewCondition',
             'refurbished' => 'https://schema.org/RefurbishedCondition',
             'used' => 'https://schema.org/UsedCondition',
@@ -883,7 +883,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         $position = 1;
 
         // Home
-        $homeTitle = match($locale) {
+        $homeTitle = match ($locale) {
             'en' => 'Home',
             'de' => 'Startseite',
             'fr' => 'Accueil',
@@ -906,7 +906,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
         $localePrefix = $locale !== $defaultLocale ? '/' . $locale : '';
 
-        $shopTitle = match($locale) {
+        $shopTitle = match ($locale) {
             'en' => 'Shop',
             'de' => 'Geschäft',
             'fr' => 'Boutique',

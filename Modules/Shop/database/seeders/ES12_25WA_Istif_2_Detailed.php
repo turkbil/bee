@@ -1,16 +1,24 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES12_25WA_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES12_25WA_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES12-25WA')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => "\n<section><h2>ES12-25WA: Dar Koridorlarda Güçlü ve Hassas İstif</h2><p>Sabah vardiyası başlarken rafların arasında ilk hareketi başlatan makine çoğu zaman bir istif makinesidir. İXTİF ES12-25WA tam da bu anda devreye girer: kompakt gövdesi, dengeli şasisi ve iki kademeli indirme sistemiyle her paleti olması gereken yüksekliğe en güvenli biçimde taşır. 1.200 kg kapasitesi ve 3.280 mm’ye ulaşan kaldırma kabiliyeti, onu hem e-ticaret merkezlerinde hem de üretim hücrelerinde vazgeçilmez kılar. Operatör yorgunluğunu azaltan mekanik direksiyon, pürüzsüz hızlanma sunuan AC sürüş kontrolü ve sessiz PU tekerlekler; gün boyu akıcı, öngörülebilir bir kullanım deneyimi yaratır. Depo düzeni sıkışık, koridorlar dar olduğunda dahi 1.490 mm dönüş yarıçapı ve farklı şasi genişliği seçenekleri ile operasyon akışını kesintisiz sürdürür.</p></section>\n<section><h3>Teknik Güç ve Mühendislik</h3><p>Teknik tarafta ES12-25WA; 24V/210Ah enerji paketiyle uzun vardiyalara uygun çalışma sağlar. Standart kurşun-asit yapı, kurumunuzun mevcut şarj altyapısıyla uyumludur; daha ileri verimlilik için Li-ion batarya seçeneği, yüksek akımlı 24V-100A hızlı şarj ve telematik entegrasyonu ile sunulur. 1.1 kW sürüş motoru (S2 60 dk) ve 2.2 kW kaldırma motoru (S3 %15), 5.0/5.5 km/s seyir ve 0.127/0.23 m/s kaldırma hızlarına ulaşır. İki kademeli indirme (0.26/0.20 m/s) özellikle rafların üst katlarında yük yerleştirirken stabilite ve doğruluk getirir; paletin son 10–15 cm’lik hareketi daha kontrollü gerçekleşir. 600 mm yük merkezinde 1.200 kg taşıma, 1947 mm toplam uzunluk ve 877 mm yüze kadar ölçüsü; dar çalışma alanlarında manevrayı kolaylaştırır. 1120–1420 mm arasında değişen şasi genişlikleri, 800 mm taşıyıcı ve 200–760 mm ayarlanabilir çatallar arası ile farklı palet tiplerine uyum sağlar. Elektromanyetik servis freni eğimli zeminlerde güven verir; PU tekerlek malzemesi ise zemine zarar vermeden sessiz ilerleme sunar. 74 dB(A) seviyesindeki gürültü değeri operatör konforunu destekler.</p></section>\n<section><h3>Sonuç ve İletişim</h3><p>Operasyonel açıdan bakıldığında, ES12-25WA mal kabulden sevkiyata kadar tüm istif adımlarını standardize eder. Kısa eğitimle kullanılabilen ergonomik tiller kolu, 715–1200 mm aralığında konforlu bir çalışma yüksekliği sağlar. Bakım tarafında ise mekanik direksiyon ve erişilebilir komponent yerleşimi servis sürelerini kısaltır, toplam sahip olma maliyetini aşağı çeker. İster mevcut hatlarınızı iyileştirmek, ister yeni bir depo devreye almak isteyin; model, modüler seçenekleriyle büyüyen işinize kolayca ayak uydurur. Bugün doğru istif makinesini seçmek, yarının verimliliğini belirler. Teknik değerlendirme ve fiyatlandırma için 0216 755 3 555 numaralı hattan ekibimizle iletişime geçebilirsiniz.</p></section>\n"], JSON_UNESCAPED_UNICODE),
-            'primary_specs' => json_encode(json_decode(<<<'JSON'
+            'body' => json_encode(['tr' => "\n<section><h2>ES12-25WA: Dar Koridorlarda Güçlü ve Hassas İstif</h2><p>Sabah vardiyası başlarken rafların arasında ilk hareketi başlatan makine çoğu zaman bir istif makinesidir. İXTİF ES12-25WA tam da bu anda devreye girer: kompakt gövdesi, dengeli şasisi ve iki kademeli indirme sistemiyle her paleti olması gereken yüksekliğe en güvenli biçimde taşır. 1.200 kg kapasitesi ve 3.280 mm’ye ulaşan kaldırma kabiliyeti, onu hem e-ticaret merkezlerinde hem de üretim hücrelerinde vazgeçilmez kılar. Operatör yorgunluğunu azaltan mekanik direksiyon, pürüzsüz hızlanma sunuan AC sürüş kontrolü ve sessiz PU tekerlekler; gün boyu akıcı, öngörülebilir bir kullanım deneyimi yaratır. Depo düzeni sıkışık, koridorlar dar olduğunda dahi 1.490 mm dönüş yarıçapı ve farklı şasi genişliği seçenekleri ile operasyon akışını kesintisiz sürdürür.</p></section>\n<section><h3>Teknik Güç ve Mühendislik</h3><p>Teknik tarafta ES12-25WA; 24V/210Ah enerji paketiyle uzun vardiyalara uygun çalışma sağlar. Standart kurşun-asit yapı, kurumunuzun mevcut şarj altyapısıyla uyumludur; daha ileri verimlilik için Li-ion batarya seçeneği, yüksek akımlı 24V-100A hızlı şarj ve telematik entegrasyonu ile sunulur. 1.1 kW sürüş motoru (S2 60 dk) ve 2.2 kW kaldırma motoru (S3 %15), 5.0/5.5 km/s seyir ve 0.127/0.23 m/s kaldırma hızlarına ulaşır. İki kademeli indirme (0.26/0.20 m/s) özellikle rafların üst katlarında yük yerleştirirken stabilite ve doğruluk getirir; paletin son 10–15 cm’lik hareketi daha kontrollü gerçekleşir. 600 mm yük merkezinde 1.200 kg taşıma, 1947 mm toplam uzunluk ve 877 mm yüze kadar ölçüsü; dar çalışma alanlarında manevrayı kolaylaştırır. 1120–1420 mm arasında değişen şasi genişlikleri, 800 mm taşıyıcı ve 200–760 mm ayarlanabilir çatallar arası ile farklı palet tiplerine uyum sağlar. Elektromanyetik servis freni eğimli zeminlerde güven verir; PU tekerlek malzemesi ise zemine zarar vermeden sessiz ilerleme sunar. 74 dB(A) seviyesindeki gürültü değeri operatör konforunu destekler.</p></section>\n<section><h3>Sonuç ve İletişim</h3><p>Operasyonel açıdan bakıldığında, ES12-25WA mal kabulden sevkiyata kadar tüm istif adımlarını standardize eder. Kısa eğitimle kullanılabilen ergonomik tiller kolu, 715–1200 mm aralığında konforlu bir çalışma yüksekliği sağlar. Bakım tarafında ise mekanik direksiyon ve erişilebilir komponent yerleşimi servis sürelerini kısaltır, toplam sahip olma maliyetini aşağı çeker. İster mevcut hatlarınızı iyileştirmek, ister yeni bir depo devreye almak isteyin; model, modüler seçenekleriyle büyüyen işinize kolayca ayak uydurur. Bugün doğru istif makinesini seçmek, yarının verimliliğini belirler. Teknik değerlendirme ve fiyatlandırma için 0216 755 3 555 numaralı hattan ekibimizle iletişime geçebilirsiniz.</p></section>\n"], JSON_UNESCAPED_UNICODE),
+            'primary_specs' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "weight-hanging",
@@ -33,9 +41,11 @@ class ES12_25WA_Istif_2_Detailed extends Seeder {
                         "value": "1490 mm"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'highlighted_features' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'highlighted_features' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "arrows-alt",
@@ -68,9 +78,11 @@ JSON
                         "description": "Pürüzsüz hızlanma ve verimli tırmanma kabiliyeti (8/16%)."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'use_cases' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'use_cases' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "warehouse",
@@ -105,9 +117,11 @@ JSON
                         "text": "Kimyasal ürünlerin PU tekerleklerle zemin dostu hareketi"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'competitive_advantages' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'competitive_advantages' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "bolt",
@@ -134,9 +148,11 @@ JSON
                         "text": "PU tekerlekler ile düşük titreşim ve sessiz çalışma"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'target_industries' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'target_industries' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "box-open",
@@ -227,17 +243,21 @@ JSON
                         "text": "B2B Toptan Dağıtım"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'warranty_info' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'warranty_info' => json_encode(json_decode(
+                <<<'JSON'
                 {
                     "coverage": "Makineye satın alım tarihinden itibaren 12 ay fabrika garantisi verilir. Li-Ion batarya modülleri ise satın alım tarihinden itibaren 24 ay garanti kapsamındadır. Garanti, normal kullanım koşullarında üretim hatalarını kapsar.",
                     "duration_months": 12,
                     "battery_warranty_months": 24
                 }
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'accessories' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'accessories' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "plug",
@@ -272,9 +292,11 @@ JSON
                         "price": "Talep üzerine"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'certifications' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'certifications' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "icon": "certificate",
@@ -283,9 +305,11 @@ JSON
                         "authority": "EU"
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
-            'faq_data' => json_encode(json_decode(<<<'JSON'
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
+            'faq_data' => json_encode(json_decode(
+                <<<'JSON'
                 [
                     {
                         "question": "600 mm yük merkezinde 1.200 kg kapasite hangi palet tiplerinde güvenlidir?",
@@ -336,8 +360,9 @@ JSON
                         "answer": "Makine 12 ay, Li-Ion batarya 24 ay garantilidir. İXTİF satış, servis ve yedek parça desteği için 0216 755 3 555 üzerinden bize ulaşabilirsiniz."
                     }
                 ]
-JSON
-            , true), JSON_UNESCAPED_UNICODE),
+JSON,
+                true
+            ), JSON_UNESCAPED_UNICODE),
             'updated_at' => now(),
         ]);
         $this->command->info("✅ Detailed güncellendi: ES12-25WA");

@@ -1230,9 +1230,9 @@ class SeoAIService
     public function getSeoSuggestions(array $formContent, string $language, array $options = []): array
     {
         try {
-            $feature = AIFeature::where('slug', 'seo-suggestions-generator')->first();
+            $feature = AIFeature::where('slug', 'seo-smart-recommendations')->first();
             if (!$feature) {
-                return ['success' => false, 'error' => 'SEO Suggestions feature bulunamadı'];
+                return ['success' => false, 'error' => 'SEO Smart Recommendations feature bulunamadı'];
             }
 
             $aiResult = $this->universalAIService->processFormRequest(

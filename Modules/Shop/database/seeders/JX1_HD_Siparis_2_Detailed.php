@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class JX1_HD_Siparis_2_Detailed extends Seeder {
-    public function run(): void {
+class JX1_HD_Siparis_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'JX1-HD')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı (JX1-HD)'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı (JX1-HD)');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>JX1-HD ile Yüksek Raflara Güvenli, Hızlı ve Kontrollü Erişim</h2>
   <p>JX1-HD, gün boyu yoğun sipariş toplama görevlerinde <strong>48V güç mimarisi</strong> ve akıllı şasi dengesiyle verimi yükseltmek için tasarlanmış süper görev destek aracıdır. İç mekânda, pürüzsüz ve düz zeminlerde çalışmak üzere optimize edilmiş yapı LED farlar, elektronik direksiyon ve hassas tahrik kontrolüyle birleşir; böylece operatör, 210 inç yüksekliğe güvenle çıkar, ürüne erişir ve aşağı inişi aynı akıcılıkla tamamlar. 6.5 mph yol hızı koridorlar arası geçişleri hızlandırırken, 3,600 lb çekme kapasitesi sipariş toplamanın ötesinde hat besleme ve yardımcı çekme görevlerinde de esneklik sağlar. Dar alanlarda 63 inç dönüş yarıçapı çeviklik sunar; 51.2 in dingil mesafesi ve 36 in kabin genişliği raf aralarında dengeli bir hız/denge karışımı yaratır.</p>

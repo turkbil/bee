@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ES16_RS_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ES16_RS_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ES16-RS')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ES16-RS'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ES16-RS');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF ES16-RS: Dar Koridorlarda Güç, Hız ve Hassasiyet</h2>
   <p>İXTİF ES16-RS, modern depoların ritmine ayak uydurmak için tasarlanmış ayakta kullanım istif makinesidir. Sabah vardiyasından gece kapanışına kadar artmayan yorgunluk, azalan çevrim süresi ve yüksek raflarda güven veren stabilite vadeder. 1.6 ton nominal kapasite, 600 mm yük merkezi ve elektronik direksiyonla birlikte gelen çevik manevra kabiliyeti, operatör yorgunluğunu azaltırken istif kalitesini standartlaştırır. 24V/210Ah akü altyapısı, yan çekme özelliği sayesinde vardiyalar arasında hızlı akü değişimi sağlar; iki kademeli alçaltma fonksiyonu ise palet inişlerinde ürün bütünlüğünü korur ve raf hasarlarını önler.</p>

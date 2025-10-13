@@ -1,15 +1,22 @@
 <?php
+
 namespace Modules\Shop\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ESL122_Istif_2_Detailed extends Seeder {
-    public function run(): void {
+class ESL122_Istif_2_Detailed extends Seeder
+{
+    public function run(): void
+    {
         $p = DB::table('shop_products')->where('sku', 'ESL122')->first();
-        if (!$p) {$this->command->error('❌ Master bulunamadı: ESL122'); return; }
+        if (!$p) {
+            $this->command->error('❌ Master bulunamadı: ESL122');
+            return;
+        }
 
         DB::table('shop_products')->where('product_id', $p->product_id)->update([
-            'long_description' => json_encode(['tr' => '
+            'body' => json_encode(['tr' => '
 <section>
   <h2>İXTİF ESL122: Dar Koridorların Akıllı İstif Uzmanı</h2>
   <p>Depo kapıları açıldığında ilk iş güvenle başlar. İXTİF ESL122, 1.200 kg nominal kapasitesi, 24V/100Ah Li-Ion bataryası ve kompakt şasisiyle dar koridorlarda akışkan bir operasyon sunmak için tasarlandı. Kirişli rijit direk mimarisi, gövdeyi çevreleyen yan darbe kirişleri ve poliüretan teker seti; titreşimi azaltırken sessizliği artırır. Kaplumbağa (crawl) fonksiyonlu uzun ve ofset tiller kolu, operatöre yük etrafında doğal bir görüş hattı ve güvenli yaklaşım sağlar. Entegre şarj cihazı, saha içinde prize yakın her noktayı bir istasyona çevirerek kesintisiz vardiya düzenine destek verir.</p>

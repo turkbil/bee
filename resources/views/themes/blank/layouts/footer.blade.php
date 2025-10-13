@@ -306,6 +306,9 @@
     {{-- Core System Scripts - Mandatory for all themes (Deferred) --}}
     <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
+    {{-- Theme Main Scripts --}}
+    <script defer src="{{ asset('assets/js/themes/blank/main.js') }}?v=1.0.1"></script>
+
     {{-- Dynamic Script Stack --}}
     @stack('scripts')
 
@@ -321,37 +324,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
         </svg>
     </button>
-
-    <script>
-        // Scroll to top button visibility - Wait for DOM
-        document.addEventListener('DOMContentLoaded', function() {
-            const scrollBtn = document.getElementById('scroll-to-top');
-
-            if (!scrollBtn) {
-                console.warn('Scroll-to-top button not found');
-                return;
-            }
-
-            // Scroll event handler
-            function handleScroll() {
-                if (window.scrollY > 300) {
-                    scrollBtn.classList.remove('opacity-0', 'pointer-events-none');
-                    scrollBtn.classList.add('opacity-100', 'pointer-events-auto');
-                } else {
-                    scrollBtn.classList.add('opacity-0', 'pointer-events-none');
-                    scrollBtn.classList.remove('opacity-100', 'pointer-events-auto');
-                }
-            }
-
-            // Add scroll listener
-            window.addEventListener('scroll', handleScroll);
-
-            // Initial check
-            handleScroll();
-
-            console.log('✅ Scroll-to-top button initialized');
-        });
-    </script>
 
     {{-- AI Chat Components --}}
     <x-ai.chat-store />

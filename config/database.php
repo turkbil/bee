@@ -117,6 +117,21 @@ return [
             ]) : [],
         ],
 
+        'litef' => [
+            'driver' => 'mysql',
+            'host' => env('LITEF_DB_HOST', 'localhost'),
+            'port' => env('LITEF_DB_PORT', '3306'),
+            'database' => env('LITEF_DB_DATABASE', 'litef_ekim23'),
+            'username' => env('LITEF_DB_USERNAME', 'litef_ekim23'),
+            'password' => env('LITEF_DB_PASSWORD', '*ssw3R[$)~]h'),
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

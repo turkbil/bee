@@ -268,7 +268,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
                 'is_active' => (bool) $product->is_active,
             ]);
 
-            // Çoklu dil alanları - FALLBACK KAPALI (kullanıcı tüm dilleri boşaltabilsin)
+            // Çoklu dil alanları - FALLBACK KAPALI (input boş kalır, backend'de fallback)
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
                     'title' => $product->getTranslated('title', $lang, false) ?? '',

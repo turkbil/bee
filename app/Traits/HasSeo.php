@@ -314,14 +314,15 @@ trait HasSeo
 
     /**
      * Get fallback title when no SEO title is set
+     * PUBLIC: Bu metod SeoMetaTagService tarafından dışarıdan çağrılır
      */
-    protected function getSeoFallbackTitle(): ?string
+    public function getSeoFallbackTitle(): ?string
     {
         // Default implementation - models can override
         if (isset($this->title)) {
             return $this->title;
         }
-        
+
         if (isset($this->name)) {
             return $this->name;
         }
@@ -331,14 +332,15 @@ trait HasSeo
 
     /**
      * Get fallback description when no SEO description is set
+     * PUBLIC: Bu metod SeoMetaTagService tarafından dışarıdan çağrılır
      */
-    protected function getSeoFallbackDescription(): ?string
+    public function getSeoFallbackDescription(): ?string
     {
         // Default implementation - models can override
         if (isset($this->description)) {
             return str_limit(strip_tags($this->description), 160);
         }
-        
+
         if (isset($this->content)) {
             return str_limit(strip_tags($this->content), 160);
         }
@@ -348,8 +350,9 @@ trait HasSeo
 
     /**
      * Get fallback keywords when no SEO keywords are set
+     * PUBLIC: Bu metod SeoMetaTagService tarafından dışarıdan çağrılır
      */
-    protected function getSeoFallbackKeywords(): array
+    public function getSeoFallbackKeywords(): array
     {
         // Default implementation - models can override
         return [];
@@ -357,8 +360,9 @@ trait HasSeo
 
     /**
      * Get fallback canonical URL
+     * PUBLIC: Bu metod SeoMetaTagService tarafından dışarıdan çağrılır
      */
-    protected function getSeoFallbackCanonicalUrl(): ?string
+    public function getSeoFallbackCanonicalUrl(): ?string
     {
         // Default implementation - models can override
         if (method_exists($this, 'getUrl')) {
@@ -370,14 +374,15 @@ trait HasSeo
 
     /**
      * Get fallback image for social sharing
+     * PUBLIC: Bu metod SeoMetaTagService tarafından dışarıdan çağrılır
      */
-    protected function getSeoFallbackImage(): ?string
+    public function getSeoFallbackImage(): ?string
     {
         // Default implementation - models can override
         if (isset($this->image)) {
             return $this->image;
         }
-        
+
         if (isset($this->featured_image)) {
             return $this->featured_image;
         }
@@ -387,8 +392,9 @@ trait HasSeo
 
     /**
      * Get fallback schema markup
+     * PUBLIC: Bu metod SeoMetaTagService tarafından dışarıdan çağrılır
      */
-    protected function getSeoFallbackSchemaMarkup(): ?array
+    public function getSeoFallbackSchemaMarkup(): ?array
     {
         // Default implementation - models can override
         return null;

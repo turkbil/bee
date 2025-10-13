@@ -422,7 +422,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         return array_unique(array_filter($keywords));
     }
 
-    protected function getSeoFallbackCanonicalUrl(): ?string
+    public function getSeoFallbackCanonicalUrl(): ?string
     {
         $locale = app()->getLocale();
         $slug = $this->getTranslated('slug', $locale) ?? ($this->slug[$locale] ?? null);
@@ -434,7 +434,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         return url('/shop/product/' . ltrim($slug, '/'));
     }
 
-    protected function getSeoFallbackImage(): ?string
+    public function getSeoFallbackImage(): ?string
     {
         if ($this->hasMedia('featured_image')) {
             return $this->getFirstMediaUrl('featured_image');
@@ -443,7 +443,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         return null;
     }
 
-    protected function getSeoFallbackSchemaMarkup(): ?array
+    public function getSeoFallbackSchemaMarkup(): ?array
     {
         $locale = app()->getLocale();
         $title = $this->getTranslated('title', $locale);

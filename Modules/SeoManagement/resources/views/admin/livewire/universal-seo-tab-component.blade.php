@@ -207,13 +207,41 @@
                     </h6>
                 </div>
                 <div class="card-body">
+                    @php
+                        // Fallback değerleri placeholder için hazırla
+                        $fallbackTitle = '';
+                        $fallbackDescription = '';
+
+                        if ($this->modelId && $this->modelClass) {
+                            try {
+                                $previousLocale = app()->getLocale();
+                                app()->setLocale($lang);
+
+                                $model = $this->modelClass::find($this->modelId);
+                                if ($model) {
+                                    if (method_exists($model, 'getSeoFallbackTitle')) {
+                                        $fallbackTitle = $model->getSeoFallbackTitle() ?? '';
+                                    }
+                                    if (method_exists($model, 'getSeoFallbackDescription')) {
+                                        $fallbackDescription = $model->getSeoFallbackDescription() ?? '';
+                                    }
+                                }
+
+                                app()->setLocale($previousLocale);
+                            } catch (\Exception $e) {
+                                \Log::error('SEO Tab Placeholder Error: ' . $e->getMessage());
+                            }
+                        }
+                    @endphp
+
                     <div class="row mb-4">
                         {{-- SEO Title --}}
                         <div class="col-12 col-md-6">
                             <div class="position-relative mb-3 mb-md-0">
                                 <div class="form-floating">
                                     <input type="text" wire:model="seoDataCache.{{ $lang }}.seo_title"
-                                        class="form-control seo-no-enter" placeholder="SEO Başlık"
+                                        class="form-control seo-no-enter"
+                                        placeholder="{{ $fallbackTitle ?: 'SEO Başlık' }}"
                                         maxlength="60" oninput="updateCharCounter(this, '{{ $lang }}', 'title')">
                                     <label>SEO Başlık ({{ strtoupper($lang) }})</label>
                                     <span class="character-counter position-absolute"
@@ -222,7 +250,13 @@
                                         <small>0/60</small>
                                     </span>
                                     <div class="form-text">
-                                        <small>Arama motorlarında görünecek başlık</small>
+                                        <small>
+                                            @if($fallbackTitle)
+                                                <i class="fas fa-magic text-success me-1"></i>Boş bırakırsanız: "{{ \Illuminate\Support\Str::limit($fallbackTitle, 50) }}"
+                                            @else
+                                                Arama motorlarında görünecek başlık
+                                            @endif
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -233,7 +267,8 @@
                             <div class="position-relative">
                                 <div class="form-floating">
                                     <textarea wire:model="seoDataCache.{{ $lang }}.seo_description"
-                                        class="form-control seo-no-enter" placeholder="SEO Açıklama"
+                                        class="form-control seo-no-enter"
+                                        placeholder="{{ $fallbackDescription ?: 'SEO Açıklama' }}"
                                         style="height: 100px; resize: vertical;" maxlength="160"
                                         oninput="updateCharCounter(this, '{{ $lang }}', 'description')"></textarea>
                                     <label>SEO Açıklama ({{ strtoupper($lang) }})</label>
@@ -243,7 +278,13 @@
                                         <small>0/160</small>
                                     </span>
                                     <div class="form-text">
-                                        <small>Arama sonuçlarında görünecek açıklama</small>
+                                        <small>
+                                            @if($fallbackDescription)
+                                                <i class="fas fa-magic text-success me-1"></i>Boş bırakırsanız: "{{ \Illuminate\Support\Str::limit($fallbackDescription, 50) }}"
+                                            @else
+                                                Arama sonuçlarında görünecek açıklama
+                                            @endif
+                                        </small>
                                     </div>
                                 </div>
                             </div>

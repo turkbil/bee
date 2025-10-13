@@ -81,7 +81,7 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
+    'path_generator' => App\Services\Media\TenantPathGenerator::class,
 
     /*
      * The class that contains the strategy for determining how to remove files.
@@ -175,6 +175,8 @@ return [
     /*
      * The path where to store temporary files while performing image conversions.
      * If set to null, storage_path('media-library/temp') will be used.
+     * NOT: Bu değer AppServiceProvider'da runtime'da tenant-aware olarak set edilir:
+     * storage_path("tenant{$tenantId}/media-library/temp")
      */
     'temporary_directory_path' => null,
 

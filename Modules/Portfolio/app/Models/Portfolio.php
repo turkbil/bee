@@ -84,7 +84,7 @@ class Portfolio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Get fallback title for SEO
      */
-    protected function getSeoFallbackTitle(): ?string
+    public function getSeoFallbackTitle(): ?string
     {
         return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
     }
@@ -92,7 +92,7 @@ class Portfolio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Get fallback description for SEO
      */
-    protected function getSeoFallbackDescription(): ?string
+    public function getSeoFallbackDescription(): ?string
     {
         $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
 
@@ -106,7 +106,7 @@ class Portfolio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Get fallback keywords for SEO
      */
-    protected function getSeoFallbackKeywords(): array
+    public function getSeoFallbackKeywords(): array
     {
         $title = $this->getSeoFallbackTitle();
 
@@ -125,7 +125,7 @@ class Portfolio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Get fallback canonical URL
      */
-    protected function getSeoFallbackCanonicalUrl(): ?string
+    public function getSeoFallbackCanonicalUrl(): ?string
     {
         $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
 
@@ -139,7 +139,7 @@ class Portfolio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Get fallback image for social sharing
      */
-    protected function getSeoFallbackImage(): ?string
+    public function getSeoFallbackImage(): ?string
     {
         // Check if portfolio has any images in content
         $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
@@ -154,7 +154,7 @@ class Portfolio extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Get fallback schema markup
      */
-    protected function getSeoFallbackSchemaMarkup(): ?array
+    public function getSeoFallbackSchemaMarkup(): ?array
     {
         return [
             '@context' => 'https://schema.org',

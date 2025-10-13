@@ -114,32 +114,32 @@ class ShopProductVariant extends BaseModel implements TranslatableEntity, HasMed
         return 'variant_id';
     }
 
-    protected function getSeoFallbackTitle(): ?string
+    public function getSeoFallbackTitle(): ?string
     {
         return null;
     }
 
-    protected function getSeoFallbackDescription(): ?string
+    public function getSeoFallbackDescription(): ?string
     {
         return null;
     }
 
-    protected function getSeoFallbackKeywords(): array
+    public function getSeoFallbackKeywords(): array
     {
         return [];
     }
 
-    protected function getSeoFallbackCanonicalUrl(): ?string
+    public function getSeoFallbackCanonicalUrl(): ?string
     {
         return null;
     }
 
-    protected function getSeoFallbackImage(): ?string
+    public function getSeoFallbackImage(): ?string
     {
         return null;
     }
 
-    protected function getSeoFallbackSchemaMarkup(): ?array
+    public function getSeoFallbackSchemaMarkup(): ?array
     {
         return null;
     }

@@ -81,11 +81,11 @@ class Page extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * HasSeo trait fallback implementations
      */
-    
+
     /**
      * Get fallback title for SEO
      */
-    protected function getSeoFallbackTitle(): ?string
+    public function getSeoFallbackTitle(): ?string
     {
         return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
     }
@@ -93,69 +93,69 @@ class Page extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Get fallback description for SEO
      */
-    protected function getSeoFallbackDescription(): ?string
+    public function getSeoFallbackDescription(): ?string
     {
         $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
-        
+
         if (is_string($content)) {
             return \Illuminate\Support\Str::limit(strip_tags($content), 160);
         }
-        
+
         return null;
     }
 
     /**
      * Get fallback keywords for SEO
      */
-    protected function getSeoFallbackKeywords(): array
+    public function getSeoFallbackKeywords(): array
     {
         $title = $this->getSeoFallbackTitle();
-        
+
         if ($title) {
             // Extract meaningful words from title
             $words = array_filter(explode(' ', strtolower($title)), function($word) {
                 return strlen($word) > 3; // Only words longer than 3 chars
             });
-            
+
             return array_slice($words, 0, 5); // Max 5 keywords
         }
-        
+
         return [];
     }
 
     /**
      * Get fallback canonical URL
      */
-    protected function getSeoFallbackCanonicalUrl(): ?string
+    public function getSeoFallbackCanonicalUrl(): ?string
     {
         $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
-        
+
         if ($slug) {
             return url('/' . ltrim($slug, '/'));
         }
-        
+
         return null;
     }
 
     /**
      * Get fallback image for social sharing
      */
-    protected function getSeoFallbackImage(): ?string
+    public function getSeoFallbackImage(): ?string
     {
         // Check if page has any images in content
         $content = $this->getTranslated('body', app()->getLocale()) ?? $this->body;
-        
+
         if (is_string($content) && preg_match('/<img[^>]+src=["\']([^"\']+)["\'][^>]*>/i', $content, $matches)) {
             return $matches[1];
         }
-        
+
         return null;
     }
 
     /**
      * Get fallback schema markup
      */
-    protected function getSeoFallbackSchemaMarkup(): ?array
+    public function getSeoFallbackSchemaMarkup(): ?array
     {
         return [
             '@context' => 'https://schema.org',

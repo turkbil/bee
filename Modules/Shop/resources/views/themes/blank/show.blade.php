@@ -218,6 +218,8 @@
                 ->values();
 
             $siblingVariants = $siblingVariants ?? collect();
+            $parentProduct = $parentProduct ?? null;
+            $isVariantPage = $isVariantPage ?? false;
         @endphp
 
         {{-- 🎯 HERO SECTION --}}
@@ -264,12 +266,24 @@
                         </div>
                     </div>
 
-                    @if ($featuredImage)
-                        <div class="hidden lg:block">
-                            <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
-                                alt="{{ $title }}" class="w-full rounded-lg ">
+                    {{-- Right Column: AI Chat Widget + Featured Image --}}
+                    <div class="hidden lg:block space-y-6">
+                        {{-- AI Chat Widget - Always Open --}}
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                            <x-ai.inline-widget
+                                title="Ürün Hakkında Soru Sor"
+                                :product-id="$item->product_id"
+                                :initially-open="true"
+                                height="500px"
+                                theme="blue"
+                            />
                         </div>
-                    @endif
+
+                        @if ($featuredImage)
+                            <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
+                                alt="{{ $title }}" class="w-full rounded-lg shadow-lg">
+                        @endif
+                    </div>
                 </div>
             </div>
         </section>
@@ -294,22 +308,10 @@
                                     <i class="fa-solid fa-align-left mr-1.5"></i>Açıklama
                                 </a>
                             @endif
-                            @if (!empty($primarySpecs))
-                                <a href="#primary-specs" data-target="primary-specs"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-list-check mr-1.5"></i>Özellikler
-                                </a>
-                            @endif
-                            @if ($highlightedFeatures->isNotEmpty())
-                                <a href="#highlighted" data-target="highlighted"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-star mr-1.5"></i>Öne Çıkanlar
-                                </a>
-                            @endif
-                            @if (!empty($featuresList))
+                            @if ($highlightedFeatures->isNotEmpty() || !empty($featuresList))
                                 <a href="#features" data-target="features"
                                     class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-check-circle mr-1.5"></i>Avantajlar
+                                    <i class="fa-solid fa-sparkles mr-1.5"></i>Özellikler
                                 </a>
                             @endif
                             @if ($siblingVariants->count() > 0)
@@ -318,16 +320,10 @@
                                     <i class="fa-solid fa-layer-group mr-1.5"></i>Varyantlar
                                 </a>
                             @endif
-                            @if (!empty($useCases))
-                                <a href="#usecases" data-target="usecases"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-bullseye mr-1.5"></i>Kullanım
-                                </a>
-                            @endif
                             @if (!empty($competitiveAdvantages))
                                 <a href="#competitive" data-target="competitive"
                                     class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-trophy mr-1.5"></i>Avantaj
+                                    <i class="fa-solid fa-trophy mr-1.5"></i>Avantajlar
                                 </a>
                             @endif
                             @if (!empty($technicalSpecs))
@@ -336,10 +332,34 @@
                                     <i class="fa-solid fa-cogs mr-1.5"></i>Teknik
                                 </a>
                             @endif
+                            @if (!empty($accessories))
+                                <a href="#accessories" data-target="accessories"
+                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    <i class="fa-solid fa-puzzle-piece mr-1.5"></i>Aksesuarlar
+                                </a>
+                            @endif
+                            @if (!empty($useCases))
+                                <a href="#usecases" data-target="usecases"
+                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    <i class="fa-solid fa-bullseye mr-1.5"></i>Kullanım
+                                </a>
+                            @endif
                             @if (!empty($targetIndustries))
                                 <a href="#industries" data-target="industries"
                                     class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-briefcase mr-1.5"></i>Sektörler
+                                </a>
+                            @endif
+                            @if (!empty($certifications))
+                                <a href="#certifications" data-target="certifications"
+                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    <i class="fa-solid fa-certificate mr-1.5"></i>Sertifikalar
+                                </a>
+                            @endif
+                            @if ($warrantyInfo)
+                                <a href="#warranty" data-target="warranty"
+                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    <i class="fa-solid fa-shield-heart mr-1.5"></i>Garanti
                                 </a>
                             @endif
                             @if ($faqEntries->isNotEmpty())
@@ -350,7 +370,7 @@
                             @endif
                             <a href="#contact" data-target="contact"
                                 class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-blue-600 dark:bg-blue-600 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-700 transition-all whitespace-nowrap">
-                                <i class="fa-solid fa-envelope mr-1.5"></i>Teklif Al
+                                <i class="fa-solid fa-envelope mr-1.5"></i>Teklif
                             </a>
                         </div>
                     </div>
@@ -366,7 +386,15 @@
                     {{-- Gallery --}}
                     @if ($galleryImages->count() > 0)
                         <section id="gallery" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Ürün Görselleri</h2>
+                            <header class="text-center mb-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-images text-3xl text-blue-600 dark:text-blue-400"></i>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Ürün Görselleri
+                                </h2>
+                                <p class="text-gray-600 dark:text-gray-400 text-lg">Ürünü farklı açılardan inceleyin</p>
+                            </header>
                             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 @foreach ($galleryImages as $image)
                                     <a href="{{ $image->getUrl() }}"
@@ -388,42 +416,27 @@
                             </div>
                         </section>
                     @endif
-
-                    {{-- Primary Specs (moved from sticky bar) --}}
                     @if (!empty($primarySpecs))
                         <section id="primary-specs" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Temel Özellikler</h2>
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 @foreach ($primarySpecs as $spec)
-                                    <div
-                                        class="flex justify-between items-center p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all">
-                                        <span
-                                            class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $spec['label'] }}</span>
-                                        <span class="font-bold text-gray-900 dark:text-white">{{ $spec['value'] }}</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </section>
-                    @endif
+                                    <div class="group relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
+                                        <div class="relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-xl">
+                                            {{-- İkon + Başlık (Üstte) --}}
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                                    <i class="fa-solid fa-bolt text-white text-lg"></i>
+                                                </div>
+                                                <h4 class="text-base font-semibold text-gray-700 dark:text-gray-300">
+                                                    {{ $spec['label'] }}
+                                                </h4>
+                                            </div>
 
-                    {{-- Highlighted Features --}}
-                    @if ($highlightedFeatures->isNotEmpty())
-                        <section id="highlighted" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Öne Çıkan Özellikler</h2>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                @foreach ($highlightedFeatures as $feature)
-                                    <div
-                                        class="flex gap-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all">
-                                        <div
-                                            class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
-                                            <i
-                                                class="fa-solid fa-{{ $feature['icon'] }} text-blue-600 dark:text-blue-400 text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">
-                                                {{ $feature['title'] }}</h4>
-                                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                                {{ $feature['description'] }}</p>
+                                            {{-- Değer (Altta) --}}
+                                            <div class="text-2xl font-bold text-gray-900 dark:text-white">
+                                                {{ $spec['value'] }}
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -431,84 +444,142 @@
                         </section>
                     @endif
 
-                    {{-- Features List --}}
-                    @if (!empty($featuresList))
+                    @if ($highlightedFeatures->isNotEmpty() || !empty($featuresList))
                         <section id="features" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Özellikler ve Avantajlar</h2>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                @foreach ($featuresList as $feature)
-                                    @php
-                                        $featureIcon = is_array($feature)
-                                            ? $feature['icon'] ?? 'check-circle'
-                                            : 'check-circle';
-                                        $featureText = is_array($feature) ? $feature['text'] ?? $feature : $feature;
-                                    @endphp
-                                    <div
-                                        class="flex gap-3 items-start p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-green-300 dark:hover:border-green-600 transition-all">
-                                        <i
-                                            class="fa-solid fa-{{ $featureIcon }} text-green-600 dark:text-green-400 mt-1 text-lg"></i>
-                                        <span class="text-gray-700 dark:text-gray-300">{{ $featureText }}</span>
-                                    </div>
-                                @endforeach
-                            </div>
+                            <header class="text-center mb-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-100 to-green-100 dark:from-yellow-900/30 dark:to-green-900/30 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-sparkles text-3xl text-yellow-600 dark:text-yellow-400"></i>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Özellikler ve Avantajlar
+                                </h2>
+                                <p class="text-lg text-gray-600 dark:text-gray-400">Ürünü öne çıkaran tüm özellikler ve sağladığı faydalar</p>
+                            </header>
+
+                            @if ($highlightedFeatures->isNotEmpty())
+                                <div class="grid grid-cols-1 gap-6 mb-8">
+                                    @foreach ($highlightedFeatures as $feature)
+                                        <div class="flex gap-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all">
+                                            <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <i class="fa-solid fa-{{ $feature['icon'] }} text-blue-600 dark:text-blue-400 text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 dark:text-white mb-2">
+                                                    {{ $feature['title'] }}
+                                                </h4>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                                    {{ $feature['description'] }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            @if (!empty($featuresList))
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    @foreach ($featuresList as $feature)
+                                        @php
+                                            $featureIcon = is_array($feature) ? $feature['icon'] ?? 'check-circle' : 'check-circle';
+                                            $featureText = is_array($feature) ? $feature['text'] ?? $feature : $feature;
+                                        @endphp
+                                        <div class="flex gap-3 items-start p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-green-300 dark:hover:border-green-600 transition-all">
+                                            <i class="fa-solid fa-{{ $featureIcon }} text-green-600 dark:text-green-400 mt-1 text-lg"></i>
+                                            <span class="text-gray-700 dark:text-gray-300">{{ $featureText }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
                         </section>
                     @endif
 
-                    {{-- Variants (moved after features) --}}
+                    {{-- Variants --}}
                     @if ($siblingVariants->count() > 0)
                         <section id="variants" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Ürün Varyantları</h2>
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <header class="text-center mb-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-layer-group text-3xl text-purple-600 dark:text-purple-400"></i>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Ürün Varyantları
+                                </h2>
+                                <p class="text-gray-600 dark:text-gray-400 text-lg">İhtiyacınıza en uygun modeli keşfedin</p>
+                            </header>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 @foreach ($siblingVariants as $variant)
                                     @php
-                                        $variantTitle =
-                                            $variant->getTranslated('title', $currentLocale) ?? $variant->sku;
+                                        $variantTitle = $variant->getTranslated('title', $currentLocale) ?? $variant->sku;
+                                        $variantDescription = $variant->getTranslated('short_description', $currentLocale);
                                         $variantUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl(
                                             $variant,
                                             $currentLocale,
                                         );
                                         $variantImage = $variant->getFirstMedia('featured_image');
+                                        $variantImageUrl = $variantImage
+                                            ? ($variantImage->hasGeneratedConversion('thumb') ? $variantImage->getUrl('thumb') : $variantImage->getUrl())
+                                            : null;
                                     @endphp
                                     <a href="{{ $variantUrl }}"
-                                        class="group border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 rounded-xl p-5 transition-all hover:shadow-lg">
-                                        @if ($variantImage)
-                                            <img src="{{ $variantImage->hasGeneratedConversion('thumb') ? $variantImage->getUrl('thumb') : $variantImage->getUrl() }}"
-                                                alt="{{ $variantTitle }}" class="w-full h-40 object-cover rounded-lg mb-4">
+                                       class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+
+                                        @if($variantImageUrl)
+                                            <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                                <img src="{{ $variantImageUrl }}"
+                                                     alt="{{ $variantTitle }}"
+                                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                            </div>
                                         @endif
-                                        <h3
-                                            class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            {{ $variantTitle }}</h3>
+
+                                        <div class="p-6">
+                                            <div class="flex items-start justify-between mb-3">
+                                                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                    {{ $variantTitle }}
+                                                </h3>
+                                                <i class="fa-solid fa-arrow-right text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                            </div>
+
+                                            @if($variantDescription)
+                                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                                                    {{ $variantDescription }}
+                                                </p>
+                                            @endif
+
+                                            @if($variant->variant_type)
+                                                <div class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full mb-3">
+                                                    <i class="fa-solid fa-tag"></i>
+                                                    <span>{{ ucfirst(str_replace('-', ' ', $variant->variant_type)) }}</span>
+                                                </div>
+                                            @endif
+
+                                            <div class="flex items-center gap-2 text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded border border-gray-200 dark:border-gray-700">
+                                                <i class="fa-solid fa-barcode"></i>
+                                                <span>{{ $variant->sku }}</span>
+                                            </div>
+
+                                            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
+                                                    Detayları Görüntüle <i class="fa-solid fa-chevron-right ml-1"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </a>
                                 @endforeach
                             </div>
                         </section>
                     @endif
 
-                    {{-- Use Cases --}}
-                    @if (!empty($useCases))
-                        <section id="usecases" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Kullanım Alanları</h2>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                @foreach ($useCases as $case)
-                                    @php
-                                        $caseIcon = is_array($case) ? $case['icon'] ?? 'check' : 'check';
-                                        $caseText = is_array($case) ? $case['text'] ?? $case : $case;
-                                    @endphp
-                                    <div
-                                        class="flex gap-4 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all">
-                                        <i
-                                            class="fa-solid fa-{{ $caseIcon }} text-blue-600 dark:text-blue-400 text-lg mt-1"></i>
-                                        <span class="text-gray-800 dark:text-gray-200">{{ $caseText }}</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </section>
-                    @endif
-
-                    {{-- Competitive Advantages --}}
                     @if (!empty($competitiveAdvantages))
                         <section id="competitive" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Rekabet Avantajları</h2>
+                            <header class="text-center mb-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-trophy text-3xl text-amber-600 dark:text-amber-400"></i>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Ürünün Güçlü Yanları
+                                </h2>
+                                <p class="text-gray-600 dark:text-gray-400 text-lg">Bu ürünü rakiplerinden ayıran özellikler</p>
+                            </header>
                             <div class="grid md:grid-cols-2 gap-8">
                                 @foreach ($competitiveAdvantages as $advantage)
                                     @php
@@ -533,8 +604,15 @@
                     {{-- Technical Specs - Compact Design --}}
                     @if (!empty($technicalSpecs))
                         <section id="technical" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Detaylı Teknik Özellikler
-                            </h2>
+                            <header class="text-center mb-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-cogs text-3xl text-slate-600 dark:text-slate-400"></i>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Detaylı Teknik Özellikler
+                                </h2>
+                                <p class="text-lg text-gray-600 dark:text-gray-400">Ölçümler, performans ve kapasiteler</p>
+                            </header>
                             <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
                                 @php
                                     $isFlat =
@@ -610,8 +688,15 @@
                     {{-- Accessories --}}
                     @if (!empty($accessories))
                         <section id="accessories" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Aksesuarlar ve Opsiyonlar
-                            </h2>
+                            <header class="text-center mb-12">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-puzzle-piece text-3xl text-orange-600 dark:text-orange-400"></i>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Aksesuarlar ve Opsiyonlar
+                                </h2>
+                                <p class="text-gray-600 dark:text-gray-400 text-lg">Ekstra ekipmanlar ve seçenekler</p>
+                            </header>
                             <div class="grid md:grid-cols-2 gap-8">
                                 @foreach ($accessories as $accessory)
                                     @php
@@ -662,28 +747,97 @@
                 </section>
                 @endif
 
+                @if (!empty($useCases))
+                    <section id="usecases" class="scroll-mt-24 mb-20 lg:mb-24">
+                        <header class="text-center mb-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-2xl mb-4">
+                                <i class="fa-solid fa-bullseye text-3xl text-blue-600 dark:text-blue-400"></i>
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                Kullanım Alanları
+                            </h2>
+                            <p class="text-lg text-gray-600 dark:text-gray-400">Hangi durumlarda kullanılır?</p>
+                        </header>
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            @foreach ($useCases as $case)
+                                @php
+                                    $caseIcon = is_array($case) ? $case['icon'] ?? 'check' : 'check';
+                                    $caseText = is_array($case) ? $case['text'] ?? $case : $case;
+                                @endphp
+                                <div class="group relative">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 dark:from-blue-500/5 dark:to-cyan-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
+                                    <div class="relative flex gap-4 p-6 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-xl">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                            <i class="fa-solid fa-{{ $caseIcon }} text-white text-lg"></i>
+                                        </div>
+                                        <p class="flex-1 min-w-0 text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                                            {{ $caseText }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+
+                @if (!empty($targetIndustries))
+                    <section id="industries" class="scroll-mt-24 mb-20 lg:mb-24">
+                        <header class="text-center mb-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl mb-4">
+                                <i class="fa-solid fa-briefcase text-3xl text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                Uygun Olduğu Sektörler
+                            </h2>
+                            <p class="text-lg text-gray-600 dark:text-gray-400">Hangi iş kollarında tercih ediliyor?</p>
+                        </header>
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            @foreach ($targetIndustries as $industry)
+                                @php
+                                    $industryIcon = is_array($industry) ? $industry['icon'] ?? 'briefcase' : 'briefcase';
+                                    $industryText = is_array($industry) ? $industry['text'] ?? $industry : $industry;
+                                @endphp
+                                <div class="group relative">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-purple-500/5 dark:to-pink-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
+                                    <div class="relative flex flex-col items-center text-center p-6 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-400 dark:hover:border-purple-500 transition-all hover:shadow-xl">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 rounded-lg flex items-center justify-center shadow-md mb-4">
+                                            <i class="fa-solid fa-{{ $industryIcon }} text-white text-2xl"></i>
+                                        </div>
+                                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                                            {{ $industryText }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+
                 {{-- Certifications --}}
                 @if (!empty($certifications))
                     <section id="certifications" class="scroll-mt-24 mb-20 lg:mb-24">
-                        <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Sertifikalar ve Uygunluklar
-                        </h2>
+                        <header class="text-center mb-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/30 dark:to-blue-900/30 rounded-2xl mb-4">
+                                <i class="fa-solid fa-certificate text-3xl text-cyan-600 dark:text-cyan-400"></i>
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                Sertifikalar ve Uygunluklar
+                            </h2>
+                            <p class="text-lg text-gray-600 dark:text-gray-400">Kalite belgelerimiz ve standartlara uygunluk</p>
+                        </header>
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                             @foreach ($certifications as $cert)
                                 @php
                                     $certIcon = $cert['icon'] ?? 'certificate';
                                 @endphp
-                                <div
-                                    class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 transition-all text-center hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-lg">
-                                    <div
-                                        class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <i
-                                            class="fa-solid fa-{{ $certIcon }} text-blue-600 dark:text-blue-400 text-2xl"></i>
+                                <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 transition-all text-center hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-lg">
+                                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fa-solid fa-{{ $certIcon }} text-blue-600 dark:text-blue-400 text-2xl"></i>
                                     </div>
                                     <h3 class="text-base font-bold text-gray-900 dark:text-white mb-3">
                                         {{ $cert['name'] }}</h3>
                                     @if (!empty($cert['year']))
-                                        <div
-                                            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full text-xs font-semibold text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
+                                        <div class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full text-xs font-semibold text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
                                             <i class="fa-solid fa-calendar"></i>
                                             {{ $cert['year'] }}
                                         </div>
@@ -697,21 +851,27 @@
                 {{-- Warranty Info --}}
                 @if ($warrantyInfo)
                     <section id="warranty" class="scroll-mt-24 mb-20 lg:mb-24">
+                        <header class="text-center mb-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 rounded-2xl mb-4">
+                                <i class="fa-solid fa-shield-heart text-3xl text-emerald-600 dark:text-emerald-400"></i>
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                Garanti Bilgisi
+                            </h2>
+                            <p class="text-lg text-gray-600 dark:text-gray-400">Güvenle alın, endişesiz kullanın</p>
+                        </header>
                         <div class="flex gap-6 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg transition-all">
-                            <div
-                                class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-shield-heart text-emerald-600 dark:text-emerald-400 text-3xl"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Garanti Bilgisi</h3>
                                 @if (is_array($warrantyInfo))
                                     @if ($warrantyInfo['coverage'] ?? false)
                                         <p class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
                                             {{ $warrantyInfo['coverage'] }}</p>
                                     @endif
                                     @if ($warrantyInfo['duration_months'] ?? false)
-                                        <div
-                                            class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/40 rounded-full text-emerald-900 dark:text-emerald-100 font-semibold">
+                                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/40 rounded-full text-emerald-900 dark:text-emerald-100 font-semibold">
                                             <i class="fa-solid fa-calendar-check"></i>
                                             {{ $warrantyInfo['duration_months'] }} ay garanti
                                         </div>
@@ -724,38 +884,18 @@
                     </section>
                 @endif
 
-                {{-- Target Industries (moved before FAQ) --}}
-                @if (!empty($targetIndustries))
-                    <section id="industries" class="scroll-mt-24 mb-20 lg:mb-24">
-                        <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Uygun Olduğu Sektörler</h2>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            @foreach ($targetIndustries as $industry)
-                                @php
-                                    $industryIcon = is_array($industry)
-                                        ? $industry['icon'] ?? 'briefcase'
-                                        : 'briefcase';
-                                    $industryText = is_array($industry) ? $industry['text'] ?? $industry : $industry;
-                                @endphp
-                                <div class="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl transition-all hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-lg">
-                                    <div class="flex flex-col items-center gap-3 text-center">
-                                        <div
-                                            class="w-14 h-14 bg-purple-100 dark:bg-purple-500/20 rounded-xl flex items-center justify-center">
-                                            <i
-                                                class="fa-solid fa-{{ $industryIcon }} text-purple-700 dark:text-purple-400 text-xl"></i>
-                                        </div>
-                                        <span
-                                            class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{ $industryText }}</span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </section>
-                @endif
-
                 {{-- FAQ --}}
                 @if ($faqEntries->isNotEmpty())
                     <section id="faq" x-data="{ openFaq: null }" class="scroll-mt-24 mb-20 lg:mb-24">
-                        <h2 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Sık Sorulan Sorular</h2>
+                        <header class="text-center mb-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/30 dark:to-rose-900/30 rounded-2xl mb-4">
+                                <i class="fa-solid fa-question-circle text-3xl text-pink-600 dark:text-pink-400"></i>
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                Sık Sorulan Sorular
+                            </h2>
+                            <p class="text-lg text-gray-600 dark:text-gray-400">Merak ettikleriniz hakkında bilgiler</p>
+                        </header>
                         <div class="space-y-4">
                             @foreach ($faqEntries as $index => $faq)
                                 <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-300 dark:hover:border-blue-600 transition-all bg-white dark:bg-gray-800">
@@ -779,7 +919,6 @@
                         </div>
                     </section>
                 @endif
-
 
             </div>
 
@@ -832,19 +971,9 @@
         </div>
     </div>
 
-    {{-- Footer --}}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-8">
-            <a href="{{ $shopIndexUrl }}"
-                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold rounded-lg transition-all hover:shadow-lg">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span>Tüm Ürünlere Dön</span>
-            </a>
-        </div>
-    </div>
 
     {{-- Trust Signals - Modern 4 Column (Before Contact Form) --}}
-    <section id="trust-signals" class="relative mt-32 scroll-mt-24">
+    <section id="trust-signals" class="relative mt-16 scroll-mt-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
@@ -1051,18 +1180,52 @@
         </div>
     </section>
 
-    {{-- Floating CTA --}}
-    <div x-data="{ show: false }" @scroll.window="show = (window.pageYOffset > 800)" x-show="show" x-transition
-        class="fixed bottom-8 right-8 z-50 hidden md:block">
-        <a href="#contact"
-            class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-4 rounded-full shadow-2xl hover:shadow-3xl transition-all">
-            <i class="fa-solid fa-envelope"></i>
-            <span>Teklif Al</span>
-        </a>
-    </div>
+    {{-- AI Chat Section --}}
+    <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4 max-w-4xl">
+
+            {{-- Inline AI Widget - Commented out, moved to hero section
+            <x-ai.inline-widget
+                title="Ürün Hakkında Soru Sor"
+                :product-id="$item->product_id"
+                :initially-open="false"
+                height="600px"
+                theme="blue"
+            />
+            --}}
+        </div>
+    </section>
 
 @endsection
 
 @push('scripts')
     <script src="{{ asset('assets/js/themes/blank/shop-product-show.js') }}"></script>
+    <script>
+        // TOC gizleme: trust-signals bölümüne gelince TOC kaybolsun
+        document.addEventListener('DOMContentLoaded', function() {
+            const tocBar = document.getElementById('toc-bar');
+            const trustSignals = document.getElementById('trust-signals');
+
+            if (tocBar && trustSignals) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // Trust signals görünürde - TOC'yi gizle
+                            tocBar.style.transform = 'translateY(-100%)';
+                            tocBar.style.opacity = '0';
+                        } else {
+                            // Trust signals görünmüyor - TOC'yi göster
+                            tocBar.style.transform = 'translateY(0)';
+                            tocBar.style.opacity = '1';
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '-80px 0px 0px 0px'
+                });
+
+                observer.observe(trustSignals);
+            }
+        });
+    </script>
 @endpush

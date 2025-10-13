@@ -309,7 +309,8 @@
       "Bash(git merge:*)",
       "Bash(git fetch:*)",
       "Bash(git rev-parse:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(git -C /Users/nurullah/Desktop/cms/laravel log -1 --oneline)"
     ],
     "deny": [],
     "ask": [],

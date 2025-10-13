@@ -246,11 +246,16 @@ class ShopController extends Controller
         $moduleSlug = ModuleSlugService::getSlug('Shop', 'show');
         $defaultLocale = get_tenant_default_locale();
 
+        // FIX: Ensure proper URL separation with explicit concatenation
+        // Prevents AI chatbot link generation issues where /shop/slug becomes /shopslug
+        $slug = ltrim($slug, '/');
+        $moduleSlug = trim($moduleSlug, '/');
+
         if ($locale === $defaultLocale) {
-            return url("/{$moduleSlug}/{$slug}");
+            return url('/' . $moduleSlug . '/' . $slug);
         }
 
-        return url("/{$locale}/{$moduleSlug}/{$slug}");
+        return url('/' . $locale . '/' . $moduleSlug . '/' . $slug);
     }
 
     // VERSION-SPECIFIC SHOW METHODS

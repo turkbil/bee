@@ -312,16 +312,9 @@ window.aiChatRenderMarkdown = function(text) {
                                 'text-yellow-800 dark:text-white dark:[&_*]:!text-white': msg.role === 'system',
                                 'text-red-800 dark:text-white dark:[&_*]:!text-white': msg.isError
                             }"
+                            :data-role="msg.role"
                             class="text-sm prose prose-sm max-w-none prose-strong:font-bold prose-ul:list-disc prose-ul:ml-4 prose-li:my-1 dark:prose-invert ai-message-content"
                             x-html="window.aiChatRenderMarkdown(msg.content)"
-                            x-init="
-                                // FORCE white color in dark mode for ALL child elements
-                                if (document.documentElement.classList.contains('dark')) {
-                                    $el.querySelectorAll('*').forEach(child => {
-                                        child.style.setProperty('color', 'white', 'important');
-                                    });
-                                }
-                            "
                         ></div>
                         <p
                             :class="{
@@ -399,23 +392,36 @@ window.aiChatRenderMarkdown = function(text) {
 <style>
 [x-cloak] { display: none !important; }
 
-/* DARK MODE TEXT FIX - Force white color for all message content in dark mode */
-.dark .ai-message-content,
-.dark .ai-message-content *,
-.dark .ai-message-content p,
-.dark .ai-message-content span,
-.dark .ai-message-content strong,
-.dark .ai-message-content em,
-.dark .ai-message-content li,
-.dark .ai-message-content ul,
-.dark .ai-message-content ol,
-.dark .ai-message-content h1,
-.dark .ai-message-content h2,
-.dark .ai-message-content h3 {
+/* USER MESSAGES - Always white text (both light and dark mode) */
+.ai-message-content[data-role="user"],
+.ai-message-content[data-role="user"] *,
+.ai-message-content[data-role="user"] p,
+.ai-message-content[data-role="user"] span,
+.ai-message-content[data-role="user"] strong,
+.ai-message-content[data-role="user"] em,
+.ai-message-content[data-role="user"] li,
+.ai-message-content[data-role="user"] ul,
+.ai-message-content[data-role="user"] ol,
+.ai-message-content[data-role="user"] h1,
+.ai-message-content[data-role="user"] h2,
+.ai-message-content[data-role="user"] h3 {
     color: white !important;
 }
 
-/* Links özel renk (turuncu) */
+/* DARK MODE TEXT FIX - Assistant/System messages white in dark mode */
+.dark .ai-message-content[data-role="assistant"],
+.dark .ai-message-content[data-role="assistant"] *,
+.dark .ai-message-content[data-role="system"],
+.dark .ai-message-content[data-role="system"] * {
+    color: white !important;
+}
+
+/* Links - Special colors */
+.ai-message-content[data-role="user"] a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: underline;
+}
+
 .dark .ai-message-content a {
     color: #fb923c !important; /* orange-400 */
 }

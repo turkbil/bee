@@ -308,5 +308,36 @@
 
     {{-- Dynamic Script Stack --}}
     @stack('scripts')
+
+    {{-- Scroll to Top Button - Positioned left of AI widget to avoid collision --}}
+    <button
+        id="scroll-to-top"
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        class="fixed bottom-6 right-24 z-40 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 pointer-events-none hover:scale-110"
+        aria-label="Sayfa başına dön"
+        title="Sayfa başına dön"
+    >
+        <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
+
+    <script>
+        // Scroll to top button visibility
+        window.addEventListener('scroll', function() {
+            const scrollBtn = document.getElementById('scroll-to-top');
+            if (window.scrollY > 300) {
+                scrollBtn.classList.remove('opacity-0', 'pointer-events-none');
+                scrollBtn.classList.add('opacity-100', 'pointer-events-auto');
+            } else {
+                scrollBtn.classList.add('opacity-0', 'pointer-events-none');
+                scrollBtn.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+        });
+    </script>
+
+    {{-- AI Chat Components --}}
+    <x-ai.chat-store />
+    <x-ai.floating-widget button-text="AI Destek" theme="blue" />
 </body>
 </html>

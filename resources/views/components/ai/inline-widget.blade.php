@@ -294,11 +294,11 @@ window.aiChatRenderMarkdown = function(text) {
                         <div
                             :class="{
                                 'text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-gray-200': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-yellow-200': msg.role === 'system',
-                                'text-red-800 dark:text-red-200': msg.isError
+                                'text-gray-800 dark:text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white': msg.isError
                             }"
-                            class="text-sm prose prose-sm max-w-none prose-strong:font-bold prose-ul:list-disc prose-ul:ml-4 prose-li:my-1"
+                            class="text-sm prose prose-sm max-w-none prose-strong:font-bold prose-ul:list-disc prose-ul:ml-4 prose-li:my-1 dark:prose-invert"
                             style="color: inherit !important;"
                             x-html="window.aiChatRenderMarkdown(msg.content)"
                         ></div>

@@ -1104,7 +1104,7 @@
                 <div class="w-full md:w-5/12 space-y-8">
                     {{-- İletişim Bilgileri --}}
                     <a href="tel:02167553555"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-blue-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-blue-400 hover:shadow-lg cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-blue-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-blue-400 hover:shadow-lg cursor-pointer">
                         <div
                             class="w-14 h-14 bg-white rounded-xl flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-all duration-300">
                             <i class="fa-solid fa-phone text-blue-600 text-xl group-hover:animate-pulse"></i>
@@ -1116,10 +1116,10 @@
                     </a>
 
                     <a href="https://wa.me/905010056758" target="_blank"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-green-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-green-400 hover:shadow-lg cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-green-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-green-400 hover:shadow-lg cursor-pointer">
                         <div
                             class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-600 transition-all duration-300">
-                            <i class="fa-brands fa-whatsapp text-white text-xl group-hover:animate-bounce"></i>
+                            <i class="fa-brands fa-whatsapp text-white text-xl group-hover:animate-pulse"></i>
                         </div>
                         <div>
                             <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">WhatsApp</div>
@@ -1128,7 +1128,7 @@
                     </a>
 
                     <a href="mailto:info@ixtif.com"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-purple-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-purple-400 hover:shadow-lg cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-purple-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-purple-400 hover:shadow-lg cursor-pointer">
                         <div
                             class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-purple-600 transition-all duration-300">
                             <i class="fa-solid fa-envelope text-white text-xl group-hover:animate-pulse"></i>

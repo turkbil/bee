@@ -1,4 +1,9 @@
-@extends('themes.blank.layouts.app')
+@php
+    $themeService = app(\App\Services\ThemeService::class);
+    $activeTheme = $themeService->getActiveTheme();
+    $themeName = $activeTheme ? $activeTheme->name : 'simple';
+@endphp
+@extends('themes.' . $themeName . '.layouts.app')
 
 {{-- V6: HYBRID - V4/V1 Content + V2 Sticky Sidebar --}}
 

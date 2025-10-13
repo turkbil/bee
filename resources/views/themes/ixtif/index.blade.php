@@ -1,4 +1,4 @@
-@extends('themes.blank.layouts.app')
+@extends('themes.ixtif.layouts.app')
 
 @section('content')
 <div class="relative" x-data="homepage()" x-init="init()">

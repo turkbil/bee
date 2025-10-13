@@ -43,9 +43,13 @@ class ThemeService
                 $cacheKey = "theme:tenant_{$t->id}";
 
                 $theme = $cache->remember($cacheKey, now()->addHours(1), function() use ($t) {
-                    return Theme::on('mysql')->where('name', $t->theme)
-                                  ->where('is_active', true)
-                                  ->first();
+                    // theme_id kullan (theme değil)
+                    if (isset($t->theme_id) && $t->theme_id) {
+                        return Theme::on('mysql')->where('theme_id', $t->theme_id)
+                                      ->where('is_active', true)
+                                      ->first();
+                    }
+                    return null;
                 });
 
                 if ($theme) {

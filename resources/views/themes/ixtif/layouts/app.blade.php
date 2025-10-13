@@ -1,7 +1,7 @@
-@include('themes.blank.layouts.header')
+@include('themes.ixtif.layouts.header')
 
 {{-- Universal Notification System --}}
-@include('themes.blank.layouts.notification')
+@include('themes.ixtif.layouts.notification')
 
 <main class="flex-1 min-h-[60vh]">
     @php
@@ -17,4 +17,4 @@
     @endphp
 </main>
 
-@include('themes.blank.layouts.footer')
+@include('themes.ixtif.layouts.footer')

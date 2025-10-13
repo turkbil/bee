@@ -23,7 +23,7 @@ class PageController extends Controller
     public function __construct(ThemeService $themeService)
     {
         $this->themeService = $themeService;
-        
+
         // 🔒 MODÜL ERİŞİM KONTROLÜ
         $this->checkModuleAccess('Page');
     }

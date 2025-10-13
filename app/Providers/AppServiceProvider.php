@@ -147,13 +147,23 @@ class AppServiceProvider extends ServiceProvider
         
         // Rate limiting for AI translation jobs
         $this->configureRateLimiters();
-        
+
         // 🚀 OTOMATIK QUEUE WORKER BAŞLATMA SİSTEMİ
-        $this->ensureQueueWorkerRunning();
+        // TEMP DISABLED FOR DEBUGGING
+        // $this->ensureQueueWorkerRunning();
     }
     
     protected function registerViewComposers(): void
     {
+        // Global Active Theme - Tüm view'larda kullanılabilir
+        view()->composer('*', function ($view) {
+            $themeService = app(\App\Services\ThemeService::class);
+            $activeTheme = $themeService->getActiveTheme();
+            $activeThemeName = $activeTheme ? $activeTheme->name : 'simple';
+
+            $view->with('activeThemeName', $activeThemeName);
+        });
+
         // Tenant Languages View Composer - Cache için optimize edilmiş
         view()->composer([
             'page::admin.livewire.page-manage-component',
@@ -170,7 +180,7 @@ class AppServiceProvider extends ServiceProvider
             } else {
                 // Sadece public sayfalarda cache kullan
                 $tenantLanguages = \Illuminate\Support\Facades\Cache::remember(
-                    'tenant_languages_for_forms', 
+                    'tenant_languages_for_forms',
                     3600, // 1 saat
                     function () {
                         return \Modules\LanguageManagement\app\Models\TenantLanguage::orderBy('is_active', 'desc')
@@ -180,7 +190,7 @@ class AppServiceProvider extends ServiceProvider
                     }
                 );
             }
-            
+
             $view->with('cachedTenantLanguages', $tenantLanguages);
         });
     }

@@ -70,8 +70,8 @@ window.aiChatRenderMarkdown = function(text) {
 
     let html = text;
 
-    // Convert [text](url) to <a> links - SITE RENKLERİNE UYGUN (turuncu/yeşil)
-    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:text-orange-700 font-semibold border-b-2 border-orange-400 hover:border-orange-600 transition-colors">$1</a>');
+    // Convert [text](url) to <a> links - SITE RENKLERİNE UYGUN (turuncu/yeşil) + DARK MODE
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-semibold border-b-2 border-orange-400 dark:border-orange-500 hover:border-orange-600 dark:hover:border-orange-400 transition-colors">$1</a>');
 
     // Convert **bold** to <strong>
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>');
@@ -307,13 +307,12 @@ window.aiChatRenderMarkdown = function(text) {
                     >
                         <div
                             :class="{
-                                'text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white': msg.isError
+                                'text-white [&_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&_*]:!text-white': msg.isError
                             }"
                             class="text-sm prose prose-sm max-w-none prose-strong:font-bold prose-ul:list-disc prose-ul:ml-4 prose-li:my-1 dark:prose-invert"
-                            style="color: inherit !important;"
                             x-html="window.aiChatRenderMarkdown(msg.content)"
                         ></div>
                         <p

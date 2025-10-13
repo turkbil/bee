@@ -172,11 +172,62 @@ class UniversalSeoTabComponent extends Component
                     'final_seoDataCache' => $this->seoDataCache
                 ]);
             } else {
-                Log::warning('⚠️ UniversalSeoTab - SEO Setting BULUNAMADI, boş cache oluşturuluyor');
-                // SEO Setting yoksa boş cache
-                foreach ($this->availableLanguages as $lang) {
-                    $this->seoDataCache[$lang] = $this->getEmptySeoData();
-                    $this->recommendationLoaders[$lang] = false;
+                Log::warning('⚠️ UniversalSeoTab - SEO Setting BULUNAMADI, fallback değerleri çekiliyor');
+
+                // SEO Setting yoksa modelden fallback değerleri çek
+                try {
+                    $model = $this->modelClass::find($this->modelId);
+
+                    if ($model) {
+                        Log::info('✅ UniversalSeoTab - Model bulundu, fallback metodları çağrılıyor');
+
+                        foreach ($this->availableLanguages as $lang) {
+                            // Geçici olarak app locale'i değiştir
+                            $previousLocale = app()->getLocale();
+                            app()->setLocale($lang);
+
+                            // Fallback değerleri çek
+                            $fallbackTitle = '';
+                            $fallbackDescription = '';
+
+                            if (method_exists($model, 'getSeoFallbackTitle')) {
+                                $fallbackTitle = $model->getSeoFallbackTitle() ?? '';
+                            }
+
+                            if (method_exists($model, 'getSeoFallbackDescription')) {
+                                $fallbackDescription = $model->getSeoFallbackDescription() ?? '';
+                            }
+
+                            // Locale'i geri al
+                            app()->setLocale($previousLocale);
+
+                            $this->seoDataCache[$lang] = $this->getEmptySeoData();
+                            $this->seoDataCache[$lang]['seo_title'] = $fallbackTitle;
+                            $this->seoDataCache[$lang]['seo_description'] = $fallbackDescription;
+                            $this->recommendationLoaders[$lang] = false;
+
+                            Log::info("✅ UniversalSeoTab - Fallback değerleri cache'e eklendi: {$lang}", [
+                                'title' => $fallbackTitle,
+                                'description' => mb_substr($fallbackDescription, 0, 50) . '...'
+                            ]);
+                        }
+                    } else {
+                        Log::warning('⚠️ UniversalSeoTab - Model bulunamadı, tamamen boş cache oluşturuluyor');
+                        foreach ($this->availableLanguages as $lang) {
+                            $this->seoDataCache[$lang] = $this->getEmptySeoData();
+                            $this->recommendationLoaders[$lang] = false;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::error('❌ UniversalSeoTab - Fallback değerleri çekilemedi', [
+                        'error' => $e->getMessage()
+                    ]);
+
+                    // Hata durumunda boş cache
+                    foreach ($this->availableLanguages as $lang) {
+                        $this->seoDataCache[$lang] = $this->getEmptySeoData();
+                        $this->recommendationLoaders[$lang] = false;
+                    }
                 }
             }
         } catch (\Exception $e) {

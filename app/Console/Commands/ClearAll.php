@@ -108,16 +108,32 @@ class ClearAll extends Command
             $this->info(count($tenantDirs) . ' adet tenant klasörü bulundu: ' . implode(', ', $tenantDirs));
         }
         foreach ($tenantDirs as $tenantDir) {
-            $this->cleanStorageDirectories([
-                $tenantDir . '/app',
-                $tenantDir . '/debugbar',
-                $tenantDir . '/framework/cache',
-                $tenantDir . '/framework/sessions',
-                $tenantDir . '/framework/testing',
-                $tenantDir . '/framework/views',
-                $tenantDir . '/logs',
-                $tenantDir . '/sessions'
-            ]);
+            // LITEF korumas\u0131: tenant2/app/public i\u00e7eri\u011fini KORUMAK i\u00e7in explicit temizleme
+            if ($tenantDir === 'tenant2') {
+                $this->info("\ud83d\udd12 LITEF Korumas\u0131: tenant2/app/public medyalar\u0131 korunuyor!");
+                $this->cleanStorageDirectories([
+                    $tenantDir . '/app/livewire-tmp',    // Sadece livewire-tmp temizleniyor
+                    $tenantDir . '/debugbar',
+                    $tenantDir . '/framework/cache',
+                    $tenantDir . '/framework/sessions',
+                    $tenantDir . '/framework/testing',
+                    $tenantDir . '/framework/views',
+                    $tenantDir . '/logs',
+                    $tenantDir . '/sessions'
+                ]);
+            } else {
+                // Di\u011fer tenantlar i\u00e7in normal temizlik
+                $this->cleanStorageDirectories([
+                    $tenantDir . '/app',
+                    $tenantDir . '/debugbar',
+                    $tenantDir . '/framework/cache',
+                    $tenantDir . '/framework/sessions',
+                    $tenantDir . '/framework/testing',
+                    $tenantDir . '/framework/views',
+                    $tenantDir . '/logs',
+                    $tenantDir . '/sessions'
+                ]);
+            }
             
             // Tenant log dosyalarını temizle
             $tenantLogsPath = storage_path($tenantDir . '/logs');

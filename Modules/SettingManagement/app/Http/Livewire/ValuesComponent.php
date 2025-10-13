@@ -298,24 +298,24 @@ class ValuesComponent extends Component
                 try {
                     // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                     $tenantId = is_tenant() ? tenant_id() : 1;
-                    
-                    // Dosya adını oluştur
-                    $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
-                    $folder = $type === 'image' ? 'images' : 'files';
-                    
+
+                    // 🎯 SPATİE PATTERN: Her setting için unique klasör (settings/{setting_id}/)
+                    $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $file->getClientOriginalExtension();
+
                     // Eski dosyayı sil (eğer varsa)
                     if ($oldValue) {
                         \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
                     }
-                    
+
                     // TenantStorageHelper ile doğru şekilde dosyayı yükle
+                    // Path: settings/{setting_id}/filename.ext (Spatie pattern)
                     $value = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
                         $file,
-                        "settings/{$folder}",
+                        "settings/{$settingId}",  // ✅ Setting ID bazlı unique klasör
                         $fileName,
                         $tenantId
                     );
-                    
+
                     $this->values[$settingId] = $value;
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
@@ -342,18 +342,19 @@ class ValuesComponent extends Component
                         if ($photo) {
                             // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                             $tenantId = is_tenant() ? tenant_id() : 1;
-                            
-                            // Dosya adını oluştur
-                            $fileName = time() . '_' . Str::slug($setting->key) . '_' . Str::random(6) . '.' . $photo->getClientOriginalExtension();
-                            
+
+                            // 🎯 SPATİE PATTERN: Her resim için unique dosya adı
+                            $fileName = time() . '_' . $index . '.' . $photo->getClientOriginalExtension();
+
                             // TenantStorageHelper ile doğru şekilde dosyayı yükle
+                            // Path: settings/{setting_id}/timestamp_index.ext (Spatie pattern)
                             $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
                                 $photo,
-                                "settings/images",
+                                "settings/{$settingId}",  // ✅ Setting ID bazlı unique klasör
                                 $fileName,
                                 $tenantId
                             );
-                            
+
                             $newImages[] = $imagePath;
                         }
                     }

@@ -123,11 +123,22 @@ class AppServiceProvider extends ServiceProvider
         // Tenant için Redis önbellek yapılandırması
         if (TenantHelpers::isTenant()) {
             $tenantId = tenant_id();
-            
+
             // ResponseCache için tenant bazlı tag ayarlaması
             config([
                 'responsecache.cache_tag' => 'tenant_' . $tenantId . '_response_cache',
                 'responsecache.cache_lifetime_in_seconds' => 86400, // 24 saat
+            ]);
+
+            // Livewire temporary upload için tenant-aware path
+            config([
+                'livewire.temporary_file_upload.disk' => 'public',
+                'livewire.temporary_file_upload.directory' => "tenant{$tenantId}/livewire-tmp",
+            ]);
+
+            // Media Library temp path için tenant-aware
+            config([
+                'media-library.temporary_directory_path' => storage_path("tenant{$tenantId}/media-library/temp"),
             ]);
         }
         

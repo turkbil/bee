@@ -194,8 +194,10 @@ readonly class ChatWidgetService
     public function saveWidgetConfig(string $widgetId, array $config): bool
     {
         try {
-            $configPath = storage_path("app/ai-widgets/{$widgetId}.json");
-            
+            // Tenant-aware path
+            $tenantId = $this->getTenantId();
+            $configPath = storage_path("tenant{$tenantId}/app/public/widgets/{$widgetId}.json");
+
             // Directory oluştur
             $directory = dirname($configPath);
             if (!File::exists($directory)) {
@@ -231,7 +233,9 @@ readonly class ChatWidgetService
     public function loadWidgetConfig(string $widgetId): ?array
     {
         try {
-            $configPath = storage_path("app/ai-widgets/{$widgetId}.json");
+            // Tenant-aware path
+            $tenantId = $this->getTenantId();
+            $configPath = storage_path("tenant{$tenantId}/app/public/widgets/{$widgetId}.json");
 
             if (!File::exists($configPath)) {
                 return null;
@@ -266,7 +270,9 @@ readonly class ChatWidgetService
     public function listWidgets(): array
     {
         try {
-            $widgetsPath = storage_path('app/ai-widgets');
+            // Tenant-aware path
+            $tenantId = $this->getTenantId();
+            $widgetsPath = storage_path("tenant{$tenantId}/app/public/widgets");
             
             if (!File::exists($widgetsPath)) {
                 return [];
@@ -311,7 +317,9 @@ readonly class ChatWidgetService
     public function deleteWidget(string $widgetId): bool
     {
         try {
-            $configPath = storage_path("app/ai-widgets/{$widgetId}.json");
+            // Tenant-aware path
+            $tenantId = $this->getTenantId();
+            $configPath = storage_path("tenant{$tenantId}/app/public/widgets/{$widgetId}.json");
 
             if (File::exists($configPath)) {
                 File::delete($configPath);
@@ -520,5 +528,23 @@ readonly class ChatWidgetService
         return View::make('ai::widgets.error-widget', [
             'error' => $error
         ])->render();
+    }
+
+    /**
+     * Tenant ID'yi al - tenant context varsa tenant ID, yoksa 1 (central)
+     */
+    private function getTenantId(): int
+    {
+        try {
+            if (app()->bound(\Stancl\Tenancy\Tenancy::class)) {
+                $tenancy = app(\Stancl\Tenancy\Tenancy::class);
+                if ($tenancy->initialized) {
+                    return tenant('id');
+                }
+            }
+            return 1; // Central context - default tenant
+        } catch (\Exception $e) {
+            return 1;
+        }
     }
 }

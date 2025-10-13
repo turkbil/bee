@@ -134,12 +134,12 @@ class BlogCategory extends BaseModel implements TranslatableEntity, HasMedia
      * HasSeo trait fallback implementations
      */
 
-    protected function getSeoFallbackTitle(): ?string
+    public function getSeoFallbackTitle(): ?string
     {
         return $this->getTranslated('title', app()->getLocale()) ?? $this->title;
     }
 
-    protected function getSeoFallbackDescription(): ?string
+    public function getSeoFallbackDescription(): ?string
     {
         $description = $this->getTranslated('description', app()->getLocale()) ?? $this->description;
 
@@ -150,7 +150,7 @@ class BlogCategory extends BaseModel implements TranslatableEntity, HasMedia
         return null;
     }
 
-    protected function getSeoFallbackKeywords(): array
+    public function getSeoFallbackKeywords(): array
     {
         $title = $this->getSeoFallbackTitle();
 
@@ -165,7 +165,7 @@ class BlogCategory extends BaseModel implements TranslatableEntity, HasMedia
         return [];
     }
 
-    protected function getSeoFallbackCanonicalUrl(): ?string
+    public function getSeoFallbackCanonicalUrl(): ?string
     {
         $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
 
@@ -176,7 +176,7 @@ class BlogCategory extends BaseModel implements TranslatableEntity, HasMedia
         return null;
     }
 
-    protected function getSeoFallbackImage(): ?string
+    public function getSeoFallbackImage(): ?string
     {
         // Kategori görseli varsa onu kullan
         if ($this->hasMedia('category_image')) {
@@ -186,7 +186,7 @@ class BlogCategory extends BaseModel implements TranslatableEntity, HasMedia
         return null;
     }
 
-    protected function getSeoFallbackSchemaMarkup(): ?array
+    public function getSeoFallbackSchemaMarkup(): ?array
     {
         return [
             '@context' => 'https://schema.org',

@@ -67,12 +67,10 @@ class StorageTenancyBootstrapper implements TenancyBootstrapper
             'framework/sessions',
             'framework/views',
             'app/public',
-            'app/public/widgets',            // Widget dosyaları
-            'app/public/settings/files',     // Setting dosyaları (public)
-            'app/public/settings/images',    // Logo vb. public görüntüler
+            'app/public/widgets',            // Widget config files (JSON)
+            'app/public/settings',           // Setting files (ID bazlı alt klasörler runtime'da oluşur)
             'app/livewire-tmp',              // Livewire dosya upload için gerekli
             'media-library/temp',            // Media upload geçici dosyalar
-            'settings/files',                // Legacy path, backward compatibility
             'logs',
         ];
 

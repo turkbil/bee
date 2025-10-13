@@ -146,14 +146,14 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
         return 'category_id';
     }
 
-    protected function getSeoFallbackTitle(): ?string
+    public function getSeoFallbackTitle(): ?string
     {
         $locale = app()->getLocale();
 
         return $this->getTranslated('title', $locale) ?? ($this->title[$locale] ?? null);
     }
 
-    protected function getSeoFallbackDescription(): ?string
+    public function getSeoFallbackDescription(): ?string
     {
         $locale = app()->getLocale();
         $content = $this->getTranslated('description', $locale) ?? ($this->description[$locale] ?? null);
@@ -165,7 +165,7 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
         return null;
     }
 
-    protected function getSeoFallbackKeywords(): array
+    public function getSeoFallbackKeywords(): array
     {
         $title = $this->getSeoFallbackTitle();
 
@@ -181,7 +181,7 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
         return array_slice($words, 0, 5);
     }
 
-    protected function getSeoFallbackCanonicalUrl(): ?string
+    public function getSeoFallbackCanonicalUrl(): ?string
     {
         $locale = app()->getLocale();
         $slug = $this->getTranslated('slug', $locale) ?? ($this->slug[$locale] ?? null);
@@ -193,7 +193,7 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
         return url('/shop/category/' . ltrim($slug, '/'));
     }
 
-    protected function getSeoFallbackImage(): ?string
+    public function getSeoFallbackImage(): ?string
     {
         if ($this->hasMedia('category_image')) {
             return $this->getFirstMediaUrl('category_image');
@@ -202,7 +202,7 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
         return $this->image_url;
     }
 
-    protected function getSeoFallbackSchemaMarkup(): ?array
+    public function getSeoFallbackSchemaMarkup(): ?array
     {
         return [
             '@context' => 'https://schema.org',

@@ -7,6 +7,12 @@ class TenantStorageHelper
 {
     /**
      * Dosyayı tenant için doğru bir şekilde yükler
+     *
+     * @param mixed $file Yüklenecek dosya
+     * @param string $relativePath Relative path (örn: "settings/1" veya "widgets")
+     * @param string $fileName Dosya adı
+     * @param int $tenantId Tenant ID
+     * @return string Public URL path
      */
     public static function storeTenantFile($file, $relativePath, $fileName, $tenantId)
     {

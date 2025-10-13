@@ -19,7 +19,28 @@ class SeoMeta extends Component
     public function __construct(
         private readonly SeoMetaTagService $seoService
     ) {
-        $this->metaTags = $this->seoService->generateMetaTags();
+        // Controller'dan share edilen metaTags varsa onu kullan, yoksa generate et
+        $sharedData = view()->getShared();
+
+        \Log::debug('SeoMeta Component - Shared Data Check', [
+            'has_metaTags' => isset($sharedData['metaTags']),
+            'metaTags_type' => isset($sharedData['metaTags']) ? gettype($sharedData['metaTags']) : 'not_set',
+            'schemas_count' => isset($sharedData['metaTags']['schemas']) ? count($sharedData['metaTags']['schemas']) : 0,
+        ]);
+
+        if (isset($sharedData['metaTags']) && is_array($sharedData['metaTags'])) {
+            // Controller'dan share edilen metaTags'i kullan (Shop gibi özel modüller için)
+            $this->metaTags = $sharedData['metaTags'];
+            \Log::debug('SeoMeta Component - Using shared metaTags', [
+                'schemas_count' => count($this->metaTags['schemas'] ?? []),
+            ]);
+        } else {
+            // Normal flow: SEO servisinden generate et
+            $this->metaTags = $this->seoService->generateMetaTags();
+            \Log::debug('SeoMeta Component - Generated metaTags', [
+                'schemas_count' => count($this->metaTags['schemas'] ?? []),
+            ]);
+        }
     }
 
     /**

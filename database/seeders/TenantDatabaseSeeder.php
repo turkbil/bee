@@ -51,6 +51,9 @@ class TenantDatabaseSeeder extends Seeder
         // 8. Anasayfayı oluştur
         $this->seedHomePage();
 
+        // 9. AI Bilgi Bankası
+        $this->seedAIKnowledgeBase();
+
         $this->command->info('✅ Tenant seeding tamamlandı!');
         $this->command->info('📧 Login: nurullah@nurullah.net / g0nulcelen');
         $this->command->info('📧 Login: info@turkbilisim.com.tr / gonu1celen');
@@ -316,5 +319,17 @@ class TenantDatabaseSeeder extends Seeder
         ]);
 
         $this->command->info('    ✅ Anasayfa oluşturuldu');
+    }
+
+    /**
+     * 9. AI Bilgi Bankası
+     */
+    protected function seedAIKnowledgeBase(): void
+    {
+        $this->command->info('  📝 AI Bilgi Bankası (İxtif - 30 soru-cevap) oluşturuluyor...');
+
+        $this->call(\Modules\SettingManagement\Database\Seeders\AIKnowledgeBaseSeeder::class);
+
+        $this->command->info('    ✅ AI Bilgi Bankası oluşturuldu');
     }
 }

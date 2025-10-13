@@ -8,6 +8,7 @@ use Modules\SettingManagement\App\Http\Livewire\ValuesComponent;
 use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
 use Modules\SettingManagement\App\Http\Livewire\FormBuilderComponent;
 use Modules\SettingManagement\App\Http\Controllers\FormBuilderController;
+use Modules\SettingManagement\App\Http\Livewire\KnowledgeBaseManager;
 
 Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
@@ -41,6 +42,11 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/tenant/settings', TenantSettingsComponent::class)
                     ->middleware(['module.permission:settingmanagement,update', 'root.access'])
                     ->name('tenant.settings');
+
+                // AI Knowledge Base
+                Route::get('/ai/knowledge-base', KnowledgeBaseManager::class)
+                    ->middleware('module.permission:settingmanagement,update')
+                    ->name('ai.knowledge-base');
 
                 // Form Builder routes - Livewire yaklaşımıyla
                 // İndex rotası kaldırıldı

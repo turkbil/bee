@@ -44,7 +44,7 @@ class ShopController extends Controller
         }
     }
 
-    public function show(string $slug, ?SeoMetaTagService $seoService = null)
+    public function show(string $slug)
     {
         $locale = app()->getLocale();
 
@@ -60,6 +60,9 @@ class ShopController extends Controller
         if (!$product) {
             abort(404);
         }
+
+        // SEO servisi inject et
+        $seoService = app(SeoMetaTagService::class);
 
         // Handle variant logic
         $parentProduct = null;
@@ -119,35 +122,75 @@ class ShopController extends Controller
                 ->get();
         }
 
-        if ($seoService) {
-            $seoService->forModel($product);
-        }
-
+        // ⚠️ ÖNEMLİ: SeoMetaTagService'in model'i algılayabilmesi için ÖNCE share et
         view()->share('currentModel', $product);
+
+        // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
+        $metaTags = null;
+        if ($seoService && method_exists($product, 'getAllSchemas')) {
+            // Shop product için özel schema'ları ekle
+            $shopSchemas = $product->getAllSchemas();
+
+            // SEO servisine schema'ları ekle (mevcut schemas array'ine merge et)
+            $currentMetaTags = $seoService->generateMetaTags();
+            $currentSchemas = $currentMetaTags['schemas'] ?? [];
+
+            // Shop schema'larını ekle (Product, Breadcrumb, FAQ)
+            foreach ($shopSchemas as $key => $schema) {
+                if ($schema) {
+                    // Shop modülü schema'ları `shop_` prefix'i ile ekle
+                    $currentSchemas['shop_' . $key] = $schema;
+                }
+            }
+
+            // Meta tags'i güncelle
+            $metaTags = array_merge($currentMetaTags, ['schemas' => $currentSchemas]);
+            view()->share('metaTags', $metaTags);
+
+            \Log::info('ShopController - Shop schemas added', [
+                'total_schemas' => count($currentSchemas),
+                'shop_schemas' => array_keys($shopSchemas),
+                'all_schema_keys' => array_keys($currentSchemas),
+            ]);
+        }
 
         try {
             // ✅ Varyant ise show-variant, değilse show render et
             $viewName = $isVariantPage ? 'show-variant' : 'show';
             $viewPath = $this->themeService->getThemeViewPath($viewName, 'shop');
 
-            return view($viewPath, [
+            $viewData = [
                 'item' => $product,
                 'parentProduct' => $parentProduct,
                 'siblingVariants' => $siblingVariants,
                 'isVariantPage' => $isVariantPage,
-            ]);
+            ];
+
+            // metaTags varsa view'a ekle
+            if ($metaTags) {
+                $viewData['metaTags'] = $metaTags;
+            }
+
+            return view($viewPath, $viewData);
         } catch (\Throwable $e) {
             Log::error('Shop theme show view error', ['message' => $e->getMessage()]);
 
             // Fallback: varyant ise show-variant, değilse show
             $fallbackView = $isVariantPage ? 'shop::front.show-variant' : 'shop::front.show';
 
-            return view($fallbackView, [
+            $fallbackData = [
                 'item' => $product,
                 'parentProduct' => $parentProduct,
                 'siblingVariants' => $siblingVariants,
                 'isVariantPage' => $isVariantPage,
-            ]);
+            ];
+
+            // metaTags varsa view'a ekle
+            if ($metaTags) {
+                $fallbackData['metaTags'] = $metaTags;
+            }
+
+            return view($fallbackView, $fallbackData);
         }
     }
 
@@ -211,7 +254,7 @@ class ShopController extends Controller
     }
 
     // VERSION-SPECIFIC SHOW METHODS
-    private function showVersion(string $slug, string $version, ?SeoMetaTagService $seoService = null)
+    private function showVersion(string $slug, string $version)
     {
         $locale = app()->getLocale();
 
@@ -227,6 +270,9 @@ class ShopController extends Controller
         if (!$product) {
             abort(404);
         }
+
+        // SEO servisi inject et
+        $seoService = app(SeoMetaTagService::class);
 
         $parentProduct = null;
         $siblingVariants = collect();
@@ -255,51 +301,84 @@ class ShopController extends Controller
             $siblingVariants = $product->childProducts()->active()->published()->get();
         }
 
-        if ($seoService) {
-            $seoService->forModel($product);
-        }
-
+        // ⚠️ ÖNEMLİ: SeoMetaTagService'in model'i algılayabilmesi için ÖNCE share et
         view()->share('currentModel', $product);
+
+        // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
+        $metaTags = null;
+        if ($seoService && method_exists($product, 'getAllSchemas')) {
+            // Shop product için özel schema'ları ekle
+            $shopSchemas = $product->getAllSchemas();
+
+            // SEO servisine schema'ları ekle (mevcut schemas array'ine merge et)
+            $currentMetaTags = $seoService->generateMetaTags();
+            $currentSchemas = $currentMetaTags['schemas'] ?? [];
+
+            // Shop schema'larını ekle (Product, Breadcrumb, FAQ)
+            foreach ($shopSchemas as $key => $schema) {
+                if ($schema) {
+                    // Shop modülü schema'ları `shop_` prefix'i ile ekle
+                    $currentSchemas['shop_' . $key] = $schema;
+                }
+            }
+
+            // Meta tags'i güncelle
+            $metaTags = array_merge($currentMetaTags, ['schemas' => $currentSchemas]);
+            view()->share('metaTags', $metaTags);
+
+            \Log::info('ShopController - Shop schemas added', [
+                'total_schemas' => count($currentSchemas),
+                'shop_schemas' => array_keys($shopSchemas),
+                'all_schema_keys' => array_keys($currentSchemas),
+            ]);
+        }
 
         // Direkt theme path kullan (ThemeService bypass)
         $viewName = $isVariantPage ? "show-variant-{$version}" : "show-{$version}";
         $viewPath = "shop::themes.blank.{$viewName}";
 
-        return view($viewPath, [
+        $viewData = [
             'item' => $product,
             'parentProduct' => $parentProduct,
             'siblingVariants' => $siblingVariants,
             'isVariantPage' => $isVariantPage,
-        ]);
+        ];
+
+        // metaTags varsa view'a ekle
+        if ($metaTags) {
+            $viewData['metaTags'] = $metaTags;
+        }
+
+        return view($viewPath, $viewData);
     }
 
-    public function showV1(string $slug, ?SeoMetaTagService $seoService = null)
+    public function showV1(string $slug)
     {
-        return $this->showVersion($slug, 'v1', $seoService);
+        return $this->showVersion($slug, 'v1');
     }
 
-    public function showV2(string $slug, ?SeoMetaTagService $seoService = null)
+    public function showV2(string $slug)
     {
-        return $this->showVersion($slug, 'v2', $seoService);
+        return $this->showVersion($slug, 'v2');
     }
 
-    public function showV3(string $slug, ?SeoMetaTagService $seoService = null)
+    public function showV3(string $slug)
     {
-        return $this->showVersion($slug, 'v3', $seoService);
+        return $this->showVersion($slug, 'v3');
     }
 
-    public function showV4(string $slug, ?SeoMetaTagService $seoService = null)
+    public function showV4(string $slug)
     {
-        return $this->showVersion($slug, 'v4', $seoService);
+        return $this->showVersion($slug, 'v4');
     }
 
-    public function showV5(string $slug, ?SeoMetaTagService $seoService = null)
+    public function showV5(string $slug)
     {
-        return $this->showVersion($slug, 'v5', $seoService);
+        return $this->showVersion($slug, 'v5');
     }
 
-    public function showV6(string $slug, ?SeoMetaTagService $seoService = null)
+    public function showV6(string $slug)
     {
-        return $this->showVersion($slug, 'v6', $seoService);
+        return $this->showVersion($slug, 'v6');
     }
 }

@@ -26,10 +26,17 @@ Route::prefix('ai/v1')->name('ai.api.v1.')->group(function () {
     // 💬 Public Chat Endpoints (Rate limited)
     Route::post('/chat', [PublicAIController::class, 'publicChat'])
         ->name('chat.public');
-    
+
     // 🎯 Public Feature Access (Rate limited)
     Route::post('/feature/{slug}', [PublicAIController::class, 'publicFeature'])
         ->name('feature.public');
+
+    // 🛍️ Shop Assistant Endpoints (NO rate limiting, NO credit cost)
+    Route::post('/shop-assistant/chat', [PublicAIController::class, 'shopAssistantChat'])
+        ->name('shop-assistant.chat');
+
+    Route::get('/shop-assistant/history', [PublicAIController::class, 'getConversationHistory'])
+        ->name('shop-assistant.history');
     
     // 👤 Authenticated User Endpoints (Requires authentication)
     Route::middleware(['auth:sanctum'])->group(function () {

@@ -133,21 +133,34 @@ class OpenAIService
             ]);
             
             // GERÇEK STREAMING REQUEST PAYLOAD
+            $isGPT5 = $this->isGPT5Model($this->model);
+
             $payload = [
                 'model' => $this->model,
                 'messages' => $messages,
-                'max_tokens' => $options['max_tokens'] ?? 16000, // Dinamik token limit
-                'temperature' => $options['temperature'] ?? 0.7,
-                'stream' => true, // ✨ STREAMING AÇIK!
-                'stream_options' => [
-                    'include_usage' => true // Token usage bilgisi için
-                ]
+                'stream' => !$isGPT5, // GPT-5 doesn't support streaming without verified org
             ];
+
+            // Add stream_options only if streaming is enabled
+            if (!$isGPT5) {
+                $payload['stream_options'] = [
+                    'include_usage' => true // Token usage bilgisi için
+                ];
+            }
+
+            // Temperature support check (GPT-5 doesn't support custom temperature)
+            if (!$isGPT5) {
+                $payload['temperature'] = $options['temperature'] ?? 0.7;
+            }
+
+            // max_tokens - Default 4000 (rate limit aşımını önlemek için)
+            // Options'da özel değer varsa onu kullan
+            $payload['max_tokens'] = $options['max_tokens'] ?? 4000;
 
             Log::info('🎯 OpenAI Request Payload', [
                 'model' => $payload['model'],
-                'max_tokens' => $payload['max_tokens'],
-                'temperature' => $payload['temperature'],
+                'max_tokens' => $payload['max_tokens'] ?? 'unlimited',
+                'temperature' => $payload['temperature'] ?? 'default (not set for GPT-5)',
                 'messages_count' => count($payload['messages'])
             ]);
 
@@ -163,42 +176,56 @@ class OpenAIService
             ])->timeout(600)->post($this->baseUrl . '/chat/completions', $payload);
 
             if ($response->successful()) {
-                // SSE formatını parse et
-                $lines = explode("\n", $response->body());
-                
-                foreach ($lines as $line) {
-                    $line = trim($line);
-                    
-                    // SSE veri satırlarını filtrele
-                    if (strpos($line, 'data: ') === 0) {
-                        $jsonData = substr($line, 6); // "data: " kısmını çıkar
-                        
-                        // [DONE] kontrolü
-                        if ($jsonData === '[DONE]') {
-                            break;
-                        }
-                        
-                        // JSON parse et
-                        $data = json_decode($jsonData, true);
-                        if (!$data) continue;
-                        
-                        // Content chunk'ını al
-                        $chunk = $data['choices'][0]['delta']['content'] ?? '';
-                        
-                        if (!empty($chunk)) {
-                            $fullResponse .= $chunk;
-                            
-                            // Callback varsa çağır (Frontend'e gönder)
-                            if ($streamCallback && is_callable($streamCallback)) {
-                                call_user_func($streamCallback, $chunk);
+                // GPT-5 non-streaming response (JSON)
+                if ($isGPT5) {
+                    $data = $response->json();
+
+                    $fullResponse = $data['choices'][0]['message']['content'] ?? '';
+
+                    // Token usage
+                    if (isset($data['usage'])) {
+                        $inputTokens = $data['usage']['prompt_tokens'] ?? 0;
+                        $outputTokens = $data['usage']['completion_tokens'] ?? 0;
+                        $totalTokens = $data['usage']['total_tokens'] ?? 0;
+                    }
+                } else {
+                    // Streaming response (SSE format)
+                    $lines = explode("\n", $response->body());
+
+                    foreach ($lines as $line) {
+                        $line = trim($line);
+
+                        // SSE veri satırlarını filtrele
+                        if (strpos($line, 'data: ') === 0) {
+                            $jsonData = substr($line, 6); // "data: " kısmını çıkar
+
+                            // [DONE] kontrolü
+                            if ($jsonData === '[DONE]') {
+                                break;
                             }
-                        }
-                        
-                        // Token usage bilgilerini al (varsa)
-                        if (isset($data['usage'])) {
-                            $inputTokens = $data['usage']['prompt_tokens'] ?? 0;
-                            $outputTokens = $data['usage']['completion_tokens'] ?? 0;
-                            $totalTokens = $data['usage']['total_tokens'] ?? 0;
+
+                            // JSON parse et
+                            $data = json_decode($jsonData, true);
+                            if (!$data) continue;
+
+                            // Content chunk'ını al
+                            $chunk = $data['choices'][0]['delta']['content'] ?? '';
+
+                            if (!empty($chunk)) {
+                                $fullResponse .= $chunk;
+
+                                // Callback varsa çağır (Frontend'e gönder)
+                                if ($streamCallback && is_callable($streamCallback)) {
+                                    call_user_func($streamCallback, $chunk);
+                                }
+                            }
+
+                            // Token usage bilgilerini al (varsa)
+                            if (isset($data['usage'])) {
+                                $inputTokens = $data['usage']['prompt_tokens'] ?? 0;
+                                $outputTokens = $data['usage']['completion_tokens'] ?? 0;
+                                $totalTokens = $data['usage']['total_tokens'] ?? 0;
+                            }
                         }
                     }
                 }
@@ -256,16 +283,52 @@ class OpenAIService
      */
     /**
      * AIService uyumlu ask metodu
+     *
+     * @param string|array $messages - User message (string) veya messages array
+     * @param bool $stream
+     * @param array $options - custom_prompt, conversation_history, temperature vb.
      */
     public function ask($messages, $stream = false, $options = [])
     {
+        // 🧠 CONVERSATION MEMORY: Build full messages array
+        $fullMessages = [];
+
+        // 1. System prompt ekle (varsa)
+        if (!empty($options['custom_prompt'])) {
+            $fullMessages[] = [
+                'role' => 'system',
+                'content' => $options['custom_prompt']
+            ];
+        }
+
+        // 2. Conversation history ekle (varsa)
+        if (!empty($options['conversation_history']) && is_array($options['conversation_history'])) {
+            foreach ($options['conversation_history'] as $historyMsg) {
+                $fullMessages[] = $historyMsg;
+            }
+        }
+
+        // 3. Current user message ekle
+        if (is_string($messages)) {
+            $fullMessages[] = [
+                'role' => 'user',
+                'content' => $messages
+            ];
+        } elseif (is_array($messages)) {
+            // Eğer messages zaten array ise, direkt kullan
+            $fullMessages = array_merge($fullMessages, $messages);
+        }
+
         // Streaming varsa generateCompletionStream kullan
         if ($stream) {
-            return $this->generateCompletionStream($messages, null, $options);
+            return $this->generateCompletionStream($fullMessages, null, $options);
         }
 
         // Normal request - tam response döndür (token bilgileri ile)
-        return $this->generateCompletionStream($messages, null, $options);
+        $result = $this->generateCompletionStream($fullMessages, null, $options);
+
+        // String response dön (compatibility için)
+        return $result['response'] ?? '';
     }
 
     /**
@@ -323,6 +386,14 @@ class OpenAIService
     }
 
     /**
+     * Check if model is GPT-5 (which doesn't support custom temperature)
+     */
+    private function isGPT5Model($modelName)
+    {
+        return str_contains(strtolower($modelName), 'gpt-5');
+    }
+
+    /**
      * Test için basit mesaj gönder
      */
     public function testMessage($prompt = "Merhaba, nasılsın?")
@@ -333,7 +404,7 @@ class OpenAIService
                 'content' => 'Sen yardımcı bir AI asistanısın. Kısa ve samimi yanıtlar ver.'
             ],
             [
-                'role' => 'user', 
+                'role' => 'user',
                 'content' => $prompt
             ]
         ];

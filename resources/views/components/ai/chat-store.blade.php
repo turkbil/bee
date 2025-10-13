@@ -90,8 +90,8 @@ document.addEventListener('alpine:init', () => {
             localStorage.setItem('ai_chat_floating_open', this.floatingOpen.toString());
 
             if (this.floatingOpen && this.messages.length === 0) {
-                // İlk açılışta hoş geldin mesajı
-                this.addSystemMessage(`👋 **${this.assistantName}** iXtif.com için özel olarak geliştirilmiştir.\n\nÜrünlerimiz, hizmetlerimiz ve şirketimiz hakkında tüm sorularınızı yanıtlamak için buradayım. Size nasıl yardımcı olabilirim?`);
+                // İlk açılışta hoş geldin mesajı - YARATICI VE İLGİ ÇEKİCİ
+                this.addSystemMessage(`🎉 **Merhaba!** Ben ${this.assistantName}'nin yapay zeka asistanıyım! 🤖\n\n✨ **Size şunlarda yardımcı olabilirim:**\n- 🛍️ Ürün özellikleri ve karşılaştırmalar\n- 💰 Fiyat bilgileri ve kampanyalar\n- 📦 Stok durumu ve teslimat\n- 🔧 Teknik destek ve kullanım\n- ❓ Merak ettiğiniz her şey!\n\n💬 **Haydi, ilk sorunuzu sorun!** Sabırsızlanıyorum... 😊`);
             }
 
             // Scroll to bottom when opening
@@ -110,7 +110,7 @@ document.addEventListener('alpine:init', () => {
             localStorage.setItem('ai_chat_floating_open', 'true');
 
             if (this.messages.length === 0) {
-                this.addSystemMessage(`👋 **${this.assistantName}** iXtif.com için özel olarak geliştirilmiştir.\n\nÜrünlerimiz, hizmetlerimiz ve şirketimiz hakkında tüm sorularınızı yanıtlamak için buradayım. Size nasıl yardımcı olabilirim?`);
+                this.addSystemMessage(`🎉 **Merhaba!** Ben ${this.assistantName}'nin yapay zeka asistanıyım! 🤖\n\n✨ **Size şunlarda yardımcı olabilirim:**\n- 🛍️ Ürün özellikleri ve karşılaştırmalar\n- 💰 Fiyat bilgileri ve kampanyalar\n- 📦 Stok durumu ve teslimat\n- 🔧 Teknik destek ve kullanım\n- ❓ Merak ettiğiniz her şey!\n\n💬 **Haydi, ilk sorunuzu sorun!** Sabırsızlanıyorum... 😊`);
             }
 
             // Scroll to bottom when opening

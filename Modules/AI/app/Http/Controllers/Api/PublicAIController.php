@@ -15,6 +15,9 @@ use Modules\AI\App\Services\AIPriorityEngine;
 use Modules\AI\App\Services\ResponseTemplateEngine;
 use Modules\AI\App\Models\AIFeature;
 use Modules\AI\App\Models\AICreditUsage;
+use App\Services\AI\Context\ModuleContextOrchestrator;
+use Modules\AI\App\Models\AIConversation;
+use Modules\AI\App\Models\AIMessage;
 
 /**
  * 🌐 PUBLIC AI CONTROLLER V2 - Frontend API Entegrasyonu
@@ -35,10 +38,14 @@ use Modules\AI\App\Models\AICreditUsage;
 class PublicAIController extends Controller
 {
     private AIService $aiService;
+    private ModuleContextOrchestrator $contextOrchestrator;
 
-    public function __construct(AIService $aiService)
-    {
+    public function __construct(
+        AIService $aiService,
+        ModuleContextOrchestrator $contextOrchestrator
+    ) {
         $this->aiService = $aiService;
+        $this->contextOrchestrator = $contextOrchestrator;
     }
 
     /**
@@ -508,18 +515,685 @@ class PublicAIController extends Controller
     private function calculateCreditsUsed(?AIFeature $feature, array $response): int
     {
         $baseCredits = 1; // Minimum credit cost
-        
+
         // Feature-specific multipliers
         if ($feature) {
             $baseCredits *= $feature->credit_cost ?? 1;
         }
-        
+
         // Response length multiplier
         $responseLength = strlen($response['content'] ?? '');
         if ($responseLength > 500) {
             $baseCredits += intval($responseLength / 500); // +1 credit per 500 chars
         }
-        
+
         return max(1, $baseCredits); // Minimum 1 credit
+    }
+
+    /**
+     * 🛍️ Shop Assistant Chat - Multi-module AI with no rate limiting
+     *
+     * Özel Shop asistanı endpoint:
+     * - Rate limiting YOK (unlimited)
+     * - Credit cost YOK (0 credit)
+     * - Multi-module context (Shop + Page + Blog)
+     * - IP-based persistent sessions
+     * - Settings-driven personality
+     * - Anti-manipulation protection
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function shopAssistantChat(Request $request): JsonResponse
+    {
+        try {
+            // Validate input (Tenant context check için exists rule'ları kaldırıldı)
+            $validated = $request->validate([
+                'message' => 'required|string|min:1|max:1000',
+                'product_id' => 'nullable|integer',
+                'category_id' => 'nullable|integer',
+                'page_slug' => 'nullable|string|max:255',
+                'session_id' => 'nullable|string|max:64',
+            ]);
+
+            // Generate or use existing session_id (IP-based)
+            $sessionId = $validated['session_id'] ?? $this->generateSessionId($request);
+
+            // Find or create conversation
+            $conversation = AIConversation::firstOrCreate(
+                [
+                    'session_id' => $sessionId,
+                    'tenant_id' => tenant('id'),
+                ],
+                [
+                    'user_id' => auth()->id(),
+                    'feature_slug' => 'shop-assistant',
+                    'context_data' => [
+                        'ip' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                        'locale' => app()->getLocale(),
+                    ],
+                    'is_active' => true,
+                ]
+            );
+
+            // Build context options for orchestrator
+            $contextOptions = [
+                'product_id' => $validated['product_id'] ?? null,
+                'category_id' => $validated['category_id'] ?? null,
+                'page_slug' => $validated['page_slug'] ?? null,
+                'session_id' => $sessionId,
+            ];
+
+            // Use ModuleContextOrchestrator to build full context
+            $aiContext = $this->contextOrchestrator->buildUserContext(
+                $validated['message'],
+                $contextOptions
+            );
+
+            // Build enhanced system prompt with product context
+            $enhancedSystemPrompt = $this->buildEnhancedSystemPrompt($aiContext);
+
+            // 🧠 CONVERSATION MEMORY: Get last 3 messages for context (token limit koruması)
+            $conversationHistory = $conversation->messages()
+                ->orderBy('created_at', 'desc')
+                ->limit(3)
+                ->get()
+                ->reverse()
+                ->map(function ($msg) {
+                    return [
+                        'role' => $msg->role,
+                        'content' => $msg->content
+                    ];
+                })
+                ->toArray();
+
+            // Call AI service with enhanced system prompt + conversation history
+            // 🔄 AUTOMATIC FALLBACK CHAIN: GPT-5 → GPT-4o-mini → Claude-Haiku → DeepSeek
+            $aiResponseText = null;
+            $usedModel = 'gpt-5';
+
+            try {
+                $aiResponseText = $this->aiService->ask($validated['message'], [
+                    'temperature' => 0.7,
+                    'custom_prompt' => $enhancedSystemPrompt,
+                    'conversation_history' => $conversationHistory, // 🧠 Last 3 messages (token limit)
+                ]);
+            } catch (\Exception $aiError) {
+                // 🔄 FALLBACK LAYER 1: GPT-5 → GPT-4o-mini
+                if (str_contains($aiError->getMessage(), '429') || str_contains($aiError->getMessage(), 'Rate limit')) {
+                    Log::warning('🔴 GPT-5 rate limit hit, falling back to GPT-4o-mini', [
+                        'error' => $aiError->getMessage()
+                    ]);
+
+                    try {
+                        $openAIProvider = \Modules\AI\App\Models\AIProvider::where('name', 'openai')
+                            ->where('is_active', true)
+                            ->first();
+
+                        if ($openAIProvider) {
+                            $fallbackService = new \Modules\AI\App\Services\OpenAIService([
+                                'provider_id' => $openAIProvider->id,
+                                'api_key' => $openAIProvider->api_key,
+                                'base_url' => $openAIProvider->base_url,
+                                'model' => 'gpt-4o-mini',
+                            ]);
+
+                            $aiResponseText = $fallbackService->ask($validated['message'], [
+                                'temperature' => 0.7,
+                                'custom_prompt' => $enhancedSystemPrompt,
+                                'conversation_history' => $conversationHistory,
+                            ]);
+
+                            $usedModel = 'gpt-4o-mini';
+                            Log::info('✅ Successfully used GPT-4o-mini fallback');
+                        }
+                    } catch (\Exception $fallback1Error) {
+                        // 🔄 FALLBACK LAYER 2: GPT-4o-mini → Claude-Haiku
+                        Log::warning('🟡 GPT-4o-mini failed, falling back to Claude-Haiku', [
+                            'error' => $fallback1Error->getMessage()
+                        ]);
+
+                        try {
+                            $claudeProvider = \Modules\AI\App\Models\AIProvider::where('name', 'anthropic')
+                                ->where('is_active', true)
+                                ->first();
+
+                            if ($claudeProvider) {
+                                $claudeService = new \Modules\AI\App\Services\ClaudeService([
+                                    'provider_id' => $claudeProvider->id,
+                                    'api_key' => $claudeProvider->api_key,
+                                    'base_url' => $claudeProvider->base_url,
+                                    'model' => 'claude-3-haiku-20240307',
+                                ]);
+
+                                $aiResponseText = $claudeService->ask($validated['message'], [
+                                    'temperature' => 0.7,
+                                    'custom_prompt' => $enhancedSystemPrompt,
+                                    'conversation_history' => $conversationHistory,
+                                ]);
+
+                                $usedModel = 'claude-3-haiku';
+                                Log::info('✅ Successfully used Claude-Haiku fallback');
+                            }
+                        } catch (\Exception $fallback2Error) {
+                            // 🔄 FALLBACK LAYER 3: Claude-Haiku → DeepSeek
+                            Log::warning('🟠 Claude-Haiku failed, falling back to DeepSeek', [
+                                'error' => $fallback2Error->getMessage()
+                            ]);
+
+                            try {
+                                $deepseekProvider = \Modules\AI\App\Models\AIProvider::where('name', 'deepseek')
+                                    ->where('is_active', true)
+                                    ->first();
+
+                                if ($deepseekProvider) {
+                                    $deepseekService = new \Modules\AI\App\Services\OpenAIService([
+                                        'provider_id' => $deepseekProvider->id,
+                                        'api_key' => $deepseekProvider->api_key,
+                                        'base_url' => $deepseekProvider->base_url,
+                                        'model' => $deepseekProvider->default_model ?? 'deepseek-chat',
+                                    ]);
+
+                                    $aiResponseText = $deepseekService->ask($validated['message'], [
+                                        'temperature' => 0.7,
+                                        'custom_prompt' => $enhancedSystemPrompt,
+                                        'conversation_history' => $conversationHistory,
+                                    ]);
+
+                                    $usedModel = 'deepseek-chat';
+                                    Log::info('✅ Successfully used DeepSeek fallback');
+                                }
+                            } catch (\Exception $fallback3Error) {
+                                Log::error('❌ All AI providers failed', [
+                                    'gpt5_error' => $aiError->getMessage(),
+                                    'gpt4o_error' => $fallback1Error->getMessage(),
+                                    'haiku_error' => $fallback2Error->getMessage(),
+                                    'deepseek_error' => $fallback3Error->getMessage(),
+                                ]);
+
+                                $aiResponseText = 'Üzgünüm, şu anda AI servisleri geçici olarak kullanılamıyor. Lütfen birkaç dakika sonra tekrar deneyin.';
+                                $usedModel = 'none';
+                            }
+                        }
+                    }
+                } else {
+                    throw $aiError; // Re-throw if not rate limit error
+                }
+            }
+
+            // Format response for compatibility
+            $aiResponse = [
+                'content' => $aiResponseText,
+                'model' => $usedModel, // Hangi model kullanıldı
+                'usage' => [
+                    'total_tokens' => 0, // Will be calculated if available
+                    'prompt_tokens' => 0,
+                    'completion_tokens' => 0,
+                ],
+            ];
+
+            // Save user message
+            AIMessage::create([
+                'conversation_id' => $conversation->id,
+                'role' => 'user',
+                'content' => $validated['message'],
+                'context_data' => $contextOptions,
+            ]);
+
+            // Save AI response
+            $assistantMessage = AIMessage::create([
+                'conversation_id' => $conversation->id,
+                'role' => 'assistant',
+                'content' => $aiResponse['content'] ?? '',
+                'model' => $aiResponse['model'] ?? 'unknown',
+                'tokens_used' => $aiResponse['usage']['total_tokens'] ?? 0,
+                'prompt_tokens' => $aiResponse['usage']['prompt_tokens'] ?? 0,
+                'completion_tokens' => $aiResponse['usage']['completion_tokens'] ?? 0,
+            ]);
+
+            // Update conversation
+            $conversation->update([
+                'last_message_at' => now(),
+                'message_count' => $conversation->messages()->count(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'message' => $aiResponse['content'] ?? '',
+                    'session_id' => $sessionId,
+                    'conversation_id' => $conversation->id,
+                    'message_id' => $assistantMessage->id,
+                    'assistant_name' => $aiContext['context']['assistant_name'] ?? 'AI Asistan',
+                    'context_used' => [
+                        'modules' => array_keys($aiContext['context']['modules'] ?? []),
+                        'product_id' => $validated['product_id'] ?? null,
+                        'category_id' => $validated['category_id'] ?? null,
+                    ],
+                    'credits_used' => 0, // Shop assistant is free
+                    'tokens_used' => $aiResponse['usage']['total_tokens'] ?? 0,
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('PublicAIController.shopAssistantChat failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'ip' => $request->ip(),
+                'message' => $request->input('message', 'N/A'),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Bir hata oluştu. Lütfen tekrar deneyin.',
+                'debug' => app()->environment('local') ? $e->getMessage() : null,
+            ], 500);
+        }
+    }
+
+    /**
+     * 🔐 Generate IP-based session ID
+     */
+    private function generateSessionId(Request $request): string
+    {
+        $data = [
+            $request->ip(),
+            $request->userAgent() ?? 'unknown',
+            tenant('id'),
+        ];
+
+        return md5(implode('|', $data));
+    }
+
+    /**
+     * 🎨 Build enhanced system prompt with product context
+     *
+     * Combines base system prompt with module-specific context (Product, Category, Page)
+     */
+    private function buildEnhancedSystemPrompt(array $aiContext): string
+    {
+        $prompts = [];
+
+        // Base system prompt (personality, contact, knowledge base)
+        $prompts[] = $aiContext['system_prompt'];
+
+        // 🔒 ANTI-MANIPULATION PROTECTION & SALES FOCUS
+        $prompts[] = "\n## 🔒 GÜVENLİK KURALLARI VE SATIŞ ODAKLI YANITLAR (ASLA İHLAL ETME!)";
+        $prompts[] = "**KRİTİK:** Sen bir SHOP ASSISTANT'sın. SADECE şirketimizin ürünleri, hizmetleri ve firma hakkında konuşabilirsin.";
+        $prompts[] = "**YASAK KONULAR:** Kangal köpeği, siyaset, din, kişisel hayat tavsiyeleri, genel bilgi sorguları, ev hayvanları, yemek tarifleri, spor, eğlence vb.";
+        $prompts[] = "**YAPILACAK:** Kullanıcı konu dışı soru sorarsa kibarca reddet ve şirket konularına yönlendir.";
+        $prompts[] = "";
+        $prompts[] = "## 🎯 SATIŞ ODAKLI YANITLAR - MUTLAKA ÜRÜN LİNKLERİ VER!";
+        $prompts[] = "**AMAÇ:** Bilgi vermek DEĞİL, SATIŞ YAPMAK! Her yanıtta ürün linklerini markdown formatında paylaş.";
+        $prompts[] = "**ZORUNLU FORMAT:** [Ürün Adı](ürün_url) - SKU: XXX - Fiyat: YYY";
+        $prompts[] = "**ÖRNEK YANIT:** \"Şantiye ortamı için **[İXTİF CPD15TVL - 1.5 Ton Forklift](https://site.com/urun/xtif-cpd15tvl)** ve **[İXTİF F2 Transpalet](https://site.com/urun/ixtif-f2)** ürünlerimizi önerebilirim. Detaylar için linklere tıklayabilirsiniz.\"";
+        $prompts[] = "**HATIRLATMA:** Ürün adı geçtiğinde MUTLAKA tıklanabilir link ver. Sadece bilgi verme, ürüne YÖNLENDIR!";
+        $prompts[] = "**ÖNEMLİ:** Tüm cümlelerine BÜYÜK HARF ile başla. Doğru Türkçe gramer ve yazım kurallarına uy.";
+        $prompts[] = "";
+        $prompts[] = "## 💎 SATIŞ DİLİ VE ÜRÜN ÖVGÜSÜ (COŞKULU PAZARLAMA!)";
+        $prompts[] = "**ZORUNLU:** Ürünleri ÖVEREK tanıt! Kuru bilgi verme, ürünün ne kadar MÜKEMMEL olduğunu anlat!";
+        $prompts[] = "**SATIŞÇI RUH:** 'Bu ürün harika!', 'Muhteşem özellikler!', 'Rakipsiz performans!', 'En çok tercih edilen model!' gibi ifadeler kullan.";
+        $prompts[] = "**ÖRNEKİXTİF F2 Transpalet'imiz gerçekten MÜKEMMEL bir seçim! Li-Ion bataryasıyla HIZLI şarj, UZUN ömür. Ergonomik tasarımıyla operatör yorulmadan SAATLERCE çalışabilir. Kompakt yapısı sayesinde dar alanlarda bile RAHATÇA manevra yaparsınız!\"";
+        $prompts[] = "**YASAK DİL:** 'iyi', 'kullanışlı', 'standart' gibi sıradan kelimeler. Bunun yerine 'HARIKA', 'MÜKEİ', 'RAKİPSİZ', 'EN İYİ' kullan!";
+        $prompts[] = "**AVANTAJLARI VURGULA:** Her üründe 'Neden bu ürün?' sorusunu cevapla. Özelliklerini sayarken FAYDALARINA odaklan!";
+        $prompts[] = "";
+        $prompts[] = "## 🚨 KRİTİK: KULLANICI KAPASİTE/MODEL SORARSA TÜM UYGUN ÜRÜNLERİ LİSTELE!";
+        $prompts[] = "**ZORUNLU:** Kullanıcı '1.5 ton transpalet', '2 ton forklift' gibi kapasite + ürün tipi sorarsa, ELİNDEKİ TÜM UYGUN MODELLERİ markdown link ile listele!";
+        $prompts[] = "**YANLIŞ:** Sadece 1 model öner ❌";
+        $prompts[] = "**DOĞRU:** Tüm uygun modelleri listele, her birinin linkini ver ✅";
+        $prompts[] = "**ÖRNEK:** Kullanıcı '1.5 ton transpalet' derse → F2, F3, F4, EPL153, EPT20-15ET gibi TÜM 1.5 ton transpalet modellerini göster!";
+        $prompts[] = "";
+
+        // Add module context if available
+        if (!empty($aiContext['context']['modules'])) {
+            $prompts[] = "\n## BAĞLAM BİLGİLERİ\n";
+
+            // Shop context (Product or Category)
+            if (!empty($aiContext['context']['modules']['shop'])) {
+                $shopContext = $aiContext['context']['modules']['shop'];
+                $prompts[] = $this->formatShopContext($shopContext);
+            }
+
+            // Page context
+            if (!empty($aiContext['context']['modules']['page'])) {
+                $pageContext = $aiContext['context']['modules']['page'];
+                $prompts[] = $this->formatPageContext($pageContext);
+            }
+        }
+
+        return implode("\n", $prompts);
+    }
+
+    /**
+     * Format shop context for AI prompt
+     */
+    private function formatShopContext(array $shopContext): string
+    {
+        $formatted = [];
+
+        // Current Product context (if viewing a product)
+        if (!empty($shopContext['current_product'])) {
+            $product = $shopContext['current_product'];
+
+            $formatted[] = "### Konuşulan Ürün:";
+            $formatted[] = "**Ürün Adı:** " . ($product['title'] ?? 'N/A');
+
+            // Ürün linki - Markdown formatında
+            if (!empty($product['url'])) {
+                $formatted[] = "**Ürün Linki:** [Ürüne Git](" . $product['url'] . ")";
+                $formatted[] = "**ÖNEMLİ:** Kullanıcıya ürün linkini Markdown formatında ver: [Ürüne Git](" . $product['url'] . ")";
+            }
+
+            $formatted[] = "**SKU:** " . ($product['sku'] ?? 'N/A');
+
+            if (!empty($product['short_description'])) {
+                $descStr = is_array($product['short_description']) ? json_encode($product['short_description'], JSON_UNESCAPED_UNICODE) : $product['short_description'];
+                $formatted[] = "**Kısa Açıklama:** {$descStr}";
+            }
+
+            if (!empty($product['long_description'])) {
+                $descStr = is_array($product['long_description']) ? json_encode($product['long_description'], JSON_UNESCAPED_UNICODE) : $product['long_description'];
+                $formatted[] = "**Detaylı Açıklama:** {$descStr}";
+            }
+
+            // Price
+            if (!empty($product['price']['formatted'])) {
+                $formatted[] = "**Fiyat:** {$product['price']['formatted']}";
+            } elseif (!empty($product['price']['on_request'])) {
+                $formatted[] = "**Fiyat:** Fiyat sorunuz için lütfen iletişime geçin";
+            }
+
+            // Technical specs (İLK 5 ÖZELLIK - Token tasarrufu)
+            if (!empty($product['technical_specs']) && is_array($product['technical_specs'])) {
+                $formatted[] = "\n**Teknik Özellikler:**";
+                $limitedSpecs = array_slice($product['technical_specs'], 0, 5, true);
+                foreach ($limitedSpecs as $key => $value) {
+                    $valueStr = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $value;
+                    $formatted[] = "- {$key}: {$valueStr}";
+                }
+            }
+
+            // Highlighted features ONLY (Features KALDIRILDI - çoğunlukla aynı)
+            if (!empty($product['highlighted_features']) && is_array($product['highlighted_features'])) {
+                $formatted[] = "\n**Öne Çıkan Özellikler:**";
+                $limitedFeatures = array_slice($product['highlighted_features'], 0, 5);
+                foreach ($limitedFeatures as $feature) {
+                    $featureStr = is_array($feature) ? json_encode($feature, JSON_UNESCAPED_UNICODE) : $feature;
+                    $formatted[] = "- {$featureStr}";
+                }
+            }
+
+            // Use cases (İLK 3 - Token tasarrufu)
+            if (!empty($product['use_cases']) && is_array($product['use_cases'])) {
+                $formatted[] = "\n**Kullanım Alanları:**";
+                $limitedUseCases = array_slice($product['use_cases'], 0, 3);
+                foreach ($limitedUseCases as $useCase) {
+                    $useCaseStr = is_array($useCase) ? json_encode($useCase, JSON_UNESCAPED_UNICODE) : $useCase;
+                    $formatted[] = "- {$useCaseStr}";
+                }
+            }
+
+            // Warranty & Certifications (ÖZET - Token tasarrufu)
+            if (!empty($product['warranty_info'])) {
+                $warrantyStr = is_array($product['warranty_info']) ? json_encode($product['warranty_info'], JSON_UNESCAPED_UNICODE) : $product['warranty_info'];
+                $formatted[] = "\n**Garanti:** " . mb_substr($warrantyStr, 0, 100);
+            }
+
+            // FAQ KALDIRILDI - Çok fazla token kullanıyor, gerekliyse soru geldiğinde cevapla
+
+            // Variants
+            if (!empty($shopContext['current_product_variants'])) {
+                $formatted[] = "\n**Varyantlar:**";
+                foreach ($shopContext['current_product_variants'] as $variant) {
+                    $formatted[] = "- {$variant['title']} (SKU: {$variant['sku']})";
+                    if (!empty($variant['key_differences'])) {
+                        $formatted[] = "  Fark: {$variant['key_differences']}";
+                    }
+                }
+            }
+
+            // Category
+            if (!empty($shopContext['current_product_category'])) {
+                $cat = $shopContext['current_product_category'];
+                $formatted[] = "\n**Kategori:** {$cat['name']}";
+            }
+
+            $formatted[] = "\n---\n";
+        }
+
+        // Current Category context (if viewing a category)
+        if (!empty($shopContext['current_category'])) {
+            $category = $shopContext['current_category'];
+
+            $formatted[] = "### Kategori:";
+            $formatted[] = "**Kategori Adı:** {$category['name']}";
+
+            if (!empty($category['description'])) {
+                $formatted[] = "**Açıklama:** {$category['description']}";
+            }
+
+            $formatted[] = "**Toplam Ürün Sayısı:** {$category['product_count']}";
+
+            if (!empty($shopContext['current_category_products'])) {
+                $formatted[] = "\n**Kategorideki Ürünler:**";
+                foreach (array_slice($shopContext['current_category_products'], 0, 10) as $product) {
+                    $formatted[] = "- {$product['title']} (SKU: {$product['sku']})";
+                }
+            }
+
+            $formatted[] = "\n---\n";
+        }
+
+        // ALWAYS include general shop context (categories + featured products)
+        if (!empty($shopContext['categories']) || !empty($shopContext['featured_products'])) {
+            $formatted[] = "### Diğer Mevcut Ürünler ve Kategoriler:";
+
+            if (!empty($shopContext['total_products'])) {
+                $formatted[] = "**Toplam Ürün Sayısı:** {$shopContext['total_products']}";
+                $formatted[] = "**Tüm Ürünlerimizi Görmek İçin:** [Tüm Ürünler](" . url('/shop') . ")";
+                $formatted[] = "**ÖNEMLİ:** Kullanıcı 'tüm ürünler', 'ne ürünleriniz var', 'katalog' gibi sorular sorduğunda bu linki paylaş!";
+                $formatted[] = "";
+            }
+
+            if (!empty($shopContext['categories'])) {
+                $formatted[] = "\n**Kategoriler:**";
+                foreach ($shopContext['categories'] as $cat) {
+                    $formatted[] = "- {$cat['name']} ({$cat['product_count']} ürün)";
+
+                    // Include subcategories if available
+                    if (!empty($cat['subcategories'])) {
+                        foreach ($cat['subcategories'] as $subcat) {
+                            $formatted[] = "  • {$subcat['name']}";
+                        }
+                    }
+                }
+            }
+
+            if (!empty($shopContext['featured_products'])) {
+                $formatted[] = "\n**Öne Çıkan Ürünler:**";
+                foreach (array_slice($shopContext['featured_products'], 0, 10) as $product) {
+                    $sku = $product['sku'] ?? 'N/A';
+                    $title = is_array($product['title']) ? json_encode($product['title'], JSON_UNESCAPED_UNICODE) : $product['title'];
+                    $formatted[] = "- {$title} (SKU: {$sku})";
+                }
+            }
+
+            // ALL ACTIVE PRODUCTS (MAKSIMUM 30 ÜRÜN - Token limit koruması)
+            if (!empty($shopContext['all_products'])) {
+                $formatted[] = "\n**Mevcut Ürünler (MUTLAKA LİNK VER!):**";
+                $formatted[] = "**SATIŞ KURALI:** Kullanıcı ürün sorduğunda MUTLAKA markdown link formatında yanıt ver: [Ürün Adı](url)";
+                $formatted[] = "";
+
+                // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
+                $limitedProducts = array_slice($shopContext['all_products'], 0, 30);
+
+                foreach ($limitedProducts as $product) {
+                    $title = is_array($product['title']) ? json_encode($product['title'], JSON_UNESCAPED_UNICODE) : $product['title'];
+                    $sku = $product['sku'] ?? 'N/A';
+                    $category = $product['category'] ?? 'Kategorisiz';
+                    $url = $product['url'] ?? '#';
+
+                    // Price info
+                    $priceInfo = '';
+                    if (!empty($product['price']['formatted'])) {
+                        $priceInfo = " - {$product['price']['formatted']}";
+                    } elseif (!empty($product['price']['on_request'])) {
+                        $priceInfo = " - (Fiyat sorunuz)";
+                    }
+
+                    // Markdown link formatında ürün bilgisi (short_description KALDIRILDI - token tasarrufu)
+                    $formatted[] = "- **[{$title}]({$url})** (SKU: {$sku}) | {$category}{$priceInfo}";
+                }
+
+                $formatted[] = "";
+                $formatted[] = "**NOT:** Daha fazla ürün için [Tüm Ürünler](" . url('/shop') . ") sayfasını öner.";
+            }
+        }
+
+        return implode("\n", $formatted);
+    }
+
+    /**
+     * Format page context for AI prompt
+     */
+    private function formatPageContext(array $pageContext): string
+    {
+        $formatted = [];
+
+        // Current Page context (if viewing a specific page)
+        if (!empty($pageContext['current_page'])) {
+            $page = $pageContext['current_page'];
+
+            $formatted[] = "### Görüntülenen Sayfa:";
+            $formatted[] = "**Sayfa Başlığı:** {$page['title']}";
+
+            if (!empty($page['content'])) {
+                $formatted[] = "**İçerik:** {$page['content']}";
+            }
+
+            $formatted[] = "\n---\n";
+        }
+
+        // ALWAYS include important pages (About, Services, Contact)
+        if (!empty($pageContext['about'])) {
+            $formatted[] = "### Hakkımızda:";
+            $formatted[] = "**{$pageContext['about']['title']}**";
+            $formatted[] = $pageContext['about']['summary'];
+            $formatted[] = "";
+        }
+
+        if (!empty($pageContext['services'])) {
+            $formatted[] = "### Hizmetlerimiz:";
+            $formatted[] = "**{$pageContext['services']['title']}**";
+            $formatted[] = $pageContext['services']['summary'];
+            $formatted[] = "";
+        }
+
+        if (!empty($pageContext['contact'])) {
+            $formatted[] = "### İletişim:";
+            $formatted[] = "**{$pageContext['contact']['title']}**";
+            $formatted[] = $pageContext['contact']['summary'];
+            $formatted[] = "";
+        }
+
+        // IMPORTANT PAGES ONLY (Token limit koruması)
+        if (!empty($pageContext['all_pages'])) {
+            $formatted[] = "### Önemli Sayfalar:";
+
+            // LIMIT: Maksimum 5 sayfa (token tasarrufu)
+            $limitedPages = array_slice($pageContext['all_pages'], 0, 5);
+
+            foreach ($limitedPages as $page) {
+                $title = $page['title'] ?? 'Başlıksız';
+                $slug = $page['slug'] ?? '';
+
+                // Summary KALDIRILDI - token tasarrufu
+                $formatted[] = "- **{$title}** (/{$slug})";
+            }
+            $formatted[] = "";
+        }
+
+        return implode("\n", $formatted);
+    }
+
+    /**
+     * 📜 Get conversation history
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getConversationHistory(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'session_id' => 'nullable|string|max:64',
+                'conversation_id' => 'nullable|integer|exists:ai_conversations,id',
+            ]);
+
+            // Find conversation by session_id or conversation_id
+            $conversation = null;
+
+            if (!empty($validated['conversation_id'])) {
+                $conversation = AIConversation::where('id', $validated['conversation_id'])
+                    ->where('tenant_id', tenant('id'))
+                    ->first();
+            } elseif (!empty($validated['session_id'])) {
+                $conversation = AIConversation::where('session_id', $validated['session_id'])
+                    ->where('tenant_id', tenant('id'))
+                    ->first();
+            } else {
+                // Generate session_id from IP
+                $sessionId = $this->generateSessionId($request);
+                $conversation = AIConversation::where('session_id', $sessionId)
+                    ->where('tenant_id', tenant('id'))
+                    ->first();
+            }
+
+            if (!$conversation) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'messages' => [],
+                        'conversation_id' => null,
+                    ],
+                ]);
+            }
+
+            // Get messages
+            $messages = $conversation->messages()
+                ->orderBy('created_at', 'asc')
+                ->get()
+                ->map(function ($message) {
+                    return [
+                        'id' => $message->id,
+                        'role' => $message->role,
+                        'content' => $message->content,
+                        'created_at' => $message->created_at->toIso8601String(),
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'conversation_id' => $conversation->id,
+                    'session_id' => $conversation->session_id,
+                    'messages' => $messages,
+                    'message_count' => $messages->count(),
+                    'created_at' => $conversation->created_at->toIso8601String(),
+                    'last_message_at' => $conversation->last_message_at?->toIso8601String(),
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('PublicAIController.getConversationHistory failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Geçmiş yüklenemedi',
+            ], 500);
+        }
     }
 }

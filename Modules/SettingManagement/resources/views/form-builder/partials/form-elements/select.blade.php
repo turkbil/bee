@@ -11,6 +11,23 @@
     $placeholder = isset($element['placeholder']) ? $element['placeholder'] : (isset($element['properties']['placeholder']) ? $element['properties']['placeholder'] : 'Seçiniz');
     $helpText = isset($element['help_text']) ? $element['help_text'] : (isset($element['properties']['help_text']) ? $element['properties']['help_text'] : '');
     $options = isset($element['options']) ? $element['options'] : (isset($element['properties']['options']) ? $element['properties']['options'] : []);
+
+    // Eğer options boşsa ve setting_id varsa, Setting modelinden options'ı çek
+    if (empty($options) && (isset($element['properties']['setting_id']) || isset($element['setting_id']))) {
+        $settingId = isset($element['properties']['setting_id']) ? $element['properties']['setting_id'] : $element['setting_id'];
+        $setting = \Modules\SettingManagement\App\Models\Setting::find($settingId);
+        if ($setting && $setting->options) {
+            $options = $setting->options;
+        }
+    }
+
+    // Eğer options boşsa ve fieldName varsa, Setting modelinden key ile çek
+    if (empty($options) && !empty($fieldName)) {
+        $setting = \Modules\SettingManagement\App\Models\Setting::where('key', $fieldName)->first();
+        if ($setting && $setting->options) {
+            $options = $setting->options;
+        }
+    }
     
     // Diğer özellikleri al
     $width = isset($element['width']) ? $element['width'] : (isset($element['properties']['width']) ? $element['properties']['width'] : 12);
@@ -50,12 +67,24 @@
                 class="form-select @error('values.' . $fieldName) is-invalid @enderror"
                 @if($isRequired) required @endif>
                 <option value="">{{ $placeholder }}</option>
-                @foreach($options as $option)
-                    <option 
-                        value="{{ isset($option['value']) ? $option['value'] : $option }}" 
-                        @if($defaultValue === (isset($option['value']) ? $option['value'] : $option) || (isset($option['is_default']) && $option['is_default'])) selected @endif
+                @foreach($options as $key => $option)
+                    @php
+                        // Associative array mı yoksa array of objects mı?
+                        if (is_array($option) && isset($option['value'])) {
+                            // Array of objects format: ['value' => '...', 'label' => '...']
+                            $optionValue = $option['value'];
+                            $optionLabel = isset($option['label']) ? $option['label'] : $option['value'];
+                        } else {
+                            // Associative array format: 'key' => 'label'
+                            $optionValue = $key;
+                            $optionLabel = is_string($option) ? $option : json_encode($option);
+                        }
+                    @endphp
+                    <option
+                        value="{{ $optionValue }}"
+                        @if($defaultValue == $optionValue || (is_array($option) && isset($option['is_default']) && $option['is_default'])) selected @endif
                     >
-                        {{ isset($option['label']) ? $option['label'] : $option }}
+                        {{ $optionLabel }}
                     </option>
                 @endforeach
             </select>

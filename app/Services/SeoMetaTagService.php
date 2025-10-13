@@ -584,8 +584,11 @@ readonly class SeoMetaTagService
                 $seoDesc = preg_replace('/\s+/', ' ', $seoDesc);
                 $seoDesc = trim($seoDesc);
                 $data['description'] = $seoDesc;
+            } elseif (method_exists($model, 'getSeoFallbackDescription') && $fallbackDesc = $model->getSeoFallbackDescription()) {
+                // 2a. Öncelik: Model'in kendi getSeoFallbackDescription() metodu (Shop gibi özel modüller için)
+                $data['description'] = $fallbackDesc;
             } elseif (method_exists($model, 'getTranslated') && $body = $model->getTranslated('body', $locale)) {
-                // 2. Öncelik: Model'in body alanından otomatik excerpt
+                // 2b. Öncelik: Model'in body alanından otomatik excerpt
                 $cleanBody = strip_tags($body);
                 $cleanBody = html_entity_decode($cleanBody, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $cleanBody = preg_replace('/\s+/', ' ', $cleanBody); // Çoklu boşlukları tek boşluğa çevir
@@ -617,6 +620,9 @@ readonly class SeoMetaTagService
                     }
                 }
                 $data['keywords'] = is_array($keywords) ? implode(', ', $keywords) : $keywords;
+            } elseif (method_exists($model, 'getSeoFallbackKeywords') && $fallbackKeywords = $model->getSeoFallbackKeywords()) {
+                // Fallback: Model'in kendi getSeoFallbackKeywords() metodu (Shop gibi özel modüller için)
+                $data['keywords'] = is_array($fallbackKeywords) ? implode(', ', $fallbackKeywords) : $fallbackKeywords;
             }
             
             // 3.1. BASIC META FIELDS - Tenant bazlı sistem

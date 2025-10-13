@@ -734,6 +734,9 @@ class PublicAIController extends Controller
                 }
             }
 
+            // 🔧 POST-PROCESSING: Fix broken URLs in AI response
+            $aiResponseText = $this->fixBrokenUrls($aiResponseText);
+
             // Format response for compatibility
             $aiResponse = [
                 'content' => $aiResponseText,
@@ -1210,5 +1213,59 @@ class PublicAIController extends Controller
                 'error' => 'Geçmiş yüklenemedi',
             ], 500);
         }
+    }
+
+    /**
+     * 🔧 Fix broken URLs in AI response (Post-processing)
+     *
+     * AI sometimes generates URLs like "/shopixtif" instead of "/shop/ixtif"
+     * This method fixes all broken URLs in markdown links
+     *
+     * @param string $content
+     * @return string
+     */
+    private function fixBrokenUrls(string $content): string
+    {
+        // Pattern 1: Fix /shopXXX → /shop/XXX (missing slash after "shop")
+        $content = preg_replace(
+            '/\[(.*?)\]\(([^)]*?)\/shop([a-z0-9-]+)/i',
+            '[$1]($2/shop/$3',
+            $content
+        );
+
+        // Pattern 2: Fix /blogXXX → /blog/XXX
+        $content = preg_replace(
+            '/\[(.*?)\]\(([^)]*?)\/blog([a-z0-9-]+)/i',
+            '[$1]($2/blog/$3',
+            $content
+        );
+
+        // Pattern 3: Fix /portfolioXXX → /portfolio/XXX
+        $content = preg_replace(
+            '/\[(.*?)\]\(([^)]*?)\/portfolio([a-z0-9-]+)/i',
+            '[$1]($2/portfolio/$3',
+            $content
+        );
+
+        // Pattern 4: Fix /announcementXXX → /announcement/XXX
+        $content = preg_replace(
+            '/\[(.*?)\]\(([^)]*?)\/announcement([a-z0-9-]+)/i',
+            '[$1]($2/announcement/$3',
+            $content
+        );
+
+        // Pattern 5: Fix double slashes (//shop → /shop)
+        $content = preg_replace(
+            '/([^:])\/\/([a-z]+)\//i',
+            '$1/$2/',
+            $content
+        );
+
+        \Log::info('🔧 Post-processing: URLs fixed in AI response', [
+            'before_length' => strlen($content),
+            'fixed_patterns' => ['shop', 'blog', 'portfolio', 'announcement'],
+        ]);
+
+        return $content;
     }
 }

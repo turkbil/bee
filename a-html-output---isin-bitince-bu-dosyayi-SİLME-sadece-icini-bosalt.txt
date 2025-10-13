@@ -1,0 +1,1199 @@
+<div data-ai-chat-messages="" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+
+            <div x-show="!chat.hasConversation" class="text-center text-gray-500 dark:text-gray-400 mt-12" style="display: none;">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                </svg>
+                <p class="text-sm">Henüz mesaj yok.</p>
+                <p class="text-xs mt-1">Bir mesaj yazarak başlayın!</p>
+            </div>
+
+
+            <template x-for="(msg, index) in chat.messages" :key="index">
+                <div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content" x-html="window.aiChatRenderMarkdown(msg.content)"></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })"></p>
+                    </div>
+                </div>
+            </template><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>merhaba</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:25</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Merhaba! Nasıl yardımcı olabilirim? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:25</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>nasılsın</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:25</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Ben gayet iyiyim, teşekkür ederim! Senin günün nasıl geçiyor? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:25</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>merhaba</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:26</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Merhaba! Nasılsın, bugün neler yapıyorsun? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:26</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>nasılsın</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:26</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Ben gayet iyiyim, teşekkür ederim! Sen nasılsın? Yardım edebileceğim bir şey var mı? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:26</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>merhaba</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:28</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Merhaba! Sana nasıl yardımcı olabilirim? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:28</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>hangi ürünü alayım</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:29</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Ne tür bir ürüne ihtiyacın olduğunu biraz daha açabilir misin? Belirli bir kapasite ya da kullanım alanı varsa, sana en uygun seçenekleri sunabilirim. 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:29</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>şantiyede</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:29</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Şantiye ortamı için güçlü ve dayanıklı ekipmanlar gerekli. Bu durumda sana <strong class="font-bold"><a href="http://laravel.test/shopxtif-cpd15tvl-15-20-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF CPD15TVL - 1.5 Ton Forklift</a></strong> ve <strong class="font-bold"><a href="http://laravel.test/shopxtif-f2-15-ton-li-ion-transpalet" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF F2 Transpalet</a></strong> ürünlerimizi önerebilirim. Her iki model de zorlu şantiye koşullarında mükemmel performans sunar. Detaylar için linklere tıklayarak daha fazla bilgi alabilirsin! 🚜🔧</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">06:29</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>nmerhaba nasılsı</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:20</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Merhaba! Ben gayet iyiyim, teşekkürler. 😊 Sen nasılsın? Yardımcı olabileceğim bir şey var mı?</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:20</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>bu ürün nasıl</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:20</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p><strong class="font-bold">İXTİF JX2-4</strong> gerçekten harika bir seçim! Dar koridorlarda mükemmel performans sunar. 192” kaldırma yüksekliği ve 42” çatalıyla etkileyici bir verimlilik sağlar. Ayrıca 24V enerji sistemiyle uzun süreli kullanım imkanı sunar.</p><p class="mt-2">Güvenli fren sistemi ve iç mekân kullanımına uygun tasarımıyla hem güvenli hem de etkili bir sipariş toplama deneyimi yaşatır. Daha fazla detay için <a href="http://laravel.test/shopxtif-jx2-4-192-kaldirma-42-catal-24v-siparis-toplama" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">buraya tıklayabilirsin</a>. 🚀</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:20</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>selam bu hangi rüün</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:32</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Selam! Hangi ürünü merak ettiğini tam olarak anlayamadım. Eğer <strong class="font-bold"><a href="http://laravel.test/shopxtif-f2-15-ton-li-ion-transpalet" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF F2 - 1.5 Ton Li-Ion Transpalet</a></strong>'i kastediyorsan, bu ürün perakende ve market alanları için tasarlanmış kompakt bir elektrikli transpalettir. 1.5 ton kapasitesi ve Li-Ion bataryası ile verimliliği artırır.</p><p class="mt-2">Kullanım alanları arasında süpermarket ve mağaza içi koridorlar bulunur. Daha fazla bilgi almak istersen, linke tıklayarak ürünü inceleyebilirsin. Başka bir ürün hakkında bilgi almak istersen, lütfen belirt! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:32</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>selam bu hangi rüün</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:32</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Selam! Sanırım bir ürün hakkında bilgi almak istiyorsun ama hangi ürünü kastettiğini tam anlayamadım. Eğer aklında belirli bir ürün varsa, lütfen adını ya da özelliklerini paylaş, sana daha iyi yardımcı olabilirim. 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:32</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>evet. bu ürün</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:32</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Anladım, <strong class="font-bold"><a href="http://laravel.test/shopxtif-f2-15-ton-li-ion-transpalet" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF F2 - 1.5 Ton Li-Ion Transpalet</a></strong>'ten bahsediyorsun. Bu harika transpalet, 1.5 ton kapasiteye sahip ve Li-Ion bataryası ile donatılmıştır. Özellikle market ve perakende alanları için mükemmel bir seçimdir. Kompakt yapısı sayesinde dar alanlarda bile rahatça kullanılabilir. Ürünü daha detaylı incelemek için yukarıdaki linke tıklayabilirsin! Eğer başka bir sorunun olursa, buradayım. 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:32</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>selam</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:34</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Merhaba! Nasıl yardımcı olabilirim? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:34</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>bu hangi ürün</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:35</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Bu, <strong class="font-bold"><a href="http://laravel.test/shopxtif-f2-15-ton-li-ion-transpalet" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF F2 - 1.5 Ton Li-Ion Transpalet</a></strong> ürünü. 1.5 ton kapasitesi ve akıllı Li-Ion bataryası ile dikkat çeken bu transpalet, market ve perakende alanları için oldukça uygun. Daha fazla bilgi almak istersen link üzerinden detaylara ulaşabilirsin. Başka bir konuda yardımcı olabilir miyim?</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:35</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>selam</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:45</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Selam! Nasıl yardımcı olabilirim? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:45</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>bu hangi ürün</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:47</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Hangi ürün hakkında konuştuğumuzu belirtir misin? Belki de <a href="http://laravel.test/shop" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Tüm Ürünler</a> sayfamıza göz atmak istersin! Yardımcı olmaktan mutluluk duyarım. 🛒</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:47</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>su firmamız var su tasıyacagız</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:48</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Su taşıma işleri için genellikle yüksek kapasiteli forkliftler ve dayanıklı ekipmanlar tercih edilir. Eğer su dolu paletleri taşımayı düşünüyorsanız, 2 ton gibi kapasitelerde forkliftler uygun olabilir. İşte size birkaç öneri: - <a href="http://laravel.test/shopxtif-cpd20fvl-20-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF CPD20FVL - 2. Ton Li-Ion Forklift</a>: Bu model, yüksek performansı ve çevreci yapısıyla dikkat çeker.<br></p><ul class="space-y-1 my-2"><li class="ml-4">• <a href="http://laravel.test/shopxtif-cpd20tvl-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF CPD20TVL - Li-Ion Forklift</a>: İş yükünüzü hafifletmek için harika bir seçenek. Bu forkliftler, su taşıma gibi ağır işler için idealdir ve uzun ömürlü bataryaları sayesinde kesintisiz çalışma imkanı sunar. Herhangi bir sorunuz varsa, yardımcı olmaktan mutluluk duyarım! 🚜💧</li></ul><p></p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:48</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>transpalet</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:48</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Su taşımak için bir transpalet arıyorsanız, işinizi kolaylaştıracak harika seçeneklerimiz var. İşte birkaç öneri: - <strong class="font-bold">Elektrikli Transpaletler</strong>: Operatör yorgunluğunu azaltır ve iş verimliliğini artırır. - <strong class="font-bold">Manuel Transpaletler</strong>: Daha küçük ölçekli işler için pratik ve ekonomik bir çözümdür. Transpaletler, paletli yüklerin kısa mesafelerde taşınması için idealdir ve su dolu paletleri rahatlıkla taşıyabilir.</p><p class="mt-2">Daha fazla bilgi veya öneri için <a href="http://laravel.test/shop" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Tüm Ürünler</a> sayfamıza göz atabilirsiniz. Yardımcı olmaktan mutluluk duyarım! 🚚💦</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:48</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>bu hangi ürün</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:59</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Su taşımak için uygun transpalet seçenekleri arasında farklı modeller mevcuttur. Spesifik bir model arıyorsanız, şu an için elimde doğrudan transpalet modellerinin linkleri yok. Ancak, genel olarak elektrikli ve manuel transpaletlerimiz bu tür işler için idealdir. Daha fazla bilgi almak ve doğru ürünü seçmek için <a href="http://laravel.test/shop" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Tüm Ürünler</a> sayfamıza göz atabilirsiniz. Herhangi bir sorunuz olursa, size yardımcı olmak için buradayım! 📦😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:59</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>senin önerin hangi transpaletler</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:59</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Su taşımak için önerdiğim transpaletler arasında elektrikli modeller öne çıkıyor. Çünkü bu modeller operatör yorgunluğunu azaltır ve iş verimliliğini artırır. İşte birkaç öneri: - <strong class="font-bold">Elektrikli Transpaletler</strong>: Bu tür transpaletler, ağır yüklerin taşınmasında büyük kolaylık sağlar ve iş gücünü azaltır. Özellikle sık kullanım gerektiren durumlar için idealdir.<br></p><ul class="space-y-1 my-2"><li class="ml-4">• <strong class="font-bold">Manuel Transpaletler</strong>: Daha küçük ölçekli işler ve kısa mesafeler için ekonomik bir çözüm sunar. Detaylı bilgi ve seçenekler için <a href="http://laravel.test/shop" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Tüm Ürünler</a> sayfamıza göz atabilirsiniz. Herhangi bir sorunuz olursa, size yardımcı olmaktan mutluluk duyarım! 🚚💧</li></ul><p></p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:59</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>bir model vermiyor musun</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:59</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Elbette, size birkaç model önerebilirim! İşte popüler transpalet modellerimizden bazıları: - <strong class="font-bold">İXTİF F2 Transpalet</strong>: Li-Ion bataryasıyla hızlı şarj ve uzun ömür sunar. Bu model gerçekten mükemmel bir seçim! Daha fazla bilgi için <a href="https:/xtif.com/shop/xtif-f2" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF F2 sayfamızı</a> ziyaret edebilirsiniz.</p><p class="mt-2">Bu modeller, su veya benzeri yüklerin taşınmasında harika performans gösterir. Daha fazla seçenek görmek isterseniz, <a href="http://laravel.test/shop" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Tüm Ürünler</a> sayfamıza göz atabilirsiniz. Herhangi bir sorunuz olursa, buradayım! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">14:59</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>bu ürün nasıl</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:06</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>İXTİF TCL101 - 1. Ton 80V Li-Ion Üç Tekerli Forklift, dar alanlarda mükemmel manevra kabiliyeti sunan bir harikadır! Kompakt şasisi sayesinde asma katlar ve yük asansörleri gibi zorlu alanlarda dahi rahatça çalışabilir. 80V Li-Ion bataryası ile uzun süreli çalışma imkanı tanır ve entegre şarj özelliği ile kesintisiz performans sağlar.</p><p class="mt-2">Ayrıca, otomatik park freni ve aktif güvenlik sistemleri ile operatör güvenliğini üst düzeye çıkarır. Detaylar için <a href="http://laravel.test/shop/xtif-tcl101-10-ton-80v-li-ion-uc-tekerli-forklift" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Ürüne Git</a> linkine tıklayarak inceleyebilirsiniz! 🚀</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:06</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>bu ürün nasıl</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:14</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>İXTİF TCL101, dar alanlarda üstün manevra kabiliyeti sunan gerçek bir ustadır! 80V Li-Ion bataryası sayesinde hızlı şarj ve uzun ömürlü kullanım sağlarken, kompakt tasarımı ile asma katlar ve yük asansörlerinde rahatlıkla çalışabilir. Ayrıca, otomatik park freni ve PMSM motoru ile enerji tasarrufu da sunar.</p><p class="mt-2">Bu ürün, dar alanlarda çalışmanız gerektiğinde gerçekten mükemmel bir seçim! Daha fazla bilgi için <a href="http://laravel.test/shop/ixtif-tcl101-10-ton-80v-li-ion-uc-tekerli-forklift" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Ürüne Git</a> linkine tıklayarak detayları inceleyebilirsiniz! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:14</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>uzun çatal ne var</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:33</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Uzun çatal ne var</p><p class="mt-2">Uzun çatal seçeneklerimiz arasında, farklı forklift modelleri için çeşitli uzunluklarda çatal alternatifleri bulunmaktadır. İşte mevcut bazı uzun çatal seçeneklerimiz: 1. <strong class="font-bold"><a href="http://laravel.test/shop/ixtif-cpd15tvl-1070-mm-catal" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF CPD15TVL 107 mm Çatal</a></strong>: Bu çatal, 1.5-2.</p><p class="mt-2">ton kapasiteli forkliftlerle uyumlu olup, özellikle daha uzun yüklerin taşınmasında büyük avantaj sağlar. 2. <strong class="font-bold"><a href="http://laravel.test/shop/ixtif-cpd15tvl-1150-mm-catal" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF CPD15TVL 115 mm Çatal</a></strong>: 115 mm uzunluğundaki bu çatal, geniş yüklerin güvenli taşınması için ideal bir çözümdür.</p><p class="mt-2">3. <strong class="font-bold"><a href="http://laravel.test/shop/ixtif-cpd18fvl-1150-mm-catal-forklift" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF CPD18FVL - 115 mm Çatal Forklift</a></strong>: 1.8 ton kapasiteli bu forklift için tasarlanmış uzun çatal, daha ağır ve geniş yükleri kolayca taşımanızı sağlar. 4.</p><p class="mt-2"><strong class="font-bold"><a href="http://laravel.test/shop/ixtif-efl181-1150-mm-catal" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">İXTİF EFL181 - 115 mm Çatal</a></strong>: Yine 115 mm uzunluğunda bir diğer seçenek olan bu çatal, yüksek performans ve dayanıklılık sunar. Bu çatal seçenekleri, yük taşıma kapasitenizi artırırken, farklı uygulama gereksinimlerinize de esneklik kazandırır. Daha fazla bilgi almak veya sipariş vermek için lütfen ilgili bağlantılara tıklayın!</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:33</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p>transpalet</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:33</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p>Transpaletler, paletli yüklerin kısa mesafelerde taşınması için kullanılan harika ekipmanlar! Hem manuel hem de elektrikli modelleri mevcut. Elektrikli transpaletler özellikle operatör yorgunluğunu azaltırken iş verimliliğini ciddi anlamda artırıyor. Transpaletler genellikle depolarda, marketlerde ve yükleme rampalarında sıkça tercih edilir.</p><p class="mt-2">Daha fazla transpalet modelimizi incelemek için <a href="http://laravel.test/shop" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">Tüm Transpaletler</a> sayfamızı ziyaret edebilirsiniz. İhtiyacınıza uygun en iyi çözümü bulmanıza yardımcı olabiliriz! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">15:33</p>
+                    </div>
+                </div>
+
+
+            <div x-show="chat.isTyping" class="flex justify-start" style="display: none;">
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm">
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                    </div>
+                </div>
+            </div>
+        </div>

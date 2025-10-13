@@ -1,4 +1,9 @@
-@extends('themes.blank.layouts.app')
+@php
+    $themeService = app(\App\Services\ThemeService::class);
+    $activeTheme = $themeService->getActiveTheme();
+    $themeName = $activeTheme ? $activeTheme->name : 'simple';
+@endphp
+@extends('themes.' . $themeName . '.layouts.app')
 
 @section('module_content')
     <article class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -1,4 +1,9 @@
-@extends('themes.blank.layouts.app')
+@php
+    $themeService = app(\App\Services\ThemeService::class);
+    $activeTheme = $themeService->getActiveTheme();
+    $themeName = $activeTheme ? $activeTheme->name : 'simple';
+@endphp
+@extends('themes.' . $themeName . '.layouts.app')
 
 @section('module_content')
 <div class="bg-white dark:bg-gray-900" x-data="pagesIndex()" x-init="init()">

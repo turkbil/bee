@@ -28,7 +28,8 @@ class SettingManagementSeeder extends Seeder
         $this->call([
             SettingsGroupsTableSeeder::class,
             SettingsTableSeeder::class,
-            ThemeSettingsSeeder::class
+            ThemeSettingsSeeder::class,
+            AISettingsSeeder::class,
         ]);
     }
 }

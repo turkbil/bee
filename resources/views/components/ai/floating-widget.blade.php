@@ -42,6 +42,24 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
 <div x-data="{
     chat: $store.aiChat,
     message: '',
+    autoOpenTimer: null,
+
+    init() {
+        // Auto-open after 10 seconds if user hasn't interacted
+        this.autoOpenTimer = setTimeout(() => {
+            if (!this.chat.floatingOpen && !this.chat.hasConversation) {
+                console.log('🤖 Auto-opening AI chat...');
+                this.chat.openFloating();
+            }
+        }, 10000);
+    },
+
+    destroy() {
+        // Clear timer on component destroy
+        if (this.autoOpenTimer) {
+            clearTimeout(this.autoOpenTimer);
+        }
+    },
 
     submitMessage() {
         if (this.message.trim()) {
@@ -52,7 +70,7 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
 }"
 class="fixed {{ $selectedPosition }} z-50">
 
-    {{-- Chat Button --}}
+    {{-- Chat Button with Awesome Animations --}}
     <button
         @click="chat.toggleFloating()"
         x-show="!chat.floatingOpen"
@@ -62,18 +80,45 @@ class="fixed {{ $selectedPosition }} z-50">
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-75"
-        class="flex items-center gap-2 px-6 py-3 rounded-full shadow-lg {{ $selectedTheme }} hover:shadow-xl transition-all duration-300 group"
+        class="relative flex flex-col items-center gap-2 group"
         aria-label="Sohbeti Aç"
     >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-        </svg>
-        <span class="font-medium hidden sm:inline">{{ $buttonText }}</span>
+        {{-- Ripple Animation Circles --}}
+        <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 rounded-full bg-blue-400 dark:bg-blue-500 animate-ping opacity-75"></div>
+            <div class="absolute inset-0 rounded-full bg-blue-400 dark:bg-blue-500 animate-pulse opacity-50" style="animation-delay: 0.5s;"></div>
+        </div>
 
-        {{-- Unread badge (optional) --}}
+        {{-- Main Button --}}
+        <div class="relative">
+            {{-- Glow Effect --}}
+            <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-75 group-hover:opacity-100 blur animate-pulse"></div>
+
+            {{-- Button Container --}}
+            <div class="relative flex items-center gap-3 px-6 py-4 rounded-full shadow-lg {{ $selectedTheme }} hover:shadow-2xl transition-all duration-300 animate-bounce-slow">
+                {{-- Robot Icon --}}
+                <div class="relative">
+                    <svg class="w-7 h-7 animate-wiggle" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2c.5 0 1 .5 1 1v1h5c1 0 2 1 2 2v12c0 1-1 2-2 2H6c-1 0-2-1-2-2V6c0-1 1-2 2-2h5V3c0-.5.5-1 1-1zm-2 7c-.5 0-1 .5-1 1s.5 1 1 1 1-.5 1-1-.5-1-1-1zm4 0c-.5 0-1 .5-1 1s.5 1 1 1 1-.5 1-1-.5-1-1-1zm-4 4c-.3 0-.5.2-.5.5 0 1.4 1.1 2.5 2.5 2.5s2.5-1.1 2.5-2.5c0-.3-.2-.5-.5-.5h-4z"/>
+                    </svg>
+                    {{-- Pulse Dot --}}
+                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></span>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></span>
+                </div>
+
+                <span class="font-bold text-sm hidden sm:inline animate-pulse-slow">Yapay Zeka</span>
+            </div>
+        </div>
+
+        {{-- Text Below --}}
+        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md">
+            Soru Sor
+        </span>
+
+        {{-- Unread badge --}}
         <span x-show="chat.messageCount > 0 && !chat.floatingOpen"
               x-text="chat.messageCount"
-              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg"
               x-cloak></span>
     </button>
 
@@ -237,4 +282,42 @@ class="fixed {{ $selectedPosition }} z-50">
 
 <style>
 [x-cloak] { display: none !important; }
+
+/* Custom Animations for AI Robot Button */
+@keyframes wiggle {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+@keyframes bounce-slow {
+    0%, 100% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(-15px);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+
+@keyframes pulse-slow {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.animate-wiggle {
+    animation: wiggle 2s ease-in-out infinite;
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 4s ease-in-out infinite;
+}
 </style>

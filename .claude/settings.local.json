@@ -308,7 +308,8 @@
       "Bash(git commit -m \"$(cat <<''EOF''\n🔧 CONFIG: Sistem güncellemeleri ve yeni özellikler\n\n- MediaManagement: ThumbnailManager servisi ve thumbmaker config eklendi\n- Console Commands: CleanOrphanPleskDatabases komutu eklendi\n- Controllers: ThumbmakerLinkController eklendi\n- Jobs: SafeDeleteDatabase job''ı eklendi\n- Listeners: CreateTenantDomains listener eklendi\n- Config: image.php yapılandırması eklendi\n- Seeder: TenantDatabaseSeeder eklendi\n- Migration güncellemeleri (Blog, Shop, Page, Portfolio, Announcement modülleri)\n- Composer bağımlılıkları güncellendi\n- Sistem helper ve provider güncellemeleri\n- CLAUDE.md talimatları güncellendi\n- Theme layouts (footer, header) güncellendi\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git merge:*)",
       "Bash(git fetch:*)",
-      "Bash(git rev-parse:*)"
+      "Bash(git rev-parse:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": [],

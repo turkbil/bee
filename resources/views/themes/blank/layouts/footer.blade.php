@@ -312,11 +312,11 @@
     {{-- Dynamic Script Stack --}}
     @stack('scripts')
 
-    {{-- Scroll to Top Button - Positioned left of AI widget to avoid collision --}}
+    {{-- Scroll to Top Button - Right side, above AI robot --}}
     <button
         id="scroll-to-top"
         onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-        class="fixed bottom-6 right-24 z-40 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 pointer-events-none hover:scale-110"
+        class="fixed bottom-32 right-6 z-40 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 pointer-events-none hover:scale-110"
         aria-label="Sayfa başına dön"
         title="Sayfa başına dön"
     >

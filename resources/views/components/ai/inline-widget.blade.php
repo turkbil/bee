@@ -312,8 +312,16 @@ window.aiChatRenderMarkdown = function(text) {
                                 'text-yellow-800 dark:text-white dark:[&_*]:!text-white': msg.role === 'system',
                                 'text-red-800 dark:text-white dark:[&_*]:!text-white': msg.isError
                             }"
-                            class="text-sm prose prose-sm max-w-none prose-strong:font-bold prose-ul:list-disc prose-ul:ml-4 prose-li:my-1 dark:prose-invert"
+                            class="text-sm prose prose-sm max-w-none prose-strong:font-bold prose-ul:list-disc prose-ul:ml-4 prose-li:my-1 dark:prose-invert ai-message-content"
                             x-html="window.aiChatRenderMarkdown(msg.content)"
+                            x-init="
+                                // FORCE white color in dark mode for ALL child elements
+                                if (document.documentElement.classList.contains('dark')) {
+                                    $el.querySelectorAll('*').forEach(child => {
+                                        child.style.setProperty('color', 'white', 'important');
+                                    });
+                                }
+                            "
                         ></div>
                         <p
                             :class="{
@@ -390,4 +398,50 @@ window.aiChatRenderMarkdown = function(text) {
 
 <style>
 [x-cloak] { display: none !important; }
+
+/* DARK MODE TEXT FIX - Force white color for all message content in dark mode */
+.dark .ai-message-content,
+.dark .ai-message-content *,
+.dark .ai-message-content p,
+.dark .ai-message-content span,
+.dark .ai-message-content strong,
+.dark .ai-message-content em,
+.dark .ai-message-content li,
+.dark .ai-message-content ul,
+.dark .ai-message-content ol,
+.dark .ai-message-content h1,
+.dark .ai-message-content h2,
+.dark .ai-message-content h3 {
+    color: white !important;
+}
+
+/* Links özel renk (turuncu) */
+.dark .ai-message-content a {
+    color: #fb923c !important; /* orange-400 */
+}
 </style>
+
+{{-- DEBUG CONSOLE KODU (Console'a yapıştır) --}}
+{{--
+// DARK MODE TEXT DEBUG
+console.log('=== DARK MODE DEBUG ===');
+console.log('HTML has dark class:', document.documentElement.classList.contains('dark'));
+console.log('All message elements:', document.querySelectorAll('.ai-message-content'));
+
+document.querySelectorAll('.ai-message-content').forEach((el, i) => {
+    console.log(`Message ${i + 1}:`);
+    console.log('  Element:', el);
+    console.log('  Computed color:', window.getComputedStyle(el).color);
+    console.log('  Classes:', el.className);
+
+    el.querySelectorAll('*').forEach((child, j) => {
+        console.log(`  Child ${j + 1}:`, child.tagName, window.getComputedStyle(child).color);
+    });
+});
+
+// FORCE FIX (test için)
+document.querySelectorAll('.ai-message-content, .ai-message-content *').forEach(el => {
+    el.style.setProperty('color', 'white', 'important');
+});
+console.log('✅ Forced white color to all elements');
+--}}

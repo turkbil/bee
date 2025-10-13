@@ -163,49 +163,12 @@ class TenantSeeder extends Seeder
 
             // Tenant dizinlerini hazırla
             $this->prepareTenantDirectories($tenant->id);
-            
-            // Tenant'a geç ve kullanıcı oluştur
-            $tenant->run(function () use ($config) {
-                // Admin kullanıcısı
-                User::create([
-                    'name' => $config['title'] . ' Yönetici',
-                    'email' => $config['user_email'],
-                    'password' => Hash::make('test'),
-                    'email_verified_at' => now(),
-                ]);
 
-                // Nurullah kullanıcısı
-                User::create([
-                    'name' => 'Nurullah Okatan',
-                    'email' => 'nurullah@nurullah.net',
-                    'password' => Hash::make('test'),
-                    'email_verified_at' => now(),
-                ]);
-
-                // Türk Bilişim kullanıcısı
-                User::create([
-                    'name' => 'Türk Bilişim',
-                    'email' => 'info@turkbilisim.com.tr',
-                    'password' => Hash::make('test'),
-                    'email_verified_at' => now(),
-                ]);
-
-                // 3 test kullanıcısı ekle
-                $tenantTestUsers = [
-                    ['name' => $config['title'] . ' Test 1', 'email' => 'test1@' . $config['domain']],
-                    ['name' => $config['title'] . ' Test 2', 'email' => 'test2@' . $config['domain']],
-                    ['name' => $config['title'] . ' Test 3', 'email' => 'test3@' . $config['domain']],
-                ];
-
-                foreach($tenantTestUsers as $user) {
-                    User::create([
-                        'name' => $user['name'],
-                        'email' => $user['email'],
-                        'password' => Hash::make('test'),
-                        'email_verified_at' => now(),
-                    ]);
-                }
-            });
+            // NOT: Kullanıcılar artık SeedDatabase job'ı tarafından TenantDatabaseSeeder içinden oluşturuluyor
+            // TenancyServiceProvider'da Events\TenantCreated event'i tetiklenince JobPipeline çalışıyor:
+            // 1. CreateDatabase → tenant database oluşturulur
+            // 2. MigrateDatabase → migration'lar çalıştırılır
+            // 3. SeedDatabase → TenantDatabaseSeeder çağrılır ve kullanıcılar oluşturulur
         }
 
         // Tenant dizinlerini temizle (sadece güvence için)

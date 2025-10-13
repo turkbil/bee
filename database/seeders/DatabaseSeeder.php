@@ -17,17 +17,15 @@ class DatabaseSeeder extends Seeder
             // AdminLanguagesSeeder temporarily disabled - will be handled in ModuleSeeder
             // $this->call(\Modules\LanguageManagement\Database\Seeders\AdminLanguagesSeeder::class);
 
-            // TenantSeeder - geçici olarak devre dışı (tenantlar manuel oluşturuldu)
-            // if (app()->environment(['local', 'testing'])) {
-            //     $this->command->info('🏠 Local/Testing environment - TenantSeeder çalıştırılıyor...');
-            //     $this->call(TenantSeeder::class);
-            //     tenancy()->end();
-            // } else {
-            //     $this->command->info('🚀 Production environment - Central tenant oluşturuluyor...');
-            //     $this->call(ProductionTenantSeeder::class);
-            // }
-
-            $this->command->info('⏭️ TenantSeeder skipped - Tenants already exist');
+            // TenantSeeder
+            if (app()->environment(['local', 'testing'])) {
+                $this->command->info('🏠 Local/Testing environment - TenantSeeder çalıştırılıyor...');
+                $this->call(TenantSeeder::class);
+                tenancy()->end();
+            } else {
+                $this->command->info('🚀 Production environment - Central tenant oluşturuluyor...');
+                $this->call(ProductionTenantSeeder::class);
+            }
             
             // Context durumunu kontrol et ve zorla central'a al
             if (!TenantHelpers::isCentral()) {
@@ -74,6 +72,28 @@ class DatabaseSeeder extends Seeder
 
             // Basit ve çalışan tenant seeder
             $this->call(TenantDatabaseSeeder::class);
+        }
+
+        // Central tenant için sadece AI Knowledge Base seed et
+        // (Diğer veriler ModuleSeeder'da zaten ekleniyor)
+        if (TenantHelpers::isCentral()) {
+            $this->command->info('🏠 Running AI Knowledge Base seeder for central tenant (laravel)...');
+
+            // Central tenant'ı bul
+            $centralTenant = \App\Models\Tenant::where('central', true)->first();
+
+            if ($centralTenant) {
+                // Tenant context'e gir
+                tenancy()->initialize($centralTenant);
+
+                // Sadece AI Knowledge Base seeder'ını çalıştır
+                $this->call(\Modules\SettingManagement\Database\Seeders\AIKnowledgeBaseSeeder::class);
+
+                // Context'den çık
+                tenancy()->end();
+
+                $this->command->info('✅ Central tenant AI Knowledge Base seeding completed!');
+            }
         }
     }
 }

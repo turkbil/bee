@@ -17,12 +17,12 @@ class StudioThemeService
         return Cache::remember($cacheKey, $this->cacheDuration, function () {
             if (!class_exists('Modules\ThemeManagement\App\Models\Theme')) {
                 return [
-                    'blank' => [
+                    'ixtif' => [
                         'id' => 0,
-                        'name' => 'Boş Tema',
-                        'folder_name' => 'blank',
-                        'description' => 'Varsayılan boş tema',
-                        'thumbnail' => '/img/themes/blank.jpg'
+                        'name' => 'Ixtif Tema',
+                        'folder_name' => 'ixtif',
+                        'description' => 'Varsayılan ixtif tema',
+                        'thumbnail' => '/img/themes/ixtif.jpg'
                     ]
                 ];
             }
@@ -40,13 +40,13 @@ class StudioThemeService
                 ];
             }
             
-            if (!isset($result['blank'])) {
-                $result['blank'] = [
+            if (!isset($result['ixtif'])) {
+                $result['ixtif'] = [
                     'id' => 0,
-                    'name' => 'Boş Tema',
-                    'folder_name' => 'blank',
-                    'description' => 'Varsayılan boş tema',
-                    'thumbnail' => '/img/themes/blank.jpg'
+                    'name' => 'Ixtif Tema',
+                    'folder_name' => 'ixtif',
+                    'description' => 'Varsayılan ixtif tema',
+                    'thumbnail' => '/img/themes/ixtif.jpg'
                 ];
             }
             
@@ -65,13 +65,13 @@ class StudioThemeService
                 return null;
             }
             
-            $setting = config('studio.themes.default', 'blank');
+            $setting = config('studio.themes.default', 'ixtif');
             
             return $allThemes[$setting] ?? reset($allThemes);
         });
     }
     
-    public function getHeaderFooterTemplates(string $themeName = 'blank'): array
+    public function getHeaderFooterTemplates(string $themeName = 'ixtif'): array
     {
         $cacheKey = $this->cachePrefix . 'templates_' . $themeName;
         

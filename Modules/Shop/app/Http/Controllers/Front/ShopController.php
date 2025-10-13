@@ -338,7 +338,7 @@ class ShopController extends Controller
 
         // Direkt theme path kullan (ThemeService bypass)
         $viewName = $isVariantPage ? "show-variant-{$version}" : "show-{$version}";
-        $viewPath = "shop::themes.blank.{$viewName}";
+        $viewPath = "shop::themes.ixtif.{$viewName}";
 
         $viewData = [
             'item' => $product,

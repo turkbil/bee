@@ -1,7 +1,7 @@
 @php
     $themeService = app('App\Services\ThemeService');
     $activeTheme = $themeService->getActiveTheme();
-    $themeName = $activeTheme->folder_name ?? 'blank';
+    $themeName = $activeTheme->folder_name ?? 'ixtif';
 @endphp
 
 @include("themes.{$themeName}.layouts.header")

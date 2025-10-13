@@ -123,7 +123,7 @@ class WidgetServiceProvider extends ServiceProvider
         });
         
         // Widget render işlemi için global bir yardımcı görünüm verisi ekleyelim
-        View::composer('themes.blank.layouts.app', function ($view) {
+        View::composer('themes.ixtif.layouts.app', function ($view) {
             $view->with('widgetResolver', $this);
         });
     }

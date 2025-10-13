@@ -620,10 +620,8 @@ readonly class SeoMetaTagService
                     }
                 }
                 $data['keywords'] = is_array($keywords) ? implode(', ', $keywords) : $keywords;
-            } elseif (method_exists($model, 'getSeoFallbackKeywords') && $fallbackKeywords = $model->getSeoFallbackKeywords()) {
-                // Fallback: Model'in kendi getSeoFallbackKeywords() metodu (Shop gibi özel modüller için)
-                $data['keywords'] = is_array($fallbackKeywords) ? implode(', ', $fallbackKeywords) : $fallbackKeywords;
             }
+            // Keywords fallback kaldırıldı - Google 2025 artık keywords kullanmıyor
             
             // 3.1. BASIC META FIELDS - Tenant bazlı sistem
             // Author: Öncelik seo_settings.author, fallback setting('site_author')

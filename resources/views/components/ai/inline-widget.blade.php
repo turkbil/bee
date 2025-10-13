@@ -187,6 +187,13 @@ window.aiChatRenderMarkdown = function(text) {
             if (this.isOpen && this.chat.messages.length === 0) {
                 this.chat.addSystemMessage(`👋 **iXtif Yapay Zeka Sistemi** iXtif.com için özel olarak geliştirilmiştir.\n\nÜrünlerimiz, hizmetlerimiz ve şirketimiz hakkında tüm sorularınızı yanıtlamak için buradayım. Size nasıl yardımcı olabilirim?`);
             }
+
+            // Scroll to bottom after init (if open)
+            if (this.isOpen) {
+                setTimeout(() => {
+                    this.chat.scrollToBottom();
+                }, 400);
+            }
         },
 
         toggle() {
@@ -197,6 +204,13 @@ window.aiChatRenderMarkdown = function(text) {
 
             if (this.isOpen && this.chat.messages.length === 0) {
                 this.chat.addSystemMessage(`👋 **iXtif Yapay Zeka Sistemi** iXtif.com için özel olarak geliştirilmiştir.\n\nÜrünlerimiz, hizmetlerimiz ve şirketimiz hakkında tüm sorularınızı yanıtlamak için buradayım. Size nasıl yardımcı olabilirim?`);
+            }
+
+            // Scroll to bottom when opening
+            if (this.isOpen) {
+                setTimeout(() => {
+                    this.chat.scrollToBottom();
+                }, 200);
             }
         },
 

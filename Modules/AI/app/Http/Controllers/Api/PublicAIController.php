@@ -594,14 +594,27 @@ class PublicAIController extends Controller
             // Build enhanced system prompt with product context
             $enhancedSystemPrompt = $this->buildEnhancedSystemPrompt($aiContext);
 
-            // 🔍 DEBUG: Log AI context URLs to check if they're correct
+            // 🔍 DEBUG: Log AI context URLs to check if they're correct (especially "i" starting products)
             if (!empty($aiContext['context']['modules']['shop']['all_products'])) {
-                $firstProduct = $aiContext['context']['modules']['shop']['all_products'][0] ?? null;
-                if ($firstProduct) {
-                    \Log::info('🔍 AI Context - First Product URL Check', [
-                        'title' => $firstProduct['title'] ?? 'N/A',
-                        'url' => $firstProduct['url'] ?? 'N/A',
-                        'expected_format' => 'http://laravel.test/shop/slug',
+                // İlk 5 ürünü logla, özellikle "i" ile başlayanları
+                $productsToLog = array_slice($aiContext['context']['modules']['shop']['all_products'], 0, 5);
+                $iStartingProducts = [];
+
+                foreach ($productsToLog as $product) {
+                    $title = is_array($product['title']) ? json_encode($product['title']) : $product['title'];
+                    if (stripos($title, 'ixtif') !== false || stripos($title, 'İXTİF') !== false) {
+                        $iStartingProducts[] = [
+                            'title' => $title,
+                            'url' => $product['url'] ?? 'N/A',
+                            'slug_starts_with_i' => str_starts_with(basename($product['url'] ?? ''), 'i'),
+                        ];
+                    }
+                }
+
+                if (!empty($iStartingProducts)) {
+                    \Log::info('🔍 AI Context - Products with "i" check', [
+                        'count' => count($iStartingProducts),
+                        'products' => $iStartingProducts,
                     ]);
                 }
             }
@@ -734,8 +747,22 @@ class PublicAIController extends Controller
                 }
             }
 
-            // 🔧 POST-PROCESSING: Fix broken URLs in AI response
-            $aiResponseText = $this->fixBrokenUrls($aiResponseText);
+            // 🔍 DEBUG: Log AI response BEFORE post-processing
+            \Log::info('🤖 AI Response BEFORE post-processing', [
+                'response_preview' => mb_substr($aiResponseText, 0, 500),
+                'contains_ixtif' => str_contains($aiResponseText, 'ixtif'),
+                'contains_xtif' => str_contains($aiResponseText, 'xtif'),
+            ]);
+
+            // 🔧 POST-PROCESSING: Fix broken URLs in AI response (context-aware)
+            $aiResponseText = $this->fixBrokenUrls($aiResponseText, $aiContext);
+
+            // 🔍 DEBUG: Log AI response AFTER post-processing
+            \Log::info('✅ AI Response AFTER post-processing', [
+                'response_preview' => mb_substr($aiResponseText, 0, 500),
+                'contains_ixtif' => str_contains($aiResponseText, 'ixtif'),
+                'contains_xtif' => str_contains($aiResponseText, 'xtif'),
+            ]);
 
             // Format response for compatibility
             $aiResponse = [
@@ -1219,50 +1246,103 @@ class PublicAIController extends Controller
     }
 
     /**
-     * 🔧 Fix broken URLs in AI response (Post-processing)
+     * 🔧 Fix broken URLs in AI response (Post-processing) - CONTEXT-AWARE V2
      *
-     * AI sometimes generates URLs like "/shopixtif" instead of "/shop/ixtif"
-     * This method fixes all broken URLs in markdown links
+     * AI sometimes generates wrong URLs by missing characters:
+     * - Wrong: http://laravel.test/shopxtif-cpd15tvl... (missing "/" and "i")
+     * - Correct: http://laravel.test/shop/ixtif-cpd15tvl...
      *
-     * @param string $content
-     * @return string
+     * Solution: Match AI's broken URLs with correct URLs from context
+     *
+     * @param string $content AI response text
+     * @param array $aiContext Full AI context with product URLs
+     * @return string Fixed content
      */
-    private function fixBrokenUrls(string $content): string
+    private function fixBrokenUrls(string $content, array $aiContext): string
     {
-        // Pattern 1: Fix /shopXXX → /shop/XXX (missing slash after "shop")
-        $content = preg_replace(
-            '/\[(.*?)\]\(([^)]*?)\/shop([a-z0-9-]+)/i',
-            '[$1]($2/shop/$3',
-            $content
-        );
+        // Step 1: Collect all correct URLs from context
+        $correctUrls = [];
 
-        // Pattern 2: Fix /blogXXX → /blog/XXX
-        $content = preg_replace(
-            '/\[(.*?)\]\(([^)]*?)\/blog([a-z0-9-]+)/i',
-            '[$1]($2/blog/$3',
-            $content
-        );
+        // From all_products
+        if (!empty($aiContext['context']['modules']['shop']['all_products'])) {
+            foreach ($aiContext['context']['modules']['shop']['all_products'] as $product) {
+                if (!empty($product['url'])) {
+                    $correctUrls[] = $product['url'];
+                }
+            }
+        }
 
-        // Pattern 3: Fix /portfolioXXX → /portfolio/XXX
-        $content = preg_replace(
-            '/\[(.*?)\]\(([^)]*?)\/portfolio([a-z0-9-]+)/i',
-            '[$1]($2/portfolio/$3',
-            $content
-        );
+        // From current_product
+        if (!empty($aiContext['context']['modules']['shop']['current_product']['url'])) {
+            $correctUrls[] = $aiContext['context']['modules']['shop']['current_product']['url'];
+        }
 
-        // Pattern 4: Fix /announcementXXX → /announcement/XXX
-        $content = preg_replace(
-            '/\[(.*?)\]\(([^)]*?)\/announcement([a-z0-9-]+)/i',
-            '[$1]($2/announcement/$3',
-            $content
-        );
+        // From variants
+        if (!empty($aiContext['context']['modules']['shop']['current_product_variants'])) {
+            foreach ($aiContext['context']['modules']['shop']['current_product_variants'] as $variant) {
+                if (!empty($variant['url'])) {
+                    $correctUrls[] = $variant['url'];
+                }
+            }
+        }
 
-        // ❌ Pattern 5 REMOVED: Was eating "i" characters in URLs like https://ixtif → https:/xtif
-        // Double slash issue doesn't exist - backend URLs are already correct
+        // From featured_products
+        if (!empty($aiContext['context']['modules']['shop']['featured_products'])) {
+            foreach ($aiContext['context']['modules']['shop']['featured_products'] as $product) {
+                if (!empty($product['url'])) {
+                    $correctUrls[] = $product['url'];
+                }
+            }
+        }
 
-        \Log::info('🔧 Post-processing: URLs fixed in AI response', [
-            'before_length' => strlen($content),
-            'fixed_patterns' => ['shop', 'blog', 'portfolio', 'announcement'],
+        // Step 2: Extract all markdown links from AI response
+        preg_match_all('/\[(.*?)\]\((http[s]?:\/\/[^)]+)\)/i', $content, $matches, PREG_SET_ORDER);
+
+        $replacements = [];
+        $fixedCount = 0;
+
+        foreach ($matches as $match) {
+            $linkText = $match[1];
+            $brokenUrl = $match[2];
+            $originalLink = $match[0]; // Full markdown: [text](url)
+
+            // Step 3: Find best matching correct URL
+            $bestMatch = null;
+            $bestSimilarity = 0;
+
+            foreach ($correctUrls as $correctUrl) {
+                // Calculate similarity percentage
+                similar_text(strtolower($brokenUrl), strtolower($correctUrl), $similarity);
+
+                if ($similarity > $bestSimilarity && $similarity >= 70) { // 70% threshold
+                    $bestSimilarity = $similarity;
+                    $bestMatch = $correctUrl;
+                }
+            }
+
+            // Step 4: If found a good match, prepare replacement
+            if ($bestMatch && $bestMatch !== $brokenUrl) {
+                $fixedLink = "[{$linkText}]({$bestMatch})";
+                $replacements[$originalLink] = $fixedLink;
+                $fixedCount++;
+
+                \Log::info('🔧 URL Fixed', [
+                    'broken' => $brokenUrl,
+                    'fixed' => $bestMatch,
+                    'similarity' => round($bestSimilarity, 1) . '%',
+                ]);
+            }
+        }
+
+        // Step 5: Apply all replacements
+        foreach ($replacements as $broken => $fixed) {
+            $content = str_replace($broken, $fixed, $content);
+        }
+
+        \Log::info('🔧 Post-processing complete', [
+            'total_links_found' => count($matches),
+            'links_fixed' => $fixedCount,
+            'correct_urls_available' => count($correctUrls),
         ]);
 
         return $content;

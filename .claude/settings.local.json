@@ -43,7 +43,8 @@
       "Read(//var/www/vhosts/tuufi.com/logs/**)",
       "Bash(systemctl status:*)",
       "Read(//etc/php-fpm.d/**)",
-      "Bash(plesk bin php_handler:*)"
+      "Bash(plesk bin php_handler:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": [],

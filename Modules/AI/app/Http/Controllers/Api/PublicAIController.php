@@ -830,6 +830,9 @@ class PublicAIController extends Controller
     {
         $prompts = [];
 
+        // 🌐 Get dynamic domain (mevcut tenant'ın domain'i)
+        $siteUrl = request()->getSchemeAndHttpHost();
+
         // Base system prompt (personality, contact, knowledge base)
         $prompts[] = $aiContext['system_prompt'];
 
@@ -842,16 +845,16 @@ class PublicAIController extends Controller
         $prompts[] = "## 🎯 SATIŞ ODAKLI YANITLAR - MUTLAKA ÜRÜN LİNKLERİ VER!";
         $prompts[] = "**AMAÇ:** Bilgi vermek DEĞİL, SATIŞ YAPMAK! Her yanıtta ürün linklerini markdown formatında paylaş.";
         $prompts[] = "**🚨 KRİTİK URL KURALI:** ASLA kendi URL üretme! SADECE aşağıdaki BAĞLAM BİLGİLERİ bölümünde verilen 'url' alanındaki linkleri kullan!";
-        $prompts[] = "**ZORUNLU FORMAT:** [Ürün Adı](context'ten_gelen_url) - Örnek: [İXTİF F2](https://ixtif.com/shop/ixtif-f2-15-ton-li-ion-transpalet)";
-        $prompts[] = "**YANLIŞ:** Kendi URL oluşturmak → https://ixtif.com/urunxtif-f2 (slash eksik) ❌";
-        $prompts[] = "**DOĞRU:** Context'teki URL'yi kullanmak → https://ixtif.com/shop/ixtif-f2-15-ton-li-ion-transpalet ✅";
+        $prompts[] = "**ZORUNLU FORMAT:** [Ürün Adı](context'ten_gelen_url) - Örnek: [Ürün Adı]({$siteUrl}/shop/urun-slug)";
+        $prompts[] = "**YANLIŞ:** Kendi URL oluşturmak → {$siteUrl}/shopurun-slug (slash eksik) ❌";
+        $prompts[] = "**DOĞRU:** Context'teki URL'yi kullanmak → {$siteUrl}/shop/urun-slug ✅";
         $prompts[] = "**HATIRLATMA:** Ürün adı geçtiğinde MUTLAKA tıklanabilir link ver. Sadece bilgi verme, ürüne YÖNLENDIR!";
         $prompts[] = "**ÖNEMLİ:** Tüm cümlelerine BÜYÜK HARF ile başla. Doğru Türkçe gramer ve yazım kurallarına uy.";
         $prompts[] = "";
         $prompts[] = "## 💎 SATIŞ DİLİ VE ÜRÜN ÖVGÜSÜ (COŞKULU PAZARLAMA!)";
         $prompts[] = "**ZORUNLU:** Ürünleri ÖVEREK tanıt! Kuru bilgi verme, ürünün ne kadar MÜKEMMEL olduğunu anlat!";
         $prompts[] = "**SATIŞÇI RUH:** 'Bu ürün harika!', 'Muhteşem özellikler!', 'Rakipsiz performans!', 'En çok tercih edilen model!' gibi ifadeler kullan.";
-        $prompts[] = "**ÖRNEK:** \"İXTİF F2 Transpalet'imiz gerçekten MÜKEMMEL bir seçim! Li-Ion bataryasıyla HIZLI şarj, UZUN ömür sunar. Daha fazla bilgi için [İXTİF F2 sayfamızı](https://ixtif.com/shop/ixtif-f2) ziyaret edebilirsiniz.\"";
+        $prompts[] = "**ÖRNEK:** \"Bu ürünümüz gerçekten MÜKEMMEL bir seçim! Li-Ion bataryasıyla HIZLI şarj, UZUN ömür sunar. Daha fazla bilgi için [Ürün sayfamızı]({$siteUrl}/shop/urun-slug) ziyaret edebilirsiniz.\"";
         $prompts[] = "**YASAK DİL:** 'iyi', 'kullanışlı', 'standart' gibi sıradan kelimeler. Bunun yerine 'HARIKA', 'MÜKEMMEL', 'RAKİPSİZ', 'EN İYİ' kullan!";
         $prompts[] = "**AVANTAJLARI VURGULA:** Her üründe 'Neden bu ürün?' sorusunu cevapla. Özelliklerini sayarken FAYDALARINA odaklan!";
         $prompts[] = "";
@@ -859,7 +862,7 @@ class PublicAIController extends Controller
         $prompts[] = "**ZORUNLU:** Kullanıcı '1.5 ton transpalet', '2 ton forklift' gibi kapasite + ürün tipi sorarsa, ELİNDEKİ TÜM UYGUN MODELLERİ markdown link ile listele!";
         $prompts[] = "**YANLIŞ:** Sadece 1 model öner ❌";
         $prompts[] = "**DOĞRU:** Tüm uygun modelleri listele, her birinin linkini ver ✅";
-        $prompts[] = "**ÖRNEK:** Kullanıcı '1.5 ton transpalet' derse → F2, F3, F4, EPL153, EPT20-15ET gibi TÜM 1.5 ton transpalet modellerini göster!";
+        $prompts[] = "**ÖRNEK:** Kullanıcı '1.5 ton transpalet' derse → Tüm 1.5 ton kapasiteli transpalet modellerini context'teki URL'leri ile göster!";
         $prompts[] = "";
 
         // Add module context if available
@@ -1254,12 +1257,8 @@ class PublicAIController extends Controller
             $content
         );
 
-        // Pattern 5: Fix double slashes (//shop → /shop)
-        $content = preg_replace(
-            '/([^:])\/\/([a-z]+)\//i',
-            '$1/$2/',
-            $content
-        );
+        // ❌ Pattern 5 REMOVED: Was eating "i" characters in URLs like https://ixtif → https:/xtif
+        // Double slash issue doesn't exist - backend URLs are already correct
 
         \Log::info('🔧 Post-processing: URLs fixed in AI response', [
             'before_length' => strlen($content),

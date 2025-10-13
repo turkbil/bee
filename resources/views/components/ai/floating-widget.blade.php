@@ -72,7 +72,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
     {{-- Chat Button with Awesome Animations --}}
     <button
-        @click="chat.toggleFloating()"
+        @click="chat.toggleFloating(); clearTimeout(autoOpenTimer);"
         x-show="!chat.floatingOpen"
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 scale-75"
@@ -80,28 +80,50 @@ class="fixed {{ $selectedPosition }} z-50">
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-75"
-        class="relative flex flex-col items-center gap-2 group"
+        class="relative group"
         aria-label="Sohbeti Aç"
     >
-        {{-- Ripple Animation Circles --}}
-        <div class="absolute inset-0 -z-10">
-            <div class="absolute inset-0 rounded-full bg-blue-400 dark:bg-blue-500 animate-ping opacity-75"></div>
-            <div class="absolute inset-0 rounded-full bg-blue-400 dark:bg-blue-500 animate-pulse opacity-50" style="animation-delay: 0.5s;"></div>
-        </div>
+        {{-- Main Button Container with Ripple --}}
+        <div class="relative flex items-center justify-center">
+            {{-- Ripple Animation Circles (İÇ İÇE GEÇEN) --}}
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-20 h-20 rounded-full bg-blue-400/30 dark:bg-blue-500/30 animate-ping"></div>
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center" style="animation-delay: 0.5s;">
+                <div class="w-24 h-24 rounded-full bg-purple-400/20 dark:bg-purple-500/20 animate-ping"></div>
+            </div>
 
-        {{-- Main Button --}}
-        <div class="relative">
             {{-- Glow Effect --}}
-            <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-75 group-hover:opacity-100 blur animate-pulse"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-75 group-hover:opacity-100 blur animate-pulse"></div>
+            </div>
 
-            {{-- Button Container --}}
-            <div class="relative flex items-center gap-3 px-6 py-4 rounded-full shadow-lg {{ $selectedTheme }} hover:shadow-2xl transition-all duration-300 animate-bounce-slow">
-                {{-- Robot Icon --}}
+            {{-- Main Button (İÇTE, MERKEZİ) --}}
+            <div class="relative flex items-center gap-3 px-5 py-3 rounded-full shadow-xl {{ $selectedTheme }} hover:shadow-2xl transition-all duration-300 animate-bounce-slow z-10">
+                {{-- Wizard/Robot Icon --}}
                 <div class="relative">
-                    <svg class="w-7 h-7 animate-wiggle" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2c.5 0 1 .5 1 1v1h5c1 0 2 1 2 2v12c0 1-1 2-2 2H6c-1 0-2-1-2-2V6c0-1 1-2 2-2h5V3c0-.5.5-1 1-1zm-2 7c-.5 0-1 .5-1 1s.5 1 1 1 1-.5 1-1-.5-1-1-1zm4 0c-.5 0-1 .5-1 1s.5 1 1 1 1-.5 1-1-.5-1-1-1zm-4 4c-.3 0-.5.2-.5.5 0 1.4 1.1 2.5 2.5 2.5s2.5-1.1 2.5-2.5c0-.3-.2-.5-.5-.5h-4z"/>
+                    {{-- Sihirbaz/Robot SVG (Emoji tarzı) --}}
+                    <svg class="w-8 h-8 animate-wiggle" viewBox="0 0 64 64" fill="currentColor">
+                        {{-- Wizard Hat --}}
+                        <path d="M32 4 L28 20 L36 20 Z" fill="#FCD34D"/>
+                        <circle cx="32" cy="18" r="2" fill="#F59E0B"/>
+
+                        {{-- Face/Head --}}
+                        <circle cx="32" cy="32" r="14" fill="#60A5FA"/>
+
+                        {{-- Eyes --}}
+                        <circle cx="27" cy="30" r="2.5" fill="#1E3A8A"/>
+                        <circle cx="37" cy="30" r="2.5" fill="#1E3A8A"/>
+
+                        {{-- Happy Smile --}}
+                        <path d="M 25 36 Q 32 40 39 36" stroke="#1E3A8A" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+                        {{-- Stars around --}}
+                        <text x="14" y="20" font-size="8" fill="#FCD34D">✨</text>
+                        <text x="44" y="20" font-size="8" fill="#FCD34D">✨</text>
                     </svg>
-                    {{-- Pulse Dot --}}
+
+                    {{-- Online Pulse Dot --}}
                     <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></span>
                     <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></span>
                 </div>
@@ -111,14 +133,16 @@ class="fixed {{ $selectedPosition }} z-50">
         </div>
 
         {{-- Text Below --}}
-        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md">
-            Soru Sor
-        </span>
+        <div class="mt-2 text-center">
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md">
+                Soru Sor 💬
+            </span>
+        </div>
 
         {{-- Unread badge --}}
         <span x-show="chat.messageCount > 0 && !chat.floatingOpen"
               x-text="chat.messageCount"
-              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg"
+              class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg"
               x-cloak></span>
     </button>
 
@@ -208,14 +232,21 @@ class="fixed {{ $selectedPosition }} z-50">
                     >
                         <div
                             :class="{
-                                'text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white': msg.isError
+                                'text-white [&_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&_*]:!text-white': msg.isError
                             }"
-                            class="text-sm prose prose-sm max-w-none dark:prose-invert"
-                            style="color: inherit !important;"
+                            class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content"
                             x-html="window.aiChatRenderMarkdown(msg.content)"
+                            x-init="
+                                // FORCE white color in dark mode for ALL child elements
+                                if (document.documentElement.classList.contains('dark')) {
+                                    $el.querySelectorAll('*').forEach(child => {
+                                        child.style.setProperty('color', 'white', 'important');
+                                    });
+                                }
+                            "
                         ></div>
                         <p
                             :class="{
@@ -319,5 +350,26 @@ class="fixed {{ $selectedPosition }} z-50">
 
 .animate-pulse-slow {
     animation: pulse-slow 4s ease-in-out infinite;
+}
+
+/* DARK MODE TEXT FIX - Floating Widget Messages */
+.dark .ai-floating-message-content,
+.dark .ai-floating-message-content *,
+.dark .ai-floating-message-content p,
+.dark .ai-floating-message-content span,
+.dark .ai-floating-message-content strong,
+.dark .ai-floating-message-content em,
+.dark .ai-floating-message-content li,
+.dark .ai-floating-message-content ul,
+.dark .ai-floating-message-content ol,
+.dark .ai-floating-message-content h1,
+.dark .ai-floating-message-content h2,
+.dark .ai-floating-message-content h3 {
+    color: white !important;
+}
+
+/* Links özel renk (turuncu) */
+.dark .ai-floating-message-content a {
+    color: #fb923c !important; /* orange-400 */
 }
 </style>

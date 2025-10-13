@@ -1,7 +1,7 @@
 {
-    "name": "Blank",
+    "name": "Ixtif",
     "version": "1.0.0",
-    "description": "Minimal tasarımlı boş tema",
+    "description": "Minimal tasarımlı ixtif tema",
     "author": "Admin",
     "regions": ["content"]
 }

@@ -15,13 +15,13 @@ class ThemesSeeder extends Seeder
             return;
         }
 
-        // Varsayılan Tema (blank)
+        // Varsayılan Tema (ixtif)
         Theme::updateOrCreate(
-            ['name' => 'blank'],
+            ['name' => 'ixtif'],
             [
-                'title' => 'Blank Tema',
-                'folder_name' => 'blank',
-                'description' => 'Boş tema (blank), temel dizayn için test.',
+                'title' => 'Ixtif Tema',
+                'folder_name' => 'ixtif',
+                'description' => 'Ixtif tema, temel dizayn için kullanılır.',
                 'is_active' => true,
                 'is_default' => true,
             ]

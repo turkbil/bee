@@ -75,7 +75,10 @@
       "Bash(sudo systemctl restart:*)",
       "Bash(time curl:*)",
       "Bash(do echo \"Test $i:\")",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(do echo \"=== $db ===\")",
+      "Bash(npm install)",
+      "Bash(npm run build)"
     ],
     "deny": [],
     "ask": [],

@@ -74,6 +74,12 @@ class ShopContextBuilder
 
         // FIX: If no tenant context, return empty (central domain için güvenlik)
         if (!$tenantId) {
+            \Log::warning('⚠️ ShopContextBuilder: No tenant context found', [
+                'tenant_id' => $tenantId,
+                'request_url' => request()->url(),
+                'request_host' => request()->getHost(),
+            ]);
+
             return [
                 'page_type' => 'shop_general',
                 'categories' => [],
@@ -83,6 +89,11 @@ class ShopContextBuilder
                 'tenant_rules' => ['category_priority' => ['enabled' => false], 'faq_enabled' => false, 'token_limits' => ['products_max' => 30]],
             ];
         }
+
+        \Log::info('✅ ShopContextBuilder: Building context for tenant', [
+            'tenant_id' => $tenantId,
+            'locale' => $this->locale,
+        ]);
 
         $cacheKey = "shop_context_{$tenantId}_{$this->locale}";
 

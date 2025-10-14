@@ -132,7 +132,7 @@ Veritabanı temizliği ve tenant yapılandırması
 
 ### Hata:
 ```
-InvalidArgumentException: View [themes.blank.layouts.app] not found
+InvalidArgumentException: View [themes.simple.layouts.app] not found
 ```
 
 ### Çözüm:

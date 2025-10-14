@@ -21,6 +21,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     
     protected $casts = [
         'is_active' => 'boolean',
+        'is_premium' => 'boolean',
         'central' => 'boolean',
         'data' => 'array',
         'theme_id' => 'integer',
@@ -225,17 +226,30 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     /**
      * Check if tenant has enough AI credits
+     * Premium tenants have unlimited credits
      */
     public function hasEnoughCredits(float $creditsNeeded): bool
     {
+        // Premium tenant = sınırsız kredi
+        if ($this->isPremium()) {
+            return true;
+        }
+
         return $this->ai_credits_balance >= $creditsNeeded;
     }
 
     /**
      * Use AI credits
+     * Premium tenants don't consume credits
      */
     public function useCredits(float $creditsUsed): bool
     {
+        // Premium tenant = kredi tüketimi yok
+        if ($this->isPremium()) {
+            $this->update(['ai_last_used_at' => now()]);
+            return true;
+        }
+
         if (!$this->hasEnoughCredits($creditsUsed)) {
             return false;
         }
@@ -244,5 +258,49 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         $this->update(['ai_last_used_at' => now()]);
 
         return true;
+    }
+
+    // ========================================
+    // PREMIUM TENANT HELPERS
+    // ========================================
+
+    /**
+     * Check if tenant is premium
+     */
+    public function isPremium(): bool
+    {
+        return $this->is_premium === true;
+    }
+
+    /**
+     * Check if tenant has unlimited AI credits
+     */
+    public function hasUnlimitedAI(): bool
+    {
+        return $this->isPremium();
+    }
+
+    /**
+     * Check if tenant has auto SEO fill enabled
+     */
+    public function hasAutoSeoFill(): bool
+    {
+        return $this->isPremium();
+    }
+
+    /**
+     * Scope query to only premium tenants
+     */
+    public function scopePremium($query)
+    {
+        return $query->where('is_premium', true);
+    }
+
+    /**
+     * Scope query to only non-premium tenants
+     */
+    public function scopeNonPremium($query)
+    {
+        return $query->where('is_premium', false);
     }
 }

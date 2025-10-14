@@ -26,13 +26,28 @@ class StorageController extends Controller
     /**
      * Serve public storage files through Laravel (bypass Nginx restrictions)
      * Route: /storage/{path}
+     *
+     * TENANT-AWARE: Otomatik olarak aktif tenant'ın klasörüne yönlendirir
      */
     public function publicStorage(Request $request, $path)
     {
         // Decode URL encoding
         $path = urldecode($path);
 
-        // Construct public storage path
+        // Tenant context kontrolü - eğer tenant context'i varsa tenant klasörüne yönlendir
+        if (app()->bound(\Stancl\Tenancy\Tenancy::class)) {
+            $tenancy = app(\Stancl\Tenancy\Tenancy::class);
+
+            if ($tenancy->initialized) {
+                // Tenant context'inde storage_path() zaten tenant klasörünü içerir
+                // Örn: /var/www/.../storage/tenant2
+                $fullPath = storage_path("app/public/{$path}");
+
+                return $this->serveFile($fullPath);
+            }
+        }
+
+        // Central context - normal storage path
         $fullPath = storage_path("app/public/{$path}");
 
         return $this->serveFile($fullPath);

@@ -25,6 +25,12 @@ class ProductPlaceholderService
     /**
      * Get or generate placeholder conversation for a product
      *
+     * 🔄 SAFE TIMEOUT STRATEGY:
+     * - Cache HIT: Return immediately (0.1s)
+     * - Cache MISS: Try generate with 3s timeout
+     * - Timeout: Return fallback + mark as pending
+     * - Success: Cache for future users
+     *
      * @param string $productId
      * @param bool $forceRegenerate
      * @return array
@@ -36,50 +42,92 @@ class ProductPlaceholderService
             $cached = ProductChatPlaceholder::getByProductId($productId);
 
             if ($cached) {
-                Log::info('✅ Product placeholder loaded from cache', [
+                // ✅ CACHE HIT - Return immediately
+                Log::info('✅ Product placeholder from cache', [
                     'product_id' => $productId,
-                    'generated_at' => $cached->generated_at
+                    'age' => $cached->generated_at?->diffForHumans()
                 ]);
 
                 return [
                     'success' => true,
-                    'conversation' => $cached->conversation_json,
+                    'conversation' => $cached->conversation,
                     'from_cache' => true,
                     'generated_at' => $cached->generated_at,
                 ];
             }
         }
 
-        // 2. Generate new placeholder
+        // 2. ❌ CACHE MISS - Return fallback IMMEDIATELY + trigger async generation
+        Log::info('⚡ Cache miss - returning fallback immediately', [
+            'product_id' => $productId
+        ]);
+
+        // Start background generation (non-blocking)
+        $this->generateInBackground($productId);
+
+        // Return fallback immediately (0ms wait for user)
+        return [
+            'success' => true,
+            'conversation' => $this->getFallbackPlaceholder(),
+            'from_cache' => false,
+            'is_fallback' => true,
+            'generating' => true, // Frontend should poll again in 3-5 seconds
+        ];
+    }
+
+    /**
+     * Force generate placeholder (used by background command)
+     *
+     * @param string $productId
+     * @return array
+     */
+    public function forceGenerate(string $productId): array
+    {
         try {
             $conversation = $this->generatePlaceholder($productId);
 
-            // 3. Save to cache
+            // Save to cache
             ProductChatPlaceholder::updateOrCreatePlaceholder($productId, $conversation);
-
-            Log::info('✅ Product placeholder generated and cached', [
-                'product_id' => $productId,
-                'conversation_count' => count($conversation)
-            ]);
 
             return [
                 'success' => true,
                 'conversation' => $conversation,
-                'from_cache' => false,
                 'generated_at' => now(),
             ];
         } catch (\Exception $e) {
-            Log::error('❌ Product placeholder generation failed', [
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Generate placeholder in background (non-blocking)
+     *
+     * SAFE APPROACH: Uses shell_exec + nohup instead of Jobs to avoid Horizon crashes
+     *
+     * @param string $productId
+     * @return void
+     */
+    protected function generateInBackground(string $productId): void
+    {
+        try {
+            $basePath = base_path();
+            $command = "nohup php {$basePath}/artisan app:generate-placeholder {$productId} > /dev/null 2>&1 &";
+
+            shell_exec($command);
+
+            Log::info('🔄 Background generation triggered', [
+                'product_id' => $productId,
+                'command' => $command
+            ]);
+        } catch (\Exception $e) {
+            Log::error('❌ Background generation failed to start', [
                 'product_id' => $productId,
                 'error' => $e->getMessage()
             ]);
-
-            // Return generic fallback placeholder
-            return [
-                'success' => false,
-                'conversation' => $this->getFallbackPlaceholder(),
-                'error' => $e->getMessage(),
-            ];
+            // Don't throw - user already got fallback
         }
     }
 
@@ -110,7 +158,7 @@ class ProductPlaceholderService
         $specs = $this->formatProductSpecs($product);
 
         // Build AI prompt
-        $prompt = $this->buildPrompt($title, $shortDesc, $longDesc, $specs);
+        $prompt = $this->buildPrompt($title, $shortDesc, $longDesc, $specs, $product->primary_specs);
 
         // Call AI - Force OpenAI GPT-4o for reliable JSON responses
         // Note: GPT-5 uses reasoning tokens which don't leave room for content
@@ -142,12 +190,16 @@ class ProductPlaceholderService
      * @param string $shortDesc
      * @param string $longDesc
      * @param string $specs
+     * @param array|null $primarySpecs
      * @return string
      */
-    protected function buildPrompt(string $title, string $shortDesc, string $longDesc, string $specs): string
+    protected function buildPrompt(string $title, string $shortDesc, string $longDesc, string $specs, ?array $primarySpecs = null): string
     {
+        // Dinamik örnek oluştur - ürünün kendi primary_specs'inden
+        $exampleQuestions = $this->generateExampleQuestions($primarySpecs, $specs);
+
         return <<<PROMPT
-Aşağıdaki ürün için 3 soru-cevap çifti üret. SADECE JSON array döndür.
+Aşağıdaki ürün için 4 soru-cevap çifti üret. SADECE JSON array döndür.
 
 ÜRÜN: {$title}
 ÖZELLİKLER: {$specs}
@@ -159,27 +211,85 @@ FORMAT (ZORUNLU):
   {"role":"user","text":"SORU 2"},
   {"role":"assistant","text":"CEVAP 2"},
   {"role":"user","text":"SORU 3"},
-  {"role":"assistant","text":"CEVAP 3"}
+  {"role":"assistant","text":"CEVAP 3"},
+  {"role":"user","text":"SORU 4"},
+  {"role":"assistant","text":"CEVAP 4"}
 ]
 
 KURALLAR:
 1. ❌ YASAK: Fiyat, kargo, garanti
 2. ❌ YASAK: "Farklı seçenekler var", "Benimle konuşun" gibi genel laflar
-3. ✅ ZORUNLU: Yukarıdaki ÖZELLİKLER'den gerçek rakamlar söyle
-4. ✅ İLK cevap "Merhaba!" ile başlar, diğerleri başlamaz
-5. ✅ Soru MAX 10 kelime, cevap MAX 25 kelime
-6. Türkçe
+3. ✅ ZORUNLU: Yukarıdaki ÖZELLİKLER listesinden gerçek değerleri kullanarak sor
+4. ✅ ZORUNLU: Her soru bir özellik hakkında olmalı ve cevapda GERÇEK DEĞER söyle
+5. ✅ İLK cevap "Merhaba!" ile başlar, diğerleri başlamaz
+6. ✅ Soru MAX 10 kelime, cevap MAX 25 kelime
+7. Türkçe
 
-DOĞRU ÖRNEK:
-[
-  {"role":"user","text":"Kapasite nedir?"},
-  {"role":"assistant","text":"Merhaba! 2 ton yük kapasitesi."},
-  {"role":"user","text":"Maksimum hız?"},
-  {"role":"assistant","text":"12 km/s hız."}
-]
+{$exampleQuestions}
 
 ŞİMDİ SADECE JSON ARRAY DÖNDÜR (açıklama yapma):
 PROMPT;
+    }
+
+    /**
+     * Generate example questions based on product's actual primary_specs
+     *
+     * @param array|null $primarySpecs
+     * @param string $specsFormatted
+     * @return string
+     */
+    protected function generateExampleQuestions(?array $primarySpecs, string $specsFormatted): string
+    {
+        if (empty($primarySpecs) || !is_array($primarySpecs)) {
+            // Fallback: Genel örnek
+            return <<<EXAMPLE
+DOĞRU ÖRNEK (BU ÜRÜNDEKİ GİBİ YAP):
+[
+  {"role":"user","text":"Özellik 1 nedir?"},
+  {"role":"assistant","text":"Merhaba! Değer 1."},
+  {"role":"user","text":"Özellik 2?"},
+  {"role":"assistant","text":"Değer 2."}
+]
+EXAMPLE;
+        }
+
+        // İlk 4 primary_specs'i al
+        $selectedSpecs = array_slice($primarySpecs, 0, 4);
+
+        $examples = [];
+        $isFirst = true;
+
+        foreach ($selectedSpecs as $spec) {
+            if (!isset($spec['label']) || !isset($spec['value'])) {
+                continue;
+            }
+
+            $label = $spec['label'];
+            $value = $spec['value'];
+
+            // İlk soru için "Merhaba!" ekle
+            if ($isFirst) {
+                $examples[] = "  {\"role\":\"user\",\"text\":\"{$label} nedir?\"},";
+                $examples[] = "  {\"role\":\"assistant\",\"text\":\"Merhaba! {$value}.\"},";
+                $isFirst = false;
+            } else {
+                $examples[] = "  {\"role\":\"user\",\"text\":\"{$label}?\"},";
+                $examples[] = "  {\"role\":\"assistant\",\"text\":\"{$value}.\"},";
+            }
+        }
+
+        // Son virgülü kaldır
+        if (!empty($examples)) {
+            $lastKey = count($examples) - 1;
+            $examples[$lastKey] = rtrim($examples[$lastKey], ',');
+        }
+
+        $exampleJson = "[\n" . implode("\n", $examples) . "\n]";
+
+        return <<<EXAMPLE
+BU ÜRÜN İÇİN DOĞRU ÖRNEK (AYNEN BUNUN GİBİ YAP):
+{$exampleJson}
+EXAMPLE;
     }
 
     /**
@@ -282,8 +392,13 @@ PROMPT;
     {
         // Get tenant-specific AI settings
         $assistantName = \App\Helpers\AISettingsHelper::getAssistantName() ?? 'Asistan';
-        $companyServices = \App\Helpers\AISettingsHelper::get('ai_company_main_services') ?? 'ürünlerimiz';
-        $personalityRole = \App\Helpers\AISettingsHelper::get('ai_personality_role') ?? 'yardımcı asistan';
+
+        // Get context arrays instead of non-existent ::get() method
+        $companyContext = \App\Helpers\AISettingsHelper::getCompanyContext();
+        $personalityContext = \App\Helpers\AISettingsHelper::getPersonality();
+
+        $companyServices = $companyContext['services'] ?? 'ürün ve hizmetlerimiz';
+        $personalityRole = $personalityContext['role'] ?? 'yardımcı asistan';
 
         // Truncate long texts for placeholder
         if (strlen($companyServices) > 50) {

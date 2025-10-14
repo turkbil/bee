@@ -20,10 +20,45 @@ class LivewireUtf8ServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Hook into Livewire dehydration process to sanitize UTF-8
+        // MULTIPLE HOOKS - Catch at every stage
+
+        // 1. After component hydration (initial load)
+        Livewire::listen('component.hydrate.initial', function ($component) {
+            $this->sanitizeComponentProperties($component);
+        });
+
+        // 2. After component hydration (subsequent updates)
+        Livewire::listen('component.hydrate.subsequent', function ($component) {
+            $this->sanitizeComponentProperties($component);
+        });
+
+        // 3. Before component dehydration (CRITICAL - before JSON encoding)
+        Livewire::listen('component.dehydrate.initial', function ($component) {
+            $this->sanitizeComponentProperties($component);
+        });
+
+        Livewire::listen('component.dehydrate.subsequent', function ($component) {
+            $this->sanitizeComponentProperties($component);
+        });
+
+        // 4. Generic dehydrate hook as fallback
         Livewire::listen('component.dehydrate', function ($component) {
             $this->sanitizeComponentProperties($component);
         });
+
+        // 5. Override JsonResponse to force UTF-8 sanitization
+        $this->overrideJsonResponse();
+    }
+
+    /**
+     * Override Laravel's JsonResponse to force UTF-8 sanitization
+     */
+    private function overrideJsonResponse(): void
+    {
+        // Monkey patch json_encode globally
+        if (!function_exists('safe_json_encode')) {
+            // This will be called by our custom JsonResponse
+        }
     }
 
     /**

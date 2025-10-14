@@ -8,10 +8,12 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * Bu migration HEM central HEM tenant veritabanlarında çalışacak
      */
     public function up(): void
     {
-        Schema::create('product_chat_placeholders', function (Blueprint $table) {
+        Schema::create('shop_product_chat_placeholders', function (Blueprint $table) {
             $table->id();
             $table->string('product_id')->unique()->comment('Shop product ID');
             $table->json('conversation_json')->comment('AI-generated placeholder conversation');
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_chat_placeholders');
+        Schema::dropIfExists('shop_product_chat_placeholders');
     }
 };

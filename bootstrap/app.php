@@ -9,6 +9,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
         \App\Providers\DatabasePoolServiceProvider::class,
         \App\Providers\QueueResilienceServiceProvider::class,
+        \App\Providers\LivewireUtf8ServiceProvider::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -66,6 +67,9 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // 8. ROOT-ONLY DEBUGBAR - Auth'tan sonra çalışmalı
         $middleware->appendToGroup('web', \App\Http\Middleware\RootOnlyDebugbar::class);
+
+        // 9. LIVEWIRE JSON SANITIZER - Livewire JSON responses için UTF-8 sanitization
+        $middleware->appendToGroup('web', \App\Http\Middleware\LivewireJsonSanitizer::class);
 
         // Middleware alias tanımları
         $middleware->alias([

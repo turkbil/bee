@@ -71,6 +71,19 @@ class ShopContextBuilder
     public function buildGeneralShopContext(): array
     {
         $tenantId = tenant('id');
+
+        // FIX: If no tenant context, return empty (central domain için güvenlik)
+        if (!$tenantId) {
+            return [
+                'page_type' => 'shop_general',
+                'categories' => [],
+                'featured_products' => [],
+                'all_products' => [],
+                'total_products' => 0,
+                'tenant_rules' => ['category_priority' => ['enabled' => false], 'faq_enabled' => false, 'token_limits' => ['products_max' => 30]],
+            ];
+        }
+
         $cacheKey = "shop_context_{$tenantId}_{$this->locale}";
 
         return Cache::remember($cacheKey, 3600, function () use ($tenantId) {
@@ -440,11 +453,35 @@ class ShopContextBuilder
     protected function getProductUrl(ShopProduct $product): string
     {
         try {
-            return ShopController::resolveProductUrl($product, $this->locale);
+            $url = ShopController::resolveProductUrl($product, $this->locale);
+
+            // DEBUG: Log URL to check for issues
+            if (str_contains($product->sku ?? '', 'JX1')) {
+                \Log::info('🔗 getProductUrl() - JX1 URL generated', [
+                    'sku' => $product->sku,
+                    'slug' => $this->translate($product->slug),
+                    'url' => $url,
+                    'method' => 'ShopController::resolveProductUrl',
+                ]);
+            }
+
+            return $url;
         } catch (\Exception $e) {
             // FIX: Explicit concatenation to prevent URL merge issues
             $slug = ltrim($this->translate($product->slug), '/');
-            return url('/shop/' . $slug);
+            $url = url('/shop/' . $slug);
+
+            // DEBUG: Log fallback URL
+            if (str_contains($product->sku ?? '', 'JX1')) {
+                \Log::info('🔗 getProductUrl() - JX1 Fallback URL', [
+                    'sku' => $product->sku,
+                    'slug' => $slug,
+                    'url' => $url,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            return $url;
         }
     }
 

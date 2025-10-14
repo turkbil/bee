@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * AI Message Model
  *
- * CENTRAL DATABASE - Tüm tenant'ların mesajları burada
- * conversation üzerinden tenant_id'ye erişilir
+ * TENANT DATABASE - Her tenant'ın mesajları kendi database'inde
+ * tenant connection kullanır (multi-tenancy)
  */
 class AIMessage extends Model
 {
+    protected $connection = 'tenant';
     protected $table = 'ai_messages';
 
     protected $fillable = [

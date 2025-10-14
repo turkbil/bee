@@ -274,18 +274,29 @@ PROMPT;
 
     /**
      * Get fallback placeholder when AI fails
+     * Uses tenant AI settings to personalize messages
      *
      * @return array
      */
     protected function getFallbackPlaceholder(): array
     {
+        // Get tenant-specific AI settings
+        $assistantName = \App\Helpers\AISettingsHelper::getAssistantName() ?? 'Asistan';
+        $companyServices = \App\Helpers\AISettingsHelper::get('ai_company_main_services') ?? 'ürünlerimiz';
+        $personalityRole = \App\Helpers\AISettingsHelper::get('ai_personality_role') ?? 'yardımcı asistan';
+
+        // Truncate long texts for placeholder
+        if (strlen($companyServices) > 50) {
+            $companyServices = 'ürün ve hizmetlerimiz';
+        }
+
         return [
-            ['role' => 'user', 'text' => 'Ürün özellikleri?'],
-            ['role' => 'assistant', 'text' => 'Merhaba! Size bu ürün hakkında detaylı bilgi verebilirim. Sorun!'],
-            ['role' => 'user', 'text' => 'Nasıl çalışır?'],
-            ['role' => 'assistant', 'text' => 'Ürünün çalışma prensibi ve kullanımı hakkında bilgi alabilirim.'],
-            ['role' => 'user', 'text' => 'Avantajları neler?'],
-            ['role' => 'assistant', 'text' => 'Ürünün teknik özellikleri ve avantajları için sormak istediğiniz varsa yazın!'],
+            ['role' => 'user', 'text' => 'Bu ürün ne işe yarar?'],
+            ['role' => 'assistant', 'text' => "Merhaba! Ben {$assistantName}, {$personalityRole} olarak size bu ürün hakkında detaylı bilgi verebilirim."],
+            ['role' => 'user', 'text' => 'Hangi özellikleri var?'],
+            ['role' => 'assistant', 'text' => "{$companyServices} kapsamında bu ürünün teknik özellikleri ve avantajları hakkında soru sorabilirsiniz!"],
+            ['role' => 'user', 'text' => 'Nasıl yardımcı olabilirsiniz?'],
+            ['role' => 'assistant', 'text' => 'Ürün özellikleri, kullanım alanları ve size en uygun çözümü bulmak için buradan yazabilirsiniz!'],
         ];
     }
 

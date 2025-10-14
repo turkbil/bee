@@ -76,12 +76,18 @@ class Setting extends Model
 
     public function getValue()
     {
-        // Her durumda settings_values tablosundan değer almayı dene
-        // Tenant context'inde veya central'da olsak da
-        $settingValue = SettingValue::where('setting_id', $this->id)->first();
+        // SettingValue tenant database'de olduğu için
+        // tenant connection'ı kullanarak sorgu yapmalıyız
 
-        if ($settingValue && $settingValue->value !== null) {
-            return $settingValue->value;
+        // Tenant context varsa tenant DB'den çek
+        if (tenant()) {
+            $settingValue = SettingValue::on('tenant')
+                ->where('setting_id', $this->id)
+                ->first();
+
+            if ($settingValue && $settingValue->value !== null) {
+                return $settingValue->value;
+            }
         }
 
         // Hiç değer yoksa default_value kullan

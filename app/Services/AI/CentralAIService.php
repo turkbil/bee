@@ -3,7 +3,7 @@
 namespace App\Services\AI;
 
 use Modules\AI\App\Models\AIProvider;
-use Modules\AI\App\Models\AITokenUsage;
+// use Modules\AI\App\Models\AITokenUsage; // TODO: Create this model or use AICreditUsage
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -318,7 +318,8 @@ class CentralAIService
             $totalTokens = $inputTokens + $outputTokens;
             
             // Detaylı kullanım kaydı (debug & statistics için)
-            AITokenUsage::create([
+            // TODO: Re-enable when AITokenUsage model is created
+            /* AITokenUsage::create([
                 'tenant_id' => $this->currentTenant->id,
                 'ai_provider_id' => $this->selectedProvider->id,
                 'provider_name' => $this->selectedProvider->name,
@@ -347,7 +348,7 @@ class CentralAIService
                     'timestamp' => now()->toISOString()
                 ],
                 'used_at' => now()
-            ]);
+            ]); */
             
             Log::info('💾 Credit usage recorded', [
                 'tenant_id' => $this->currentTenant->id,

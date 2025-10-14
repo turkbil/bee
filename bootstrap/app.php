@@ -7,6 +7,7 @@ use App\Exceptions\Handler;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
+        \App\Providers\JsonResponseServiceProvider::class, // MUST BE FIRST - Override JsonResponse
         \App\Providers\DatabasePoolServiceProvider::class,
         \App\Providers\QueueResilienceServiceProvider::class,
         \App\Providers\LivewireUtf8ServiceProvider::class,

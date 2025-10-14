@@ -13,11 +13,12 @@ use App\Models\Tenant;
 /**
  * AI Conversation Model
  *
- * CENTRAL DATABASE - Tüm tenant'ların konuşmaları burada
- * tenant_id ile filtreleme yapılır (Global Scope YOK)
+ * TENANT DATABASE - Her tenant'ın konuşmaları kendi database'inde
+ * tenant connection kullanır (multi-tenancy)
  */
 class AIConversation extends Model
 {
+    protected $connection = 'tenant';
     protected $table = 'ai_conversations';
 
     protected $fillable = [

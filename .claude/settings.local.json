@@ -79,7 +79,11 @@
       "Bash(do echo \"=== $db ===\")",
       "Bash(npm install)",
       "Bash(npm run build)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(mariadb:*)",
+      "Bash(truncate:*)",
+      "Bash(cat:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": [],

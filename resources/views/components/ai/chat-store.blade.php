@@ -332,21 +332,28 @@ window.placeholderV4 = function(productId = null) {
             console.log('🔍 Placeholder init started', { productId });
 
             if (productId) {
-                // Start with fallback, then try to load from cache
-                this.conversation = this.getFallbackConversation();
-                this.isLoading = false;
+                console.log('📡 Loading product placeholder from cache/API...');
+                this.isLoading = true;
 
-                console.log('📡 Checking cache for product placeholder...');
-                // Try to load - if cached, it will be fast. If not, generate in background
-                this.loadProductPlaceholder(productId); // Don't await - run in background
+                // Try to load from API first (fast if cached)
+                await this.loadProductPlaceholder(productId);
+
+                // If load failed, use fallback
+                if (this.loadError || this.conversation.length === 0) {
+                    console.log('⚠️ Using fallback conversation');
+                    this.conversation = this.getFallbackConversation();
+                }
+
+                this.isLoading = false;
             } else {
                 console.log('⚠️ No productId provided, using fallback');
                 this.conversation = this.getFallbackConversation();
                 this.isLoading = false;
             }
 
-            console.log('✅ Placeholder init completed (immediate)', {
-                conversationLength: this.conversation.length
+            console.log('✅ Placeholder init completed', {
+                conversationLength: this.conversation.length,
+                conversation: this.conversation
             });
         },
 
@@ -358,31 +365,37 @@ window.placeholderV4 = function(productId = null) {
                 const loadTime = Date.now() - startTime;
 
                 if (data.success && data.data.conversation) {
-                    console.log('✅ Product placeholder loaded', {
+                    console.log('✅ Product placeholder loaded from API', {
                         from_cache: data.data.from_cache,
                         generated_at: data.data.generated_at,
                         load_time_ms: loadTime,
-                        note: data.data.from_cache ? 'Cached - will use next visit' : 'Generated - cached for next visit'
+                        conversation_items: data.data.conversation.length
                     });
-                    // Don't replace conversation on first visit - it's already showing fallback
-                    // Next visit will load from cache immediately
+
+                    // Set conversation data from API
+                    this.conversation = data.data.conversation;
+                    this.loadError = false;
                 } else {
                     throw new Error('Invalid response');
                 }
             } catch (error) {
-                console.error('❌ Failed to load product placeholder (will retry next time):', error);
+                console.error('❌ Failed to load product placeholder:', error);
                 this.loadError = true;
             }
         },
 
         getFallbackConversation() {
+            // ✅ FIX: Use tenant-specific assistant name from Alpine store
+            // assistantName is already loaded from backend at line 38
+            const assistantName = '{{ \App\Helpers\AISettingsHelper::getAssistantName() }}' || 'Asistan';
+
             return [
-                { role: 'user', text: "Merhaba, bu ürün ne iş yapıyor?" },
-                { role: 'assistant', text: "Merhaba! Bu ürün profesyonel kullanım için tasarlanmış, yüksek performanslı bir ekipmandır. İhtiyaçlarınıza göre farklı modellerde sunulmaktadır." },
-                { role: 'user', text: "Hangi kapasitede var?" },
-                { role: 'assistant', text: "Farklı kapasite seçeneklerimiz mevcut. Size en uygun modeli belirlemek için kullanım amacınızı ve ihtiyacınızı konuşalım!" },
-                { role: 'user', text: "Neden bu modeli tercih etmeliyim?" },
-                { role: 'assistant', text: "Bu model dayanıklılığı, yüksek performansı ve kolay kullanımıyla öne çıkıyor. Detaylı teknik özellikleri ve avantajları için benimle konuşmaya başlayın!" }
+                { role: 'user', text: "Bu ürün ne işe yarar?" },
+                { role: 'assistant', text: `Merhaba! Ben ${assistantName}, size bu ürün hakkında detaylı bilgi verebilirim. Sorularınızı bekliyorum!` },
+                { role: 'user', text: "Hangi özellikleri var?" },
+                { role: 'assistant', text: "Ürünün teknik özellikleri, kullanım alanları ve avantajları hakkında size yardımcı olabilirim. Merak ettiklerinizi sorun!" },
+                { role: 'user', text: "Nasıl yardımcı olabilirsiniz?" },
+                { role: 'assistant', text: "Ürün detayları, karşılaştırmalar ve size en uygun çözümü bulmak için buradan mesaj atabilirsiniz!" }
             ];
         },
 

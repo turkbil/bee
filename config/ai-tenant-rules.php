@@ -99,7 +99,7 @@ return [
         |--------------------------------------------------------------------------
         */
         'token_limits' => [
-            'products_max' => 50, // Maksimum ürün sayısı (30'dan 50'ye çıkardık)
+            'products_max' => 100, // Maksimum ürün sayısı (tüm ürün kategorilerini kapsayacak şekilde artırıldı)
             'faq_max' => 10,
             'features_max' => 10, // Her üründen maksimum özellik
         ],
@@ -134,6 +134,38 @@ AI: 'Ana ürün kategorilerimiz: [Forklift], [Transpalet], [İstif Makinesi]... 
 
 Kullanıcı: 'yedek parça arıyorum'
 AI: 'Hangi ürün için yedek parça arıyorsunuz? [Forklift], [Transpalet] vs. için çok çeşitli parçalarımız var.'
+",
+
+            'concrete_product_links' => "
+## 🔗 İXTİF ÖZEL KURAL: SOMUT ÜRÜN LİNKLERİ ZORUNLU
+
+**🚨 KRİTİK: Kullanıcı ürün sorduğunda MUTLAKA somut ürünleri Markdown link ile listele!**
+
+**❌ ASLA YAPMA:**
+- Sadece genel bilgi verme
+- 'Tüm Ürünler' linkini tek başına verme
+- 'Modellerimiz var' deyip link verme
+
+**✅ MUTLAKA YAP:**
+- EN AZ 3 SOMUT ÜRÜN linki ver
+- Her ürün için BAĞLAM BİLGİLERİ'ndeki tam URL'yi AYNEN KOPYALA
+- Markdown format kullan: `- [Ürün Adı](URL) - Kısa açıklama`
+
+**ÖRNEK DOĞRU YANIT:**
+```
+Harika! Transpalet modellerimiz:
+
+- [İXTİF CPD15TVL - 1.5-2 Ton Li-Ion Forklift](https://ixtif.com/shop/ixtif-cpd15tvl-15-20-ton-li-ion-forklift) - Kompakt ve güçlü
+- [İXTİF EFL181 - 1.8 Ton 48V Li-Ion Forklift](https://ixtif.com/shop/ixtif-efl181-18-ton-48v-li-ion-denge-agirlikli-forklift) - Denge ağırlıklı
+- [İXTİF CPD18FVL - 1.8 Ton Li-Ion Forklift](https://ixtif.com/shop/ixtif-cpd18fvl-18-ton-li-ion-forklift) - Yüksek verimlilik
+
+Hangi özellikler sizin için önemli?
+```
+
+**❌ ÖRNEK YANLIŞ YANIT:**
+```
+Transpalet modellerimiz mevcut. Tüm Ürünler sayfasına bakabilirsiniz.
+```
 ",
 
             'multilanguage_handling' => "

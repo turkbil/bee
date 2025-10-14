@@ -72,15 +72,20 @@ class ValuesComponent extends Component
     {
         $this->groupId = $group;
         $this->group = SettingGroup::findOrFail($group);
-        
+
         $settings = Setting::where('group_id', $this->groupId)->get();
-        
+
         foreach ($settings as $setting) {
             $value = SettingValue::where('setting_id', $setting->id)->first();
-            
+
             // Normal değerler için
             $finalValue = $value ? $value->value : $setting->default_value;
-            
+
+            // UTF-8 sanitization
+            if (is_string($finalValue) && !mb_check_encoding($finalValue, 'UTF-8')) {
+                $finalValue = mb_convert_encoding($finalValue, 'UTF-8', 'UTF-8');
+            }
+
             // Hem numeric ID hem string key ile kaydet (layout sistem için)
             $this->values[$setting->id] = $finalValue;
             $this->values[$setting->key] = $finalValue;
@@ -499,8 +504,31 @@ class ValuesComponent extends Component
             ->orderBy('sort_order', 'asc')
             ->get();
 
+        // UTF-8 sanitization for all values to prevent JSON encoding errors
+        $this->sanitizeValuesForJson();
+
         return view('settingmanagement::livewire.values-component', [
             'settings' => $settings
         ]);
+    }
+
+    /**
+     * Sanitize all component values to ensure valid UTF-8 encoding
+     * This prevents "Malformed UTF-8 characters" errors during Livewire JSON serialization
+     */
+    private function sanitizeValuesForJson(): void
+    {
+        foreach ($this->values as $key => $value) {
+            if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+                // Remove invalid UTF-8 characters
+                $this->values[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+            }
+        }
+
+        foreach ($this->originalValues as $key => $value) {
+            if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+                $this->originalValues[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+            }
+        }
     }
 }

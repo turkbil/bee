@@ -74,7 +74,8 @@
       "Bash(do echo \"=== Testing $domain ===\")",
       "Bash(sudo systemctl restart:*)",
       "Bash(time curl:*)",
-      "Bash(do echo \"Test $i:\")"
+      "Bash(do echo \"Test $i:\")",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": [],

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductChatPlaceholder extends Model
 {
+    protected $table = 'shop_product_chat_placeholders';
+
     protected $fillable = [
         'product_id',
         'conversation_json',

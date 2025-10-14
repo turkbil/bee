@@ -974,11 +974,15 @@ class PublicAIController extends Controller
 
         // 🔥 TENANT-SPECIFIC CUSTOM PROMPTS (iXtif gibi özel kurallar)
         $tenantId = tenant('id');
-        $tenantRules = $this->getTenantRules($tenantId);
 
-        if (!empty($tenantRules['custom_prompts'])) {
-            foreach ($tenantRules['custom_prompts'] as $promptKey => $promptContent) {
-                $prompts[] = "\n" . trim($promptContent);
+        // FIX: If no tenant context, skip tenant rules (central domain için güvenlik)
+        if ($tenantId) {
+            $tenantRules = $this->getTenantRules($tenantId);
+
+            if (!empty($tenantRules['custom_prompts'])) {
+                foreach ($tenantRules['custom_prompts'] as $promptKey => $promptContent) {
+                    $prompts[] = "\n" . trim($promptContent);
+                }
             }
         }
 

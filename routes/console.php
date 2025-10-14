@@ -39,10 +39,11 @@ Schedule::call(function () {
     ->name('tenant-auto-scaling')
     ->withoutOverlapping();
 
-// Real-time metrics collection - every minute
-Schedule::call(function () {
-    $realTimeAutoScalingService = app(\Modules\TenantManagement\App\Services\RealTimeAutoScalingService::class);
-    $realTimeAutoScalingService->collectAndStoreMetrics();
-})->everyMinute()
-    ->name('tenant-metrics-collection')
-    ->withoutOverlapping();
+// Real-time metrics collection - DISABLED (method not implemented)
+// Gerekirse collectAndStoreMetrics() metodu eklenerek aktif edilebilir
+// Schedule::call(function () {
+//     $realTimeAutoScalingService = app(\Modules\TenantManagement\App\Services\RealTimeAutoScalingService::class);
+//     $realTimeAutoScalingService->collectAndStoreMetrics();
+// })->everyMinute()
+//     ->name('tenant-metrics-collection')
+//     ->withoutOverlapping();

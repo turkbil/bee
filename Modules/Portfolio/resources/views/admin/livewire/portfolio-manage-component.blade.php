@@ -178,15 +178,6 @@
         </div>
     </form>
 
-    {{-- AUTO SEO FILL TRIGGER - Premium tenants için otomatik SEO doldurma --}}
-    @if($portfolioId && $portfolio)
-        <x-auto-seo-trigger
-            :model="$portfolio"
-            model-type="portfolio"
-            :locale="$currentLanguage"
-        />
-    @endif
-
 
     @push('scripts')
         {{-- 🎯 MODEL & MODULE SETUP --}}
@@ -237,8 +228,5 @@
         ])
 
         @include('ai::admin.components.universal-ai-content-scripts')
-
-        {{-- 🎁 AUTO SEO FILL - Premium tenants için otomatik SEO doldurma --}}
-        <script src="{{ asset('assets/js/auto-seo-fill.js') }}"></script>
     @endpush
 </div>

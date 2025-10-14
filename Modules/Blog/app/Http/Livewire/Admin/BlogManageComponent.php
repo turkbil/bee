@@ -580,8 +580,7 @@ class BlogManageComponent extends Component implements AIContentGeneratable
             'jsVariables' => [
                 'currentBlogId' => $this->blogId ?? null,
                 'currentLanguage' => $this->currentLanguage ?? 'tr'
-            ],
-            'blog' => $this->blogId ? Blog::find($this->blogId) : null
+            ]
         ]);
     }
 

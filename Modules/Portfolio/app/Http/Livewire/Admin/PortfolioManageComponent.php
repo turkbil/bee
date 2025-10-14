@@ -513,8 +513,7 @@ class PortfolioManageComponent extends Component implements AIContentGeneratable
             'jsVariables' => [
                 'currentPortfolioId' => $this->portfolioId ?? null,
                 'currentLanguage' => $this->currentLanguage ?? 'tr'
-            ],
-            'portfolio' => $this->portfolioId ? Portfolio::find($this->portfolioId) : null
+            ]
         ]);
     }
 

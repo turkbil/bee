@@ -8,6 +8,13 @@ class ProductChatPlaceholder extends Model
 {
     protected $table = 'shop_product_chat_placeholders';
 
+    // Tenant-aware: Varsayılan olarak tenant connection kullan
+    public function getConnectionName()
+    {
+        // Eğer tenant context varsa tenant connection kullan, yoksa default
+        return tenancy()->initialized ? 'mysql' : parent::getConnectionName();
+    }
+
     protected $fillable = [
         'product_id',
         'conversation_json',

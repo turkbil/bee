@@ -78,7 +78,8 @@
       "Bash(timeout:*)",
       "Bash(do echo \"=== $db ===\")",
       "Bash(npm install)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": [],

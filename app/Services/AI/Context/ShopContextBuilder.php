@@ -73,7 +73,11 @@ class ShopContextBuilder
         $tenantId = tenant('id');
         $cacheKey = "shop_context_{$tenantId}_{$this->locale}";
 
-        return Cache::remember($cacheKey, 3600, function () {
+        return Cache::remember($cacheKey, 3600, function () use ($tenantId) {
+            // Load tenant-specific rules
+            $tenantRules = $this->getTenantRules($tenantId);
+            $productLimit = $tenantRules['token_limits']['products_max'] ?? 30;
+
             $categories = ShopCategory::whereNull('parent_id')
                 ->where('is_active', true)
                 ->with('children')
@@ -84,11 +88,17 @@ class ShopContextBuilder
                 ->take(10)
                 ->get();
 
-            // Get ALL active products (summary only - not full details)
-            $allProducts = ShopProduct::where('is_active', true)
-                ->select(['product_id', 'sku', 'title', 'slug', 'short_description', 'category_id', 'base_price', 'price_on_request'])
-                ->with('category:category_id,title')
-                ->get();
+            // Get ALL active products with category priority filtering
+            $allProductsQuery = ShopProduct::where('is_active', true)
+                ->select(['product_id', 'sku', 'title', 'slug', 'short_description', 'category_id', 'base_price', 'price_on_request', 'faq_data'])
+                ->with('category:category_id,title,slug');
+
+            // Apply category priority if enabled (tenant-specific)
+            if ($tenantRules['category_priority']['enabled'] ?? false) {
+                $allProductsQuery = $this->applyCategoryPriority($allProductsQuery, $tenantRules);
+            }
+
+            $allProducts = $allProductsQuery->take($productLimit)->get();
 
             return [
                 'page_type' => 'shop_general',
@@ -98,15 +108,18 @@ class ShopContextBuilder
                     'slug' => $this->translate($c->slug),
                     'url' => $this->getCategoryUrl($c),
                     'product_count' => $c->products()->where('is_active', true)->count(),
+                    'priority' => $this->getCategoryPriority($c, $tenantRules),
                     'subcategories' => $c->children->map(fn($sc) => [
                         'id' => $sc->category_id,
                         'name' => $this->translate($sc->title),
                         'url' => $this->getCategoryUrl($sc),
+                        'priority' => $this->getCategoryPriority($sc, $tenantRules),
                     ])->toArray(),
                 ])->toArray(),
                 'featured_products' => $featuredProducts->map(fn($p) => $this->formatProduct($p))->toArray(),
-                'all_products' => $allProducts->map(fn($p) => $this->formatProductSummary($p))->toArray(),
+                'all_products' => $allProducts->map(fn($p) => $this->formatProductSummary($p, $tenantRules))->toArray(),
                 'total_products' => $allProducts->count(),
+                'tenant_rules' => $tenantRules, // Include rules for AI prompt
             ];
         });
     }

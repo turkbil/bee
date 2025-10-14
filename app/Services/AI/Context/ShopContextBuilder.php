@@ -89,8 +89,18 @@ class ShopContextBuilder
                 ->get();
 
             // Get ALL active products with category priority filtering
-            $allProductsQuery = ShopProduct::where('is_active', true)
-                ->select(['product_id', 'sku', 'title', 'slug', 'short_description', 'category_id', 'base_price', 'price_on_request', 'faq_data'])
+            $allProductsQuery = ShopProduct::where('shop_products.is_active', true)
+                ->select([
+                    'shop_products.product_id',
+                    'shop_products.sku',
+                    'shop_products.title',
+                    'shop_products.slug',
+                    'shop_products.short_description',
+                    'shop_products.category_id',
+                    'shop_products.base_price',
+                    'shop_products.price_on_request',
+                    'shop_products.faq_data'
+                ])
                 ->with('category:category_id,title,slug');
 
             // Apply category priority if enabled (tenant-specific)
@@ -159,7 +169,8 @@ class ShopContextBuilder
         }
 
         // Join with categories to filter by slug
-        $query->join('shop_categories', 'shop_products.category_id', '=', 'shop_categories.category_id');
+        $query->join('shop_categories', 'shop_products.category_id', '=', 'shop_categories.category_id')
+            ->where('shop_categories.is_active', true);
 
         // Prioritize: high priority first, then others, low priority last
         $query->orderByRaw("
@@ -255,6 +266,8 @@ class ShopContextBuilder
             'stock_status' => $product->stock_status ?? null,
             'low_stock_threshold' => $product->low_stock_threshold ?? null,
             'manage_stock' => $product->manage_stock ?? false,
+            'allow_backorder' => $product->allow_backorder ?? false,
+            'lead_time_days' => $product->lead_time_days ?? null,
 
             // Technical specifications (original JSON fields)
             'technical_specs' => $product->technical_specs,
@@ -276,6 +289,7 @@ class ShopContextBuilder
             'faq' => $product->faq_data,
 
             // Additional info
+            'accessories' => $product->accessories ?? null,
             'certifications' => $product->certifications,
             'warranty_info' => $product->warranty_info,
             'specifications' => $product->specifications ?? null,

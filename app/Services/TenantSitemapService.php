@@ -36,6 +36,15 @@ class TenantSitemapService
         // Dinamik modül içerikleri - tenant'a atanmış content modüllerini işle
         self::addDynamicModuleContent($sitemap, $languages, $defaultLanguage);
 
+        // Shop modülü - Ürünler ve Kategoriler
+        self::addShopContent($sitemap, $languages, $defaultLanguage);
+
+        // Blog modülü - Yazılar ve Kategoriler
+        self::addBlogContent($sitemap, $languages, $defaultLanguage);
+
+        // Portfolio kategorileri
+        self::addPortfolioCategoryContent($sitemap, $languages, $defaultLanguage);
+
         return $sitemap;
     }
     
@@ -220,8 +229,10 @@ class TenantSitemapService
         
         // Modül tipine göre bonus/ceza
         $moduleBonus = match(strtolower($moduleName)) {
-            'page' => 0.1,        // Page'ler daha önemli
-            'portfolio' => 0.0,   // Neutral
+            'page' => 0.1,          // Page'ler daha önemli
+            'shopproduct' => 0.05,  // Shop ürünleri önemli
+            'blog' => 0.0,          // Blog neutral
+            'portfolio' => 0.0,     // Neutral
             'announcement' => -0.1, // Daha az önemli
             default => 0.0
         };
@@ -723,6 +734,163 @@ class TenantSitemapService
     }
 
     /**
+     * Shop içeriklerini ekle (Ürünler ve Kategoriler)
+     */
+    private static function addShopContent(Sitemap $sitemap, array $languages, string $defaultLanguage): void
+    {
+        try {
+            // Shop ürünlerini ekle
+            $shopProducts = \Modules\Shop\App\Models\ShopProduct::where('is_active', true)->get();
+
+            foreach ($shopProducts as $product) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $product->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    // URL pattern: /shop/product/{slug} veya /{locale}/shop/product/{slug}
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/shop/product/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($product->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(self::getModulePriority('ShopProduct', $product))
+                    );
+                }
+            }
+
+            // Shop kategorilerini ekle
+            $shopCategories = \Modules\Shop\App\Models\ShopCategory::where('is_active', true)->get();
+
+            foreach ($shopCategories as $category) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $category->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    // URL pattern: /shop/category/{slug}
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/shop/category/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($category->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.7)
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            // Shop modülü yoksa veya hata varsa skip
+            \Log::warning('Shop sitemap generation failed', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Blog içeriklerini ekle (Yazılar ve Kategoriler)
+     */
+    private static function addBlogContent(Sitemap $sitemap, array $languages, string $defaultLanguage): void
+    {
+        try {
+            // Blog yazılarını ekle
+            $blogs = \Modules\Blog\App\Models\Blog::where('is_active', true)->get();
+
+            foreach ($blogs as $blog) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $blog->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    // URL pattern: /blog/{slug}
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/blog/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($blog->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                            ->setPriority(self::getModulePriority('Blog', $blog))
+                    );
+                }
+            }
+
+            // Blog kategorilerini ekle
+            $blogCategories = \Modules\Blog\App\Models\BlogCategory::where('is_active', true)->get();
+
+            foreach ($blogCategories as $category) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $category->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    // URL pattern: /blog/category/{slug}
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/blog/category/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($category->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                            ->setPriority(0.6)
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            // Blog modülü yoksa veya hata varsa skip
+            \Log::warning('Blog sitemap generation failed', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Portfolio kategorilerini ekle
+     */
+    private static function addPortfolioCategoryContent(Sitemap $sitemap, array $languages, string $defaultLanguage): void
+    {
+        try {
+            $portfolioCategories = \Modules\Portfolio\App\Models\PortfolioCategory::where('is_active', true)->get();
+
+            foreach ($portfolioCategories as $category) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $category->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    // URL pattern: /portfolio/category/{slug}
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/portfolio/category/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($category->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                            ->setPriority(0.6)
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            // Portfolio modülü yoksa veya hata varsa skip
+            \Log::warning('Portfolio category sitemap generation failed', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
      * Sitemap'i dosyaya kaydet
      */
     public static function generateAndSave(): string
@@ -730,9 +898,9 @@ class TenantSitemapService
         $sitemap = self::generate();
         $filename = 'sitemap.xml';
         $path = public_path($filename);
-        
+
         $sitemap->writeToFile($path);
-        
+
         return $filename;
     }
 }

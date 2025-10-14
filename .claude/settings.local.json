@@ -72,7 +72,9 @@
       "Bash(grep -oE '`[^`]+`')",
       "Bash(git rm:*)",
       "Bash(do echo \"=== Testing $domain ===\")",
-      "Bash(sudo systemctl restart:*)"
+      "Bash(sudo systemctl restart:*)",
+      "Bash(time curl:*)",
+      "Bash(do echo \"Test $i:\")"
     ],
     "deny": [],
     "ask": [],

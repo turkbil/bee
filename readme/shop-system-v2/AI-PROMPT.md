@@ -85,7 +85,7 @@
 │   │       └── 030_add_primary_specs_template_to_shop_categories.php
 │   └── resources/
 │       └── views/
-│           └── themes/blank/
+│           └── themes/simple/
 │               ├── index.blade.php          # Ürün listesi
 │               └── show.blade.php           # Landing page
 ├── Modules/Shop/database/

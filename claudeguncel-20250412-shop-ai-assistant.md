@@ -344,8 +344,8 @@ Ancak dikkat! Eğer daha yüksek yük kapasitesi veya kaldırma yüksekliği ger
 
 ### 3️⃣ **Widget'ı Shop Sayfasına Entegre Et** ⭐ 2 MOD + KATEGORİ
 **Dosyalar:**
-- `Modules/Shop/resources/views/themes/blank/show.blade.php` (Ürün sayfası)
-- `Modules/Shop/resources/views/themes/blank/index.blade.php` (Kategori listesi) ⭐ YENİ
+- `Modules/Shop/resources/views/themes/simple/show.blade.php` (Ürün sayfası)
+- `Modules/Shop/resources/views/themes/simple/index.blade.php` (Kategori listesi) ⭐ YENİ
 
 **2 Kullanım Modu:**
 
@@ -731,8 +731,8 @@ Kullanıcı **"başla"** dediğinde:
 - ✅ `Modules/AI/resources/views/widgets/shop-product-chat-floating.blade.php`
 - ✅ `Modules/AI/resources/views/widgets/shop-product-chat-inline.blade.php`
 - ✅ `Modules/AI/resources/views/widgets/shop-category-chat-inline.blade.php` ⭐ YENİ
-- ✅ `Modules/Shop/resources/views/themes/blank/show.blade.php` (ürün - güncelleme)
-- ✅ `Modules/Shop/resources/views/themes/blank/index.blade.php` (kategori - güncelleme) ⭐ YENİ
+- ✅ `Modules/Shop/resources/views/themes/simple/show.blade.php` (ürün - güncelleme)
+- ✅ `Modules/Shop/resources/views/themes/simple/index.blade.php` (kategori - güncelleme) ⭐ YENİ
 
 ### Config:
 - ✅ `config/ai.php` (shop_assistant_enabled ekle)

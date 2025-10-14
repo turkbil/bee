@@ -88,7 +88,7 @@
 
 ### Kullanılmayan Template'ler
 ```
-/resources/views/themes/blank/ - BOŞ TEMA - BU KALACAK
+/resources/views/themes/simple/ - BOŞ TEMA - BU KALACAK
 /resources/views/errors/offline.blade.php - KULLANILMIYOR - BUNUN KULLANILMASINI SAĞLAYABİLİRİZ.
 ```
 

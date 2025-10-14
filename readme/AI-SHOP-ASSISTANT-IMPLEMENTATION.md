@@ -204,7 +204,7 @@ php artisan db:seed --class="Modules\SettingManagement\Database\Seeders\AISettin
 ## 🔗 Entegrasyon
 
 ### Shop Product Detail Page
-**Dosya:** `Modules/Shop/resources/views/themes/blank/show.blade.php`
+**Dosya:** `Modules/Shop/resources/views/themes/simple/show.blade.php`
 
 **Eklenen Section (Satır 1464-1486):**
 ```blade
@@ -234,7 +234,7 @@ php artisan db:seed --class="Modules\SettingManagement\Database\Seeders\AISettin
 ```
 
 ### Theme Layout
-**Dosya:** `resources/views/themes/blank/layouts/footer.blade.php`
+**Dosya:** `resources/views/themes/simple/layouts/footer.blade.php`
 
 **Eklenen (Satır 312-314):**
 ```blade
@@ -369,10 +369,10 @@ curl -X GET "http://www.laravel.test/api/ai/v1/shop-assistant/history?session_id
    - `/shop-assistant/chat` route eklendi
    - `/shop-assistant/history` route eklendi
 
-4. `Modules/Shop/resources/views/themes/blank/show.blade.php`
+4. `Modules/Shop/resources/views/themes/simple/show.blade.php`
    - AI Chat Section eklendi (inline widget)
 
-5. `resources/views/themes/blank/layouts/footer.blade.php`
+5. `resources/views/themes/simple/layouts/footer.blade.php`
    - Chat store component eklendi
    - Floating widget eklendi
 

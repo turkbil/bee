@@ -336,9 +336,23 @@ class ShopController extends Controller
             ]);
         }
 
-        // Direkt theme path kullan (ThemeService bypass)
+        // Dinamik tema ile view path oluştur
         $viewName = $isVariantPage ? "show-variant-{$version}" : "show-{$version}";
-        $viewPath = "shop::themes.ixtif.{$viewName}";
+
+        try {
+            $viewPath = $this->themeService->getThemeViewPath($viewName, 'shop');
+        } catch (\Throwable $e) {
+            // Fallback: simple tema kullan
+            $defaultTheme = config('studio.themes.default', 'simple');
+            $viewPath = "shop::themes.{$defaultTheme}.{$viewName}";
+
+            Log::warning('Shop versioned view fallback', [
+                'version' => $version,
+                'view_name' => $viewName,
+                'fallback_theme' => $defaultTheme,
+                'error' => $e->getMessage()
+            ]);
+        }
 
         $viewData = [
             'item' => $product,

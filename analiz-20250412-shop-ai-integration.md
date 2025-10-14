@@ -150,10 +150,10 @@ is_system
    → ShopAIIntegration servisi çağır
    → Rate limiting bypass (shop için)
 
-2. Modules/Shop/resources/views/themes/blank/show.blade.php
+2. Modules/Shop/resources/views/themes/simple/show.blade.php
    → Widget include ekle
 
-3. Modules/Shop/resources/views/themes/blank/index.blade.php
+3. Modules/Shop/resources/views/themes/simple/index.blade.php
    → Kategori widget include ekle
 ```
 

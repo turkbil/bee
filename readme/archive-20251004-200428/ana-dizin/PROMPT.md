@@ -517,7 +517,7 @@
 
   1. front/index.blade.php - Liste sayfası
   2. front/show.blade.php - Detay sayfası
-  3. themes/blank/index.blade.php - Tema örneği
+  3. themes/simple/index.blade.php - Tema örneği
 
   PORTFOLIO EKLE:
   - Category dropdown - liste filtreleme

@@ -9,6 +9,15 @@ return [
     'name' => 'Studio Builder',
     'prefix' => 'studio',    // Route öneki
     'middleware' => ['web', 'auth', 'tenant'],  // Modül middleware'i
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tema Ayarları
+    |--------------------------------------------------------------------------
+    */
+    'themes' => [
+        'default' => env('STUDIO_DEFAULT_THEME', 'simple'),  // Varsayılan tema
+    ],
     
     /*
     |--------------------------------------------------------------------------

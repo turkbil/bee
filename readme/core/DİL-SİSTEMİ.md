@@ -1,16 +1,16 @@
 # TURKBIL BEE - ÇOK DİLLİ İÇERİK SİSTEMİ
 
-ADMİN PANEL: 
-https://laravel.test/admin/... 
+ADMİN PANEL:
+https://laravel.test/admin/...
 tabler.io teması kullanıyor. Bootstrap kullanıyor.
-Livewire kullanıyor. 
+Livewire kullanıyor.
 Dil Tablosu: system_languages tablosu ile sadece admin paneli hardtextler değişiyor.
 
 ÖNYÜZ - TENANTLAR
 https://laravel.test/
 tailwind ve alpine kullanıyor.
 Livewire de calısır.
-Dil tablosu: site_languages tablosu ile sadece önyüz yani tenant site değişiyor. 
+Dil tablosu: site_languages tablosu ile sadece önyüz yani tenant site değişiyor.
 
 system_languages ve sit_languages birbirlerinden tamamen farklı. bunu bilmen ve unutmaman lazım.
 
@@ -41,10 +41,10 @@ Kullanıcı İngilizce içerik istiyor:
 ```
 1. HİÇBİRİNDE PREFIX YOK:
    /hakkimizda (tr), /about-us (en), /من-نحن (ar)
-   
+
 2. VARSAYILAN HARİÇ PREFIX:
    /hakkimizda (tr), /en/about-us (en), /ar/من-نحن (ar)
-   
+
 3. TÜMÜNDE PREFIX:
    /tr/hakkimizda (tr), /en/about-us (en), /ar/من-نحن (ar)
 ```
@@ -82,12 +82,12 @@ Türkçe sekmesi:
 // Model'de trait kullanımı
 class Page extends Model {
     use HasTranslations;
-    
+
     protected $translatable = ['title', 'body', 'metakey', 'metadesc', 'slug'];
-    
+
     protected $casts = [
         'title' => 'array',
-        'body' => 'array', 
+        'body' => 'array',
         'slug' => 'array',
         'metakey' => 'array',
         'metadesc' => 'array'
@@ -115,14 +115,14 @@ Schema::table('pages', function($table) {
 // 3. Veriyi JSON formatına çevir
 foreach($pages as $page) {
     // Zaten JSON ise koru, string ise çevir
-    $titleData = is_array($page->getRawOriginal('title')) 
-        ? $page->getRawOriginal('title') 
+    $titleData = is_array($page->getRawOriginal('title'))
+        ? $page->getRawOriginal('title')
         : ['tr' => $page->getRawOriginal('title')];
-    
+
     $bodyData = is_array($page->getRawOriginal('body'))
         ? $page->getRawOriginal('body')
         : ['tr' => $page->getRawOriginal('body')];
-    
+
     $page->update([
         'title' => $titleData,
         'body' => $bodyData
@@ -383,7 +383,7 @@ php artisan url:change-prefix --from=none --to=all
 #### ✅ 1.1 Page Migration Güncelleme - JSON COLUMN YAKLAŞIMI
 - [✅] **ANA MİGRATION DÜZENLE**: `/Modules/Page/database/migrations/2024_02_17_000001_create_pages_table.php`
   - [✅] Satır 13: `$table->string('title')` → `$table->json('title')`
-  - [✅] Satır 15: `$table->longText('body')` → `$table->json('body')`  
+  - [✅] Satır 15: `$table->longText('body')` → `$table->json('body')`
   - [✅] Satır 14: `$table->string('slug')` → `$table->json('slug')`
   - [✅] Satır 18: `$table->string('metakey')` → `$table->json('metakey')`
   - [✅] Satır 19: `$table->string('metadesc')` → `$table->json('metadesc')`
@@ -418,7 +418,7 @@ php artisan url:change-prefix --from=none --to=all
   - [✅] **UPDATE**: Update method'unda çoklu dil güncelleme - PageManageComponent
   - [✅] **SHOW**: Show method'unda çoklu dil gösterme - Frontend controller
 
-#### ✅ 3.2 Livewire Component Güncellemeleri  
+#### ✅ 3.2 Livewire Component Güncellemeleri
 - [✅] **PAGE LİVEWİRE**: Gerekirse Livewire component'leri güncelle - PageManageComponent
 - [✅] **BACKEND VERİ İŞLEME**: Form submit işlemlerini çoklu dil için düzenle
 
@@ -429,7 +429,7 @@ php artisan url:change-prefix --from=none --to=all
   - [✅] Slug kolonunda da JSON'dan değer gösterilsin
   - [✅] Dil eksik olan kayıtlarda fallback uyarısı
 
-#### ✅ 4.2 Page Düzenle Sayfası  
+#### ✅ 4.2 Page Düzenle Sayfası
 - [✅] **DİL BUTONLARI**: `http://laravel.test/admin/page/manage/{id}`
   - [✅] Sağ üst köşede dil seçici butonları ekle: `[🇹🇷 TR] [🇺🇸 EN] [🇸🇦 AR]`
   - [✅] Aktif dil butonu KABAK GİBİ BÜYÜK ve renkli yap
@@ -474,7 +474,7 @@ php artisan url:change-prefix --from=none --to=all
 
 #### ☐ 6.3 Artisan Komutları
 - [ ] **language:add**: `php artisan language:add {code}` komutu
-- [ ] **language:remove**: `php artisan language:remove {code}` komutu  
+- [ ] **language:remove**: `php artisan language:remove {code}` komutu
 - [ ] **url:change-prefix**: URL prefix değiştirme komutu
 
 ### ✅ **AŞAMA 7: TEST VE OPTİMİZASYON**
@@ -518,18 +518,18 @@ php artisan url:change-prefix --from=none --to=all
 
 [🇺🇸 EN] tıklanınca:
 ┌─────────────────────────────────────────┐
-│ Edit Page - ENGLISH         [🇺🇸 EN]    │ ← KABAK GİBİ BÜYÜK  
+│ Edit Page - ENGLISH         [🇺🇸 EN]    │ ← KABAK GİBİ BÜYÜK
 │                        [🇹🇷 TR] [🇸🇦 AR]    │ ← Normal boyut
 ├─────────────────────────────────────────┤
 │ Title (English): [Learning Laravel]    │ ← title_en input
-│ Content (English): [Text editor...]    │ ← body_en editor  
+│ Content (English): [Text editor...]    │ ← body_en editor
 │ Slug (English): [learning-laravel]     │ ← slug_en input
 └─────────────────────────────────────────┘
 ```
 
 ### SONUÇ KONTROLÜ:
 ✅ Admin'de sayfa oluştur → 3 dilde içerik gir
-✅ Frontend'de dil değiştir → İçerik değişsin  
+✅ Frontend'de dil değiştir → İçerik değişsin
 ✅ URL'ler çalışsın → /about-us, /en/about-us
 ✅ Fallback çalışsın → Boş alan → Türkçe göster
 
@@ -568,7 +568,7 @@ php artisan url:change-prefix --from=none --to=all
 - **Durum**: ✅ **TAMAMLANDI**
 
 #### ✅ **4. LanguageService Genişletildi**
-- **Yeni Metodlar**: 
+- **Yeni Metodlar**:
   - `getSiteLanguage()` - Site dili alma
   - `getAdminLanguage()` - Admin dili alma
 - **Geliştirildi**: getCurrentLocale() context desteği
@@ -580,7 +580,7 @@ php artisan url:change-prefix --from=none --to=all
 - **Durum**: ✅ **TAMAMLANDI**
 
 #### ✅ **6. Theme Integration - Header'a Eklendi**
-- **Dosya**: `/resources/views/themes/blank/layouts/header.blade.php`
+- **Dosya**: `/resources/views/themes/simple/layouts/header.blade.php`
 - **Konum**: Header sağ üst köşe (dark mode butonunun yanı)
 - **Stil**: Button group, sadece bayraklar
 - **Durum**: ✅ **TAMAMLANDI**
@@ -590,12 +590,12 @@ php artisan url:change-prefix --from=none --to=all
 - **İçerik**: Tüm kullanım senaryoları ve örnekler
 - **Durum**: ✅ **TAMAMLANDI**
 
-### 🎯 **KADEME 3 SONUÇ**: 
+### 🎯 **KADEME 3 SONUÇ**:
 **Frontend dil değiştirme sistemi %100 çalışır durumda! Header'da görünür ve işlevsel.**
 
 ---
 
-## 🎉 **TAMAMLANAN İŞLEMLER** 
+## 🎉 **TAMAMLANAN İŞLEMLER**
 
 ### ✅ **KADEME 1: TEMEL ALTYAPı KURULUMU** - **23.06.2025 01:10**
 
@@ -625,7 +625,7 @@ php artisan url:change-prefix --from=none --to=all
 - **Cache**: Tüm cache'ler temizlendi
 - **Durum**: ✅ **TAMAMLANDI**
 
-### 🎯 **KADEME 1 SONUÇ**: 
+### 🎯 **KADEME 1 SONUÇ**:
 **LanguageManagement modülü %100 çalışır durumda!**
 
 ---
@@ -636,7 +636,7 @@ php artisan url:change-prefix --from=none --to=all
 
 #### ✅ **1. Page Migration JSON Kolonlara Çevrildi**
 - **Ana Migration**: `/Modules/Page/database/migrations/2024_02_17_000001_create_pages_table.php`
-  - `string('title')` → `json('title')` 
+  - `string('title')` → `json('title')`
   - `string('slug')` → `json('slug')`
   - `longText('body')` → `json('body')`
   - `string('metakey')` → `json('metakey')`
@@ -685,7 +685,7 @@ php artisan url:change-prefix --from=none --to=all
 - **Slug Sistemi**: `$page->getCurrentSlug('tr')` → "anasayfa"
 - **Durum**: ✅ **TAMAMLANDI**
 
-### 🎯 **KADEME 2 SONUÇ**: 
+### 🎯 **KADEME 2 SONUÇ**:
 **Page modülü tam JSON çoklu dil desteği kazandı! Test edildi ve çalışıyor.**
 
 ---
@@ -696,7 +696,7 @@ php artisan url:change-prefix --from=none --to=all
 
 #### ✅ **Tamamlananlar**:
 1. ✅ **Language Switcher component'i oluşturuldu**
-2. ✅ **Admin panel'de dil sekmeli düzenleme sistemi** 
+2. ✅ **Admin panel'de dil sekmeli düzenleme sistemi**
 3. ✅ **Frontend'de dil değiştirme sistemi**
 4. ✅ **Site_languages tablosu 3 dil ile populate edildi**
 5. ✅ **LanguageSwitcher component veritabanından dil çekecek şekilde güncellendi**
@@ -705,12 +705,12 @@ php artisan url:change-prefix --from=none --to=all
 8. ✅ **Admin panelde dil değişince editör içerik değişmeme sorunu çözüldü**
 9. ✅ **Session/Cookie dil hafızası**
 10. ✅ **URL yapısını belirle** (/tr/sayfa vs /sayfa?lang=tr) - **TAMAMLANDI**
-11. ✅ **DynamicRouteService'e locale desteği ekle** - **TAMAMLANDI** 
+11. ✅ **DynamicRouteService'e locale desteği ekle** - **TAMAMLANDI**
 12. ✅ **Pages detay sayfaları route sorunu çözüldü** - **TAMAMLANDI**
 13. ✅ **TinyMCE editör çoklu dil desteği** - **TAMAMLANDI**
 14. ⏳ **SEO: hreflang tag'leri** - **BEKLİYOR**
 
-#### 🎯 **KADEME 3 SONUÇ**: 
+#### 🎯 **KADEME 3 SONUÇ**:
 ✅ **%95 TAMAMLANDI** - Frontend dil değiştirme, admin panel dil sistemi, TinyMCE editör ve Pages detay sayfaları tamamen çözüldü!
 
 ---
@@ -719,7 +719,7 @@ php artisan url:change-prefix --from=none --to=all
 
 ### ✅ **14. DynamicRouteService Pages Slug Eşleştirmesi Düzeltildi**
 - **Problem**: /hakkimizda, /about-us gibi direkt slug'lara erişim çalışmıyordu
-- **Çözüm**: 
+- **Çözüm**:
   - JSON slug arama eklendi
   - Çoklu dil desteği (tr/en/ar)
   - Direkt slug eşleştirmesi eklendi
@@ -728,7 +728,7 @@ php artisan url:change-prefix --from=none --to=all
 
 ### ✅ **15. TinyMCE Çoklu Dil Editör Desteği**
 - **Problem**: Admin panelde editor_tr, editor_en, editor_ar ID'leri çalışmıyordu
-- **Çözüm**: 
+- **Çözüm**:
   - TinyMCE selector'ı güncellendi: `#editor, [id^="editor_"]`
   - Livewire hook'u geliştirildi
   - Asset yolu SSL hatası düzeltildi
@@ -747,7 +747,7 @@ php artisan url:change-prefix --from=none --to=all
 3. **Announcement modülü** (JSON kolonlar)
 4. **Theme modülü** (theme içeriklerinde)
 
-#### 🎯 **Beklenen Sonuç**: 
+#### 🎯 **Beklenen Sonuç**:
 Tam sistem çoklu dil desteği
 
 ---

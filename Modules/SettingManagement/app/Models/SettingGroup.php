@@ -76,6 +76,28 @@ class SettingGroup extends Model
 
     public function settings(): HasMany
     {
-        return $this->hasMany(Setting::class, 'group_id'); 
+        return $this->hasMany(Setting::class, 'group_id');
+    }
+
+    /**
+     * Get count of settings that have values (filled settings)
+     * This counts actual SettingValue records, not just Setting definitions
+     *
+     * Note: Since Settings are in central DB and SettingValues are in tenant DB,
+     * we need to manually check for values instead of using whereHas.
+     */
+    public function getFilledSettingsCountAttribute(): int
+    {
+        // Get all setting IDs for this group
+        $settingIds = $this->settings()->pluck('id')->toArray();
+
+        if (empty($settingIds)) {
+            return 0;
+        }
+
+        // Count how many of these settings have values in the tenant database
+        return SettingValue::whereIn('setting_id', $settingIds)
+            ->distinct('setting_id')
+            ->count('setting_id');
     }
 }

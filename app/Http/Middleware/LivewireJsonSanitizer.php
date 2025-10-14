@@ -38,7 +38,25 @@ class LivewireJsonSanitizer
             }
         }
 
-        $response = $next($request);
+        // CRITICAL: Try-catch around entire request to prevent UTF-8 errors
+        try {
+            $response = $next($request);
+        } catch (\InvalidArgumentException $e) {
+            // Catch UTF-8 encoding errors at source
+            if (str_contains($e->getMessage(), 'UTF-8') || str_contains($e->getMessage(), 'Malformed')) {
+                \Log::error('LivewireJsonSanitizer: Caught UTF-8 error in response creation', [
+                    'error' => $e->getMessage(),
+                    'url' => $request->fullUrl(),
+                ]);
+
+                // Return a clean error response
+                return new \App\Http\SafeJsonResponse([
+                    'error' => 'Data encoding error',
+                    'message' => 'Some data contains invalid characters. The page has been refreshed automatically.',
+                ], 500);
+            }
+            throw $e;
+        }
 
         // Process response
         if (($request->is('livewire/*') || $request->header('X-Livewire'))
@@ -50,8 +68,14 @@ class LivewireJsonSanitizer
                 // Sanitize recursively
                 $sanitized = $this->sanitizeData($data);
 
-                // Set the sanitized data back
-                $response->setData($sanitized);
+                // Force use SafeJsonResponse
+                $safeResponse = new \App\Http\SafeJsonResponse(
+                    $sanitized,
+                    $response->getStatusCode(),
+                    $response->headers->all()
+                );
+
+                return $safeResponse;
             } catch (\Exception $e) {
                 // Log detailed error
                 \Log::error('LivewireJsonSanitizer: Failed to sanitize response', [
@@ -61,7 +85,7 @@ class LivewireJsonSanitizer
                 ]);
 
                 // Return error response instead of crashing
-                return response()->json([
+                return new \App\Http\SafeJsonResponse([
                     'error' => 'Invalid UTF-8 encoding detected',
                     'message' => 'Some data contains invalid characters. Please refresh the page.',
                 ], 500);

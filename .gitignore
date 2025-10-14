@@ -64,3 +64,6 @@ SUNUCU_BILGILERI.txt
 *.sql
 !database/migrations/*.sql
 !database/seeders/*.sql
+
+# Readme/Döküman klasörü (local development)
+/readme

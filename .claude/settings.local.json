@@ -69,7 +69,8 @@
       "Bash(host:*)",
       "Bash(openssl:*)",
       "Bash(certbot:*)",
-      "Bash(grep -oE '`[^`]+`')"
+      "Bash(grep -oE '`[^`]+`')",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": [],

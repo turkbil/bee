@@ -500,8 +500,7 @@ class AnnouncementManageComponent extends Component implements AIContentGenerata
             'jsVariables' => [
                 'currentAnnouncementId' => $this->announcementId ?? null,
                 'currentLanguage' => $this->currentLanguage ?? 'tr'
-            ],
-            'announcement' => $this->announcementId ? Announcement::find($this->announcementId) : null
+            ]
         ]);
     }
 

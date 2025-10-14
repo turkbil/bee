@@ -1,0 +1,76 @@
+<div class="tab-pane fade active show" id="tabs-1" style="border-radius: 0px !important; overflow: hidden !important;" role="tabpanel">
+                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                                <div class="row g-3">
+                                    <!--[if BLOCK]><![endif]-->                                        <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_default_author" wire:model.defer="values.seo_default_author" class="form-control " placeholder="Varsayılan yazar adını giriniz" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_author">
+                Varsayılan Yazar
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Sayfalarda author meta tag için kullanılacak varsayılan yazar adı
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_default_twitter_site" wire:model.defer="values.seo_default_twitter_site" class="form-control " placeholder="@sitenizinhesabi" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_twitter_site">
+                Twitter Site Hesabı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Twitter Cards için site hesabı (@ işareti ile başlamalıdır)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_default_twitter_creator" wire:model.defer="values.seo_default_twitter_creator" class="form-control " placeholder="@creatorhesabi" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_twitter_creator">
+                Twitter Creator Hesabı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Twitter Cards için creator hesabı (@ işareti ile başlamalıdır)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                    <!--[if ENDBLOCK]><![endif]-->
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if ENDBLOCK]><![endif]-->
+                        
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    </div>

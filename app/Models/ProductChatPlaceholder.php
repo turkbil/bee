@@ -8,11 +8,17 @@ class ProductChatPlaceholder extends Model
 {
     protected $table = 'shop_product_chat_placeholders';
 
-    // Tenant-aware: Varsayılan olarak tenant connection kullan
+    // Tenant-aware: Hangi tenant context'teyse o connection'ı kullan
     public function getConnectionName()
     {
-        // Eğer tenant context varsa tenant connection kullan, yoksa default
-        return tenancy()->initialized ? 'mysql' : parent::getConnectionName();
+        // Tenancy initialized değilse default connection
+        if (!tenancy()->initialized) {
+            return config('database.default');
+        }
+
+        // Tenant context varsa tenant'ın kendi connection'ını kullan
+        // Stancl/Tenancy paketi otomatik olarak tenant DB'ye yönlendirir
+        return 'tenant';
     }
 
     protected $fillable = [

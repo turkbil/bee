@@ -16,7 +16,10 @@ use Modules\AI\App\Http\Controllers\Api\PublicAIController;
 |
 */
 
-Route::prefix('ai/v1')->name('ai.api.v1.')->group(function () {
+Route::prefix('ai/v1')
+    ->name('ai.api.v1.')
+    ->middleware([\Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class])
+    ->group(function () {
     
     // 📋 Public Information Endpoints (No authentication required)
     Route::get('/features/public', [PublicAIController::class, 'getPublicFeatures'])

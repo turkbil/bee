@@ -56,13 +56,12 @@ class FrontendAutoSeoFillMiddleware
             if (!$modelType) {
                 $modelType = $this->detectModelTypeFromRoute($request);
                 if (!$modelType) {
-                    return $response; // Tespit edilemedi, devam et
+                    return $response;
                 }
             }
 
             // Model ID'yi route parametrelerinden al
             $modelId = $this->getModelIdFromRoute($request, $modelType);
-
             if (!$modelId) {
                 return $response;
             }
@@ -94,11 +93,11 @@ class FrontendAutoSeoFillMiddleware
             }
 
             // SEO üret ve kaydet (arka planda)
-            Log::info('🎯 Frontend Auto SEO Fill: Üretim başlatılıyor', [
+            Log::info('🎯 Premium Tenant Auto SEO Fill başlatıldı', [
+                'tenant' => $tenant->id,
                 'model_type' => $modelType,
                 'model_id' => $modelId,
-                'locale' => $locale,
-                'tenant' => $tenant->id
+                'locale' => $locale
             ]);
 
             $seoData = $this->autoSeoFillService->autoFillSeoData($model, $locale);
@@ -106,7 +105,7 @@ class FrontendAutoSeoFillMiddleware
             if ($seoData) {
                 $this->autoSeoFillService->saveSeoData($model, $seoData, $locale);
 
-                Log::info('✅ Frontend Auto SEO Fill: Başarıyla üretildi', [
+                Log::info('✅ Premium Tenant Auto SEO Fill başarılı', [
                     'model_type' => $modelType,
                     'model_id' => $modelId
                 ]);
@@ -114,10 +113,11 @@ class FrontendAutoSeoFillMiddleware
 
         } catch (\Exception $e) {
             // Hata durumunda log at ama response'u etkileme
-            Log::error('❌ Frontend Auto SEO Fill: Hata', [
+            Log::error('❌ Premium Tenant Auto SEO Fill hatası', [
                 'error' => $e->getMessage(),
-                'model_type' => $modelType,
-                'trace' => $e->getTraceAsString()
+                'model_type' => $modelType ?? 'unknown',
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ]);
         }
 
@@ -129,31 +129,48 @@ class FrontendAutoSeoFillMiddleware
      */
     protected function getModelIdFromRoute(Request $request, string $modelType): ?int
     {
-        $routeParams = $request->route()->parameters();
+        $path = $request->path();
+        $slug = null;
 
-        // Model type'a göre parametre adını belirle
-        $paramName = match($modelType) {
-            'page' => 'slug',  // Page slug kullanıyor
-            'blog' => 'slug',  // Blog slug kullanıyor
-            'portfolio' => 'slug',  // Portfolio slug kullanıyor
-            'announcement' => 'id',
-            'shop_product' => 'slug',
-            'shop_category' => 'slug',
-            default => 'id'
-        };
-
-        $value = $routeParams[$paramName] ?? null;
-
-        // Slug ise, model'den ID'yi bul
-        if (in_array($paramName, ['slug']) && $value) {
-            $modelClass = $this->getModelClass($modelType);
-            if ($modelClass && class_exists($modelClass)) {
-                $model = $modelClass::where('slug->' . app()->getLocale(), $value)->first();
-                return $model?->id ?? $model?->getKey();
-            }
+        // Path'den slug'ı çıkar
+        if ($modelType === 'shop_product') {
+            // shop/slug-here
+            $slug = preg_replace('#^shop/(.+)$#', '$1', $path);
+        } elseif ($modelType === 'shop_category') {
+            // shop/category/slug-here veya shop/brand/slug-here
+            $slug = preg_replace('#^shop/(category|brand)/(.+)$#', '$2', $path);
+        } elseif (in_array($modelType, ['blog', 'portfolio', 'announcement'])) {
+            // tr/blog/slug-here veya blog/slug-here
+            $parts = explode('/', $path);
+            $slug = end($parts);
         }
 
-        return is_numeric($value) ? (int) $value : null;
+        if (!$slug || $slug === $path) {
+            // Route parametrelerinden dene
+            $routeParams = $request->route()->parameters();
+            $slug = $routeParams['slug'] ?? null;
+        }
+
+        if (!$slug) {
+            return null;
+        }
+
+        // Slug'dan ID bul
+        $modelClass = $this->getModelClass($modelType);
+        if ($modelClass && class_exists($modelClass)) {
+            $locale = app()->getLocale();
+
+            $model = $modelClass::where('slug->' . $locale, $slug)->first();
+
+            if (!$model) {
+                // Locale olmadan dene (fallback)
+                $model = $modelClass::where('slug', $slug)->first();
+            }
+
+            return $model?->id ?? $model?->getKey();
+        }
+
+        return null;
     }
 
     /**
@@ -183,37 +200,50 @@ class FrontendAutoSeoFillMiddleware
             return null;
         }
 
-        // Controller'dan tespit et
+        // URL PATH'den tespit et (en güvenilir yöntem)
+        $path = $request->path();
+
+        if (str_starts_with($path, 'shop/category/')) {
+            return 'shop_category';
+        }
+        if (str_starts_with($path, 'shop/brand/')) {
+            return 'shop_category'; // Brand da category gibi işle
+        }
+        if (str_starts_with($path, 'shop/') && $path !== 'shop' && $path !== 'shop/') {
+            return 'shop_product'; // /shop/{slug} -> product detail
+        }
+        if (str_contains($path, '/blog/') || preg_match('#^[^/]+/blog/#', $path)) {
+            return 'blog';
+        }
+        if (str_contains($path, '/portfolio/') || preg_match('#^[^/]+/portfolio/#', $path)) {
+            return 'portfolio';
+        }
+        if (str_contains($path, '/announcement/') || preg_match('#^[^/]+/announcement/#', $path)) {
+            return 'announcement';
+        }
+
+        // Controller'dan tespit et (fallback)
         $action = $route->getAction();
         $controller = $action['controller'] ?? '';
 
-        if (str_contains($controller, 'PageController')) {
-            return 'page';
-        }
-        if (str_contains($controller, 'BlogController')) {
-            return 'blog';
-        }
-        if (str_contains($controller, 'PortfolioController')) {
-            return 'portfolio';
-        }
-        if (str_contains($controller, 'AnnouncementController')) {
-            return 'announcement';
-        }
-        if (str_contains($controller, 'ShopProductController')) {
-            return 'shop_product';
-        }
-        if (str_contains($controller, 'ShopCategoryController') || str_contains($controller, 'CategoryController')) {
-            return 'shop_category';
+        if ($controller) {
+            if (str_contains($controller, 'PageController')) return 'page';
+            if (str_contains($controller, 'BlogController')) return 'blog';
+            if (str_contains($controller, 'PortfolioController')) return 'portfolio';
+            if (str_contains($controller, 'AnnouncementController')) return 'announcement';
+            if (str_contains($controller, 'ShopProductController') || str_contains($controller, 'ShopController')) return 'shop_product';
+            if (str_contains($controller, 'ShopCategoryController') || str_contains($controller, 'CategoryController')) return 'shop_category';
         }
 
-        // Route name'den tespit et
+        // Route name'den tespit et (fallback)
         $name = $route->getName();
+
         if ($name) {
             if (str_contains($name, 'page.')) return 'page';
             if (str_contains($name, 'blog.')) return 'blog';
             if (str_contains($name, 'portfolio.')) return 'portfolio';
             if (str_contains($name, 'announcement.')) return 'announcement';
-            if (str_contains($name, 'shop.product')) return 'shop_product';
+            if (str_contains($name, 'shop.show') || str_contains($name, 'shop.product')) return 'shop_product';
             if (str_contains($name, 'shop.category')) return 'shop_category';
         }
 

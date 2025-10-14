@@ -108,6 +108,7 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // API middleware grubu
         $middleware->group('api', [
+            \App\Http\Middleware\InitializeTenancy::class, // 🔥 Tenant initialization for API
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);

@@ -595,6 +595,26 @@ class PublicAIController extends Controller
                 $contextOptions
             );
 
+            // 🎯 İXTİF ÖZEL: Dinamik Ürün Arama (Sadece Tenant 2 ve 3)
+            $tenantId = tenant('id');
+            if (in_array($tenantId, [2, 3])) { // ixtif.com ve ixtif.com.tr
+                $ixtifSearch = app(\App\Services\AI\TenantSpecific\IxtifProductSearchService::class);
+
+                // Dinamik ürün araması yap
+                $searchResult = $ixtifSearch->searchProducts($validated['message']);
+
+                // Bulunan ürünleri context'e inject et (mevcut all_products yerine kullan)
+                if (!empty($searchResult['products'])) {
+                    $aiContext['context']['modules']['shop']['all_products'] = $searchResult['products'];
+
+                    \Log::info('✅ IxtifProductSearchService - Products injected to context', [
+                        'search_type' => $searchResult['search_type'],
+                        'products_count' => count($searchResult['products']),
+                        'execution_time_ms' => $searchResult['execution_time_ms'],
+                    ]);
+                }
+            }
+
             // Build enhanced system prompt with product context
             $enhancedSystemPrompt = $this->buildEnhancedSystemPrompt($aiContext);
 
@@ -761,11 +781,15 @@ class PublicAIController extends Controller
             // 🔧 POST-PROCESSING: Fix broken URLs in AI response (context-aware)
             $aiResponseText = $this->fixBrokenUrls($aiResponseText, $aiContext);
 
-            // 🔍 DEBUG: Log AI response AFTER post-processing
-            \Log::info('✅ AI Response AFTER post-processing', [
+            // 🎨 MARKDOWN → HTML CONVERSION (Frontend için HTML format gerekli)
+            $aiResponseText = $this->convertMarkdownToHtml($aiResponseText);
+
+            // 🔍 DEBUG: Log AI response AFTER post-processing + HTML conversion
+            \Log::info('✅ AI Response AFTER post-processing + HTML conversion', [
                 'response_preview' => mb_substr($aiResponseText, 0, 500),
                 'contains_ixtif' => str_contains($aiResponseText, 'ixtif'),
                 'contains_xtif' => str_contains($aiResponseText, 'xtif'),
+                'has_html_tags' => str_contains($aiResponseText, '<'),
             ]);
 
             // Format response for compatibility
@@ -977,11 +1001,22 @@ class PublicAIController extends Controller
 
         // FIX: If no tenant context, skip tenant rules (central domain için güvenlik)
         if ($tenantId) {
-            $tenantRules = $this->getTenantRules($tenantId);
+            // İXTİF ÖZEL: IxtifProductSearchService'den prompt'ları al (tenant 2 ve 3)
+            if (in_array($tenantId, [2, 3])) {
+                $ixtifSearch = app(\App\Services\AI\TenantSpecific\IxtifProductSearchService::class);
+                $ixtifPrompts = $ixtifSearch->getCustomPrompts();
 
-            if (!empty($tenantRules['custom_prompts'])) {
-                foreach ($tenantRules['custom_prompts'] as $promptKey => $promptContent) {
+                foreach ($ixtifPrompts as $promptKey => $promptContent) {
                     $prompts[] = "\n" . trim($promptContent);
+                }
+            } else {
+                // Diğer tenant'lar için config'den al (eski yöntem)
+                $tenantRules = $this->getTenantRules($tenantId);
+
+                if (!empty($tenantRules['custom_prompts'])) {
+                    foreach ($tenantRules['custom_prompts'] as $promptKey => $promptContent) {
+                        $prompts[] = "\n" . trim($promptContent);
+                    }
                 }
             }
         }
@@ -1001,31 +1036,77 @@ class PublicAIController extends Controller
         $prompts[] = "   - Ürün adında kelime geçiyor mu?";
         $prompts[] = "   - Kategori adında kelime geçiyor mu?";
         $prompts[] = "   - Kısa açıklamada kelime geçiyor mu?";
-        $prompts[] = "3. Bulunan TÜM ürünleri MUTLAKA Markdown link ile listele: [Ürün Adı](url)";
-        $prompts[] = "   ⚠️ ÖNEMLİ: Her ürün linkli olmalı! Link olmayan ürün ASLA ekleme!";
+        $prompts[] = "3. Bulunan ürünleri Markdown link ile listele: [Ürün Adı](tam_url)";
+        $prompts[] = "   ⚠️ ÖNEMLİ: Her ürün için BAĞLAM BİLGİLERİ'ndeki URL'yi AYNEN KOPYALA!";
+        $prompts[] = "   ⚠️ ASLA kendi URL üretme! Sadece verilen URL'leri kullan!";
         $prompts[] = "4. Her ürünün yanına özelliklerinden 1-2 tanesini yaz";
         $prompts[] = "5. Kullanıcıya ihtiyaç netleştirme sorusu sor";
         $prompts[] = "";
-        $prompts[] = "**GENEL ÖRNEK:**";
+        $prompts[] = "**GENEL ÖRNEK (Markdown Format):**";
         $prompts[] = "```";
-        $prompts[] = "Kullanıcı: '[HERHANGI BIR ÜRÜN KATEGORISI] arıyorum'";
-        $prompts[] = "Sen: 'Harika! [KATEGORI] modellerimiz:";
-        $prompts[] = "- [Ürün 1 Adı](url1) - Özellik A, Özellik B";
-        $prompts[] = "- [Ürün 2 Adı](url2) - Özellik C, Özellik D";
-        $prompts[] = "- [Ürün 3 Adı](url3) - Özellik E, Özellik F";
+        $prompts[] = "Kullanıcı: 'Transpalet arıyorum'";
+        $prompts[] = "";
+        $prompts[] = "Sen: 'Harika! Transpalet modellerimiz:";
+        $prompts[] = "";
+        $prompts[] = "- [İXTİF CPD15TVL - 1.5-2 Ton Li-Ion Forklift](https://ixtif.com/shop/ixtif-cpd15tvl-15-20-ton-li-ion-forklift) - Kompakt ve güçlü";
+        $prompts[] = "- [İXTİF EFL181 - 1.8 Ton 48V Li-Ion Forklift](https://ixtif.com/shop/ixtif-efl181-18-ton-48v-li-ion-denge-agirlikli-forklift) - Denge ağırlıklı";
         $prompts[] = "";
         $prompts[] = "Hangi özellikler sizin için önemli?'";
         $prompts[] = "```";
         $prompts[] = "";
         $prompts[] = "**DİKKAT:** Yukarıdaki sadece FORMAT örneği! Gerçek ürün adları ve URL'leri BAĞLAM BİLGİLERİ bölümünden al!";
         $prompts[] = "";
-        $prompts[] = "## 📋 URL KURALLARI";
-        $prompts[] = "- ASLA kendi URL üretme!";
-        $prompts[] = "- SADECE BAĞLAM BİLGİLERİ bölümündeki URL'leri kullan";
-        $prompts[] = "- Format: [Ürün Adı](context_url)";
+        $prompts[] = "## 📋 URL KURALLARI - ÇOK ÖNEMLİ!";
+        $prompts[] = "**🚨 KRİTİK: ASLA KENDİ URL ÜRETME!**";
+        $prompts[] = "";
+        $prompts[] = "**DOĞRU YÖNTEM:**";
+        $prompts[] = "1. BAĞLAM BİLGİLERİ bölümündeki 'Mevcut Ürünler' listesine bak";
+        $prompts[] = "2. Her ürünün 'URL:' satırında TAM URL var";
+        $prompts[] = "3. O URL'yi AYNEN KOPYALA (hiçbir harf değiştirme!)";
+        $prompts[] = "4. Markdown format: [Ürün Adı](kopyaladığın_url)";
+        $prompts[] = "";
+        $prompts[] = "**ÖRNEK:**";
+        $prompts[] = "```";
+        $prompts[] = "BAĞLAM: URL: `https://ixtif.com/shop/ixtif-cpd15tvl-15-20-ton-li-ion-forklift`";
+        $prompts[] = "YANIT: [İXTİF CPD15TVL](https://ixtif.com/shop/ixtif-cpd15tvl-15-20-ton-li-ion-forklift)";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**❌ YANLIŞ ÖRNEKLER (YAPMA!):**";
+        $prompts[] = "- `https:/ixtif.com/shopxtif...` → // eksik, i eksik, / eksik";
+        $prompts[] = "- `https://ixtif.com/ixtif-cpd15tvl` → /shop/ eksik";
+        $prompts[] = "- Kendi URL üretmek → ASLA!";
         $prompts[] = "";
         $prompts[] = "## 💬 İLETİŞİM YÖNLENDİRME";
         $prompts[] = "Kullanıcı detaylı bilgi istediğinde WhatsApp/Telefon iletişim bilgilerini paylaş (sistem ayarlarında mevcut).";
+        $prompts[] = "";
+        $prompts[] = "## 🎨 YANIT BİÇİMLENDİRME KURALLARI - MARKDOWN FORMAT";
+        $prompts[] = "**🚨 KRİTİK: Yan ıtlarını Markdown formatında ver! HTML kullanma!**";
+        $prompts[] = "";
+        $prompts[] = "**İZİN VERİLEN MARKDOWN KURALLARI:**";
+        $prompts[] = "- `**kalın metin**` - Vurgulu metinler için";
+        $prompts[] = "- `*italik metin*` - İtalik metinler için";
+        $prompts[] = "- `- liste` - Sırasız listeler için";
+        $prompts[] = "- `1. liste` - Sıralı listeler için";
+        $prompts[] = "- `[Metin](url)` - Linkler için (EN ÖNEMLİ!)";
+        $prompts[] = "- Satır atlamak için boş satır bırak";
+        $prompts[] = "";
+        $prompts[] = "**✅ ÖRNEK DOĞRU YANIT (Markdown):**";
+        $prompts[] = "```";
+        $prompts[] = "Merhaba! Transpalet modellerimiz:";
+        $prompts[] = "";
+        $prompts[] = "- [İXTİF CPD15TVL - 1.5-2 Ton Li-Ion Forklift](https://ixtif.com/shop/ixtif-cpd15tvl-15-20-ton-li-ion-forklift) - Kompakt ve güçlü";
+        $prompts[] = "- [İXTİF EFL181 - 1.8 Ton 48V Li-Ion Forklift](https://ixtif.com/shop/ixtif-efl181-18-ton-48v-li-ion-denge-agirlikli-forklift) - Denge ağırlıklı";
+        $prompts[] = "";
+        $prompts[] = "Hangi yük kapasitesini arıyorsunuz?";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**📋 ÖNEMLİ KURALLAR:**";
+        $prompts[] = "1. **Linkler**: MUTLAKA `[Metin](tam_url)` formatında";
+        $prompts[] = "2. **URL Kopyalama**: URL'leri BAĞLAM BİLGİLERİ'nden AYNEN KOPYALA";
+        $prompts[] = "3. **Ürün listesi**: Her ürün için `-` ile başla";
+        $prompts[] = "4. **Vurgulu metin**: `**metin**` kullan";
+        $prompts[] = "";
+        $prompts[] = "**ÖNEMLİ:** BÜTÜN yanıtların Markdown formatında olmalı! Markdown→HTML dönüşümünü backend yapacak.";
         $prompts[] = "";
 
         // Add module context if available
@@ -1064,7 +1145,7 @@ class PublicAIController extends Controller
 
             // Ürün linki - Markdown formatında
             if (!empty($product['url'])) {
-                $formatted[] = "**Ürün Linki:** [Ürüne Git](" . $product['url'] . ")";
+                $formatted[] = "**Ürün Linki:** " . $product['url'];
                 $formatted[] = "**ÖNEMLİ:** Kullanıcıya ürün linkini Markdown formatında ver: [Ürüne Git](" . $product['url'] . ")";
             }
 
@@ -1174,8 +1255,8 @@ class PublicAIController extends Controller
 
             if (!empty($shopContext['total_products'])) {
                 $formatted[] = "**Toplam Ürün Sayısı:** {$shopContext['total_products']}";
-                $formatted[] = "**Tüm Ürünlerimizi Görmek İçin:** [Tüm Ürünler](" . url('/shop') . ")";
-                $formatted[] = "**ÖNEMLİ:** Kullanıcı 'tüm ürünler', 'ne ürünleriniz var', 'katalog' gibi sorular sorduğunda bu linki paylaş!";
+                $formatted[] = "**Tüm Ürünlerimizi Görmek İçin:** " . url('/shop');
+                $formatted[] = "**ÖNEMLİ:** Kullanıcı 'tüm ürünler', 'ne ürünleriniz var', 'katalog' gibi sorular sorduğunda bu linki Markdown formatında paylaş: [Tüm Ürünler](" . url('/shop') . ")";
                 $formatted[] = "";
             }
 
@@ -1204,8 +1285,8 @@ class PublicAIController extends Controller
 
             // ALL ACTIVE PRODUCTS (MAKSIMUM 30 ÜRÜN - Token limit koruması)
             if (!empty($shopContext['all_products'])) {
-                $formatted[] = "\n**Mevcut Ürünler (MUTLAKA LİNK VER!):**";
-                $formatted[] = "**🚨 KRİTİK: Aşağıdaki ürünler için SADECE parantez içindeki URL'leri kullan! Kendi URL üretme!**";
+                $formatted[] = "\n**Mevcut Ürünler (MUTLAKA MARKDOWN LİNK VER!):**";
+                $formatted[] = "**🚨 KRİTİK: Aşağıdaki ürünler için SADECE verilen URL'leri AYNEN KOPYALA! Kendi URL üretme!**";
                 $formatted[] = "";
 
                 // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
@@ -1225,9 +1306,11 @@ class PublicAIController extends Controller
                         $priceInfo = " - (Fiyat sorunuz)";
                     }
 
-                    // FIX: URL'yi daha net göster - AI için açık format
-                    $formatted[] = "- **{$title}** → URL: `{$url}` | SKU: {$sku} | {$category}{$priceInfo}";
-                    $formatted[] = "  → Markdown format: [{$title}]({$url})";
+                    // FIX: URL'yi daha net göster - AI için Markdown format template
+                    $formatted[] = "- **{$title}**";
+                    $formatted[] = "  → URL: {$url}";
+                    $formatted[] = "  → SKU: {$sku} | Kategori: {$category}{$priceInfo}";
+                    $formatted[] = "  → Markdown: [{$title}]({$url})";
                 }
 
                 $formatted[] = "";
@@ -1395,21 +1478,37 @@ class PublicAIController extends Controller
      */
     private function fixBrokenUrls(string $content, array $aiContext): string
     {
-        // Step 1: Collect all correct URLs from context
+        \Log::info('🔍 fixBrokenUrls() STARTED', [
+            'content_length' => strlen($content),
+            'content_preview' => mb_substr($content, 0, 300),
+        ]);
+
+        // Step 1: Collect all correct URLs + SKUs from context
         $correctUrls = [];
+        $skuToUrl = []; // SKU → URL mapping for exact matching
 
         // From all_products
         if (!empty($aiContext['context']['modules']['shop']['all_products'])) {
             foreach ($aiContext['context']['modules']['shop']['all_products'] as $product) {
                 if (!empty($product['url'])) {
                     $correctUrls[] = $product['url'];
+
+                    // Also map SKU to URL for exact matching
+                    if (!empty($product['sku'])) {
+                        $skuToUrl[$product['sku']] = $product['url'];
+                    }
                 }
             }
         }
 
         // From current_product
         if (!empty($aiContext['context']['modules']['shop']['current_product']['url'])) {
-            $correctUrls[] = $aiContext['context']['modules']['shop']['current_product']['url'];
+            $url = $aiContext['context']['modules']['shop']['current_product']['url'];
+            $correctUrls[] = $url;
+
+            if (!empty($aiContext['context']['modules']['shop']['current_product']['sku'])) {
+                $skuToUrl[$aiContext['context']['modules']['shop']['current_product']['sku']] = $url;
+            }
         }
 
         // From variants
@@ -1417,6 +1516,10 @@ class PublicAIController extends Controller
             foreach ($aiContext['context']['modules']['shop']['current_product_variants'] as $variant) {
                 if (!empty($variant['url'])) {
                     $correctUrls[] = $variant['url'];
+
+                    if (!empty($variant['sku'])) {
+                        $skuToUrl[$variant['sku']] = $variant['url'];
+                    }
                 }
             }
         }
@@ -1426,61 +1529,294 @@ class PublicAIController extends Controller
             foreach ($aiContext['context']['modules']['shop']['featured_products'] as $product) {
                 if (!empty($product['url'])) {
                     $correctUrls[] = $product['url'];
+
+                    if (!empty($product['sku'])) {
+                        $skuToUrl[$product['sku']] = $product['url'];
+                    }
                 }
             }
         }
 
-        // Step 2: Extract all markdown links from AI response
-        preg_match_all('/\[(.*?)\]\((http[s]?:\/\/[^)]+)\)/i', $content, $matches, PREG_SET_ORDER);
+        \Log::info('📊 Collected URLs from context', [
+            'correct_urls_count' => count($correctUrls),
+            'sku_mappings_count' => count($skuToUrl),
+        ]);
 
         $replacements = [];
         $fixedCount = 0;
 
-        foreach ($matches as $match) {
+        // DUAL FORMAT SUPPORT: Markdown + HTML
+
+        // FORMAT 1: Markdown links - [text](url)
+        // Esnek URL pattern: http:// veya https:// veya https:/ (bozuk URL'ler için)
+        preg_match_all('/\[(.*?)\]\((https?:\/?\/?[^)]+)\)/i', $content, $markdownMatches, PREG_SET_ORDER);
+
+        \Log::info('🔗 Found Markdown links', [
+            'count' => count($markdownMatches),
+        ]);
+
+        foreach ($markdownMatches as $match) {
             $linkText = $match[1];
             $brokenUrl = $match[2];
             $originalLink = $match[0]; // Full markdown: [text](url)
 
-            // Step 3: Find best matching correct URL
-            $bestMatch = null;
-            $bestSimilarity = 0;
+            // METHOD 1: Try to extract SKU from link text and get exact URL
+            if (preg_match('/İXTİF[- ]([A-Z0-9]+)/i', $linkText, $skuMatch)) {
+                $extractedSku = 'İXTİF-' . strtoupper($skuMatch[1]);
 
-            foreach ($correctUrls as $correctUrl) {
-                // Calculate similarity percentage
-                similar_text(strtolower($brokenUrl), strtolower($correctUrl), $similarity);
+                if (isset($skuToUrl[$extractedSku])) {
+                    $correctUrl = $skuToUrl[$extractedSku];
+                    $fixedLink = "[{$linkText}]({$correctUrl})";
+                    $replacements[$originalLink] = $fixedLink;
+                    $fixedCount++;
 
-                if ($similarity > $bestSimilarity && $similarity >= 70) { // 70% threshold
-                    $bestSimilarity = $similarity;
-                    $bestMatch = $correctUrl;
+                    \Log::info('✅ URL Fixed (Markdown SKU Match)', [
+                        'link_text' => $linkText,
+                        'extracted_sku' => $extractedSku,
+                        'broken' => $brokenUrl,
+                        'fixed' => $correctUrl,
+                    ]);
+                    continue;
                 }
             }
 
-            // Step 4: If found a good match, prepare replacement
+            // METHOD 2: Slug-based similarity matching (fallback)
+            $bestMatch = $this->findBestMatchingUrl($brokenUrl, $correctUrls);
+
             if ($bestMatch && $bestMatch !== $brokenUrl) {
                 $fixedLink = "[{$linkText}]({$bestMatch})";
                 $replacements[$originalLink] = $fixedLink;
                 $fixedCount++;
 
-                \Log::info('🔧 URL Fixed', [
+                \Log::info('✅ URL Fixed (Markdown Similarity)', [
                     'broken' => $brokenUrl,
                     'fixed' => $bestMatch,
-                    'similarity' => round($bestSimilarity, 1) . '%',
                 ]);
             }
         }
 
-        // Step 5: Apply all replacements
+        // FORMAT 2: HTML links - <a href="url">text</a>
+        // Esnek URL pattern: http:// veya https:// veya https:/ (bozuk URL'ler için)
+        preg_match_all('/<a\s+href=["\'](https?:\/?\/?[^"\']+)["\'][^>]*>(.*?)<\/a>/i', $content, $htmlMatches, PREG_SET_ORDER);
+
+        \Log::info('🔗 Found HTML links', [
+            'count' => count($htmlMatches),
+        ]);
+
+        foreach ($htmlMatches as $match) {
+            $brokenUrl = $match[1];
+            $linkText = $match[2];
+            $originalLink = $match[0]; // Full HTML: <a href="url">text</a>
+
+            // METHOD 1: Try to extract SKU from link text and get exact URL
+            if (preg_match('/İXTİF[- ]([A-Z0-9]+)/i', $linkText, $skuMatch)) {
+                $extractedSku = 'İXTİF-' . strtoupper($skuMatch[1]);
+
+                if (isset($skuToUrl[$extractedSku])) {
+                    $correctUrl = $skuToUrl[$extractedSku];
+                    $fixedLink = "<a href=\"{$correctUrl}\">{$linkText}</a>";
+                    $replacements[$originalLink] = $fixedLink;
+                    $fixedCount++;
+
+                    \Log::info('✅ URL Fixed (HTML SKU Match)', [
+                        'link_text' => $linkText,
+                        'extracted_sku' => $extractedSku,
+                        'broken' => $brokenUrl,
+                        'fixed' => $correctUrl,
+                    ]);
+                    continue;
+                }
+            }
+
+            // METHOD 2: Slug-based similarity matching (fallback)
+            $bestMatch = $this->findBestMatchingUrl($brokenUrl, $correctUrls);
+
+            if ($bestMatch && $bestMatch !== $brokenUrl) {
+                $fixedLink = "<a href=\"{$bestMatch}\">{$linkText}</a>";
+                $replacements[$originalLink] = $fixedLink;
+                $fixedCount++;
+
+                \Log::info('✅ URL Fixed (HTML Similarity)', [
+                    'broken' => $brokenUrl,
+                    'fixed' => $bestMatch,
+                ]);
+            }
+        }
+
+        // Step 3: Apply all replacements
         foreach ($replacements as $broken => $fixed) {
             $content = str_replace($broken, $fixed, $content);
         }
 
-        \Log::info('🔧 Post-processing complete', [
-            'total_links_found' => count($matches),
-            'links_fixed' => $fixedCount,
+        \Log::info('🔧 Post-processing COMPLETE', [
+            'markdown_links_found' => count($markdownMatches),
+            'html_links_found' => count($htmlMatches),
+            'total_links_fixed' => $fixedCount,
             'correct_urls_available' => count($correctUrls),
+            'sku_mappings' => count($skuToUrl),
         ]);
 
         return $content;
+    }
+
+    /**
+     * Find best matching URL from correct URLs using slug similarity
+     */
+    private function findBestMatchingUrl(string $brokenUrl, array $correctUrls): ?string
+    {
+        $bestMatch = null;
+        $bestSimilarity = 0;
+
+        // Extract slug from broken URL
+        // SPECIAL CASE: AI üretiyor: https:/xtif.com/shopxtif-cpd15tvl...
+        // Gerçek: https://ixtif.com/shop/ixtif-cpd15tvl...
+        // Slug kısmı genellikle doğru (cpd15tvl), sadece domain ve path bozuk
+
+        $parsedUrl = parse_url($brokenUrl);
+        $brokenPath = $parsedUrl['path'] ?? '';
+
+        // Path'den slug çıkar: /shopxtif-cpd15tvl → cpd15tvl kısmını bul
+        // Birden fazla - varsa sonuncudan sonrasını al
+        $brokenSlug = basename($brokenPath);
+
+        // Log for debugging
+        \Log::info('🔍 Finding match for broken URL', [
+            'broken_url' => $brokenUrl,
+            'broken_path' => $brokenPath,
+            'broken_slug' => $brokenSlug,
+        ]);
+
+        foreach ($correctUrls as $correctUrl) {
+            $correctSlug = basename(parse_url($correctUrl, PHP_URL_PATH));
+
+            // İLK ÖNCE: Tam slug match (en güvenilir)
+            if (strtolower($brokenSlug) === strtolower($correctSlug)) {
+                \Log::info('✅ EXACT SLUG MATCH', [
+                    'broken_slug' => $brokenSlug,
+                    'correct_slug' => $correctSlug,
+                    'correct_url' => $correctUrl,
+                ]);
+                return $correctUrl; // 100% match, direkt dön
+            }
+
+            // İKİNCİ: Substring match (bozuk slug içinde doğru slug var mı?)
+            // Örnek: shopxtif-cpd15tvl içinde ixtif-cpd15tvl var mı?
+            if (stripos($brokenSlug, $correctSlug) !== false || stripos($correctSlug, $brokenSlug) !== false) {
+                \Log::info('✅ SUBSTRING MATCH', [
+                    'broken_slug' => $brokenSlug,
+                    'correct_slug' => $correctSlug,
+                    'correct_url' => $correctUrl,
+                ]);
+                return $correctUrl; // Substring match, kabul et
+            }
+
+            // ÜÇÜNCÜ: Similarity matching (fallback)
+            similar_text(strtolower($brokenSlug), strtolower($correctSlug), $similarity);
+
+            if ($similarity > $bestSimilarity && $similarity >= 50) { // 50% threshold (daha toleranslı)
+                $bestSimilarity = $similarity;
+                $bestMatch = $correctUrl;
+            }
+        }
+
+        if ($bestMatch) {
+            \Log::info('✅ SIMILARITY MATCH', [
+                'broken_slug' => $brokenSlug,
+                'similarity' => round($bestSimilarity, 1) . '%',
+                'correct_url' => $bestMatch,
+            ]);
+        } else {
+            \Log::warning('❌ NO MATCH FOUND', [
+                'broken_url' => $brokenUrl,
+                'broken_slug' => $brokenSlug,
+            ]);
+        }
+
+        return $bestMatch;
+    }
+
+    /**
+     * Convert Markdown to HTML (Safe conversion for frontend)
+     *
+     * AI generates Markdown (daha güvenilir), bu metod HTML'e çevirir
+     */
+    private function convertMarkdownToHtml(string $markdown): string
+    {
+        \Log::info('🎨 Converting Markdown to HTML', [
+            'markdown_preview' => mb_substr($markdown, 0, 200),
+        ]);
+
+        $html = $markdown;
+
+        // 1. Links: [text](url) → <a href="url">text</a>
+        $html = preg_replace(
+            '/\[([^\]]+)\]\(([^)]+)\)/',
+            '<a href="$2">$1</a>',
+            $html
+        );
+
+        // 2. Bold: **text** → <strong>text</strong>
+        $html = preg_replace(
+            '/\*\*([^\*]+)\*\*/',
+            '<strong>$1</strong>',
+            $html
+        );
+
+        // 3. Italic: *text* → <em>text</em> (tek yıldız, bold'dan sonra)
+        $html = preg_replace(
+            '/\*([^\*]+)\*/',
+            '<em>$1</em>',
+            $html
+        );
+
+        // 4. Unordered lists: - item → <ul><li>item</li></ul>
+        // Satırları parçala
+        $lines = explode("\n", $html);
+        $result = [];
+        $inList = false;
+
+        foreach ($lines as $line) {
+            $trimmed = trim($line);
+
+            // Liste item: - veya * ile başlıyor
+            if (preg_match('/^[-*]\s+(.+)$/', $trimmed, $match)) {
+                if (!$inList) {
+                    $result[] = '<ul>';
+                    $inList = true;
+                }
+                $result[] = '<li>' . $match[1] . '</li>';
+            } else {
+                if ($inList) {
+                    $result[] = '</ul>';
+                    $inList = false;
+                }
+
+                // Boş satır → <br>
+                if (empty($trimmed)) {
+                    $result[] = '<br>';
+                } else {
+                    // Normal text → <p> wrap (eğer zaten HTML tag'i yoksa)
+                    if (!preg_match('/^<[a-z]+/i', $trimmed)) {
+                        $result[] = '<p>' . $trimmed . '</p>';
+                    } else {
+                        $result[] = $trimmed;
+                    }
+                }
+            }
+        }
+
+        // Liste açık kalmışsa kapat
+        if ($inList) {
+            $result[] = '</ul>';
+        }
+
+        $html = implode("\n", $result);
+
+        \Log::info('✅ Markdown→HTML conversion complete', [
+            'html_preview' => mb_substr($html, 0, 300),
+        ]);
+
+        return $html;
     }
 
     /**

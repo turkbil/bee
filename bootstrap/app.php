@@ -92,6 +92,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.rate.limit' => \Modules\TenantManagement\App\Http\Middleware\TenantRateLimitMiddleware::class,
             'auto.queue.health' => \App\Http\Middleware\AutoQueueHealthCheck::class, // 🚀 OTOMATIK QUEUE HEALTH CHECK
             'root.debugbar' => \App\Http\Middleware\RootOnlyDebugbar::class, // 🛠️ ROOT-ONLY DEBUGBAR
+            'frontend.auto.seo' => \App\Http\Middleware\FrontendAutoSeoFillMiddleware::class, // 🎯 FRONTEND AUTO SEO FILL
         ]);
                 
         // Admin middleware grubu
@@ -116,6 +117,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'locale.site', // Locale belirleme (URL parse için gerekli)
             \Spatie\ResponseCache\Middlewares\CacheResponse::class, // ✅ Response cache (URL-based, locale'den bağımsız)
             \App\Http\Middleware\FixResponseCacheHeaders::class, // 🔧 Session middleware'in cache header'larını ezmesini engelle (EN SONDA)
+            'frontend.auto.seo', // 🎯 Frontend Auto SEO Fill (Premium tenants)
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü

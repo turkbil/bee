@@ -70,7 +70,9 @@
       "Bash(openssl:*)",
       "Bash(certbot:*)",
       "Bash(grep -oE '`[^`]+`')",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(do echo \"=== Testing $domain ===\")",
+      "Bash(sudo systemctl restart:*)"
     ],
     "deny": [],
     "ask": [],

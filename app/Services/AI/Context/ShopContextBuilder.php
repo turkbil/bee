@@ -231,6 +231,7 @@ class ShopContextBuilder
     protected function formatProduct(ShopProduct $product): array
     {
         return [
+            // Basic info
             'id' => $product->product_id,
             'sku' => $product->sku,
             'title' => $this->translate($product->title),
@@ -238,17 +239,35 @@ class ShopContextBuilder
             'url' => $this->getProductUrl($product),
             'short_description' => $this->translate($product->short_description),
             'body' => $this->sanitize($this->translate($product->body), 500),
+            'meta_title' => $this->translate($product->meta_title ?? $product->title),
+            'meta_description' => $this->translate($product->meta_description ?? $product->short_description),
+            'meta_keywords' => $product->meta_keywords,
 
-            // Fiyat bilgisi
+            // Price info
             'price' => $this->formatPrice($product),
+            'base_price' => $product->base_price,
+            'compare_at_price' => $product->compare_at_price,
+            'price_on_request' => $product->price_on_request,
+            'currency' => $product->currency,
 
-            // Teknik �zellikler
+            // Stock & inventory
+            'stock_quantity' => $product->stock_quantity ?? null,
+            'stock_status' => $product->stock_status ?? null,
+            'low_stock_threshold' => $product->low_stock_threshold ?? null,
+            'manage_stock' => $product->manage_stock ?? false,
+
+            // Technical specifications (original JSON fields)
             'technical_specs' => $product->technical_specs,
             'features' => $product->features,
             'highlighted_features' => $product->highlighted_features,
             'primary_specs' => $product->primary_specs,
 
-            // Pazarlama i�erii
+            // Custom JSON fields (tenant-specific)
+            'custom_technical_specs' => $product->custom_technical_specs ?? null,
+            'custom_features' => $product->custom_features ?? null,
+            'custom_certifications' => $product->custom_certifications ?? null,
+
+            // Marketing content
             'use_cases' => $product->use_cases,
             'competitive_advantages' => $product->competitive_advantages,
             'target_industries' => $product->target_industries,
@@ -256,16 +275,40 @@ class ShopContextBuilder
             // FAQ
             'faq' => $product->faq_data,
 
-            // Ek bilgiler
+            // Additional info
             'certifications' => $product->certifications,
             'warranty_info' => $product->warranty_info,
+            'specifications' => $product->specifications ?? null,
 
-            // Varyant bilgisi
+            // Physical properties
+            'weight' => $product->weight ?? null,
+            'weight_unit' => $product->weight_unit ?? null,
+            'dimensions' => $product->dimensions ?? null,
+            'dimension_unit' => $product->dimension_unit ?? null,
+
+            // Taxonomy
+            'category_id' => $product->category_id,
+            'brand_id' => $product->brand_id ?? null,
+            'tags' => $product->tags ?? null,
+
+            // Status flags
+            'is_featured' => $product->is_featured,
+            'is_master_product' => $product->is_master_product,
+            'allow_reviews' => $product->allow_reviews ?? false,
+
+            // Variant info
             'is_variant' => !empty($product->parent_product_id),
+            'parent_product_id' => $product->parent_product_id,
             'variant_type' => $product->variant_type,
-            'has_variants' => $product->is_master_product || $product->childProducts->count() > 0,
+            'has_variants' => $product->is_master_product || ($product->childProducts && $product->childProducts->count() > 0),
+
+            // SEO & visibility
+            'visibility' => $product->visibility ?? null,
+            'sort_order' => $product->sort_order ?? null,
+            'published_at' => $product->published_at ?? null,
         ];
     }
+
 
     /**
      * Varyantlar1 formatla

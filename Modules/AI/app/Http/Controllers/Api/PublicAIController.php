@@ -936,6 +936,28 @@ class PublicAIController extends Controller
     }
 
     /**
+     * Get tenant-specific rules from config
+     */
+    private function getTenantRules(int $tenantId): array
+    {
+        $tenantRules = config('ai-tenant-rules', []);
+
+        // Find tenant config by ID
+        foreach ($tenantRules as $key => $rules) {
+            if (isset($rules['tenant_id']) && $rules['tenant_id'] === $tenantId) {
+                return $rules;
+            }
+        }
+
+        // Return default rules if tenant not found
+        return $tenantRules['default'] ?? [
+            'category_priority' => ['enabled' => false],
+            'faq_enabled' => false,
+            'token_limits' => ['products_max' => 30],
+        ];
+    }
+
+    /**
      * 🎨 Build enhanced system prompt with product context
      *
      * Combines base system prompt with module-specific context (Product, Category, Page)
@@ -949,6 +971,16 @@ class PublicAIController extends Controller
 
         // Base system prompt (personality, contact, knowledge base)
         $prompts[] = $aiContext['system_prompt'];
+
+        // 🔥 TENANT-SPECIFIC CUSTOM PROMPTS (iXtif gibi özel kurallar)
+        $tenantId = tenant('id');
+        $tenantRules = $this->getTenantRules($tenantId);
+
+        if (!empty($tenantRules['custom_prompts'])) {
+            foreach ($tenantRules['custom_prompts'] as $promptKey => $promptContent) {
+                $prompts[] = "\n" . trim($promptContent);
+            }
+        }
 
         // 🎯 SATIŞ ODAKLI YAKLAŞIM
         $prompts[] = "\n## 🎯 SEN KİMSİN ve NE YAPARSIN";

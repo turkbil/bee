@@ -125,11 +125,84 @@ class ShopContextBuilder
     }
 
     /**
+     * Get tenant-specific rules from config
+     */
+    protected function getTenantRules(int $tenantId): array
+    {
+        $tenantRules = config('ai-tenant-rules', []);
+
+        // Find tenant config by ID
+        foreach ($tenantRules as $key => $rules) {
+            if (isset($rules['tenant_id']) && $rules['tenant_id'] === $tenantId) {
+                return $rules;
+            }
+        }
+
+        // Return default rules if tenant not found
+        return $tenantRules['default'] ?? [
+            'category_priority' => ['enabled' => false],
+            'faq_enabled' => false,
+            'token_limits' => ['products_max' => 30],
+        ];
+    }
+
+    /**
+     * Apply category priority filtering to product query
+     */
+    protected function applyCategoryPriority($query, array $tenantRules)
+    {
+        $highPriority = $tenantRules['category_priority']['high_priority'] ?? [];
+        $lowPriority = $tenantRules['category_priority']['low_priority'] ?? [];
+
+        if (empty($highPriority) && empty($lowPriority)) {
+            return $query;
+        }
+
+        // Join with categories to filter by slug
+        $query->join('shop_categories', 'shop_products.category_id', '=', 'shop_categories.category_id');
+
+        // Prioritize: high priority first, then others, low priority last
+        $query->orderByRaw("
+            CASE
+                WHEN shop_categories.slug IN ('" . implode("','", $highPriority) . "') THEN 1
+                WHEN shop_categories.slug IN ('" . implode("','", $lowPriority) . "') THEN 3
+                ELSE 2
+            END
+        ");
+
+        return $query;
+    }
+
+    /**
+     * Get category priority level (for display purposes)
+     */
+    protected function getCategoryPriority(ShopCategory $category, array $tenantRules): string
+    {
+        if (!($tenantRules['category_priority']['enabled'] ?? false)) {
+            return 'normal';
+        }
+
+        $slug = $this->translate($category->slug);
+        $highPriority = $tenantRules['category_priority']['high_priority'] ?? [];
+        $lowPriority = $tenantRules['category_priority']['low_priority'] ?? [];
+
+        if (in_array($slug, $highPriority)) {
+            return 'high';
+        }
+
+        if (in_array($slug, $lowPriority)) {
+            return 'low';
+        }
+
+        return 'normal';
+    }
+
+    /**
      * Format product summary (lightweight version for listing)
      */
-    protected function formatProductSummary(ShopProduct $product): array
+    protected function formatProductSummary(ShopProduct $product, array $tenantRules = []): array
     {
-        return [
+        $summary = [
             'id' => $product->product_id,
             'sku' => $product->sku,
             'title' => $this->translate($product->title),
@@ -138,6 +211,18 @@ class ShopContextBuilder
             'price' => $this->formatPrice($product),
             'url' => $this->getProductUrl($product),
         ];
+
+        // Add FAQ if enabled for this tenant
+        if ($tenantRules['faq_enabled'] ?? false) {
+            $faqLimit = $tenantRules['faq_limit'] ?? 10;
+            $faqData = $product->faq_data;
+
+            if (!empty($faqData) && is_array($faqData)) {
+                $summary['faq'] = array_slice($faqData, 0, $faqLimit);
+            }
+        }
+
+        return $summary;
     }
 
     /**

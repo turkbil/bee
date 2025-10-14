@@ -251,11 +251,16 @@
                             </button>
 
                             {{-- Theme Badge --}}
+                            @php
+                                $themeService = app(\App\Services\ThemeService::class);
+                                $activeTheme = $themeService->getActiveTheme();
+                                $themeName = $activeTheme ? $activeTheme->name : 'simple';
+                            @endphp
                             <span class="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded text-xs font-medium">
                                 <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path>
                                 </svg>
-                                Tema: blank
+                                Tema: {{ $themeName }}
                             </span>
                         </div>
                     </div>
@@ -307,7 +312,12 @@
     <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
     {{-- Theme Main Scripts --}}
-    <script defer src="{{ asset('assets/js/themes/simple/main.js') }}?v=1.0.1"></script>
+    @php
+        $themeService = app(\App\Services\ThemeService::class);
+        $activeTheme = $themeService->getActiveTheme();
+        $themeName = $activeTheme ? $activeTheme->name : 'simple';
+    @endphp
+    <script defer src="{{ asset('assets/js/themes/' . $themeName . '/main.js') }}?v=1.0.1"></script>
 
     {{-- Dynamic Script Stack --}}
     @stack('scripts')

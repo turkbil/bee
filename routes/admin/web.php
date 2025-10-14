@@ -105,9 +105,9 @@ Route::middleware(['admin', 'tenant'])->prefix('admin/debug')->name('admin.debug
     Route::get('/translation/full-debug', [\App\Http\Controllers\Admin\TranslationDebugAdvancedController::class, 'fullSystemDebug'])->name('translation.full-debug');
 });
 
-// Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için  
+// Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için
 Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
-    
+
     // Slug benzersizlik kontrolü - AJAX
     Route::post('/check-slug', function(\Illuminate\Http\Request $request) {
         $slug = $request->input('slug');

@@ -14,6 +14,19 @@ require __DIR__.'/admin/web.php';
 
 // 🧹 Test route'ları arşivlendi
 
+// STORAGE ROUTES - EN ÖNCE TANIMLANMALI (high priority)
+// Tenant medya dosyalarına erişim
+Route::middleware([InitializeTenancy::class])
+    ->get('/storage/tenant{id}/{path}', [StorageController::class, 'tenantMedia'])
+    ->where('id', '[0-9]+')
+    ->where('path', '.*')
+    ->name('storage.tenant');
+
+// Normal storage dosyalarına erişim (tenant-aware)
+Route::middleware([InitializeTenancy::class])
+    ->get('/storage/{path}', [StorageController::class, 'publicStorage'])
+    ->where('path', '.*')
+    ->name('storage.public');
 
 // Health check endpoint for Docker containers
 Route::get('/health', [App\Http\Controllers\HealthController::class, 'check'])->name('health.check');
@@ -368,16 +381,6 @@ Route::middleware([InitializeTenancy::class, 'site'])
 // Basit thumbmaker link servisi
 Route::get('/thumbmaker/{encoded}/{width?}/{height?}/{quality?}', \App\Http\Controllers\ThumbmakerLinkController::class)
     ->where(['encoded' => '[A-Za-z0-9-_]+', 'width' => '\d+', 'height' => '\d+', 'quality' => '\d+']);
-
-// Tenant medya dosyalarına erişim
-Route::get('/storage/tenant{id}/{path}', [StorageController::class, 'tenantMedia'])
-    ->where('id', '[0-9]+')
-    ->where('path', '.*');
-
-// Normal storage dosyalarına erişim
-Route::get('/storage/{path}', [StorageController::class, 'publicStorage'])
-    ->where('path', '(?!tenant)[/\w\.-]+')
-    ->name('storage.public');
 
 // 403 hata sayfası rotası
 Route::get('/403', function () {

@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Throwable;
 
@@ -406,6 +406,20 @@ class ThumbnailManager
 
     protected function toPublicUrl(string $relative): string
     {
-        return cdn('storage/'.ltrim($relative, '/'));
+        // Tenant prefix'i ayıkla
+        $relative = ltrim($relative, '/');
+
+        // Eğer tenant{id}/ formatındaysa, storage route'una uygun URL oluştur
+        if (preg_match('/^tenant(\d+)\/(.+)$/', $relative, $matches)) {
+            $tenantId = $matches[1];
+            $path = $matches[2];
+
+            // StorageController'ın publicStorage route'u ile uyumlu format
+            // Route: /storage/{path} middleware ile tenant context otomatik
+            return url('storage/' . $path);
+        }
+
+        // Central storage için
+        return cdn('storage/' . $relative);
     }
 }

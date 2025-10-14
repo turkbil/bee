@@ -466,14 +466,17 @@ class ShopContextBuilder
         try {
             $url = ShopController::resolveProductUrl($product, $this->locale);
 
-            // DEBUG: Log URL to check for issues
-            if (str_contains($product->sku ?? '', 'JX1')) {
-                \Log::info('🔗 getProductUrl() - JX1 URL generated', [
+            // DEBUG: İlk birkaç ürünü logla
+            static $logCount = 0;
+            if ($logCount < 3) {
+                \Log::info('🔗 getProductUrl() - URL generated', [
                     'sku' => $product->sku,
                     'slug' => $this->translate($product->slug),
                     'url' => $url,
-                    'method' => 'ShopController::resolveProductUrl',
+                    'url_length' => strlen($url),
+                    'contains_https' => str_contains($url, 'https://'),
                 ]);
+                $logCount++;
             }
 
             return $url;

@@ -995,5 +995,10 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                     Route::post("/sync-models", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "syncModels"])->name("sync-models");
                     Route::get("/model-info/{model}", [\Modules\AI\App\Http\Controllers\Admin\ModelCreditRateController::class, "getModelInfo"])->name("model-info");
                 });
+
+                // 📚 Knowledge Base Management
+                Route::get("/knowledge-base", \Modules\AI\App\Livewire\KnowledgeBase\ManageComponent::class)
+                    ->middleware('module.permission:ai,view')
+                    ->name("knowledge-base");
             });
     });

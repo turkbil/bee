@@ -71,6 +71,9 @@ class AIServiceProvider extends ServiceProvider
         // UNIVERSAL COMPONENTS - A1 CMS Pattern
         Livewire::component('ai::universal-ai-content', \Modules\AI\App\Http\Livewire\Admin\UniversalAIContentComponent::class);
 
+        // Knowledge Base Management Component
+        Livewire::component('ai::knowledge-base.manage', \Modules\AI\App\Livewire\KnowledgeBase\ManageComponent::class);
+
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);

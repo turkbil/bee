@@ -102,7 +102,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.access',
             'admin.nocache', // MUTLAK CACHE ENGELLEMESİ
             'locale.admin',
-            'auto.queue.health', // 🚀 OTOMATIK QUEUE HEALTH CHECK
+            // 'auto.queue.health', // 🚨 GEÇİCİ OLARAK KAPALI - Horizon boot loop sorununu çözüyor
+            \App\Http\Middleware\FixLegacyTenantUrls::class, // 🔧 Eski tenant URL'lerini düzelt
         ]);
         
         // API middleware grubu

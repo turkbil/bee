@@ -5,19 +5,30 @@
     $width = $element['properties']['width'] ?? 12;
 
     // Mevcut JSON değerini text formatına çevir
-    $fieldValue = $values[$fieldName] ?? '{}';
+    $fieldValue = $values[$fieldName] ?? null;
+
+    // Null, boş string veya false ise boş obje olarak başlat
+    if (empty($fieldValue)) {
+        $fieldValue = '{}';
+    }
 
     if(is_string($fieldValue)) {
         $jsonData = json_decode($fieldValue, true);
-    } else {
+    } elseif(is_array($fieldValue)) {
         $jsonData = $fieldValue;
+    } else {
+        $jsonData = [];
     }
 
     $textValue = '';
     if(is_array($jsonData) && !empty($jsonData)) {
         foreach($jsonData as $question => $answer) {
-            $textValue .= "Soru: {$question}\n";
-            $textValue .= "Cevap: {$answer}\n\n";
+            // Ensure question and answer are strings
+            $questionStr = is_string($question) ? $question : json_encode($question);
+            $answerStr = is_string($answer) ? $answer : (is_array($answer) ? json_encode($answer) : (string)$answer);
+
+            $textValue .= "Soru: {$questionStr}\n";
+            $textValue .= "Cevap: {$answerStr}\n\n";
         }
     }
 @endphp

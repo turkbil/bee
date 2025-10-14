@@ -252,6 +252,14 @@
         </div>
     </form>
 
+    {{-- AUTO SEO FILL TRIGGER - Premium tenants için otomatik SEO doldurma --}}
+    @if($blogId && $blog)
+        <x-auto-seo-trigger
+            :model="$blog"
+            model-type="blog"
+            :locale="$currentLanguage"
+        />
+    @endif
 
     @push('scripts')
         {{-- 🎯 MODEL & MODULE SETUP --}}
@@ -302,5 +310,8 @@
         ])
 
         @include('ai::admin.components.universal-ai-content-scripts')
+
+        {{-- 🎁 AUTO SEO FILL - Premium tenants için otomatik SEO doldurma --}}
+        <script src="{{ asset('assets/js/auto-seo-fill.js') }}"></script>
     @endpush
 </div>

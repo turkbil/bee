@@ -37,6 +37,24 @@ class SettingGroup extends Model
     ];
 
     /**
+     * Get attributes for array conversion (used by Livewire serialization)
+     * Sanitize all string attributes to prevent UTF-8 encoding errors
+     */
+    public function attributesToArray()
+    {
+        $attributes = parent::attributesToArray();
+
+        // Sanitize all string attributes
+        foreach ($attributes as $key => $value) {
+            if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+                $attributes[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+            }
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Return the sluggable configuration array for this model.
      *
      * @return array

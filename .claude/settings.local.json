@@ -47,7 +47,9 @@
       "Bash(git commit:*)",
       "Bash(git pull:*)",
       "Bash(git stash:*)",
-      "Bash(git clean:*)"
+      "Bash(git clean:*)",
+      "Bash(plesk bin database:*)",
+      "Bash(plesk bin site:*)"
     ],
     "deny": [],
     "ask": [],

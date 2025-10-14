@@ -157,6 +157,9 @@
     {{-- Core System Styles - Mandatory for all themes --}}
     <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.0">
 
+    {{-- Simple Theme Custom Styles --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/themes/simple/style.css') }}?v=1.0.0">
+
     {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')

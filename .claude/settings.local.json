@@ -104,7 +104,9 @@
       "WebFetch(domain:159.253.45.94)",
       "Bash(top:*)",
       "Bash(pkill:*)",
-      "Bash(do echo \"=== Testing product $id ===\")"
+      "Bash(do echo \"=== Testing product $id ===\")",
+      "Bash(composer:*)",
+      "Bash(service php-fpm:*)"
     ],
     "deny": [],
     "ask": [],

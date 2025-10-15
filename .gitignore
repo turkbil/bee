@@ -67,3 +67,5 @@ SUNUCU_BILGILERI.txt
 
 # Readme/Döküman klasörü (local development)
 /readme
+# Database Backups - Ignore SQL files
+database-backups/**/*.sql

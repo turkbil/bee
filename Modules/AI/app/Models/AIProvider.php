@@ -49,11 +49,35 @@ class AIProvider extends Model
      */
     public function getApiKeyAttribute($value)
     {
+        // GEÇC GEÇİCİ FIX: Production için encryption tekrar aktif edilecek
+        // Şimdilik ENV'den oku (local development için)
+        if ($this->name === 'openai' && env('OPENAI_API_KEY')) {
+            return env('OPENAI_API_KEY');
+        }
+        if ($this->name === 'anthropic' && env('ANTHROPIC_API_KEY')) {
+            return env('ANTHROPIC_API_KEY');
+        }
+        if ($this->name === 'deepseek' && env('DEEPSEEK_API_KEY')) {
+            return env('DEEPSEEK_API_KEY');
+        }
+
+        if (!$value) {
+            return null;
+        }
+
+        // Eğer zaten "sk-" ile başlıyorsa (plain text), direkt döndür
+        if (str_starts_with($value, 'sk-')) {
+            return $value;
+        }
+
+        // Encrypted ise decrypt et
         try {
-            return $value ? Crypt::decryptString($value) : null;
+            $decrypted = Crypt::decryptString($value);
+            return $decrypted;
         } catch (\Exception $e) {
-            \Log::warning('API key decryption failed for provider: ' . $this->name);
-            return $value; // Eski format için fallback
+            \Log::warning('API key decryption warning for provider: ' . $this->name . ' - Using ENV fallback');
+            // Decrypt başarısız olursa NULL döndür
+            return null;
         }
     }
 

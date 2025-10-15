@@ -1004,10 +1004,11 @@ class PublicAIController extends Controller
         $prompts[] = "**YASAK:** Siyaset, din, genel bilgi, konu dışı konular";
         $prompts[] = "";
         $prompts[] = "**💡 ZORUNLU SATIŞ AKIŞI:**";
-        $prompts[] = "1️⃣ Müşteri herhangi bir ürün/kategori isterse → **DERHAL** aşağıdaki 'Mevcut Ürünler' listesinden 3-5 ürün linkle göster";
+        $prompts[] = "1️⃣ Müşteri herhangi bir ürün/kategori isterse → **DERHAL** aşağıdaki 'Mevcut Ürünler' listesinden 3-5 ürün göster";
         $prompts[] = "2️⃣ **HER ÜRÜN İÇİN:**";
-        $prompts[] = "   - Aşağıdaki listeden markdown linki **OLDUĞU GİBİ** kopyala: [Ürün Adı](URL)";
-        $prompts[] = "   - ⚠️ URL'i değiştirme, eksiltme, veya kendin oluşturma - COPY/PASTE yap!";
+        $prompts[] = "   - Ürün başlığını yaz";
+        $prompts[] = "   - Yanına [LINK_ID:XXX] etiketini **AYNEN** kopyala (URL değil, sadece bu etiketi!";
+        $prompts[] = "   - ⚠️ Markdown link yaratma, URL yaratma - Sadece [LINK_ID:123] formatındaki etiketi kopyala!";
         $prompts[] = "   - Öne çıkan 2-3 özellik yaz (kapasite, batarya, kullanım alanı)";
         $prompts[] = "   - Hangi müşteri tipi için uygun olduğunu belirt";
         $prompts[] = "3️⃣ **ÜRÜNLER ARASI FARKLAR:**";
@@ -1029,12 +1030,12 @@ class PublicAIController extends Controller
         $prompts[] = "";
         $prompts[] = "AI: 'Merhaba! İşte size uygun transpalet seçeneklerimiz:";
         $prompts[] = "";
-        $prompts[] = "⭐ **[Litef EPT20 Elektrikli Transpalet](url)**";
+        $prompts[] = "⭐ **Litef EPT20 Elektrikli Transpalet** [LINK_ID:296]";
         $prompts[] = "   - 2000 kg taşıma kapasitesi";
         $prompts[] = "   - Lityum batarya ile 8 saat kesintisiz çalışma";
         $prompts[] = "   - Orta/yoğun kullanım için ideal";
         $prompts[] = "";
-        $prompts[] = "⭐ **[Litef EPT15 Manuel Transpalet](url)**";
+        $prompts[] = "⭐ **Litef EPT15 Manuel Transpalet** [LINK_ID:297]";
         $prompts[] = "   - 1500 kg kapasite";
         $prompts[] = "   - Elektrik gerektirmez, bakım maliyeti düşük";
         $prompts[] = "   - Hafif işler ve kısa mesafeler için";
@@ -1044,7 +1045,7 @@ class PublicAIController extends Controller
         $prompts[] = "";
         $prompts[] = "Hangi yoğunlukta kullanacaksınız? 😊'";
         $prompts[] = "";
-        $prompts[] = "**🔗 URL FORMAT:** Markdown link + Açıklama + Karşılaştırma ZORUNLU!";
+        $prompts[] = "**🔗 LINK FORMAT:** Başlık + [LINK_ID:XXX] + Açıklama + Karşılaştırma ZORUNLU!";
         $prompts[] = "";
 
         // Base system prompt (personality, contact, knowledge base)
@@ -1255,11 +1256,11 @@ class PublicAIController extends Controller
 
             // ALL ACTIVE PRODUCTS (MAKSIMUM 30 ÜRÜN - Token limit koruması)
             if (!empty($shopContext['all_products'])) {
-                $formatted[] = "\n**Mevcut Ürünler (MUTLAKA LİNK VER!):**";
+                $formatted[] = "\n**Mevcut Ürünler (MUTLAKA [LINK_ID] VER!):**";
                 $formatted[] = "**🚨 KRİTİK:**";
-                $formatted[] = "- Aşağıdaki markdown linklerini **AYNEN KOPYALA**";
-                $formatted[] = "- URL'i kendin oluşturma, değiştirme, eksiltme!";
-                $formatted[] = "- `[Başlık](URL)` formatını olduğu gibi kopyala!";
+                $formatted[] = "- Aşağıdaki [LINK_ID:XXX] etiketlerini **AYNEN KOPYALA**";
+                $formatted[] = "- URL oluşturma, markdown link yaratma!";
+                $formatted[] = "- Sadece **Ürün Adı** [LINK_ID:123] formatı kullan!";
                 $formatted[] = "";
 
                 // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
@@ -1270,18 +1271,21 @@ class PublicAIController extends Controller
                     $sku = $product['sku'] ?? 'N/A';
                     $category = $product['category'] ?? 'Kategorisiz';
                     $url = $product['url'] ?? '#';
+                    $productId = $product['id'] ?? null;
 
                     // Price info
                     $priceInfo = '';
                     if (!empty($product['price']['formatted'])) {
-                        $priceInfo = " - {$product['price']['formatted']}";
+                        $priceInfo = ", Fiyat: {$product['price']['formatted']}";
                     } elseif (!empty($product['price']['on_request'])) {
-                        $priceInfo = " - (Fiyat sorunuz)";
+                        $priceInfo = ", Fiyat: Sorunuz";
                     }
 
-                    // ULTRA-CLEAR URL FORMAT: Copy-paste friendly for AI
-                    // URL'i tek satırda ver - AI'ın kopyalaması daha kolay
-                    $formatted[] = "• **{$title}** (SKU: {$sku}) → [{$title}]({$url}){$priceInfo}";
+                    // YENİ FORMAT: URL yerine product ID ver
+                    // AI markdown link oluşturamasın - Frontend ID'den URL üretecek
+                    // Format: • **Ürün Adı** (SKU: xxx, Fiyat: xxx)
+                    // AI'a "Link olarak [Ürün Adı](PRODUCT_ID:xxx) formatında yaz" diyeceğiz
+                    $formatted[] = "• **{$title}** (SKU: {$sku}{$priceInfo}) [LINK_ID:{$productId}]";
                 }
 
                 $formatted[] = "";

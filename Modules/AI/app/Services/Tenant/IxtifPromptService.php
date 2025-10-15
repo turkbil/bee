@@ -134,24 +134,31 @@ class IxtifPromptService
         $prompts[] = "";
 
         // ====================================
-        // 7️⃣ ÖRNEK DİYALOG
+        // 7️⃣ ÖRNEK DİYALOG - ÖNCE ÜRÜN GÖSTER!
         // ====================================
-        $prompts[] = "**💬 ÖRNEK DİYALOG:**";
+        $prompts[] = "**💬 ÖRNEK DİYALOG (DOĞRU YAKLAŞIM):**";
         $prompts[] = "";
         $prompts[] = "Müşteri: 'Transpalet arıyorum'";
-        $prompts[] = "AI: 'Merhaba! Transpalet ihtiyacınız için yardımcı olabilirim. 😊";
-        $prompts[] = "- Kapasite ihtiyacınız nedir? (1.5 ton, 2 ton, 2.5 ton?)";
-        $prompts[] = "- Manuel mi, elektrikli mi tercih edersiniz?'";
         $prompts[] = "";
-        $prompts[] = "Müşteri: '2 ton elektrikli'";
-        $prompts[] = "AI: 'Harika! Size 2 ton elektrikli transpaletlerimizi göstereyim:";
-        $prompts[] = "* **[Litef EPT20 Elektrikli Transpalet](https://ixtif.com/shop/ixtif/litef-ept20)** - 2000 kg, Lityum batarya, kompakt tasarım";
-        $prompts[] = "* **[Litef EPT20-Li Transpalet](https://ixtif.com/shop/ixtif/litef-ept20-li)** - 2000 kg, Hızlı şarj, ergonomik direksiyon";
+        $prompts[] = "AI: 'Merhaba! Transpalet seçeneklerimizi göstereyim: 😊";
         $prompts[] = "";
-        $prompts[] = "Daha detaylı bilgi için telefon numaranızı alabilir miyim? 📞'";
+        $prompts[] = "⭐ **[Litef EPT20 Elektrikli Transpalet](https://ixtif.com/shop/ixtif/litef-ept20)**";
+        $prompts[] = "   - 2000 kg taşıma kapasitesi";
+        $prompts[] = "   - Lityum batarya, 8 saat çalışma";
+        $prompts[] = "   - Orta/yoğun kullanım için";
+        $prompts[] = "";
+        $prompts[] = "⭐ **[Litef EPT15 Manuel Transpalet](https://ixtif.com/shop/ixtif/litef-ept15)**";
+        $prompts[] = "   - 1500 kg kapasite";
+        $prompts[] = "   - Elektrik gerektirmez, bakım maliyeti düşük";
+        $prompts[] = "   - Hafif işler için ekonomik";
+        $prompts[] = "";
+        $prompts[] = "🔍 **Karşılaştırma:** EPT20 elektrikli ve hızlı, EPT15 ise ekonomik. Hangi yoğunlukta kullanacaksınız?'";
+        $prompts[] = "";
+        $prompts[] = "Müşteri: 'Günde 50+ palet taşıyacağız'";
+        $prompts[] = "AI: 'O zaman EPT20 size daha uygun! Detaylı teklif için telefon numaranızı alabilir miyim? 📞'";
         $prompts[] = "";
         $prompts[] = "Müşteri: '0555 123 4567'";
-        $prompts[] = "AI: 'Teşekkürler! Ekibimiz en kısa sürede sizi arayacak. İyi günler dilerim! 🙏'";
+        $prompts[] = "AI: 'Teşekkürler! Ekibimiz en kısa sürede sizi arayacak. İyi günler! 🙏'";
         $prompts[] = "";
 
         return $prompts;

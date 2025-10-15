@@ -539,6 +539,12 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
+        \Log::info('🛍️ shopAssistantChat() BAŞLADI', [
+            'message' => $request->input('message'),
+            'tenant_id' => tenant('id'),
+            'timestamp' => now()->toIso8601String()
+        ]);
+
         try {
             // Validate input (Tenant context check için exists rule'ları kaldırıldı)
             $validated = $request->validate([
@@ -1000,7 +1006,8 @@ class PublicAIController extends Controller
         $prompts[] = "**💡 ZORUNLU SATIŞ AKIŞI:**";
         $prompts[] = "1️⃣ Müşteri herhangi bir ürün/kategori isterse → **DERHAL** aşağıdaki 'Mevcut Ürünler' listesinden 3-5 ürün linkle göster";
         $prompts[] = "2️⃣ **HER ÜRÜN İÇİN:**";
-        $prompts[] = "   - Markdown link ver: [Ürün Adı](URL)";
+        $prompts[] = "   - Aşağıdaki listeden markdown linki **OLDUĞU GİBİ** kopyala: [Ürün Adı](URL)";
+        $prompts[] = "   - ⚠️ URL'i değiştirme, eksiltme, veya kendin oluşturma - COPY/PASTE yap!";
         $prompts[] = "   - Öne çıkan 2-3 özellik yaz (kapasite, batarya, kullanım alanı)";
         $prompts[] = "   - Hangi müşteri tipi için uygun olduğunu belirt";
         $prompts[] = "3️⃣ **ÜRÜNLER ARASI FARKLAR:**";
@@ -1014,7 +1021,8 @@ class PublicAIController extends Controller
         $prompts[] = "- ❌ 'Elimde ürün listesi yok' deme - Aşağıda 30+ ürün var!";
         $prompts[] = "- ❌ Link vermeden telefon/WhatsApp isteme!";
         $prompts[] = "- ❌ Ürünleri karşılaştırmadan listele!";
-        $prompts[] = "- ❌ Kendin URL uydurma - SADECE aşağıdaki listedeki URL'leri kullan!";
+        $prompts[] = "- ❌ URL'i kendin değiştirme/eksiltme - Aşağıdaki linki AYNEN kopyala!";
+        $prompts[] = "- ❌ Markdown linkini parçalara bölme - TEK SATIRDA ver!";
         $prompts[] = "";
         $prompts[] = "**✅ DOĞRU ÖRNEK:**";
         $prompts[] = "Müşteri: 'transpalet arıyorum'";
@@ -1248,7 +1256,10 @@ class PublicAIController extends Controller
             // ALL ACTIVE PRODUCTS (MAKSIMUM 30 ÜRÜN - Token limit koruması)
             if (!empty($shopContext['all_products'])) {
                 $formatted[] = "\n**Mevcut Ürünler (MUTLAKA LİNK VER!):**";
-                $formatted[] = "**🚨 KRİTİK: Aşağıdaki ürünler için SADECE parantez içindeki URL'leri kullan! Kendi URL üretme!**";
+                $formatted[] = "**🚨 KRİTİK:**";
+                $formatted[] = "- Aşağıdaki markdown linklerini **AYNEN KOPYALA**";
+                $formatted[] = "- URL'i kendin oluşturma, değiştirme, eksiltme!";
+                $formatted[] = "- `[Başlık](URL)` formatını olduğu gibi kopyala!";
                 $formatted[] = "";
 
                 // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
@@ -1268,9 +1279,9 @@ class PublicAIController extends Controller
                         $priceInfo = " - (Fiyat sorunuz)";
                     }
 
-                    // FIX: URL'yi daha net göster - AI için açık format
-                    $formatted[] = "- **{$title}** → URL: `{$url}` | SKU: {$sku} | {$category}{$priceInfo}";
-                    $formatted[] = "  → Markdown format: [{$title}]({$url})";
+                    // ULTRA-CLEAR URL FORMAT: Copy-paste friendly for AI
+                    // URL'i tek satırda ver - AI'ın kopyalaması daha kolay
+                    $formatted[] = "• **{$title}** (SKU: {$sku}) → [{$title}]({$url}){$priceInfo}";
                 }
 
                 $formatted[] = "";
@@ -1438,6 +1449,11 @@ class PublicAIController extends Controller
      */
     private function fixBrokenUrls(string $content, array $aiContext): string
     {
+        \Log::info('🔧 fixBrokenUrls() CALLED', [
+            'content_length' => strlen($content),
+            'has_context' => !empty($aiContext['context']['modules']['shop']['all_products'])
+        ]);
+
         // Step 1: Collect all correct URLs from context
         $correctUrls = [];
 
@@ -1492,7 +1508,7 @@ class PublicAIController extends Controller
                 // Calculate similarity percentage
                 similar_text(strtolower($brokenUrl), strtolower($correctUrl), $similarity);
 
-                if ($similarity > $bestSimilarity && $similarity >= 70) { // 70% threshold
+                if ($similarity > $bestSimilarity && $similarity >= 30) { // 30% threshold - very aggressive
                     $bestSimilarity = $similarity;
                     $bestMatch = $correctUrl;
                 }

@@ -173,6 +173,13 @@ class OpenAIService
             $outputTokens = 0;
             $totalTokens = 0;
             
+            // DEBUG: Log API key being used
+            Log::info('🔑 OpenAI API Key Debug', [
+                'key_starts_with' => substr($this->apiKey, 0, 15) . '...',
+                'key_length' => strlen($this->apiKey),
+                'key_is_empty' => empty($this->apiKey),
+            ]);
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',

@@ -1024,6 +1024,8 @@ class PublicAIController extends Controller
         $prompts[] = "- ❌ Ürünleri karşılaştırmadan listele!";
         $prompts[] = "- ❌ URL'i kendin değiştirme/eksiltme - Aşağıdaki linki AYNEN kopyala!";
         $prompts[] = "- ❌ Markdown linkini parçalara bölme - TEK SATIRDA ver!";
+        $prompts[] = "- ❌ FİYAT UYDURMA! Eğer fiyat bilgisi verilmemişse '%XX daha pahalı' gibi karşılaştırmalar yapma!";
+        $prompts[] = "- ❌ Fiyat yoksa 'Fiyat için iletişime geçin' de, yüzde/miktar uydurma!";
         $prompts[] = "";
         $prompts[] = "**✅ DOĞRU ÖRNEK:**";
         $prompts[] = "Müşteri: 'transpalet arıyorum'";

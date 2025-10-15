@@ -548,6 +548,21 @@ window.aiChatRenderMarkdown = function(content) {
 
     let html = content;
 
+    // 0. [LINK_ID:XXX] → Tıklanabilir link'e dönüştür (YENİ!)
+    // Format: **Ürün Adı** [LINK_ID:296] → <a href="/shop/product/296">Ürün Adı</a>
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)\]/gi, function(match, productName, productId) {
+        const productUrl = `/shop/product/${productId}`;
+        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors font-semibold">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+            ${productName}
+        </a>`;
+    });
+
+    // Markdown bold syntax'ı HTML'e çevir (**text** → <strong>text</strong>)
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
     // 1. Link'lere target="_blank", rel ve Tailwind class ekle
     // Standart link: <a href="url">text</a>
     html = html.replace(/<a\s+href="([^"]+)"([^>]*)>([^<]+)<\/a>/gi, function(match, url, attrs, text) {

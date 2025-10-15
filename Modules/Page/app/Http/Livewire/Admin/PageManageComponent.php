@@ -524,7 +524,8 @@ class PageManageComponent extends Component implements AIContentGeneratable
             'jsVariables' => [
                 'currentPageId' => $this->pageId ?? null,
                 'currentLanguage' => $this->currentLanguage ?? 'tr'
-            ]
+            ],
+            'page' => $this->pageId ? Page::find($this->pageId) : null
         ]);
     }
 

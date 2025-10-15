@@ -14,9 +14,6 @@ class TenantUrlGenerator extends DefaultUrlGenerator
         // Storage linkini ekle
         $url .= '/storage';
 
-        // Tenant ID'yi al - tenant yoksa, central için de tenant1 formatında URL üret
-        $tenantId = app(\Stancl\Tenancy\Tenancy::class)->initialized ? tenant('id') : '1';
-
         // Medya ID'sini al
         $mediaId = $this->media->id;
 
@@ -31,15 +28,17 @@ class TenantUrlGenerator extends DefaultUrlGenerator
             // Dosya adı: original-name-thumb.webp
             $fileName = $pathinfo['filename'] . '-' . $conversionName . '.' . $extension;
 
-            // URL: /storage/tenant1/35/conversions/mavi-bos-thumb.webp
-            return $url . '/tenant' . $tenantId . '/' . $mediaId . '/conversions/' . $fileName;
+            // URL: /storage/35/conversions/mavi-bos-thumb.webp
+            // NOT: tenant{id} yok - StorageController otomatik algılıyor
+            return $url . '/' . $mediaId . '/conversions/' . $fileName;
         }
 
         // Orijinal dosya
         $fileName = $this->media->file_name;
 
-        // Tam URL'yi oluştur - hem tenant hem central için tenant{id} formatında
-        return $url . '/tenant' . $tenantId . '/' . $mediaId . '/' . $fileName;
+        // Tam URL'yi oluştur - tenant{id} olmadan
+        // StorageController domain'e göre otomatik tenant klasörünü bulur
+        return $url . '/' . $mediaId . '/' . $fileName;
     }
 
     public function getPath(): string

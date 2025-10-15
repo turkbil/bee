@@ -5,7 +5,7 @@ use Modules\Shop\App\Http\Controllers\Front\ShopController;
 use Modules\Shop\App\Http\Controllers\Front\ShopQuoteController;
 
 // DESIGN VERSION ROUTES (Test için farklı tasarımlar - Wildcard'dan önce tanımlanmalı!)
-Route::middleware(['web', 'tenant'])
+Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
     ->prefix('shop')
     ->group(function () {
         // V1 - Modern & Minimalist
@@ -28,7 +28,7 @@ Route::middleware(['web', 'tenant'])
     });
 
 // NORMAL SHOP ROUTES
-Route::middleware(['web', 'tenant'])
+Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
     ->prefix('shop')
     ->group(function () {
         // Shop Index - Tüm ürünler

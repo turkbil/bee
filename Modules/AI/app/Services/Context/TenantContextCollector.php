@@ -96,9 +96,12 @@ class TenantContextCollector extends ContextCollector
             $context['additional_data'] = $profile->data;
         }
 
+        // 📚 Knowledge Base - Sık Sorulan Sorular (Priority: High)
+        $context['knowledge_base'] = $this->getKnowledgeBase();
+
         // Mevcut optimized context'i kullan
         $context['optimized_context'] = $profile->getOptimizedAIContext(3);
-        
+
         // AI için context metni oluştur
         $context['context_text'] = $this->buildContextText($context, $profile);
 
@@ -179,6 +182,19 @@ class TenantContextCollector extends ContextCollector
             $avoidTopics = array_keys(array_filter($context['behavior']['avoid_topics']));
             if (!empty($avoidTopics)) {
                 $parts[] = "⚠️ AVOID TOPICS: " . implode(', ', $avoidTopics);
+            }
+        }
+
+        // 📚 Knowledge Base (Sık Sorulan Sorular - ÖNCELİKLİ!)
+        if (isset($context['knowledge_base']) && !empty($context['knowledge_base'])) {
+            $parts[] = "\n--- 📚 ŞİRKET BİLGİ BANKASI (PRIORITY: HIGH) ---";
+            $parts[] = "⚠️ IMPORTANT: Aşağıdaki soru-cevapları kullanıcı sorularında MUTLAKA kullan!";
+            $parts[] = "Bu bilgiler şirket tarafından onaylanmış resmi cevaplardır.\n";
+
+            foreach ($context['knowledge_base'] as $item) {
+                $category = $item['category'] ?: 'Genel';
+                $parts[] = "• [{$category}] {$item['question']}";
+                $parts[] = "  → {$item['answer']}\n";
             }
         }
 
@@ -299,7 +315,43 @@ class TenantContextCollector extends ContextCollector
                 $this->cacheTtl = 3600; // 1 saat
                 break;
         }
-        
+
         return $this->collect($options);
+    }
+
+    /**
+     * 📚 Get Knowledge Base - Aktif soru-cevapları al
+     *
+     * Tenant'ın bilgi bankasından aktif ve cevaplı soruları çeker
+     * Cache: 5 dakika
+     */
+    private function getKnowledgeBase(): array
+    {
+        try {
+            $cacheKey = 'tenant_kb_' . tenant_id();
+
+            return \Cache::remember($cacheKey, 300, function () {
+                return \Modules\AI\App\Models\KnowledgeBase::active()
+                    ->whereNotNull('answer')
+                    ->where('answer', '!=', '')
+                    ->ordered()
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'category' => $item->category,
+                            'question' => $item->question,
+                            'answer' => $item->answer,
+                        ];
+                    })
+                    ->toArray();
+            });
+        } catch (\Exception $e) {
+            Log::warning('Failed to load knowledge base for AI context', [
+                'tenant_id' => tenant_id(),
+                'error' => $e->getMessage()
+            ]);
+
+            return [];
+        }
     }
 }

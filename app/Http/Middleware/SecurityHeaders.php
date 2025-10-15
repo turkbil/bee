@@ -50,14 +50,13 @@ class SecurityHeaders
         ]);
         $response->headers->set('Content-Security-Policy', $csp);
 
-        // Cache Control for Dynamic Pages (must revalidate)
+        // Cache Control - Sadece admin için set et, ResponseCache'i ezme
         if ($request->is('admin/*') || $request->is('*/admin/*')) {
             $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
             $response->headers->set('Pragma', 'no-cache');
-        } else {
-            // Frontend pages - allow browser caching with revalidation
-            $response->headers->set('Cache-Control', 'public, max-age=3600, must-revalidate');
+            $response->headers->set('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
         }
+        // Frontend sayfalar için Cache-Control'u EZME - ResponseCache middleware'i yönetir
 
         // Remove server signature
         $response->headers->remove('X-Powered-By');

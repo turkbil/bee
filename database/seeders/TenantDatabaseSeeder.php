@@ -333,9 +333,10 @@ class TenantDatabaseSeeder extends Seeder
      */
     protected function seedAIKnowledgeBase(): void
     {
-        $this->command->info('  📝 AI Bilgi Bankası (İxtif - 30 soru-cevap) oluşturuluyor...');
+        $this->command->info('  📝 AI Bilgi Bankası oluşturuluyor...');
 
-        $this->call(\Modules\SettingManagement\Database\Seeders\AIKnowledgeBaseSeeder::class);
+        // Yeni Knowledge Base Seeder
+        $this->call(\Database\Seeders\Tenant\KnowledgeBaseSeeder::class);
 
         $this->command->info('    ✅ AI Bilgi Bankası oluşturuldu');
     }

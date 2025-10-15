@@ -701,11 +701,19 @@ readonly class SeoMetaTagService
                 }
             }
 
-            // Fallback: Site logo
+            // Fallback: Site logo (LogoService kullan)
             if (!$featuredImage) {
-                $defaultOgImage = setting('site_logo') ?: setting('site_logo_url') ?: asset('logo.png');
-                $featuredImage = $defaultOgImage;
-                $allImages[] = $featuredImage;
+                $logoService = app(\App\Services\LogoService::class);
+                $logoUrl = $logoService->getSchemaLogoUrl();
+
+                if ($logoUrl) {
+                    $featuredImage = $logoUrl;
+                    $allImages[] = $featuredImage;
+                } else {
+                    // Ultimate fallback
+                    $featuredImage = asset('logo.png');
+                    $allImages[] = $featuredImage;
+                }
             }
 
             $data['og_image'] = $featuredImage;
@@ -1195,13 +1203,12 @@ readonly class SeoMetaTagService
             'url' => url('/'),
         ];
 
-        // Logo ekle
-        $siteLogo = setting('site_logo');
-        if ($siteLogo) {
-            $schema['logo'] = [
-                '@type' => 'ImageObject',
-                'url' => cdn($siteLogo)
-            ];
+        // Logo ekle (LogoService kullan)
+        $logoService = app(\App\Services\LogoService::class);
+        $logoStructuredData = $logoService->getStructuredData();
+
+        if ($logoStructuredData) {
+            $schema['logo'] = $logoStructuredData;
         }
 
         // İletişim bilgileri

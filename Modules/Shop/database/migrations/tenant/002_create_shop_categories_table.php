@@ -69,7 +69,12 @@ return new class extends Migration
         // JSON slug indexes (MySQL 8.0+ / MariaDB 10.5+) - Tablo oluşturulduktan sonra
         // Dinamik olarak system_languages'dan alınır
         if (DB::getDriverName() === 'mysql') {
-            $version = DB::selectOne('SELECT VERSION() as version')->version;
+            $versionResult = DB::selectOne('SELECT VERSION() as version');
+            $version = $versionResult ? $versionResult->version : null;
+
+            if (!$version) {
+                return; // Versiyon alınamazsa indexleme yapma
+            }
 
             // MySQL 8.0+ veya MariaDB 10.5+ kontrolü
             $isMariaDB = stripos($version, 'MariaDB') !== false;

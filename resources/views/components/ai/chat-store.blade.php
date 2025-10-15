@@ -332,21 +332,28 @@ window.placeholderV4 = function(productId = null) {
             console.log('🔍 Placeholder init started', { productId });
 
             if (productId) {
-                // Start with fallback, then try to load from cache
-                this.conversation = this.getFallbackConversation();
-                this.isLoading = false;
+                console.log('📡 Loading product placeholder from cache/API...');
+                this.isLoading = true;
 
-                console.log('📡 Checking cache for product placeholder...');
-                // Try to load - if cached, it will be fast. If not, generate in background
-                this.loadProductPlaceholder(productId); // Don't await - run in background
+                // Try to load from API first (fast if cached)
+                await this.loadProductPlaceholder(productId);
+
+                // If load failed, use fallback
+                if (this.loadError || this.conversation.length === 0) {
+                    console.log('⚠️ Using fallback conversation');
+                    this.conversation = this.getFallbackConversation();
+                }
+
+                this.isLoading = false;
             } else {
                 console.log('⚠️ No productId provided, using fallback');
                 this.conversation = this.getFallbackConversation();
                 this.isLoading = false;
             }
 
-            console.log('✅ Placeholder init completed (immediate)', {
-                conversationLength: this.conversation.length
+            console.log('✅ Placeholder init completed', {
+                conversationLength: this.conversation.length,
+                conversation: this.conversation
             });
         },
 
@@ -358,31 +365,37 @@ window.placeholderV4 = function(productId = null) {
                 const loadTime = Date.now() - startTime;
 
                 if (data.success && data.data.conversation) {
-                    console.log('✅ Product placeholder loaded', {
+                    console.log('✅ Product placeholder loaded from API', {
                         from_cache: data.data.from_cache,
                         generated_at: data.data.generated_at,
                         load_time_ms: loadTime,
-                        note: data.data.from_cache ? 'Cached - will use next visit' : 'Generated - cached for next visit'
+                        conversation_items: data.data.conversation.length
                     });
-                    // Don't replace conversation on first visit - it's already showing fallback
-                    // Next visit will load from cache immediately
+
+                    // Set conversation data from API
+                    this.conversation = data.data.conversation;
+                    this.loadError = false;
                 } else {
                     throw new Error('Invalid response');
                 }
             } catch (error) {
-                console.error('❌ Failed to load product placeholder (will retry next time):', error);
+                console.error('❌ Failed to load product placeholder:', error);
                 this.loadError = true;
             }
         },
 
         getFallbackConversation() {
+            // ✅ FIX: Use tenant-specific assistant name from Alpine store
+            // assistantName is already loaded from backend at line 38
+            const assistantName = '{{ \App\Helpers\AISettingsHelper::getAssistantName() }}' || 'Asistan';
+
             return [
-                { role: 'user', text: "Merhaba, bu ürün ne iş yapıyor?" },
-                { role: 'assistant', text: "Merhaba! Bu ürün profesyonel kullanım için tasarlanmış, yüksek performanslı bir ekipmandır. İhtiyaçlarınıza göre farklı modellerde sunulmaktadır." },
-                { role: 'user', text: "Hangi kapasitede var?" },
-                { role: 'assistant', text: "Farklı kapasite seçeneklerimiz mevcut. Size en uygun modeli belirlemek için kullanım amacınızı ve ihtiyacınızı konuşalım!" },
-                { role: 'user', text: "Neden bu modeli tercih etmeliyim?" },
-                { role: 'assistant', text: "Bu model dayanıklılığı, yüksek performansı ve kolay kullanımıyla öne çıkıyor. Detaylı teknik özellikleri ve avantajları için benimle konuşmaya başlayın!" }
+                { role: 'user', text: "Bu ürün ne işe yarar?" },
+                { role: 'assistant', text: `Merhaba! Ben ${assistantName}, size bu ürün hakkında detaylı bilgi verebilirim. Sorularınızı bekliyorum!` },
+                { role: 'user', text: "Hangi özellikleri var?" },
+                { role: 'assistant', text: "Ürünün teknik özellikleri, kullanım alanları ve avantajları hakkında size yardımcı olabilirim. Merak ettiklerinizi sorun!" },
+                { role: 'user', text: "Nasıl yardımcı olabilirsiniz?" },
+                { role: 'assistant', text: "Ürün detayları, karşılaştırmalar ve size en uygun çözümü bulmak için buradan mesaj atabilirsiniz!" }
             ];
         },
 
@@ -526,48 +539,73 @@ window.placeholderV4 = function(productId = null) {
 };
 
 /**
- * Markdown Renderer for AI Chat Messages
- * Converts markdown syntax to HTML for chat display
+ * HTML Sanitizer & Enhancer for AI Chat Messages v3.0
+ * AI artık HTML formatında yanıt veriyor - burada sanitize + style ekliyoruz
+ * İzin verilen: <p>, <h3>, <h4>, <ul>, <ol>, <li>, <strong>, <b>, <em>, <i>, <a>, <br>, <div>, <span>
  */
 window.aiChatRenderMarkdown = function(content) {
     if (!content) return '';
 
-    // Sanitize HTML tags first
-    let html = content
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+    let html = content;
 
-    // Headers (h1, h2, h3)
-    html = html.replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-3 mb-2">$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-4 mb-3">$1</h1>');
+    // 1. Link'lere target="_blank", rel ve Tailwind class ekle
+    // Standart link: <a href="url">text</a>
+    html = html.replace(/<a\s+href="([^"]+)"([^>]*)>([^<]+)<\/a>/gi, function(match, url, attrs, text) {
+        // Zaten target varsa dokunma
+        if (attrs.includes('target=')) return match;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity text-blue-500 dark:text-blue-400 font-medium">${text}</a>`;
+    });
 
-    // Bold **text**
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>');
+    // Link içinde <strong> olan durumlar: <a href="url"><strong>text</strong></a>
+    html = html.replace(/<a\s+href="([^"]+)"([^>]*)><strong>([^<]+)<\/strong><\/a>/gi, function(match, url, attrs, text) {
+        if (attrs.includes('target=')) return match;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity text-blue-500 dark:text-blue-400 font-bold">${text}</a>`;
+    });
 
-    // Italic *text*
-    html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+    // Link içinde <b> olan durumlar: <a href="url"><b>text</b></a>
+    html = html.replace(/<a\s+href="([^"]+)"([^>]*)><b>([^<]+)<\/b><\/a>/gi, function(match, url, attrs, text) {
+        if (attrs.includes('target=')) return match;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity text-blue-500 dark:text-blue-400 font-bold">${text}</a>`;
+    });
 
-    // Links [text](url)
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity">$1</a>');
+    // 2. <ul> listelerine Tailwind class ekle
+    html = html.replace(/<ul>/gi, '<ul class="space-y-1.5 my-2 ml-4 list-none">');
 
-    // Unordered lists (- item)
-    html = html.replace(/^\s*[-*]\s+(.+)$/gim, '<li class="ml-4">• $1</li>');
-    html = html.replace(/(<li class="ml-4">.*<\/li>)/s, '<ul class="space-y-1 my-2">$1</ul>');
+    // 3. <ol> listelerine Tailwind class ekle
+    html = html.replace(/<ol>/gi, '<ol class="space-y-1.5 my-2 ml-4 list-decimal">');
 
-    // Line breaks
-    html = html.replace(/\n\n/g, '</p><p class="mt-2">');
-    html = html.replace(/\n/g, '<br>');
+    // 4. <li> elementlerine class ekle + bullet point
+    html = html.replace(/<li>/gi, '<li class="ml-2 text-gray-800 dark:text-gray-200">• ');
 
-    // Wrap in paragraph
-    html = '<p>' + html + '</p>';
+    // 5. <p> elementlerine class ekle
+    html = html.replace(/<p>/gi, '<p class="mb-2 text-gray-800 dark:text-gray-200 leading-relaxed">');
 
-    // Clean up multiple <p> tags
-    html = html.replace(/<p><\/p>/g, '');
+    // 6. <h3> başlıklarına class ekle
+    html = html.replace(/<h3>/gi, '<h3 class="text-lg font-bold mt-3 mb-2 text-gray-900 dark:text-gray-100">');
+
+    // 7. <h4> başlıklarına class ekle
+    html = html.replace(/<h4>/gi, '<h4 class="text-base font-semibold mt-2 mb-1 text-gray-900 dark:text-gray-100">');
+
+    // 8. <strong> elementlerine class ekle
+    html = html.replace(/<strong>/gi, '<strong class="font-bold text-gray-900 dark:text-white">');
+
+    // 9. <b> elementlerine class ekle
+    html = html.replace(/<b>/gi, '<b class="font-bold text-gray-900 dark:text-white">');
+
+    // 10. <em> elementlerine class ekle
+    html = html.replace(/<em>/gi, '<em class="italic text-gray-700 dark:text-gray-300">');
+
+    // 11. <i> elementlerine class ekle
+    html = html.replace(/<i>/gi, '<i class="italic text-gray-700 dark:text-gray-300">');
+
+    // 12. <br> sonrasında biraz boşluk ekle
+    html = html.replace(/<br\s*\/?>/gi, '<br class="my-1">');
+
+    // 13. <div> varsa temel class ekle
+    html = html.replace(/<div>/gi, '<div class="my-2">');
 
     return html;
 };
 
-console.log('✅ AI Chat Markdown Renderer loaded');
+console.log('✅ AI Chat HTML Sanitizer & Enhancer v3.0 loaded');
 </script>

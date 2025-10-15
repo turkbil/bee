@@ -34,7 +34,7 @@ class DynamicRouteRegistrar
     protected function registerMainRoutes(): void
     {
         // Tenant context'inde dil prefix'li route'lar
-        Route::middleware(['web', 'tenant', 'locale.site', 'page.tracker'])
+        Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo', 'page.tracker'])
             ->group(function () {
                 // Single slug route (e.g., /tr/pages)
                 Route::get('/{lang}/{slug1}', function ($lang, $slug1) {

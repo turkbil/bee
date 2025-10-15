@@ -1,5 +1,34 @@
-SİSTEM GERÇEK SİSTEM. O YÜZDEN KESİNLİKLE  
-MİGRATE FRESH SEED -- YAPMA!!! BEN SÖYLEMEDEN VERİTABANINA MANUEL İÇERİK EKLEME VE VERİTABANINDA DÜZENLEME YAPMA. 
+## ⛔ KRİTİK UYARILAR - MUTLAKA OKU!
+
+### 🚨 VERİTABANI KORUMA KURALLARI
+
+**BU GERÇEK CANLI SİSTEMDİR!**
+
+#### ❌ KESİNLİKLE YAPMA:
+1. **`php artisan migrate:fresh`** - ASLA!
+2. **`php artisan migrate:fresh --seed`** - ASLA!
+3. **`php artisan db:wipe`** - ASLA!
+4. **Veritabanı tablosunu truncate** - ASLA!
+5. **Manuel SQL DELETE/DROP komutları** - ASLA!
+6. **Tenant database silme** - ASLA!
+7. **Sunucuda ayarlarıyla bir işlem için defalarca sor, sunucu ayarlarını rastgele değiştirme** 
+8. **Sunucuyu apacheyi restart kafana göre yapma. Özellikle onaylar iste. Gerekmedikçe de yapma.**
+
+#### ⚠️ KULLANICI İZNİ GEREKIR:
+- **Veritabanına INSERT/UPDATE**: Önce kullanıcıya sor, onay al
+- **Mevcut kayıtları değiştirme**: Önce kullanıcıya sor, onay al
+- **Migration dosyası oluşturma**: Önce kullanıcıya sor, içeriğini göster
+
+#### ✅ SERBEST İŞLEMLER:
+- Kod okuma, analiz yapma
+- SELECT sorguları (readonly)
+- Log dosyalarını okuma
+- Config dosyalarını okuma
+- Test ortamında çalışma (eğer varsa)
+
+---
+
+**UNUTMA:** Eğer bir işlem "veritabanındaki mevcut verileri etkileyecekse" → **ÖNCE KULLANICIYA SOR!** 
 
 
 # 🤖 CLAUDE ÇALIŞMA TALİMATLARI
@@ -43,7 +72,7 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 - **Extended Think**: Her mesajı ultra deep analiz et, reasoning yap
 - **Türkçe İletişim**: Daima Türkçe yanıt ver
 - **Otomatik Devam**: Sorma, direkt hareket et
-- **Asla manuel işlem yapma veritabanına**
+- **Veritabanı Koruma**: Üstteki kritik uyarılara mutlaka uy!
 
 ### 📝 ÖNEMLİ NOT
 Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
@@ -73,6 +102,35 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 ### PATTERN SİSTEMİ
 - **Page Pattern = Master**: Yeni modüller Page pattern'i alır
 - **JSON çoklu dil + SEO + Modern PHP**
+
+---
+
+## 🏢 TENANT YÖNETİMİ
+
+### YENİ TENANT EKLEME
+**Detaylı kılavuz:** `readme/tenant-olusturma.md`
+
+#### Hızlı Adımlar:
+1. **Plesk Panel**: Domain alias olarak ekle (SEO redirect KAPALI!)
+2. **Laravel Tenant**: Tinker ile tenant + domain oluştur
+3. **Config Güncelle**: `plesk repair web tuufi.com -y`
+4. **Test**: `curl -I https://yenidomain.com/`
+
+#### Kritik Kontroller:
+```bash
+# SEO redirect kontrol (false olmalı!)
+plesk db "SELECT name, seoRedirect FROM domain_aliases WHERE name = 'domain.com'"
+
+# Gerekirse kapat
+plesk db "UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = 'domain.com'"
+```
+
+#### Mevcut Tenant'lar:
+- **tuufi.com**: Central domain (tenant değil)
+- **ixtif.com**: Tenant ID: 2
+- **ixtif.com.tr**: Tenant ID: 3
+
+**NOT:** Yeni tenant eklerken mutlaka dökümanı takip et!
 
 ---
 

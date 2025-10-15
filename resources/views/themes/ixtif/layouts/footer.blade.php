@@ -8,72 +8,17 @@
                 {{-- Company Info --}}
                 <div class="space-y-4">
                     @php
-                        $siteLogo = setting('site_logo');
-                        $siteKontrastLogo = setting('site_kontrast_logo');
-                        $siteTitle = setting('site_title', config('app.name'));
+                        $logoService = app(\App\Services\LogoService::class);
+                        $logos = $logoService->getLogos();
                         $siteDescription = setting('site_description', 'Modern web çözümleri ile dijital dünyanızı şekillendiriyoruz.');
-
-                        // Footer için logo mantığı
-                        $hasKontrastLogo = $siteKontrastLogo && $siteKontrastLogo !== 'Logo yok';
-                        $hasNormalLogo = $siteLogo && $siteLogo !== 'Logo yok';
-                        $hasBothLogos = $hasNormalLogo && $hasKontrastLogo;
-
-                        $tenantId = function_exists('tenant_id') ? tenant_id() : null;
-                        $normalizePath = function ($path) use ($tenantId) {
-                            if (!$path) {
-                                return $path;
-                            }
-
-                            if ($tenantId && !str_contains($path, 'tenant'.$tenantId) && str_starts_with($path, 'storage/')) {
-                                return 'storage/tenant'.$tenantId.'/'.\Illuminate\Support\Str::after($path, 'storage/');
-                            }
-
-                            return $path;
-                        };
-
-                        $siteLogo = $normalizePath($siteLogo);
-                        $siteKontrastLogo = $normalizePath($siteKontrastLogo);
-
-                        $siteLogoUrl = $hasNormalLogo ? thumbmaker($siteLogo, 'logo') : null;
-                        $siteKontrastLogoUrl = $hasKontrastLogo ? thumbmaker($siteKontrastLogo, 'logo') : null;
                     @endphp
 
-                    <div class="flex items-center">
-                        @if($hasBothLogos)
-                            {{-- Her iki logo da var - Dark mode'da kontrast, Light mode'da normal --}}
-                            <img src="{{ $siteLogoUrl ?? cdn($siteLogo) }}"
-                                 alt="{{ $siteTitle }}"
-                                 width="160"
-                                 height="48"
-                                 class="h-8 w-auto block dark:hidden"
-                                 fetchpriority="low">
-                            <img src="{{ $siteKontrastLogoUrl ?? cdn($siteKontrastLogo) }}"
-                                 alt="{{ $siteTitle }}"
-                                 width="160"
-                                 height="48"
-                                 class="h-8 w-auto hidden dark:block"
-                                 fetchpriority="low">
-                        @elseif($hasKontrastLogo)
-                            {{-- Sadece kontrast logo var - Dark mode'da göster, Light mode'da beyaz filtre ile --}}
-                            <img src="{{ $siteKontrastLogoUrl ?? cdn($siteKontrastLogo) }}"
-                                 alt="{{ $siteTitle }}"
-                                 width="160"
-                                 height="48"
-                                 class="h-8 w-auto"
-                                 fetchpriority="low">
-                        @elseif($hasNormalLogo)
-                            {{-- Sadece normal logo var - Light mode'da normal, Dark mode'da beyaz filtre ile --}}
-                            <img src="{{ $siteLogoUrl ?? cdn($siteLogo) }}"
-                                 alt="{{ $siteTitle }}"
-                                 width="160"
-                                 height="48"
-                                 class="h-8 w-auto logo-footer-adaptive"
-                                 fetchpriority="low">
-                        @else
-                            {{-- Logo yoksa sadece başlık göster --}}
-                            <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ $siteTitle }}</h2>
-                        @endif
-                    </div>
+                    @include('components.logo.responsive-logo', [
+                        'logos' => $logos,
+                        'baseClass' => 'h-8 w-auto',
+                        'priority' => 'low',
+                        'location' => 'footer'
+                    ])
 
                     <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                         {{ $siteDescription }}
@@ -251,11 +196,16 @@
                             </button>
 
                             {{-- Theme Badge --}}
+                            @php
+                                $themeService = app(\App\Services\ThemeService::class);
+                                $activeTheme = $themeService->getActiveTheme();
+                                $themeName = $activeTheme ? $activeTheme->name : 'simple';
+                            @endphp
                             <span class="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded text-xs font-medium">
                                 <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path>
                                 </svg>
-                                Tema: blank
+                                Tema: {{ $themeName }}
                             </span>
                         </div>
                     </div>
@@ -307,7 +257,12 @@
     <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
     {{-- Theme Main Scripts --}}
-    <script defer src="{{ asset('assets/js/themes/simple/main.js') }}?v=1.0.1"></script>
+    @php
+        $themeService = app(\App\Services\ThemeService::class);
+        $activeTheme = $themeService->getActiveTheme();
+        $themeName = $activeTheme ? $activeTheme->name : 'simple';
+    @endphp
+    <script defer src="{{ asset('assets/js/themes/' . $themeName . '/main.js') }}?v=1.0.1"></script>
 
     {{-- Dynamic Script Stack --}}
     @stack('scripts')

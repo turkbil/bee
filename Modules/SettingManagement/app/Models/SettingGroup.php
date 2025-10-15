@@ -37,6 +37,24 @@ class SettingGroup extends Model
     ];
 
     /**
+     * Get attributes for array conversion (used by Livewire serialization)
+     * Sanitize all string attributes to prevent UTF-8 encoding errors
+     */
+    public function attributesToArray()
+    {
+        $attributes = parent::attributesToArray();
+
+        // Sanitize all string attributes
+        foreach ($attributes as $key => $value) {
+            if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+                $attributes[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+            }
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Return the sluggable configuration array for this model.
      *
      * @return array
@@ -76,6 +94,28 @@ class SettingGroup extends Model
 
     public function settings(): HasMany
     {
-        return $this->hasMany(Setting::class, 'group_id'); 
+        return $this->hasMany(Setting::class, 'group_id');
+    }
+
+    /**
+     * Get count of settings that have values (filled settings)
+     * This counts actual SettingValue records, not just Setting definitions
+     *
+     * Note: Since Settings are in central DB and SettingValues are in tenant DB,
+     * we need to manually check for values instead of using whereHas.
+     */
+    public function getFilledSettingsCountAttribute(): int
+    {
+        // Get all setting IDs for this group
+        $settingIds = $this->settings()->pluck('id')->toArray();
+
+        if (empty($settingIds)) {
+            return 0;
+        }
+
+        // Count how many of these settings have values in the tenant database
+        return SettingValue::whereIn('setting_id', $settingIds)
+            ->distinct('setting_id')
+            ->count('setting_id');
     }
 }

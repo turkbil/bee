@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+</head>
+<body>
+<div class="fixed top-4 left-4 z-[9999]">
+    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="font-semibold text-sm">Ana Menü</span>
+    </a>
+</div>
+
+<!-- CATEGORY-001: Large Grid with Image Backgrounds -->
+<section id="category-001" class="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+    <div class="container mx-auto px-6">
+        <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+            <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-001
+        </span>
+        <h2 class="text-5xl font-black text-white mb-4">Kategorileri Keşfet</h2>
+        <p class="text-xl text-gray-300 mb-12 max-w-2xl">Türkiye'nin en büyük istif pazarında binlerce ürün sizi bekliyor</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Elektronik -->
+            <a href="#" class="group relative h-80 rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800"></div>
+                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                <div class="relative h-full flex flex-col justify-end p-8">
+                    <i class="fa-solid fa-laptop text-6xl text-white mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-3xl font-bold text-white mb-2">Elektronik</h3>
+                    <p class="text-blue-100 text-lg mb-3">850+ Ürün</p>
+                    <div class="flex items-center text-white font-semibold">
+                        <span>Keşfet</span>
+                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Mobilya -->
+            <a href="#" class="group relative h-80 rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500">
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-600 to-orange-800"></div>
+                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                <div class="relative h-full flex flex-col justify-end p-8">
+                    <i class="fa-solid fa-couch text-6xl text-white mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-3xl font-bold text-white mb-2">Mobilya</h3>
+                    <p class="text-orange-100 text-lg mb-3">620+ Ürün</p>
+                    <div class="flex items-center text-white font-semibold">
+                        <span>Keşfet</span>
+                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Tekstil -->
+            <a href="#" class="group relative h-80 rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500">
+                <div class="absolute inset-0 bg-gradient-to-br from-pink-600 to-purple-800"></div>
+                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                <div class="relative h-full flex flex-col justify-end p-8">
+                    <i class="fa-solid fa-shirt text-6xl text-white mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-3xl font-bold text-white mb-2">Tekstil</h3>
+                    <p class="text-pink-100 text-lg mb-3">1200+ Ürün</p>
+                    <div class="flex items-center text-white font-semibold">
+                        <span>Keşfet</span>
+                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Alet & Ekipman -->
+            <a href="#" class="group relative h-80 rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500">
+                <div class="absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-800"></div>
+                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                <div class="relative h-full flex flex-col justify-end p-8">
+                    <i class="fa-solid fa-wrench text-6xl text-white mb-4 group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-3xl font-bold text-white mb-2">Alet & Ekipman</h3>
+                    <p class="text-green-100 text-lg mb-3">450+ Ürün</p>
+                    <div class="flex items-center text-white font-semibold">
+                        <span>Keşfet</span>
+                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-002: Minimal Icon Grid -->
+<section id="category-002" class="h-screen flex items-center justify-center bg-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-002
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Ürün Kategorileri</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Her kategoride binlerce istif ürün</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <a href="#" class="group bg-gray-50 hover:bg-gradient-to-br hover:from-blue-500 hover:to-blue-600 rounded-3xl p-8 text-center transition-all duration-300 hover:scale-110 hover:shadow-2xl">
+                <i class="fa-solid fa-laptop text-5xl text-blue-600 group-hover:text-white mb-4 transition-colors"></i>
+                <h3 class="font-bold text-gray-900 group-hover:text-white mb-1 transition-colors">Elektronik</h3>
+                <p class="text-sm text-gray-600 group-hover:text-blue-100 transition-colors">850+</p>
+            </a>
+
+            <a href="#" class="group bg-gray-50 hover:bg-gradient-to-br hover:from-orange-500 hover:to-orange-600 rounded-3xl p-8 text-center transition-all duration-300 hover:scale-110 hover:shadow-2xl">
+                <i class="fa-solid fa-couch text-5xl text-orange-600 group-hover:text-white mb-4 transition-colors"></i>
+                <h3 class="font-bold text-gray-900 group-hover:text-white mb-1 transition-colors">Mobilya</h3>
+                <p class="text-sm text-gray-600 group-hover:text-orange-100 transition-colors">620+</p>
+            </a>
+
+            <a href="#" class="group bg-gray-50 hover:bg-gradient-to-br hover:from-pink-500 hover:to-pink-600 rounded-3xl p-8 text-center transition-all duration-300 hover:scale-110 hover:shadow-2xl">
+                <i class="fa-solid fa-shirt text-5xl text-pink-600 group-hover:text-white mb-4 transition-colors"></i>
+                <h3 class="font-bold text-gray-900 group-hover:text-white mb-1 transition-colors">Tekstil</h3>
+                <p class="text-sm text-gray-600 group-hover:text-pink-100 transition-colors">1200+</p>
+            </a>
+
+            <a href="#" class="group bg-gray-50 hover:bg-gradient-to-br hover:from-green-500 hover:to-green-600 rounded-3xl p-8 text-center transition-all duration-300 hover:scale-110 hover:shadow-2xl">
+                <i class="fa-solid fa-wrench text-5xl text-green-600 group-hover:text-white mb-4 transition-colors"></i>
+                <h3 class="font-bold text-gray-900 group-hover:text-white mb-1 transition-colors">Alet & Ekipman</h3>
+                <p class="text-sm text-gray-600 group-hover:text-green-100 transition-colors">450+</p>
+            </a>
+
+            <a href="#" class="group bg-gray-50 hover:bg-gradient-to-br hover:from-purple-500 hover:to-purple-600 rounded-3xl p-8 text-center transition-all duration-300 hover:scale-110 hover:shadow-2xl">
+                <i class="fa-solid fa-home text-5xl text-purple-600 group-hover:text-white mb-4 transition-colors"></i>
+                <h3 class="font-bold text-gray-900 group-hover:text-white mb-1 transition-colors">Ev & Yaşam</h3>
+                <p class="text-sm text-gray-600 group-hover:text-purple-100 transition-colors">380+</p>
+            </a>
+
+            <a href="#" class="group bg-gray-50 hover:bg-gradient-to-br hover:from-red-500 hover:to-red-600 rounded-3xl p-8 text-center transition-all duration-300 hover:scale-110 hover:shadow-2xl">
+                <i class="fa-solid fa-utensils text-5xl text-red-600 group-hover:text-white mb-4 transition-colors"></i>
+                <h3 class="font-bold text-gray-900 group-hover:text-white mb-1 transition-colors">Mutfak</h3>
+                <p class="text-sm text-gray-600 group-hover:text-red-100 transition-colors">290+</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-003: Split Featured Category -->
+<section id="category-003" class="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900">
+    <div class="container mx-auto px-6">
+        <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+            <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-003
+        </span>
+
+        <div class="grid lg:grid-cols-2 gap-8 items-center">
+            <!-- Featured Category -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-12 hover:scale-105 transition-all duration-500">
+                <div class="inline-block bg-yellow-500 text-yellow-900 px-4 py-2 rounded-full text-sm font-bold mb-6">
+                    <i class="fa-solid fa-star mr-1"></i>ÖNE ÇIKAN KATEGORİ
+                </div>
+                <i class="fa-solid fa-laptop text-8xl text-blue-400 mb-6"></i>
+                <h3 class="text-5xl font-black text-white mb-4">Elektronik</h3>
+                <p class="text-2xl text-blue-200 mb-6">850+ İstif Ürün</p>
+                <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                    Laptop, telefon, tablet ve daha fazlası. Fabrika çıkışlı, sıfır kutulu elektronik ürünlerde %70'e varan indirimler.
+                </p>
+                <a href="#" class="inline-flex items-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    <span>Tümünü Gör</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Other Categories Grid -->
+            <div class="grid grid-cols-2 gap-6">
+                <a href="#" class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:scale-105 transition-all">
+                    <i class="fa-solid fa-couch text-4xl text-orange-400 mb-3"></i>
+                    <h4 class="text-xl font-bold text-white mb-1">Mobilya</h4>
+                    <p class="text-gray-400">620+ Ürün</p>
+                </a>
+
+                <a href="#" class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:scale-105 transition-all">
+                    <i class="fa-solid fa-shirt text-4xl text-pink-400 mb-3"></i>
+                    <h4 class="text-xl font-bold text-white mb-1">Tekstil</h4>
+                    <p class="text-gray-400">1200+ Ürün</p>
+                </a>
+
+                <a href="#" class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:scale-105 transition-all">
+                    <i class="fa-solid fa-wrench text-4xl text-green-400 mb-3"></i>
+                    <h4 class="text-xl font-bold text-white mb-1">Alet & Ekipman</h4>
+                    <p class="text-gray-400">450+ Ürün</p>
+                </a>
+
+                <a href="#" class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:scale-105 transition-all">
+                    <i class="fa-solid fa-home text-4xl text-purple-400 mb-3"></i>
+                    <h4 class="text-xl font-bold text-white mb-1">Ev & Yaşam</h4>
+                    <p class="text-gray-400">380+ Ürün</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-004: Horizontal Scroll Cards -->
+<section id="category-004" class="h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-blue-50">
+    <div class="container mx-auto px-6">
+        <div class="mb-12">
+            <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-004
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Kategorilere Göz At</h2>
+            <p class="text-xl text-gray-600">Kaydırarak tüm kategorileri keşfedin</p>
+        </div>
+
+        <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory" style="scrollbar-width: thin;">
+            <!-- Elektronik -->
+            <div class="snap-center shrink-0 w-80 bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all group">
+                <div class="h-48 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                    <i class="fa-solid fa-laptop text-8xl text-white group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">Elektronik</h3>
+                    <p class="text-gray-600 mb-4">Laptop, telefon, tablet ve daha fazlası</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-blue-600">850+ Ürün</span>
+                        <i class="fa-solid fa-arrow-right text-blue-600 text-xl group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobilya -->
+            <div class="snap-center shrink-0 w-80 bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all group">
+                <div class="h-48 bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center">
+                    <i class="fa-solid fa-couch text-8xl text-white group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">Mobilya</h3>
+                    <p class="text-gray-600 mb-4">Koltuk, masa, sandalye, dolap</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-orange-600">620+ Ürün</span>
+                        <i class="fa-solid fa-arrow-right text-orange-600 text-xl group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tekstil -->
+            <div class="snap-center shrink-0 w-80 bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all group">
+                <div class="h-48 bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center">
+                    <i class="fa-solid fa-shirt text-8xl text-white group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">Tekstil</h3>
+                    <p class="text-gray-600 mb-4">Giyim, ev tekstili, kumaş</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-pink-600">1200+ Ürün</span>
+                        <i class="fa-solid fa-arrow-right text-pink-600 text-xl group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alet & Ekipman -->
+            <div class="snap-center shrink-0 w-80 bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all group">
+                <div class="h-48 bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center">
+                    <i class="fa-solid fa-wrench text-8xl text-white group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">Alet & Ekipman</h3>
+                    <p class="text-gray-600 mb-4">El aletleri, elektrikli aletler</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-green-600">450+ Ürün</span>
+                        <i class="fa-solid fa-arrow-right text-green-600 text-xl group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ev & Yaşam -->
+            <div class="snap-center shrink-0 w-80 bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all group">
+                <div class="h-48 bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
+                    <i class="fa-solid fa-home text-8xl text-white group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-2">Ev & Yaşam</h3>
+                    <p class="text-gray-600 mb-4">Dekorasyon, aksesuar, bahçe</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-purple-600">380+ Ürün</span>
+                        <i class="fa-solid fa-arrow-right text-purple-600 text-xl group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-005: Tab Navigation Style -->
+<section id="category-005" class="h-screen flex items-center justify-center bg-gray-900" x-data="{ activeTab: 'elektronik' }">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-teal-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-005
+            </span>
+            <h2 class="text-5xl font-black text-white mb-4">Kategorileri Keşfet</h2>
+        </div>
+
+        <!-- Tab Buttons -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+            <button @click="activeTab = 'elektronik'" :class="activeTab === 'elektronik' ? 'bg-blue-600 text-white scale-110' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'" class="px-8 py-4 rounded-full font-bold transition-all duration-300">
+                <i class="fa-solid fa-laptop mr-2"></i>Elektronik
+            </button>
+            <button @click="activeTab = 'mobilya'" :class="activeTab === 'mobilya' ? 'bg-orange-600 text-white scale-110' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'" class="px-8 py-4 rounded-full font-bold transition-all duration-300">
+                <i class="fa-solid fa-couch mr-2"></i>Mobilya
+            </button>
+            <button @click="activeTab = 'tekstil'" :class="activeTab === 'tekstil' ? 'bg-pink-600 text-white scale-110' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'" class="px-8 py-4 rounded-full font-bold transition-all duration-300">
+                <i class="fa-solid fa-shirt mr-2"></i>Tekstil
+            </button>
+            <button @click="activeTab = 'alet'" :class="activeTab === 'alet' ? 'bg-green-600 text-white scale-110' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'" class="px-8 py-4 rounded-full font-bold transition-all duration-300">
+                <i class="fa-solid fa-wrench mr-2"></i>Alet & Ekipman
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="max-w-4xl mx-auto">
+            <div x-show="activeTab === 'elektronik'" x-transition class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-12 text-white">
+                <i class="fa-solid fa-laptop text-7xl mb-6"></i>
+                <h3 class="text-4xl font-black mb-4">Elektronik Kategorisi</h3>
+                <p class="text-xl text-blue-100 mb-6">Laptop, telefon, tablet, akıllı saat ve daha fazlası. Fabrika çıkışlı sıfır elektronik ürünlerde büyük fırsatlar.</p>
+                <div class="flex items-center gap-8 mb-8">
+                    <div>
+                        <div class="text-5xl font-bold">850+</div>
+                        <div class="text-blue-200">Ürün</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">%70</div>
+                        <div class="text-blue-200">İndirim</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">24</div>
+                        <div class="text-blue-200">Marka</div>
+                    </div>
+                </div>
+                <a href="#" class="inline-flex items-center gap-3 bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    <span>Ürünleri Görüntüle</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div x-show="activeTab === 'mobilya'" x-transition class="bg-gradient-to-br from-orange-600 to-orange-800 rounded-3xl p-12 text-white">
+                <i class="fa-solid fa-couch text-7xl mb-6"></i>
+                <h3 class="text-4xl font-black mb-4">Mobilya Kategorisi</h3>
+                <p class="text-xl text-orange-100 mb-6">Koltuk takımları, yatak odası, yemek odası, ofis mobilyaları. Kaliteli mobilyalarda istif fiyatları.</p>
+                <div class="flex items-center gap-8 mb-8">
+                    <div>
+                        <div class="text-5xl font-bold">620+</div>
+                        <div class="text-orange-200">Ürün</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">%65</div>
+                        <div class="text-orange-200">İndirim</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">18</div>
+                        <div class="text-orange-200">Marka</div>
+                    </div>
+                </div>
+                <a href="#" class="inline-flex items-center gap-3 bg-white text-orange-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    <span>Ürünleri Görüntüle</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div x-show="activeTab === 'tekstil'" x-transition class="bg-gradient-to-br from-pink-600 to-pink-800 rounded-3xl p-12 text-white">
+                <i class="fa-solid fa-shirt text-7xl mb-6"></i>
+                <h3 class="text-4xl font-black mb-4">Tekstil Kategorisi</h3>
+                <p class="text-xl text-pink-100 mb-6">Giyim, ev tekstili, kumaş, yatak çarşafları. En büyük tekstil istif stoğu burada.</p>
+                <div class="flex items-center gap-8 mb-8">
+                    <div>
+                        <div class="text-5xl font-bold">1200+</div>
+                        <div class="text-pink-200">Ürün</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">%75</div>
+                        <div class="text-pink-200">İndirim</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">32</div>
+                        <div class="text-pink-200">Marka</div>
+                    </div>
+                </div>
+                <a href="#" class="inline-flex items-center gap-3 bg-white text-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    <span>Ürünleri Görüntüle</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div x-show="activeTab === 'alet'" x-transition class="bg-gradient-to-br from-green-600 to-green-800 rounded-3xl p-12 text-white">
+                <i class="fa-solid fa-wrench text-7xl mb-6"></i>
+                <h3 class="text-4xl font-black mb-4">Alet & Ekipman Kategorisi</h3>
+                <p class="text-xl text-green-100 mb-6">El aletleri, elektrikli aletler, bahçe ekipmanları. Profesyonel kalitede istif fiyatları.</p>
+                <div class="flex items-center gap-8 mb-8">
+                    <div>
+                        <div class="text-5xl font-bold">450+</div>
+                        <div class="text-green-200">Ürün</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">%60</div>
+                        <div class="text-green-200">İndirim</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-bold">15</div>
+                        <div class="text-green-200">Marka</div>
+                    </div>
+                </div>
+                <a href="#" class="inline-flex items-center gap-3 bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    <span>Ürünleri Görüntüle</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-006: Masonry Grid Style -->
+<section id="category-006" class="h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-slate-700 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-006
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Tüm Kategoriler</h2>
+            <p class="text-xl text-gray-600">İhtiyacınız olan her şey burada</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 max-h-[600px] overflow-y-auto pr-4" style="scrollbar-width: thin;">
+            <!-- Large Card - Elektronik -->
+            <a href="#" class="md:col-span-2 md:row-span-2 bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-10 text-white hover:scale-105 transition-all duration-500 group">
+                <i class="fa-solid fa-laptop text-8xl mb-6 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-4xl font-black mb-3">Elektronik</h3>
+                <p class="text-xl text-blue-100 mb-4">En son teknoloji ürünler</p>
+                <div class="text-5xl font-bold mb-2">850+</div>
+                <div class="text-blue-200">Ürün Çeşidi</div>
+            </a>
+
+            <!-- Small Cards -->
+            <a href="#" class="bg-white rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all group border-2 border-gray-200">
+                <i class="fa-solid fa-couch text-5xl text-orange-600 mb-4 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Mobilya</h3>
+                <p class="text-gray-600">620+ Ürün</p>
+            </a>
+
+            <a href="#" class="bg-white rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all group border-2 border-gray-200">
+                <i class="fa-solid fa-shirt text-5xl text-pink-600 mb-4 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Tekstil</h3>
+                <p class="text-gray-600">1200+ Ürün</p>
+            </a>
+
+            <a href="#" class="bg-white rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all group border-2 border-gray-200">
+                <i class="fa-solid fa-wrench text-5xl text-green-600 mb-4 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Alet & Ekipman</h3>
+                <p class="text-gray-600">450+ Ürün</p>
+            </a>
+
+            <a href="#" class="bg-white rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all group border-2 border-gray-200">
+                <i class="fa-solid fa-home text-5xl text-purple-600 mb-4 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Ev & Yaşam</h3>
+                <p class="text-gray-600">380+ Ürün</p>
+            </a>
+
+            <!-- Medium Card -->
+            <a href="#" class="md:col-span-2 bg-gradient-to-br from-pink-600 to-pink-800 rounded-3xl p-8 text-white hover:scale-105 transition-all duration-500 group">
+                <i class="fa-solid fa-utensils text-6xl mb-4 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-3xl font-black mb-2">Mutfak</h3>
+                <p class="text-pink-100 mb-3">Mutfak gereçleri ve ekipmanları</p>
+                <div class="text-4xl font-bold">290+ Ürün</div>
+            </a>
+
+            <a href="#" class="bg-white rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all group border-2 border-gray-200">
+                <i class="fa-solid fa-basketball text-5xl text-red-600 mb-4 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Spor</h3>
+                <p class="text-gray-600">210+ Ürün</p>
+            </a>
+
+            <a href="#" class="bg-white rounded-2xl p-6 hover:shadow-2xl hover:scale-105 transition-all group border-2 border-gray-200">
+                <i class="fa-solid fa-baby text-5xl text-cyan-600 mb-4 group-hover:scale-110 transition-transform"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Bebek</h3>
+                <p class="text-gray-600">180+ Ürün</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-007: Sidebar Navigation Style -->
+<section id="category-007" class="h-screen flex items-center justify-center bg-white" x-data="{ selectedCategory: 'elektronik' }">
+    <div class="container mx-auto px-6">
+        <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+            <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-007
+        </span>
+
+        <div class="grid lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <div class="bg-gray-50 rounded-3xl p-6 h-fit">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Kategoriler</h3>
+                <nav class="space-y-2">
+                    <button @click="selectedCategory = 'elektronik'" :class="selectedCategory === 'elektronik' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-200'" class="w-full text-left px-6 py-4 rounded-2xl font-semibold transition-all flex items-center gap-3">
+                        <i class="fa-solid fa-laptop text-xl"></i>
+                        <span>Elektronik</span>
+                        <span class="ml-auto text-sm" x-show="selectedCategory === 'elektronik'">850+</span>
+                    </button>
+                    <button @click="selectedCategory = 'mobilya'" :class="selectedCategory === 'mobilya' ? 'bg-orange-600 text-white' : 'text-gray-700 hover:bg-gray-200'" class="w-full text-left px-6 py-4 rounded-2xl font-semibold transition-all flex items-center gap-3">
+                        <i class="fa-solid fa-couch text-xl"></i>
+                        <span>Mobilya</span>
+                        <span class="ml-auto text-sm" x-show="selectedCategory === 'mobilya'">620+</span>
+                    </button>
+                    <button @click="selectedCategory = 'tekstil'" :class="selectedCategory === 'tekstil' ? 'bg-pink-600 text-white' : 'text-gray-700 hover:bg-gray-200'" class="w-full text-left px-6 py-4 rounded-2xl font-semibold transition-all flex items-center gap-3">
+                        <i class="fa-solid fa-shirt text-xl"></i>
+                        <span>Tekstil</span>
+                        <span class="ml-auto text-sm" x-show="selectedCategory === 'tekstil'">1200+</span>
+                    </button>
+                    <button @click="selectedCategory = 'alet'" :class="selectedCategory === 'alet' ? 'bg-green-600 text-white' : 'text-gray-700 hover:bg-gray-200'" class="w-full text-left px-6 py-4 rounded-2xl font-semibold transition-all flex items-center gap-3">
+                        <i class="fa-solid fa-wrench text-xl"></i>
+                        <span>Alet & Ekipman</span>
+                        <span class="ml-auto text-sm" x-show="selectedCategory === 'alet'">450+</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Content Area -->
+            <div class="lg:col-span-3">
+                <div x-show="selectedCategory === 'elektronik'" x-transition class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-10">
+                    <i class="fa-solid fa-laptop text-8xl text-blue-600 mb-6"></i>
+                    <h3 class="text-5xl font-black text-gray-900 mb-4">Elektronik</h3>
+                    <p class="text-xl text-gray-700 mb-8">Laptop, telefon, tablet, akıllı saat ve daha fazlası. Son model elektronik cihazlarda %70'e varan indirimler.</p>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">850+</div>
+                            <div class="text-gray-600">Ürün</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">24</div>
+                            <div class="text-gray-600">Marka</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">%70</div>
+                            <div class="text-gray-600">İndirim</div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="inline-flex items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition-all">
+                        <span>Ürünleri İncele</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div x-show="selectedCategory === 'mobilya'" x-transition class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-3xl p-10">
+                    <i class="fa-solid fa-couch text-8xl text-orange-600 mb-6"></i>
+                    <h3 class="text-5xl font-black text-gray-900 mb-4">Mobilya</h3>
+                    <p class="text-xl text-gray-700 mb-8">Koltuk takımları, yatak odası, yemek odası, ofis mobilyaları. Kaliteli mobilyalarda istif fiyatları.</p>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-orange-600 mb-2">620+</div>
+                            <div class="text-gray-600">Ürün</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-orange-600 mb-2">18</div>
+                            <div class="text-gray-600">Marka</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-orange-600 mb-2">%65</div>
+                            <div class="text-gray-600">İndirim</div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="inline-flex items-center gap-3 bg-orange-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-orange-700 transition-all">
+                        <span>Ürünleri İncele</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div x-show="selectedCategory === 'tekstil'" x-transition class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-3xl p-10">
+                    <i class="fa-solid fa-shirt text-8xl text-pink-600 mb-6"></i>
+                    <h3 class="text-5xl font-black text-gray-900 mb-4">Tekstil</h3>
+                    <p class="text-xl text-gray-700 mb-8">Giyim, ev tekstili, kumaş, yatak çarşafları. En büyük tekstil istif stoğu burada.</p>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-pink-600 mb-2">1200+</div>
+                            <div class="text-gray-600">Ürün</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-pink-600 mb-2">32</div>
+                            <div class="text-gray-600">Marka</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-pink-600 mb-2">%75</div>
+                            <div class="text-gray-600">İndirim</div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="inline-flex items-center gap-3 bg-pink-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-pink-700 transition-all">
+                        <span>Ürünleri İncele</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div x-show="selectedCategory === 'alet'" x-transition class="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-10">
+                    <i class="fa-solid fa-wrench text-8xl text-green-600 mb-6"></i>
+                    <h3 class="text-5xl font-black text-gray-900 mb-4">Alet & Ekipman</h3>
+                    <p class="text-xl text-gray-700 mb-8">El aletleri, elektrikli aletler, bahçe ekipmanları. Profesyonel kalitede istif fiyatları.</p>
+
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-green-600 mb-2">450+</div>
+                            <div class="text-gray-600">Ürün</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-green-600 mb-2">15</div>
+                            <div class="text-gray-600">Marka</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <div class="text-4xl font-bold text-green-600 mb-2">%60</div>
+                            <div class="text-gray-600">İndirim</div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="inline-flex items-center gap-3 bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-green-700 transition-all">
+                        <span>Ürünleri İncele</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-008: Accordion List Style -->
+<section id="category-008" class="h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-indigo-900" x-data="{ openCategory: null }">
+    <div class="container mx-auto px-6 max-w-4xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-008
+            </span>
+            <h2 class="text-5xl font-black text-white mb-4">Tüm Kategoriler</h2>
+            <p class="text-xl text-purple-200">Kategorilere tıklayarak detayları görün</p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- Elektronik -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden">
+                <button @click="openCategory = openCategory === 'elektronik' ? null : 'elektronik'" class="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-all">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-laptop text-3xl text-blue-400"></i>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Elektronik</h3>
+                            <p class="text-blue-200">850+ Ürün</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid text-white text-xl" :class="openCategory === 'elektronik' ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <div x-show="openCategory === 'elektronik'" x-transition class="px-6 pb-6">
+                    <p class="text-gray-300 mb-4">Laptop, telefon, tablet, akıllı saat ve daha fazlası. Fabrika çıkışlı sıfır elektronik ürünlerde %70'e varan indirimler.</p>
+                    <div class="flex gap-4 mb-4">
+                        <div class="bg-blue-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">24 Marka</div>
+                        </div>
+                        <div class="bg-blue-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">%70 İndirim</div>
+                        </div>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-700 transition-all">
+                        <span>Ürünleri Gör</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobilya -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden">
+                <button @click="openCategory = openCategory === 'mobilya' ? null : 'mobilya'" class="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-all">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-couch text-3xl text-orange-400"></i>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Mobilya</h3>
+                            <p class="text-orange-200">620+ Ürün</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid text-white text-xl" :class="openCategory === 'mobilya' ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <div x-show="openCategory === 'mobilya'" x-transition class="px-6 pb-6">
+                    <p class="text-gray-300 mb-4">Koltuk takımları, yatak odası, yemek odası, ofis mobilyaları. Kaliteli mobilyalarda istif fiyatları.</p>
+                    <div class="flex gap-4 mb-4">
+                        <div class="bg-orange-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">18 Marka</div>
+                        </div>
+                        <div class="bg-orange-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">%65 İndirim</div>
+                        </div>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-full font-bold hover:bg-orange-700 transition-all">
+                        <span>Ürünleri Gör</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tekstil -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden">
+                <button @click="openCategory = openCategory === 'tekstil' ? null : 'tekstil'" class="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-all">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-shirt text-3xl text-pink-400"></i>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Tekstil</h3>
+                            <p class="text-pink-200">1200+ Ürün</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid text-white text-xl" :class="openCategory === 'tekstil' ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <div x-show="openCategory === 'tekstil'" x-transition class="px-6 pb-6">
+                    <p class="text-gray-300 mb-4">Giyim, ev tekstili, kumaş, yatak çarşafları. En büyük tekstil istif stoğu burada.</p>
+                    <div class="flex gap-4 mb-4">
+                        <div class="bg-pink-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">32 Marka</div>
+                        </div>
+                        <div class="bg-pink-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">%75 İndirim</div>
+                        </div>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 bg-pink-600 text-white px-6 py-3 rounded-full font-bold hover:bg-pink-700 transition-all">
+                        <span>Ürünleri Gör</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Alet & Ekipman -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden">
+                <button @click="openCategory = openCategory === 'alet' ? null : 'alet'" class="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-all">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-wrench text-3xl text-green-400"></i>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Alet & Ekipman</h3>
+                            <p class="text-green-200">450+ Ürün</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid text-white text-xl" :class="openCategory === 'alet' ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </button>
+                <div x-show="openCategory === 'alet'" x-transition class="px-6 pb-6">
+                    <p class="text-gray-300 mb-4">El aletleri, elektrikli aletler, bahçe ekipmanları. Profesyonel kalitede istif fiyatları.</p>
+                    <div class="flex gap-4 mb-4">
+                        <div class="bg-green-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">15 Marka</div>
+                        </div>
+                        <div class="bg-green-600/30 rounded-xl px-4 py-2">
+                            <div class="text-2xl font-bold text-white">%60 İndirim</div>
+                        </div>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-full font-bold hover:bg-green-700 transition-all">
+                        <span>Ürünleri Gör</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-009: Circle Icon Grid -->
+<section id="category-009" class="h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="inline-block bg-amber-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-009
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Popüler Kategoriler</h2>
+            <p class="text-xl text-gray-600">En çok tercih edilen kategorileri keşfedin</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8">
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-laptop text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-blue-600 transition-colors">Elektronik</h3>
+                <p class="text-sm text-gray-600">850+</p>
+            </a>
+
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-couch text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-orange-600 transition-colors">Mobilya</h3>
+                <p class="text-sm text-gray-600">620+</p>
+            </a>
+
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-shirt text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-pink-600 transition-colors">Tekstil</h3>
+                <p class="text-sm text-gray-600">1200+</p>
+            </a>
+
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-wrench text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-green-600 transition-colors">Alet & Ekipman</h3>
+                <p class="text-sm text-gray-600">450+</p>
+            </a>
+
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-home text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-purple-600 transition-colors">Ev & Yaşam</h3>
+                <p class="text-sm text-gray-600">380+</p>
+            </a>
+
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-utensils text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-red-600 transition-colors">Mutfak</h3>
+                <p class="text-sm text-gray-600">290+</p>
+            </a>
+
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-basketball text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-cyan-600 transition-colors">Spor</h3>
+                <p class="text-sm text-gray-600">210+</p>
+            </a>
+
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-28 h-28 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-300">
+                    <i class="fa-solid fa-baby text-5xl text-white"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-center group-hover:text-yellow-600 transition-colors">Bebek</h3>
+                <p class="text-sm text-gray-600">180+</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY-010: Mega Menu Style -->
+<section id="category-010" class="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>CATEGORY-010
+            </span>
+            <h2 class="text-5xl font-black text-white mb-4">Tüm Kategoriler</h2>
+            <p class="text-xl text-blue-200">3120+ ürünle Türkiye'nin en büyük istif pazarı</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Elektronik Mega Card -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 hover:bg-white/15 hover:scale-105 transition-all duration-500 group">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-laptop text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Elektronik</h3>
+                        <p class="text-blue-200">850+ Ürün</p>
+                    </div>
+                </div>
+                <ul class="space-y-3 mb-6">
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-blue-400"></i>Laptop & Notebook
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-blue-400"></i>Akıllı Telefon
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-blue-400"></i>Tablet
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-blue-400"></i>Akıllı Saat
+                    </a></li>
+                </ul>
+                <a href="#" class="flex items-center gap-2 text-blue-400 font-semibold hover:gap-4 transition-all">
+                    <span>Tümünü Gör</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Mobilya Mega Card -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 hover:bg-white/15 hover:scale-105 transition-all duration-500 group">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-couch text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Mobilya</h3>
+                        <p class="text-orange-200">620+ Ürün</p>
+                    </div>
+                </div>
+                <ul class="space-y-3 mb-6">
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-orange-400"></i>Koltuk Takımı
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-orange-400"></i>Yatak Odası
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-orange-400"></i>Yemek Odası
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-orange-400"></i>Ofis Mobilyası
+                    </a></li>
+                </ul>
+                <a href="#" class="flex items-center gap-2 text-orange-400 font-semibold hover:gap-4 transition-all">
+                    <span>Tümünü Gör</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Tekstil Mega Card -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 hover:bg-white/15 hover:scale-105 transition-all duration-500 group">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-pink-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shirt text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Tekstil</h3>
+                        <p class="text-pink-200">1200+ Ürün</p>
+                    </div>
+                </div>
+                <ul class="space-y-3 mb-6">
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-pink-400"></i>Giyim & Moda
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-pink-400"></i>Ev Tekstili
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-pink-400"></i>Yatak Çarşafı
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-pink-400"></i>Perde & Halı
+                    </a></li>
+                </ul>
+                <a href="#" class="flex items-center gap-2 text-pink-400 font-semibold hover:gap-4 transition-all">
+                    <span>Tümünü Gör</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Alet & Ekipman Mega Card -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 hover:bg-white/15 hover:scale-105 transition-all duration-500 group">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-wrench text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Alet & Ekipman</h3>
+                        <p class="text-green-200">450+ Ürün</p>
+                    </div>
+                </div>
+                <ul class="space-y-3 mb-6">
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-green-400"></i>El Aletleri
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-green-400"></i>Elektrikli Aletler
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-green-400"></i>Bahçe Ekipmanı
+                    </a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+                        <i class="fa-solid fa-chevron-right text-xs text-green-400"></i>Ölçüm Aletleri
+                    </a></li>
+                </ul>
+                <a href="#" class="flex items-center gap-2 text-green-400 font-semibold hover:gap-4 transition-all">
+                    <span>Tümünü Gör</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

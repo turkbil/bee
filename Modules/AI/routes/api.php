@@ -44,6 +44,16 @@ Route::prefix('ai/v1')
     Route::get('/product-placeholder/{productId}', [PublicAIController::class, 'getProductPlaceholder'])
         ->name('product-placeholder');
 
+    // 🔗 Link Resolver Endpoint (Convert [LINK:module:type:id] to URL)
+    Route::get('/resolve-link/{module}/{type}/{id}', [PublicAIController::class, 'resolveLink'])
+        ->name('resolve-link')
+        ->middleware(['throttle:120,1']); // 120 requests per minute
+
+    // 🗑️ Delete Conversation (Admin/Testing - NO AUTH for now)
+    Route::delete('/conversation/{conversationId}', [PublicAIController::class, 'deleteConversation'])
+        ->name('conversation.delete')
+        ->middleware(['throttle:10,1']); // 10 deletions per minute
+
     // 📚 Knowledge Base Endpoints (Public access, cached)
     Route::get('/knowledge-base', [PublicAIController::class, 'getKnowledgeBase'])
         ->name('knowledge-base.list')

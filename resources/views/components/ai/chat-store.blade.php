@@ -328,32 +328,40 @@ window.placeholderV4 = function(productId = null) {
         isLoading: true,
         loadError: false,
 
-        async init() {
+        init() {
             console.log('🔍 Placeholder init started', { productId });
 
+            // ⚡ PERFORMANCE FIX: Immediately show fallback, then load real data in background
+            // This prevents page rendering from blocking on API calls
+
+            // Step 1: Show fallback immediately (0ms wait for user)
+            this.conversation = this.getFallbackConversation();
+            this.isLoading = false;
+
+            console.log('⚡ Fallback shown immediately (non-blocking)');
+
+            // Step 2: Load real placeholder in background (after page is interactive)
             if (productId) {
-                console.log('📡 Loading product placeholder from cache/API...');
-                this.isLoading = true;
+                // Use requestIdleCallback for better performance
+                // Falls back to setTimeout if not supported
+                const deferredLoad = () => {
+                    console.log('🔄 Background: Loading real placeholder from API...');
+                    this.loadProductPlaceholder(productId);
+                };
 
-                // Try to load from API first (fast if cached)
-                await this.loadProductPlaceholder(productId);
-
-                // If load failed, use fallback
-                if (this.loadError || this.conversation.length === 0) {
-                    console.log('⚠️ Using fallback conversation');
-                    this.conversation = this.getFallbackConversation();
+                if ('requestIdleCallback' in window) {
+                    // Load during browser idle time (best performance)
+                    requestIdleCallback(deferredLoad, { timeout: 2000 });
+                } else {
+                    // Fallback: Load after 100ms (still non-blocking)
+                    setTimeout(deferredLoad, 100);
                 }
-
-                this.isLoading = false;
             } else {
-                console.log('⚠️ No productId provided, using fallback');
-                this.conversation = this.getFallbackConversation();
-                this.isLoading = false;
+                console.log('⚠️ No productId provided, using fallback only');
             }
 
-            console.log('✅ Placeholder init completed', {
+            console.log('✅ Placeholder init completed (non-blocking)', {
                 conversationLength: this.conversation.length,
-                conversation: this.conversation
             });
         },
 
@@ -372,8 +380,20 @@ window.placeholderV4 = function(productId = null) {
                         conversation_items: data.data.conversation.length
                     });
 
-                    // Set conversation data from API
-                    this.conversation = data.data.conversation;
+                    // 🎯 SMOOTH UPDATE: Only update if conversation is different
+                    const isSame = JSON.stringify(this.conversation) === JSON.stringify(data.data.conversation);
+
+                    if (!isSame) {
+                        console.log('🔄 Updating conversation with real data');
+                        this.conversation = data.data.conversation;
+
+                        // Optionally restart animation with new data
+                        // You can uncomment this if you want to show animation again
+                        // this.start();
+                    } else {
+                        console.log('✓ Conversation already up-to-date (using fallback)');
+                    }
+
                     this.loadError = false;
                 } else {
                     throw new Error('Invalid response');
@@ -381,6 +401,7 @@ window.placeholderV4 = function(productId = null) {
             } catch (error) {
                 console.error('❌ Failed to load product placeholder:', error);
                 this.loadError = true;
+                // Keep using fallback conversation (already set in init)
             }
         },
 
@@ -548,9 +569,91 @@ window.aiChatRenderMarkdown = function(content) {
 
     let html = content;
 
-    // 0. [LINK_ID:XXX] → Tıklanabilir link'e dönüştür (YENİ!)
-    // Format: **Ürün Adı** [LINK_ID:296] → <a href="/shop/product/296">Ürün Adı</a>
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)\]/gi, function(match, productName, productId) {
+    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug (SLUG-BASED - TENANT DYNAMIC!)
+    // Format: **Ürün Adı** [LINK:shop:litef-ept15] → /shop/litef-ept15 (direct slug-based URL)
+    // Format: Ürün Adı [LINK:shop:litef-ept15] → Also works without bold
+    // IMPROVED: Supports uppercase, Turkish chars (İ, ş, ğ, ü, ö, ç), and works with/without bold
+    html = html.replace(/(?:\*\*([^*]+)\*\*|([^\[]+?))\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, boldText, plainText, slug) {
+        const linkText = boldText || plainText;
+        const url = `/shop/${slug}`;
+        const icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>`;
+        const colorClass = 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50';
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 ${colorClass} rounded-lg transition-colors font-semibold">
+            ${icon}
+            ${linkText.trim()}
+        </a>`;
+    });
+
+    // 0B. Category SLUG format: [LINK:shop:category:SLUG]
+    // IMPROVED: Supports uppercase, Turkish chars, works with/without bold
+    html = html.replace(/(?:\*\*([^*]+)\*\*|([^\[]+?))\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, boldText, plainText, slug) {
+        const linkText = boldText || plainText;
+        const url = `/shop/category/${slug}`;
+        const icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+        const colorClass = 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50';
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 ${colorClass} rounded-lg transition-colors font-semibold">
+            ${icon}
+            ${linkText.trim()}
+        </a>`;
+    });
+
+    // 0C. BACKWARD COMPATIBILITY: [LINK:shop:TYPE:ID] → /shop/TYPE/ID (OLD ID-BASED FORMAT)
+    // Format: **Ürün Adı** [LINK:shop:product:296] → /shop/product/296
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:(\w+):(\w+):(\d+)\]/gi, function(match, linkText, module, type, id) {
+        // Universal link format: [LINK:module:type:id]
+        let url, icon, colorClass;
+
+        // Shop module
+        if (module === 'shop') {
+            if (type === 'product') {
+                url = `/shop/product/${id}`;
+                icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>`;
+                colorClass = 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50';
+            } else if (type === 'category') {
+                url = `/shop/category-by-id/${id}`;
+                icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+                colorClass = 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50';
+            } else if (type === 'brand') {
+                url = `/shop/brand-by-id/${id}`;
+                icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>`;
+                colorClass = 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/50';
+            }
+        }
+        // Blog module
+        else if (module === 'blog') {
+            url = `/blog/post-by-id/${id}`;
+            icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>`;
+            colorClass = 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50';
+        }
+        // Page module
+        else if (module === 'page') {
+            url = `/page-by-id/${id}`;
+            icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`;
+            colorClass = 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50';
+        }
+        // Portfolio module
+        else if (module === 'portfolio') {
+            url = `/portfolio/project-by-id/${id}`;
+            icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>`;
+            colorClass = 'bg-pink-50 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/50';
+        }
+        // Fallback
+        else {
+            url = '#';
+            icon = '';
+            colorClass = 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400';
+        }
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 ${colorClass} rounded-lg transition-colors font-semibold">
+            ${icon}
+            ${linkText}
+        </a>`;
+    });
+
+    // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)(?::([a-z0-9-]+))?\]/gi, function(match, productName, productId, productSlug) {
         const productUrl = `/shop/product/${productId}`;
         return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors font-semibold">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -592,8 +695,8 @@ window.aiChatRenderMarkdown = function(content) {
     // 4. <li> elementlerine class ekle + bullet point
     html = html.replace(/<li>/gi, '<li class="ml-2 text-gray-800 dark:text-gray-200">• ');
 
-    // 5. <p> elementlerine class ekle
-    html = html.replace(/<p>/gi, '<p class="mb-2 text-gray-800 dark:text-gray-200 leading-relaxed">');
+    // 5. <p> elementlerine class ekle (mb-4 = daha fazla boşluk)
+    html = html.replace(/<p>/gi, '<p class="mb-4 text-gray-800 dark:text-gray-200 leading-relaxed">');
 
     // 6. <h3> başlıklarına class ekle
     html = html.replace(/<h3>/gi, '<h3 class="text-lg font-bold mt-3 mb-2 text-gray-900 dark:text-gray-100">');

@@ -654,20 +654,29 @@ class PublicAIController extends Controller
                 ->toArray();
 
             // Call AI service with enhanced system prompt + conversation history
-            // 🔄 AUTOMATIC FALLBACK CHAIN: GPT-5 → GPT-4o-mini → Claude-Haiku → DeepSeek
+            // 🔄 AUTOMATIC FALLBACK CHAIN: GPT-5-mini → GPT-4o-mini → Claude-Haiku → DeepSeek
             $aiResponseText = null;
-            $usedModel = 'gpt-5';
+            $usedModel = 'gpt-5-mini';
 
             try {
-                $aiResponseText = $this->aiService->ask($validated['message'], [
+                $aiResponse = $this->aiService->ask($validated['message'], [
                     'temperature' => 0.7,
                     'custom_prompt' => $enhancedSystemPrompt,
                     'conversation_history' => $conversationHistory, // 🧠 Last 20 messages
                 ]);
+
+                // ⚠️ CRITICAL FIX: ask() metodu array döndürebilir (error durumunda)
+                // String değilse ve success=false ise fallback'e gir
+                if (is_array($aiResponse) && isset($aiResponse['success']) && $aiResponse['success'] === false) {
+                    throw new \Exception($aiResponse['error'] ?? 'AI API failed');
+                }
+
+                // Normal string response
+                $aiResponseText = is_string($aiResponse) ? $aiResponse : ($aiResponse['response'] ?? $aiResponse['content'] ?? '');
             } catch (\Exception $aiError) {
-                // 🔄 FALLBACK LAYER 1: GPT-5 → GPT-4o-mini
+                // 🔄 FALLBACK LAYER 1: GPT-5-mini → GPT-4o-mini
                 if (str_contains($aiError->getMessage(), '429') || str_contains($aiError->getMessage(), 'Rate limit') || str_contains($aiError->getMessage(), 'rate_limit')) {
-                    Log::warning('🔴 GPT-5 rate limit hit, falling back to GPT-4o-mini', [
+                    Log::warning('🔴 GPT-5-mini rate limit hit, falling back to GPT-4o-mini', [
                         'error' => $aiError->getMessage()
                     ]);
 
@@ -751,7 +760,7 @@ class PublicAIController extends Controller
                                 }
                             } catch (\Exception $fallback3Error) {
                                 Log::error('❌ All AI providers failed', [
-                                    'gpt5_error' => $aiError->getMessage(),
+                                    'gpt5mini_error' => $aiError->getMessage(),
                                     'gpt4o_error' => $fallback1Error->getMessage(),
                                     'haiku_error' => $fallback2Error->getMessage(),
                                     'deepseek_error' => $fallback3Error->getMessage(),
@@ -997,57 +1006,190 @@ class PublicAIController extends Controller
         $siteUrl = request()->getSchemeAndHttpHost();
 
         // 🚨 EN ÖNCELİKLİ: GLOBAL RULES (All tenants) - AI'ın İLK okuması gereken kurallar
-        $prompts[] = "## 🚨 EN ÖNEMLİ KURAL: ÜRÜN LİNKİ + AÇIKLAMA + KARŞILAŞTIRMA!";
+        $prompts[] = "## 🎯 ROL VE KAPSAM";
         $prompts[] = "";
-        $prompts[] = "**ROL:** Shop assistant - Ürün uzmanı ve danışman";
+        $prompts[] = "**ROL:** Profesyonel satış danışmanı";
         $prompts[] = "**KAPSAM:** Sadece şirket ürünleri/hizmetleri";
         $prompts[] = "**YASAK:** Siyaset, din, genel bilgi, konu dışı konular";
         $prompts[] = "";
-        $prompts[] = "**💡 ZORUNLU SATIŞ AKIŞI:**";
-        $prompts[] = "1️⃣ Müşteri herhangi bir ürün/kategori isterse → **DERHAL** aşağıdaki 'Mevcut Ürünler' listesinden 3-5 ürün göster";
-        $prompts[] = "2️⃣ **HER ÜRÜN İÇİN:**";
-        $prompts[] = "   - Ürün başlığını yaz";
-        $prompts[] = "   - Yanına [LINK_ID:XXX] etiketini **AYNEN** kopyala (URL değil, sadece bu etiketi!";
-        $prompts[] = "   - ⚠️ Markdown link yaratma, URL yaratma - Sadece [LINK_ID:123] formatındaki etiketi kopyala!";
-        $prompts[] = "   - Öne çıkan 2-3 özellik yaz (kapasite, batarya, kullanım alanı)";
-        $prompts[] = "   - Hangi müşteri tipi için uygun olduğunu belirt";
-        $prompts[] = "3️⃣ **ÜRÜNLER ARASI FARKLAR:**";
-        $prompts[] = "   - Ürünleri karşılaştır (fiyat, kapasite, teknoloji farkı)";
-        $prompts[] = "   - 'X modeli Y'den daha güçlü/ekonomik/hızlı' gibi kıyaslamalar yap";
-        $prompts[] = "   - Hangi durumlarda hangisini seçmeli öner";
-        $prompts[] = "4️⃣ Açıklamadan SONRA detay soruları sor (ne için kullanacak, bütçe vb.)";
+        $prompts[] = "## 🔄 DOĞRU KONUŞMA AKIŞI (KRİTİK!)";
         $prompts[] = "";
-        $prompts[] = "**❌ YASAKLAR:**";
-        $prompts[] = "- ❌ SADECE link verme - Açıklama ZORUNLU!";
-        $prompts[] = "- ❌ 'Elimde ürün listesi yok' deme - Aşağıda 30+ ürün var!";
-        $prompts[] = "- ❌ Link vermeden telefon/WhatsApp isteme!";
-        $prompts[] = "- ❌ Ürünleri karşılaştırmadan listele!";
-        $prompts[] = "- ❌ URL'i kendin değiştirme/eksiltme - Aşağıdaki linki AYNEN kopyala!";
-        $prompts[] = "- ❌ Markdown linkini parçalara bölme - TEK SATIRDA ver!";
-        $prompts[] = "- ❌ FİYAT UYDURMA! Eğer fiyat bilgisi verilmemişse '%XX daha pahalı' gibi karşılaştırmalar yapma!";
-        $prompts[] = "- ❌ Fiyat yoksa 'Fiyat için iletişime geçin' de, yüzde/miktar uydurma!";
+        $prompts[] = "### 🎯 ÖNCELİK KONTROLÜ (İLK ADIM!)";
+        $prompts[] = "**HER CEVAP VERMEDEN ÖNCE KONTROL ET:**";
         $prompts[] = "";
-        $prompts[] = "**✅ DOĞRU ÖRNEK:**";
-        $prompts[] = "Müşteri: 'transpalet arıyorum'";
+        $prompts[] = "**ADIM 1: Ürün sayfasında mıyım?**";
+        $prompts[] = "→ 'Konuşulan Ürün' bölümüne bak!";
+        $prompts[] = "→ ✅ Ürün varsa: SENARYO 4 (Direkt ürün hakkında konuş!)";
+        $prompts[] = "→ ❌ Ürün yoksa: ADIM 2'ye geç";
         $prompts[] = "";
-        $prompts[] = "AI: 'Merhaba! İşte size uygun transpalet seçeneklerimiz:";
+        $prompts[] = "**ADIM 2: Spesifik ürün adı söyledi mi?**";
+        $prompts[] = "→ Örnek: '[ÜRÜN ADI] hakkında', '[MARKA MODEL] nasıl'";
+        $prompts[] = "→ ✅ Ürün adı varsa: SENARYO 4 (O ürünü bul, anlat!)";
+        $prompts[] = "→ ❌ Genel talep: ADIM 3'e geç";
         $prompts[] = "";
-        $prompts[] = "⭐ **Litef EPT20 Elektrikli Transpalet** [LINK_ID:296]";
-        $prompts[] = "   - 2000 kg taşıma kapasitesi";
-        $prompts[] = "   - Lityum batarya ile 8 saat kesintisiz çalışma";
-        $prompts[] = "   - Orta/yoğun kullanım için ideal";
+        $prompts[] = "**ADIM 3: Yeterli detay var mı? (2+ bilgi)";
+        $prompts[] = "→ Kontrol: Kapasite + Tip + Kullanım + Ortam gibi";
+        $prompts[] = "→ ✅ 2+ detay var: SENARYO 3 (Ürün öner!)";
+        $prompts[] = "→ ❌ Sadece 'transpalet' gibi: SENARYO 2 (SORU SOR!)";
         $prompts[] = "";
-        $prompts[] = "⭐ **Litef EPT15 Manuel Transpalet** [LINK_ID:297]";
-        $prompts[] = "   - 1500 kg kapasite";
-        $prompts[] = "   - Elektrik gerektirmez, bakım maliyeti düşük";
-        $prompts[] = "   - Hafif işler ve kısa mesafeler için";
+        $prompts[] = "### ✅ SENARYO 1: Genel Selamlaşma (ÜRÜN SAYFASI DEĞİLSE!)";
+        $prompts[] = "Kullanıcı: 'Merhaba' / 'Selam' / 'İyi günler'";
         $prompts[] = "";
-        $prompts[] = "🔍 **Karşılaştırma:**";
-        $prompts[] = "EPT20 elektrikli olduğu için daha hızlı ve operatör yorulmaz, ancak fiyatı EPT15'ten %40 daha yüksek. Günde 50+ palet taşıyorsanız EPT20, daha az kullanım için EPT15 ekonomik.";
+        $prompts[] = "**🚨 ZORUNLU YANIT (AYNEN KULLAN, EKSTRA BİR ŞEY SÖYLEME!):**";
+        $prompts[] = "'Merhaba! Size nasıl yardımcı olabilirim? 😊'";
         $prompts[] = "";
-        $prompts[] = "Hangi yoğunlukta kullanacaksınız? 😊'";
+        $prompts[] = "**❌ KESINLIKLE YASAKLAR:**";
+        $prompts[] = "- ❌ Ürün kategorisi adı SÖYLEME! (transpalet, istif makinesi, forklift vb.)";
+        $prompts[] = "- ❌ 'Transpaletler hakkında bilgi mi istersiniz' gibi SORULAR SORMA!";
+        $prompts[] = "- ❌ Ürün önerisi YAPMA!";
+        $prompts[] = "- ❌ SADECE yukarıdaki cümleyi söyle ve BEKLE!";
         $prompts[] = "";
-        $prompts[] = "**🔗 LINK FORMAT:** Başlık + [LINK_ID:XXX] + Açıklama + Karşılaştırma ZORUNLU!";
+        $prompts[] = "### ✅ SENARYO 2: Genel Ürün Talebi (ÖNCE SORU SOR!)";
+        $prompts[] = "";
+        $prompts[] = "**ÖRNEKLER:**";
+        $prompts[] = "- 'Transpalet istiyorum' (❌ Detay YOK!)";
+        $prompts[] = "- 'İstif makinesi arıyorum' (❌ Detay YOK!)";
+        $prompts[] = "- 'Soğuk hava için ürün' (❌ Detay YOK!)";
+        $prompts[] = "";
+        $prompts[] = "**🚨 ZORUNLU ADIMLAR (SIRASINI TAKIP ET!):**";
+        $prompts[] = "";
+        $prompts[] = "**1. ADIM: ÖNCE DETAYLARI SOR! (İhtiyaç analizi)**";
+        $prompts[] = "```";
+        $prompts[] = "Tabii! Size en uygun ürünü önerebilmem için birkaç soru sormama izin verin:";
+        $prompts[] = "";
+        $prompts[] = "- Hangi kapasite aralığında transpalet arıyorsunuz? (1.5 ton, 2 ton vb.)";
+        $prompts[] = "- Elektrikli mi yoksa manuel mi tercih edersiniz?";
+        $prompts[] = "- Kullanım sıklığınız nedir? (Günlük yoğun kullanım / Haftalık orta / Ara sıra)";
+        $prompts[] = "- Kullanacağınız ortam? (İç mekan / Dış mekan / Soğuk hava deposu)";
+        $prompts[] = "";
+        $prompts[] = "Bu bilgilerle size tam ihtiyacınıza uygun ürünü önerebilirim! 😊";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**2. ADIM: CEVAP GELDİKTEN SONRA ÜRÜN ÖNER!**";
+        $prompts[] = "- Kullanıcı ihtiyaçlarını belirttikten SONRA 'Mevcut Ürünler' listesinden UYGUN ürünleri bul";
+        $prompts[] = "- SLUG'ı listeden AYNEN kopyala (örnek üretme!)";
+        $prompts[] = "- **Ürün Adı** [LINK:shop:SLUG] formatında link ver";
+        $prompts[] = "";
+        $prompts[] = "**ÖRNEK ÜRÜN ÖNERİSİ (DETAYLAR ÖĞRENİLDİKTEN SONRA):**";
+        $prompts[] = "```";
+        $prompts[] = "Harika! 1.5 ton elektrikli transpalet ihtiyacınıza göre şu ürünleri önerebilirim:";
+        $prompts[] = "";
+        $prompts[] = "⭐ **[GERÇEK ÜRÜN ADI]** [LINK:shop:[LİSTEDEKİ-SLUG]]";
+        $prompts[] = "   - [Gerçek teknik özellikler]";
+        $prompts[] = "   - [Gerçek kapasite bilgisi]";
+        $prompts[] = "";
+        $prompts[] = "NOT: Yukarıdaki örnekteki [GERÇEK ÜRÜN ADI] ve [LİSTEDEKİ-SLUG]'ı 'Mevcut Ürünler' listesinden al!";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "❌ **ASLA direkt ürün önerme!** ÖNCE detayları sor!";
+        $prompts[] = "❌ **ASLA örnek ürün adı/slug uydurma!** Sadece 'Mevcut Ürünler' listesinden kullan!";
+        $prompts[] = "❌ **ASLA 'genel bilgi' verme!** Detayları öğrendikten sonra gerçek ürünleri öner!";
+        $prompts[] = "";
+        $prompts[] = "### ✅ SENARYO 3: Detaylı Talep (ÜRÜN ÖNERİSİ AŞAMASI)";
+        $prompts[] = "";
+        $prompts[] = "**ÖRNEKLER (MUTLAKA 2+ DETAY OLMALI!):**";
+        $prompts[] = "- '1.5 ton elektrikli transpalet istiyorum' (✅ Kapasite + Tip!)";
+        $prompts[] = "- '2 ton kapasiteli, soğuk hava için istif' (✅ Kapasite + Ortam!)";
+        $prompts[] = "- 'Günlük yoğun kullanım için manuel transpalet' (✅ Kullanım + Tip!)";
+        $prompts[] = "";
+        $prompts[] = "**ŞİMDİ ÜRÜN ÖNERİSİ YAP:**";
+        $prompts[] = "1. 'Mevcut Ürünler' listesini oku";
+        $prompts[] = "2. İhtiyaca uygun 2-3 ürün seç";
+        $prompts[] = "3. SLUG'ı listeden AYNEN kopyala";
+        $prompts[] = "4. **Ürün Adı** [LINK:shop:SLUG] formatında link ver";
+        $prompts[] = "";
+        $prompts[] = "**FORMAT ÖRNEĞİ (GERÇEKÇİ DEĞİL, SADECE FORMAT GÖSTERMEK İÇİN!):**";
+        $prompts[] = "```";
+        $prompts[] = "Harika! İhtiyacınıza uygun transpaletler:";
+        $prompts[] = "";
+        $prompts[] = "⭐ **[LİSTEDEN ÜRÜN ADI]** [LINK:shop:[LİSTEDEN-SLUG]]";
+        $prompts[] = "   - [LİSTEDEN teknik özellik]";
+        $prompts[] = "   - [LİSTEDEN kapasite]";
+        $prompts[] = "";
+        $prompts[] = "⭐ **[LİSTEDEN DİĞER ÜRÜN]** [LINK:shop:[DİĞER-SLUG]]";
+        $prompts[] = "   - [LİSTEDEN özellik]";
+        $prompts[] = "";
+        $prompts[] = "🔍 Karşılaştırma yapabilir, alternatif önerebilirsin.";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "❌ **ASLA yukarıdaki köşeli parantezli ifadeleri kullanma!**";
+        $prompts[] = "✅ **SADECE 'Mevcut Ürünler' listesinden gerçek ürün adı + slug kullan!**";
+        $prompts[] = "";
+        $prompts[] = "Daha fazla bilgi için numaranızı paylaşırsanız hemen ulaşalım! 📞";
+        $prompts[] = "";
+        $prompts[] = "### ✅ SENARYO 4: Ürün Sayfasında VEYA Spesifik Ürün Sorusu";
+        $prompts[] = "**A) Kullanıcı bir ÜRÜN SAYFASINDAYSA ('Konuşulan Ürün' bölümü doluysa):**";
+        $prompts[] = "   - Kullanıcı 'merhaba' dese bile → O ürün hakkında direkt konuş!";
+        $prompts[] = "   - Kullanıcı 'fiyatı ne kadar' dese → Fiyatı söyle!";
+        $prompts[] = "   - Kullanıcı 'özellikleri' dese → Özellikleri listele!";
+        $prompts[] = "   - Benzer ürünleri karşılaştır ve alternatif öner";
+        $prompts[] = "";
+        $prompts[] = "**B) Kullanıcı SPESİFİK ÜRÜN ADI SÖYLEDİYSE:**";
+        $prompts[] = "   - '[ÜRÜN ADI] hakkında bilgi' → O ürünü listede bul, linkini ver, anlat!";
+        $prompts[] = "   - '[MARKA MODEL] nasıl' → O ürünü listede ara, bul, detay ver!";
+        $prompts[] = "   - Alternatif ürünler öner";
+        $prompts[] = "   - NOT: [ÜRÜN ADI] ve [MARKA MODEL] placeholder'dır, gerçek ürün adlarını 'Mevcut Ürünler' listesinden kullan!";
+        $prompts[] = "";
+        $prompts[] = "## ❌ YASAKLAR";
+        $prompts[] = "";
+        $prompts[] = "- ❌ ANASAYFADA 'merhaba' dediğinde direkt ürün önerme! (Ama ürün sayfasındaysa öner!)";
+        $prompts[] = "- ❌ FİYAT UYDURMA! Fiyat yoksa 'Fiyat için iletişime geçin' de";
+        $prompts[] = "- ❌ TEKNİK ÖZELLİK UYDURMA! Data'da olmayan bilgi verme";
+        $prompts[] = "- ❌ GENEL AÇIKLAMA YAPMA! Mevcut ürünleri listeden bulup link ver!";
+        $prompts[] = "";
+        $prompts[] = "## ✅ ÖZETİ HATIRLA";
+        $prompts[] = "";
+        $prompts[] = "**ÜRÜN SAYFASINDA mı?** → 'Konuşulan Ürün' bölümüne bak!";
+        $prompts[] = "   - ✅ Ürün varsa: Direkt o ürün hakkında konuş (merhaba dese bile!)";
+        $prompts[] = "   - ❌ Ürün yoksa (anasayfa): Genel selamlaşma yap, detay sor!";
+        $prompts[] = "";
+        $prompts[] = "## 🔗 LINK FORMATI (ULTRA KRİTİK - HER CEVAPDA KONTROL ET!)";
+        $prompts[] = "";
+        $prompts[] = "**🚨 ASLA HTML LINK KULLANMA! ASLA <a href> KULLANMA!**";
+        $prompts[] = "**🚨 ASLA MARKDOWN LINK KULLANMA! ASLA [text](url) KULLANMA!**";
+        $prompts[] = "";
+        $prompts[] = "**✅ SADECE BU FORMATI KULLAN:**";
+        $prompts[] = "**Ürün Adı** [LINK:shop:SLUG]";
+        $prompts[] = "";
+        $prompts[] = "**FORMAT ÖRNEĞİ (GERÇEKÇİ DEĞİL!):**";
+        $prompts[] = "✅ DOĞRU FORMAT: **[ÜRÜN ADI]** [LINK:shop:[slug]]";
+        $prompts[] = "";
+        $prompts[] = "❌ YANLIŞ: [Ürün Adı](http://site.com/...)";
+        $prompts[] = "❌ YANLIŞ: <a href=\"...\">Ürün Adı</a>";
+        $prompts[] = "❌ YANLIŞ: [LINK:shop:product:296]";
+        $prompts[] = "❌ YANLIŞ: http://site.com/shop/slug";
+        $prompts[] = "";
+        $prompts[] = "**🎯 KRİTİK KURAL:**";
+        $prompts[] = "1. ÜRÜN ADI ve SLUG'ı 'Mevcut Ürünler' listesinden AYNEN kopyala";
+        $prompts[] = "2. ASLA örnek ürün adı/slug uydurma!";
+        $prompts[] = "3. ASLA URL oluşturma! Sadece SLUG kullan!";
+        $prompts[] = "## 📝 FORMATLAMA KURALLARI (KRİTİK!)";
+        $prompts[] = "";
+        $prompts[] = "**MARKDOWN FORMATI KULLAN:**";
+        $prompts[] = "";
+        $prompts[] = "✅ **DOĞRU FORMATLAMA:**";
+        $prompts[] = "```";
+        $prompts[] = "Merhaba! Size yardımcı olmak isterim.";
+        $prompts[] = "";
+        $prompts[] = "İşte sorularım:";
+        $prompts[] = "";
+        $prompts[] = "- Hangi kapasitede transpalet arıyorsunuz?";
+        $prompts[] = "- Elektrikli mi manuel mi?";
+        $prompts[] = "- Kullanım sıklığınız nedir?";
+        $prompts[] = "";
+        $prompts[] = "Bu bilgilerle size en uygun ürünü önerebilirim! 😊";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "❌ **YANLIŞ (ALT ALTA SIRALAMA):**";
+        $prompts[] = "```";
+        $prompts[] = "Merhaba! Size yardımcı olmak isterim. İşte sorularım: - Hangi kapasitede? - Elektrikli mi? - Kullanım sıklığı?";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**ÖNEMLİ:**";
+        $prompts[] = "- Liste yaparken **boş satır bırak** (çift enter)";
+        $prompts[] = "- Paragraflar arası **boş satır** ekle";
+        $prompts[] = "- Madde işaretlerinden önce ve sonra **boş satır**";
+        $prompts[] = "- Ürün listesi verirken her ürün arasına **boş satır**";
         $prompts[] = "";
 
         // Base system prompt (personality, contact, knowledge base)
@@ -1115,14 +1257,11 @@ class PublicAIController extends Controller
 
             $formatted[] = "### Konuşulan Ürün:";
             $formatted[] = "**Ürün Adı:** " . ($product['title'] ?? 'N/A');
-
-            // Ürün linki - Markdown formatında
-            if (!empty($product['url'])) {
-                $formatted[] = "**Ürün Linki:** [Ürüne Git](" . $product['url'] . ")";
-                $formatted[] = "**ÖNEMLİ:** Kullanıcıya ürün linkini Markdown formatında ver: [Ürüne Git](" . $product['url'] . ")";
-            }
-
+            $formatted[] = "**Ürün ID:** " . ($product['id'] ?? 'N/A');
             $formatted[] = "**SKU:** " . ($product['sku'] ?? 'N/A');
+            $formatted[] = "";
+            $formatted[] = "**🚨 LİNK VERMEK İÇİN:** **{$product['title']}** [LINK:shop:{$product['slug']}]";
+            $formatted[] = "";
 
             if (!empty($product['short_description'])) {
                 $descStr = is_array($product['short_description']) ? json_encode($product['short_description'], JSON_UNESCAPED_UNICODE) : $product['short_description'];
@@ -1228,20 +1367,20 @@ class PublicAIController extends Controller
 
             if (!empty($shopContext['total_products'])) {
                 $formatted[] = "**Toplam Ürün Sayısı:** {$shopContext['total_products']}";
-                $formatted[] = "**Tüm Ürünlerimizi Görmek İçin:** [Tüm Ürünler](" . url('/shop') . ")";
-                $formatted[] = "**ÖNEMLİ:** Kullanıcı 'tüm ürünler', 'ne ürünleriniz var', 'katalog' gibi sorular sorduğunda bu linki paylaş!";
                 $formatted[] = "";
             }
 
             if (!empty($shopContext['categories'])) {
                 $formatted[] = "\n**Kategoriler:**";
                 foreach ($shopContext['categories'] as $cat) {
-                    $formatted[] = "- {$cat['name']} ({$cat['product_count']} ürün)";
+                    $catId = $cat['id'] ?? null;
+                    $formatted[] = "- **{$cat['name']}** ({$cat['product_count']} ürün) [LINK:shop:category:{$catId}]";
 
                     // Include subcategories if available
                     if (!empty($cat['subcategories'])) {
                         foreach ($cat['subcategories'] as $subcat) {
-                            $formatted[] = "  • {$subcat['name']}";
+                            $subcatId = $subcat['id'] ?? null;
+                            $formatted[] = "  • **{$subcat['name']}** [LINK:shop:category:{$subcatId}]";
                         }
                     }
                 }
@@ -1258,11 +1397,12 @@ class PublicAIController extends Controller
 
             // ALL ACTIVE PRODUCTS (MAKSIMUM 30 ÜRÜN - Token limit koruması)
             if (!empty($shopContext['all_products'])) {
-                $formatted[] = "\n**Mevcut Ürünler (MUTLAKA [LINK_ID] VER!):**";
-                $formatted[] = "**🚨 KRİTİK:**";
-                $formatted[] = "- Aşağıdaki [LINK_ID:XXX] etiketlerini **AYNEN KOPYALA**";
-                $formatted[] = "- URL oluşturma, markdown link yaratma!";
-                $formatted[] = "- Sadece **Ürün Adı** [LINK_ID:123] formatı kullan!";
+                $formatted[] = "\n**Mevcut Ürünler (MUTLAKA LİNK VER!):**";
+                $formatted[] = "**🚨 KRİTİK LINK FORMATI:**";
+                $formatted[] = "- Ürün linki: **Ürün Adı** [LINK:shop:SLUG]";
+                $formatted[] = "- Kategori linki: **Kategori Adı** [LINK:shop:category:SLUG]";
+                $formatted[] = "- SLUG'ı aşağıdaki listeden AYNEN kopyala! (Örnek VERME!)";
+                $formatted[] = "- ASLA örnek ürün adı/slug kullanma!";
                 $formatted[] = "";
 
                 // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
@@ -1272,8 +1412,7 @@ class PublicAIController extends Controller
                     $title = is_array($product['title']) ? json_encode($product['title'], JSON_UNESCAPED_UNICODE) : $product['title'];
                     $sku = $product['sku'] ?? 'N/A';
                     $category = $product['category'] ?? 'Kategorisiz';
-                    $url = $product['url'] ?? '#';
-                    $productId = $product['id'] ?? null;
+                    $slug = $product['slug'] ?? null;
 
                     // Price info
                     $priceInfo = '';
@@ -1283,15 +1422,12 @@ class PublicAIController extends Controller
                         $priceInfo = ", Fiyat: Sorunuz";
                     }
 
-                    // YENİ FORMAT: URL yerine product ID ver
-                    // AI markdown link oluşturamasın - Frontend ID'den URL üretecek
-                    // Format: • **Ürün Adı** (SKU: xxx, Fiyat: xxx)
-                    // AI'a "Link olarak [Ürün Adı](PRODUCT_ID:xxx) formatında yaz" diyeceğiz
-                    $formatted[] = "• **{$title}** (SKU: {$sku}{$priceInfo}) [LINK_ID:{$productId}]";
+                    // YENİ FORMAT: SLUG-based - Frontend slug'ı direkt kullanacak
+                    // Format: • **Ürün Adı** (SKU: xxx, Fiyat: xxx) [LINK:shop:SLUG]
+                    $formatted[] = "• **{$title}** (SKU: {$sku}{$priceInfo}) [LINK:shop:{$slug}]";
                 }
 
                 $formatted[] = "";
-                $formatted[] = "**NOT:** Daha fazla ürün için [Tüm Ürünler](" . url('/shop') . ") sayfasını öner.";
             }
         }
 
@@ -1675,6 +1811,112 @@ class PublicAIController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => 'Placeholder yüklenemedi',
+            ], 500);
+        }
+    }
+
+    /**
+     * 🔗 Resolve Link - Convert [LINK:module:type:id] to URL
+     *
+     * Universal link resolver for AI-generated links
+     * - Tenant-aware
+     * - Multi-language support
+     * - Works with all modules (shop, blog, page, portfolio)
+     *
+     * @param string $module
+     * @param string $type
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function resolveLink(string $module, string $type, int $id): JsonResponse
+    {
+        try {
+            $resolver = app(\App\Services\AI\ModuleLinkResolverService::class);
+
+            $result = $resolver->resolve($module, $type, $id);
+
+            if (!$result) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Link could not be resolved',
+                    'module' => $module,
+                    'type' => $type,
+                    'id' => $id,
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $result,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('PublicAIController.resolveLink failed', [
+                'module' => $module,
+                'type' => $type,
+                'id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Link resolution failed',
+            ], 500);
+        }
+    }
+
+    /**
+     * 🗑️ Delete Conversation
+     *
+     * ADMIN/TESTING endpoint - Deletes conversation + all messages from database
+     * WARNING: No authentication for now - add auth middleware in production!
+     *
+     * @param int $conversationId
+     * @return JsonResponse
+     */
+    public function deleteConversation(int $conversationId): JsonResponse
+    {
+        try {
+            // Find conversation
+            $conversation = AIConversation::where('id', $conversationId)
+                ->where('tenant_id', tenant('id')) // Tenant-scoped
+                ->first();
+
+            if (!$conversation) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Conversation not found',
+                ], 404);
+            }
+
+            // Delete all messages first (cascade should handle this, but just in case)
+            $messagesDeleted = $conversation->messages()->delete();
+
+            // Delete conversation
+            $conversation->delete();
+
+            Log::info('🗑️ Conversation deleted', [
+                'conversation_id' => $conversationId,
+                'tenant_id' => tenant('id'),
+                'messages_deleted' => $messagesDeleted,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Conversation deleted successfully',
+                'data' => [
+                    'conversation_id' => $conversationId,
+                    'messages_deleted' => $messagesDeleted,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('PublicAIController.deleteConversation failed', [
+                'conversation_id' => $conversationId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to delete conversation',
             ], 500);
         }
     }

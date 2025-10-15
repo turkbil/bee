@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Log;
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Models\ShopBrand;
+use App\Jobs\GenerateProductPlaceholderJob;
+use App\Models\ProductChatPlaceholder;
 
 class ShopController extends Controller
 {
@@ -40,6 +42,43 @@ class ShopController extends Controller
 
             return view('shop::front.index', compact('products', 'moduleTitle'));
         }
+    }
+
+    /**
+     * Show product by ID (fallback for AI old format)
+     * Redirects to slug-based URL
+     */
+    public function showById(int $id)
+    {
+        $product = ShopProduct::query()
+            ->active()
+            ->published()
+            ->where('product_id', $id)
+            ->first();
+
+        if (!$product) {
+            abort(404);
+        }
+
+        // Redirect to slug-based URL
+        $locale = app()->getLocale();
+        $slug = $product->getTranslated('slug', $locale) ?? $product->slug[$locale] ?? null;
+
+        if ($slug === null) {
+            abort(404);
+        }
+
+        $moduleSlug = ModuleSlugService::getSlug('Shop', 'show');
+        $defaultLocale = get_tenant_default_locale();
+
+        $slug = ltrim($slug, '/');
+        $moduleSlug = trim($moduleSlug, '/');
+
+        if ($locale === $defaultLocale) {
+            return redirect('/' . $moduleSlug . '/' . $slug, 301);
+        }
+
+        return redirect('/' . $locale . '/' . $moduleSlug . '/' . $slug, 301);
     }
 
     public function show(string $slug)
@@ -123,6 +162,29 @@ class ShopController extends Controller
         // ⚠️ ÖNEMLİ: SeoMetaTagService'in model'i algılayabilmesi için ÖNCE share et
         view()->share('currentModel', $product);
 
+        // 🔄 PLACEHOLDER QUEUE: Generate AI placeholder in background if not exists
+        // - İlk ziyaretçi: Fallback görür, queue işler
+        // - Sonraki ziyaretçiler: Gerçek AI conversation görür
+        try {
+            $placeholderExists = ProductChatPlaceholder::where('product_id', $product->product_id)->exists();
+
+            if (!$placeholderExists) {
+                // Queue'ya job at (non-blocking, arka planda çalışır)
+                GenerateProductPlaceholderJob::dispatch((string) $product->product_id);
+
+                Log::info('🔄 Placeholder job dispatched', [
+                    'product_id' => $product->product_id,
+                    'product_title' => $product->title,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Silent fail - placeholder generation hatası sayfayı bozmamalı
+            Log::warning('⚠️ Placeholder queue dispatch failed', [
+                'product_id' => $product->product_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
         $metaTags = null;
         if ($seoService && method_exists($product, 'getAllSchemas')) {
@@ -190,6 +252,38 @@ class ShopController extends Controller
 
             return view($fallbackView, $fallbackData);
         }
+    }
+
+    /**
+     * Show category by ID (fallback for AI ID-based links)
+     * Redirects to slug-based URL
+     */
+    public function categoryById(int $id)
+    {
+        $category = ShopCategory::query()
+            ->where('category_id', $id)
+            ->first();
+
+        if (!$category) {
+            abort(404);
+        }
+
+        // Redirect to slug-based URL
+        $locale = app()->getLocale();
+        $slug = $category->getTranslated('slug', $locale) ?? $category->slug[$locale] ?? null;
+
+        if ($slug === null) {
+            abort(404);
+        }
+
+        $defaultLocale = get_tenant_default_locale();
+        $slug = ltrim($slug, '/');
+
+        if ($locale === $defaultLocale) {
+            return redirect('/shop/category/' . $slug, 301);
+        }
+
+        return redirect('/' . $locale . '/shop/category/' . $slug, 301);
     }
 
     public function category(string $slug)
@@ -306,6 +400,29 @@ class ShopController extends Controller
 
         // ⚠️ ÖNEMLİ: SeoMetaTagService'in model'i algılayabilmesi için ÖNCE share et
         view()->share('currentModel', $product);
+
+        // 🔄 PLACEHOLDER QUEUE: Generate AI placeholder in background if not exists
+        // - İlk ziyaretçi: Fallback görür, queue işler
+        // - Sonraki ziyaretçiler: Gerçek AI conversation görür
+        try {
+            $placeholderExists = ProductChatPlaceholder::where('product_id', $product->product_id)->exists();
+
+            if (!$placeholderExists) {
+                // Queue'ya job at (non-blocking, arka planda çalışır)
+                GenerateProductPlaceholderJob::dispatch((string) $product->product_id);
+
+                Log::info('🔄 Placeholder job dispatched', [
+                    'product_id' => $product->product_id,
+                    'product_title' => $product->title,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Silent fail - placeholder generation hatası sayfayı bozmamalı
+            Log::warning('⚠️ Placeholder queue dispatch failed', [
+                'product_id' => $product->product_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
         $metaTags = null;

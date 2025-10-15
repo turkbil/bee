@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Yorumları - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+</head>
+<body>
+<div class="fixed top-4 left-4 z-[9999]">
+    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="font-semibold text-sm">Ana Menü</span>
+    </a>
+</div>
+<div class="scroll-container">
+
+<!-- TESTIMONIALS-001: Classic Grid Cards -->
+<section id="testimonials-001" class="h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-8">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-001
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Müşterilerimiz Ne Diyor?</h2>
+            <p class="text-xl text-gray-600">Binlerce mutlu müşterimizden bazı yorumlar</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <!-- Review 1 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        AY
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Ayşe Yılmaz</h3>
+                        <p class="text-gray-500 text-sm">İstanbul</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "İxtif.com sayesinde ofis mobilyalarımızı çok uygun fiyata aldık. Teslimat çok hızlıydı, ürünler mükemmel kalitede geldi. Kesinlikle tavsiye ediyorum!"
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>15 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        MK
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Mehmet Kaya</h3>
+                        <p class="text-gray-500 text-sm">Ankara</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Elektronik ürünlerde inanılmaz fırsatlar buldum. Özellikle laptop ve tablet fiyatları çok cazip. Müşteri hizmetleri de gerçekten ilgili, teşekkürler!"
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>12 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        ZD
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Zeynep Demir</h3>
+                        <p class="text-gray-500 text-sm">İzmir</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Tekstil ürünlerinde harika seçenekler var. Kaliteli kumaşları toptan fiyatına aldım. İşletmem için sürekli buradan alışveriş yapıyorum."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>8 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 4 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        EA
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Emre Arslan</h3>
+                        <p class="text-gray-500 text-sm">Bursa</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-gray-300 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Alet ve ekipman kategorisinde profesyonel ürünler buldum. Fiyatlar uygun ama kargo biraz geç geldi. Yine de memnunum."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>5 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 5 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        SA
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Selin Aydın</h3>
+                        <p class="text-gray-500 text-sm">Antalya</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Online alışverişte en güvendiğim site. Ürün açıklamaları detaylı, fotoğraflar gerçek. İade sürecim de çok kolay oldu."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>1 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 6 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        BŞ
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Burak Şahin</h3>
+                        <p class="text-gray-500 text-sm">Konya</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Restoran ekipmanlarımızı buradan temin ediyoruz. Hem kalite hem de fiyat olarak en iyisi. Toplu alışverişlerde ekstra indirim de var."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>28 Eylül 2024
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-002: Featured Large Review -->
+<section id="testimonials-002" class="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-8">
+    <div class="container mx-auto max-w-5xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-002
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Öne Çıkan Yorum</h2>
+            <p class="text-xl text-gray-600">Bu ay en beğenilen müşteri yorumu</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-12 shadow-2xl">
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-xl">
+                    AY
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <h3 class="text-3xl font-bold text-gray-900 mb-2">Ayşe Yılmaz</h3>
+                <p class="text-gray-500 text-lg mb-4">Kurumsal Satın Alma Müdürü - İstanbul</p>
+                <div class="flex justify-center gap-2 mb-6">
+                    <i class="fa-solid fa-star text-yellow-400 text-3xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-3xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-3xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-3xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-3xl"></i>
+                </div>
+            </div>
+
+            <div class="max-w-3xl mx-auto">
+                <i class="fa-solid fa-quote-left text-6xl text-blue-200 mb-6 block"></i>
+                <p class="text-2xl text-gray-700 leading-relaxed text-center mb-8">
+                    İxtif.com ile çalışmaya başladığımızdan beri şirketimizin ofis ekipmanları maliyetleri %40 düştü. 
+                    Hem kaliteli ürünler hem de profesyonel müşteri hizmetleri sunuyorlar. Özellikle toplu alışverişlerde 
+                    sağladıkları indirimler ve esnek ödeme seçenekleri işimizi çok kolaylaştırıyor. 3 yıldır çalıştığımız 
+                    güvenilir bir iş ortağı.
+                </p>
+                <i class="fa-solid fa-quote-right text-6xl text-blue-200 block text-right"></i>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <div class="flex items-center justify-between text-gray-600">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-calendar text-blue-600"></i>
+                        <span>15 Ekim 2024</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-shopping-cart text-blue-600"></i>
+                        <span>120+ Sipariş</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-badge-check text-blue-600"></i>
+                        <span>Doğrulanmış Alıcı</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <button class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                <i class="fa-solid fa-star mr-2"></i>Siz de Yorum Yapın
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-003: Slider/Carousel Style -->
+<section id="testimonials-003" class="h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-8" 
+         x-data="{ 
+             currentSlide: 0,
+             reviews: [
+                 { name: 'Mehmet Kaya', location: 'Ankara', rating: 5, text: 'Elektronik ürünlerde muhteşem fiyatlar buldum. Laptop aldım, 3 gün içinde geldi. Çok memnunum!', date: '12 Ekim 2024' },
+                 { name: 'Zeynep Demir', location: 'İzmir', rating: 5, text: 'Tekstil kategorisinde kaliteli ürünler var. İşletmem için toptan alışveriş yapıyorum, süper!', date: '8 Ekim 2024' },
+                 { name: 'Emre Arslan', location: 'Bursa', rating: 4, text: 'Alet ve ekipman kategorisi çok iyi. Profesyonel ürünler, uygun fiyatlar. Tavsiye ederim.', date: '5 Ekim 2024' },
+                 { name: 'Selin Aydın', location: 'Antalya', rating: 5, text: 'Online alışverişte en güvendiğim site. Ürün açıklamaları detaylı, müşteri hizmetleri harika!', date: '1 Ekim 2024' }
+             ],
+             nextSlide() {
+                 this.currentSlide = (this.currentSlide + 1) % this.reviews.length;
+             },
+             prevSlide() {
+                 this.currentSlide = this.currentSlide === 0 ? this.reviews.length - 1 : this.currentSlide - 1;
+             }
+         }"
+         x-init="setInterval(() => { nextSlide() }, 5000)">
+    <div class="container mx-auto max-w-4xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-003
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Müşteri Deneyimleri</h2>
+            <p class="text-xl text-gray-600">Gerçek kullanıcılardan gerçek yorumlar</p>
+        </div>
+
+        <div class="relative bg-white rounded-3xl p-12 shadow-2xl">
+            <template x-for="(review, index) in reviews" :key="index">
+                <div x-show="currentSlide === index" 
+                     x-transition:enter="transition ease-out duration-500"
+                     x-transition:enter-start="opacity-0 transform translate-x-8"
+                     x-transition:enter-end="opacity-100 transform translate-x-0"
+                     x-transition:leave="transition ease-in duration-500"
+                     x-transition:leave-start="opacity-100 transform translate-x-0"
+                     x-transition:leave-end="opacity-0 transform -translate-x-8">
+                    
+                    <div class="text-center mb-8">
+                        <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full mx-auto mb-6 flex items-center justify-center text-white text-3xl font-bold">
+                            <span x-text="review.name.split(' ').map(n => n[0]).join('')"></span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2" x-text="review.name"></h3>
+                        <p class="text-gray-500 mb-4" x-text="review.location"></p>
+                        
+                        <div class="flex justify-center gap-1 mb-6">
+                            <template x-for="i in 5" :key="i">
+                                <i :class="i <= review.rating ? 'fa-solid fa-star text-yellow-400' : 'fa-solid fa-star text-gray-300'" class="text-2xl"></i>
+                            </template>
+                        </div>
+                    </div>
+
+                    <p class="text-xl text-gray-700 text-center leading-relaxed mb-8" x-text="review.text"></p>
+
+                    <p class="text-center text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>
+                        <span x-text="review.date"></span>
+                    </p>
+                </div>
+            </template>
+
+            <!-- Navigation Buttons -->
+            <button @click="prevSlide()" 
+                    class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-green-600 text-white rounded-full hover:bg-green-700 hover:scale-110 transition-all shadow-lg">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button @click="nextSlide()" 
+                    class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-green-600 text-white rounded-full hover:bg-green-700 hover:scale-110 transition-all shadow-lg">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <!-- Dots Indicator -->
+            <div class="flex justify-center gap-2 mt-8">
+                <template x-for="(review, index) in reviews" :key="index">
+                    <button @click="currentSlide = index" 
+                            :class="currentSlide === index ? 'bg-green-600 w-8' : 'bg-gray-300 w-3'"
+                            class="h-3 rounded-full transition-all duration-300"></button>
+                </template>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-004: Video Testimonials Style -->
+<section id="testimonials-004" class="h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-pink-100 p-8">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-004
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Video Yorumlar</h2>
+            <p class="text-xl text-gray-600">Müşterilerimiz deneyimlerini anlatıyor</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <!-- Video 1 -->
+            <div class="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div class="relative h-64 bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center">
+                    <i class="fa-solid fa-circle-play text-white text-7xl group-hover:scale-110 transition-all cursor-pointer"></i>
+                    <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                        <i class="fa-solid fa-clock mr-1"></i>2:15
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center text-white font-bold">
+                            AY
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Ayşe Yılmaz</h3>
+                            <p class="text-gray-500 text-sm">Ofis Mobilyası</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 mb-3">
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 text-sm">
+                        "Şirketimizin tüm ofis mobilyalarını İxtif.com'dan temin ettik. Kalite ve fiyat mükemmel!"
+                    </p>
+                </div>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div class="relative h-64 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                    <i class="fa-solid fa-circle-play text-white text-7xl group-hover:scale-110 transition-all cursor-pointer"></i>
+                    <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                        <i class="fa-solid fa-clock mr-1"></i>1:45
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
+                            MK
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Mehmet Kaya</h3>
+                            <p class="text-gray-500 text-sm">Elektronik</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 mb-3">
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 text-sm">
+                        "Laptop ve tabletleri çok uygun fiyata aldım. Hızlı teslimat ve kaliteli ürünler!"
+                    </p>
+                </div>
+            </div>
+
+            <!-- Video 3 -->
+            <div class="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div class="relative h-64 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                    <i class="fa-solid fa-circle-play text-white text-7xl group-hover:scale-110 transition-all cursor-pointer"></i>
+                    <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                        <i class="fa-solid fa-clock mr-1"></i>3:20
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center text-white font-bold">
+                            ZD
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Zeynep Demir</h3>
+                            <p class="text-gray-500 text-sm">Tekstil</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 mb-3">
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                        <i class="fa-solid fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 text-sm">
+                        "Tekstil ürünlerinde harika seçenekler var. İşletmem için sürekli buradan alıyorum!"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-10">
+            <button class="bg-gradient-to-r from-pink-600 to-pink-700 text-white px-10 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                <i class="fa-solid fa-video mr-2"></i>Tüm Video Yorumları İzle
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-005: Stats + Reviews Combo -->
+<section id="testimonials-005" class="h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 p-8">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-005
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Müşteri Memnuniyeti</h2>
+            <p class="text-xl text-gray-600">Rakamlarla başarımız ve müşteri yorumları</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            <div class="bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-5xl font-black bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-3">
+                    98%
+                </div>
+                <p class="text-gray-700 font-semibold">Müşteri Memnuniyeti</p>
+            </div>
+            <div class="bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-5xl font-black bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-3">
+                    4.8
+                </div>
+                <p class="text-gray-700 font-semibold">Ortalama Puan</p>
+            </div>
+            <div class="bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-5xl font-black bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-3">
+                    12K+
+                </div>
+                <p class="text-gray-700 font-semibold">Toplam Yorum</p>
+            </div>
+            <div class="bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-5xl font-black bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-3">
+                    95%
+                </div>
+                <p class="text-gray-700 font-semibold">Tekrar Alışveriş</p>
+            </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-3xl p-6 shadow-lg">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-white font-bold">
+                        EA
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900">Emre Arslan</h3>
+                        <div class="flex gap-1">
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-700 text-sm">
+                    "Profesyonel ekipmanlar için en iyi adres. Fiyat/performans oranı mükemmel. Tavsiye ederim!"
+                </p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 shadow-lg">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-white font-bold">
+                        SA
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900">Selin Aydın</h3>
+                        <div class="flex gap-1">
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-700 text-sm">
+                    "Online alışverişte en güvendiğim site. Ürün açıklamaları detaylı, teslimat hızlı!"
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-006: Social Media Style -->
+<section id="testimonials-006" class="h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-cyan-100 p-8">
+    <div class="container mx-auto max-w-4xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-006
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Sosyal Medyada Biz</h2>
+            <p class="text-xl text-gray-600">Instagram ve Twitter'dan müşteri paylaşımları</p>
+        </div>
+
+        <div class="space-y-6">
+            <!-- Instagram Post 1 -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                            AY
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">@ayse.yilmaz</h3>
+                            <p class="text-gray-500 text-sm">Instagram • 2 saat önce</p>
+                        </div>
+                    </div>
+                    <i class="fa-brands fa-instagram text-3xl text-pink-500"></i>
+                </div>
+                <p class="text-gray-700 mb-4">
+                    Ofis mobilyalarımız @ixtif.com'dan geldi! 😍 Hem kaliteli hem de çok uygun fiyatlı. 
+                    Özellikle koltuklar süper rahat 🪑✨ #ixtif #ofismobilyası #istanbuloffice
+                </p>
+                <div class="flex items-center gap-6 text-gray-600">
+                    <span><i class="fa-solid fa-heart text-red-500 mr-2"></i>1.2K beğeni</span>
+                    <span><i class="fa-solid fa-comment mr-2"></i>87 yorum</span>
+                    <span><i class="fa-solid fa-share-nodes mr-2"></i>34 paylaşım</span>
+                </div>
+            </div>
+
+            <!-- Twitter Post -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                            MK
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">@mehmetkaya</h3>
+                            <p class="text-gray-500 text-sm">Twitter (X) • 5 saat önce</p>
+                        </div>
+                    </div>
+                    <i class="fa-brands fa-x-twitter text-3xl text-gray-900"></i>
+                </div>
+                <p class="text-gray-700 mb-4">
+                    İxtif.com'dan laptop aldım, 3 günde geldi! 💻 Fiyat diğer sitelerden çok daha uygun. 
+                    Artık tüm elektronik ihtiyaçlarımı buradan karşılıyorum 👍 #ixtif #elektronik #laptop
+                </p>
+                <div class="flex items-center gap-6 text-gray-600">
+                    <span><i class="fa-solid fa-heart text-red-500 mr-2"></i>856 beğeni</span>
+                    <span><i class="fa-solid fa-comment mr-2"></i>42 yanıt</span>
+                    <span><i class="fa-solid fa-retweet text-green-500 mr-2"></i>128 retweet</span>
+                </div>
+            </div>
+
+            <!-- Instagram Post 2 -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                            ZD
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">@zeynep.demir</h3>
+                            <p class="text-gray-500 text-sm">Instagram • 1 gün önce</p>
+                        </div>
+                    </div>
+                    <i class="fa-brands fa-instagram text-3xl text-pink-500"></i>
+                </div>
+                <p class="text-gray-700 mb-4">
+                    Butik mağazam için tüm tekstil ürünlerini @ixtif.com'dan temin ediyorum 🧵✨ 
+                    Kaliteli kumaşlar, uygun fiyatlar, hızlı kargo! Ne istersin ki daha? 🛍️ #ixtif #tekstil #butik
+                </p>
+                <div class="flex items-center gap-6 text-gray-600">
+                    <span><i class="fa-solid fa-heart text-red-500 mr-2"></i>2.3K beğeni</span>
+                    <span><i class="fa-solid fa-comment mr-2"></i>156 yorum</span>
+                    <span><i class="fa-solid fa-share-nodes mr-2"></i>89 paylaşım</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-007: Timeline Reviews -->
+<section id="testimonials-007" class="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-indigo-100 p-8">
+    <div class="container mx-auto max-w-5xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-007
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Müşteri Yolculuğu</h2>
+            <p class="text-xl text-gray-600">Yıllar içinde aldığımız yorumlar</p>
+        </div>
+
+        <div class="relative">
+            <!-- Timeline Line -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-indigo-300"></div>
+
+            <!-- 2024 -->
+            <div class="relative mb-12">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold text-lg">
+                        2024
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="text-right">
+                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
+                            <div class="flex items-center justify-end gap-3 mb-3">
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Ayşe Yılmaz</h3>
+                                    <div class="flex gap-1 justify-end">
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                    AY
+                                </div>
+                            </div>
+                            <p class="text-gray-700 text-sm">
+                                "3 yıldır çalıştığımız güvenilir iş ortağı. Ofis ekipmanları maliyetimiz %40 düştü!"
+                            </p>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+            </div>
+
+            <!-- 2023 -->
+            <div class="relative mb-12">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold text-lg">
+                        2023
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div></div>
+                    <div class="text-left">
+                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                    MK
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Mehmet Kaya</h3>
+                                    <div class="flex gap-1">
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 text-sm">
+                                "Elektronik ürünlerde en iyi fiyatları burada buldum. Laptop ve tabletler harika!"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2022 -->
+            <div class="relative mb-12">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold text-lg">
+                        2022
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="text-right">
+                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
+                            <div class="flex items-center justify-end gap-3 mb-3">
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Zeynep Demir</h3>
+                                    <div class="flex gap-1 justify-end">
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                    ZD
+                                </div>
+                            </div>
+                            <p class="text-gray-700 text-sm">
+                                "Tekstil kategorisi harika! İşletmem için sürekli buradan alışveriş yapıyorum."
+                            </p>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+            </div>
+
+            <!-- 2021 -->
+            <div class="relative">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold text-lg">
+                        2021
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div></div>
+                    <div class="text-left">
+                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                    EA
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Emre Arslan</h3>
+                                    <div class="flex gap-1">
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                        <i class="fa-solid fa-star text-gray-300 text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 text-sm">
+                                "Alet ve ekipman kategorisinde profesyonel ürünler var. Fiyat/performans dengesi çok iyi."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-008: Rating Distribution -->
+<section id="testimonials-008" class="h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 to-violet-100 p-8">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-violet-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-008
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Puan Dağılımı</h2>
+            <p class="text-xl text-gray-600">12,450 müşteri yorumumuzun analizi</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Overall Rating -->
+            <div class="bg-white rounded-3xl p-12 shadow-2xl text-center">
+                <div class="text-8xl font-black bg-gradient-to-r from-violet-600 to-violet-700 bg-clip-text text-transparent mb-4">
+                    4.8
+                </div>
+                <div class="flex justify-center gap-2 mb-6">
+                    <i class="fa-solid fa-star text-yellow-400 text-4xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-4xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-4xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-4xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-4xl"></i>
+                </div>
+                <p class="text-2xl text-gray-700 font-semibold mb-2">Ortalama Puan</p>
+                <p class="text-gray-500">12,450 toplam değerlendirme</p>
+
+                <div class="mt-10 pt-10 border-t border-gray-200">
+                    <button class="bg-gradient-to-r from-violet-600 to-violet-700 text-white px-10 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                        <i class="fa-solid fa-pen mr-2"></i>Yorum Yaz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Rating Bars -->
+            <div class="bg-white rounded-3xl p-12 shadow-2xl">
+                <div class="space-y-6" x-data="{
+                    ratings: [
+                        { stars: 5, percentage: 82, count: 10210 },
+                        { stars: 4, percentage: 12, count: 1494 },
+                        { stars: 3, percentage: 4, count: 498 },
+                        { stars: 2, percentage: 1, count: 125 },
+                        { stars: 1, percentage: 1, count: 123 }
+                    ]
+                }">
+                    <template x-for="rating in ratings" :key="rating.stars">
+                        <div class="flex items-center gap-4">
+                            <div class="flex gap-1 w-32">
+                                <template x-for="i in 5" :key="i">
+                                    <i :class="i <= rating.stars ? 'fa-solid fa-star text-yellow-400' : 'fa-solid fa-star text-gray-300'"></i>
+                                </template>
+                            </div>
+                            <div class="flex-1">
+                                <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-violet-600 to-violet-700 rounded-full transition-all duration-1000"
+                                         :style="`width: ${rating.percentage}%`"></div>
+                                </div>
+                            </div>
+                            <div class="w-20 text-right">
+                                <span class="font-bold text-gray-900" x-text="rating.percentage + '%'"></span>
+                                <span class="text-gray-500 text-sm ml-2" x-text="'(' + rating.count.toLocaleString() + ')'"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="mt-10 pt-10 border-t border-gray-200">
+                    <h3 class="font-bold text-gray-900 text-lg mb-4">En Çok Bahsedilen Özellikler</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-violet-100 text-violet-700 rounded-full font-semibold text-sm">
+                            Hızlı Teslimat
+                        </span>
+                        <span class="px-4 py-2 bg-violet-100 text-violet-700 rounded-full font-semibold text-sm">
+                            Kaliteli Ürünler
+                        </span>
+                        <span class="px-4 py-2 bg-violet-100 text-violet-700 rounded-full font-semibold text-sm">
+                            Uygun Fiyat
+                        </span>
+                        <span class="px-4 py-2 bg-violet-100 text-violet-700 rounded-full font-semibold text-sm">
+                            İyi Müşteri Hizmetleri
+                        </span>
+                        <span class="px-4 py-2 bg-violet-100 text-violet-700 rounded-full font-semibold text-sm">
+                            Kolay İade
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-009: Comparison Before/After -->
+<section id="testimonials-009" class="h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-rose-100 p-8">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-rose-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-009
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Önce vs Sonra</h2>
+            <p class="text-xl text-gray-600">İxtif.com ile değişen iş süreçleri</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Before -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-red-200">
+                <div class="text-center mb-6">
+                    <div class="inline-block bg-red-100 text-red-700 px-6 py-3 rounded-full font-bold text-lg mb-4">
+                        <i class="fa-solid fa-x mr-2"></i>İxtif.com'dan ÖNCE
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-times text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Yüksek Maliyetler</h3>
+                            <p class="text-gray-600 text-sm">
+                                Ofis ekipmanlarına ayda 15,000 ₺ harcıyorduk. Bütçemiz sürekli aşıyordu.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-times text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Uzun Tedarik Süreleri</h3>
+                            <p class="text-gray-600 text-sm">
+                                Ürünleri bulmak ve temin etmek haftalar alıyordu. Projeler gecikiyordu.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-times text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Sınırlı Seçenekler</h3>
+                            <p class="text-gray-600 text-sm">
+                                Kaliteli ürün bulmak zor, seçenekler kısıtlıydı. Kompromis yapmak zorundaydık.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-times text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Karmaşık Süreçler</h3>
+                            <p class="text-gray-600 text-sm">
+                                Sipariş, ödeme ve teslimat süreçleri çok karmaşıktı. Zaman kaybı yaşıyorduk.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- After -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-green-200">
+                <div class="text-center mb-6">
+                    <div class="inline-block bg-green-100 text-green-700 px-6 py-3 rounded-full font-bold text-lg mb-4">
+                        <i class="fa-solid fa-check mr-2"></i>İxtif.com'dan SONRA
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-check text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">%40 Maliyet Tasarrufu</h3>
+                            <p class="text-gray-600 text-sm">
+                                Aynı kalitede ürünleri 9,000 ₺'ye alıyoruz. Bütçemizde 6,000 ₺ tasarruf!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-check text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">2-3 Gün Teslimat</h3>
+                            <p class="text-gray-600 text-sm">
+                                Sipariş veriyoruz, 2-3 gün içinde teslim alıyoruz. Projeler zamanında tamamlanıyor.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-check text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">2000+ Ürün Seçeneği</h3>
+                            <p class="text-gray-600 text-sm">
+                                İhtiyacımız olan her şeyi tek platformda buluyoruz. Kalite artık problem değil!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-check text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 mb-2">Kolay ve Hızlı</h3>
+                            <p class="text-gray-600 text-sm">
+                                Tek tıkla sipariş, online ödeme, otomatik takip. Her şey çok pratik ve hızlı!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <div class="bg-white rounded-3xl p-6 inline-block shadow-lg">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-rose-500 to-rose-700 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                        AY
+                    </div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-gray-900 text-lg">Ayşe Yılmaz</h3>
+                        <p class="text-gray-600">Kurumsal Satın Alma Müdürü - ABC Teknoloji A.Ş.</p>
+                        <div class="flex gap-1 mt-2">
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS-010: Category-Based Reviews -->
+<section id="testimonials-010" class="h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100 p-8"
+         x-data="{ 
+             activeCategory: 'electronics',
+             categories: {
+                 electronics: {
+                     name: 'Elektronik',
+                     icon: 'fa-laptop',
+                     color: 'blue',
+                     reviews: [
+                         { name: 'Mehmet Kaya', text: 'Laptop ve tabletleri çok uygun fiyata aldım. Kalite harika!', rating: 5 },
+                         { name: 'Ali Çelik', text: 'Elektronik ürünlerde en iyi fiyatlar burada. Kesinlikle tavsiye ederim!', rating: 5 }
+                     ]
+                 },
+                 furniture: {
+                     name: 'Mobilya',
+                     icon: 'fa-couch',
+                     color: 'green',
+                     reviews: [
+                         { name: 'Ayşe Yılmaz', text: 'Ofis mobilyalarımızı buradan aldık. Hem kaliteli hem uygun fiyatlı!', rating: 5 },
+                         { name: 'Zehra Demir', text: 'Koltuklar çok rahat, montaj hizmeti de mükemmeldi.', rating: 5 }
+                     ]
+                 },
+                 textile: {
+                     name: 'Tekstil',
+                     icon: 'fa-shirt',
+                     color: 'purple',
+                     reviews: [
+                         { name: 'Zeynep Demir', text: 'Tekstil ürünlerinde harika seçenekler var. İşletmem için toptan alıyorum!', rating: 5 },
+                         { name: 'Fatma Yıldız', text: 'Kaliteli kumaşlar, uygun fiyatlar. Çok memnunum!', rating: 5 }
+                     ]
+                 },
+                 tools: {
+                     name: 'Alet & Ekipman',
+                     icon: 'fa-wrench',
+                     color: 'orange',
+                     reviews: [
+                         { name: 'Emre Arslan', text: 'Profesyonel ekipmanlar için en iyi adres. Fiyat/performans mükemmel!', rating: 4 },
+                         { name: 'Burak Şahin', text: 'Restoran ekipmanlarımızı buradan alıyoruz. Kalite çok iyi!', rating: 5 }
+                     ]
+                 }
+             }
+         }">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-amber-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-010
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Kategorilere Göre Yorumlar</h2>
+            <p class="text-xl text-gray-600">Her kategoride mutlu müşteriler</p>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+            <template x-for="(category, key) in categories" :key="key">
+                <button @click="activeCategory = key"
+                        :class="activeCategory === key ? 
+                                `bg-gradient-to-r from-${category.color}-600 to-${category.color}-700 text-white scale-110` : 
+                                'bg-white text-gray-700 hover:bg-gray-100'"
+                        class="px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-lg flex items-center gap-3">
+                    <i :class="'fa-solid ' + category.icon"></i>
+                    <span x-text="category.name"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- Reviews Content -->
+        <div class="bg-white rounded-3xl p-12 shadow-2xl">
+            <template x-for="(category, key) in categories" :key="key">
+                <div x-show="activeCategory === key"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100">
+                    
+                    <div class="text-center mb-10">
+                        <div :class="`w-24 h-24 bg-gradient-to-br from-${category.color}-500 to-${category.color}-700 rounded-full mx-auto flex items-center justify-center mb-6`">
+                            <i :class="'fa-solid ' + category.icon + ' text-5xl text-white'"></i>
+                        </div>
+                        <h3 class="text-4xl font-black text-gray-900 mb-3" x-text="category.name + ' Kategorisi'"></h3>
+                        <p class="text-gray-600 text-lg">Bu kategorideki müşteri yorumları</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <template x-for="(review, index) in category.reviews" :key="index">
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-8">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div :class="`w-16 h-16 bg-gradient-to-br from-${category.color}-500 to-${category.color}-700 rounded-full flex items-center justify-center text-white text-xl font-bold`">
+                                        <span x-text="review.name.split(' ').map(n => n[0]).join('')"></span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 text-lg" x-text="review.name"></h4>
+                                        <div class="flex gap-1">
+                                            <template x-for="i in 5" :key="i">
+                                                <i :class="i <= review.rating ? 'fa-solid fa-star text-yellow-400' : 'fa-solid fa-star text-gray-300'"></i>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 text-lg leading-relaxed" x-text="review.text"></p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <div class="text-center mt-8">
+            <button class="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-10 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                <i class="fa-solid fa-comment-dots mr-2"></i>Tüm Yorumları Görüntüle
+            </button>
+        </div>
+    </div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1260,7 +1260,7 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/js/themes/simple/shop-product-show.js') }}"></script>
+    <script src="{{ asset('assets/js/themes/ixtif/shop-product-show.js') }}"></script>
     <script>
         // TOC gizleme: trust-signals bölümüne gelince TOC kaybolsun
         document.addEventListener('DOMContentLoaded', function() {

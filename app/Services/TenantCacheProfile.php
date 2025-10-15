@@ -75,12 +75,28 @@ class TenantCacheProfile implements CacheProfile
             }
             return false;
         }
-        
+
+        if (app()->environment(['local', 'staging'])) {
+            \Log::debug('shouldCacheRequest = TRUE', [
+                'url' => $request->fullUrl()
+            ]);
+        }
+
         return true;
     }
 
     public function shouldCacheResponse(Response $response): bool
     {
+        // Debug log sadece local/staging'de
+        if (app()->environment(['local', 'staging'])) {
+            \Log::debug('shouldCacheResponse check', [
+                'status' => $response->getStatusCode(),
+                'is_successful' => $response->isSuccessful(),
+                'is_redirection' => $response->isRedirection(),
+                'content_type' => $response->headers->get('Content-Type')
+            ]);
+        }
+
         // Redirect response'ları cache'leme
         if ($response->isRedirection()) {
             return false;
@@ -90,8 +106,22 @@ class TenantCacheProfile implements CacheProfile
             // Cache header'larını düzelt
             $response->setPublic();
             $response->setMaxAge(3600); // 1 saat
+
+            if (app()->environment(['local', 'staging'])) {
+                \Log::debug('Response will be cached', [
+                    'status' => $response->getStatusCode()
+                ]);
+            }
+
             return true;
         }
+
+        if (app()->environment(['local', 'staging'])) {
+            \Log::debug('Response will NOT be cached', [
+                'status' => $response->getStatusCode()
+            ]);
+        }
+
         return false;
     }
 

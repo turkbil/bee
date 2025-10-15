@@ -61,6 +61,7 @@ SUNUCU_BILGILERI.txt
 
 # Veritabanı yedekleri
 /backups
-*.sql
-!database/migrations/*.sql
-!database/seeders/*.sql
+!database-backups/**/*.sql
+
+# Readme/Döküman klasörü (local development)
+/readme

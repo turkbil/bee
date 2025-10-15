@@ -33,6 +33,24 @@ class Setting extends Model
         'is_system' => 'boolean',
         'is_required' => 'boolean',
     ];
+
+    /**
+     * Get attributes for array conversion (used by Livewire serialization)
+     * Sanitize all string attributes to prevent UTF-8 encoding errors
+     */
+    public function attributesToArray()
+    {
+        $attributes = parent::attributesToArray();
+
+        // Sanitize all string attributes
+        foreach ($attributes as $key => $value) {
+            if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+                $attributes[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+            }
+        }
+
+        return $attributes;
+    }
     
     /**
      * Return the sluggable configuration array for this model.
@@ -58,12 +76,18 @@ class Setting extends Model
 
     public function getValue()
     {
-        // Her durumda settings_values tablosundan değer almayı dene
-        // Tenant context'inde veya central'da olsak da
-        $settingValue = SettingValue::where('setting_id', $this->id)->first();
+        // SettingValue tenant database'de olduğu için
+        // tenant connection'ı kullanarak sorgu yapmalıyız
 
-        if ($settingValue && $settingValue->value !== null) {
-            return $settingValue->value;
+        // Tenant context varsa tenant DB'den çek
+        if (tenant()) {
+            $settingValue = SettingValue::on('tenant')
+                ->where('setting_id', $this->id)
+                ->first();
+
+            if ($settingValue && $settingValue->value !== null) {
+                return $settingValue->value;
+            }
         }
 
         // Hiç değer yoksa default_value kullan

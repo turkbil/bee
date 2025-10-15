@@ -7,8 +7,10 @@ use App\Exceptions\Handler;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
+        \App\Providers\JsonResponseServiceProvider::class, // MUST BE FIRST - Override JsonResponse
         \App\Providers\DatabasePoolServiceProvider::class,
         \App\Providers\QueueResilienceServiceProvider::class,
+        \App\Providers\LivewireUtf8ServiceProvider::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -67,6 +69,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // 8. ROOT-ONLY DEBUGBAR - Auth'tan sonra çalışmalı
         $middleware->appendToGroup('web', \App\Http\Middleware\RootOnlyDebugbar::class);
 
+        // 9. LIVEWIRE JSON SANITIZER - Livewire JSON responses için UTF-8 sanitization
+        $middleware->appendToGroup('web', \App\Http\Middleware\LivewireJsonSanitizer::class);
+
         // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
@@ -87,6 +92,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant.rate.limit' => \Modules\TenantManagement\App\Http\Middleware\TenantRateLimitMiddleware::class,
             'auto.queue.health' => \App\Http\Middleware\AutoQueueHealthCheck::class, // 🚀 OTOMATIK QUEUE HEALTH CHECK
             'root.debugbar' => \App\Http\Middleware\RootOnlyDebugbar::class, // 🛠️ ROOT-ONLY DEBUGBAR
+            'frontend.auto.seo' => \App\Http\Middleware\FrontendAutoSeoFillMiddleware::class, // 🎯 FRONTEND AUTO SEO FILL
         ]);
                 
         // Admin middleware grubu
@@ -96,11 +102,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.access',
             'admin.nocache', // MUTLAK CACHE ENGELLEMESİ
             'locale.admin',
-            'auto.queue.health', // 🚀 OTOMATIK QUEUE HEALTH CHECK
+            // 'auto.queue.health', // 🚨 GEÇİCİ OLARAK KAPALI - Horizon boot loop sorununu çözüyor
+            \App\Http\Middleware\FixLegacyTenantUrls::class, // 🔧 Eski tenant URL'lerini düzelt
         ]);
         
         // API middleware grubu
         $middleware->group('api', [
+            \App\Http\Middleware\InitializeTenancy::class, // 🔥 Tenant initialization for API
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
@@ -109,7 +117,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('site', [
             'web',
             'locale.site', // Locale belirleme (URL parse için gerekli)
+            'frontend.auto.seo', // 🎯 Frontend Auto SEO Fill (Premium tenants) - CACHE'DEN ÖNCE ÇALIŞMALI!
             \Spatie\ResponseCache\Middlewares\CacheResponse::class, // ✅ Response cache (URL-based, locale'den bağımsız)
+            \App\Http\Middleware\FixResponseCacheHeaders::class, // 🔧 Session middleware'in cache header'larını ezmesini engelle (EN SONDA)
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü

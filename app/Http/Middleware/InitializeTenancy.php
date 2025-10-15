@@ -107,10 +107,49 @@ class InitializeTenancy extends BaseMiddleware
     
     protected function handleApiTenancy($request, Closure $next)
     {
-        // API için şimdilik tenant middleware'i devre dışı bırak
-        // Çünkü sonsuz döngü yaratıyor
-        
-        // Basit test: tenant olmadan devam et
-        return $next($request);
+        // API için domain-based tenant detection
+        $host = $request->getHost();
+
+        // Central domainleri config'den kontrol et
+        $centralDomains = config('tenancy.central_domains', []);
+        if (in_array($host, $centralDomains)) {
+            // Config'de tanımlı central domain ise tenancy başlatma
+            return $next($request);
+        }
+
+        try {
+            // Cache key oluştur - 15 dakika cache
+            $cacheKey = "tenant_domain_data:{$host}";
+
+            $domainModel = Cache::remember($cacheKey, 60 * 15, function() use ($host) {
+                return Domain::with('tenant')->where('domain', $host)->first();
+            });
+
+            if (!$domainModel || !$domainModel->tenant) {
+                // API için JSON error döndür
+                return response()->json([
+                    'error' => 'Tenant not found',
+                    'message' => 'No active tenant found for this domain'
+                ], 404);
+            }
+
+            $tenant = $domainModel->tenant;
+
+            // Tenant'ı başlat
+            $this->tenancy->initialize($tenant);
+
+            return $next($request);
+
+        } catch (\Exception $e) {
+            Log::error('API Tenant initialization error: ' . $e->getMessage(), [
+                'host' => $host,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'error' => 'Internal server error',
+                'message' => 'Error initializing tenant'
+            ], 500);
+        }
     }
 }

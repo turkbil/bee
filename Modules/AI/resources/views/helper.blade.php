@@ -65,6 +65,12 @@
                             </a>
                             @endhasmoduleaccess
 
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.knowledge-base') }}">
+                                <i class="ti ti-brain me-1"></i>
+                                Bilgi Bankası
+                            </a>
+                            @endhasmoduleaccess
 
                             {{-- Profil ve Ayarlar --}}
                             <h6 class="dropdown-menu-header card-header-light">

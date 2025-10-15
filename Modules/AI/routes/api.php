@@ -16,7 +16,9 @@ use Modules\AI\App\Http\Controllers\Api\PublicAIController;
 |
 */
 
-Route::prefix('ai/v1')->name('ai.api.v1.')->group(function () {
+Route::prefix('ai/v1')
+    ->name('ai.api.v1.')
+    ->group(function () {
     
     // 📋 Public Information Endpoints (No authentication required)
     Route::get('/features/public', [PublicAIController::class, 'getPublicFeatures'])
@@ -41,7 +43,16 @@ Route::prefix('ai/v1')->name('ai.api.v1.')->group(function () {
     // 🎨 Product Placeholder Endpoint (Cached AI-generated conversations)
     Route::get('/product-placeholder/{productId}', [PublicAIController::class, 'getProductPlaceholder'])
         ->name('product-placeholder');
-    
+
+    // 📚 Knowledge Base Endpoints (Public access, cached)
+    Route::get('/knowledge-base', [PublicAIController::class, 'getKnowledgeBase'])
+        ->name('knowledge-base.list')
+        ->middleware(['throttle:60,1']); // 60 requests per minute
+
+    Route::get('/knowledge-base/{questionId}', [PublicAIController::class, 'answerKnowledgeQuestion'])
+        ->name('knowledge-base.answer')
+        ->middleware(['throttle:30,1']); // 30 requests per minute
+
     // 👤 Authenticated User Endpoints (Requires authentication)
     Route::middleware(['auth:sanctum'])->group(function () {
         

@@ -46,7 +46,13 @@
       "Bash(plesk bin php_handler:*)",
       "Bash(git commit:*)",
       "Bash(git clean:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(chmod:*)",
+      "Bash(./deploy_production.sh:*)",
+      "Bash(timeout 60 ssh:*)",
+      "Bash(ssh:*)",
+      "Read(//tmp/**)",
+      "Bash(/dev/null)"
     ],
     "deny": [],
     "ask": [],

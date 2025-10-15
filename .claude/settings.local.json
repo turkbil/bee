@@ -45,7 +45,8 @@
       "Read(//etc/php-fpm.d/**)",
       "Bash(plesk bin php_handler:*)",
       "Bash(git commit:*)",
-      "Bash(git clean:*)"
+      "Bash(git clean:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": [],

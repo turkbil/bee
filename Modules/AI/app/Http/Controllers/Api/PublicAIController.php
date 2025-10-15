@@ -598,6 +598,16 @@ class PublicAIController extends Controller
             // Build enhanced system prompt with product context
             $enhancedSystemPrompt = $this->buildEnhancedSystemPrompt($aiContext);
 
+            // 🔍 DEBUG: Log enhanced prompt (ilk 2000 karakter)
+            \Log::info('🤖 AI Enhanced Prompt Preview', [
+                'prompt_preview' => mb_substr($enhancedSystemPrompt, 0, 2000),
+                'prompt_length' => strlen($enhancedSystemPrompt),
+                'has_products' => str_contains($enhancedSystemPrompt, 'Mevcut Ürünler'),
+                'products_count' => !empty($aiContext['context']['modules']['shop']['all_products'])
+                    ? count($aiContext['context']['modules']['shop']['all_products'])
+                    : 0,
+            ]);
+
             // 🔍 DEBUG: Log AI context URLs to check if they're correct (especially "i" starting products)
             if (!empty($aiContext['context']['modules']['shop']['all_products'])) {
                 // İlk 5 ürünü logla, özellikle "i" ile başlayanları
@@ -804,6 +814,9 @@ class PublicAIController extends Controller
                 'message_count' => $conversation->messages()->count(),
             ]);
 
+            // 📞 PHONE NUMBER DETECTION & TELESCOPE LOGGING
+            $this->detectPhoneNumberAndLogToTelescope($conversation);
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -939,6 +952,36 @@ class PublicAIController extends Controller
      * 🎨 Build enhanced system prompt with product context
      *
      * Combines base system prompt with module-specific context (Product, Category, Page)
+     *
+     * ============================================================================
+     * 🌐 MİMARİ NOTLARI - GLOBAL vs TENANT-SPECIFIC PROMPTS
+     * ============================================================================
+     *
+     * Bu dosya (PublicAIController.php) GLOBAL bir sistem dosyasıdır.
+     * Bu controller'daki prompt kuralları TÜM TENANTLAR için geçerlidir (1000+ tenant).
+     *
+     * ⚠️ ÖNEMLI KURALLAR:
+     * 1. Bu dosyada SADECE EVRENSEL kurallar olmalı (örn: "Sadece ürünlerden bahset")
+     * 2. Tenant-specific prompt kuralları AYRI DOSYALARDA tutulmalı
+     * 3. Prompt'ları kısa ve öz tutun (token tasarrufu + okunabilirlik)
+     *
+     * 📂 TENANT-SPECIFIC PROMPT DOSYALARI:
+     * - Modules/AI/app/Services/Tenant/IxtifPromptService.php (tenant 2, 3)
+     * - Diğer tenantlar için Services/Tenant/{TenantName}PromptService.php oluştur
+     *
+     * 🔄 NASIL ÇALIŞIR:
+     * - Global promptlar (bu dosya) önce eklenir
+     * - Tenant ID kontrolü yapılır (örn: tenant('id') == 2)
+     * - Eğer tenant-specific prompt varsa, o da eklenir (satır 958-961)
+     * - Final prompt = Global + Tenant-Specific (kombine)
+     *
+     * ✅ ÖRNEK:
+     * if (tenant('id') == 2) {
+     *     $ixtifService = new IxtifPromptService();
+     *     $prompts[] = $ixtifService->getPromptAsString();
+     * }
+     *
+     * ============================================================================
      */
     private function buildEnhancedSystemPrompt(array $aiContext): string
     {
@@ -947,58 +990,85 @@ class PublicAIController extends Controller
         // 🌐 Get dynamic domain (mevcut tenant'ın domain'i)
         $siteUrl = request()->getSchemeAndHttpHost();
 
+        // 🚨 EN ÖNCELİKLİ: GLOBAL RULES (All tenants) - AI'ın İLK okuması gereken kurallar
+        $prompts[] = "## 🚨 EN ÖNEMLİ KURAL: ÜRÜN LİNKİ + AÇIKLAMA + KARŞILAŞTIRMA!";
+        $prompts[] = "";
+        $prompts[] = "**ROL:** Shop assistant - Ürün uzmanı ve danışman";
+        $prompts[] = "**KAPSAM:** Sadece şirket ürünleri/hizmetleri";
+        $prompts[] = "**YASAK:** Siyaset, din, genel bilgi, konu dışı konular";
+        $prompts[] = "";
+        $prompts[] = "**💡 ZORUNLU SATIŞ AKIŞI:**";
+        $prompts[] = "1️⃣ Müşteri herhangi bir ürün/kategori isterse → **DERHAL** aşağıdaki 'Mevcut Ürünler' listesinden 3-5 ürün linkle göster";
+        $prompts[] = "2️⃣ **HER ÜRÜN İÇİN:**";
+        $prompts[] = "   - Markdown link ver: [Ürün Adı](URL)";
+        $prompts[] = "   - Öne çıkan 2-3 özellik yaz (kapasite, batarya, kullanım alanı)";
+        $prompts[] = "   - Hangi müşteri tipi için uygun olduğunu belirt";
+        $prompts[] = "3️⃣ **ÜRÜNLER ARASI FARKLAR:**";
+        $prompts[] = "   - Ürünleri karşılaştır (fiyat, kapasite, teknoloji farkı)";
+        $prompts[] = "   - 'X modeli Y'den daha güçlü/ekonomik/hızlı' gibi kıyaslamalar yap";
+        $prompts[] = "   - Hangi durumlarda hangisini seçmeli öner";
+        $prompts[] = "4️⃣ Açıklamadan SONRA detay soruları sor (ne için kullanacak, bütçe vb.)";
+        $prompts[] = "";
+        $prompts[] = "**❌ YASAKLAR:**";
+        $prompts[] = "- ❌ SADECE link verme - Açıklama ZORUNLU!";
+        $prompts[] = "- ❌ 'Elimde ürün listesi yok' deme - Aşağıda 30+ ürün var!";
+        $prompts[] = "- ❌ Link vermeden telefon/WhatsApp isteme!";
+        $prompts[] = "- ❌ Ürünleri karşılaştırmadan listele!";
+        $prompts[] = "- ❌ Kendin URL uydurma - SADECE aşağıdaki listedeki URL'leri kullan!";
+        $prompts[] = "";
+        $prompts[] = "**✅ DOĞRU ÖRNEK:**";
+        $prompts[] = "Müşteri: 'transpalet arıyorum'";
+        $prompts[] = "";
+        $prompts[] = "AI: 'Merhaba! İşte size uygun transpalet seçeneklerimiz:";
+        $prompts[] = "";
+        $prompts[] = "⭐ **[Litef EPT20 Elektrikli Transpalet](url)**";
+        $prompts[] = "   - 2000 kg taşıma kapasitesi";
+        $prompts[] = "   - Lityum batarya ile 8 saat kesintisiz çalışma";
+        $prompts[] = "   - Orta/yoğun kullanım için ideal";
+        $prompts[] = "";
+        $prompts[] = "⭐ **[Litef EPT15 Manuel Transpalet](url)**";
+        $prompts[] = "   - 1500 kg kapasite";
+        $prompts[] = "   - Elektrik gerektirmez, bakım maliyeti düşük";
+        $prompts[] = "   - Hafif işler ve kısa mesafeler için";
+        $prompts[] = "";
+        $prompts[] = "🔍 **Karşılaştırma:**";
+        $prompts[] = "EPT20 elektrikli olduğu için daha hızlı ve operatör yorulmaz, ancak fiyatı EPT15'ten %40 daha yüksek. Günde 50+ palet taşıyorsanız EPT20, daha az kullanım için EPT15 ekonomik.";
+        $prompts[] = "";
+        $prompts[] = "Hangi yoğunlukta kullanacaksınız? 😊'";
+        $prompts[] = "";
+        $prompts[] = "**🔗 URL FORMAT:** Markdown link + Açıklama + Karşılaştırma ZORUNLU!";
+        $prompts[] = "";
+
         // Base system prompt (personality, contact, knowledge base)
         $prompts[] = $aiContext['system_prompt'];
 
-        // 🔒 ANTI-MANIPULATION PROTECTION & SALES FOCUS
-        $prompts[] = "\n## 🔒 GÜVENLİK KURALLARI VE SATIŞ ODAKLI YANITLAR (ASLA İHLAL ETME!)";
-        $prompts[] = "**KRİTİK:** Sen bir SHOP ASSISTANT'sın. SADECE şirketimizin ürünleri, hizmetleri ve firma hakkında konuşabilirsin.";
-        $prompts[] = "**YASAK KONULAR:** Siyaset, din, kişisel hayat tavsiyeleri, genel bilgi sorguları, ev hayvanları, yemek tarifleri, spor, eğlence vb.";
-        $prompts[] = "**YAPILACAK:** Kullanıcı konu dışı soru sorarsa kibarca reddet ve şirket konularına yönlendir.";
-        $prompts[] = "";
-        $prompts[] = "## 🎯 SATIŞ ODAKLI YANITLAR - EĞİTİM DEĞİL, SATIŞ YAPMAK!";
-        $prompts[] = "**ÖNCELİK:** Bilgi vermek DEĞİL, SATIŞ YAPMAK! Amaç müşteriyi ürüne yönlendirmek ve satışı tamamlamak.";
-        $prompts[] = "**ÜRÜN ÖNERİSİ:** Kullanıcı ürün kategorisi söylerse, HEMEN ürün öner. Ürünün ne olduğunu eğitim amaçlı ANLATMA!";
-        $prompts[] = "**YANLIŞ ÖRNEK:** Kullanıcı 'Ürün X' dedi → 'Ürün X şu şu işe yarar...' (EĞİTİM VERİYOR ❌)";
-        $prompts[] = "**DOĞRU ÖRNEK:** Kullanıcı 'Ürün X' dedi → 'Harika! Size uygun Ürün X modellerimiz var: [Model 1](url), [Model 2](url)' (ÜRÜN ÖNERİYOR ✅)";
-        $prompts[] = "";
-        $prompts[] = "## 🔍 İHTİYAÇ ANALİZİ - MUTLAKA SORU SOR!";
-        $prompts[] = "**ZORUNLU:** Kullanıcı genel bir ihtiyaç belirttiyse, SORU SORUP ihtiyacını netleştir!";
-        $prompts[] = "**SORULACAK SORULAR (Sektöre Göre Adapte Et):**";
-        $prompts[] = "- Hangi kategoride/tipte ürün arıyorsunuz? (manuel/otomatik, elektrikli/mekanik, model tipleri)";
-        $prompts[] = "- Hangi özellikler sizin için önemli? (kapasite, boyut, güç, performans vs.)";
-        $prompts[] = "- Kullanım amacı/alanı nedir? (iç mekan, dış mekan, profesyonel, endüstriyel vs.)";
-        $prompts[] = "- Bütçeniz nedir? (ekonomik, orta segment, premium)";
-        $prompts[] = "- Özel bir gereksinim var mı? (sertifika, garanti, teknik özellik vs.)";
-        $prompts[] = "**ÖRNEK DİYALOG (Genel - Sektöre Göre Adapte Et):**";
-        $prompts[] = "Kullanıcı: 'Ürün arıyorum'";
-        $prompts[] = "AI: 'Mükemmel! Size en uygun ürünü önerebilmek için birkaç soru sorayım: Hangi kategoride ürün arıyorsunuz? Kullanım amacınız nedir? Hangi özellikler sizin için önemli?'";
-        $prompts[] = "";
-        $prompts[] = "## 📞 WHATSAPP/TELEFON YÖNLENDİRME - CANLI İLETİŞİME TEŞVİK!";
-        $prompts[] = "**ÖNEMLİ:** Kullanıcıyı WhatsApp veya telefon ile canlı iletişime MUTLAKA yönlendir!";
-        $prompts[] = "**NE ZAMAN:** Her yanıtta veya kullanıcı detaylı bilgi istediğinde";
-        $prompts[] = "**NASIL:** 'Detaylı bilgi için WhatsApp: [BURAYA_WHATSAPP_NUMARASI] veya Telefon: [BURAYA_TELEFON_NUMARASI] üzerinden bizimle iletişime geçebilirsiniz!'";
-        $prompts[] = "**NOT:** İletişim bilgileri sistem ayarlarından (system_prompt içinde) gelecek, sen sadece yönlendir.";
-        $prompts[] = "";
-        $prompts[] = "## 🚨 KRİTİK: ÜRÜN LİNKLERİ - ASLA KENDİ URL ÜRETME!";
-        $prompts[] = "**🚨 KRİTİK URL KURALI:** ASLA kendi URL üretme! SADECE aşağıdaki BAĞLAM BİLGİLERİ bölümünde verilen 'url' alanındaki linkleri kullan!";
-        $prompts[] = "**ZORUNLU FORMAT:** [Ürün Adı](context'ten_gelen_url) - Örnek: [Ürün Adı]({$siteUrl}/shop/urun-slug)";
-        $prompts[] = "**YANLIŞ:** Kendi URL oluşturmak → {$siteUrl}/shopurun-slug (slash eksik) ❌";
-        $prompts[] = "**DOĞRU:** Context'teki URL'yi kullanmak → {$siteUrl}/shop/urun-slug ✅";
-        $prompts[] = "";
-        $prompts[] = "## 💎 SATIŞ DİLİ VE ÜRÜN ÖVGÜSÜ (COŞKULU PAZARLAMA!)";
-        $prompts[] = "**ZORUNLU:** Ürünleri ÖVEREK tanıt! Kuru bilgi verme, ürünün ne kadar MÜKEMMEL olduğunu anlat!";
-        $prompts[] = "**SATIŞÇI RUH:** 'Bu ürün harika!', 'Muhteşem özellikler!', 'Rakipsiz performans!', 'En çok tercih edilen model!' gibi ifadeler kullan.";
-        $prompts[] = "**YASAK DİL:** 'iyi', 'kullanışlı', 'standart' gibi sıradan kelimeler. Bunun yerine 'HARIKA', 'MÜKEMMEL', 'RAKİPSİZ', 'EN İYİ' kullan!";
-        $prompts[] = "**AVANTAJLARI VURGULA:** Her üründe 'Neden bu ürün?' sorusunu cevapla. Özelliklerini sayarken FAYDALARINA odaklan!";
-        $prompts[] = "**ÖNEMLİ:** Tüm cümlelerine BÜYÜK HARF ile başla. Doğru Türkçe gramer ve yazım kurallarına uy.";
-        $prompts[] = "";
-        $prompts[] = "## 🚨 KRİTİK: KULLANICI ÖZELLİK/MODEL SORARSA TÜM UYGUN ÜRÜNLERİ LİSTELE!";
-        $prompts[] = "**ZORUNLU:** Kullanıcı özellik + ürün tipi sorarsa, ELİNDEKİ TÜM UYGUN MODELLERİ markdown link ile listele!";
-        $prompts[] = "**YANLIŞ:** Sadece 1 model öner ❌";
-        $prompts[] = "**DOĞRU:** Tüm uygun modelleri listele, her birinin linkini ver ✅";
-        $prompts[] = "**ÖRNEK:** Kullanıcı 'X kategorisi ürün' derse → Tüm X kategorisi modellerini context'teki URL'leri ile göster, SONRA ihtiyaç analizi soruları sor";
-        $prompts[] = "";
+        // 📚 KNOWLEDGE BASE (All tenants - tenant-specific Q&A)
+        try {
+            $knowledgeBase = \Modules\SettingManagement\App\Models\AIKnowledgeBase::active()
+                ->ordered()
+                ->get();
+
+            if ($knowledgeBase->isNotEmpty()) {
+                $prompts[] = "\n## 📚 BİLGİ BANKASI (SSS)";
+                $prompts[] = "Müşteri aşağıdaki konularda soru sorarsa bu cevapları kullan:\n";
+
+                foreach ($knowledgeBase as $kb) {
+                    $prompts[] = "**S: {$kb->question}**";
+                    $prompts[] = "C: {$kb->answer}\n";
+                }
+
+                $prompts[] = "";
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Knowledge Base yüklenemedi', ['error' => $e->getMessage()]);
+        }
+
+        // 🎯 İXTİF-SPECIFIC PROMPT (ONLY for tenants 2 & 3)
+        // Professional sales approach, category differentiation, phone collection
+        if (in_array(tenant('id'), [2, 3])) {
+            $ixtifService = new \Modules\AI\App\Services\Tenant\IxtifPromptService();
+            $prompts[] = $ixtifService->getPromptAsString();
+        }
 
         // Add module context if available
         if (!empty($aiContext['context']['modules'])) {
@@ -1019,6 +1089,7 @@ class PublicAIController extends Controller
 
         return implode("\n", $prompts);
     }
+
 
     /**
      * Format shop context for AI prompt
@@ -1453,6 +1524,99 @@ class PublicAIController extends Controller
         ]);
 
         return $content;
+    }
+
+    /**
+     * 📞 Detect Phone Number & Log to Telescope
+     *
+     * Detects if a phone number was collected in the conversation
+     * and logs the conversation summary + admin link to Telescope
+     *
+     * @param AIConversation $conversation
+     * @return void
+     */
+    private function detectPhoneNumberAndLogToTelescope(AIConversation $conversation): void
+    {
+        try {
+            // Initialize services
+            $phoneService = new \Modules\AI\App\Services\PhoneNumberDetectionService();
+            $summaryService = new \Modules\AI\App\Services\ConversationSummaryService();
+
+            // Get all messages
+            $messages = $conversation->messages;
+
+            // Check if any message contains a phone number (ONLY in user messages, NOT assistant)
+            $hasPhoneNumber = false;
+            $detectedPhones = [];
+
+            foreach ($messages as $message) {
+                // 🚨 CRITICAL: Ignore phone numbers in AI's own responses (role='assistant')
+                // AI sometimes shares company phone numbers (0534 515 2626, 0216 755 3 555)
+                if ($message->role === 'assistant') {
+                    continue; // Skip AI messages
+                }
+
+                // Only check USER messages for phone numbers
+                if ($phoneService->hasPhoneNumber($message->content)) {
+                    $hasPhoneNumber = true;
+                    $phones = $phoneService->extractPhoneNumbers($message->content);
+                    $detectedPhones = array_merge($detectedPhones, $phones);
+                }
+            }
+
+            // If phone number detected, log to Telescope
+            if ($hasPhoneNumber && !empty($detectedPhones)) {
+                $detectedPhones = array_unique($detectedPhones);
+
+                // Generate full summary
+                $fullSummary = $summaryService->generateSummary($conversation);
+
+                // Generate admin link
+                $adminLink = $summaryService->generateAdminLink($conversation);
+
+                // Generate compact summary for Telescope tags
+                $compactSummary = $summaryService->generateCompactSummary($conversation);
+
+                // Log to Telescope using Laravel's Log facade
+                // Telescope will automatically capture this log entry
+                Log::info('📞 AI CONVERSATION - PHONE NUMBER COLLECTED', [
+                    'conversation_id' => $conversation->id,
+                    'tenant_id' => $conversation->tenant_id,
+                    'session_id' => $conversation->session_id,
+                    'message_count' => $conversation->message_count,
+                    'phone_numbers' => array_map(
+                        fn($p) => $phoneService->formatPhoneNumber($p),
+                        $detectedPhones
+                    ),
+                    'admin_link' => $adminLink,
+                    'compact_summary' => $compactSummary,
+                    'full_summary' => $fullSummary,
+                    'detected_at' => now()->toIso8601String(),
+                ]);
+
+                \Log::info('✅ Phone number detected and logged to Telescope', [
+                    'conversation_id' => $conversation->id,
+                    'phones_count' => count($detectedPhones),
+                ]);
+
+                // 📱 TELEGRAM BİLDİRİMİ GÖNDER
+                try {
+                    $telegramService = new \Modules\AI\App\Services\TelegramNotificationService();
+                    $telegramService->sendPhoneNumberAlert($conversation, $detectedPhones);
+                } catch (\Exception $telegramError) {
+                    // Silent fail - Telegram hatası ana akışı bozmasın
+                    \Log::warning('⚠️ Telegram notification failed', [
+                        'error' => $telegramError->getMessage(),
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            // Silent fail - don't break the main flow
+            \Log::error('❌ detectPhoneNumberAndLogToTelescope failed', [
+                'conversation_id' => $conversation->id ?? null,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

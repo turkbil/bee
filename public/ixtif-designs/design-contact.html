@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İletişim Sections - ixtif.com Tasarım Kütüphanesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        html { scroll-snap-type: y mandatory; }
+        section { scroll-snap-align: start; }
+    </style>
+</head>
+<body>
+
+<!-- Back to Index Button -->
+<div class="fixed top-6 left-6 z-[9999]">
+    <a href="index.html" class="flex items-center gap-3 bg-white/90 backdrop-blur-lg shadow-2xl px-6 py-3 rounded-full hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white transition-all duration-300 font-semibold border-2 border-gray-200 hover:border-transparent group">
+        <i class="fa-solid fa-arrow-left group-hover:animate-pulse"></i>
+        <span>Ana Menüye Dön</span>
+    </a>
+</div>
+
+<!-- ============================================
+     CONTACT-001: Split Screen with Form & Info
+     ============================================ -->
+<section id="contact-001" class="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+    <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto bg-white rounded-[50px] shadow-2xl overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+                <!-- Left: Contact Info -->
+                <div class="bg-gradient-to-br from-blue-600 to-purple-600 p-12 lg:p-16 text-white relative overflow-hidden">
+                    <!-- Background Pattern -->
+                    <div class="absolute inset-0 opacity-10">
+                        <div class="absolute inset-0" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 30px 30px;"></div>
+                    </div>
+
+                    <!-- Badge -->
+                    <span class="inline-block bg-white/20 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold mb-8 border border-white/30 relative z-10">
+                        <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-001
+                    </span>
+
+                    <!-- Content -->
+                    <div class="relative z-10">
+                        <h2 class="text-5xl font-black mb-6">Bize Ulaşın</h2>
+                        <p class="text-xl text-white/90 mb-12 leading-relaxed">
+                            ixtif.com ile ilgili tüm sorularınız için 7/24 hizmetinizdeyiz
+                        </p>
+
+                        <!-- Contact Items -->
+                        <div class="space-y-8">
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-phone text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg mb-2">Telefon</h3>
+                                    <p class="text-white/80">0850 123 45 67</p>
+                                    <p class="text-white/60 text-sm mt-1">Hafta içi 09:00 - 18:00</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-envelope text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg mb-2">E-posta</h3>
+                                    <p class="text-white/80">info@ixtif.com</p>
+                                    <p class="text-white/60 text-sm mt-1">7/24 yanıt veriyoruz</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-location-dot text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg mb-2">Adres</h3>
+                                    <p class="text-white/80">Maslak Mah. Büyükdere Cad.<br>No: 123 Sarıyer / İstanbul</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg mb-2">WhatsApp</h3>
+                                    <p class="text-white/80">0532 123 45 67</p>
+                                    <p class="text-white/60 text-sm mt-1">Anında destek</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="mt-12 pt-8 border-t border-white/20">
+                            <p class="text-white/60 mb-4">Sosyal Medyada Takip Edin</p>
+                            <div class="flex gap-3">
+                                <button class="w-12 h-12 bg-white/10 backdrop-blur-lg rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors">
+                                    <i class="fa-brands fa-facebook text-xl"></i>
+                                </button>
+                                <button class="w-12 h-12 bg-white/10 backdrop-blur-lg rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors">
+                                    <i class="fa-brands fa-instagram text-xl"></i>
+                                </button>
+                                <button class="w-12 h-12 bg-white/10 backdrop-blur-lg rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors">
+                                    <i class="fa-brands fa-twitter text-xl"></i>
+                                </button>
+                                <button class="w-12 h-12 bg-white/10 backdrop-blur-lg rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors">
+                                    <i class="fa-brands fa-linkedin text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Contact Form -->
+                <div class="p-12 lg:p-16">
+                    <h3 class="text-4xl font-black text-gray-900 mb-3">Mesaj Gönderin</h3>
+                    <p class="text-gray-600 mb-8">Formu doldurun, en kısa sürede size dönüş yapalım</p>
+
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Ad Soyad</label>
+                                <input type="text" placeholder="Adınız" class="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Telefon</label>
+                                <input type="tel" placeholder="0XXX XXX XX XX" class="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">E-posta</label>
+                            <input type="email" placeholder="ornek@email.com" class="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Konu</label>
+                            <select class="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-colors">
+                                <option>Genel Bilgi</option>
+                                <option>Sipariş Sorunu</option>
+                                <option>İade & Değişim</option>
+                                <option>Öneri & Şikayet</option>
+                                <option>Diğer</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Mesajınız</label>
+                            <textarea rows="5" placeholder="Mesajınızı buraya yazın..." class="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-colors resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>
+                            Mesajı Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-002: Minimal Center Form
+     ============================================ -->
+<section id="contact-002" class="h-screen flex items-center justify-center bg-white">
+    <div class="container mx-auto px-6">
+        <div class="max-w-2xl mx-auto text-center">
+            <!-- Badge -->
+            <span class="inline-block bg-gray-900 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+                <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-002
+            </span>
+
+            <!-- Title -->
+            <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">
+                Size Nasıl Yardımcı Olabiliriz?
+            </h2>
+            <p class="text-xl text-gray-600 mb-12">
+                Sorularınız mı var? Bize ulaşın, 24 saat içinde geri dönelim
+            </p>
+
+            <!-- Quick Contact Buttons -->
+            <div class="grid grid-cols-3 gap-4 mb-12">
+                <button class="bg-gray-50 hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-500 rounded-2xl p-6 transition-all duration-300 group">
+                    <i class="fa-solid fa-phone text-3xl text-gray-400 group-hover:text-blue-600 mb-3 transition-colors"></i>
+                    <p class="font-bold text-gray-700 text-sm">Ara</p>
+                </button>
+                <button class="bg-gray-50 hover:bg-green-50 border-2 border-gray-200 hover:border-green-500 rounded-2xl p-6 transition-all duration-300 group">
+                    <i class="fa-brands fa-whatsapp text-3xl text-gray-400 group-hover:text-green-600 mb-3 transition-colors"></i>
+                    <p class="font-bold text-gray-700 text-sm">WhatsApp</p>
+                </button>
+                <button class="bg-gray-50 hover:bg-purple-50 border-2 border-gray-200 hover:border-purple-500 rounded-2xl p-6 transition-all duration-300 group">
+                    <i class="fa-solid fa-envelope text-3xl text-gray-400 group-hover:text-purple-600 mb-3 transition-colors"></i>
+                    <p class="font-bold text-gray-700 text-sm">E-posta</p>
+                </button>
+            </div>
+
+            <!-- Contact Form -->
+            <form class="space-y-6 text-left">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="text" placeholder="Adınız" class="px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors">
+                    <input type="email" placeholder="E-posta" class="px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors">
+                </div>
+                <input type="text" placeholder="Konu" class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors">
+                <textarea rows="5" placeholder="Mesajınız..." class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors resize-none"></textarea>
+
+                <button type="submit" class="w-full bg-gray-900 text-white px-8 py-5 rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors">
+                    Gönder
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-003: Card Grid with Icons
+     ============================================ -->
+<section id="contact-003" class="h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-600 to-orange-600 relative overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0">
+        <div class="absolute top-20 left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <!-- Badge -->
+        <div class="text-center mb-8">
+            <span class="inline-block bg-white/20 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/30">
+                <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-003
+            </span>
+        </div>
+
+        <!-- Title -->
+        <div class="text-center mb-16">
+            <h2 class="text-5xl md:text-7xl font-black text-white mb-4 drop-shadow-2xl">
+                İletişime Geçin
+            </h2>
+            <p class="text-2xl text-white/90 max-w-3xl mx-auto">
+                Size en uygun iletişim kanalını seçin, anında yanıt alın
+            </p>
+        </div>
+
+        <!-- Contact Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            <!-- Phone -->
+            <button class="bg-white rounded-3xl p-8 hover:scale-105 hover:shadow-2xl transition-all duration-300 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    <i class="fa-solid fa-phone text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Telefon</h3>
+                <p class="text-gray-600 mb-4">Hemen arayın</p>
+                <p class="text-xl font-black text-blue-600">0850 123 45 67</p>
+            </button>
+
+            <!-- WhatsApp -->
+            <button class="bg-white rounded-3xl p-8 hover:scale-105 hover:shadow-2xl transition-all duration-300 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    <i class="fa-brands fa-whatsapp text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">WhatsApp</h3>
+                <p class="text-gray-600 mb-4">Anında mesajlaşın</p>
+                <p class="text-xl font-black text-green-600">0532 123 45 67</p>
+            </button>
+
+            <!-- Email -->
+            <button class="bg-white rounded-3xl p-8 hover:scale-105 hover:shadow-2xl transition-all duration-300 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    <i class="fa-solid fa-envelope text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">E-posta</h3>
+                <p class="text-gray-600 mb-4">Mail gönderin</p>
+                <p class="text-xl font-black text-purple-600">info@ixtif.com</p>
+            </button>
+
+            <!-- Live Chat -->
+            <button class="bg-white rounded-3xl p-8 hover:scale-105 hover:shadow-2xl transition-all duration-300 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    <i class="fa-solid fa-comment-dots text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Canlı Destek</h3>
+                <p class="text-gray-600 mb-4">7/24 online</p>
+                <p class="text-xl font-black text-orange-600">Sohbete Başla</p>
+            </button>
+        </div>
+
+        <!-- Bottom Info -->
+        <div class="text-center mt-12">
+            <p class="text-white/80 text-lg">
+                <i class="fa-solid fa-clock mr-2"></i>
+                Ortalama yanıt süresi: <strong class="text-white">2 saat</strong>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-004: Map Background with Form Overlay
+     ============================================ -->
+<section id="contact-004" class="h-screen flex items-center justify-center bg-gray-100 relative">
+    <!-- Simulated Map Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-400"></div>
+    <div class="absolute inset-0" style="background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px);"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Contact Info Cards -->
+                <div class="space-y-6">
+                    <!-- Badge -->
+                    <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                        <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-004
+                    </span>
+
+                    <div class="bg-white rounded-3xl p-8 shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-location-dot text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Adres</h3>
+                        <p class="text-gray-600">
+                            Maslak Mah. Büyükdere Cad.<br>
+                            No: 123 Kat: 5<br>
+                            34398 Sarıyer / İstanbul
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-8 shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-phone text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Telefon</h3>
+                        <p class="text-gray-600 mb-1">0850 123 45 67</p>
+                        <p class="text-gray-600">0212 123 45 67</p>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-8 shadow-xl">
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-clock text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Çalışma Saatleri</h3>
+                        <p class="text-gray-600">Pazartesi - Cuma: 09:00 - 18:00</p>
+                        <p class="text-gray-600">Cumartesi: 10:00 - 16:00</p>
+                        <p class="text-gray-600">Pazar: Kapalı</p>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-2 bg-white rounded-3xl p-10 shadow-xl">
+                    <h2 class="text-4xl font-black text-gray-900 mb-3">Hızlı İletişim</h2>
+                    <p class="text-gray-600 mb-8">Formu doldurun, size en kısa sürede ulaşalım</p>
+
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input type="text" placeholder="Ad Soyad" class="px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:bg-white focus:border-blue-500 transition-all">
+                            <input type="email" placeholder="E-posta" class="px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:bg-white focus:border-blue-500 transition-all">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input type="tel" placeholder="Telefon" class="px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:bg-white focus:border-blue-500 transition-all">
+                            <input type="text" placeholder="Şehir" class="px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:bg-white focus:border-blue-500 transition-all">
+                        </div>
+                        <textarea rows="6" placeholder="Mesajınız..." class="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:bg-white focus:border-blue-500 transition-all resize-none"></textarea>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>
+                            Mesajı Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-005: FAQ Style Contact
+     ============================================ -->
+<section id="contact-005" class="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div class="container mx-auto px-6">
+        <div class="max-w-5xl mx-auto">
+            <!-- Badge -->
+            <div class="text-center mb-8">
+                <span class="inline-block bg-blue-500/20 text-blue-300 px-6 py-2 rounded-full text-sm font-bold border border-blue-500/30">
+                    <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-005
+                </span>
+            </div>
+
+            <!-- Title -->
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-black text-white mb-4">
+                    Sıkça Sorulan Sorular
+                </h2>
+                <p class="text-xl text-gray-400">
+                    Cevabını bulamadınız mı? Bize ulaşın!
+                </p>
+            </div>
+
+            <!-- FAQ Accordion -->
+            <div class="space-y-4 mb-12" x-data="{ activeFaq: 0 }">
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl overflow-hidden">
+                    <button @click="activeFaq = activeFaq === 0 ? null : 0" class="w-full p-6 flex items-center justify-between text-left">
+                        <span class="text-xl font-bold text-white">Sipariş nasıl verebilirim?</span>
+                        <i class="fa-solid text-white text-xl transition-transform duration-300" :class="activeFaq === 0 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                    <div x-show="activeFaq === 0" x-transition class="px-6 pb-6">
+                        <p class="text-gray-300 leading-relaxed">Ürünleri sepete ekleyip, ödeme adımlarını tamamlayarak sipariş verebilirsiniz.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl overflow-hidden">
+                    <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full p-6 flex items-center justify-between text-left">
+                        <span class="text-xl font-bold text-white">Kargo ücreti ne kadar?</span>
+                        <i class="fa-solid text-white text-xl transition-transform duration-300" :class="activeFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                    <div x-show="activeFaq === 1" x-transition class="px-6 pb-6">
+                        <p class="text-gray-300 leading-relaxed">500₺ ve üzeri alışverişlerde kargo ücretsiz, altında 29,90₺'dir.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl overflow-hidden">
+                    <button @click="activeFaq = activeFaq === 2 ? null : 2" class="w-full p-6 flex items-center justify-between text-left">
+                        <span class="text-xl font-bold text-white">İade & değişim süresi nedir?</span>
+                        <i class="fa-solid text-white text-xl transition-transform duration-300" :class="activeFaq === 2 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                    <div x-show="activeFaq === 2" x-transition class="px-6 pb-6">
+                        <p class="text-gray-300 leading-relaxed">Ürünü teslim aldıktan sonra 14 gün içinde iade/değişim yapabilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact CTA -->
+            <div class="bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-3xl p-10 text-center">
+                <h3 class="text-3xl font-black text-white mb-4">Cevabını bulamadınız mı?</h3>
+                <p class="text-white/80 mb-8">Müşteri hizmetlerimiz size yardımcı olmak için hazır</p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button class="bg-white text-gray-900 px-10 py-4 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-colors">
+                        <i class="fa-solid fa-phone mr-2"></i>
+                        Bizi Arayın
+                    </button>
+                    <button class="bg-white/10 text-white border-2 border-white/30 px-10 py-4 rounded-full font-bold hover:bg-white/20 transition-colors">
+                        <i class="fa-solid fa-envelope mr-2"></i>
+                        E-posta Gönderin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-006: Social Media Focus
+     ============================================ -->
+<section id="contact-006" class="h-screen flex items-center justify-center bg-white">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Badge -->
+            <span class="inline-block bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2 rounded-full text-sm font-bold mb-8 shadow-lg">
+                <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-006
+            </span>
+
+            <!-- Title -->
+            <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">
+                Sosyal Medyada Bizi Takip Edin
+            </h2>
+            <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+                Kampanyalardan, yeni ürünlerden ve fırsatlardan ilk siz haberdar olun
+            </p>
+
+            <!-- Social Media Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <!-- Instagram -->
+                <a href="#" class="group bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-3xl p-8 hover:scale-110 transition-all duration-300 shadow-xl">
+                    <i class="fa-brands fa-instagram text-6xl text-white mb-4"></i>
+                    <h3 class="text-white font-bold text-lg mb-1">Instagram</h3>
+                    <p class="text-white/80 text-sm">50K Takipçi</p>
+                </a>
+
+                <!-- Facebook -->
+                <a href="#" class="group bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-8 hover:scale-110 transition-all duration-300 shadow-xl">
+                    <i class="fa-brands fa-facebook text-6xl text-white mb-4"></i>
+                    <h3 class="text-white font-bold text-lg mb-1">Facebook</h3>
+                    <p class="text-white/80 text-sm">35K Beğeni</p>
+                </a>
+
+                <!-- Twitter -->
+                <a href="#" class="group bg-gradient-to-br from-cyan-400 to-blue-500 rounded-3xl p-8 hover:scale-110 transition-all duration-300 shadow-xl">
+                    <i class="fa-brands fa-twitter text-6xl text-white mb-4"></i>
+                    <h3 class="text-white font-bold text-lg mb-1">Twitter</h3>
+                    <p class="text-white/80 text-sm">28K Takipçi</p>
+                </a>
+
+                <!-- YouTube -->
+                <a href="#" class="group bg-gradient-to-br from-red-600 to-red-700 rounded-3xl p-8 hover:scale-110 transition-all duration-300 shadow-xl">
+                    <i class="fa-brands fa-youtube text-6xl text-white mb-4"></i>
+                    <h3 class="text-white font-bold text-lg mb-1">YouTube</h3>
+                    <p class="text-white/80 text-sm">42K Abone</p>
+                </a>
+            </div>
+
+            <!-- Direct Contact -->
+            <div class="bg-gray-50 rounded-3xl p-10">
+                <h3 class="text-2xl font-black text-gray-900 mb-6">Diğer İletişim Yolları</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <i class="fa-solid fa-phone text-4xl text-blue-600 mb-3"></i>
+                        <p class="font-bold text-gray-900">Telefon</p>
+                        <p class="text-gray-600">0850 123 45 67</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fa-solid fa-envelope text-4xl text-purple-600 mb-3"></i>
+                        <p class="font-bold text-gray-900">E-posta</p>
+                        <p class="text-gray-600">info@ixtif.com</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fa-brands fa-whatsapp text-4xl text-green-600 mb-3"></i>
+                        <p class="font-bold text-gray-900">WhatsApp</p>
+                        <p class="text-gray-600">0532 123 45 67</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-007: Department Based Contact
+     ============================================ -->
+<section id="contact-007" class="h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-cyan-50">
+    <div class="container mx-auto px-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Badge -->
+            <div class="text-center mb-8">
+                <span class="inline-block bg-teal-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                    <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-007
+                </span>
+            </div>
+
+            <!-- Title -->
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">
+                    Departmanlarımız
+                </h2>
+                <p class="text-xl text-gray-600">
+                    İhtiyacınıza uygun departmanı seçin, doğrudan iletişime geçin
+                </p>
+            </div>
+
+            <!-- Departments Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Sales -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-cart-shopping text-4xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">Satış Departmanı</h3>
+                    <p class="text-gray-600 mb-6">Ürünler ve fiyatlar hakkında bilgi</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700"><i class="fa-solid fa-phone text-blue-600 mr-2"></i> 0850 123 45 01</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-envelope text-blue-600 mr-2"></i> satis@ixtif.com</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-clock text-blue-600 mr-2"></i> 09:00 - 18:00</p>
+                    </div>
+                </div>
+
+                <!-- Support -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-headset text-4xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">Müşteri Hizmetleri</h3>
+                    <p class="text-gray-600 mb-6">Sipariş takibi ve destek</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700"><i class="fa-solid fa-phone text-green-600 mr-2"></i> 0850 123 45 02</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-envelope text-green-600 mr-2"></i> destek@ixtif.com</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-clock text-green-600 mr-2"></i> 7/24</p>
+                    </div>
+                </div>
+
+                <!-- Returns -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-rotate-left text-4xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">İade & Değişim</h3>
+                    <p class="text-gray-600 mb-6">İade işlemleri</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700"><i class="fa-solid fa-phone text-purple-600 mr-2"></i> 0850 123 45 03</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-envelope text-purple-600 mr-2"></i> iade@ixtif.com</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-clock text-purple-600 mr-2"></i> 09:00 - 18:00</p>
+                    </div>
+                </div>
+
+                <!-- Corporate -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-building text-4xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">Kurumsal Satış</h3>
+                    <p class="text-gray-600 mb-6">Toplu alımlar için</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700"><i class="fa-solid fa-phone text-orange-600 mr-2"></i> 0850 123 45 04</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-envelope text-orange-600 mr-2"></i> kurumsal@ixtif.com</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-clock text-orange-600 mr-2"></i> 09:00 - 18:00</p>
+                    </div>
+                </div>
+
+                <!-- Accounting -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-calculator text-4xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">Muhasebe</h3>
+                    <p class="text-gray-600 mb-6">Fatura ve ödeme işlemleri</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700"><i class="fa-solid fa-phone text-yellow-600 mr-2"></i> 0850 123 45 05</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-envelope text-yellow-600 mr-2"></i> muhasebe@ixtif.com</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-clock text-yellow-600 mr-2"></i> 09:00 - 17:00</p>
+                    </div>
+                </div>
+
+                <!-- HR -->
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-users text-4xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">İnsan Kaynakları</h3>
+                    <p class="text-gray-600 mb-6">Kariyer fırsatları</p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700"><i class="fa-solid fa-phone text-indigo-600 mr-2"></i> 0850 123 45 06</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-envelope text-indigo-600 mr-2"></i> kariyer@ixtif.com</p>
+                        <p class="text-gray-700"><i class="fa-solid fa-clock text-indigo-600 mr-2"></i> 09:00 - 18:00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-008: Quick Action Buttons
+     ============================================ -->
+<section id="contact-008" class="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative overflow-hidden">
+    <!-- Animated Background -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMTAwIDAgTCAwIDAgMCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Badge -->
+            <span class="inline-block bg-white/20 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold mb-8 border border-white/30 animate-pulse">
+                <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-008 • ANINDA YARDIM
+            </span>
+
+            <!-- Title -->
+            <h2 class="text-6xl md:text-7xl font-black text-white mb-6 drop-shadow-2xl">
+                Size Nasıl Yardımcı Olabiliriz?
+            </h2>
+            <p class="text-2xl text-white/90 mb-16">
+                İhtiyacınıza en uygun iletişim yöntemini seçin
+            </p>
+
+            <!-- Action Buttons Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <!-- Call Now -->
+                <button class="group bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-3xl p-10 hover:bg-white hover:border-white transition-all duration-300">
+                    <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300">
+                        <i class="fa-solid fa-phone text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-3xl font-black text-white group-hover:text-gray-900 mb-3 transition-colors">Hemen Arayın</h3>
+                    <p class="text-white/70 group-hover:text-gray-600 mb-4 transition-colors">Telefon desteği</p>
+                    <div class="text-4xl font-black text-white group-hover:text-green-600 transition-colors">
+                        0850 123 45 67
+                    </div>
+                </button>
+
+                <!-- WhatsApp -->
+                <button class="group bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-3xl p-10 hover:bg-white hover:border-white transition-all duration-300">
+                    <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300">
+                        <i class="fa-brands fa-whatsapp text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-3xl font-black text-white group-hover:text-gray-900 mb-3 transition-colors">WhatsApp</h3>
+                    <p class="text-white/70 group-hover:text-gray-600 mb-4 transition-colors">Anında mesajlaşın</p>
+                    <div class="text-4xl font-black text-white group-hover:text-green-600 transition-colors">
+                        0532 123 45 67
+                    </div>
+                </button>
+
+                <!-- Live Chat -->
+                <button class="group bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-3xl p-10 hover:bg-white hover:border-white transition-all duration-300">
+                    <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300">
+                        <i class="fa-solid fa-comment-dots text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-3xl font-black text-white group-hover:text-gray-900 mb-3 transition-colors">Canlı Destek</h3>
+                    <p class="text-white/70 group-hover:text-gray-600 mb-4 transition-colors">Online sohbet</p>
+                    <div class="bg-green-500 text-white group-hover:bg-green-600 px-6 py-3 rounded-full font-bold inline-block">
+                        <i class="fa-solid fa-circle text-xs mr-2 animate-pulse"></i>
+                        Online
+                    </div>
+                </button>
+
+                <!-- Email -->
+                <button class="group bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-3xl p-10 hover:bg-white hover:border-white transition-all duration-300">
+                    <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300">
+                        <i class="fa-solid fa-envelope text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-3xl font-black text-white group-hover:text-gray-900 mb-3 transition-colors">E-posta</h3>
+                    <p class="text-white/70 group-hover:text-gray-600 mb-4 transition-colors">Detaylı sorular için</p>
+                    <div class="text-2xl font-black text-white group-hover:text-orange-600 transition-colors">
+                        info@ixtif.com
+                    </div>
+                </button>
+            </div>
+
+            <!-- Response Time -->
+            <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 inline-block">
+                <p class="text-white/80">
+                    <i class="fa-solid fa-clock text-yellow-400 mr-2"></i>
+                    Ortalama yanıt süresi: <strong class="text-white">15 dakika</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-009: Location Cards
+     ============================================ -->
+<section id="contact-009" class="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="container mx-auto px-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Badge -->
+            <div class="text-center mb-8">
+                <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg">
+                    <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-009
+                </span>
+            </div>
+
+            <!-- Title -->
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">
+                    Ofislerimiz
+                </h2>
+                <p class="text-xl text-gray-600">
+                    Türkiye genelinde 3 farklı lokasyonda hizmet veriyoruz
+                </p>
+            </div>
+
+            <!-- Location Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Istanbul -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                        <i class="fa-solid fa-building text-8xl text-white opacity-20"></i>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <i class="fa-solid fa-location-dot text-2xl text-blue-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-black text-gray-900">İstanbul</h3>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Maslak Mah. Büyükdere Cad.<br>
+                            No: 123 Kat: 5<br>
+                            34398 Sarıyer / İstanbul
+                        </p>
+                        <div class="space-y-2 text-sm mb-6">
+                            <p class="text-gray-700"><i class="fa-solid fa-phone text-blue-600 mr-2"></i> 0212 123 45 67</p>
+                            <p class="text-gray-700"><i class="fa-solid fa-envelope text-blue-600 mr-2"></i> istanbul@ixtif.com</p>
+                        </div>
+                        <button class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors">
+                            <i class="fa-solid fa-map-location-dot mr-2"></i>
+                            Haritada Göster
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ankara -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                        <i class="fa-solid fa-building text-8xl text-white opacity-20"></i>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="fa-solid fa-location-dot text-2xl text-green-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-black text-gray-900">Ankara</h3>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Kızılay Mah. Atatürk Bulvarı<br>
+                            No: 456 Kat: 3<br>
+                            06420 Çankaya / Ankara
+                        </p>
+                        <div class="space-y-2 text-sm mb-6">
+                            <p class="text-gray-700"><i class="fa-solid fa-phone text-green-600 mr-2"></i> 0312 123 45 67</p>
+                            <p class="text-gray-700"><i class="fa-solid fa-envelope text-green-600 mr-2"></i> ankara@ixtif.com</p>
+                        </div>
+                        <button class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-colors">
+                            <i class="fa-solid fa-map-location-dot mr-2"></i>
+                            Haritada Göster
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Izmir -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                        <i class="fa-solid fa-building text-8xl text-white opacity-20"></i>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <i class="fa-solid fa-location-dot text-2xl text-orange-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-black text-gray-900">İzmir</h3>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Alsancak Mah. Kıbrıs Şehitleri Cad.<br>
+                            No: 789 Kat: 2<br>
+                            35220 Konak / İzmir
+                        </p>
+                        <div class="space-y-2 text-sm mb-6">
+                            <p class="text-gray-700"><i class="fa-solid fa-phone text-orange-600 mr-2"></i> 0232 123 45 67</p>
+                            <p class="text-gray-700"><i class="fa-solid fa-envelope text-orange-600 mr-2"></i> izmir@ixtif.com</p>
+                        </div>
+                        <button class="w-full bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition-colors">
+                            <i class="fa-solid fa-map-location-dot mr-2"></i>
+                            Haritada Göster
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CONTACT-010: Floating Contact Bar
+     ============================================ -->
+<section id="contact-010" class="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-gray-900 to-black relative overflow-hidden">
+    <!-- Animated Gradient Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- Badge -->
+            <div class="text-center mb-8">
+                <span class="inline-block bg-white/10 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/20">
+                    <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-010
+                </span>
+            </div>
+
+            <!-- Title -->
+            <div class="text-center mb-16">
+                <h2 class="text-6xl md:text-7xl font-black text-white mb-6 drop-shadow-2xl">
+                    7/24 Yanınızdayız
+                </h2>
+                <p class="text-2xl text-white/80 max-w-3xl mx-auto">
+                    Hangi saatte olursanız olun, size yardımcı olmak için hazırız
+                </p>
+            </div>
+
+            <!-- Contact Methods -->
+            <div class="bg-white/5 backdrop-blur-lg border-2 border-white/10 rounded-[50px] p-8 mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Phone -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group">
+                        <i class="fa-solid fa-phone text-4xl text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">Telefon</h3>
+                        <p class="text-white/60 text-sm">Hemen arayın</p>
+                    </button>
+
+                    <!-- Email -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group">
+                        <i class="fa-solid fa-envelope text-4xl text-purple-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">E-posta</h3>
+                        <p class="text-white/60 text-sm">Mail gönderin</p>
+                    </button>
+
+                    <!-- WhatsApp -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group">
+                        <i class="fa-brands fa-whatsapp text-4xl text-green-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">WhatsApp</h3>
+                        <p class="text-white/60 text-sm">Mesajlaşın</p>
+                    </button>
+
+                    <!-- Live Chat -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group relative">
+                        <div class="absolute top-3 right-3 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <i class="fa-solid fa-comment-dots text-4xl text-orange-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">Canlı Destek</h3>
+                        <p class="text-white/60 text-sm">Online</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-8 mb-12">
+                <div class="text-center">
+                    <div class="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 mb-2">
+                        <2h
+                    </div>
+                    <p class="text-white/70 font-semibold">Ortalama Yanıt</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400 mb-2">
+                        98%
+                    </div>
+                    <p class="text-white/70 font-semibold">Memnuniyet</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-2">
+                        24/7
+                    </div>
+                    <p class="text-white/70 font-semibold">Destek</p>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center">
+                <button class="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-16 py-6 rounded-full font-black text-2xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <i class="fa-solid fa-headset mr-3"></i>
+                    Destek Talep Et
+                </button>
+                <p class="text-white/60 mt-6">
+                    <i class="fa-solid fa-shield-check text-green-400 mr-2"></i>
+                    %100 müşteri memnuniyeti garantisi
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

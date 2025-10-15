@@ -362,19 +362,25 @@ window.aiChatRenderMarkdown = function(text) {
                 </button>
             </form>
 
-            {{-- Clear conversation button --}}
-            <div class="flex justify-end mt-2">
-                <button
-                    @click="chat.clearConversation()"
-                    x-show="chat.hasConversation"
-                    class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
-                    x-cloak
-                >
-                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                    Konuşmayı Temizle
-                </button>
+            {{-- Footer Info - Auto-hide after 10 seconds --}}
+            <div
+                x-data="{ visible: true }"
+                x-init="setTimeout(() => visible = false, 10000)"
+                x-show="visible"
+                x-transition:leave="transition ease-in duration-1000"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="mt-2"
+            >
+                <p class="text-[8px] text-gray-400 dark:text-gray-500 leading-tight opacity-60">
+                    Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
+                    Geliştirme süreci devam etmektedir, zaman zaman hatalar görülebilir.
+                    Ürünler hakkında daha detaylı bilgi veya destek için
+                    <a href="/sayfa/iletisim" target="_blank" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 underline">
+                        iletişim sayfamızdan
+                    </a>
+                    bize ulaşabilirsiniz.
+                </p>
             </div>
         </div>
     </div>

@@ -43,6 +43,10 @@ Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
         // Quote (Teklif) Form
         Route::post('/quote', [ShopQuoteController::class, 'submit'])->name('shop.quote.submit');
 
+        // ID-based fallback routes (AI ID kullanırsa redirect)
+        Route::get('/product/{id}', [ShopController::class, 'showById'])->name('shop.show.by-id')->where('id', '[0-9]+');
+        Route::get('/category-by-id/{id}', [ShopController::class, 'categoryById'])->name('shop.category.by-id')->where('id', '[0-9]+');
+
         // Shop Product Detail - WILDCARD (en sonda olmalı!)
         Route::get('/{slug}', [ShopController::class, 'show'])->name('shop.show');
     });

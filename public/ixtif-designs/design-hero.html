@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+
+        @keyframes slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="fixed top-4 left-4 z-[9999]">
+    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="font-semibold text-sm">Ana Menü</span>
+    </a>
+</div>
+
+<div class="scroll-container">
+
+<!-- HERO-001: Split Screen with Animated Background -->
+<section id="hero-001" class="h-screen flex items-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-30">
+        <div class="absolute top-20 -left-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-20 -right-20 w-96 h-96 bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-white">
+                <span class="inline-block bg-white/20 backdrop-blur-lg px-6 py-3 rounded-full text-sm font-bold mb-6 animate-bounce">
+                    <i class="fa-solid fa-fire mr-2"></i>SÜPER KAMPANYA
+                </span>
+                <h1 class="text-7xl md:text-8xl font-black mb-6 leading-tight">
+                    İstif Ürünlerde
+                    <span class="block text-yellow-300 mt-2">%70'e Varan İndirim</span>
+                </h1>
+                <p class="text-2xl text-purple-100 mb-8 leading-relaxed">
+                    20.000+ orijinal ürün, güvenli alışveriş, hızlı teslimat. Elektronikten mobilyaya her kategoride!
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-white text-purple-600 px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                        <i class="fa-solid fa-shopping-cart mr-2"></i>
+                        Alışverişe Başla
+                    </button>
+                    <button class="bg-white/10 backdrop-blur-lg text-white border-2 border-white/30 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all">
+                        <i class="fa-solid fa-play mr-2"></i>
+                        Nasıl Çalışır?
+                    </button>
+                </div>
+                <div class="flex items-center gap-8 mt-10">
+                    <div>
+                        <div class="text-4xl font-black">850+</div>
+                        <div class="text-purple-200">Elektronik</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-black">620+</div>
+                        <div class="text-purple-200">Mobilya</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-black">1200+</div>
+                        <div class="text-purple-200">Tekstil</div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative animate-float">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/20 backdrop-blur-lg rounded-3xl p-8 border border-white/30">
+                        <i class="fa-solid fa-laptop text-6xl text-white mb-4"></i>
+                        <h3 class="font-bold text-white text-xl">Elektronik</h3>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-lg rounded-3xl p-8 border border-white/30 mt-8">
+                        <i class="fa-solid fa-couch text-6xl text-white mb-4"></i>
+                        <h3 class="font-bold text-white text-xl">Mobilya</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white/20 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/30">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-001
+        </span>
+    </div>
+</section>
+
+<!-- HERO-002: Minimal with Large Typography -->
+<section id="hero-002" class="h-screen flex items-center bg-white">
+    <div class="container mx-auto px-6">
+        <div class="max-w-5xl">
+            <div class="inline-block bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-bold mb-8">
+                <i class="fa-solid fa-bolt mr-2"></i>HIZLI TESLİMAT
+            </div>
+            <h1 class="text-9xl font-black mb-8 leading-none">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600">
+                    İSTİF.
+                </span>
+                <br />
+                <span class="text-gray-900">KALİTE.</span>
+                <br />
+                <span class="text-gray-300">FIRSAT.</span>
+            </h1>
+            <p class="text-3xl text-gray-600 mb-12 max-w-3xl leading-relaxed">
+                En iyi markaların istif ürünleri şimdi ixtif.com'da. Garantili, orijinal, uygun fiyatlı.
+            </p>
+            <div class="flex items-center gap-8">
+                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-6 rounded-2xl font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
+                    Keşfet
+                    <i class="fa-solid fa-arrow-right ml-3"></i>
+                </button>
+                <div class="flex items-center gap-4">
+                    <div class="flex -space-x-3">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 border-4 border-white"></div>
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-4 border-white"></div>
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-red-400 border-4 border-white"></div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gray-900 text-lg">50K+ Mutlu Müşteri</div>
+                        <div class="text-gray-500">⭐⭐⭐⭐⭐ 4.9/5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 right-12">
+        <span class="inline-block bg-gray-100 px-6 py-2 rounded-full text-sm font-bold text-gray-700 shadow-lg">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-002
+        </span>
+    </div>
+</section>
+
+<!-- HERO-003: Dark with Glowing Effects -->
+<section id="hero-003" class="h-screen flex items-center relative overflow-hidden bg-black">
+    <div class="absolute inset-0">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600 rounded-full blur-3xl opacity-30 animate-pulse" style="animation-delay: 1.5s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-600 rounded-full blur-3xl opacity-20 animate-pulse" style="animation-delay: 3s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="text-center max-w-6xl mx-auto text-white">
+            <h1 class="text-9xl font-black mb-8 leading-tight">
+                Türkiye'nin En Büyük
+                <span class="block bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mt-4">
+                    İstif Ürün Platformu
+                </span>
+            </h1>
+            <p class="text-3xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+                Elektronik'ten mobilyaya, tekstil'den alet ekipman'a 20+ kategoride binlerce ürün
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6 mb-16">
+                <button class="bg-white text-gray-900 px-12 py-6 rounded-2xl font-bold text-xl hover:shadow-2xl hover:shadow-white/50 transition-all">
+                    <i class="fa-solid fa-rocket mr-2"></i>
+                    Hemen Başla
+                </button>
+                <button class="bg-white/10 backdrop-blur-lg text-white border-2 border-white/20 px-12 py-6 rounded-2xl font-bold text-xl hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-phone mr-2"></i>
+                    Bize Ulaşın
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition-all">
+                    <div class="text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 mb-3">20K+</div>
+                    <div class="text-gray-300 text-lg">Ürün Çeşidi</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition-all">
+                    <div class="text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-3">500+</div>
+                    <div class="text-gray-300 text-lg">Marka</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/20 transition-all">
+                    <div class="text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-red-400 mb-3">50K+</div>
+                    <div class="text-gray-300 text-lg">Müşteri</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white/10 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/20">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-003
+        </span>
+    </div>
+</section>
+
+<!-- HERO-004: Category Grid Showcase -->
+<section id="hero-004" class="h-screen flex items-center bg-gradient-to-br from-green-50 to-emerald-50">
+    <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="inline-block bg-green-600 text-white px-6 py-3 rounded-full font-bold mb-6">
+                    <i class="fa-solid fa-badge-percent mr-2"></i>%70'E VARAN İNDİRİM
+                </span>
+                <h1 class="text-7xl md:text-8xl font-black text-gray-900 mb-6 leading-tight">
+                    Elektronik'te
+                    <span class="block bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600">
+                        Devasa İndirimler
+                    </span>
+                </h1>
+                <p class="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Samsung, LG, Sony ve daha fazlası... Orijinal ürünler, garanti belgeli, 2-3 gün teslimat
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl h-40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-tv text-7xl text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Televizyon</h3>
+                    <p class="text-gray-500 mb-3">150+ ürün</p>
+                    <div class="text-green-600 font-black text-lg">%40-70 İNDİRİM</div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl h-40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-mobile text-7xl text-purple-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Telefon</h3>
+                    <p class="text-gray-500 mb-3">320+ ürün</p>
+                    <div class="text-green-600 font-black text-lg">%30-60 İNDİRİM</div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl h-40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-laptop text-7xl text-orange-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Laptop</h3>
+                    <p class="text-gray-500 mb-3">180+ ürün</p>
+                    <div class="text-green-600 font-black text-lg">%35-65 İNDİRİM</div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl h-40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-headphones text-7xl text-green-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Aksesuar</h3>
+                    <p class="text-gray-500 mb-3">200+ ürün</p>
+                    <div class="text-green-600 font-black text-lg">%50-80 İNDİRİM</div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-12 py-6 rounded-2xl font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
+                    <i class="fa-solid fa-shopping-cart mr-2"></i>
+                    Alışverişe Başla
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white px-6 py-2 rounded-full text-sm font-bold text-gray-700 shadow-lg">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-004
+        </span>
+    </div>
+</section>
+
+<!-- HERO-005: Animated Text Rotation -->
+<section id="hero-005" class="h-screen flex items-center bg-black text-white relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600 rounded-full blur-3xl animate-pulse" style="animation-delay: 1.5s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="mb-8" x-data="{
+                words: ['İSTİF', 'FIRSAT', 'KALİTE', 'UYGUN'],
+                colors: ['from-blue-400 to-cyan-400', 'from-purple-400 to-pink-400', 'from-green-400 to-emerald-400', 'from-orange-400 to-red-400'],
+                currentIndex: 0
+            }" x-init="setInterval(() => currentIndex = (currentIndex + 1) % words.length, 2000)">
+                <h1 class="text-9xl font-black">
+                    <span class="block bg-clip-text text-transparent bg-gradient-to-r transition-all duration-500"
+                          :class="'bg-gradient-to-r ' + colors[currentIndex]"
+                          x-text="words[currentIndex]">
+                        İSTİF
+                    </span>
+                </h1>
+            </div>
+            <p class="text-4xl text-gray-300 mb-12 leading-relaxed">
+                Her Gün Yeni Fırsatlar, Her Ürün Garantili, Her Kategori İndirimli
+            </p>
+            <button class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-16 py-7 rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all">
+                KEŞFET
+                <i class="fa-solid fa-arrow-right ml-4"></i>
+            </button>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white/10 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/20">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-005
+        </span>
+    </div>
+</section>
+
+<!-- HERO-006: Full Width Category Cards -->
+<section id="hero-006" class="h-screen flex items-center bg-gradient-to-br from-orange-50 to-red-50">
+    <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-8xl font-black mb-6">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-red-600">
+                        Mega İstif İndirimi
+                    </span>
+                </h1>
+                <p class="text-3xl text-gray-600 mb-8">20.000+ ürün, 500+ marka, tek tıkla kapında</p>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl h-36 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-laptop text-6xl text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Elektronik</h3>
+                    <p class="text-sm text-gray-500 mb-3">850+ ürün</p>
+                    <div class="text-orange-600 font-black text-lg">%40-70 İNDİRİM</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-xl h-36 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-couch text-6xl text-green-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Mobilya</h3>
+                    <p class="text-sm text-gray-500 mb-3">620+ ürün</p>
+                    <div class="text-orange-600 font-black text-lg">%30-60 İNDİRİM</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl h-36 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shirt text-6xl text-purple-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Tekstil</h3>
+                    <p class="text-sm text-gray-500 mb-3">1200+ ürün</p>
+                    <div class="text-orange-600 font-black text-lg">%50-80 İNDİRİM</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition-all cursor-pointer group">
+                    <div class="bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl h-36 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-toolbox text-6xl text-orange-600"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Alet & Ekipman</h3>
+                    <p class="text-sm text-gray-500 mb-3">450+ ürün</p>
+                    <div class="text-orange-600 font-black text-lg">%35-65 İNDİRİM</div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <button class="bg-gradient-to-r from-orange-500 to-red-600 text-white px-12 py-6 rounded-full font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
+                    <i class="fa-solid fa-shopping-cart mr-2"></i>
+                    Alışverişe Başla
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white px-6 py-2 rounded-full text-sm font-bold text-gray-700 shadow-lg">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-006
+        </span>
+    </div>
+</section>
+
+<!-- HERO-007: Countdown Timer Hero -->
+<section id="hero-007" class="h-screen flex items-center bg-gradient-to-br from-red-600 via-pink-600 to-purple-600 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+        <div class="absolute w-full h-full" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 50px 50px;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-6xl mx-auto text-center text-white">
+            <div class="inline-block bg-yellow-400 text-gray-900 px-8 py-4 rounded-full font-black text-lg mb-8 animate-bounce">
+                <i class="fa-solid fa-clock mr-2"></i>FLASH SALE BAŞLADI!
+            </div>
+            <h1 class="text-8xl font-black mb-8 leading-tight">
+                24 Saatlik
+                <span class="block text-yellow-300 mt-2">Mega İndirim Fırsatı!</span>
+            </h1>
+            <p class="text-3xl text-pink-100 mb-12">Seçili ürünlerde %80'e varan indirim. Stoklar tükenmeden acele edin!</p>
+
+            <!-- Countdown -->
+            <div class="grid grid-cols-4 gap-6 max-w-3xl mx-auto mb-12" x-data="{
+                hours: 23,
+                minutes: 45,
+                seconds: 30
+            }" x-init="setInterval(() => {
+                if(seconds > 0) seconds--;
+                else { seconds = 59; if(minutes > 0) minutes--; else { minutes = 59; if(hours > 0) hours--; }}
+            }, 1000)">
+                <div class="bg-white/20 backdrop-blur-lg rounded-3xl p-8 border-2 border-white/30">
+                    <div class="text-6xl font-black mb-2" x-text="hours"></div>
+                    <div class="text-pink-100">Saat</div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg rounded-3xl p-8 border-2 border-white/30">
+                    <div class="text-6xl font-black mb-2" x-text="minutes"></div>
+                    <div class="text-pink-100">Dakika</div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg rounded-3xl p-8 border-2 border-white/30">
+                    <div class="text-6xl font-black mb-2" x-text="seconds"></div>
+                    <div class="text-pink-100">Saniye</div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg rounded-3xl p-8 border-2 border-white/30">
+                    <div class="text-6xl font-black mb-2">%80</div>
+                    <div class="text-pink-100">İndirim</div>
+                </div>
+            </div>
+
+            <button class="bg-yellow-400 text-gray-900 px-16 py-7 rounded-full font-black text-2xl hover:bg-yellow-300 hover:scale-110 transition-all shadow-2xl">
+                <i class="fa-solid fa-bolt mr-2"></i>
+                FIRSAT YAKALA!
+            </button>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white/20 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/30">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-007
+        </span>
+    </div>
+</section>
+
+<!-- HERO-008: Product Featured Hero -->
+<section id="hero-008" class="h-screen flex items-center bg-gradient-to-br from-cyan-50 to-blue-50">
+    <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-block bg-cyan-600 text-white px-6 py-3 rounded-full font-bold mb-6">
+                        <i class="fa-solid fa-star mr-2"></i>HAFTANIN FIRSATI
+                    </div>
+                    <h1 class="text-7xl font-black text-gray-900 mb-6 leading-tight">
+                        Samsung 65" QLED TV
+                        <span class="block text-cyan-600 mt-2">%65 İndirimle!</span>
+                    </h1>
+                    <div class="flex items-baseline gap-4 mb-8">
+                        <span class="text-3xl text-gray-400 line-through">₺45.999</span>
+                        <span class="text-6xl font-black text-cyan-600">₺15.999</span>
+                        <span class="bg-green-600 text-white px-4 py-2 rounded-full font-bold">₺30.000 tasarruf!</span>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-xl">
+                            <i class="fa-solid fa-check-circle text-green-600 text-2xl"></i>
+                            <span>4K QLED Ekran Teknolojisi</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-xl">
+                            <i class="fa-solid fa-check-circle text-green-600 text-2xl"></i>
+                            <span>2 Yıl Resmi Distribütör Garantisi</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-xl">
+                            <i class="fa-solid fa-check-circle text-green-600 text-2xl"></i>
+                            <span>Ücretsiz Kargo & Kurulum</span>
+                        </li>
+                    </ul>
+                    <button class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-12 py-6 rounded-2xl font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
+                        <i class="fa-solid fa-shopping-cart mr-2"></i>
+                        Hemen Al
+                    </button>
+                </div>
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-cyan-100 to-blue-100 rounded-3xl p-12 shadow-2xl">
+                        <div class="bg-white rounded-2xl p-8 shadow-xl">
+                            <i class="fa-solid fa-tv text-9xl text-cyan-600"></i>
+                        </div>
+                    </div>
+                    <div class="absolute -top-6 -right-6 bg-red-600 text-white px-8 py-4 rounded-full font-black text-2xl shadow-2xl animate-pulse">
+                        %65 İNDİRİM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white px-6 py-2 rounded-full text-sm font-bold text-gray-700 shadow-lg">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-008
+        </span>
+    </div>
+</section>
+
+<!-- HERO-009: Trust Badges Hero -->
+<section id="hero-009" class="h-screen flex items-center bg-white">
+    <div class="container mx-auto px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-8xl font-black text-gray-900 mb-8 leading-tight">
+                Güvenli Alışveriş,
+                <span class="block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                    Mutlu Müşteriler
+                </span>
+            </h1>
+            <p class="text-3xl text-gray-600 mb-12 max-w-4xl mx-auto">
+                50.000+ müşterimiz ixtif.com'a güveniyor. Siz de katılın!
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-10 border-2 border-green-200">
+                    <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-shield-check text-4xl text-white"></i>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-3">%100 Güvenli</h3>
+                    <p class="text-gray-600 text-lg">SSL sertifikalı, güvenli ödeme altyapısı</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-10 border-2 border-blue-200">
+                    <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-truck-fast text-4xl text-white"></i>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-3">Hızlı Teslimat</h3>
+                    <p class="text-gray-600 text-lg">2-3 gün içinde kapınızda</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-10 border-2 border-purple-200">
+                    <div class="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-rotate-left text-4xl text-white"></i>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-3">14 Gün İade</h3>
+                    <p class="text-gray-600 text-lg">Koşulsuz iade garantisi</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <button class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-12 py-6 rounded-2xl font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
+                    <i class="fa-solid fa-shopping-bag mr-2"></i>
+                    Alışverişe Başla
+                </button>
+                <button class="border-2 border-gray-300 text-gray-700 px-12 py-6 rounded-2xl font-bold text-xl hover:border-indigo-600 hover:text-indigo-600 transition-all">
+                    <i class="fa-solid fa-circle-info mr-2"></i>
+                    Daha Fazla Bilgi
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-gray-100 px-6 py-2 rounded-full text-sm font-bold text-gray-700 shadow-lg">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-009
+        </span>
+    </div>
+</section>
+
+<!-- HERO-010: Search Focus Hero -->
+<section id="hero-010" class="h-screen flex items-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
+    <div class="absolute inset-0">
+        <div class="absolute w-full h-full opacity-10" style="background-image:
+            linear-gradient(45deg, white 25%, transparent 25%, transparent 75%, white 75%, white),
+            linear-gradient(45deg, white 25%, transparent 25%, transparent 75%, white 75%, white);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-5xl mx-auto text-center text-white">
+            <h1 class="text-8xl font-black mb-8 leading-tight">
+                Ne Arıyorsanız
+                <span class="block text-yellow-300 mt-2">Burada Bulun!</span>
+            </h1>
+            <p class="text-3xl text-purple-100 mb-12">20.000+ ürün, 500+ marka, tek arama kutusunda</p>
+
+            <!-- Big Search Bar -->
+            <div class="max-w-4xl mx-auto mb-12">
+                <div class="relative">
+                    <input type="text"
+                           placeholder="Ürün, kategori veya marka ara..."
+                           class="w-full bg-white text-gray-900 text-2xl px-8 py-8 pr-32 rounded-3xl focus:outline-none focus:ring-4 focus:ring-yellow-400 shadow-2xl">
+                    <button class="absolute right-3 top-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-5 rounded-2xl font-bold text-xl hover:shadow-xl transition-all">
+                        <i class="fa-solid fa-search mr-2"></i>
+                        Ara
+                    </button>
+                </div>
+            </div>
+
+            <!-- Popular Searches -->
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="text-purple-200 font-semibold">Popüler Aramalar:</span>
+                <button class="bg-white/20 hover:bg-white/30 backdrop-blur-lg px-6 py-3 rounded-full font-semibold border border-white/30 transition-all">
+                    Laptop
+                </button>
+                <button class="bg-white/20 hover:bg-white/30 backdrop-blur-lg px-6 py-3 rounded-full font-semibold border border-white/30 transition-all">
+                    Koltuk Takımı
+                </button>
+                <button class="bg-white/20 hover:bg-white/30 backdrop-blur-lg px-6 py-3 rounded-full font-semibold border border-white/30 transition-all">
+                    Televizyon
+                </button>
+                <button class="bg-white/20 hover:bg-white/30 backdrop-blur-lg px-6 py-3 rounded-full font-semibold border border-white/30 transition-all">
+                    Beyaz Eşya
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <span class="inline-block bg-white/20 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/30">
+            <i class="fa-solid fa-hashtag mr-1"></i>HERO-010
+        </span>
+    </div>
+</section>
+
+</div>
+
+</body>
+</html>

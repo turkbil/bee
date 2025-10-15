@@ -53,7 +53,14 @@
       "Bash(ssh:*)",
       "Read(//tmp/**)",
       "Bash(/dev/null)",
-      "Bash(brew services restart:*)"
+      "Bash(brew services restart:*)",
+      "Bash(cat:*)",
+      "Bash(timeout 60 curl:*)",
+      "Bash(nginx -v)",
+      "Bash(apache2 -v)",
+      "Bash(httpd -v)",
+      "Read(//opt/homebrew/etc/nginx/**)",
+      "Bash(awk:*)"
     ],
     "deny": [],
     "ask": [],

@@ -243,6 +243,7 @@ class ShopContextBuilder
             'id' => $product->product_id,
             'sku' => $product->sku,
             'title' => $this->translate($product->title),
+            'slug' => $this->translate($product->slug),
             'short_description' => $this->translate($product->short_description),
             'category' => $product->category ? $this->translate($product->category->title) : null,
             'price' => $this->formatPrice($product),

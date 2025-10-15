@@ -321,13 +321,69 @@ class AIService
         // AI'dan yanıt al - Dinamik provider kullanımı
         $startTime = microtime(true);
         $apiResponse = $this->currentService->ask($messages, $stream);
-        
+
         // Provider performansını güncelle
         if ($this->currentProvider) {
             $responseTime = (microtime(true) - $startTime) * 1000;
             $this->providerManager->updateProviderPerformance($this->currentProvider->name, $responseTime);
         }
-        
+
+        // 🔥 HATA KONTROLÜ - Rate limit ve diğer hatalar için fallback
+        if (is_array($apiResponse) && isset($apiResponse['success']) && $apiResponse['success'] === false) {
+            $errorMsg = $apiResponse['error'] ?? 'Unknown error';
+
+            // Sonsuz döngüyü önle - sadece bir kez fallback yap
+            if (isset($options['_fallback_retry']) && $options['_fallback_retry'] === true) {
+                Log::error('❌ Fallback also failed, returning error to user', [
+                    'error' => $errorMsg
+                ]);
+                return "Üzgünüm, şu anda AI sistemlerimizde bir sorun yaşıyoruz. Lütfen birkaç dakika sonra tekrar deneyin.";
+            }
+
+            // Rate limit hatası mı?
+            if (str_contains($errorMsg, '429') ||
+                str_contains(strtolower($errorMsg), 'rate limit') ||
+                str_contains(strtolower($errorMsg), 'rate_limit')) {
+
+                Log::warning('🔴 Rate limit hit, attempting fallback', [
+                    'current_provider' => $this->currentProvider?->name ?? 'unknown',
+                    'current_model' => $this->currentProvider?->default_model ?? 'unknown',
+                    'error' => substr($errorMsg, 0, 200)
+                ]);
+
+                // Fallback provider bul ve geç
+                try {
+                    $fallbackResult = $this->providerManager->getFallbackProvider($this->currentProvider?->name);
+
+                    if ($fallbackResult && isset($fallbackResult['success']) && $fallbackResult['success']) {
+                        // Provider ve service değiştir
+                        $this->currentProvider = $fallbackResult['provider'];
+                        $this->currentService = $fallbackResult['service'];
+
+                        Log::info('✅ Fallback provider aktif, retry yapılıyor', [
+                            'fallback_provider' => $fallbackResult['provider']->name,
+                            'fallback_model' => $fallbackResult['model']
+                        ]);
+
+                        // Fallback provider ile recursive çağrı YAP - tek sefer
+                        return $this->ask($prompt, array_merge($options, ['_fallback_retry' => true]), $stream);
+                    }
+                } catch (\Exception $fallbackException) {
+                    Log::error('🔇 Fallback provider initialization failed', [
+                        'fallback_error' => $fallbackException->getMessage()
+                    ]);
+                }
+            }
+
+            // Fallback başarısız oldu veya rate limit değil, error mesajını döndür
+            Log::error('❌ AI API Error (no fallback available)', [
+                'error' => $errorMsg,
+                'response' => $apiResponse
+            ]);
+
+            return "Üzgünüm, şu anda AI sistemlerimizde bir sorun yaşıyoruz. Lütfen birkaç dakika sonra tekrar deneyin.";
+        }
+
         // API response'u parse et (string veya array olabilir)
         $response = is_array($apiResponse) ? ($apiResponse['response'] ?? $apiResponse) : $apiResponse;
         

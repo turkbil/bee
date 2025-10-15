@@ -23,55 +23,52 @@ class ProductPlaceholderService
     }
 
     /**
-     * Get or generate placeholder conversation for a product
+     * Get placeholder conversation for a product (CACHE-ONLY)
      *
-     * 🔄 SAFE TIMEOUT STRATEGY:
-     * - Cache HIT: Return immediately (0.1s)
-     * - Cache MISS: Try generate with 3s timeout
-     * - Timeout: Return fallback + mark as pending
-     * - Success: Cache for future users
+     * ⚡ NEW STRATEGY (Cache-Only):
+     * - Cache HIT: Return immediately (~50ms)
+     * - Cache MISS: Return fallback (NO generation, queue handles it)
+     *
+     * GENERATION FLOW:
+     * 1. User visits product page → ShopController dispatches queue job
+     * 2. Queue processes → AI generates → Saves to DB
+     * 3. Next user → Cache HIT → Real conversation shown
      *
      * @param string $productId
-     * @param bool $forceRegenerate
+     * @param bool $forceRegenerate (ignored, kept for BC)
      * @return array
      */
     public function getPlaceholder(string $productId, bool $forceRegenerate = false): array
     {
-        // 1. Check cache (database)
-        if (!$forceRegenerate) {
-            $cached = ProductChatPlaceholder::getByProductId($productId);
+        // Check cache (database) - READONLY
+        $cached = ProductChatPlaceholder::getByProductId($productId);
 
-            if ($cached) {
-                // ✅ CACHE HIT - Return immediately
-                Log::info('✅ Product placeholder from cache', [
-                    'product_id' => $productId,
-                    'age' => $cached->generated_at?->diffForHumans()
-                ]);
+        if ($cached) {
+            // ✅ CACHE HIT - Return real conversation
+            Log::info('✅ Placeholder from cache (readonly)', [
+                'product_id' => $productId,
+                'age' => $cached->generated_at?->diffForHumans()
+            ]);
 
-                return [
-                    'success' => true,
-                    'conversation' => $cached->conversation,
-                    'from_cache' => true,
-                    'generated_at' => $cached->generated_at,
-                ];
-            }
+            return [
+                'success' => true,
+                'conversation' => $cached->conversation,
+                'from_cache' => true,
+                'generated_at' => $cached->generated_at,
+            ];
         }
 
-        // 2. ❌ CACHE MISS - Return fallback IMMEDIATELY + trigger async generation
-        Log::info('⚡ Cache miss - returning fallback immediately', [
+        // ❌ CACHE MISS - Return fallback (NO generation here!)
+        // Queue job handles generation (dispatched in ShopController)
+        Log::info('⚡ Cache miss - returning fallback (queue will generate)', [
             'product_id' => $productId
         ]);
 
-        // Start background generation (non-blocking)
-        $this->generateInBackground($productId);
-
-        // Return fallback immediately (0ms wait for user)
         return [
             'success' => true,
             'conversation' => $this->getFallbackPlaceholder(),
             'from_cache' => false,
             'is_fallback' => true,
-            'generating' => true, // Frontend should poll again in 3-5 seconds
         ];
     }
 

@@ -195,7 +195,7 @@ class AIProviderManager
     public function getProviderServiceWithoutFailover()
     {
         $provider = $this->getDefaultProvider();
-        
+
         if (!$provider) {
             throw new \Exception("No default AI provider configured");
         }
@@ -205,13 +205,68 @@ class AIProviderManager
         }
 
         $service = $provider->getServiceInstance();
-        
+
         Log::info("🔥 Strict provider selected (no failover)", [
             'provider' => $provider->name,
             'model' => $provider->default_model,
             'priority' => $provider->priority
         ]);
-        
+
         return ['provider' => $provider, 'service' => $service];
+    }
+
+    /**
+     * Get fallback provider (next available provider)
+     *
+     * @param string|null $excludeProviderName Current provider to exclude
+     * @return array|null ['provider' => AIProvider, 'service' => ServiceInstance, 'model' => string]
+     */
+    public function getFallbackProvider($excludeProviderName = null)
+    {
+        // Aktif provider'ları priority sırasına göre al
+        $activeProviders = $this->providers
+            ->where('is_active', true)
+            ->sortBy('priority');
+
+        Log::info('🔍 Fallback provider aranıyor', [
+            'exclude' => $excludeProviderName,
+            'available_count' => $activeProviders->count()
+        ]);
+
+        foreach ($activeProviders as $provider) {
+            // Mevcut provider'ı atla
+            if ($excludeProviderName && $provider->name === $excludeProviderName) {
+                continue;
+            }
+
+            // Provider kullanılabilir mi?
+            if ($provider->isAvailable()) {
+                try {
+                    $service = $provider->getServiceInstance();
+
+                    Log::info('✅ Fallback provider bulundu', [
+                        'provider' => $provider->name,
+                        'model' => $provider->default_model,
+                        'priority' => $provider->priority
+                    ]);
+
+                    return [
+                        'provider' => $provider,
+                        'service' => $service,
+                        'model' => $provider->default_model,
+                        'success' => true
+                    ];
+                } catch (\Exception $e) {
+                    Log::warning('⚠️ Fallback provider initialization failed', [
+                        'provider' => $provider->name,
+                        'error' => $e->getMessage()
+                    ]);
+                    continue;
+                }
+            }
+        }
+
+        Log::error('❌ Fallback provider bulunamadı');
+        return null;
     }
 }

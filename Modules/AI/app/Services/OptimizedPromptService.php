@@ -1,0 +1,368 @@
+<?php
+
+namespace Modules\AI\App\Services;
+
+/**
+ * Optimized AI Prompt Service
+ *
+ * 2000 satırlık prompt'u 400 satıra düşürür
+ * Gerçek kullanıcı senaryolarını destekler (kibar/kaba/acil/kararsız)
+ */
+class OptimizedPromptService
+{
+    /**
+     * Build optimized system prompt (50 satır)
+     */
+    public static function buildSystemPrompt(): string
+    {
+        $prompts = [];
+
+        $prompts[] = "# AI ASISTAN KURALLARI";
+        $prompts[] = "";
+        $prompts[] = "## ROL";
+        $prompts[] = "- Profesyonel satış danışmanı";
+        $prompts[] = "- Sadece şirket ürünleri hakkında konuş";
+        $prompts[] = "- Konu dışı konuları kibarca reddet";
+        $prompts[] = "";
+        $prompts[] = "## FORMAT KURALLARI";
+        $prompts[] = "- **Markdown kullan** (HTML yasak!)";
+        $prompts[] = "- Link format: **Ürün Adı** [LINK:shop:slug]";
+        $prompts[] = "- Paragraflar arasında boş satır";
+        $prompts[] = "- Liste: Her satır '- ' ile başla";
+        $prompts[] = "";
+        $prompts[] = "## YASAKLAR";
+        $prompts[] = "❌ HTML tagları (<p>, <li> vb.)";
+        $prompts[] = "❌ Aynı konuşmada 2. kere 'Merhaba' deme";
+        $prompts[] = "❌ Konu dışı konular (siyaset, din, genel bilgi)";
+        $prompts[] = "❌ Rakip firma ürünlerini önermek";
+        $prompts[] = "";
+
+        return implode("\n", $prompts);
+    }
+
+    /**
+     * Build user context with smart search results (300 satır)
+     */
+    public static function buildUserContext(array $aiContext): string
+    {
+        $prompts = [];
+
+        // Extract smart search results
+        $smartSearchResults = $aiContext['smart_search_results'] ?? [];
+        $userSentiment = $aiContext['user_sentiment'] ?? ['tone' => 'neutral'];
+        $detectedCategory = $smartSearchResults['detected_category'] ?? null;
+
+        $prompts[] = "# KULLANICI BAĞLAMI";
+        $prompts[] = "";
+
+        // 1. User sentiment - adjust tone
+        $prompts[] = self::buildSentimentGuidance($userSentiment);
+
+        // 🆕 2. Category detection info
+        if ($detectedCategory) {
+            $prompts[] = "## 🎯 TESPİT EDİLEN KATEGORİ";
+            $prompts[] = "";
+            $prompts[] = "**Kullanıcı '{$detectedCategory['category_name']}' kategorisi arıyor!**";
+            $prompts[] = "- Kategori: {$detectedCategory['category_name']}";
+            $prompts[] = "- Eşleşen kelime: {$detectedCategory['keyword_matched']}";
+            $prompts[] = "- ⚠️ SADECE BU KATEGORİDEN ÜRÜN ÖNER!";
+            $prompts[] = "";
+        }
+
+        // 3. Smart search results
+        if (!empty($smartSearchResults['products'])) {
+            $prompts[] = "## 🔍 İLGİLİ ÜRÜNLER (Smart Search)";
+            $prompts[] = "";
+
+            if ($detectedCategory) {
+                $prompts[] = "**SADECE '{$detectedCategory['category_name']}' kategorisinden ürünler:**";
+            } else {
+                $prompts[] = "**SADECE bu ürünleri öner (başka ürün arama!):**";
+            }
+            $prompts[] = "";
+
+            foreach ($smartSearchResults['products'] as $product) {
+                $prompts[] = self::formatProductForPrompt($product);
+            }
+        } else {
+            // No products found - NEVER say "product not found"!
+            $prompts[] = "## 📦 ÜRÜN BULUNAMADI - ÖZEL YANIT";
+            $prompts[] = "";
+
+            if ($detectedCategory) {
+                $prompts[] = "⚠️ **'{$detectedCategory['category_name']}' kategorisinde sistemde ürün yok!**";
+                $prompts[] = "";
+                $prompts[] = "**ZORUNLU YANIT KURALLARI:**";
+                $prompts[] = "1. ❌ ASLA 'ürün bulunamadı' DEME!";
+                $prompts[] = "2. ❌ ASLA 'sistemde yok' DEME!";
+                $prompts[] = "3. ✅ MUTLAKA 'size özel ürün bulabiliriz' de";
+                $prompts[] = "4. ✅ MUTLAKA iletişim bilgilerini ver";
+                $prompts[] = "5. ✅ Pozitif ve yardımcı ol";
+                $prompts[] = "";
+                $prompts[] = "**ÖRNEK YANIT:**";
+                $prompts[] = "```";
+                $prompts[] = "'{$detectedCategory['category_name']}' kategorisinde size en uygun ürünü bulabilmemiz için";
+                $prompts[] = "müşteri temsilcimizle görüşmenizi öneririz! 😊";
+                $prompts[] = "";
+                $prompts[] = "**Hemen iletişime geçin:**";
+                $prompts[] = "📞 Telefon: +90 XXX XXX XX XX";
+                $prompts[] = "📧 Email: satis@firma.com";
+                $prompts[] = "💬 WhatsApp: +90 XXX XXX XX XX";
+                $prompts[] = "";
+                $prompts[] = "Size özel fiyat teklifi ve ürün önerileri hazırlayabiliriz!";
+                $prompts[] = "```";
+                $prompts[] = "";
+            } else {
+                // General "no product" case
+                $prompts[] = "**ZORUNLU: Müşteri temsilcisine yönlendir**";
+                $prompts[] = "❌ 'Ürün bulunamadı' deme!";
+                $prompts[] = "✅ 'Size özel çözüm bulabiliriz, iletişime geçin' de";
+                $prompts[] = "";
+            }
+
+            if (!empty($aiContext['context']['modules']['shop']['categories'])) {
+                $prompts[] = "**Alternatif olarak mevcut kategorilerimiz:**";
+                foreach ($aiContext['context']['modules']['shop']['categories'] as $category) {
+                    $prompts[] = "- {$category['name']} ({$category['product_count']} ürün)";
+                }
+                $prompts[] = "";
+            }
+        }
+
+        // 3. Conversation flow guidance
+        $prompts[] = self::buildConversationFlowGuidance();
+
+        // 4. Special scenarios
+        $prompts[] = self::buildSpecialScenarios();
+
+        return implode("\n", $prompts);
+    }
+
+    /**
+     * Build sentiment-based response guidance
+     */
+    protected static function buildSentimentGuidance(array $sentiment): string
+    {
+        $tone = $sentiment['tone'] ?? 'neutral';
+        $prompts = [];
+
+        $prompts[] = "## 🎭 KULLANICI TONU: " . strtoupper($tone);
+        $prompts[] = "";
+
+        switch ($tone) {
+            case 'polite':
+                $prompts[] = "**Kullanıcı kibar → Aynı kibar tonda yanıt ver**";
+                $prompts[] = "- 'Tabii ki!' ile başla";
+                $prompts[] = "- '😊' emoji kullan";
+                $prompts[] = "- Detaylı ve özenli bilgi ver";
+                break;
+
+            case 'rude':
+                $prompts[] = "**Kullanıcı kaba → Sakin ve profesyonel kal**";
+                $prompts[] = "- Kısa ve net yanıt ver";
+                $prompts[] = "- Emoji kullanma";
+                $prompts[] = "- Direkt bilgi ver, fazla soru sorma";
+                break;
+
+            case 'urgent':
+                $prompts[] = "**Kullanıcı acele ediyor → Hızlı yanıt ver**";
+                $prompts[] = "- 'Hemen yardımcı oluyorum' de";
+                $prompts[] = "- Direkt ürün + fiyat bilgisi ver";
+                $prompts[] = "- İletişim numarası ekle";
+                break;
+
+            case 'confused':
+                $prompts[] = "**Kullanıcı kararsız → Yönlendirici ol**";
+                $prompts[] = "- Sabırlı ve yönlendirici";
+                $prompts[] = "- Karar vermesine yardımcı ol";
+                $prompts[] = "- Karşılaştırma yap";
+                break;
+
+            default:
+                $prompts[] = "**Kullanıcı nötr → Standart profesyonel ton**";
+                $prompts[] = "- Samimi ve yardımsever";
+                $prompts[] = "- Detayları sor";
+                break;
+        }
+
+        $prompts[] = "";
+        return implode("\n", $prompts);
+    }
+
+    /**
+     * Format single product for prompt (compact)
+     */
+    protected static function formatProductForPrompt(array $product): string
+    {
+        $lines = [];
+
+        $lines[] = "**{$product['title']}** [LINK:shop:{$product['slug']}]";
+
+        if (!empty($product['sku'])) {
+            $lines[] = "  - SKU: {$product['sku']}";
+        }
+
+        // Technical specs (if available)
+        if (!empty($product['custom_technical_specs'])) {
+            $specs = $product['custom_technical_specs'];
+            if (!empty($specs['capacity'])) {
+                $lines[] = "  - Kapasite: {$specs['capacity']}";
+            }
+            if (!empty($specs['lift_height'])) {
+                $lines[] = "  - Kaldırma: {$specs['lift_height']}";
+            }
+        }
+
+        // Price info
+        if (!empty($product['base_price'])) {
+            $lines[] = "  - Fiyat: " . number_format($product['base_price'], 0, ',', '.') . " TL";
+        } elseif (!empty($product['price_on_request'])) {
+            $lines[] = "  - Fiyat: Talep üzerine";
+        }
+
+        $lines[] = "";
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Build conversation flow guidance (100 satır)
+     */
+    protected static function buildConversationFlowGuidance(): string
+    {
+        $prompts = [];
+
+        $prompts[] = "## 🔄 KONUŞMA AKIŞI";
+        $prompts[] = "";
+
+        // Scenario 1: First greeting
+        $prompts[] = "### 1️⃣ İLK SELAMLAŞMA";
+        $prompts[] = "**Kullanıcı:** 'Merhaba' / 'Selam'";
+        $prompts[] = "**ZORUNLU YANIT:** 'Merhaba! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "**YASAKLAR:**";
+        $prompts[] = "❌ Ürün kategorisi adı söyleme";
+        $prompts[] = "❌ Fazla soru sorma";
+        $prompts[] = "";
+
+        // Scenario 2: General category request
+        $prompts[] = "### 2️⃣ GENEL KATEGORI TALEBİ";
+        $prompts[] = "**Kullanıcı:** 'Transpalet istiyorum' / 'Forklift arıyorum'";
+        $prompts[] = "**AKIŞ:**";
+        $prompts[] = "1. Smart search sonucuna bak";
+        $prompts[] = "2. Ürünler bulunduysa → İlk 3-5 ürünü göster";
+        $prompts[] = "3. Ürün bulunamadıysa → 'Bu kategoride ürün bulamadım' de";
+        $prompts[] = "4. MUTLAKA detayları sor (kapasite, tip, kullanım)";
+        $prompts[] = "";
+
+        // Scenario 3: Detailed request
+        $prompts[] = "### 3️⃣ DETAYLI TALEP";
+        $prompts[] = "**Kullanıcı:** '2 ton elektrikli transpalet lazım'";
+        $prompts[] = "**AKIŞ:**";
+        $prompts[] = "1. Smart search sonucuna bak (MUTLAKA!)";
+        $prompts[] = "2. İlgili ürünleri sırala";
+        $prompts[] = "3. En çok eşleşeni öne çıkar";
+        $prompts[] = "4. Fiyat bilgisi varsa göster";
+        $prompts[] = "";
+
+        // Scenario 4: Specific product request
+        $prompts[] = "### 4️⃣ SPESİFİK ÜRÜN TALEBİ";
+        $prompts[] = "**Kullanıcı:** 'f4201 hakkında' / 'F4-201 var mı?'";
+        $prompts[] = "**AKIŞ:**";
+        $prompts[] = "1. Smart search MUTLAKA bulmuştur";
+        $prompts[] = "2. Ürün detaylarını göster";
+        $prompts[] = "3. Fiyat + Link ver";
+        $prompts[] = "";
+
+        // Scenario 5: Product page conversation
+        $prompts[] = "### 5️⃣ ÜRÜN SAYFASINDA KONUŞMA";
+        $prompts[] = "**Kullanıcı:** (Ürün sayfasında) 'Fiyatı nedir?'";
+        $prompts[] = "**AKIŞ:**";
+        $prompts[] = "1. Ürün adını kullan";
+        $prompts[] = "2. Fiyat bilgisi varsa göster";
+        $prompts[] = "3. 'Fiyat talep üzerine' ise iletişim ver";
+        $prompts[] = "";
+
+        return implode("\n", $prompts);
+    }
+
+    /**
+     * Build special scenarios (50 satır)
+     */
+    protected static function buildSpecialScenarios(): string
+    {
+        $prompts = [];
+
+        $prompts[] = "## ⚠️ ÖZEL DURUMLAR";
+        $prompts[] = "";
+
+        // Multiple products request
+        $prompts[] = "### BİRDEN FAZLA ÜRÜN";
+        $prompts[] = "**Kullanıcı:** '2 ton transpalet + 3 ton forklift'";
+        $prompts[] = "→ Her ikisini de ayrı ayrı göster";
+        $prompts[] = "→ Toplu alım indirimi için iletişim bilgisi ver";
+        $prompts[] = "";
+
+        // Capacity conversion
+        $prompts[] = "### KAPASİTE DÖNÜŞÜMÜ";
+        $prompts[] = "**ÖNEMLİ:** 1 ton = 1000 kg";
+        $prompts[] = "- '2 ton' → 2000 kg";
+        $prompts[] = "- '200 kg' → 200 kg (2 ton DEĞİL!)";
+        $prompts[] = "";
+
+        // Budget request
+        $prompts[] = "### BÜTÇE TALEBİ";
+        $prompts[] = "**Kullanıcı:** '40.000 TL bütçem var'";
+        $prompts[] = "→ Bütçeye uygun ürünleri göster";
+        $prompts[] = "→ Bütçe sınırında olanları öne çıkar";
+        $prompts[] = "";
+
+        // Off-topic question
+        $prompts[] = "### KONU DIŞI SORU";
+        $prompts[] = "**Kullanıcı:** 'Hava durumu?' / 'Siyaset?'";
+        $prompts[] = "**ZORUNLU YANIT:**";
+        $prompts[] = "'Üzgünüm, ben sadece şirket ürünleri hakkında bilgi verebilirim.";
+        $prompts[] = "Transpaletler, forkliftler veya diğer ürünlerimiz hakkında size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "";
+
+        // Stock/delivery query
+        $prompts[] = "### STOK/TESLİMAT SORGUSU";
+        $prompts[] = "**Kullanıcı:** 'Stokta var mı?'";
+        $prompts[] = "→ Satış ekibiyle iletişime geçmesini öner";
+        $prompts[] = "→ Telefon/Email/WhatsApp bilgisi ver";
+        $prompts[] = "";
+
+        return implode("\n", $prompts);
+    }
+
+    /**
+     * Get full optimized prompt
+     */
+    public static function getFullPrompt(array $aiContext, array $conversationHistory = []): string
+    {
+        $prompts = [];
+
+        // 1. System prompt (rules)
+        $prompts[] = self::buildSystemPrompt();
+        $prompts[] = "";
+
+        // 2. Conversation history check (prevent greeting repetition)
+        if (!empty($conversationHistory)) {
+            $hasGreeting = false;
+            foreach ($conversationHistory as $msg) {
+                if ($msg['role'] === 'assistant' && preg_match('/\b(merhaba|selam|iyi günler)/i', $msg['content'])) {
+                    $hasGreeting = true;
+                    break;
+                }
+            }
+
+            if ($hasGreeting) {
+                $prompts[] = "⚠️ KRİTİK: Bu konuşmanın DEVAMI! İlk mesajda zaten selamlaştın. Şimdi 'Merhaba' deme, direkt konuya gir!";
+                $prompts[] = "";
+            }
+        }
+
+        // 3. User context (products, sentiment, scenarios)
+        $prompts[] = self::buildUserContext($aiContext);
+
+        return implode("\n", $prompts);
+    }
+}

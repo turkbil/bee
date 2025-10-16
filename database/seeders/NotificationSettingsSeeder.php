@@ -106,7 +106,7 @@ class NotificationSettingsSeeder extends Seeder
                 'default_value' => '',
                 'sort_order' => 5,
                 'is_active' => true,
-                'help_text' => 'Twilio hesabınızdan alacağınız Account SID. Twilio Console\'da bulabilirsiniz. Örnek: AC1b50075754770609cb4a69be42112e3f',
+                'help_text' => 'Twilio hesabınızdan alacağınız Account SID. Twilio Console\'da bulabilirsiniz. Format: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (32 karakter)',
                 'updated_at' => now(),
             ]
         );
@@ -319,7 +319,7 @@ class NotificationSettingsSeeder extends Seeder
                                         'required' => false,
                                         'help_text' => 'Twilio hesabınızdan alacağınız Account SID.',
                                         'setting_id' => $twilioAccountSid,
-                                        'placeholder' => 'AC1b50075754770609cb4a69be42112e3f',
+                                        'placeholder' => 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                                         'default_value' => ''
                                     ]
                                 ]

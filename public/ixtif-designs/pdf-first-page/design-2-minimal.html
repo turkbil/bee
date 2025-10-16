@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İXTİF - PDF İlk Sayfa (Minimal)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white min-h-screen flex items-center justify-center p-16">
+
+    <div class="max-w-3xl w-full space-y-20">
+
+        <!-- Logo & Brand - Top Left -->
+        <div class="space-y-3">
+            <h1 class="text-7xl font-black text-slate-900 tracking-tight">
+                İXTİF
+            </h1>
+            <div class="h-1 w-24 bg-blue-600"></div>
+            <p class="text-lg text-slate-600 font-medium">
+                Türkiye'nin İstif Pazarı
+            </p>
+            <p class="text-sm text-blue-600 font-mono">
+                ixtif.com
+            </p>
+        </div>
+
+        <!-- Product Title - Center -->
+        <div class="space-y-6 py-16">
+            <div class="text-xs text-slate-400 uppercase tracking-widest font-semibold">
+                Ürün Kataloğu / Product Catalog
+            </div>
+            <h2 class="text-6xl font-bold text-slate-900 leading-tight">
+                {{ÜRÜN_BAŞLIĞI}}
+            </h2>
+            <div class="h-2 w-32 bg-gradient-to-r from-blue-600 to-transparent"></div>
+        </div>
+
+        <!-- Product Image Placeholder -->
+        <div class="border-4 border-slate-200 rounded-lg overflow-hidden">
+            <div class="aspect-[4/3] bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+                <div class="text-center space-y-4">
+                    <svg class="w-24 h-24 text-slate-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <p class="text-sm text-slate-400">Ürün Görseli</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="border-t-2 border-slate-200 pt-6 flex items-center justify-between text-sm">
+            <div class="text-slate-500">
+                Katalog Tarihi: <span class="font-semibold text-slate-700">{{TARİH}}</span>
+            </div>
+            <div class="flex items-center gap-2 text-blue-600">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="font-medium">Güncel Bilgiler</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

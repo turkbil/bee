@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İXTİF - PDF Son Sayfa (QR Code)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen p-8">
+
+    <div class="max-w-6xl mx-auto space-y-12">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-3xl p-12 text-center">
+            <h1 class="text-6xl font-black mb-3">İXTİF</h1>
+            <p class="text-2xl text-blue-200">Türkiye'nin İstif Pazarı</p>
+            <div class="mt-6 text-3xl font-mono text-blue-100">ixtif.com</div>
+        </div>
+
+        <!-- Contact Grid with QR -->
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <!-- Telefon -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-blue-600">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                    </svg>
+                </div>
+                <div class="text-sm text-slate-500 uppercase tracking-wide font-semibold mb-2">Telefon</div>
+                <div class="text-2xl font-bold text-slate-900">0216 755 3 555</div>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-green-600">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                    </svg>
+                </div>
+                <div class="text-sm text-slate-500 uppercase tracking-wide font-semibold mb-2">WhatsApp</div>
+                <div class="text-2xl font-bold text-slate-900">0501 005 67 58</div>
+            </div>
+
+            <!-- E-posta -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-purple-600">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                    </svg>
+                </div>
+                <div class="text-sm text-slate-500 uppercase tracking-wide font-semibold mb-2">E-posta</div>
+                <div class="text-lg font-bold text-slate-900">info@ixtif.com</div>
+            </div>
+
+        </div>
+
+        <!-- QR Code & Info Section -->
+        <div class="grid md:grid-cols-2 gap-8">
+
+            <!-- QR Code -->
+            <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
+                <h3 class="text-2xl font-bold text-slate-900 mb-6">Web Sitemizi Ziyaret Edin</h3>
+                <div class="bg-slate-100 w-64 h-64 mx-auto rounded-2xl flex items-center justify-center mb-6">
+                    <div class="text-center space-y-4">
+                        <div class="w-48 h-48 bg-white border-4 border-slate-300 rounded-xl mx-auto flex items-center justify-center">
+                            <svg class="w-24 h-24 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clip-rule="evenodd"></path>
+                                <path d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM7 11a1 1 0 100-2H4a1 1 0 100 2h3zM17 13a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM16 17a1 1 0 100-2h-3a1 1 0 100 2h3z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-slate-500 font-medium">QR Kodu Tarayın</p>
+                    </div>
+                </div>
+                <p class="text-lg font-bold text-blue-600">ixtif.com</p>
+            </div>
+
+            <!-- Hizmetler -->
+            <div class="bg-white rounded-2xl shadow-lg p-12">
+                <h3 class="text-2xl font-bold text-slate-900 mb-8">Hizmetlerimiz</h3>
+
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-2xl">📦</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 mb-1">Sıfır Ekipmanlar</div>
+                            <div class="text-sm text-slate-600">Forklift ve istif makineleri</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-2xl">♻️</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 mb-1">İkinci El</div>
+                            <div class="text-sm text-slate-600">Garantili kullanılmış ekipmanlar</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-2xl">🔑</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 mb-1">Kiralama</div>
+                            <div class="text-sm text-slate-600">Kısa ve uzun vadeli kiralama</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-2xl">🔧</span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 mb-1">Teknik Servis</div>
+                            <div class="text-sm text-slate-600">Yedek parça ve bakım hizmetleri</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-slate-900 text-white rounded-2xl p-8 text-center space-y-3">
+            <p class="text-slate-300">
+                Bu katalog <span class="font-bold text-white">{{TARİH}}</span> tarihinde oluşturulmuştur.
+            </p>
+            <p class="text-sm text-slate-400">
+                Güncel fiyatlar ve detaylı bilgi için lütfen bizimle iletişime geçiniz.
+            </p>
+            <div class="pt-4 border-t border-slate-700">
+                <p class="text-xs text-slate-500">
+                    © 2025 İXTİF - Türkiye'nin İstif Pazarı | Tüm hakları saklıdır.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

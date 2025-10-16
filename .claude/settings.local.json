@@ -73,7 +73,14 @@
       "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_MdkdLK/**)",
       "WebSearch",
       "Bash(git checkout:*)",
-      "Bash(composer require:*)"
+      "Bash(composer require:*)",
+      "Bash(git remote set-url:*)",
+      "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_LIWRHx/**)",
+      "Bash(pdftotext:*)",
+      "Bash(md5:*)",
+      "Bash(node --version:*)",
+      "Bash(npm:*)",
+      "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_CGCygW/**)"
     ],
     "deny": [],
     "ask": [],

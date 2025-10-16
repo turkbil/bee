@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İXTİF - PDF İlk Sayfa (Corporate)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Header Bar -->
+    <div class="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-8">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div>
+                <h1 class="text-5xl font-black tracking-wide">İXTİF</h1>
+                <p class="text-blue-200 text-sm mt-1">Türkiye'nin İstif Pazarı</p>
+            </div>
+            <div class="text-right">
+                <p class="text-2xl font-mono text-blue-100">ixtif.com</p>
+                <p class="text-xs text-blue-300 mt-1">0216 755 3 555</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-8 py-16">
+
+        <!-- Catalog Badge -->
+        <div class="inline-flex items-center gap-3 bg-blue-100 text-blue-900 px-6 py-3 rounded-full mb-8">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+            </svg>
+            <span class="font-bold text-sm uppercase tracking-wide">Ürün Kataloğu</span>
+        </div>
+
+        <!-- Product Title -->
+        <div class="bg-white rounded-2xl shadow-lg border-l-8 border-blue-600 p-12 mb-12">
+            <div class="flex items-start gap-8">
+                <div class="flex-shrink-0 w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-3">
+                        Teknik Döküman / Technical Document
+                    </div>
+                    <h2 class="text-5xl font-bold text-slate-900 leading-tight mb-4">
+                        {{ÜRÜN_BAŞLIĞI}}
+                    </h2>
+                    <p class="text-lg text-slate-600">
+                        Detaylı teknik özellikler, kullanım alanları ve ürün bilgileri
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Image -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-12">
+            <div class="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center border border-slate-200">
+                <div class="text-center space-y-4">
+                    <div class="w-32 h-32 mx-auto bg-slate-300 rounded-2xl flex items-center justify-center">
+                        <svg class="w-16 h-16 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm text-slate-500 font-medium">Ürün Görseli</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="grid grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow p-6 text-center">
+                <div class="text-xs text-slate-500 uppercase tracking-wide mb-2">Katalog Tarihi</div>
+                <div class="text-lg font-bold text-slate-900">{{TARİH}}</div>
+            </div>
+            <div class="bg-white rounded-xl shadow p-6 text-center">
+                <div class="text-xs text-slate-500 uppercase tracking-wide mb-2">Durum</div>
+                <div class="inline-flex items-center gap-2 text-green-600 font-bold text-lg">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Güncel
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow p-6 text-center">
+                <div class="text-xs text-slate-500 uppercase tracking-wide mb-2">Kategori</div>
+                <div class="text-lg font-bold text-slate-900">İstif & Forklift</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Bar -->
+    <div class="bg-slate-900 text-white py-8 mt-16">
+        <div class="max-w-6xl mx-auto px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                © 2025 İXTİF - Türkiye'nin İstif Pazarı | Tüm hakları saklıdır.
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

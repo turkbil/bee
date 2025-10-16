@@ -256,6 +256,11 @@ Route::middleware(['site'])->withoutMiddleware(\Spatie\ResponseCache\Middlewares
     return redirect()->back()->with('error', __('admin.invalid_language'));
 })->name('language.switch');
 
+// SHOP PDF EXPORT ROUTE - Dinamik route'lardan ÖNCE tanımlanmalı!
+Route::middleware([InitializeTenancy::class, 'site'])
+    ->get('/shop/pdf/{slug}', [\Modules\Shop\App\Http\Controllers\Front\ShopController::class, 'exportPdf'])
+    ->name('shop.pdf');
+
 // Dinamik modül route'ları - sadece frontend içerik için
 Route::middleware([InitializeTenancy::class, 'site'])
     ->group(function () {
@@ -330,7 +335,7 @@ Route::middleware([InitializeTenancy::class, 'site'])
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, null, $lang);
         })->where('lang', getSupportedLanguageRegex())
          ->where('slug1', '[^/]+')
-         ->where('slug2', '[^/]+');
+         ->where('slug2', '^(?!pdf)[^/]+$');
          
         Route::get('/{lang}/{slug1}/{slug2}/{slug3}', function($lang, $slug1, $slug2, $slug3) {
             // Dil geçerliliği kontrolü
@@ -356,7 +361,7 @@ Route::middleware([InitializeTenancy::class, 'site'])
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3, $lang);
         })->where('lang', getSupportedLanguageRegex())
          ->where('slug1', '[^/]+')
-         ->where('slug2', '[^/]+')
+         ->where('slug2', '^(?!pdf)[^/]+$')
          ->where('slug3', '[^/]+');
          
         // Catch-all route'ları - prefix olmayan - sadece content route'ları için
@@ -368,12 +373,12 @@ Route::middleware([InitializeTenancy::class, 'site'])
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
         })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug)[^/]+$')
-         ->where('slug2', '[^/]+');
+         ->where('slug2', '^(?!pdf)[^/]+$');
          
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
         })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug)[^/]+$')
-         ->where('slug2', '[^/]+')
+         ->where('slug2', '^(?!pdf)[^/]+$')
          ->where('slug3', '[^/]+');
     });
 

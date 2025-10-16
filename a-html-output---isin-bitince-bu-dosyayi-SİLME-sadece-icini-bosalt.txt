@@ -1,182 +1,571 @@
-# InvalidArgumentException - Internal Server Error
-View [form-builder.partials.form-elements.section] not found.
+<div x-show="chat.floatingOpen" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95" :style="{
+            height: (expanded || chat.hasConversation) ? '600px' : '420px',
+            transition: 'height 0.4s ease-in-out',
+            maxHeight: 'calc(100vh - 120px)'
+        }" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700" style="height: 600px; transition: height 0.4s ease-in-out; max-height: calc(-120px + 100vh);">
 
-PHP 8.4.11
-Laravel 12.33.0
-a.test
+        <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg" x-text="chat.assistantName">iXtif Yapay Zeka Asistanı</h3>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        <p class="text-xs text-white/80">Online</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
 
-## Stack Trace
+                <button @click="chat.closeFloating()" class="p-2 hover:bg-white/10 rounded-lg transition" title="Kapat">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
-<!--[if BLOCK]><![endif]-->0 - vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php:138
-1 - vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php:91
-2 - vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php:75
-3 - vendor/laravel/framework/src/Illuminate/View/Factory.php:150
-4 - Modules/SettingManagement/resources/views/livewire/values-component.blade.php:29
-5 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:37
-6 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:38
-7 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
-8 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:16
-9 - vendor/laravel/framework/src/Illuminate/View/View.php:208
-10 - vendor/laravel/framework/src/Illuminate/View/View.php:191
-11 - vendor/laravel/framework/src/Illuminate/View/View.php:160
-12 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:259
-13 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:303
-14 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:251
-15 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:54
-16 - vendor/livewire/livewire/src/LivewireManager.php:73
-17 - vendor/livewire/volt/src/LivewireManager.php:23
-18 - vendor/livewire/livewire/src/Features/SupportPageComponents/HandlesPageComponents.php:17
-19 - vendor/livewire/livewire/src/Features/SupportPageComponents/SupportPageComponents.php:117
-20 - vendor/livewire/livewire/src/Features/SupportPageComponents/HandlesPageComponents.php:14
-21 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
-22 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
-23 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
-24 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
-25 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-26 - Modules/UserManagement/app/Http/Middleware/ModulePermissionMiddleware.php:91
-27 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-28 - app/Http/Middleware/FixLegacyTenantUrls.php:16
-29 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-30 - Modules/LanguageManagement/app/Http/Middleware/AdminSetLocaleMiddleware.php:30
-31 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-32 - app/Http/Middleware/AdminNoCacheMiddleware.php:27
-33 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-34 - app/Http/Middleware/AdminAccessMiddleware.php:40
-35 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-36 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:66
-37 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-38 - app/Http/Middleware/LivewireJsonSanitizer.php:43
-39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-40 - app/Http/Middleware/RootOnlyDebugbar.php:35
-41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-42 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
-43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-44 - app/Http/Middleware/DatabasePoolMiddleware.php:58
-45 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-46 - app/Http/Middleware/SecurityHeaders.php:18
-47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-48 - vendor/spatie/laravel-missing-page-redirector/src/RedirectsMissingPages.php:12
-49 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-50 - app/Http/Middleware/CheckThemeStatus.php:40
-51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-52 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
-53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-54 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
-55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-56 - vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php:63
-57 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-58 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
-59 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-60 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
-61 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-62 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
-63 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
-64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-65 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
-66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-67 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
-68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-69 - app/Http/Middleware/InitializeTenancy.php:92
-70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-71 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-72 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
-73 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
-74 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
-75 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
-76 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
-77 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-78 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
-79 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-80 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:66
-81 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-82 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
-83 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
-84 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-85 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
-86 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
-87 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-88 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
-89 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-90 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
-91 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-92 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
-93 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-94 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
-95 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-96 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
-97 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-98 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
-99 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-100 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-101 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
-102 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
-103 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
-104 - public/index.php:17
-105 - /Users/nurullah/.composer/vendor/laravel/valet/server.php:110
-<!--[if ENDBLOCK]><![endif]-->
 
-## Request
+        <div x-show="!chat.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700" x-data="{
+                suggestions: [
+                    'Ürün özellikleri',
+                    'Stok durumu',
+                    'Fiyat bilgisi',
+                    'Hızlı öneri',
+                    'Karşılaştırma',
+                    'En iyiler'
+                ],
+                currentSuggestion: 0,
+                init() {
+                    setInterval(() =&gt; {
+                        this.currentSuggestion = (this.currentSuggestion + 1) % this.suggestions.length;
+                    }, 2000);
+                }
+            }" style="display: none;">
+            <div class="text-center">
 
-GET /admin/settingmanagement/values/10
+                <div class="relative inline-block mb-4">
 
-## Headers
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-20 h-20 bg-blue-400 rounded-full opacity-20 animate-ping-slow"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full opacity-30 animate-pulse-slow"></div>
+                    </div>
 
-<!--[if BLOCK]><![endif]-->* **host**: a.test
-* **cookie**: siteTextColor=#ffffff; XSRF-TOKEN=eyJpdiI6IlJ1bXY3VldJWHc1c1VhLzVLOHZld3c9PSIsInZhbHVlIjoiUmxmZEFUcjJEYysxWkdNNXo5ZDJ4bndLWDVoczZjWVVKeWNQRytWODRpZkx4WGw3NXQxRFlseTZBODZXVFZRSmxyMHoxTnhzVnhPUjJodGFGckRqcEVKcHRia0lDZGZPSW5va0UrM0pwNjhnL21ndmlpMGdnS0o5YWVPc1NwclEiLCJtYWMiOiIzYjY4NzU2MzA5MzU0ZTRkMzc3MTc0OGQwMzk1Zjk4M2Y3ZjdlMjA5MWFmYjAyZTMzM2ZkMzBkMGQyMDhiMWEyIiwidGFnIjoiIn0%3D; laravel_session=eyJpdiI6IlFmZ1Q2NnV4MG4xYmM1cURsUTROZmc9PSIsInZhbHVlIjoiTENhYXNwcENlcWMxWmFSVUVCUFg3MTBwbGRMU1pRalIyRlU2V1RyNXVDbDdRQXNCL2I5WkpVL2VWM2Z6TXQ1VUNKTDFJUmtJZktVQjhqK3RVdGhhbWRBV1NwQ1Y3UGFNQ3p6eHFVcjJuNzE1RHJicndrYUFhL0Y4WGtpOFk1NngiLCJtYWMiOiI4ZDVkZDIxMDNkYjYxYmMxNDA3ZWZlNzg5YzYwMDY1NTI5MGI5YTY0MGVmOTA1YTczNzUwODJiYzBjZTkyMmY4IiwidGFnIjoiIn0%3D
-* **priority**: u=0, i
-* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
-* **accept-encoding**: gzip, deflate, br, zstd
-* **referer**: https://a.test/admin/settingmanagement
-* **sec-fetch-dest**: document
-* **sec-fetch-user**: ?1
-* **sec-fetch-mode**: navigate
-* **sec-fetch-site**: same-origin
-* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
-* **upgrade-insecure-requests**: 1
-* **dnt**: 1
-* **sec-ch-ua-platform**: "macOS"
-* **sec-ch-ua-mobile**: ?0
-* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
-<!--[if ENDBLOCK]><![endif]-->
 
-## Route Context
+                    <div class="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full shadow-lg animate-bounce-subtle">
+                        <svg class="w-8 h-8 text-white animate-wiggle-subtle" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                        </svg>
+                    </div>
+                </div>
 
-<!--[if BLOCK]><![endif]-->controller: Modules\SettingManagement\App\Http\Livewire\ValuesComponent
-route name: admin.settingmanagement.values
-middleware: admin, tenant, module.permission:settingmanagement,view
-<!--[if ENDBLOCK]><![endif]-->
 
-## Route Parameters
+                <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-2 animate-fade-in-up">
+                    Merhaba! 👋
+                </h4>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 animate-fade-in-up animation-delay-100">
+                    Size nasıl yardımcı olabilirim?
+                </p>
 
-<!--[if BLOCK]><![endif]-->{
-    "group": "10"
-}
-<!--[if ENDBLOCK]><![endif]-->
 
-## Database Queries
+                <div class="h-6 flex items-center justify-center">
+                    <p x-data="{
+                            currentText: 'Ürün özellikleri',
+                            fading: false,
+                            suggestionsList: [
+                                'Ürün özellikleri',
+                                'Stok durumu',
+                                'Fiyat bilgisi',
+                                'Hızlı öneri',
+                                'Karşılaştırma',
+                                'En iyiler'
+                            ],
+                            currentIndex: 0,
+                            init() {
+                                setInterval(() =&gt; {
+                                    // Fade out
+                                    this.fading = true;
 
-<!--[if BLOCK]><![endif]-->* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (1.66 ms)
-* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.59 ms)
-* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.34 ms)
-* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.65 ms)
-* tenant - select `code` from `admin_languages` where `is_active` = 1 (0.31 ms)
-* mysql - select * from `modules` where `name` = 'settingmanagement' limit 1 (1.11 ms)
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (0.51 ms)
-* mysql - select exists(select * from `module_tenants` where `module_id` = '7' and `tenant_id` = '2' and `is_active` = 1) as `exists` (1.38 ms)
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (0.49 ms)
-* tenant - select exists(select * from `permissions` where `name` = 'settingmanagement.view' and `guard_name` = 'web') as `exists` (0.89 ms)
-* mysql - select * from `settings_groups` where `settings_groups`.`id` = '10' and `settings_groups`.`deleted_at` is null limit 1 (0.36 ms)
-* mysql - select * from `settings` where `group_id` = '10' (0.31 ms)
-* tenant - select * from `settings_values` where `setting_id` = 56 limit 1 (0.27 ms)
-* tenant - select * from `settings_values` where `setting_id` = 57 limit 1 (0.37 ms)
-* tenant - select * from `settings_values` where `setting_id` = 58 limit 1 (0.27 ms)
-* tenant - select * from `settings_values` where `setting_id` = 59 limit 1 (0.24 ms)
-* tenant - select * from `settings_values` where `setting_id` = 60 limit 1 (0.21 ms)
-* tenant - select * from `settings_values` where `setting_id` = 61 limit 1 (0.21 ms)
-* tenant - select * from `settings_values` where `setting_id` = 62 limit 1 (0.17 ms)
-* tenant - select * from `settings_values` where `setting_id` = 63 limit 1 (0.21 ms)
-* tenant - select * from `settings_values` where `setting_id` = 64 limit 1 (0.24 ms)
-* tenant - select * from `settings_values` where `setting_id` = 65 limit 1 (0.23 ms)
-* mysql - select * from `settings` where `group_id` = '10' order by `sort_order` asc (0.31 ms)
-<!--[if ENDBLOCK]><![endif]-->
+                                    // Change text after fade out completes
+                                    setTimeout(() =&gt; {
+                                        this.currentIndex = (this.currentIndex + 1) % this.suggestionsList.length;
+                                        this.currentText = this.suggestionsList[this.currentIndex];
+
+                                        // Fade in
+                                        setTimeout(() =&gt; {
+                                            this.fading = false;
+                                        }, 50);
+                                    }, 250);
+                                }, 2500);
+                            }
+                        }" :class="{ 'opacity-0': fading, 'opacity-100': !fading }" class="text-sm text-gray-600 dark:text-gray-300 text-center transition-opacity duration-250 opacity-100" x-text="currentText">Karşılaştırma</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div x-show="chat.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4" data-ai-chat-messages="" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+
+            <template x-for="(msg, index) in chat.messages" :key="index">
+                <div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content" x-html="window.aiChatRenderMarkdown(msg.content)"></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })"></p>
+                    </div>
+                </div>
+            </template><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">2 ton kaldırma kapasitesi olacak Elektrikli transpalet teknik özellikler operatör için kullanım kolaylıkları çünkü direkt satın alacak kişi kullanacak cezbetmesi gerekiyor</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:16</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Tabii! 2 ton kaldırma kapasitesine sahip elektrikli transpaletler, operatörler için birçok avantaj sunar. İşte dikkat çeken teknik özellikleri ve kullanım kolaylıkları: - <strong class="font-bold text-gray-900 dark:text-white">Kapasite:</strong> 200 kg taşıma kapasitesi ile ağır yükleri kolayca taşıma imkanı. - <strong class="font-bold text-gray-900 dark:text-white">Akü Tipi:</strong> Genellikle lityum ion veya kurşun asit akülerle donatılmıştır. Lityum ion aküler, daha uzun ömürlüdür ve daha hızlı şarj olabilir. - <strong class="font-bold text-gray-900 dark:text-white">Kaldırma Yüksekliği:</strong> Genellikle 200 mm ile 210 mm arasında, paletleri zemin seviyesinden kaldırarak kolay taşıma sağlar. - <strong class="font-bold text-gray-900 dark:text-white">Hafif ve Kompakt Tasarım:</strong> Dar alanlarda manevra kabiliyeti yüksek, bu da operatörlerin dar koridorlarda bile rahatça çalışabilmesini sağlar. - <strong class="font-bold text-gray-900 dark:text-white">Kullanım Kolaylığı:</strong> Ergonomik tasarımlı kontrol kolları ve pedal sistemi ile operatör yorgunluğunu azaltır.</p>
+<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Düşük sürtünme ile hareket etmek, iş verimliliğini artırır. - <strong class="font-bold text-gray-900 dark:text-white">Güvenlik Özellikleri:</strong> Acil durdurma butonu, geri görüş sensörleri ve yük dengeleme sistemleri, operatör güvenliğini artırır. - <strong class="font-bold text-gray-900 dark:text-white">Yükseklik Ayarı:</strong> Yükseklik ayarı sayesinde, farklı yüksekliklerdeki paletlerle çalışma imkanı. - <strong class="font-bold text-gray-900 dark:text-white">Düşük Bakım Maliyeti:</strong> Elektrikli sistem, mekanik aksamdan daha az aşınma yaşar, bu da bakım maliyetlerini düşürür. Bu özellikler, elektrikli transpaletlerin operatörler için ne kadar cazip olduğunu gösteriyor. İş verimliliği artırırken, aynı zamanda güvenli ve konforlu bir çalışma ortamı sağlar. Daha fazla bilgi veya ürün önerisi isterseniz, yardımcı olmaktan mutluluk duyarım! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:16</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">hangi ürünler olsun</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:17</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Tabii! 2 ton kaldırma kapasitesine sahip elektrikli transpaletler, operatörler için oldukça avantajlıdır. İşte bu ürünlerin teknik özellikleri ve kullanım kolaylıkları: ⭐ <strong class="font-bold text-gray-900 dark:text-white">[Litef EPT20 Elektrikli Transpalet](https:/xtif.com/shopxtiftef-ept20)</strong> - <strong class="font-bold text-gray-900 dark:text-white">Kapasite:</strong> 200 kg - <strong class="font-bold text-gray-900 dark:text-white">Akü Tipi:</strong> Lityum iyon akü, hızlı şarj imkanı - <strong class="font-bold text-gray-900 dark:text-white">Kaldırma Yüksekliği:</strong> 200 mm - <strong class="font-bold text-gray-900 dark:text-white">Manevra Kabiliyeti:</strong> Dar alanlarda kolay hareket - <strong class="font-bold text-gray-900 dark:text-white">Ergonomik Tasarım:</strong> Kolay kontrol ve az yorgunluk - <strong class="font-bold text-gray-900 dark:text-white">Güvenlik Özellikleri:</strong> Acil durdurma butonu ve geri görüş sensörleri ⭐ <strong class="font-bold text-gray-900 dark:text-white">[Litef EPT15 Elektrikli Transpalet](https:/xtif.com/shopxtiftef-ept15)</strong> - <strong class="font-bold text-gray-900 dark:text-white">Kapasite:</strong> 150 kg - <strong class="font-bold text-gray-900 dark:text-white">Akü Tipi:</strong> Kurşun asit akü, ekonomik çözüm - <strong class="font-bold text-gray-900 dark:text-white">Kaldırma Yüksekliği:</strong> 210 mm - <strong class="font-bold text-gray-900 dark:text-white">Kullanım Kolaylığı:</strong> Ergonomik kollar ve pedallar - <strong class="font-bold text-gray-900 dark:text-white">Düşük Bakım Maliyeti:</strong> Uzun ömürlü yapı, az aşınma Bu elektrikli transpaletler, yük taşıma işlemlerini daha hızlı ve verimli hale getirir.</p>
+<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Ergonomik tasarımı sayesinde operatör yorgunluğunu azaltır ve güvenlik önlemleri, iş kazalarını en aza indirir. Eğer daha fazla bilgi almak isterseniz veya başka ürünler hakkında merak ettikleriniz varsa, yardımcı olmaktan memnuniyet duyarım! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:17</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">2 ton olacak dedim</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:18</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Elbette! İşte 2 ton kaldırma kapasitesine sahip elektrikli transpaletler: ⭐ <strong class="font-bold text-gray-900 dark:text-white">[İXTİF EPT20 Elektrikli Transpalet](https:/xtif.com/shopxtiftef-ept20)</strong> - <strong class="font-bold text-gray-900 dark:text-white">Kapasite:</strong> 200 kg - <strong class="font-bold text-gray-900 dark:text-white">Akü:</strong> Lityum iyon, hızlı şarj imkanı - <strong class="font-bold text-gray-900 dark:text-white">Kaldırma Yüksekliği:</strong> 200 mm - <strong class="font-bold text-gray-900 dark:text-white">Ergonomik Kontrol:</strong> Kullanım kolaylığı sağlar - <strong class="font-bold text-gray-900 dark:text-white">Düşük Bakım Maliyeti:</strong> Uzun ömürlü ve az aşınma ⭐ <strong class="font-bold text-gray-900 dark:text-white">[İXTİF EPT20L Elektrikli Transpalet](https:/xtif.com/shopxtiftef-ept20l)</strong> - <strong class="font-bold text-gray-900 dark:text-white">Kapasite:</strong> 200 kg - <strong class="font-bold text-gray-900 dark:text-white">Akü:</strong> Kurşun asit, ekonomik çözüm - <strong class="font-bold text-gray-900 dark:text-white">Kaldırma Yüksekliği:</strong> 210 mm - <strong class="font-bold text-gray-900 dark:text-white">Güvenlik Özellikleri:</strong> Acil durdurma butonu ve geri görüş sensörleri - <strong class="font-bold text-gray-900 dark:text-white">Manevra Kabiliyeti:</strong> Dar alanlarda rahat hareket Bu elektrikli transpaletler, operatörlerin yük taşıma işlemlerini daha verimli ve güvenli hale getirmesine yardımcı olur.</p>
+<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Eğer daha fazla bilgi veya başka bir ürün hakkında merak ettikleriniz varsa, buradayım! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:18</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">f4 201 ürünü linki nedir</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:22</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">İşte 2 ton kaldırma kapasitesine sahip elektrikli transpalet ürününüz: ⭐ <strong class="font-bold text-gray-900 dark:text-white">[İXTİF EPT20 Elektrikli Transpalet](https:/xtif.com/shopxtif/ept20)</strong> - <strong class="font-bold text-gray-900 dark:text-white">Kapasite:</strong> 200 kg - <strong class="font-bold text-gray-900 dark:text-white">Akü:</strong> Lityum iyon, hızlı şarj imkanı - <strong class="font-bold text-gray-900 dark:text-white">Kaldırma Yüksekliği:</strong> 200 mm - <strong class="font-bold text-gray-900 dark:text-white">Ergonomik Kontrol:</strong> Kullanım kolaylığı sağlar - <strong class="font-bold text-gray-900 dark:text-white">Düşük Bakım Maliyeti:</strong> Uzun ömürlü ve az aşınma Bu ürün, operatörlerin iş verimliliğini artırarak, güvenli ve konforlu bir çalışma ortamı sunar. Başka bir konuda yardımcı olabilir miyim?</p>
+<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:22</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">f4 201  model ürününüzün linkini istiyorum</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">ancak F4 201 model ürünümüz mevcut değil. Eğer başka bir model veya ürün hakkında bilgi almak isterseniz, yardımcı olmaktan memnuniyet duyarım! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">var bak veritabanına f4 201 transpalet</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">ancak F4 201 modeli hakkında veritabanımda bilgi bulamıyorum. Eğer başka bir model veya ürün hakkında bilgi almak isterseniz, yardımcı olmaktan memnuniyet duyarım! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">201 olarak arat</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">ancak F4 201 model transpalet hakkında elimde bilgi bulunmuyor. Eğer başka bir ürün ya da model hakkında bilgi almak isterseniz, size yardımcı olmaktan memnuniyet duyarım! 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">veritabanına tekrar bak</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Elbette! İşte 201 model elektrikli transpalet ile ilgili bilgiler: ⭐ <strong class="font-bold text-gray-900 dark:text-white">[İXTİF EPT20 201 Elektrikli Transpalet](https:/xtif.com/shopxtif/ept20)</strong> - <strong class="font-bold text-gray-900 dark:text-white">Kapasite:</strong> 200 kg - <strong class="font-bold text-gray-900 dark:text-white">Akü:</strong> Lityum iyon, hızlı şarj imkanı - <strong class="font-bold text-gray-900 dark:text-white">Kaldırma Yüksekliği:</strong> 200 mm - <strong class="font-bold text-gray-900 dark:text-white">Ergonomik Kontrol:</strong> Kullanım kolaylığı sağlar - <strong class="font-bold text-gray-900 dark:text-white">Düşük Bakım Maliyeti:</strong> Uzun ömürlü ve az aşınma Bu ürün, operatörlerin yük taşıma işlemlerini daha verimli ve güvenli hale getirmesine yardımcı olur.</p>
+<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Başka bir konuda yardımcı olmamı ister misiniz? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">16:23</p>
+                    </div>
+                </div>
+
+
+            <div x-show="chat.isTyping" class="flex justify-start" style="display: none;">
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm">
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+
+            <div x-show="chat.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" style="display: none;">
+                <span x-text="chat.error"></span>
+            </div>
+
+
+            <form @submit.prevent="submitMessage()" class="flex gap-2" x-data="{ inputFocused: false }">
+                <div class="flex-1 relative">
+
+                    <div x-show="inputFocused &amp;&amp; !chat.isLoading" class="absolute inset-0 bg-blue-400 rounded-full opacity-20 animate-pulse-glow pointer-events-none" style="display: none;"></div>
+
+                    <input type="text" x-model="message" @focus="expanded = true; inputFocused = true" @blur="inputFocused = false" placeholder="Mesajınızı yazın..." :disabled="chat.isLoading" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-all duration-300 relative z-10" :class="{ 'animate-input-invite': !expanded &amp;&amp; !chat.hasConversation }" autocomplete="off">
+                </div>
+                <button type="submit" :disabled="!message.trim() || chat.isLoading" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors shadow-sm" disabled="disabled">
+                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        <path x-show="chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" style="display: none;"></path>
+                    </svg>
+                </button>
+            </form>
+
+
+            <div class="mt-2">
+                <p style="font-size: 11px !important; line-height: 1.4 !important; opacity: 0.9 !important;" class="text-gray-800 dark:text-white">
+                    Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
+                </p>
+
+
+                <button @click="if(confirm('Database + localStorage temizlenecek. Emin misiniz?')) {
+                        fetch('/api/ai/v1/conversation/' + chat.conversationId, { method: 'DELETE' })
+                            .then(() =&gt; {
+                                chat.clearConversation();
+                                alert('✅ Konuşma database\'den silindi');
+                            })
+                            .catch(err =&gt; alert('❌ Hata: ' + err));
+                    }" class="text-xs text-red-400 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400 opacity-20 hover:opacity-100 transition absolute right-2 bottom-1" title="[ADMIN] Clear DB + Cache" x-show="chat.conversationId" style="">
+                    🗑️
+                </button>
+            </div>
+        </div>
+    </div>

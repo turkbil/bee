@@ -14,6 +14,8 @@ use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Models\ShopBrand;
 use App\Jobs\GenerateProductPlaceholderJob;
 use App\Models\ProductChatPlaceholder;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Spatie\Browsershot\Browsershot;
 
 class ShopController extends Controller
 {
@@ -514,5 +516,180 @@ class ShopController extends Controller
     public function showV6(string $slug)
     {
         return $this->showVersion($slug, 'v6');
+    }
+
+    /**
+     * Export product info as PDF using Browsershot (renders actual web page)
+     */
+    public function exportPdf(string $slug)
+    {
+        $locale = app()->getLocale();
+
+        $product = ShopProduct::query()
+            ->with(['category', 'brand'])
+            ->active()
+            ->published()
+            ->where(function ($query) use ($slug, $locale) {
+                $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"{$locale}\"')) = ?", [$slug]);
+            })
+            ->first();
+
+        if (!$product) {
+            abort(404);
+        }
+
+        $title = $product->getTranslated('title', $locale);
+
+        // Build product URL
+        $productUrl = self::resolveProductUrl($product, $locale);
+
+        // Generate filename
+        $filename = \Str::slug($title) . '-urun-katalogu.pdf';
+        $pdfPath = storage_path('app/temp/' . $filename);
+
+        // Ensure temp directory exists
+        if (!file_exists(storage_path('app/temp'))) {
+            mkdir(storage_path('app/temp'), 0755, true);
+        }
+
+        try {
+            // Use Browsershot to render the actual web page as PDF
+            Browsershot::url($productUrl)
+                ->setNodeBinary('/opt/homebrew/bin/node')
+                ->setNpmBinary('/opt/homebrew/bin/npm')
+                ->addChromiumArguments([
+                    'no-sandbox',
+                    'disable-setuid-sandbox',
+                ])
+                ->waitUntilNetworkIdle()
+                ->showBackground()
+                ->format('A4')            // Standard A4 paper size
+                ->margins(10, 10, 10, 10) // 10mm margins for print-friendly
+                ->windowSize(1200, 1600)  // Modern viewport width (not too narrow)
+                ->pages('1-100')          // Capture all pages
+                // Hide sidebar and make content full width with custom CSS
+                ->setOption('addStyleTag', json_encode([
+                    'content' => '
+                        /* ========================================
+                           PDF EXPORT - CUSTOM CSS RULES
+                           ======================================== */
+
+                        /* Hide right sidebar */
+                        #sticky-sidebar { display: none !important; }
+                        .lg\:col-span-1 { display: none !important; }
+
+                        /* Make left content full width */
+                        .lg\:col-span-2 {
+                            grid-column: span 3 / span 3 !important;
+                            max-width: 100% !important;
+                        }
+
+                        /* Hide header, navigation, TOC bar, footer */
+                        header, nav, footer, #toc-bar { display: none !important; }
+
+                        /* Hide Contact Form (#contact section) */
+                        #contact { display: none !important; }
+
+                        /* Hide Trust Signals Section */
+                        #trust-signals { display: none !important; }
+
+                        /* Hide Hero CTA Buttons (Teklif Al, Ara buttons) */
+                        #hero-section .flex.flex-col.sm\:flex-row { display: none !important; }
+                        #hero-section a[href="#contact"] { display: none !important; }
+                        #hero-section a[href^="tel:"] { display: none !important; }
+
+                        /* Hide AI Chat Section */
+                        section.py-16.bg-white { display: none !important; }
+                        .inline-flex.items-center.gap-2.bg-white\/20 { display: none !important; }
+
+                        /* Hide floating widgets */
+                        .fixed { display: none !important; }
+                        .sticky { position: relative !important; }
+
+                        /* FAQ - Always Open (Disable Alpine.js accordion) */
+                        #faq [x-show] {
+                            display: block !important;
+                            opacity: 1 !important;
+                            max-height: none !important;
+                        }
+                        #faq .fa-chevron-down { display: none !important; }
+
+                        /* Industries - Force 3x3 Grid */
+                        #industries .grid {
+                            grid-template-columns: repeat(3, 1fr) !important;
+                        }
+
+                        /* Variants - Hide ALL Links & Buttons */
+                        #variants a {
+                            pointer-events: none !important;
+                            text-decoration: none !important;
+                            color: inherit !important;
+                        }
+                        #variants .text-sm.font-semibold { display: none !important; }
+                        #variants .mt-4.pt-4.border-t { display: none !important; }
+                        #variants .fa-arrow-right { display: none !important; }
+                        #variants .fa-chevron-right { display: none !important; }
+
+                        /* Disable All Links (No pointer events, no underline) */
+                        a {
+                            pointer-events: none !important;
+                            text-decoration: none !important;
+                            cursor: default !important;
+                        }
+
+                        /* ========================================
+                           PAGE BREAK FIXES
+                           Prevent sections from breaking across pages
+                           ======================================== */
+
+                        /* Prevent all sections from breaking */
+                        section {
+                            page-break-inside: avoid !important;
+                            break-inside: avoid !important;
+                        }
+
+                        /* Specific section IDs */
+                        #gallery, #description, #primary-specs, #features, #variants,
+                        #competitive, #technical, #accessories, #usecases, #industries,
+                        #certifications, #warranty, #faq {
+                            page-break-inside: avoid !important;
+                            break-inside: avoid !important;
+                        }
+
+                        /* Keep section headers with content */
+                        header {
+                            page-break-after: avoid !important;
+                            break-after: avoid !important;
+                        }
+
+                        /* Prevent orphan items in grids/lists */
+                        .grid > *, .space-y-4 > *, .space-y-6 > *, .space-y-8 > * {
+                            page-break-inside: avoid !important;
+                            break-inside: avoid !important;
+                        }
+
+                        /* Optimize for print */
+                        body { background: white !important; }
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                    '
+                ]))
+                ->save($pdfPath);
+
+            return response()->download($pdfPath, $filename, [
+                'Content-Type' => 'application/pdf',
+            ])->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            \Log::error('Browsershot PDF generation failed', [
+                'error' => $e->getMessage(),
+                'product_id' => $product->product_id,
+                'url' => $productUrl,
+            ]);
+
+            abort(500, 'PDF oluşturulurken bir hata oluştu: ' . $e->getMessage());
+        }
     }
 }

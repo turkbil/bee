@@ -1029,6 +1029,15 @@
                                         <i class="fa-brands fa-whatsapp"></i>WhatsApp
                                     </a>
                                 </div>
+
+                                {{-- PDF İndir Butonu --}}
+                                @php
+                                    $pdfSlug = $item->getTranslated('slug', $currentLocale);
+                                @endphp
+                                <a href="{{ route('shop.pdf', ['slug' => $pdfSlug]) }}" target="_blank"
+                                    class="flex items-center justify-center gap-2 border-2 border-red-500 dark:border-red-600 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 text-sm font-medium py-3 rounded-lg hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20 dark:hover:text-red-300 hover:border-red-600 dark:hover:border-red-500 transition-all">
+                                    <i class="fa-solid fa-file-pdf"></i>PDF İndir
+                                </a>
                             </div>
                         </div>
                     </div>

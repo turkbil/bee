@@ -47,6 +47,9 @@ Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
         Route::get('/product/{id}', [ShopController::class, 'showById'])->name('shop.show.by-id')->where('id', '[0-9]+');
         Route::get('/category-by-id/{id}', [ShopController::class, 'categoryById'])->name('shop.category.by-id')->where('id', '[0-9]+');
 
+        // PDF Export - routes/web.php'de tanımlı (dinamik route'lardan önce)
+        // Route::get('/pdf/{slug}', [ShopController::class, 'exportPdf'])->name('shop.pdf');
+
         // Shop Product Detail - WILDCARD (en sonda olmalı!)
         Route::get('/{slug}', [ShopController::class, 'show'])->name('shop.show');
     });

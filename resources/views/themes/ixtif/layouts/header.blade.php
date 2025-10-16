@@ -364,7 +364,7 @@
         </div>
 
         {{-- Main Menu Bar --}}
-        <nav class="bg-white dark:bg-gray-800 shadow-lg relative z-50 transition-colors duration-300 sticky top-0">
+        <nav class="bg-white dark:bg-gray-800 shadow-lg relative transition-colors duration-300 sticky top-0" style="z-index: 100;">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between py-4">
                     {{-- Logo --}}
@@ -535,8 +535,9 @@
                     {{-- Right Actions --}}
                     <div class="flex items-center gap-2">
                         <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
-                                class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                                class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 transition">
+                            <i class="fa-solid text-lg transition-all duration-200"
+                               :class="searchOpen ? 'fa-search-minus' : 'fa-search-plus'"></i>
                         </button>
 
                         {{-- Dark/Light Mode Toggle --}}
@@ -560,8 +561,11 @@
                         </button>
                     </div>
                 </div>
+            </div>
 
-                {{-- Search Bar (Absolute - doesn't push content down) --}}
+            {{-- Dropdown Wrapper - Contains both search and mega menu stacked --}}
+            <div class="absolute left-0 right-0 top-full" style="z-index: 150;">
+                {{-- Search Bar --}}
                 <div x-show="searchOpen"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 -translate-y-2"
@@ -569,8 +573,7 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="absolute left-0 right-0 top-full bg-white dark:bg-gray-800 shadow-lg border-t border-gray-100 dark:border-gray-700"
-                     style="z-index: 45;"
+                     class="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700"
                      x-cloak>
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                         <div class="relative">
@@ -585,7 +588,7 @@
                     </div>
                 </div>
 
-                {{-- Mega Menu Dropdown --}}
+                {{-- Mega Menu Dropdown - Always below search if both open --}}
                 <div x-show="activeMegaMenu !== null"
                      @mouseleave="activeMegaMenu = null"
                      x-transition:enter="transition ease-out duration-300"
@@ -594,9 +597,7 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     style="transform-origin: top center;"
-                     class="absolute left-0 right-0 bg-white dark:bg-gray-800 shadow-2xl border-t border-gray-100 dark:border-gray-700 transition-[top] duration-200 z-30"
-                     :class="searchOpen ? 'top-[calc(100%_+_100px)]' : 'top-full'"
+                     class="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700"
                      x-cloak>
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İXTİF - PDF Son Sayfa (Minimal)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white min-h-screen flex items-center justify-center p-16">
+
+    <div class="max-w-4xl w-full space-y-16">
+
+        <!-- Logo -->
+        <div class="text-center space-y-3">
+            <h1 class="text-6xl font-black text-slate-900">İXTİF</h1>
+            <div class="h-1 w-24 bg-blue-600 mx-auto"></div>
+            <p class="text-xl text-slate-600 font-medium">Türkiye'nin İstif Pazarı</p>
+        </div>
+
+        <!-- Contact Info - Simple List -->
+        <div class="grid md:grid-cols-2 gap-12">
+            <div class="space-y-6">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">İletişim Bilgileri</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-sm text-slate-500 font-medium mb-1">Telefon</div>
+                        <div class="text-2xl font-bold text-slate-900">0216 755 3 555</div>
+                    </div>
+
+                    <div>
+                        <div class="text-sm text-slate-500 font-medium mb-1">WhatsApp</div>
+                        <div class="text-2xl font-bold text-slate-900">0501 005 67 58</div>
+                    </div>
+
+                    <div>
+                        <div class="text-sm text-slate-500 font-medium mb-1">E-posta</div>
+                        <div class="text-xl font-bold text-blue-600">info@ixtif.com</div>
+                    </div>
+
+                    <div>
+                        <div class="text-sm text-slate-500 font-medium mb-1">Web Sitesi</div>
+                        <div class="text-xl font-bold text-blue-600">ixtif.com</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">Hizmetlerimiz</h2>
+
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-slate-700 font-medium">Sıfır Forklift & İstif Makineleri</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-slate-700 font-medium">İkinci El Ekipmanlar</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-slate-700 font-medium">Kiralama Hizmetleri</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-slate-700 font-medium">Yedek Parça Satışı</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span class="text-slate-700 font-medium">Teknik Servis & Bakım</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Separator -->
+        <div class="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+
+        <!-- Footer Info -->
+        <div class="text-center space-y-3">
+            <p class="text-slate-600">
+                Bu katalog <span class="font-semibold text-slate-900">{{TARİH}}</span> tarihinde oluşturulmuştur.
+            </p>
+            <p class="text-sm text-slate-500">
+                Güncel fiyatlar ve detaylı bilgi için bizimle iletişime geçiniz.
+            </p>
+            <div class="pt-6 border-t border-slate-200">
+                <p class="text-xs text-slate-400">
+                    © 2025 İXTİF - Türkiye'nin İstif Pazarı | Tüm hakları saklıdır.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

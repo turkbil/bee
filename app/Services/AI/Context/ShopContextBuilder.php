@@ -6,6 +6,7 @@ use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Http\Controllers\Front\ShopController;
 use Illuminate\Support\Facades\Cache;
+use App\Services\AI\ProductSearchService;
 
 /**
  * Shop Context Builder
@@ -62,6 +63,34 @@ class ShopContextBuilder
             'products' => $products->map(fn($p) => $this->formatProduct($p))->toArray(),
             'product_count' => $category->products()->where('is_active', true)->count(),
         ];
+    }
+
+    /**
+     * 🆕 NEW: Smart product context using intelligent search
+     * Uses ProductSearchService for 3-layer search
+     */
+    public function buildSmartProductContext(string $userMessage): array
+    {
+        $searchService = new ProductSearchService();
+        $searchResults = $searchService->searchProducts($userMessage);
+
+        if (!empty($searchResults['products'])) {
+            \Log::info('✅ Smart Product Search: Found relevant products', [
+                'count' => $searchResults['count'],
+                'search_layer' => $searchResults['search_layer']
+            ]);
+
+            return [
+                'relevant_products' => $searchResults['products'],
+                'search_method' => $searchResults['search_layer'],
+                'total_found' => $searchResults['count'],
+                'user_sentiment' => $searchService->detectUserSentiment($userMessage),
+            ];
+        }
+
+        // Fallback: Get general featured products if no specific search
+        \Log::info('⚠️ Smart Product Search: No relevant products, using general context');
+        return $this->buildGeneralShopContext();
     }
 
     /**

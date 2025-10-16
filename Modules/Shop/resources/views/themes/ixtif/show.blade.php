@@ -287,10 +287,14 @@
             </div>
         </section>
 
-        {{-- 📑 TABLE OF CONTENTS --}}
-        <div id="toc-bar"
-            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky z-50 transition-transform duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        {{-- 📑 TABLE OF CONTENTS - Fixed below header --}}
+        <div id="toc-bar" x-data="{ scrolled: false }"
+            @scroll.window="scrolled = window.pageYOffset > 50"
+            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed left-0 right-0 transition-all duration-300"
+            :class="scrolled ? 'top-14 z-40' : 'top-[120px] z-40'"
+            style="z-index: 40;">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300"
+                 :class="scrolled ? 'py-1.5' : 'py-2'">
                 <div class="flex items-center">
                     <div
                         class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
@@ -377,7 +381,7 @@
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style="padding-top: 80px;">
             <div class="grid lg:grid-cols-3 gap-8 items-start">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div class="lg:col-span-2 min-h-screen">

@@ -244,6 +244,7 @@ function aiChatWidget(config) {
         remainingRequests: null,
         creditsRemaining: null,
         unreadCount: 0,
+        sessionId: null, // ✅ For conversation continuity
         
         // Computed
         get statusText() {
@@ -301,15 +302,22 @@ function aiChatWidget(config) {
             this.scrollToBottom();
             
             try {
-                const endpoint = this.isAuthenticated ? '/chat/user' : '/chat';
+                // ✅ FIX: Use shop-assistant/chat for Smart Product Search integration
+                const endpoint = '/shop-assistant/chat';
                 const payload = {
                     message: message,
+                    session_id: this.sessionId || `session-${Date.now()}`,
                     feature: feature || null,
                     context: {
                         widget_version: '2.0',
                         timestamp: Date.now()
                     }
                 };
+
+                // Store session ID for conversation continuity
+                if (!this.sessionId) {
+                    this.sessionId = payload.session_id;
+                }
                 
                 const response = await fetch(`${this.apiBaseUrl}${endpoint}`, {
                     method: 'POST',

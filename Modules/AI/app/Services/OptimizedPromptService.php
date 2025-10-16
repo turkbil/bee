@@ -19,6 +19,23 @@ class OptimizedPromptService
 
         $prompts[] = "# AI ASISTAN KURALLARI";
         $prompts[] = "";
+        $prompts[] = "## 🎯 EN ÖNEMLİ KURAL: ÜRÜN GÖSTER!";
+        $prompts[] = "**❌ ASLA YAPMA:**";
+        $prompts[] = "- Genel bilgi/açıklama verme";
+        $prompts[] = "- \"Transpalet nedir\" gibi eğitim metni yazma";
+        $prompts[] = "- \"İşte özellikler\" diyip liste sıralama";
+        $prompts[] = "";
+        $prompts[] = "**✅ MUTLAKA YAP:**";
+        $prompts[] = "- ÜRÜN ismi + LINK göster";
+        $prompts[] = "- Kısa giriş (1 cümle) + ÜRÜN LİSTESİ";
+        $prompts[] = "- Her ürün için: **Başlık** [LINK:shop:slug] + özellikler";
+        $prompts[] = "";
+        $prompts[] = "## ⚖️ KAPASİTE DÖNÜŞÜMÜ (KRİTİK!)";
+        $prompts[] = "**1 ton = 1000 kg (bin kilo!):**";
+        $prompts[] = "- 2 ton = 2000 kg ✅";
+        $prompts[] = "- 200 kg = 0.2 ton ✅";
+        $prompts[] = "- ❌ ASLA \"200 kg = 2 ton\" DEME!";
+        $prompts[] = "";
         $prompts[] = "## ROL";
         $prompts[] = "- Profesyonel satış danışmanı";
         $prompts[] = "- Sadece şirket ürünleri hakkında konuş";
@@ -75,7 +92,18 @@ class OptimizedPromptService
             $prompts[] = "";
 
             if ($detectedCategory) {
-                $prompts[] = "**SADECE '{$detectedCategory['category_name']}' kategorisinden ürünler:**";
+                $prompts[] = "**⚠️ KRİTİK: Kullanıcı '{$detectedCategory['category_name']}' kategorisinden ürün istedi!**";
+                $prompts[] = "**MUTLAKA ÜRÜN LİSTESİ GÖSTER! Genel bilgi verme!**";
+                $prompts[] = "";
+                $prompts[] = "**ZORUNLU FORMAT:**";
+                $prompts[] = "1. Kısa giriş (1 cümle)";
+                $prompts[] = "2. Ürün listesi (her ürün için başlık + link + özellikler)";
+                $prompts[] = "3. Yardım teklifi";
+                $prompts[] = "";
+                $prompts[] = "**❌ YAPMA:** Genel açıklama, özellik anlatımı, eğitim metni";
+                $prompts[] = "**✅ YAP:** Direkt ürün listesi göster";
+                $prompts[] = "";
+                $prompts[] = "**SADECE bu {$detectedCategory['category_name']} ürünlerini göster:**";
             } else {
                 $prompts[] = "**SADECE bu ürünleri öner (başka ürün arama!):**";
             }
@@ -84,6 +112,10 @@ class OptimizedPromptService
             foreach ($smartSearchResults['products'] as $product) {
                 $prompts[] = self::formatProductForPrompt($product);
             }
+
+            $prompts[] = "";
+            $prompts[] = "⚠️ **TEKRAR:** Yukarıdaki ürün listesini MUTLAKA göster! Genel bilgi değil, SPESİFİK ÜRÜNLER!";
+            $prompts[] = "";
         } else {
             // No products found - NEVER say "product not found"!
             $prompts[] = "## 📦 ÜRÜN BULUNAMADI - ÖZEL YANIT";
@@ -196,7 +228,20 @@ class OptimizedPromptService
     {
         $lines = [];
 
-        $lines[] = "**{$product['title']}** [LINK:shop:{$product['slug']}]";
+        // Handle multi-language title (JSON)
+        $title = $product['title'];
+        if (is_array($title)) {
+            // Get Turkish title or first available
+            $title = $title['tr'] ?? $title['en'] ?? reset($title) ?? 'Product';
+        }
+
+        // Handle slug (should be string, but check anyway)
+        $slug = $product['slug'];
+        if (is_array($slug)) {
+            $slug = $slug['tr'] ?? $slug['en'] ?? reset($slug) ?? 'product';
+        }
+
+        $lines[] = "**{$title}** [LINK:shop:{$slug}]";
 
         if (!empty($product['sku'])) {
             $lines[] = "  - SKU: {$product['sku']}";
@@ -299,13 +344,6 @@ class OptimizedPromptService
         $prompts[] = "**Kullanıcı:** '2 ton transpalet + 3 ton forklift'";
         $prompts[] = "→ Her ikisini de ayrı ayrı göster";
         $prompts[] = "→ Toplu alım indirimi için iletişim bilgisi ver";
-        $prompts[] = "";
-
-        // Capacity conversion
-        $prompts[] = "### KAPASİTE DÖNÜŞÜMÜ";
-        $prompts[] = "**ÖNEMLİ:** 1 ton = 1000 kg";
-        $prompts[] = "- '2 ton' → 2000 kg";
-        $prompts[] = "- '200 kg' → 200 kg (2 ton DEĞİL!)";
         $prompts[] = "";
 
         // Budget request

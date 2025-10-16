@@ -519,7 +519,7 @@ class ShopController extends Controller
     }
 
     /**
-     * Export product info as PDF using Browsershot (renders actual web page)
+     * Export product info as PDF with first/last pages using Browsershot
      */
     public function exportPdf(string $slug)
     {
@@ -539,13 +539,10 @@ class ShopController extends Controller
         }
 
         $title = $product->getTranslated('title', $locale);
-
-        // Build product URL
         $productUrl = self::resolveProductUrl($product, $locale);
-
-        // Generate filename
         $filename = \Str::slug($title) . '-urun-katalogu.pdf';
         $pdfPath = storage_path('app/temp/' . $filename);
+        $htmlPath = storage_path('app/temp/' . \Str::slug($title) . '-combined.html');
 
         // Ensure temp directory exists
         if (!file_exists(storage_path('app/temp'))) {
@@ -553,140 +550,191 @@ class ShopController extends Controller
         }
 
         try {
-            // Use Browsershot to render the actual web page as PDF
-            Browsershot::url($productUrl)
+            // Get current date in Turkish
+            $catalogDate = now()->locale('tr')->isoFormat('D MMMM YYYY');
+
+            // Logo URL - Use tenant storage or public fallback
+            $logoPath = storage_path('app/public/settings/ixtif-logo-white.png');
+            if (file_exists($logoPath)) {
+                $logoUrl = url('/storage/settings/ixtif-logo-white.png');
+            } else {
+                $logoUrl = url('/ixtif-designs/assets/logos/ixtif-logo-white.png');
+            }
+
+            // Product image URL
+            $productImage = null;
+            if ($product->hasMedia('featured_image')) {
+                $productImage = $product->getFirstMediaUrl('featured_image');
+            }
+
+            // Render first page
+            $firstPageHtml = view('shop::themes.ixtif.pdf.first-page', [
+                'productTitle' => $title,
+                'logoUrl' => $logoUrl,
+                'catalogDate' => $catalogDate,
+                'productImage' => $productImage,
+            ])->render();
+
+            // Fetch product content page via HTTP (with SSL verification disabled for local dev)
+            $context = stream_context_create([
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ],
+            ]);
+            $productPageHtml = file_get_contents($productUrl, false, $context);
+
+            // Render last page
+            $lastPageHtml = view('shop::themes.ixtif.pdf.last-page', [
+                'logoUrl' => $logoUrl,
+                'catalogDate' => $catalogDate,
+            ])->render();
+
+            // CSS to inject for product page cleanup
+            $productPageCss = '
+                /* Hide right sidebar */
+                #sticky-sidebar { display: none !important; }
+                .lg\:col-span-1 { display: none !important; }
+
+                /* Make left content full width */
+                .lg\:col-span-2 {
+                    grid-column: span 3 / span 3 !important;
+                    max-width: 100% !important;
+                }
+
+                /* Hide header, navigation, TOC bar, footer */
+                header, nav, footer, #toc-bar { display: none !important; }
+
+                /* Hide Contact Form & Trust Signals */
+                #contact, #trust-signals { display: none !important; }
+
+                /* Hide Hero CTA Buttons */
+                #hero-section .flex.flex-col.sm\:flex-row { display: none !important; }
+                #hero-section a[href="#contact"] { display: none !important; }
+                #hero-section a[href^="tel:"] { display: none !important; }
+
+                /* Hide AI Chat & floating widgets */
+                section.py-16.bg-white { display: none !important; }
+                .fixed { display: none !important; }
+                .sticky { position: relative !important; }
+
+                /* FAQ - Always Open */
+                #faq [x-show] {
+                    display: block !important;
+                    opacity: 1 !important;
+                    max-height: none !important;
+                }
+
+                /* Disable All Links */
+                a {
+                    pointer-events: none !important;
+                    text-decoration: none !important;
+                }
+
+                /* Page Break Prevention */
+                section {
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                }
+            ';
+
+            // Inject CSS into product page HTML
+            $productPageHtml = str_replace(
+                '</head>',
+                '<style>' . $productPageCss . '</style></head>',
+                $productPageHtml
+            );
+
+            // Extract body content from product page (remove <html>, <head>, <body> tags)
+            preg_match('/<body[^>]*>(.*?)<\/body>/is', $productPageHtml, $bodyMatches);
+            $productBodyContent = $bodyMatches[1] ?? $productPageHtml;
+
+            // Combine all 3 sections with page breaks
+            $combinedHtml = <<<HTML
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$title} - İXTİF Ürün Kataloğu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .page-break {
+            page-break-after: always !important;
+            break-after: always !important;
+        }
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    </style>
+</head>
+<body>
+
+<!-- FIRST PAGE -->
+<div class="page-break">
+HTML;
+
+            // Add first page body content (extract from first page HTML)
+            preg_match('/<body[^>]*>(.*?)<\/body>/is', $firstPageHtml, $firstPageMatches);
+            $combinedHtml .= $firstPageMatches[1] ?? '';
+
+            $combinedHtml .= <<<HTML
+</div>
+
+<!-- PRODUCT CONTENT PAGE -->
+<div class="page-break">
+{$productBodyContent}
+</div>
+
+<!-- LAST PAGE -->
+<div>
+HTML;
+
+            // Add last page body content
+            preg_match('/<body[^>]*>(.*?)<\/body>/is', $lastPageHtml, $lastPageMatches);
+            $combinedHtml .= $lastPageMatches[1] ?? '';
+
+            $combinedHtml .= <<<HTML
+</div>
+
+</body>
+</html>
+HTML;
+
+            // Write combined HTML to temp file
+            file_put_contents($htmlPath, $combinedHtml);
+
+            // Generate PDF from combined HTML file using Browsershot
+            Browsershot::html($combinedHtml)
                 ->setNodeBinary('/opt/homebrew/bin/node')
                 ->setNpmBinary('/opt/homebrew/bin/npm')
-                ->addChromiumArguments([
-                    'no-sandbox',
-                    'disable-setuid-sandbox',
-                ])
+                ->addChromiumArguments(['no-sandbox', 'disable-setuid-sandbox'])
                 ->waitUntilNetworkIdle()
                 ->showBackground()
-                ->format('A4')            // Standard A4 paper size
-                ->margins(10, 10, 10, 10) // 10mm margins for print-friendly
-                ->windowSize(1200, 1600)  // Modern viewport width (not too narrow)
-                ->pages('1-100')          // Capture all pages
-                // Hide sidebar and make content full width with custom CSS
-                ->setOption('addStyleTag', json_encode([
-                    'content' => '
-                        /* ========================================
-                           PDF EXPORT - CUSTOM CSS RULES
-                           ======================================== */
-
-                        /* Hide right sidebar */
-                        #sticky-sidebar { display: none !important; }
-                        .lg\:col-span-1 { display: none !important; }
-
-                        /* Make left content full width */
-                        .lg\:col-span-2 {
-                            grid-column: span 3 / span 3 !important;
-                            max-width: 100% !important;
-                        }
-
-                        /* Hide header, navigation, TOC bar, footer */
-                        header, nav, footer, #toc-bar { display: none !important; }
-
-                        /* Hide Contact Form (#contact section) */
-                        #contact { display: none !important; }
-
-                        /* Hide Trust Signals Section */
-                        #trust-signals { display: none !important; }
-
-                        /* Hide Hero CTA Buttons (Teklif Al, Ara buttons) */
-                        #hero-section .flex.flex-col.sm\:flex-row { display: none !important; }
-                        #hero-section a[href="#contact"] { display: none !important; }
-                        #hero-section a[href^="tel:"] { display: none !important; }
-
-                        /* Hide AI Chat Section */
-                        section.py-16.bg-white { display: none !important; }
-                        .inline-flex.items-center.gap-2.bg-white\/20 { display: none !important; }
-
-                        /* Hide floating widgets */
-                        .fixed { display: none !important; }
-                        .sticky { position: relative !important; }
-
-                        /* FAQ - Always Open (Disable Alpine.js accordion) */
-                        #faq [x-show] {
-                            display: block !important;
-                            opacity: 1 !important;
-                            max-height: none !important;
-                        }
-                        #faq .fa-chevron-down { display: none !important; }
-
-                        /* Industries - Force 3x3 Grid */
-                        #industries .grid {
-                            grid-template-columns: repeat(3, 1fr) !important;
-                        }
-
-                        /* Variants - Hide ALL Links & Buttons */
-                        #variants a {
-                            pointer-events: none !important;
-                            text-decoration: none !important;
-                            color: inherit !important;
-                        }
-                        #variants .text-sm.font-semibold { display: none !important; }
-                        #variants .mt-4.pt-4.border-t { display: none !important; }
-                        #variants .fa-arrow-right { display: none !important; }
-                        #variants .fa-chevron-right { display: none !important; }
-
-                        /* Disable All Links (No pointer events, no underline) */
-                        a {
-                            pointer-events: none !important;
-                            text-decoration: none !important;
-                            cursor: default !important;
-                        }
-
-                        /* ========================================
-                           PAGE BREAK FIXES
-                           Prevent sections from breaking across pages
-                           ======================================== */
-
-                        /* Prevent all sections from breaking */
-                        section {
-                            page-break-inside: avoid !important;
-                            break-inside: avoid !important;
-                        }
-
-                        /* Specific section IDs */
-                        #gallery, #description, #primary-specs, #features, #variants,
-                        #competitive, #technical, #accessories, #usecases, #industries,
-                        #certifications, #warranty, #faq {
-                            page-break-inside: avoid !important;
-                            break-inside: avoid !important;
-                        }
-
-                        /* Keep section headers with content */
-                        header {
-                            page-break-after: avoid !important;
-                            break-after: avoid !important;
-                        }
-
-                        /* Prevent orphan items in grids/lists */
-                        .grid > *, .space-y-4 > *, .space-y-6 > *, .space-y-8 > * {
-                            page-break-inside: avoid !important;
-                            break-inside: avoid !important;
-                        }
-
-                        /* Optimize for print */
-                        body { background: white !important; }
-                        * {
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                        }
-                    '
-                ]))
+                ->format('A4')
+                ->margins(10, 10, 10, 10)
+                ->windowSize(1200, 1600)
                 ->save($pdfPath);
+
+            // Clean up temp HTML file
+            if (file_exists($htmlPath)) {
+                unlink($htmlPath);
+            }
 
             return response()->download($pdfPath, $filename, [
                 'Content-Type' => 'application/pdf',
             ])->deleteFileAfterSend(true);
 
         } catch (\Exception $e) {
-            \Log::error('Browsershot PDF generation failed', [
+            \Log::error('PDF generation failed', [
                 'error' => $e->getMessage(),
                 'product_id' => $product->product_id,
-                'url' => $productUrl,
+                'trace' => $e->getTraceAsString(),
             ]);
 
             abort(500, 'PDF oluşturulurken bir hata oluştu: ' . $e->getMessage());

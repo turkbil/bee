@@ -112,6 +112,7 @@ class InitializeTenancy extends BaseMiddleware
 
         // Central domainleri config'den kontrol et
         $centralDomains = config('tenancy.central_domains', []);
+
         if (in_array($host, $centralDomains)) {
             // Config'de tanımlı central domain ise tenancy başlatma
             return $next($request);

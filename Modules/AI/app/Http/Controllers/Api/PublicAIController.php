@@ -539,12 +539,6 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
-        \Log::info('🛍️ shopAssistantChat() BAŞLADI', [
-            'message' => $request->input('message'),
-            'tenant_id' => tenant('id'),
-            'timestamp' => now()->toIso8601String()
-        ]);
-
         try {
             // Validate input (Tenant context check için exists rule'ları kaldırıldı)
             $validated = $request->validate([
@@ -633,9 +627,9 @@ class PublicAIController extends Controller
             $optimizedPromptService = new \Modules\AI\App\Services\OptimizedPromptService();
             $enhancedSystemPrompt = $optimizedPromptService->getFullPrompt($aiContext, $conversationHistory);
 
-            // 🔍 DEBUG: Log enhanced prompt (ilk 2000 karakter)
+            // 🔍 DEBUG: Log enhanced prompt (ilk 5000 karakter - ürün listesini görmek için)
             \Log::info('🤖 AI Optimized Prompt Preview', [
-                'prompt_preview' => mb_substr($enhancedSystemPrompt, 0, 2000),
+                'prompt_preview' => mb_substr($enhancedSystemPrompt, 0, 5000),
                 'prompt_length' => strlen($enhancedSystemPrompt),
                 'old_prompt_length' => '~15000 characters (2000+ lines)',
                 'reduction_percentage' => '~75% smaller',

@@ -23,8 +23,36 @@ class ProductSearchService
 
     public function __construct()
     {
-        $this->tenantId = session('tenant_id', 1);
-        $this->locale = session('site_locale', 'tr');
+        // ✅ FIX: Get tenant_id from central tenants table via tenancy helper
+        $this->tenantId = tenant('id');
+
+        // ⚠️ CRITICAL: tenant() NULL ise exception fırlat - API route tenant middleware eksik!
+        if (!$this->tenantId) {
+            \Log::error('🚨 ProductSearchService: Tenant context missing!', [
+                'backtrace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)
+            ]);
+            throw new \Exception('Tenant context is required for ProductSearchService. Ensure InitializeTenancy middleware is applied to the route.');
+        }
+
+        // ✅ FIX: Get locale from tenant's tenant_languages table (is_default = 1)
+        try {
+            $defaultLanguage = \Modules\LanguageManagement\App\Models\TenantLanguage::where('is_default', 1)->first();
+            $this->locale = $defaultLanguage ? $defaultLanguage->code : 'tr';
+
+            \Log::info('🔧 ProductSearchService initialized', [
+                'tenant_id' => $this->tenantId,
+                'locale' => $this->locale,
+                'default_language' => $defaultLanguage ? $defaultLanguage->name : 'Turkish (fallback)'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('🚨 ProductSearchService: Failed to get default language', [
+                'tenant_id' => $this->tenantId,
+                'error' => $e->getMessage()
+            ]);
+
+            // Fallback to 'tr' if language table query fails
+            $this->locale = 'tr';
+        }
     }
 
     /**
@@ -53,7 +81,18 @@ class ProductSearchService
 
             // 🆕 CATEGORY-BASED SEARCH (If category detected)
             if ($detectedCategory) {
+                Log::info('🔍 Attempting category search', [
+                    'category_id' => $detectedCategory['category_id'],
+                    'category_name' => $detectedCategory['category_name']
+                ]);
+
                 $results = $this->searchByCategory($detectedCategory['category_id'], $keywords);
+
+                Log::info('📊 Category search results', [
+                    'results_count' => count($results),
+                    'is_empty' => empty($results)
+                ]);
+
                 if (!empty($results)) {
                     Log::info('✅ Category Search found products', [
                         'category' => $detectedCategory['category_name'],
@@ -72,14 +111,14 @@ class ProductSearchService
                 return $this->formatResults($results, 'exact', $detectedCategory);
             }
 
-            // Try Layer 2: Fuzzy Search
-            $results = $this->fuzzySearch($keywords, $detectedCategory);
-            if (!empty($results)) {
-                Log::info('✅ Layer 2 (Fuzzy Search) found products', [
-                    'count' => count($results)
-                ]);
-                return $this->formatResults($results, 'fuzzy', $detectedCategory);
-            }
+            // Try Layer 2: Fuzzy Search (DISABLED - causes array-to-string conversion issues)
+            // $results = $this->fuzzySearch($keywords, $detectedCategory);
+            // if (!empty($results)) {
+            //     Log::info('✅ Layer 2 (Fuzzy Search) found products', [
+            //         'count' => count($results)
+            //     ]);
+            //     return $this->formatResults($results, 'fuzzy', $detectedCategory);
+            // }
 
             // Try Layer 3: Phonetic Search
             $results = $this->phoneticSearch($keywords);
@@ -201,9 +240,14 @@ class ProductSearchService
                         ->first();
 
                     if ($category) {
+                        // Get title in current locale (handle JSON title)
+                        $title = is_array($category->title)
+                            ? ($category->title[$this->locale] ?? $category->title['tr'] ?? 'Unknown')
+                            : $category->title;
+
                         return [
                             'category_id' => $category->category_id,
-                            'category_name' => $category->title,
+                            'category_name' => $title,
                             'category_slug' => $category->slug,
                             'keyword_matched' => $keyword
                         ];
@@ -220,26 +264,43 @@ class ProductSearchService
      */
     protected function searchByCategory(int $categoryId, array $keywords = []): array
     {
+        // First get products WITHOUT keyword filtering
+        $baseQuery = ShopProduct::where('is_active', true)
+            ->where('category_id', $categoryId);
+
+        $totalInCategory = $baseQuery->count();
+        Log::info('🔎 searchByCategory debug', [
+            'category_id' => $categoryId,
+            'total_products_in_category' => $totalInCategory,
+            'keywords' => $keywords
+        ]);
+
+        // Now apply full filters
         $query = ShopProduct::where('is_active', true)
             ->where('category_id', $categoryId)
             ->select([
                 'product_id', 'sku', 'title', 'slug', 'short_description',
-                'category_id', 'base_price', 'price_on_request', 'custom_technical_specs'
+                'category_id', 'base_price', 'price_on_request'
             ])
             ->with('category:category_id,title,slug');
 
-        // If keywords provided, filter further
-        if (!empty($keywords)) {
-            $query->where(function($q) use ($keywords) {
-                foreach ($keywords as $keyword) {
-                    $q->orWhere('sku', 'LIKE', '%' . $keyword . '%')
-                      ->orWhere('title', 'LIKE', '%' . $keyword . '%')
-                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(custom_technical_specs, '$.model')) LIKE ?", ['%' . $keyword . '%']);
-                }
-            });
-        }
+        // If keywords provided, filter further (skip JSON for now)
+        // SKIP keyword filtering for category search - just return all products from category
+        // if (!empty($keywords)) {
+        //     $query->where(function($q) use ($keywords) {
+        //         foreach ($keywords as $keyword) {
+        //             $q->orWhere('sku', 'LIKE', '%' . $keyword . '%')
+        //               ->orWhere('title', 'LIKE', '%' . $keyword . '%');
+        //         }
+        //     });
+        // }
 
-        return $query->limit(10)->get()->toArray();
+        $results = $query->limit(10)->get()->toArray();
+        Log::info('🔎 searchByCategory results', [
+            'results_count' => count($results)
+        ]);
+
+        return $results;
     }
 
     /**
@@ -252,7 +313,7 @@ class ProductSearchService
         $query = ShopProduct::where('is_active', true)
             ->select([
                 'product_id', 'sku', 'title', 'slug', 'short_description',
-                'category_id', 'base_price', 'price_on_request', 'custom_technical_specs'
+                'category_id', 'base_price', 'price_on_request', 'technical_specs'
             ])
             ->with('category:category_id,title,slug');
 
@@ -266,8 +327,8 @@ class ProductSearchService
             foreach ($keywords as $keyword) {
                 $q->orWhere('sku', 'LIKE', '%' . $keyword . '%')
                   ->orWhere('title', 'LIKE', '%' . $keyword . '%')
-                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(custom_technical_specs, '$.model')) LIKE ?", ['%' . $keyword . '%'])
-                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(custom_technical_specs, '$.capacity')) LIKE ?", ['%' . $keyword . '%']);
+                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(technical_specs, '$.model')) LIKE ?", ['%' . $keyword . '%'])
+                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(technical_specs, '$.capacity')) LIKE ?", ['%' . $keyword . '%']);
             }
         });
 
@@ -291,7 +352,7 @@ class ProductSearchService
             $query = ShopProduct::where('is_active', true)
                 ->select([
                     'product_id', 'sku', 'title', 'slug', 'short_description',
-                    'category_id', 'base_price', 'price_on_request', 'custom_technical_specs'
+                    'category_id', 'base_price', 'price_on_request', 'technical_specs'
                 ])
                 ->with('category:category_id,title,slug');
 
@@ -307,9 +368,12 @@ class ProductSearchService
         $threshold = 2; // Max allowed Levenshtein distance
 
         foreach ($products as $product) {
-            // Build searchable text from SKU + title + model
-            $model = $product->custom_technical_specs['model'] ?? '';
-            $searchableText = $this->normalizeText($product->sku . ' ' . $product->title . ' ' . $model);
+            // Build searchable text from SKU + title + short_description (skip complex JSON)
+            $searchableText = $this->normalizeText(
+                $product->sku . ' ' .
+                $product->title . ' ' .
+                ($product->short_description ?? '')
+            );
 
             foreach ($keywords as $keyword) {
                 $normalizedKeyword = $this->normalizeText($keyword);

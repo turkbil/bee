@@ -213,7 +213,7 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 flex flex-col">
+<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 flex flex-col pt-[120px]">
 
     {{-- NEW MEGA MENU HEADER --}}
     <header x-data="{
@@ -222,11 +222,15 @@
         expandedCategory: null,
         activeMegaMenu: null,
         searchOpen: false,
-        activeCategory: 'first'
-    }">
+        activeCategory: 'first',
+        scrolled: false
+    }"
+    @scroll.window="scrolled = window.pageYOffset > 50"
+    class="fixed top-0 left-0 right-0 z-[100]">
 
-        {{-- Top Info Bar --}}
-        <div class="border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-colors duration-300">
+        {{-- Top Info Bar - Hidden when scrolled --}}
+        <div class="border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300"
+             :class="scrolled ? 'h-0 opacity-0 overflow-hidden' : 'h-auto opacity-100'">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between text-sm py-2">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
@@ -363,10 +367,11 @@
             </div>
         </div>
 
-        {{-- Main Menu Bar --}}
-        <nav class="bg-white dark:bg-gray-800 shadow-lg relative transition-colors duration-300 sticky top-0" style="z-index: 100;">
+        {{-- Main Menu Bar - Shrinks when scrolled --}}
+        <nav class="bg-white dark:bg-gray-800 shadow-lg relative transition-all duration-300">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between py-4">
+                <div class="flex items-center justify-between transition-all duration-300"
+                     :class="scrolled ? 'py-2' : 'py-4'">
                     {{-- Logo --}}
                     <div class="flex items-center gap-3">
                         <a href="{{ url('/') }}" class="flex items-center gap-3">
@@ -406,20 +411,26 @@
                                 {{-- Light mode logo --}}
                                 <img src="{{ $logoUrl }}"
                                      alt="{{ setting('site_name') ?? 'iXtif' }}"
-                                     class="h-12 sm:h-14 w-auto object-contain dark:hidden"
+                                     class="dark:hidden transition-all duration-300"
+                                     :class="scrolled ? 'h-8 sm:h-10 w-[180px]' : 'h-12 sm:h-14 w-[180px]'"
+                                     style="object-fit: contain;"
                                      onerror="console.error('Logo load failed:', this.src); this.style.display='none';">
 
                                 {{-- Dark mode logo --}}
                                 @if($logoDarkUrl)
                                     <img src="{{ $logoDarkUrl }}"
                                          alt="{{ setting('site_name') ?? 'iXtif' }}"
-                                         class="h-12 sm:h-14 w-auto object-contain hidden dark:block"
+                                         class="hidden dark:block transition-all duration-300"
+                                         :class="scrolled ? 'h-8 sm:h-10 w-[180px]' : 'h-12 sm:h-14 w-[180px]'"
+                                         style="object-fit: contain;"
                                          onerror="console.error('Dark logo load failed:', this.src); this.style.display='none';">
                                 @else
                                     {{-- Fallback: Light logo with filter in dark mode --}}
                                     <img src="{{ $logoUrl }}"
                                          alt="{{ setting('site_name') ?? 'iXtif' }}"
-                                         class="h-12 sm:h-14 w-auto object-contain hidden dark:block brightness-0 invert opacity-90"
+                                         class="hidden dark:block brightness-0 invert opacity-90 transition-all duration-300"
+                                         :class="scrolled ? 'h-8 sm:h-10 w-[180px]' : 'h-12 sm:h-14 w-[180px]'"
+                                         style="object-fit: contain;"
                                          onerror="console.error('Dark logo fallback failed:', this.src); this.style.display='none';">
                                 @endif
                             @else
@@ -464,13 +475,6 @@
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'istif-makinesi' }"></i>
                         </button>
-
-                        {{-- Otonom (Sadece Link - Mega Menu YOK) --}}
-                        <a href="{{ route('shop.index') }}?category=amr"
-                           class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition flex items-center gap-2">
-                            <i class="fa-solid fa-robot text-sm"></i>
-                            <span>Otonom</span>
-                        </a>
 
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <button @mouseenter="activeMegaMenu = 'all-categories'"
@@ -556,8 +560,9 @@
 
                         {{-- Mobile Menu Button --}}
                         <button @click="mobileMenuOpen = !mobileMenuOpen"
-                                class="lg:hidden w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 transition">
-                            <i class="fa-solid" :class="mobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+                                class="lg:hidden w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 flex items-center justify-center text-white shadow-md hover:shadow-lg transition-all duration-300">
+                            <i class="fa-solid text-lg transition-all duration-300"
+                               :class="mobileMenuOpen ? 'fa-times rotate-90' : 'fa-bars'"></i>
                         </button>
                     </div>
                 </div>
@@ -665,23 +670,82 @@
              class="lg:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mobile-nav-container">
             <div class="px-4 py-3 space-y-1 max-w-full overflow-x-hidden">
                 @php
-                    // Mobile için ana kategoriler
+                    // Mobile için ana kategoriler ve alt kategoriler
                     $mainCategories = [
-                        ['name' => 'Forklift', 'slug' => 'forklift', 'icon' => 'fa-solid fa-forklift'],
-                        ['name' => 'Transpalet', 'slug' => 'transpalet', 'icon' => 'fa-solid fa-dolly'],
-                        ['name' => 'İstif Makinesi', 'slug' => 'istif-makinesi', 'icon' => 'fa-solid fa-box-open-full'],
-                        ['name' => 'Otonom', 'slug' => 'amr', 'icon' => 'fa-solid fa-robot'],
+                        [
+                            'name' => 'Forklift',
+                            'slug' => 'forklift',
+                            'icon' => 'fa-solid fa-forklift',
+                            'subcategories' => [
+                                ['name' => 'Elektrikli Forklift', 'slug' => 'elektrikli-forklift'],
+                                ['name' => 'Dizel Forklift', 'slug' => 'dizel-forklift'],
+                                ['name' => 'LPG Forklift', 'slug' => 'lpg-forklift'],
+                                ['name' => 'Reach Truck', 'slug' => 'reach-truck'],
+                            ]
+                        ],
+                        [
+                            'name' => 'Transpalet',
+                            'slug' => 'transpalet',
+                            'icon' => 'fa-solid fa-dolly',
+                            'subcategories' => [
+                                ['name' => 'Manuel Transpalet', 'slug' => 'manuel-transpalet'],
+                                ['name' => 'Akülü Transpalet', 'slug' => 'akulu-transpalet'],
+                                ['name' => 'Makaslı Transpalet', 'slug' => 'makasli-transpalet'],
+                            ]
+                        ],
+                        [
+                            'name' => 'İstif Makinesi',
+                            'slug' => 'istif-makinesi',
+                            'icon' => 'fa-solid fa-box-open-full',
+                            'subcategories' => [
+                                ['name' => 'Yürüyen İstif', 'slug' => 'yuruyen-istif'],
+                                ['name' => 'Binekli İstif', 'slug' => 'binekli-istif'],
+                                ['name' => 'Geniş Ayaklı İstif', 'slug' => 'genis-ayakli-istif'],
+                            ]
+                        ],
                     ];
                 @endphp
 
-                {{-- Ana Kategoriler (Mobile) --}}
+                {{-- Ana Kategoriler (Mobile) - Accordion Style --}}
                 @foreach($mainCategories as $cat)
-                    <a href="{{ route('shop.index') }}?category={{ $cat['slug'] }}"
-                       @click="mobileMenuOpen = false"
-                       class="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2">
-                        <i class="{{ $cat['icon'] }} text-sm"></i>
-                        <span>{{ $cat['name'] }}</span>
-                    </a>
+                    <div x-data="{ categoryOpen: false }" class="space-y-1">
+                        {{-- Ana Kategori Başlığı --}}
+                        <div class="flex items-center gap-2">
+                            <button @click="categoryOpen = !categoryOpen"
+                                    class="flex-1 flex items-center justify-between px-3 py-2 rounded-md text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                <span class="flex items-center gap-2">
+                                    <i class="{{ $cat['icon'] }} text-sm"></i>
+                                    <span>{{ $cat['name'] }}</span>
+                                </span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
+                                   :class="{ 'rotate-180': categoryOpen }"></i>
+                            </button>
+                            {{-- Hepsini Gör Linki --}}
+                            <a href="{{ route('shop.index') }}?category={{ $cat['slug'] }}"
+                               @click="mobileMenuOpen = false"
+                               class="px-2 py-2 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition">
+                                Tümü
+                            </a>
+                        </div>
+
+                        {{-- Alt Kategoriler --}}
+                        <div x-show="categoryOpen"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 -translate-y-2"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-2"
+                             class="pl-8 space-y-1 bg-gray-50 dark:bg-gray-900/50 rounded-md py-1">
+                            @foreach($cat['subcategories'] as $sub)
+                                <a href="{{ route('shop.index') }}?category={{ $sub['slug'] }}"
+                                   @click="mobileMenuOpen = false"
+                                   class="block px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition">
+                                    {{ $sub['name'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
                 @endforeach
 
                 {{-- Tüm Kategoriler --}}

@@ -127,6 +127,8 @@ class ModuleContextOrchestrator
             'context' => $fullContext,
             'system_prompt' => $this->buildSystemPrompt(),
             'session_id' => $options['session_id'] ?? null,
+            'smart_search_results' => $options['smart_search_results'] ?? null, // 🆕 Smart Search results
+            'user_sentiment' => $options['user_sentiment'] ?? null, // 🆕 User sentiment
         ];
     }
 }

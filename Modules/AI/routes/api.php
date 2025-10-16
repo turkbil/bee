@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\AI\App\Http\Controllers\Api\PublicAIController;
+use App\Http\Middleware\InitializeTenancy;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,13 @@ use Modules\AI\App\Http\Controllers\Api\PublicAIController;
 | - Public chat widget support
 | - Feature-specific API endpoints
 |
+| ⚠️ TENANT CONTEXT: Tüm route'lar InitializeTenancy middleware kullanır
+|
 */
 
 Route::prefix('ai/v1')
     ->name('ai.api.v1.')
+    ->middleware([InitializeTenancy::class]) // ✅ FIX: Tenant context için middleware eklendi
     ->group(function () {
     
     // 📋 Public Information Endpoints (No authentication required)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İXTİF - PDF Son Sayfa (İletişim)</title>
+    <title>İXTİF - İletişim Bilgileri</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white min-h-screen flex items-center justify-center p-8">
@@ -12,7 +12,7 @@
 
         <!-- Header -->
         <div class="text-center space-y-4">
-            <img src="../assets/logos/ixtif-logo-white.png" alt="İXTİF Logo" class="h-24 mx-auto">
+            <img src="{{ $logoUrl }}" alt="İXTİF Logo" class="h-24 mx-auto">
             <p class="text-2xl text-blue-300 font-semibold">Türkiye'nin İstif Pazarı</p>
             <div class="h-1 w-48 bg-gradient-to-r from-transparent via-blue-400 to-transparent mx-auto"></div>
         </div>
@@ -117,7 +117,7 @@
         <!-- Footer -->
         <div class="text-center space-y-4 border-t border-white/10 pt-8">
             <p class="text-blue-200">
-                Bu katalog {{TARİH}} tarihinde oluşturulmuştur.
+                Bu katalog {{ $catalogDate }} tarihinde oluşturulmuştur.
             </p>
             <p class="text-sm text-blue-300">
                 Güncel fiyatlar ve detaylı bilgi için lütfen bizimle iletişime geçiniz.

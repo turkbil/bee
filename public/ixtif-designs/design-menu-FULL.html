@@ -31,12 +31,8 @@
 <div class="scroll-container">
 
 <!-- MENU-001: Classic Dropdown Mega Menu -->
-<section id="menu-001" class="bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col">
-    <nav x-data="{
-        megaOpen: false,
-        activeTab: 'electronics',
-        mobileOpen: false
-    }" class="bg-white shadow-lg relative z-50">
+<section id="menu-001" class="bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col" x-data="{ sidebarOpen: false, mobileMenuOpen: false, expandedCategory: null }">
+    <nav class="bg-white shadow-lg relative z-50">
         <!-- Top Bar -->
         <div class="border-b border-gray-100">
             <div class="container mx-auto px-4 md:px-6 py-2">
@@ -107,30 +103,29 @@
             <div x-show="megaOpen"
                  @mouseleave="megaOpen = false"
                  x-transition
-                 class="absolute left-0 right-0 top-full bg-white shadow-2xl border-t"
-                 style="display: none;">
+                 class="absolute left-0 right-0 top-full bg-white shadow-2xl border-t">
                 <div class="container mx-auto px-6 py-8">
                     <div class="grid grid-cols-12 gap-8">
                         <div class="col-span-3">
                             <h3 class="font-bold text-lg mb-4">Kategoriler</h3>
                             <div class="space-y-1">
                                 <button @mouseenter="activeTab = 'electronics'" :class="activeTab === 'electronics' ? 'bg-blue-50 text-blue-600' : ''" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 transition flex items-center gap-3">
-                                    <i class="fa-solid fa-laptop text-xl"></i>
-                                    <span class="font-semibold">Elektronik</span>
+                                    <i class="fa-solid fa-warehouse text-xl"></i>
+                                    <span class="font-semibold">Forklift</span>
                                 </button>
                                 <button @mouseenter="activeTab = 'furniture'" :class="activeTab === 'furniture' ? 'bg-blue-50 text-blue-600' : ''" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 transition flex items-center gap-3">
-                                    <i class="fa-solid fa-couch text-xl"></i>
-                                    <span class="font-semibold">Mobilya</span>
+                                    <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                                    <span class="font-semibold">İstif Makinesi</span>
                                 </button>
                                 <button @mouseenter="activeTab = 'textile'" :class="activeTab === 'textile' ? 'bg-blue-50 text-blue-600' : ''" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 transition flex items-center gap-3">
-                                    <i class="fa-solid fa-shirt text-xl"></i>
-                                    <span class="font-semibold">Tekstil</span>
+                                    <i class="fa-solid fa-dolly text-xl"></i>
+                                    <span class="font-semibold">Transpalet</span>
                                 </button>
                             </div>
                         </div>
                         <div class="col-span-9">
                             <div x-show="activeTab === 'electronics'" x-transition>
-                                <h4 class="text-xl font-bold mb-6">Elektronik Ürünler</h4>
+                                <h4 class="text-xl font-bold mb-6">Forklift Ürünler</h4>
                                 <div class="grid grid-cols-4 gap-4">
                                     <a href="#" class="group p-4 rounded-xl hover:bg-blue-50 transition">
                                         <div class="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-100 transition">
@@ -141,7 +136,7 @@
                                     </a>
                                     <a href="#" class="group p-4 rounded-xl hover:bg-blue-50 transition">
                                         <div class="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-100 transition">
-                                            <i class="fa-solid fa-mobile text-5xl text-gray-400 group-hover:text-blue-600"></i>
+                                            <i class="fa-solid fa-truck-loading text-5xl text-gray-400 group-hover:text-blue-600"></i>
                                         </div>
                                         <h5 class="font-semibold">Telefon</h5>
                                         <p class="text-sm text-gray-500">320+ ürün</p>
@@ -157,8 +152,7 @@
         <!-- Mobile Menu -->
         <div x-show="mobileOpen"
              x-transition
-             class="lg:hidden border-t border-gray-100 bg-white"
-             style="display: none;">
+             class="lg:hidden border-t border-gray-100 bg-white">
             <div class="container mx-auto px-4 py-4">
                 <div class="space-y-2">
                     <a href="#" class="block px-4 py-3 rounded-lg hover:bg-gray-100 font-semibold">Kategoriler</a>

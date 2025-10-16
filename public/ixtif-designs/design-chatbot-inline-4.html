@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Inline Tasarımları - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+
+        @keyframes typing {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        .typing-dot { animation: typing 1.4s infinite; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        4 / 6
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-chatbot-inline-3.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-chatbot-inline-5.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="chatbot-inline-004" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 p-8">
+    <div class="w-full max-w-5xl">
+        <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-INLINE-004
+        </span>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden p-8">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-headset text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900">Sipariş Takip Asistanı</h3>
+                    <p class="text-gray-500">Siparişiniz her adımda bizimle</p>
+                </div>
+            </div>
+
+            <!-- Timeline Chat -->
+            <div class="relative">
+                <!-- Vertical Line -->
+                <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-green-500 to-emerald-600"></div>
+
+                <div class="space-y-8">
+                    <!-- Step 1 -->
+                    <div class="flex gap-6">
+                        <div class="relative z-10 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl">
+                            <i class="fa-solid fa-check text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-green-50 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-900">Sipariş Alındı</h5>
+                                <span class="text-sm text-gray-500">15:23</span>
+                            </div>
+                            <p class="text-gray-600 mb-3">Siparişiniz #IXT-2024-45891 başarıyla oluşturuldu!</p>
+                            <div class="bg-white rounded-xl p-4">
+                                <div class="text-sm text-gray-500 mb-2">Sipariş Detayı:</div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-warehouse text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">ASUS Laptop</div>
+                                        <div class="text-sm text-gray-500">1 Adet • ₺15.999</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex gap-6">
+                        <div class="relative z-10 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl">
+                            <i class="fa-solid fa-box text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-green-50 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-900">Paketlendi</h5>
+                                <span class="text-sm text-gray-500">16:45</span>
+                            </div>
+                            <p class="text-gray-600">Ürününüz özenle paketlendi ve kargoya hazır hale getirildi.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 - Active -->
+                    <div class="flex gap-6">
+                        <div class="relative z-10 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl animate-pulse">
+                            <i class="fa-solid fa-truck-fast text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-400 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-900">Kargoda</h5>
+                                <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                    <i class="fa-solid fa-spinner fa-spin mr-1"></i>Aktif
+                                </span>
+                            </div>
+                            <p class="text-gray-700 mb-4">Ürününüz kargo firmasına teslim edildi. Tahmini teslimat: <strong>Yarın 18:00'a kadar</strong></p>
+                            <div class="bg-white rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-gray-700">Kargo Takip No:</span>
+                                    <button class="text-sm text-green-600 hover:text-green-700 font-semibold">
+                                        <i class="fa-solid fa-copy mr-1"></i>Kopyala
+                                    </button>
+                                </div>
+                                <div class="font-mono text-lg font-bold text-gray-900">PT-2024-789456123</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 - Pending -->
+                    <div class="flex gap-6 opacity-50">
+                        <div class="relative z-10 w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-house text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-gray-100 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-700">Teslim Edildi</h5>
+                                <span class="text-sm text-gray-400">Bekleniyor...</span>
+                            </div>
+                            <p class="text-gray-500">Ürününüz adresinize teslim edilecek.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 mt-8">
+                <button class="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-xl transition-all">
+                    <i class="fa-solid fa-phone mr-2"></i>Kargo Firmasını Ara
+                </button>
+                <button class="flex-1 bg-green-50 text-green-600 px-6 py-4 rounded-xl font-bold hover:bg-green-100 transition-all">
+                    <i class="fa-solid fa-message mr-2"></i>Destek Talebi Oluştur
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

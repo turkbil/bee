@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kampanya Tasarımları - ixtif.com</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-scale {
+            animation: pulse-scale 2s ease-in-out infinite;
+        }
+
+        @keyframes slide-up {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .slide-up {
+            animation: slide-up 0.6s ease-out;
+        }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        3 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-promotions-2.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-promotions-4.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10" x-data="{ activeTab: 'electronics' }">
+                <div class="text-center mb-12">
+                    <div class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full font-black text-sm mb-6">
+                        KATEGORİ KAMPANYALARI
+                    </div>
+                    <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">
+                        Kategoriye Özel Fırsatlar
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        Her kategoride farklı indirimler ve özel teklifler
+                    </p>
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <button @click="activeTab = 'electronics'" :class="activeTab === 'electronics' ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-2xl scale-110' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-8 py-4 rounded-full font-bold transition-all duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-warehouse text-xl"></i>
+                        <span>Forklift</span>
+                    </button>
+                    <button @click="activeTab = 'furniture'" :class="activeTab === 'furniture' ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-2xl scale-110' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-8 py-4 rounded-full font-bold transition-all duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                        <span>İstif Makinesi</span>
+                    </button>
+                    <button @click="activeTab = 'textile'" :class="activeTab === 'textile' ? 'bg-gradient-to-r from-pink-600 to-pink-700 text-white shadow-2xl scale-110' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-8 py-4 rounded-full font-bold transition-all duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-dolly text-xl"></i>
+                        <span>Transpalet</span>
+                    </button>
+                    <button @click="activeTab = 'tools'" :class="activeTab === 'tools' ? 'bg-gradient-to-r from-orange-600 to-orange-700 text-white shadow-2xl scale-110' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-8 py-4 rounded-full font-bold transition-all duration-300 flex items-center gap-2">
+                        <i class="fa-solid fa-gears text-xl"></i>
+                        <span>Yedek Parça</span>
+                    </button>
+                </div>
+
+                <!-- Content -->
+                <div class="max-w-4xl mx-auto">
+                    <!-- Electronics -->
+                    <div x-show="activeTab === 'electronics'" x-transition class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-12">
+                        <div class="flex flex-col md:flex-row items-center gap-8">
+                            <div class="flex-1">
+                                <h3 class="text-4xl font-black text-gray-900 mb-4">Forklift Özel</h3>
+                                <p class="text-xl text-gray-700 mb-6">Laptop, telefon ve aksesuarlarda özel indirim</p>
+                                <ul class="space-y-3 mb-6">
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>128 ürün seçeneği</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>%30'a varan indirimler</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>Ücretsiz kargo</span>
+                                    </li>
+                                </ul>
+                                <button class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-all duration-300">
+                                    Fırsatları Gör
+                                </button>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-white rounded-3xl p-8 shadow-2xl text-center">
+                                    <div class="text-7xl font-black text-blue-600 mb-2">%30</div>
+                                    <div class="text-2xl font-bold text-gray-900">İndirim</div>
+                                    <div class="text-gray-600 mt-2">Tüm Laptop'larda</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Furniture -->
+                    <div x-show="activeTab === 'furniture'" x-transition class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-3xl p-12">
+                        <div class="flex flex-col md:flex-row items-center gap-8">
+                            <div class="flex-1">
+                                <h3 class="text-4xl font-black text-gray-900 mb-4">İstif Makinesi Özel</h3>
+                                <p class="text-xl text-gray-700 mb-6">Koltuk, masa ve dolaplarda özel kampanya</p>
+                                <ul class="space-y-3 mb-6">
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>106 ürün seçeneği</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>%25'e varan indirimler</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>Ücretsiz montaj</span>
+                                    </li>
+                                </ul>
+                                <button class="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-all duration-300">
+                                    Fırsatları Gör
+                                </button>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-white rounded-3xl p-8 shadow-2xl text-center">
+                                    <div class="text-7xl font-black text-amber-600 mb-2">%25</div>
+                                    <div class="text-2xl font-bold text-gray-900">İndirim</div>
+                                    <div class="text-gray-600 mt-2">Tüm Koltuk Takımlarında</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Textile -->
+                    <div x-show="activeTab === 'textile'" x-transition class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-3xl p-12">
+                        <div class="flex flex-col md:flex-row items-center gap-8">
+                            <div class="flex-1">
+                                <h3 class="text-4xl font-black text-gray-900 mb-4">Transpalet Özel</h3>
+                                <p class="text-xl text-gray-700 mb-6">Giyim ve ev tekstilinde özel fiyatlar</p>
+                                <ul class="space-y-3 mb-6">
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>69 ürün seçeneği</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>%35'e varan indirimler</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>3 al 2 öde kampanyası</span>
+                                    </li>
+                                </ul>
+                                <button class="bg-gradient-to-r from-pink-600 to-pink-700 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-all duration-300">
+                                    Fırsatları Gör
+                                </button>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-white rounded-3xl p-8 shadow-2xl text-center">
+                                    <div class="text-7xl font-black text-pink-600 mb-2">%35</div>
+                                    <div class="text-2xl font-bold text-gray-900">İndirim</div>
+                                    <div class="text-gray-600 mt-2">Tüm Transpalet Ürünlerinde</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools -->
+                    <div x-show="activeTab === 'tools'" x-transition class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-3xl p-12">
+                        <div class="flex flex-col md:flex-row items-center gap-8">
+                            <div class="flex-1">
+                                <h3 class="text-4xl font-black text-gray-900 mb-4">Yedek Parça Özel</h3>
+                                <p class="text-xl text-gray-700 mb-6">El aletleri ve ekipmanlarda kampanya</p>
+                                <ul class="space-y-3 mb-6">
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>146 ürün seçeneği</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>%20'ye varan indirimler</span>
+                                    </li>
+                                    <li class="flex items-center gap-3 text-gray-700">
+                                        <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                        <span>2 yıl garanti</span>
+                                    </li>
+                                </ul>
+                                <button class="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition-all duration-300">
+                                    Fırsatları Gör
+                                </button>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-white rounded-3xl p-8 shadow-2xl text-center">
+                                    <div class="text-7xl font-black text-orange-600 mb-2">%20</div>
+                                    <div class="text-2xl font-bold text-gray-900">İndirim</div>
+                                    <div class="text-gray-600 mt-2">Tüm El Aletlerinde</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                PROMOTIONS-003
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

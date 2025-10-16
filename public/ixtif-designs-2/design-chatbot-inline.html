@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Inline Tasarımları - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+
+        @keyframes typing {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        .typing-dot { animation: typing 1.4s infinite; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+<div class="fixed top-4 left-4 z-[9999]">
+    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="font-semibold text-sm">Ana Menü</span>
+    </a>
+</div>
+<div class="scroll-container">
+
+<!-- CHATBOT-INLINE-001: Classic Product Helper -->
+<section id="chatbot-inline-001" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50 p-8">
+    <div class="w-full max-w-6xl" x-data="{
+        messages: [
+            { type: 'bot', text: 'Merhaba! Ben ixtif.com asistanınız. Size nasıl yardımcı olabilirim? 😊', time: '14:30' },
+            { type: 'user', text: 'Laptop arıyorum, önerebilir misiniz?', time: '14:31' },
+            { type: 'bot', text: 'Tabii ki! Size istif ürünlerden mükemmel laptop seçeneklerimiz var. Hangi özellikler önemli sizin için?', time: '14:31' }
+        ],
+        inputText: '',
+        isTyping: false
+    }">
+        <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-INLINE-001
+        </span>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-robot text-3xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold">ixtif Asistan</h3>
+                        <div class="flex items-center gap-2 text-blue-100">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm">Çevrimiçi • Anında yanıt</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all">
+                            <i class="fa-solid fa-phone"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="h-96 overflow-y-auto p-6 bg-gray-50 space-y-4">
+                <template x-for="(msg, index) in messages" :key="index">
+                    <div :class="msg.type === 'user' ? 'flex justify-end' : 'flex justify-start'">
+                        <div :class="msg.type === 'user' ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200'"
+                             class="max-w-md rounded-2xl px-6 py-4 shadow-sm">
+                            <p x-text="msg.text" class="text-sm leading-relaxed"></p>
+                            <div :class="msg.type === 'user' ? 'text-blue-100' : 'text-gray-400'"
+                                 class="text-xs mt-2" x-text="msg.time"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Typing Indicator -->
+                <div x-show="isTyping" class="flex justify-start">
+                    <div class="bg-white border border-gray-200 rounded-2xl px-6 py-4 shadow-sm">
+                        <div class="flex gap-1">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Replies -->
+            <div class="px-6 py-4 bg-white border-t border-gray-200">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-laptop mr-2"></i>Elektronik Ürünler
+                    </button>
+                    <button class="bg-purple-50 hover:bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-truck mr-2"></i>Kargo Takibi
+                    </button>
+                    <button class="bg-green-50 hover:bg-green-100 text-green-600 px-4 py-2 rounded-full text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-badge-percent mr-2"></i>Kampanyalar
+                    </button>
+                </div>
+
+                <!-- Input -->
+                <div class="flex gap-3">
+                    <button class="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-paperclip text-gray-600"></i>
+                    </button>
+                    <input type="text" x-model="inputText"
+                           placeholder="Mesajınızı yazın..."
+                           class="flex-1 bg-gray-100 border-0 rounded-xl px-6 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-xl rounded-xl flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-paper-plane text-white"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-INLINE-002: Minimal Card Style -->
+<section id="chatbot-inline-002" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-indigo-900 p-8">
+    <div class="w-full max-w-4xl" x-data="{
+        conversation: [
+            { role: 'assistant', message: '👋 İxtif.com''a hoş geldiniz! Size yardımcı olabilir miyim?' },
+            { role: 'user', message: 'Mobilya kategorisindeki ürünlere bakmak istiyorum' },
+            { role: 'assistant', message: 'Harika! 620+ mobilya ürünümüz var. İşte popüler kategorilerimiz:' }
+        ]
+    }">
+        <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-INLINE-002
+        </span>
+
+        <div class="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden">
+            <!-- Minimal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                    <span class="text-white font-semibold">Canlı Destek</span>
+                </div>
+                <div class="flex gap-2">
+                    <button class="text-white/60 hover:text-white"><i class="fa-solid fa-minus"></i></button>
+                    <button class="text-white/60 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="p-6 h-80 overflow-y-auto space-y-4">
+                <template x-for="(msg, idx) in conversation" :key="idx">
+                    <div>
+                        <div x-show="msg.role === 'assistant'" class="flex gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-robot text-white text-sm"></i>
+                            </div>
+                            <div class="bg-white/20 backdrop-blur-lg text-white rounded-2xl rounded-tl-sm px-6 py-4 max-w-md">
+                                <p class="text-sm" x-text="msg.message"></p>
+                            </div>
+                        </div>
+                        <div x-show="msg.role === 'user'" class="flex justify-end">
+                            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl rounded-tr-sm px-6 py-4 max-w-md">
+                                <p class="text-sm" x-text="msg.message"></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Product Cards -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer border border-white/10">
+                        <i class="fa-solid fa-couch text-3xl text-blue-400 mb-2"></i>
+                        <div class="text-white font-semibold text-sm">Koltuk Takımları</div>
+                        <div class="text-white/60 text-xs">230+ ürün</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer border border-white/10">
+                        <i class="fa-solid fa-bed text-3xl text-purple-400 mb-2"></i>
+                        <div class="text-white font-semibold text-sm">Yatak Odası</div>
+                        <div class="text-white/60 text-xs">180+ ürün</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer border border-white/10">
+                        <i class="fa-solid fa-chair text-3xl text-pink-400 mb-2"></i>
+                        <div class="text-white font-semibold text-sm">Ofis Mobilya</div>
+                        <div class="text-white/60 text-xs">210+ ürün</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input -->
+            <div class="p-6 border-t border-white/10">
+                <div class="flex gap-3">
+                    <input type="text" placeholder="Mesaj yazın..."
+                           class="flex-1 bg-white/10 border border-white/20 text-white placeholder-white/40 rounded-xl px-6 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 rounded-xl font-semibold text-white hover:shadow-xl transition-all">
+                        Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-INLINE-003: Split Screen with Products -->
+<section id="chatbot-inline-003" class="min-h-screen flex items-center bg-gradient-to-br from-slate-100 to-gray-200 p-8">
+    <div class="w-full max-w-7xl mx-auto">
+        <span class="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-INLINE-003
+        </span>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Chat Column -->
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+                <div class="bg-gradient-to-r from-orange-600 to-red-600 text-white p-6">
+                    <h3 class="text-2xl font-bold flex items-center gap-3">
+                        <i class="fa-solid fa-comments"></i>
+                        Ürün Danışmanı
+                    </h3>
+                    <p class="text-orange-100 mt-1">AI destekli alışveriş asistanınız</p>
+                </div>
+
+                <div class="flex-1 p-6 space-y-4 overflow-y-auto max-h-96">
+                    <div class="flex gap-3">
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-robot text-orange-600"></i>
+                        </div>
+                        <div class="bg-gray-100 rounded-2xl rounded-tl-sm px-6 py-4 max-w-md">
+                            <p class="text-sm text-gray-800">Merhaba! Laptop arıyorsunuz değil mi? Size özel seçtiklerimiz sağda görünüyor 👉</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <div class="bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-2xl rounded-tr-sm px-6 py-4 max-w-md">
+                            <p class="text-sm">Evet, oyun oynamak için güçlü bir laptop istiyorum</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-robot text-orange-600"></i>
+                        </div>
+                        <div class="bg-gray-100 rounded-2xl rounded-tl-sm px-6 py-4 max-w-md">
+                            <p class="text-sm text-gray-800">Mükemmel! Gaming laptop'larımızı güncelledim. Tümü yüksek performanslı ekran kartına sahip 🎮</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 border-t border-gray-200">
+                    <div class="flex gap-3">
+                        <input type="text" placeholder="Hangi özellikleri arıyorsunuz?"
+                               class="flex-1 bg-gray-100 border-0 rounded-xl px-6 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <button class="bg-gradient-to-r from-orange-600 to-red-600 px-6 py-3 rounded-xl text-white font-semibold hover:shadow-xl transition-all">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Column -->
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h4 class="text-xl font-bold text-gray-900">Size Özel Öneriler</h4>
+                    <span class="bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold">3 Ürün</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex gap-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-4 border-2 border-orange-200 hover:border-orange-400 transition-all cursor-pointer">
+                        <div class="w-24 h-24 bg-white rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-laptop text-4xl text-orange-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-xs text-orange-600 font-semibold mb-1">GAMING LAPTOP</div>
+                            <h5 class="font-bold text-gray-900 mb-2">ASUS ROG Strix G15</h5>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs text-gray-500 line-through">₺35.999</span>
+                                <span class="text-xl font-black text-orange-600">₺24.999</span>
+                                <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">%30</span>
+                            </div>
+                            <div class="flex gap-2 text-xs text-gray-600">
+                                <span><i class="fa-solid fa-microchip mr-1"></i>RTX 3070</span>
+                                <span><i class="fa-solid fa-memory mr-1"></i>16GB RAM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 bg-gray-50 rounded-2xl p-4 border-2 border-gray-200 hover:border-orange-400 transition-all cursor-pointer">
+                        <div class="w-24 h-24 bg-white rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-laptop text-4xl text-purple-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-xs text-purple-600 font-semibold mb-1">GAMING LAPTOP</div>
+                            <h5 class="font-bold text-gray-900 mb-2">MSI Katana 15</h5>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs text-gray-500 line-through">₺28.999</span>
+                                <span class="text-xl font-black text-purple-600">₺19.499</span>
+                                <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">%33</span>
+                            </div>
+                            <div class="flex gap-2 text-xs text-gray-600">
+                                <span><i class="fa-solid fa-microchip mr-1"></i>RTX 3060</span>
+                                <span><i class="fa-solid fa-memory mr-1"></i>16GB RAM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 bg-gray-50 rounded-2xl p-4 border-2 border-gray-200 hover:border-orange-400 transition-all cursor-pointer">
+                        <div class="w-24 h-24 bg-white rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-laptop text-4xl text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-xs text-blue-600 font-semibold mb-1">GAMING LAPTOP</div>
+                            <h5 class="font-bold text-gray-900 mb-2">Lenovo Legion 5</h5>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs text-gray-500 line-through">₺32.999</span>
+                                <span class="text-xl font-black text-blue-600">₺22.999</span>
+                                <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">%30</span>
+                            </div>
+                            <div class="flex gap-2 text-xs text-gray-600">
+                                <span><i class="fa-solid fa-microchip mr-1"></i>RTX 3070 Ti</span>
+                                <span><i class="fa-solid fa-memory mr-1"></i>32GB RAM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-INLINE-004: Timeline Style -->
+<section id="chatbot-inline-004" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 p-8">
+    <div class="w-full max-w-5xl">
+        <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-INLINE-004
+        </span>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden p-8">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-headset text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900">Sipariş Takip Asistanı</h3>
+                    <p class="text-gray-500">Siparişiniz her adımda bizimle</p>
+                </div>
+            </div>
+
+            <!-- Timeline Chat -->
+            <div class="relative">
+                <!-- Vertical Line -->
+                <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-green-500 to-emerald-600"></div>
+
+                <div class="space-y-8">
+                    <!-- Step 1 -->
+                    <div class="flex gap-6">
+                        <div class="relative z-10 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl">
+                            <i class="fa-solid fa-check text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-green-50 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-900">Sipariş Alındı</h5>
+                                <span class="text-sm text-gray-500">15:23</span>
+                            </div>
+                            <p class="text-gray-600 mb-3">Siparişiniz #IXT-2024-45891 başarıyla oluşturuldu!</p>
+                            <div class="bg-white rounded-xl p-4">
+                                <div class="text-sm text-gray-500 mb-2">Sipariş Detayı:</div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-laptop text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">ASUS Laptop</div>
+                                        <div class="text-sm text-gray-500">1 Adet • ₺15.999</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex gap-6">
+                        <div class="relative z-10 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl">
+                            <i class="fa-solid fa-box text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-green-50 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-900">Paketlendi</h5>
+                                <span class="text-sm text-gray-500">16:45</span>
+                            </div>
+                            <p class="text-gray-600">Ürününüz özenle paketlendi ve kargoya hazır hale getirildi.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 - Active -->
+                    <div class="flex gap-6">
+                        <div class="relative z-10 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl animate-pulse">
+                            <i class="fa-solid fa-truck-fast text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-400 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-900">Kargoda</h5>
+                                <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                    <i class="fa-solid fa-spinner fa-spin mr-1"></i>Aktif
+                                </span>
+                            </div>
+                            <p class="text-gray-700 mb-4">Ürününüz kargo firmasına teslim edildi. Tahmini teslimat: <strong>Yarın 18:00'a kadar</strong></p>
+                            <div class="bg-white rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-gray-700">Kargo Takip No:</span>
+                                    <button class="text-sm text-green-600 hover:text-green-700 font-semibold">
+                                        <i class="fa-solid fa-copy mr-1"></i>Kopyala
+                                    </button>
+                                </div>
+                                <div class="font-mono text-lg font-bold text-gray-900">PT-2024-789456123</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 - Pending -->
+                    <div class="flex gap-6 opacity-50">
+                        <div class="relative z-10 w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-house text-white text-xl"></i>
+                        </div>
+                        <div class="flex-1 bg-gray-100 rounded-2xl p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h5 class="font-bold text-gray-700">Teslim Edildi</h5>
+                                <span class="text-sm text-gray-400">Bekleniyor...</span>
+                            </div>
+                            <p class="text-gray-500">Ürününüz adresinize teslim edilecek.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 mt-8">
+                <button class="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-xl transition-all">
+                    <i class="fa-solid fa-phone mr-2"></i>Kargo Firmasını Ara
+                </button>
+                <button class="flex-1 bg-green-50 text-green-600 px-6 py-4 rounded-xl font-bold hover:bg-green-100 transition-all">
+                    <i class="fa-solid fa-message mr-2"></i>Destek Talebi Oluştur
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-INLINE-005: FAQ Style Interactive -->
+<section id="chatbot-inline-005" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-8">
+    <div class="w-full max-w-6xl" x-data="{
+        selectedQuestion: null,
+        questions: [
+            { id: 1, q: 'Kargo süresi ne kadar?', a: 'İstanbul içi 1-2 iş günü, Türkiye geneli 2-3 iş günü içinde teslim edilir.', icon: 'fa-truck-fast', color: 'blue' },
+            { id: 2, q: 'İade koşulları nelerdir?', a: '14 gün içinde ürünü kullanmadıysanız iade edebilirsiniz. Kargo ücretsiz!', icon: 'fa-rotate-left', color: 'green' },
+            { id: 3, q: 'Garanti süresi ne kadar?', a: 'Tüm elektronik ürünlerde 2 yıl resmi distribütör garantisi vardır.', icon: 'fa-shield-check', color: 'purple' },
+            { id: 4, q: 'Hangi ödeme yöntemlerini kabul ediyorsunuz?', a: 'Kredi kartı, havale/EFT ve kapıda ödeme seçeneklerimiz mevcut.', icon: 'fa-credit-card', color: 'orange' }
+        ]
+    }">
+        <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-INLINE-005
+        </span>
+
+        <div class="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 text-center">
+                <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-circle-question text-4xl"></i>
+                </div>
+                <h3 class="text-3xl font-black mb-2">Nasıl Yardımcı Olabiliriz?</h3>
+                <p class="text-indigo-100">Sıkça sorulan sorulardan size en uygun olanı seçin</p>
+            </div>
+
+            <div class="p-8">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <template x-for="q in questions" :key="q.id">
+                        <button @click="selectedQuestion = selectedQuestion === q.id ? null : q.id"
+                                :class="selectedQuestion === q.id ? 'ring-4 ring-' + q.color + '-400/50 bg-' + q.color + '-500/20' : 'bg-white/10'"
+                                class="text-left p-6 rounded-2xl border border-white/20 hover:bg-white/20 transition-all">
+                            <i :class="'fa-solid ' + q.icon + ' text-' + q.color + '-400'" class="text-3xl mb-3"></i>
+                            <div class="text-white font-semibold" x-text="q.q"></div>
+                        </button>
+                    </template>
+                </div>
+
+                <!-- Answer Display -->
+                <div x-show="selectedQuestion" x-transition class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                    <template x-for="q in questions" :key="q.id">
+                        <div x-show="selectedQuestion === q.id">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-robot text-white text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-white/60 text-sm mb-2">Asistan Cevabı:</div>
+                                    <p class="text-white text-lg leading-relaxed" x-text="q.a"></p>
+                                    <div class="flex gap-3 mt-4">
+                                        <button class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                                            <i class="fa-solid fa-thumbs-up mr-2"></i>Yardımcı Oldu
+                                        </button>
+                                        <button class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                                            <i class="fa-solid fa-comment mr-2"></i>Daha Fazla Bilgi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Custom Question Input -->
+                <div class="mt-6">
+                    <div class="text-white/60 text-sm mb-3 text-center">Veya kendi sorunuzu sorun:</div>
+                    <div class="flex gap-3">
+                        <input type="text" placeholder="Sorunuzu buraya yazın..."
+                               class="flex-1 bg-white/10 border border-white/20 text-white placeholder-white/40 rounded-xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 rounded-xl font-bold text-white hover:shadow-2xl transition-all whitespace-nowrap">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>Gönder
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-INLINE-006: Comparison Chat -->
+<section id="chatbot-inline-006" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-blue-50 p-8">
+    <div class="w-full max-w-7xl">
+        <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa="hashtag mr-1"></i>CHATBOT-INLINE-006
+        </span>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden p-8">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-3xl font-black text-gray-900">Ürün Karşılaştırma Asistanı</h3>
+                    <p class="text-gray-500">AI ile akıllı ürün karşılaştırması</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="bg-cyan-100 text-cyan-600 px-4 py-2 rounded-xl font-semibold hover:bg-cyan-200 transition-all">
+                        <i class="fa-solid fa-rotate mr-2"></i>Yeni Karşılaştırma
+                    </button>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Product 1 -->
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border-2 border-blue-200">
+                    <div class="text-center mb-4">
+                        <div class="w-32 h-32 bg-white rounded-xl mx-auto flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-laptop text-6xl text-blue-600"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-lg mb-1">ASUS VivoBook</h4>
+                        <div class="text-2xl font-black text-blue-600">₺12.999</div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">İşlemci</div>
+                            <div class="font-semibold text-gray-900">Intel i5-12400</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">RAM</div>
+                            <div class="font-semibold text-gray-900">8GB DDR4</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">Ekran Kartı</div>
+                            <div class="font-semibold text-gray-900">Intel UHD</div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">Depolama</div>
+                            <div class="font-semibold text-gray-900">256GB SSD</div>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold mt-4 transition-all">
+                        Sepete Ekle
+                    </button>
+                </div>
+
+                <!-- VS Badge -->
+                <div class="flex items-center justify-center">
+                    <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center shadow-2xl">
+                        <span class="text-white font-black text-2xl">VS</span>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border-2 border-purple-200">
+                    <div class="text-center mb-4">
+                        <div class="w-32 h-32 bg-white rounded-xl mx-auto flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-laptop text-6xl text-purple-600"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-lg mb-1">Lenovo IdeaPad</h4>
+                        <div class="text-2xl font-black text-purple-600">₺14.499</div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">İşlemci</div>
+                            <div class="font-semibold text-gray-900 flex items-center gap-2">
+                                Intel i7-12700
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Daha İyi</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">RAM</div>
+                            <div class="font-semibold text-gray-900 flex items-center gap-2">
+                                16GB DDR5
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Daha İyi</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">Ekran Kartı</div>
+                            <div class="font-semibold text-gray-900 flex items-center gap-2">
+                                NVIDIA MX450
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Daha İyi</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3">
+                            <div class="text-xs text-gray-500 mb-1">Depolama</div>
+                            <div class="font-semibold text-gray-900 flex items-center gap-2">
+                                512GB SSD
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Daha İyi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-xl text-white px-6 py-3 rounded-xl font-bold mt-4 transition-all">
+                        Sepete Ekle
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Recommendation -->
+            <div class="mt-8 bg-gradient-to-r from-cyan-100 to-blue-100 rounded-2xl p-6 border-2 border-cyan-300">
+                <div class="flex items-start gap-4">
+                    <div class="w-16 h-16 bg-cyan-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-robot text-white text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h5 class="font-bold text-gray-900 mb-2 text-lg">AI Tavsiyesi</h5>
+                        <p class="text-gray-700 leading-relaxed">
+                            Kullanım amacınıza göre <strong>Lenovo IdeaPad</strong> daha iyi bir seçim. Daha güçlü işlemci, çift RAM ve ayrı ekran kartı ile oyun ve video editing yapabilirsiniz. Sadece ₺1.500 fark var ama performans farkı %40+!
+                        </p>
+                        <div class="flex gap-3 mt-4">
+                            <button class="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-3 rounded-xl font-semibold transition-all">
+                                <i class="fa-solid fa-check mr-2"></i>Lenovo'yu Seç
+                            </button>
+                            <button class="bg-white text-cyan-600 px-6 py-3 rounded-xl font-semibold hover:bg-cyan-50 transition-all">
+                                Başka Seçenek Göster
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+</body>
+</html>

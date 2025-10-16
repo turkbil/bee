@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+</head>
+<body>
+<div class="fixed top-4 left-4 z-[9999]">
+    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="font-semibold text-sm">Ana Menü</span>
+    </a>
+</div>
+<div class="scroll-container">
+
+<!-- PRICING-001: Three Column Classic -->
+<section id="pricing-001" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+    <div class="container mx-auto max-w-7xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-gray-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-001
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Üyelik Paketleri</h2>
+            <p class="text-xl text-gray-600">Size uygun paketi seçin</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Basic -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-gray-900 mb-2">Temel</h3>
+                    <div class="text-5xl font-black text-gray-900 mb-2">Ücretsiz</div>
+                    <p class="text-gray-600">Başlangıç için</p>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span class="text-gray-700">10 ürün listeleme</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span class="text-gray-700">Temel istatistikler</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span class="text-gray-700">Email destek</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-times text-gray-300 text-xl"></i>
+                        <span class="text-gray-400">Premium özellikler</span>
+                    </li>
+                </ul>
+                <button class="w-full bg-gray-200 text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-gray-300 transition-all">
+                    Ücretsiz Başla
+                </button>
+            </div>
+
+            <!-- Pro -->
+            <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-8 shadow-2xl transform scale-110 relative">
+                <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm">
+                    En Popüler
+                </div>
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-white mb-2">Pro</h3>
+                    <div class="text-5xl font-black text-white mb-2">₺99</div>
+                    <p class="text-blue-100">/aylık</p>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-white text-xl"></i>
+                        <span class="text-white">Sınırsız ürün</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-white text-xl"></i>
+                        <span class="text-white">Gelişmiş istatistikler</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-white text-xl"></i>
+                        <span class="text-white">7/24 canlı destek</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-white text-xl"></i>
+                        <span class="text-white">Premium özellikler</span>
+                    </li>
+                </ul>
+                <button class="w-full bg-white text-blue-600 px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all">
+                    Hemen Başla
+                </button>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-black text-gray-900 mb-2">Kurumsal</h3>
+                    <div class="text-5xl font-black text-gray-900 mb-2">₺299</div>
+                    <p class="text-gray-600">/aylık</p>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span class="text-gray-700">Tüm Pro özellikler</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span class="text-gray-700">Özel hesap yöneticisi</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span class="text-gray-700">API erişimi</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span class="text-gray-700">Öncelikli destek</span>
+                    </li>
+                </ul>
+                <button class="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all">
+                    İletişime Geç
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-002: Toggle Monthly/Yearly -->
+<section id="pricing-002" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-8"
+         x-data="{ 
+             yearly: false,
+             plans: [
+                 { name: 'Başlangıç', monthly: 49, yearly: 470, features: ['50 ürün', 'Temel analiz', 'Email destek'] },
+                 { name: 'Profesyonel', monthly: 99, yearly: 950, features: ['Sınırsız ürün', 'Gelişmiş analiz', '7/24 destek', 'API'] },
+                 { name: 'Kurumsal', monthly: 299, yearly: 2870, features: ['Tüm özellikler', 'Özel yönetici', 'SLA garantisi', 'Eğitim'] }
+             ]
+         }">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-002
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Esnek Fiyatlandırma</h2>
+            <p class="text-xl text-gray-600 mb-8">Yıllık ödemede %20 tasarruf</p>
+
+            <!-- Toggle -->
+            <div class="inline-flex items-center gap-4 bg-white rounded-full p-2 shadow-lg">
+                <button @click="yearly = false" 
+                        :class="!yearly ? 'bg-blue-600 text-white' : 'text-gray-700'"
+                        class="px-8 py-3 rounded-full font-bold transition-all">
+                    Aylık
+                </button>
+                <button @click="yearly = true" 
+                        :class="yearly ? 'bg-blue-600 text-white' : 'text-gray-700'"
+                        class="px-8 py-3 rounded-full font-bold transition-all relative">
+                    Yıllık
+                    <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">-20%</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <template x-for="plan in plans" :key="plan.name">
+                <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all">
+                    <h3 class="text-2xl font-black text-gray-900 mb-6" x-text="plan.name"></h3>
+                    <div class="mb-6">
+                        <span class="text-5xl font-black text-gray-900" x-text="'₺' + (yearly ? plan.yearly : plan.monthly)"></span>
+                        <span class="text-gray-600" x-text="yearly ? '/yıl' : '/ay'"></span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <template x-for="feature in plan.features" :key="feature">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check text-blue-600"></i>
+                                <span class="text-gray-700" x-text="feature"></span>
+                            </li>
+                        </template>
+                    </ul>
+                    <button class="w-full bg-blue-600 text-white px-8 py-4 rounded-full font-bold hover:bg-blue-700 transition-all">
+                        Seç
+                    </button>
+                </div>
+            </template>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-003: Comparison Table -->
+<section id="pricing-003" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-8 overflow-y-auto">
+    <div class="container mx-auto max-w-7xl py-12">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-003
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Detaylı Karşılaştırma</h2>
+            <p class="text-xl text-gray-600">Hangi plan size uygun?</p>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gradient-to-r from-purple-600 to-purple-700">
+                        <th class="p-6 text-left text-white font-bold">Özellikler</th>
+                        <th class="p-6 text-center text-white font-bold">Temel</th>
+                        <th class="p-6 text-center text-white font-bold">Pro</th>
+                        <th class="p-6 text-center text-white font-bold">Kurumsal</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr class="hover:bg-purple-50 transition-all">
+                        <td class="p-6 font-semibold">Ürün Listeleme</td>
+                        <td class="p-6 text-center">10</td>
+                        <td class="p-6 text-center">Sınırsız</td>
+                        <td class="p-6 text-center">Sınırsız</td>
+                    </tr>
+                    <tr class="hover:bg-purple-50 transition-all">
+                        <td class="p-6 font-semibold">İstatistikler</td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-check text-green-600"></i></td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-check text-green-600"></i></td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-check text-green-600"></i></td>
+                    </tr>
+                    <tr class="hover:bg-purple-50 transition-all">
+                        <td class="p-6 font-semibold">Destek</td>
+                        <td class="p-6 text-center">Email</td>
+                        <td class="p-6 text-center">7/24 Canlı</td>
+                        <td class="p-6 text-center">Öncelikli</td>
+                    </tr>
+                    <tr class="hover:bg-purple-50 transition-all">
+                        <td class="p-6 font-semibold">API Erişimi</td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-times text-gray-300"></i></td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-check text-green-600"></i></td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-check text-green-600"></i></td>
+                    </tr>
+                    <tr class="hover:bg-purple-50 transition-all">
+                        <td class="p-6 font-semibold">Özel Yönetici</td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-times text-gray-300"></i></td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-times text-gray-300"></i></td>
+                        <td class="p-6 text-center"><i class="fa-solid fa-check text-green-600"></i></td>
+                    </tr>
+                    <tr class="bg-gray-50">
+                        <td class="p-6 font-bold text-lg">Fiyat</td>
+                        <td class="p-6 text-center font-bold text-2xl">Ücretsiz</td>
+                        <td class="p-6 text-center font-bold text-2xl">₺99/ay</td>
+                        <td class="p-6 text-center font-bold text-2xl">₺299/ay</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-004: Simple Cards -->
+<section id="pricing-004" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-8">
+    <div class="container mx-auto max-w-5xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-004
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Basit Fiyatlandırma</h2>
+            <p class="text-xl text-gray-600">Gizli ücret yok, şeffaf fiyatlar</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Bireysel -->
+            <div class="bg-white rounded-3xl p-12 shadow-2xl text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-user text-3xl text-white"></i>
+                </div>
+                <h3 class="text-3xl font-black text-gray-900 mb-4">Bireysel</h3>
+                <div class="mb-8">
+                    <span class="text-6xl font-black text-gray-900">₺49</span>
+                    <span class="text-gray-600 text-xl">/ay</span>
+                </div>
+                <ul class="text-left space-y-4 mb-8">
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span>100 ürün listeleme</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span>Temel istatistikler</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-green-600 text-xl"></i>
+                        <span>Email destek</span>
+                    </li>
+                </ul>
+                <button class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    Satın Al
+                </button>
+            </div>
+
+            <!-- İşletme -->
+            <div class="bg-gradient-to-br from-green-600 to-green-700 rounded-3xl p-12 shadow-2xl text-center">
+                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-building text-3xl text-green-600"></i>
+                </div>
+                <h3 class="text-3xl font-black text-white mb-4">İşletme</h3>
+                <div class="mb-8">
+                    <span class="text-6xl font-black text-white">₺149</span>
+                    <span class="text-green-100 text-xl">/ay</span>
+                </div>
+                <ul class="text-left space-y-4 mb-8 text-white">
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-xl"></i>
+                        <span>Sınırsız ürün</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-xl"></i>
+                        <span>Gelişmiş analytics</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fa-solid fa-check text-xl"></i>
+                        <span>7/24 canlı destek</span>
+                    </li>
+                </ul>
+                <button class="w-full bg-white text-green-600 px-8 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    Satın Al
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-005: Feature-Based Pricing -->
+<section id="pricing-005" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-pink-100 p-8">
+    <div class="container mx-auto max-w-7xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-005
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Özellik Bazlı Fiyatlandırma</h2>
+            <p class="text-xl text-gray-600">Sadece ihtiyacınız olanı ödeyin</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Feature 1 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-box text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-3">Ürün Listeleme</h3>
+                <div class="text-4xl font-black text-gray-900 mb-2">₺5</div>
+                <p class="text-gray-600 mb-6">/ürün/ay</p>
+                <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                    <li>Detaylı açıklama</li>
+                    <li>10 fotoğraf</li>
+                    <li>SEO optimizasyonu</li>
+                </ul>
+                <button class="w-full bg-pink-600 text-white px-6 py-3 rounded-full font-bold hover:bg-pink-700 transition-all">
+                    Ekle
+                </button>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-chart-line text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-3">Analytics</h3>
+                <div class="text-4xl font-black text-gray-900 mb-2">₺29</div>
+                <p class="text-gray-600 mb-6">/ay</p>
+                <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                    <li>Detaylı raporlar</li>
+                    <li>Ziyaretçi analizi</li>
+                    <li>Dönüşüm takibi</li>
+                </ul>
+                <button class="w-full bg-blue-600 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-700 transition-all">
+                    Ekle
+                </button>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-headset text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-3">Premium Destek</h3>
+                <div class="text-4xl font-black text-gray-900 mb-2">₺49</div>
+                <p class="text-gray-600 mb-6">/ay</p>
+                <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                    <li>7/24 canlı destek</li>
+                    <li>Öncelikli yanıt</li>
+                    <li>Özel yönetici</li>
+                </ul>
+                <button class="w-full bg-green-600 text-white px-6 py-3 rounded-full font-bold hover:bg-green-700 transition-all">
+                    Ekle
+                </button>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-code text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-3">API Erişimi</h3>
+                <div class="text-4xl font-black text-gray-900 mb-2">₺79</div>
+                <p class="text-gray-600 mb-6">/ay</p>
+                <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                    <li>RESTful API</li>
+                    <li>Webhook desteği</li>
+                    <li>Dokümantasyon</li>
+                </ul>
+                <button class="w-full bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-700 transition-all">
+                    Ekle
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-006: Pay As You Go -->
+<section id="pricing-006" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 p-8">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-006
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Kullandığınız Kadar Öde</h2>
+            <p class="text-xl text-gray-600">Esnek fiyatlandırma modeli</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-12 shadow-2xl">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-shopping-cart text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">Satış Başına</h3>
+                    <div class="text-5xl font-black text-orange-600 mb-2">%5</div>
+                    <p class="text-gray-600">Komisyon oranı</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-box text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">Ürün Başına</h3>
+                    <div class="text-5xl font-black text-blue-600 mb-2">₺2</div>
+                    <p class="text-gray-600">Aylık listeleme</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-chart-bar text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-3">İşlem Başına</h3>
+                    <div class="text-5xl font-black text-green-600 mb-2">₺1</div>
+                    <p class="text-gray-600">Ödeme işlemi</p>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-8 text-center">
+                <h4 class="text-2xl font-bold text-gray-900 mb-4">Örnek Hesaplama</h4>
+                <p class="text-gray-700 text-lg mb-6">
+                    100 ürün + 50 satış (₺10,000) = ₺200 (ürün) + ₺500 (komisyon) + ₺50 (işlem) = <strong class="text-orange-600">₺750/ay</strong>
+                </p>
+                <button class="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-12 py-5 rounded-full font-bold text-xl hover:shadow-2xl transition-all">
+                    Hemen Başla
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-007: Tiered Pricing -->
+<section id="pricing-007" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-cyan-100 p-8">
+    <div class="container mx-auto max-w-5xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-007
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Kademeli Fiyatlandırma</h2>
+            <p class="text-xl text-gray-600">Daha çok ürün, daha az fiyat</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-12 shadow-2xl">
+            <div class="space-y-6">
+                <div class="flex items-center justify-between p-6 bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-2xl">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">1-50 Ürün</h3>
+                        <p class="text-gray-600">Başlangıç seviyesi</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-black text-cyan-600">₺10</div>
+                        <p class="text-gray-600">/ürün/ay</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">51-200 Ürün</h3>
+                        <p class="text-gray-600">Orta seviye</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-black text-blue-600">₺7</div>
+                        <p class="text-gray-600">/ürün/ay</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-6 bg-gradient-to-r from-green-50 to-green-100 rounded-2xl">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">201-500 Ürün</h3>
+                        <p class="text-gray-600">İleri seviye</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-black text-green-600">₺5</div>
+                        <p class="text-gray-600">/ürün/ay</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">500+ Ürün</h3>
+                        <p class="text-gray-600">Kurumsal seviye</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-black text-purple-600">₺3</div>
+                        <p class="text-gray-600">/ürün/ay</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 text-center">
+                <button class="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white px-12 py-5 rounded-full font-bold text-xl hover:shadow-2xl transition-all">
+                    Başvur
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-008: FAQ + Pricing -->
+<section id="pricing-008" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-indigo-100 p-8 overflow-y-auto">
+    <div class="container mx-auto max-w-7xl py-12">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-008
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Fiyatlar & SSS</h2>
+            <p class="text-xl text-gray-600">Sık sorulan sorular ve fiyatlandırma</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Pricing -->
+            <div class="bg-white rounded-3xl p-8 shadow-xl">
+                <h3 class="text-3xl font-black text-gray-900 mb-8">Paketler</h3>
+                <div class="space-y-6">
+                    <div class="p-6 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-2xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-2xl font-bold text-gray-900">Temel</h4>
+                            <div class="text-3xl font-black text-indigo-600">₺49</div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>50 ürün</li>
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>Temel analiz</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-2xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-2xl font-bold text-gray-900">Pro</h4>
+                            <div class="text-3xl font-black text-indigo-600">₺99</div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>Sınırsız ürün</li>
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>Gelişmiş analiz</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div x-data="{ openFaq: 0 }">
+                <h3 class="text-3xl font-black text-gray-900 mb-8">Sık Sorulanlar</h3>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <button @click="openFaq = openFaq === 0 ? null : 0" 
+                                class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all">
+                            <span class="font-bold text-gray-900">Deneme süresi var mı?</span>
+                            <i :class="openFaq === 0 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                        </button>
+                        <div x-show="openFaq === 0" x-transition class="p-6 pt-0 text-gray-700">
+                            Evet, tüm paketlerde 14 gün ücretsiz deneme süresi sunuyoruz.
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <button @click="openFaq = openFaq === 1 ? null : 1" 
+                                class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all">
+                            <span class="font-bold text-gray-900">İptal edebilir miyim?</span>
+                            <i :class="openFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                        </button>
+                        <div x-show="openFaq === 1" x-transition class="p-6 pt-0 text-gray-700">
+                            Evet, istediğiniz zaman iptal edebilirsiniz. Kalan süre için geri ödeme yapılır.
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <button @click="openFaq = openFaq === 2 ? null : 2" 
+                                class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all">
+                            <span class="font-bold text-gray-900">Ödeme yöntemleri neler?</span>
+                            <i :class="openFaq === 2 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                        </button>
+                        <div x-show="openFaq === 2" x-transition class="p-6 pt-0 text-gray-700">
+                            Kredi kartı, banka havalesi ve sanal pos ile ödeme yapabilirsiniz.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-009: Enterprise Custom -->
+<section id="pricing-009" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 to-violet-100 p-8">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-violet-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-009
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Kurumsal Çözümler</h2>
+            <p class="text-xl text-gray-600">İşletmenize özel paketler</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Left: Features -->
+            <div class="space-y-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-users text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Özel Hesap Yöneticisi</h3>
+                        <p class="text-gray-600">Size özel danışman desteği</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-code text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">API ve Webhook</h3>
+                        <p class="text-gray-600">Sistemlerinizle entegrasyon</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-shield-check text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">SLA Garantisi</h3>
+                        <p class="text-gray-600">%99.9 uptime garantisi</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Eğitim ve Onboarding</h3>
+                        <p class="text-gray-600">Ekibiniz için özel eğitim</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Contact Form -->
+            <div class="bg-white rounded-3xl p-10 shadow-2xl">
+                <h3 class="text-3xl font-black text-gray-900 mb-6">Teklif Alın</h3>
+                <form class="space-y-4">
+                    <input type="text" placeholder="Şirket Adı" 
+                           class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none">
+                    <input type="text" placeholder="Yetkili Kişi" 
+                           class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none">
+                    <input type="email" placeholder="E-posta" 
+                           class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none">
+                    <input type="tel" placeholder="Telefon" 
+                           class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none">
+                    <select class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none">
+                        <option>Çalışan Sayısı</option>
+                        <option>1-10</option>
+                        <option>11-50</option>
+                        <option>51-200</option>
+                        <option>200+</option>
+                    </select>
+                    <button class="w-full bg-gradient-to-r from-violet-600 to-violet-700 text-white px-8 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                        Teklif İste
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING-010: Calculator -->
+<section id="pricing-010" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-rose-100 p-8"
+         x-data="{ 
+             products: 100,
+             sales: 50,
+             get productCost() { return this.products * 5; },
+             get commissionCost() { return this.sales * 100 * 0.05; },
+             get total() { return this.productCost + this.commissionCost; }
+         }">
+    <div class="container mx-auto max-w-5xl">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-rose-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-010
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Fiyat Hesaplayıcı</h2>
+            <p class="text-xl text-gray-600">Aylık maliyetinizi hesaplayın</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-12 shadow-2xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Left: Inputs -->
+                <div class="space-y-8">
+                    <div>
+                        <label class="block text-gray-900 font-bold text-lg mb-4">Ürün Sayısı: <span x-text="products"></span></label>
+                        <input type="range" x-model="products" min="0" max="500" step="10" 
+                               class="w-full h-3 bg-rose-200 rounded-full appearance-none cursor-pointer">
+                        <div class="flex justify-between text-gray-600 text-sm mt-2">
+                            <span>0</span>
+                            <span>500</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-900 font-bold text-lg mb-4">Aylık Satış: <span x-text="sales"></span></label>
+                        <input type="range" x-model="sales" min="0" max="200" step="5" 
+                               class="w-full h-3 bg-rose-200 rounded-full appearance-none cursor-pointer">
+                        <div class="flex justify-between text-gray-600 text-sm mt-2">
+                            <span>0</span>
+                            <span>200</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Calculation -->
+                <div class="bg-gradient-to-br from-rose-50 to-rose-100 rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Maliyet Özeti</h3>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center justify-between p-4 bg-white rounded-xl">
+                            <span class="text-gray-700">Ürün Listeleme</span>
+                            <span class="font-bold text-gray-900" x-text="'₺' + productCost"></span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-white rounded-xl">
+                            <span class="text-gray-700">Satış Komisyonu (%5)</span>
+                            <span class="font-bold text-gray-900" x-text="'₺' + commissionCost"></span>
+                        </div>
+                    </div>
+
+                    <div class="border-t-2 border-rose-200 pt-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-gray-900">Toplam Aylık</span>
+                            <span class="text-4xl font-black text-rose-600" x-text="'₺' + total"></span>
+                        </div>
+                    </div>
+
+                    <button class="w-full mt-8 bg-gradient-to-r from-rose-600 to-rose-700 text-white px-8 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                        Bu Planı Seç
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+</body>
+</html>

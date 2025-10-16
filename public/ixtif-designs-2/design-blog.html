@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Tasarımları - ixtif.com</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 overflow-hidden">
+
+    <!-- Fixed Back Button -->
+    <a href="index.html" class="fixed top-6 left-6 z-50 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-semibold shadow-2xl hover:shadow-blue-500/50 hover:scale-105 transition-all duration-300 flex items-center gap-2">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Ana Menü</span>
+    </a>
+
+    <div class="scroll-container">
+
+        <!-- BLOG-001: Classic Grid -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-12">
+                    <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">Blog & Haberler</h2>
+                    <p class="text-xl text-gray-600">İxtif dünyasından son haberler ve ipuçları</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- Post 1 -->
+                    <article class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                        <div class="h-48 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-6xl">
+                            <i class="fa-solid fa-laptop"></i>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                                <i class="fa-solid fa-calendar"></i>
+                                <span>15 Ekim 2024</span>
+                                <span class="mx-2">•</span>
+                                <i class="fa-solid fa-clock"></i>
+                                <span>5 dk okuma</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition-colors">
+                                2024'te En İyi Laptop Modelleri
+                            </h3>
+                            <p class="text-gray-600 mb-4 line-clamp-3">
+                                Yeni nesil işlemciler ve yapay zeka özellikleriyle donatılmış laptop'ları keşfedin. İş, oyun ve yaratıcı projeler için en uygun modeller...
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="inline-block bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-semibold">
+                                    Elektronik
+                                </span>
+                                <a href="#" class="text-blue-600 font-bold hover:gap-3 flex items-center gap-2 transition-all">
+                                    Devamını Oku
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post 2 -->
+                    <article class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                        <div class="h-48 bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-6xl">
+                            <i class="fa-solid fa-couch"></i>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                                <i class="fa-solid fa-calendar"></i>
+                                <span>12 Ekim 2024</span>
+                                <span class="mx-2">•</span>
+                                <i class="fa-solid fa-clock"></i>
+                                <span>7 dk okuma</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 hover:text-amber-600 transition-colors">
+                                Modern Ev Dekorasyonu İpuçları
+                            </h3>
+                            <p class="text-gray-600 mb-4 line-clamp-3">
+                                Evinize modern ve şık bir görünüm kazandıracak mobilya seçimi ve dekorasyon önerileri. Uzman tasarımcılardan püf noktaları...
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="inline-block bg-amber-100 text-amber-600 px-3 py-1 rounded-full text-sm font-semibold">
+                                    Mobilya
+                                </span>
+                                <a href="#" class="text-amber-600 font-bold hover:gap-3 flex items-center gap-2 transition-all">
+                                    Devamını Oku
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post 3 -->
+                    <article class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                        <div class="h-48 bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-6xl">
+                            <i class="fa-solid fa-shirt"></i>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                                <i class="fa-solid fa-calendar"></i>
+                                <span>10 Ekim 2024</span>
+                                <span class="mx-2">•</span>
+                                <i class="fa-solid fa-clock"></i>
+                                <span>4 dk okuma</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 hover:text-pink-600 transition-colors">
+                                Ev Tekstilinde 2024 Trendleri
+                            </h3>
+                            <p class="text-gray-600 mb-4 line-clamp-3">
+                                Bu sezonun en popüler renkleri, dokuları ve desenleri. Evinize yeni bir hava katacak tekstil ürünlerini keşfedin...
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="inline-block bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm font-semibold">
+                                    Tekstil
+                                </span>
+                                <a href="#" class="text-pink-600 font-bold hover:gap-3 flex items-center gap-2 transition-all">
+                                    Devamını Oku
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                BLOG-001
+            </div>
+        </section>
+
+        <!-- BLOG-002: Featured + List -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-black text-gray-900 mb-8">Son Yazılar</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Featured Post -->
+                        <div class="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+                            <div class="h-64 bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-8xl">
+                                <i class="fa-solid fa-lightbulb"></i>
+                            </div>
+                            <div class="p-8">
+                                <div class="inline-block bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-bold mb-4">
+                                    ÖNE ÇIKAN
+                                </div>
+                                <h3 class="text-3xl font-black text-gray-900 mb-4">
+                                    Akıllı Ev Sistemleri Rehberi
+                                </h3>
+                                <p class="text-gray-600 mb-6">
+                                    Evinizi akıllı hale getirmek için ihtiyacınız olan her şey. Ürün önerileri, kurulum ipuçları ve bütçe planlaması.
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">
+                                            AY
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-gray-900">Ahmet Yılmaz</div>
+                                            <div class="text-sm text-gray-500">14 Ekim 2024</div>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="bg-purple-600 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all">
+                                        Oku
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post List -->
+                        <div class="space-y-4">
+                            <article class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                <div class="flex gap-6">
+                                    <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center text-white text-3xl flex-shrink-0">
+                                        <i class="fa-solid fa-leaf"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 mb-2 hover:text-green-600 transition-colors">
+                                            Sürdürülebilir Alışveriş İpuçları
+                                        </h4>
+                                        <p class="text-gray-600 text-sm mb-2 line-clamp-2">
+                                            Çevre dostu ürünler seçerek hem doğayı koruyun hem de tasarruf edin...
+                                        </p>
+                                        <div class="flex items-center gap-3 text-sm text-gray-500">
+                                            <span>8 Ekim 2024</span>
+                                            <span>•</span>
+                                            <span>3 dk</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                <div class="flex gap-6">
+                                    <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center text-white text-3xl flex-shrink-0">
+                                        <i class="fa-solid fa-wrench"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 mb-2 hover:text-orange-600 transition-colors">
+                                            Ev Tamiri İçin Gerekli Araçlar
+                                        </h4>
+                                        <p class="text-gray-600 text-sm mb-2 line-clamp-2">
+                                            Her evde bulunması gereken temel el aletleri ve ekipmanlar listesi...
+                                        </p>
+                                        <div class="flex items-center gap-3 text-sm text-gray-500">
+                                            <span>5 Ekim 2024</span>
+                                            <span>•</span>
+                                            <span>6 dk</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                <div class="flex gap-6">
+                                    <div class="w-24 h-24 bg-gradient-to-br from-red-500 to-red-700 rounded-2xl flex items-center justify-center text-white text-3xl flex-shrink-0">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 mb-2 hover:text-red-600 transition-colors">
+                                            Hediye Seçim Rehberi 2024
+                                        </h4>
+                                        <p class="text-gray-600 text-sm mb-2 line-clamp-2">
+                                            Sevdiklerinize mükemmel hediyeler bulmanın püf noktaları...
+                                        </p>
+                                        <div class="flex items-center gap-3 text-sm text-gray-500">
+                                            <span>3 Ekim 2024</span>
+                                            <span>•</span>
+                                            <span>5 dk</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                BLOG-002
+            </div>
+        </section>
+
+        <!-- BLOG-003: Magazine Style -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Header -->
+                    <div class="text-center mb-12">
+                        <h2 class="text-6xl font-black text-gray-900 mb-2">İxtif Magazine</h2>
+                        <p class="text-xl text-gray-600">Alışveriş, tasarım ve yaşam tarzı</p>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-6">
+                        <!-- Large Featured -->
+                        <div class="col-span-12 md:col-span-8">
+                            <article class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl overflow-hidden shadow-2xl h-full relative group cursor-pointer">
+                                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                                <div class="absolute inset-0 flex flex-col justify-end p-8 text-white">
+                                    <div class="inline-block bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-sm font-bold mb-4 w-fit">
+                                        ÖZEL DOSYA
+                                    </div>
+                                    <h3 class="text-4xl md:text-5xl font-black mb-4">
+                                        Minimalist Yaşam Tarzı
+                                    </h3>
+                                    <p class="text-xl text-white/90 mb-6 max-w-2xl">
+                                        Az eşyayla daha mutlu ve özgür bir yaşam. Minimalizmin temel prensipleri ve pratik uygulamaları.
+                                    </p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-solid fa-user"></i>
+                                            <span>Zeynep Demir</span>
+                                        </div>
+                                        <span>•</span>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-solid fa-clock"></i>
+                                            <span>12 dk okuma</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+
+                        <!-- Side Posts -->
+                        <div class="col-span-12 md:col-span-4 space-y-6">
+                            <article class="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-3xl p-6 text-white hover:scale-105 transition-all duration-300 cursor-pointer">
+                                <div class="text-5xl mb-4">
+                                    <i class="fa-solid fa-book"></i>
+                                </div>
+                                <h4 class="text-2xl font-bold mb-2">Kitap Köşesi</h4>
+                                <p class="text-white/90 mb-4">Bu ay okumanız gereken 5 kitap önerisi</p>
+                                <div class="text-sm">15 Ekim • 4 dk</div>
+                            </article>
+
+                            <article class="bg-gradient-to-br from-pink-500 to-rose-600 rounded-3xl p-6 text-white hover:scale-105 transition-all duration-300 cursor-pointer">
+                                <div class="text-5xl mb-4">
+                                    <i class="fa-solid fa-palette"></i>
+                                </div>
+                                <h4 class="text-2xl font-bold mb-2">Renk Trendleri</h4>
+                                <p class="text-white/90 mb-4">2024 sonbaharının popüler renk paletleri</p>
+                                <div class="text-sm">13 Ekim • 5 dk</div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                BLOG-003
+            </div>
+        </section>
+
+        <!-- BLOG-004: Category Tabs -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10" x-data="{ activeCategory: 'all' }">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-5xl font-black text-white text-center mb-8">Blog Kategorileri</h2>
+
+                    <!-- Category Tabs -->
+                    <div class="flex flex-wrap justify-center gap-4 mb-12">
+                        <button @click="activeCategory = 'all'" :class="activeCategory === 'all' ? 'bg-white text-gray-900' : 'bg-white/10 text-white hover:bg-white/20'" class="px-6 py-3 rounded-full font-bold transition-all duration-300">
+                            <i class="fa-solid fa-grid-2 mr-2"></i>Tümü
+                        </button>
+                        <button @click="activeCategory = 'tech'" :class="activeCategory === 'tech' ? 'bg-blue-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'" class="px-6 py-3 rounded-full font-bold transition-all duration-300">
+                            <i class="fa-solid fa-laptop mr-2"></i>Teknoloji
+                        </button>
+                        <button @click="activeCategory = 'home'" :class="activeCategory === 'home' ? 'bg-amber-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'" class="px-6 py-3 rounded-full font-bold transition-all duration-300">
+                            <i class="fa-solid fa-home mr-2"></i>Ev & Yaşam
+                        </button>
+                        <button @click="activeCategory = 'shopping'" :class="activeCategory === 'shopping' ? 'bg-pink-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'" class="px-6 py-3 rounded-full font-bold transition-all duration-300">
+                            <i class="fa-solid fa-shopping-bag mr-2"></i>Alışveriş
+                        </button>
+                    </div>
+
+                    <!-- Posts Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Tech Posts -->
+                        <article x-show="activeCategory === 'all' || activeCategory === 'tech'" x-transition class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300">
+                            <div class="flex gap-6">
+                                <div class="w-24 h-24 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl flex-shrink-0">
+                                    <i class="fa-solid fa-microchip"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="inline-block bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2">TEKNOLOJİ</span>
+                                    <h3 class="text-xl font-bold text-white mb-2">Yapay Zeka ve Alışveriş</h3>
+                                    <p class="text-white/70 text-sm mb-3 line-clamp-2">AI destekli ürün önerileri nasıl çalışır?</p>
+                                    <div class="text-white/50 text-xs">14 Ekim • 6 dk</div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Home Posts -->
+                        <article x-show="activeCategory === 'all' || activeCategory === 'home'" x-transition class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300">
+                            <div class="flex gap-6">
+                                <div class="w-24 h-24 bg-amber-600 rounded-2xl flex items-center justify-center text-white text-3xl flex-shrink-0">
+                                    <i class="fa-solid fa-paint-roller"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="inline-block bg-amber-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2">EV & YAŞAM</span>
+                                    <h3 class="text-xl font-bold text-white mb-2">Duvar Boyası Renk Seçimi</h3>
+                                    <p class="text-white/70 text-sm mb-3 line-clamp-2">Evinize uygun rengi nasıl seçersiniz?</p>
+                                    <div class="text-white/50 text-xs">12 Ekim • 5 dk</div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Shopping Posts -->
+                        <article x-show="activeCategory === 'all' || activeCategory === 'shopping'" x-transition class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300">
+                            <div class="flex gap-6">
+                                <div class="w-24 h-24 bg-pink-600 rounded-2xl flex items-center justify-center text-white text-3xl flex-shrink-0">
+                                    <i class="fa-solid fa-tags"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="inline-block bg-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2">ALIŞVERİŞ</span>
+                                    <h3 class="text-xl font-bold text-white mb-2">Akıllı Alışveriş Taktikleri</h3>
+                                    <p class="text-white/70 text-sm mb-3 line-clamp-2">Online alışverişte tasarruf püf noktaları</p>
+                                    <div class="text-white/50 text-xs">10 Ekim • 4 dk</div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- More Posts -->
+                        <article x-show="activeCategory === 'all' || activeCategory === 'tech'" x-transition class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300">
+                            <div class="flex gap-6">
+                                <div class="w-24 h-24 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-3xl flex-shrink-0">
+                                    <i class="fa-solid fa-mobile"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="inline-block bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold mb-2">TEKNOLOJİ</span>
+                                    <h3 class="text-xl font-bold text-white mb-2">Telefon Kamera Karşılaştırması</h3>
+                                    <p class="text-white/70 text-sm mb-3 line-clamp-2">2024 flagshiplerinin kamera performansları</p>
+                                    <div class="text-white/50 text-xs">8 Ekim • 8 dk</div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                BLOG-004
+            </div>
+        </section>
+
+        <!-- BLOG-005: Timeline Style -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-5xl font-black text-gray-900 text-center mb-12">Blog Zaman Çizelgesi</h2>
+
+                    <div class="relative">
+                        <!-- Vertical Line -->
+                        <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-purple-500"></div>
+
+                        <!-- Timeline Items -->
+                        <div class="space-y-8">
+                            <!-- Item 1 -->
+                            <div class="relative pl-20">
+                                <div class="absolute left-4 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                                    <i class="fa-solid fa-circle text-xs"></i>
+                                </div>
+                                <div class="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                                    <div class="text-blue-600 text-sm font-bold mb-2">15 EKİM 2024</div>
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-2">E-Ticaretin Geleceği</h3>
+                                    <p class="text-gray-600 mb-4">Metaverse, AR ve VR teknolojilerinin online alışverişe etkisi üzerine detaylı analiz.</p>
+                                    <div class="flex items-center gap-4">
+                                        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-semibold">Teknoloji</span>
+                                        <a href="#" class="text-blue-600 font-bold">Oku →</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div class="relative pl-20">
+                                <div class="absolute left-4 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                                    <i class="fa-solid fa-circle text-xs"></i>
+                                </div>
+                                <div class="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                                    <div class="text-purple-600 text-sm font-bold mb-2">12 EKİM 2024</div>
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Sürdürülebilir Mobilya Trendi</h3>
+                                    <p class="text-gray-600 mb-4">Çevre dostu malzemelerle üretilen mobilyalar ve geri dönüşüm teknikleri.</p>
+                                    <div class="flex items-center gap-4">
+                                        <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm font-semibold">Mobilya</span>
+                                        <a href="#" class="text-purple-600 font-bold">Oku →</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="relative pl-20">
+                                <div class="absolute left-4 w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                                    <i class="fa-solid fa-circle text-xs"></i>
+                                </div>
+                                <div class="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                                    <div class="text-pink-600 text-sm font-bold mb-2">8 EKİM 2024</div>
+                                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Organik Tekstil Ürünleri</h3>
+                                    <p class="text-gray-600 mb-4">Sağlığınız ve çevre için organik kumaş seçiminin önemi.</p>
+                                    <div class="flex items-center gap-4">
+                                        <span class="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm font-semibold">Tekstil</span>
+                                        <a href="#" class="text-pink-600 font-bold">Oku →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                BLOG-005
+            </div>
+        </section>
+
+        <!-- BLOG-006: Card Masonry -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-5xl font-black text-gray-900 mb-4">Keşfet</h2>
+                        <p class="text-xl text-gray-600">İlginç yazılar ve rehberler</p>
+                    </div>
+
+                    <div class="columns-1 md:columns-2 lg:columns-3 gap-6">
+                        <!-- Card 1 - Tall -->
+                        <div class="bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl p-8 mb-6 text-white break-inside-avoid hover:scale-105 transition-all duration-300 cursor-pointer">
+                            <div class="text-6xl mb-4">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <h3 class="text-3xl font-black mb-4">E-Ticaret İstatistikleri 2024</h3>
+                            <p class="text-white/90 mb-6">Türkiye online alışveriş trendleri ve rakamlar</p>
+                            <div class="flex items-center gap-2 text-sm">
+                                <i class="fa-solid fa-clock"></i>
+                                <span>10 dk okuma</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 - Short -->
+                        <div class="bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl p-6 mb-6 text-white break-inside-avoid hover:scale-105 transition-all duration-300 cursor-pointer">
+                            <h3 class="text-2xl font-bold mb-2">Hızlı İpucu</h3>
+                            <p class="text-white/90">Mobilya bakımı için doğal yöntemler</p>
+                        </div>
+
+                        <!-- Card 3 - Medium -->
+                        <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl p-8 mb-6 text-white break-inside-avoid hover:scale-105 transition-all duration-300 cursor-pointer">
+                            <div class="text-5xl mb-4">
+                                <i class="fa-solid fa-sparkles"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Dekorasyon Trendleri</h3>
+                            <p class="text-white/90 mb-4">Bu sonbaharın en popüler ev dekorasyonu fikirleri</p>
+                            <div class="text-sm">6 dk</div>
+                        </div>
+
+                        <!-- Card 4 - Short -->
+                        <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl p-6 mb-6 text-white break-inside-avoid hover:scale-105 transition-all duration-300 cursor-pointer">
+                            <h3 class="text-2xl font-bold mb-2">Yeni Ürün</h3>
+                            <p class="text-white/90">Akıllı termostat incelemesi</p>
+                        </div>
+
+                        <!-- Card 5 - Tall -->
+                        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-8 mb-6 text-white break-inside-avoid hover:scale-105 transition-all duration-300 cursor-pointer">
+                            <div class="text-6xl mb-4">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <h3 class="text-3xl font-black mb-4">AI Alışveriş Asistanları</h3>
+                            <p class="text-white/90 mb-6">Yapay zeka destekli kişiselleştirilmiş ürün önerileri nasıl çalışır?</p>
+                            <div class="flex items-center gap-2 text-sm">
+                                <i class="fa-solid fa-clock"></i>
+                                <span>8 dk okuma</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 6 - Medium -->
+                        <div class="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl p-8 mb-6 text-white break-inside-avoid hover:scale-105 transition-all duration-300 cursor-pointer">
+                            <div class="text-5xl mb-4">
+                                <i class="fa-solid fa-gift"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Hediye Fikirleri</h3>
+                            <p class="text-white/90 mb-4">Her bütçeye uygun yaratıcı hediye önerileri</p>
+                            <div class="text-sm">5 dk</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                BLOG-006
+            </div>
+        </section>
+
+        <!-- BLOG-007: Search & Filter -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10" x-data="{ 
+                searchQuery: '',
+                posts: [
+                    { title: 'Akıllı Ev Sistemleri', category: 'Teknoloji', color: 'blue' },
+                    { title: 'Minimalist Dekorasyon', category: 'Ev & Yaşam', color: 'amber' },
+                    { title: 'Online Alışveriş Güvenliği', category: 'Alışveriş', color: 'pink' },
+                    { title: 'Laptop Seçim Rehberi', category: 'Teknoloji', color: 'blue' }
+                ],
+                get filteredPosts() {
+                    if (!this.searchQuery) return this.posts;
+                    return this.posts.filter(post => 
+                        post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                }
+            }">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-5xl font-black text-gray-900 text-center mb-8">Blog Ara</h2>
+
+                    <!-- Search Bar -->
+                    <div class="relative mb-12">
+                        <i class="fa-solid fa-search absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                        <input 
+                            type="text"
+                            x-model="searchQuery"
+                            placeholder="Blog yazılarında ara..."
+                            class="w-full bg-white pl-16 pr-6 py-5 rounded-full border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition-colors text-lg shadow-lg"
+                        >
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <span x-text="filteredPosts.length"></span> sonuç
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="space-y-4">
+                        <template x-for="post in filteredPosts" :key="post.title">
+                            <div class="bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
+                                <div class="flex items-center gap-6">
+                                    <div :class="'w-16 h-16 bg-gradient-to-br from-' + post.color + '-500 to-' + post.color + '-700 rounded-2xl flex items-center justify-center text-white text-2xl'">
+                                        <i class="fa-solid fa-file-alt"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-2xl font-bold text-gray-900 mb-2" x-text="post.title"></h3>
+                                        <div class="flex items-center gap-4 text-gray-600">
+                                            <span :class="'inline-block bg-' + post.color + '-100 text-' + post.color + '-600 px-3 py-1 rounded-full text-sm font-semibold'" x-text="post.category"></span>
+                                            <span class="text-sm">15 Ekim 2024</span>
+                                            <span>•</span>
+                                            <span class="text-sm">5 dk okuma</span>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-right text-gray-400 text-2xl"></i>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div x-show="filteredPosts.length === 0" class="text-center py-12">
+                            <div class="text-6xl text-gray-400 mb-4">
+                                <i class="fa-solid fa-search"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-600 mb-2">Sonuç Bulunamadı</h3>
+                            <p class="text-gray-500">Arama kriterlerinizi değiştirerek tekrar deneyin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                BLOG-007
+            </div>
+        </section>
+
+        <!-- BLOG-008: Author Profile -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-5xl mx-auto">
+                    <!-- Author Header -->
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8 mb-8 text-white">
+                        <div class="flex flex-col md:flex-row items-center gap-8">
+                            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center text-indigo-600 text-5xl font-black flex-shrink-0">
+                                AY
+                            </div>
+                            <div class="flex-1 text-center md:text-left">
+                                <h2 class="text-4xl font-black mb-2">Ahmet Yılmaz</h2>
+                                <p class="text-xl text-white/90 mb-4">Teknoloji Editörü & İçerik Yaratıcısı</p>
+                                <p class="text-white/80 mb-4">
+                                    10 yıllık deneyimimle teknoloji, e-ticaret ve dijital trendler üzerine yazıyorum.
+                                </p>
+                                <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                                    <div class="bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full">
+                                        <span class="font-bold">48</span> Yazı
+                                    </div>
+                                    <div class="bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full">
+                                        <span class="font-bold">25K+</span> Okuyucu
+                                    </div>
+                                    <div class="bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full">
+                                        <span class="font-bold">4.9/5</span> Puan
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Author's Posts -->
+                    <h3 class="text-3xl font-black text-gray-900 mb-6">Son Yazılar</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <article class="bg-gray-50 rounded-3xl p-6 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 text-2xl mb-4">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-gray-900 mb-2">
+                                Yapay Zeka ve E-Ticaret
+                            </h4>
+                            <p class="text-gray-600 mb-4">
+                                AI'nin online alışveriş deneyimini nasıl dönüştürdüğünü keşfedin.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">14 Ekim 2024</span>
+                                <a href="#" class="text-blue-600 font-bold">Oku →</a>
+                            </div>
+                        </article>
+
+                        <article class="bg-gray-50 rounded-3xl p-6 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-2xl mb-4">
+                                <i class="fa-solid fa-shield-check"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-gray-900 mb-2">
+                                Siber Güvenlik İpuçları
+                            </h4>
+                            <p class="text-gray-600 mb-4">
+                                Online alışverişte güvende kalmanın 10 altın kuralı.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">10 Ekim 2024</span>
+                                <a href="#" class="text-purple-600 font-bold">Oku →</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                BLOG-008
+            </div>
+        </section>
+
+        <!-- BLOG-009: Popular Posts -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-500 via-pink-500 to-purple-500 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute top-20 left-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+            </div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-12">
+                        <div class="inline-block bg-white/20 backdrop-blur-lg text-white px-6 py-2 rounded-full font-bold mb-6">
+                            🔥 POPÜLER
+                        </div>
+                        <h2 class="text-5xl md:text-6xl font-black text-white mb-4 drop-shadow-2xl">
+                            En Çok Okunan Yazılar
+                        </h2>
+                        <p class="text-xl text-white/90">Bu hafta en popüler blog içerikleri</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- #1 -->
+                        <article class="bg-white rounded-3xl overflow-hidden shadow-2xl hover:scale-105 transition-all duration-300 relative">
+                            <div class="absolute top-4 left-4 w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-black text-xl shadow-xl z-10">
+                                1
+                            </div>
+                            <div class="h-48 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-6xl">
+                                <i class="fa-solid fa-fire"></i>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-2xl font-black text-gray-900 mb-3">
+                                    Black Friday 2024 Rehberi
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    En iyi fırsatları kaçırmamak için taktikler ve takvim
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                                        <i class="fa-solid fa-eye"></i>
+                                        <span>45.2K görüntülenme</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- #2 -->
+                        <article class="bg-white rounded-3xl overflow-hidden shadow-2xl hover:scale-105 transition-all duration-300 relative">
+                            <div class="absolute top-4 left-4 w-12 h-12 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center text-white font-black text-xl shadow-xl z-10">
+                                2
+                            </div>
+                            <div class="h-48 bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white text-6xl">
+                                <i class="fa-solid fa-leaf"></i>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-2xl font-black text-gray-900 mb-3">
+                                    Sürdürülebilir Yaşam
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    Çevre dostu ürünlerle minimalist yaşam tarzı
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                                        <i class="fa-solid fa-eye"></i>
+                                        <span>38.7K görüntülenme</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- #3 -->
+                        <article class="bg-white rounded-3xl overflow-hidden shadow-2xl hover:scale-105 transition-all duration-300 relative">
+                            <div class="absolute top-4 left-4 w-12 h-12 bg-gradient-to-br from-orange-300 to-orange-400 rounded-full flex items-center justify-center text-white font-black text-xl shadow-xl z-10">
+                                3
+                            </div>
+                            <div class="h-48 bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-6xl">
+                                <i class="fa-solid fa-home-heart"></i>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-2xl font-black text-gray-900 mb-3">
+                                    Ev Ofisi Düzenleme
+                                </h3>
+                                <p class="text-gray-600 mb-4">
+                                    Verimli çalışma için ideal ev ofisi tasarımı
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                                        <i class="fa-solid fa-eye"></i>
+                                        <span>32.4K görüntülenme</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                BLOG-009
+            </div>
+        </section>
+
+        <!-- BLOG-010: Newsletter Integration -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- Left: Latest Posts -->
+                        <div>
+                            <h2 class="text-4xl font-black text-white mb-8">Son Blog Yazıları</h2>
+                            <div class="space-y-4">
+                                <article class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+                                    <h3 class="text-xl font-bold text-white mb-2">Akıllı Mutfak Cihazları 2024</h3>
+                                    <p class="text-white/70 text-sm mb-3">Hayatınızı kolaylaştıracak mutfak teknolojileri</p>
+                                    <div class="flex items-center gap-4 text-white/50 text-sm">
+                                        <span>15 Ekim</span>
+                                        <span>•</span>
+                                        <span>6 dk</span>
+                                    </div>
+                                </article>
+
+                                <article class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+                                    <h3 class="text-xl font-bold text-white mb-2">Gardırop Düzenleme Taktikleri</h3>
+                                    <p class="text-white/70 text-sm mb-3">Marie Kondo metoduyla minimalist gardırop</p>
+                                    <div class="flex items-center gap-4 text-white/50 text-sm">
+                                        <span>13 Ekim</span>
+                                        <span>•</span>
+                                        <span>5 dk</span>
+                                    </div>
+                                </article>
+
+                                <article class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+                                    <h3 class="text-xl font-bold text-white mb-2">Gaming Setup Rehberi</h3>
+                                    <p class="text-white/70 text-sm mb-3">Profesyonel oyuncu ekipmanları ve öneriler</p>
+                                    <div class="flex items-center gap-4 text-white/50 text-sm">
+                                        <span>11 Ekim</span>
+                                        <span>•</span>
+                                        <span>8 dk</span>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+
+                        <!-- Right: Newsletter Signup -->
+                        <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-8 shadow-2xl" x-data="{ email: '', subscribed: false }">
+                            <div class="text-center mb-8">
+                                <div class="w-20 h-20 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center text-white text-4xl mx-auto mb-6">
+                                    <i class="fa-solid fa-envelope-open"></i>
+                                </div>
+                                <h3 class="text-3xl font-black text-white mb-4">
+                                    Blog Bültenine Abone Ol
+                                </h3>
+                                <p class="text-xl text-white/90">
+                                    Her hafta yeni blog yazılarından haberdar ol
+                                </p>
+                            </div>
+
+                            <form @submit.prevent="subscribed = true" class="space-y-4">
+                                <input 
+                                    type="email" 
+                                    x-model="email"
+                                    placeholder="E-posta adresin"
+                                    required
+                                    class="w-full px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50"
+                                >
+                                <button 
+                                    type="submit"
+                                    class="w-full bg-white text-blue-600 py-4 rounded-full font-black text-lg shadow-xl hover:scale-105 transition-all duration-300"
+                                >
+                                    <i class="fa-solid fa-check mr-2"></i>
+                                    Abone Ol
+                                </button>
+                                <div x-show="subscribed" x-transition class="bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full text-center">
+                                    <i class="fa-solid fa-check-circle mr-2"></i>
+                                    Harika! İlk bültenin yolda.
+                                </div>
+                            </form>
+
+                            <div class="mt-8 space-y-3">
+                                <div class="flex items-center gap-3 text-white">
+                                    <i class="fa-solid fa-check-circle text-xl"></i>
+                                    <span>Haftalık yeni yazılar</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-white">
+                                    <i class="fa-solid fa-check-circle text-xl"></i>
+                                    <span>Özel içerikler</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-white">
+                                    <i class="fa-solid fa-check-circle text-xl"></i>
+                                    <span>Ücretsiz rehberler</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                BLOG-010
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

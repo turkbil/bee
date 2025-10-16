@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Cards - ixtif.com Tasarım Kütüphanesi</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Scroll Snap */
+        html {
+            scroll-snap-type: y mandatory;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(to right, #f0f0f0 0%, #e0e0e0 20%, #f0f0f0 40%, #f0f0f0 100%);
+            background-size: 1000px 100%;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        5 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-products-4.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-products-6.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 relative overflow-hidden px-8">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">PRODUCT-005</span>
+        </div>
+
+        <div class="max-w-7xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Karşılaştırma Kartları</h2>
+                <p class="text-xl text-gray-400">Yan yana ürün karşılaştırma</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Basic Plan -->
+                <div class="bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-gray-500 to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-warehouse text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Dell Inspiron 15</h3>
+                        <p class="text-gray-400">Temel Kullanım</p>
+                    </div>
+
+                    <div class="text-center mb-6">
+                        <div class="text-4xl font-black text-white mb-2">₺12.999</div>
+                        <div class="text-gray-400">Normal fiyat: ₺18.999</div>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-green-400"></i>
+                            <span>Intel Core i5 11. Nesil</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-green-400"></i>
+                            <span>8GB RAM</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-green-400"></i>
+                            <span>256GB SSD</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-green-400"></i>
+                            <span>15.6" FHD Ekran</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-500">
+                            <i class="fa-solid fa-xmark text-red-400"></i>
+                            <span>Ekran Kartı Yok</span>
+                        </li>
+                    </ul>
+
+                    <button class="w-full bg-white/10 hover:bg-white/20 text-white py-4 rounded-xl font-bold transition-all">
+                        Sepete Ekle
+                    </button>
+                </div>
+
+                <!-- Popular Plan -->
+                <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-8 border-4 border-yellow-400 relative transform scale-105">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black px-6 py-2 rounded-full font-bold">
+                        EN POPÜLER
+                    </div>
+
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-warehouse text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Dell XPS 15</h3>
+                        <p class="text-blue-100">Profesyonel Kullanım</p>
+                    </div>
+
+                    <div class="text-center mb-6">
+                        <div class="text-4xl font-black text-white mb-2">₺24.999</div>
+                        <div class="text-blue-100">Normal fiyat: ₺42.999</div>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-white">
+                            <i class="fa-solid fa-check text-yellow-300"></i>
+                            <span>Intel Core i7 13. Nesil</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-white">
+                            <i class="fa-solid fa-check text-yellow-300"></i>
+                            <span>16GB RAM</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-white">
+                            <i class="fa-solid fa-check text-yellow-300"></i>
+                            <span>512GB SSD</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-white">
+                            <i class="fa-solid fa-check text-yellow-300"></i>
+                            <span>15.6" 4K OLED Ekran</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-white">
+                            <i class="fa-solid fa-check text-yellow-300"></i>
+                            <span>NVIDIA RTX 4050</span>
+                        </li>
+                    </ul>
+
+                    <button class="w-full bg-white text-blue-600 py-4 rounded-xl font-bold hover:bg-blue-50 transition-all">
+                        Sepete Ekle
+                    </button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-warehouse text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Alienware x15</h3>
+                        <p class="text-gray-400">Gaming & Yaratıcı</p>
+                    </div>
+
+                    <div class="text-center mb-6">
+                        <div class="text-4xl font-black text-white mb-2">₺54.999</div>
+                        <div class="text-gray-400">Normal fiyat: ₺89.999</div>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-purple-400"></i>
+                            <span>Intel Core i9 13. Nesil</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-purple-400"></i>
+                            <span>32GB RAM</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-purple-400"></i>
+                            <span>1TB NVMe SSD</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-purple-400"></i>
+                            <span>15.6" QHD 240Hz</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-300">
+                            <i class="fa-solid fa-check text-purple-400"></i>
+                            <span>NVIDIA RTX 4080</span>
+                        </li>
+                    </ul>
+
+                    <button class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold hover:shadow-2xl transition-all">
+                        Sepete Ekle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+</body>
+</html>

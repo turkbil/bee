@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hizmetler Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        1 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="#" class="px-4 py-2 bg-white/10 rounded-lg opacity-50 cursor-not-allowed transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-services-2.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="service-001" class="min-h-screen flex items-center justify-center bg-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>SERVICE-001
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">İxtif.com Hizmetleri</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Müşterilerimize en iyi alışveriş deneyimini sunuyoruz</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Ücretsiz Kargo -->
+            <div class="group bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                    <i class="fa-solid fa-truck-fast text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Ücretsiz Kargo</h3>
+                <p class="text-gray-700 mb-4">500 TL ve üzeri tüm siparişlerinizde kargo ücretsiz!</p>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-blue-600"></i>
+                        <span>Türkiye geneli</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-blue-600"></i>
+                        <span>2-3 gün teslimat</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Kolay İade -->
+            <div class="group bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                    <i class="fa-solid fa-rotate-left text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Kolay İade</h3>
+                <p class="text-gray-700 mb-4">14 gün içinde ücretsiz iade ve değişim hakkı</p>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-green-600"></i>
+                        <span>Ücret iadesi</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-green-600"></i>
+                        <span>Kapıdan teslim</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Güvenli Ödeme -->
+            <div class="group bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                    <i class="fa-solid fa-shield-check text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Güvenli Ödeme</h3>
+                <p class="text-gray-700 mb-4">SSL sertifikalı güvenli alışveriş garantisi</p>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-purple-600"></i>
+                        <span>Kredi kartı</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-purple-600"></i>
+                        <span>Kapıda ödeme</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 7/24 Destek -->
+            <div class="group bg-gradient-to-br from-orange-50 to-orange-100 rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <div class="w-20 h-20 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                    <i class="fa-solid fa-headset text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">7/24 Destek</h3>
+                <p class="text-gray-700 mb-4">Müşteri hizmetlerimiz her zaman yanınızda</p>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-orange-600"></i>
+                        <span>Canlı destek</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-orange-600"></i>
+                        <span>WhatsApp hattı</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Orijinal Ürün Garantisi -->
+            <div class="group bg-gradient-to-br from-pink-50 to-pink-100 rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <div class="w-20 h-20 bg-gradient-to-br from-pink-600 to-pink-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                    <i class="fa-solid fa-certificate text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Orijinal Ürün</h3>
+                <p class="text-gray-700 mb-4">Tüm ürünlerimiz %100 orijinal ve garantili</p>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-pink-600"></i>
+                        <span>Fabrika çıkışlı</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-pink-600"></i>
+                        <span>Resmi garanti</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Taksit İmkanı -->
+            <div class="group bg-gradient-to-br from-teal-50 to-teal-100 rounded-3xl p-8 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <div class="w-20 h-20 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                    <i class="fa-solid fa-credit-card text-4xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Taksit İmkanı</h3>
+                <p class="text-gray-700 mb-4">9 taksit imkanı ile ödemelerinizi kolaylaştırın</p>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-teal-600"></i>
+                        <span>9 taksit</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check text-teal-600"></i>
+                        <span>Tüm kartlar</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

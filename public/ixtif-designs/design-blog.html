@@ -3,153 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Sections - ixtif.com</title>
+    <title>Blog Tasarımları - iXtif Tasarım Kütüphanesi</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-        section { scroll-snap-align: start; }
-        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #2563eb, #7c3aed);
+        }
     </style>
 </head>
-<body>
-<div class="fixed top-4 left-4 z-[9999]">
-    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
-        <i class="fa-solid fa-arrow-left"></i>
-        <span class="font-semibold text-sm">Ana Menü</span>
-    </a>
-</div>
-<div class="scroll-container">
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
 
-<!-- BLOG-001 -->
-<section id="blog-001" class="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
-    <div class="container mx-auto px-6 text-center">
-        <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
-            <i class="fa-solid fa-hashtag mr-1"></i>BLOG-001
-        </span>
-        <h2 class="text-6xl font-black text-gray-900 mb-6">Blog Sections #1</h2>
-        <p class="text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-            İxtif.com'da blog sections için modern ve yaratıcı tasarım örneği
-        </p>
-        <div class="flex justify-center gap-4">
-            <button class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-10 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition">
-                <i class="fa-solid fa-rocket mr-2"></i>Başla
-            </button>
-            <button class="border-2 border-blue-600 text-blue-600 px-10 py-5 rounded-full font-bold text-lg hover:bg-blue-50 transition">
-                Detaylar
-            </button>
+    <!-- Header Navigation -->
+    <div class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all group">
+                    <i class="fa-solid fa-home text-xl group-hover:scale-110 transition-transform"></i>
+                    <span class="hidden sm:inline font-semibold">Ana Sayfa</span>
+                </a>
+
+                <!-- Kategori Başlığı -->
+                <div class="text-center flex-1 mx-4">
+                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full">
+                        <i class="fa-solid fa-newspaper text-2xl"></i>
+                        <h1 class="text-xl md:text-2xl font-bold">Blog Tasarımları</h1>
+                    </div>
+                    <p class="text-sm text-gray-400 mt-2">Blog ve haber tasarımları</p>
+                </div>
+
+                <!-- Tasarım Sayısı -->
+                <div class="text-center px-4 py-2 bg-white/10 rounded-lg">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-yellow-500">
+                        10
+                    </div>
+                    <div class="text-xs text-gray-400">Tasarım</div>
+                </div>
+            </div>
         </div>
     </div>
-</section>
 
-<!-- BLOG-002 -->
-<section id="blog-002" class="h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100">
-    <div class="container mx-auto px-6 text-center">
-        <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
-            <i class="fa-solid fa-hashtag mr-1"></i>BLOG-002
-        </span>
-        <h2 class="text-6xl font-black text-gray-900 mb-6">Blog Sections #2</h2>
-        <p class="text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-            İxtif.com'da blog sections için modern ve yaratıcı tasarım örneği
-        </p>
-        <div class="flex justify-center gap-4">
-            <button class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-10 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition">
-                <i class="fa-solid fa-rocket mr-2"></i>Başla
-            </button>
-            <button class="border-2 border-purple-600 text-purple-600 px-10 py-5 rounded-full font-bold text-lg hover:bg-purple-50 transition">
-                Detaylar
-            </button>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-12">
+
+        <!-- Info Banner -->
+        <div class="mb-12 bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-info text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-2">Nasıl Kullanılır?</h3>
+                    <p class="text-gray-400">
+                        Aşağıdaki tasarımlardan birini seçin. Her tasarım ayrı bir sayfada açılacak ve üst kısımdaki
+                        <strong class="text-white">İleri/Geri</strong> butonları ile diğer tasarımlara geçiş yapabilirsiniz.
+                    </p>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
 
-<!-- BLOG-003 -->
-<section id="blog-003" class="h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
-    <div class="container mx-auto px-6 text-center">
-        <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
-            <i class="fa-solid fa-hashtag mr-1"></i>BLOG-003
-        </span>
-        <h2 class="text-6xl font-black text-gray-900 mb-6">Blog Sections #3</h2>
-        <p class="text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-            İxtif.com'da blog sections için modern ve yaratıcı tasarım örneği
-        </p>
-        <div class="flex justify-center gap-4">
-            <button class="bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition">
-                <i class="fa-solid fa-rocket mr-2"></i>Başla
-            </button>
-            <button class="border-2 border-green-600 text-green-600 px-10 py-5 rounded-full font-bold text-lg hover:bg-green-50 transition">
-                Detaylar
-            </button>
+        <!-- Gallery Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            
+            <a href="design-blog-1.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #1</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #1
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-2.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #2</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #2
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-3.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #3</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #3
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-4.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #4</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #4
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-5.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #5</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #5
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-6.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #6</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #6
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-7.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #7</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #7
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-8.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #8</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #8
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-9.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #9</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #9
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-blog-10.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-amber-500 to-yellow-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-newspaper text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #10</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-500 to-yellow-500 transition-all">
+                            Blog Tasarımları #10
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-amber-500 to-yellow-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
         </div>
-    </div>
-</section>
 
-<!-- BLOG-004 -->
-<section id="blog-004" class="h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-pink-100">
-    <div class="container mx-auto px-6 text-center">
-        <span class="inline-block bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
-            <i class="fa-solid fa-hashtag mr-1"></i>BLOG-004
-        </span>
-        <h2 class="text-6xl font-black text-gray-900 mb-6">Blog Sections #4</h2>
-        <p class="text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-            İxtif.com'da blog sections için modern ve yaratıcı tasarım örneği
-        </p>
-        <div class="flex justify-center gap-4">
-            <button class="bg-gradient-to-r from-pink-600 to-pink-700 text-white px-10 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition">
-                <i class="fa-solid fa-rocket mr-2"></i>Başla
-            </button>
-            <button class="border-2 border-pink-600 text-pink-600 px-10 py-5 rounded-full font-bold text-lg hover:bg-pink-50 transition">
-                Detaylar
-            </button>
+        <!-- Back to Home -->
+        <div class="mt-12 text-center">
+            <a href="index.html" class="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 rounded-full transition-all group">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-semibold">Ana Sayfaya Dön</span>
+            </a>
         </div>
-    </div>
-</section>
 
-<!-- BLOG-005 -->
-<section id="blog-005" class="h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
-    <div class="container mx-auto px-6 text-center">
-        <span class="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
-            <i class="fa-solid fa-hashtag mr-1"></i>BLOG-005
-        </span>
-        <h2 class="text-6xl font-black text-gray-900 mb-6">Blog Sections #5</h2>
-        <p class="text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-            İxtif.com'da blog sections için modern ve yaratıcı tasarım örneği
-        </p>
-        <div class="flex justify-center gap-4">
-            <button class="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-10 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition">
-                <i class="fa-solid fa-rocket mr-2"></i>Başla
-            </button>
-            <button class="border-2 border-orange-600 text-orange-600 px-10 py-5 rounded-full font-bold text-lg hover:bg-orange-50 transition">
-                Detaylar
-            </button>
-        </div>
     </div>
-</section>
 
-<!-- BLOG-006 -->
-<section id="blog-006" class="h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-cyan-100">
-    <div class="container mx-auto px-6 text-center">
-        <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
-            <i class="fa-solid fa-hashtag mr-1"></i>BLOG-006
-        </span>
-        <h2 class="text-6xl font-black text-gray-900 mb-6">Blog Sections #6</h2>
-        <p class="text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-            İxtif.com'da blog sections için modern ve yaratıcı tasarım örneği
-        </p>
-        <div class="flex justify-center gap-4">
-            <button class="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white px-10 py-5 rounded-full font-bold text-lg hover:shadow-2xl transition">
-                <i class="fa-solid fa-rocket mr-2"></i>Başla
-            </button>
-            <button class="border-2 border-cyan-600 text-cyan-600 px-10 py-5 rounded-full font-bold text-lg hover:bg-cyan-50 transition">
-                Detaylar
-            </button>
-        </div>
-    </div>
-</section>
-
-</div>
 </body>
 </html>

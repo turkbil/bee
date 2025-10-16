@@ -74,4 +74,27 @@ return [
         'chat_id' => env('TELEGRAM_CHAT_ID'),
     ],
 
+    // Alias for backward compatibility (QuoteRequestNotification + TelegramNotificationService)
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twilio WhatsApp Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Twilio WhatsApp API bildirimleri için gerekli ayarlar.
+    | Account SID ve Auth Token Twilio dashboard'dan alınır.
+    |
+    */
+
+    'twilio' => [
+        'account_sid' => env('TWILIO_ACCOUNT_SID'),
+        'auth_token' => env('TWILIO_AUTH_TOKEN'),
+        'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
+        'whatsapp_to' => env('TWILIO_WHATSAPP_TO'),
+    ],
+
 ];

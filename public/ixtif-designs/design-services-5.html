@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hizmetler Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        5 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-services-4.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-services-6.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="service-005" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-blue-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>SERVICE-005
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Müşteri Avantajları</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">İxtif.com'da alışveriş yapmanın 6 önemli avantajı</p>
+        </div>
+
+        <div class="max-w-5xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-7xl font-black text-cyan-200 mb-4">01</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">İstif Fiyatları</h3>
+                <p class="text-gray-600">Fabrika fazlası ve stok ürünlerde %70'e varan indirimler. Normal fiyatların çok altında kaliteli ürünler.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-7xl font-black text-blue-200 mb-4">02</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Geniş Ürün Yelpazesi</h3>
+                <p class="text-gray-600">Forklift, mobilya, tekstil, alet & ekipman olmak üzere 450+ farklı ürün seçeneği.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-7xl font-black text-purple-200 mb-4">03</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Güvenli Alışveriş</h3>
+                <p class="text-gray-600">SSL sertifikalı güvenli ödeme sistemi. Kişisel ve finansal bilgileriniz tam güvende.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-7xl font-black text-green-200 mb-4">04</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Hızlı Teslimat</h3>
+                <p class="text-gray-600">Türkiye geneli 2-3 gün içinde teslimat. 500 TL üzeri siparişlerde kargo bedava.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-7xl font-black text-orange-200 mb-4">05</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Kolay İade</h3>
+                <p class="text-gray-600">14 gün içinde koşulsuz iade ve değişim hakkı. İade kargo ücreti tarafımızdan karşılanır.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="text-7xl font-black text-pink-200 mb-4">06</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Müşteri Desteği</h3>
+                <p class="text-gray-600">7/24 canlı destek, WhatsApp hattı ve telefon ile kesintisiz müşteri hizmetleri.</p>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

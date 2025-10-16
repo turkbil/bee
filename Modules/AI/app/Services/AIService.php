@@ -976,10 +976,34 @@ class AIService
         if ($mode === 'chat') {
             // CHAT MODU: Samimi, kısa, doğal yanıtlar
             $parts[] = "🗣️ CHAT MODU: Samimi, dostça ve doğal konuş. Sohbet tarzında yanıt ver.";
-            $parts[] = "📝 HTML KULLANIMI: HTML tagları kullanabilirsin ama işlenmiş çıktı olarak ver.";
-            $parts[] = "⚠️ ÖNEMLİ: HTML kodlarını HAM METIN olarak verme! Örnek: '<p>metin</p>' değil, doğrudan 'metin' ver.";
-            $parts[] = "📏 UZUNLUK: Soruya göre esnek - kısa sorular için kısa yanıt, detay gereken konular için daha uzun.";
-            $parts[] = "🎯 ÖNEMLI: Blog yazısı değil, doğal sohbet yap. Samimi ve arkadaşça ol.";
+            $parts[] = "";
+            $parts[] = "⚡ ZORUNLU MARKDOWN FORMAT KURALLARI:";
+            $parts[] = "✅ MUTLAKA KULLAN: Markdown formatı";
+            $parts[] = "✅ Paragraflar: Boş satırla ayır";
+            $parts[] = "✅ Liste: Her satır '- ' ile başla (tire+boşluk)";
+            $parts[] = "✅ Vurgu: **kalın metin**";
+            $parts[] = "";
+            $parts[] = "⛔ KESİNLİKLE YASAK:";
+            $parts[] = "❌ HTML tagları YASAK! (<p>, <ul>, <li>, <br> vb.)";
+            $parts[] = "❌ '<>' karakterleri YASAK!";
+            $parts[] = "❌ '<> <>' gibi ayraçlar YASAK!";
+            $parts[] = "";
+            $parts[] = "✅ DOĞRU ÖRNEK (AYNEN BU ŞEKİLDE YAZ):";
+            $parts[] = "Merhaba! Size yardımcı olmak isterim.";
+            $parts[] = "";
+            $parts[] = "İşte sorularım:";
+            $parts[] = "- Hangi kapasite?";
+            $parts[] = "- Elektrikli mi?";
+            $parts[] = "- Kullanım alanı neresi?";
+            $parts[] = "";
+            $parts[] = "Bu bilgilerle size en uygun ürünü bulabilirim!";
+            $parts[] = "";
+            $parts[] = "❌ YANLIŞ ÖRNEK (ASLA BÖYLE YAPMA):";
+            $parts[] = "<p>Merhaba</p> ← HTML YASAK!";
+            $parts[] = "Hangi kapasite?<> ← <> YASAK!";
+            $parts[] = "";
+            $parts[] = "📏 UZUNLUK: Soruya göre esnek.";
+            $parts[] = "🎯 ÖNEMLI: Doğal sohbet yap. Samimi ve arkadaşça ol. Sadece Markdown kullan!";
         } else {
             // FEATURE/BLOG MODU: Profesyonel, detaylı içerik
             if (isset($options['user_input'])) {

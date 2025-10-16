@@ -69,7 +69,7 @@ class ShopQuoteController extends Controller
     }
 
     /**
-     * Admin'e bildirim gönder (Mail + Telegram)
+     * Admin'e bildirim gönder (Mail + Telegram + WhatsApp)
      */
     private function sendAdminNotification(array $data, ShopProduct $product)
     {
@@ -84,6 +84,33 @@ class ShopQuoteController extends Controller
         Notification::route('mail', $adminEmail)
             ->route('telegram', config('services.telegram-bot-api.chat_id'))
             ->notify(new QuoteRequestNotification($data, $product));
+
+        // WhatsApp bildirimi gönder
+        try {
+            $whatsappService = app(\App\Services\WhatsAppNotificationService::class);
+            $whatsappService->sendCustomerLead(
+                [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone'],
+                ],
+                $data['message'] ?? 'Teklif talebi',
+                [
+                    [
+                        'title' => $product->title,
+                        'url' => route('shop.show', $product->slug),
+                    ]
+                ],
+                [
+                    'site' => tenant('domain'),
+                    'page_url' => url()->previous(),
+                ]
+            );
+        } catch (\Exception $e) {
+            Log::error('WhatsApp notification failed', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

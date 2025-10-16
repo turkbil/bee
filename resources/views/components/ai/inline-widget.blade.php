@@ -222,7 +222,7 @@ window.aiChatRenderMarkdown = function(text) {
     class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700"
 >
     {{-- Header --}}
-    <div class="{{ $selectedTheme['header'] }} dark:from-blue-700 dark:to-blue-800 text-white px-6 py-4">
+    <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white px-6 py-4">
         <div class="flex items-center justify-between" :class="{ 'cursor-pointer': !alwaysOpen }" @click="toggle()">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -270,7 +270,7 @@ window.aiChatRenderMarkdown = function(text) {
         {{-- Messages Container --}}
         <div
             data-ai-chat-messages
-            class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900"
+            class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900"
         >
             {{-- Placeholder Animation (V4 - Slide Up - Dynamic Product-specific) --}}
             <div x-show="!chat.hasConversation"
@@ -334,7 +334,7 @@ window.aiChatRenderMarkdown = function(text) {
         </div>
 
         {{-- Input Area --}}
-        <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
             {{-- Error message --}}
             <div x-show="chat.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" x-cloak>
                 <span x-text="chat.error"></span>
@@ -362,24 +362,11 @@ window.aiChatRenderMarkdown = function(text) {
                 </button>
             </form>
 
-            {{-- Footer Info - Auto-hide after 10 seconds --}}
-            <div
-                x-data="{ visible: true }"
-                x-init="setTimeout(() => visible = false, 10000)"
-                x-show="visible"
-                x-transition:leave="transition ease-in duration-1000"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="mt-2"
-            >
-                <p class="text-[8px] text-gray-400 dark:text-gray-500 leading-tight opacity-60">
+            {{-- Footer Info - Always visible --}}
+            <div class="mt-2">
+                <p style="font-size: 11px !important; line-height: 1.4 !important; opacity: 0.9 !important;"
+                   class="text-gray-800 dark:text-white">
                     Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
-                    Geliştirme süreci devam etmektedir, zaman zaman hatalar görülebilir.
-                    Ürünler hakkında daha detaylı bilgi veya destek için
-                    <a href="/sayfa/iletisim" target="_blank" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 underline">
-                        iletişim sayfamızdan
-                    </a>
-                    bize ulaşabilirsiniz.
                 </p>
             </div>
         </div>

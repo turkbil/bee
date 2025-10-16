@@ -20,10 +20,10 @@ class TelegramNotificationService
     private string $botToken;
     private string $chatId;
 
-    public function __construct()
+    public function __construct(?string $botToken = null, ?string $chatId = null)
     {
-        $this->botToken = config('services.telegram.bot_token') ?? env('TELEGRAM_BOT_TOKEN', '');
-        $this->chatId = config('services.telegram.chat_id') ?? env('TELEGRAM_CHAT_ID', '');
+        $this->botToken = $botToken ?? config('services.telegram.bot_token') ?? env('TELEGRAM_BOT_TOKEN', '');
+        $this->chatId = $chatId ?? config('services.telegram.chat_id') ?? env('TELEGRAM_CHAT_ID', '');
     }
 
     /**

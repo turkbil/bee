@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        8 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-pricing-7.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-pricing-9.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="pricing-008" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-indigo-100 p-8 overflow-y-auto">
+    <div class="container mx-auto max-w-7xl py-12">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>PRICING-008
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Fiyatlar & SSS</h2>
+            <p class="text-xl text-gray-600">Sık sorulan sorular ve fiyatlandırma</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Pricing -->
+            <div class="bg-white rounded-3xl p-8 shadow-xl">
+                <h3 class="text-3xl font-black text-gray-900 mb-8">Paketler</h3>
+                <div class="space-y-6">
+                    <div class="p-6 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-2xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-2xl font-bold text-gray-900">Temel</h4>
+                            <div class="text-3xl font-black text-indigo-600">₺49</div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>50 ürün</li>
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>Temel analiz</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-2xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-2xl font-bold text-gray-900">Pro</h4>
+                            <div class="text-3xl font-black text-indigo-600">₺99</div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>Sınırsız ürün</li>
+                            <li><i class="fa-solid fa-check text-green-600 mr-2"></i>Gelişmiş analiz</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div x-data="{ openFaq: 0 }">
+                <h3 class="text-3xl font-black text-gray-900 mb-8">Sık Sorulanlar</h3>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <button @click="openFaq = openFaq === 0 ? null : 0" 
+                                class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all">
+                            <span class="font-bold text-gray-900">Deneme süresi var mı?</span>
+                            <i :class="openFaq === 0 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                        </button>
+                        <div x-show="openFaq === 0" x-transition class="p-6 pt-0 text-gray-700">
+                            Evet, tüm paketlerde 14 gün ücretsiz deneme süresi sunuyoruz.
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <button @click="openFaq = openFaq === 1 ? null : 1" 
+                                class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all">
+                            <span class="font-bold text-gray-900">İptal edebilir miyim?</span>
+                            <i :class="openFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                        </button>
+                        <div x-show="openFaq === 1" x-transition class="p-6 pt-0 text-gray-700">
+                            Evet, istediğiniz zaman iptal edebilirsiniz. Kalan süre için geri ödeme yapılır.
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <button @click="openFaq = openFaq === 2 ? null : 2" 
+                                class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-all">
+                            <span class="font-bold text-gray-900">Ödeme yöntemleri neler?</span>
+                            <i :class="openFaq === 2 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                        </button>
+                        <div x-show="openFaq === 2" x-transition class="p-6 pt-0 text-gray-700">
+                            Kredi kartı, banka havalesi ve sanal pos ile ödeme yapabilirsiniz.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

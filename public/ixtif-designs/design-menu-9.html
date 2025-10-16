@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Tasarımları - ixtif.com | 10 Profesyonel Mega Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-down { animation: slideDown 0.3s ease-out; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-[60] bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        9 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-menu-8.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-menu-10.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="menu-009" class="min-h-screen flex flex-col bg-gradient-to-br from-emerald-50 to-teal-50" x-data="{ sidebarOpen: false, mobileMenuOpen: false, expandedCategory: null, searchFocused: false }">
+    <nav class="bg-white shadow-lg relative z-50">
+        <!-- Top Bar -->
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-2">
+            <div class="container mx-auto px-6">
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center gap-4">
+                        <span><i class="fa-solid fa-truck mr-2"></i>Hızlı Kargo</span>
+                        <span><i class="fa-solid fa-shield-check mr-2"></i>Güvenli Alışveriş</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="hover:text-emerald-200 transition">Yardım</a>
+                        <a href="#" class="hover:text-emerald-200 transition">İletişim</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center gap-6">
+                <!-- Logo (Compact) -->
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-warehouse text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-black text-emerald-600">ixtif</span>
+                </div>
+
+                <!-- Dominant Search Bar -->
+                <div class="flex-1 relative">
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl z-10"></i>
+                        <input
+                            type="text"
+                            x-model="searchQuery"
+                            @focus="searchFocused = true"
+                            @blur="setTimeout(() => searchFocused = false, 200)"
+                            placeholder="20.000+ ürün içinde arayın... (Forklift, mobilya, tekstil...)"
+                            class="w-full bg-gray-50 border-2 border-gray-200 rounded-full px-16 py-5 text-lg focus:outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-sm focus:shadow-xl"
+                        >
+                        <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-10 py-3 rounded-full font-bold hover:shadow-xl transition-all">
+                            <i class="fa-solid fa-search mr-2"></i>Ara
+                        </button>
+                    </div>
+
+                    <!-- Search Suggestions Dropdown -->
+                    <div x-show="searchFocused" x-transition class="absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 z-50">
+                        <div class="grid grid-cols-4 gap-4 mb-6">
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-500 uppercase mb-3">Popüler Aramalar</h4>
+                                <div class="space-y-2">
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">iPhone 13</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Samsung TV</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Koltuk Takımı</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Laptop</a>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-500 uppercase mb-3">Kategoriler</h4>
+                                <div class="space-y-2">
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Forklift</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">İstif Makinesi</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Transpalet</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Yedek Parça</a>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-500 uppercase mb-3">Markalar</h4>
+                                <div class="space-y-2">
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Apple</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Samsung</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">LG</a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm">Bosch</a>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-500 uppercase mb-3">Kampanyalar</h4>
+                                <div class="space-y-2">
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm flex items-center gap-2">
+                                        <i class="fa-solid fa-fire text-orange-500"></i>
+                                        Flaş İndirim
+                                    </a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm flex items-center gap-2">
+                                        <i class="fa-solid fa-tag text-red-500"></i>
+                                        %50 İndirim
+                                    </a>
+                                    <a href="#" class="block text-gray-700 hover:text-emerald-600 font-semibold text-sm flex items-center gap-2">
+                                        <i class="fa-solid fa-truck text-blue-500"></i>
+                                        Ücretsiz Kargo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-100 pt-4 text-center">
+                            <p class="text-sm text-gray-500">
+                                <i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i>
+                                İpucu: Detaylı arama için kategori + marka yazabilirsiniz
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <button class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center hover:bg-emerald-100 transition relative">
+                        <i class="fa-solid fa-heart text-emerald-600 text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">9</span>
+                    </button>
+                    <button class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center hover:bg-emerald-100 transition relative">
+                        <i class="fa-solid fa-shopping-cart text-emerald-600 text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">6</span>
+                    </button>
+                    <button class="bg-gray-900 text-white px-6 py-3 rounded-full font-semibold hover:shadow-xl transition">
+                        <i class="fa-solid fa-user mr-2"></i>Giriş
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Bar -->
+        <div class="border-t border-gray-100">
+            <div class="container mx-auto px-6 py-3">
+                <div class="flex items-center justify-center gap-6">
+                    <a href="#" class="text-gray-700 hover:text-emerald-600 font-semibold transition text-sm">Forklift</a>
+                    <a href="#" class="text-gray-700 hover:text-emerald-600 font-semibold transition text-sm">İstif Makinesi</a>
+                    <a href="#" class="text-gray-700 hover:text-emerald-600 font-semibold transition text-sm">Transpalet</a>
+                    <a href="#" class="text-gray-700 hover:text-emerald-600 font-semibold transition text-sm">Yedek Parça</a>
+                    <a href="#" class="text-gray-700 hover:text-emerald-600 font-semibold transition text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-fire text-orange-500"></i>
+                        Kampanyalar
+                    </a>
+                    <a href="#" class="text-gray-700 hover:text-emerald-600 font-semibold transition text-sm">Toplu Satış</a>
+                    <a href="#" class="text-gray-700 hover:text-emerald-600 font-semibold transition text-sm">Hakkımızda</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-1 flex items-center justify-center p-12">
+        <div class="text-center max-w-2xl">
+            <span class="inline-block bg-emerald-100 text-emerald-600 px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>MENU-009
+            </span>
+            <h2 class="text-5xl font-black text-gray-800 mb-4">Search-First Menu</h2>
+            <p class="text-xl text-gray-600 mb-6">Arama odaklı, büyük search bar ile kullanıcı dostu navigasyon</p>
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-500">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Search Priority</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Smart Suggestions</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Large Input</span>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

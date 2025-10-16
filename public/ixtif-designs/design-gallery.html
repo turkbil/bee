@@ -3,785 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery Sections - ixtif.com</title>
+    <title>Galeri Tasarımları - iXtif Tasarım Kütüphanesi</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-        section { scroll-snap-align: start; }
-        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #2563eb, #7c3aed);
+        }
     </style>
 </head>
-<body>
-<div class="fixed top-4 left-4 z-[9999]">
-    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
-        <i class="fa-solid fa-arrow-left"></i>
-        <span class="font-semibold text-sm">Ana Menü</span>
-    </a>
-</div>
-<div class="scroll-container">
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
 
-<!-- GALLERY-001: Classic Grid -->
-<section id="gallery-001" class="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-gray-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-001
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Ürün Galerisi</h2>
-            <p class="text-xl text-gray-600">En popüler ürünlerimiz</p>
-        </div>
+    <!-- Header Navigation -->
+    <div class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all group">
+                    <i class="fa-solid fa-home text-xl group-hover:scale-110 transition-transform"></i>
+                    <span class="hidden sm:inline font-semibold">Ana Sayfa</span>
+                </a>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-laptop text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">Laptop Pro</h3>
-                        <p class="text-sm">Elektronik</p>
+                <!-- Kategori Başlığı -->
+                <div class="text-center flex-1 mx-4">
+                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-gradient-to-r from-fuchsia-500 to-pink-500 rounded-full">
+                        <i class="fa-solid fa-images text-2xl"></i>
+                        <h1 class="text-xl md:text-2xl font-bold">Galeri Tasarımları</h1>
                     </div>
+                    <p class="text-sm text-gray-400 mt-2">Görsel galeri tasarımları</p>
                 </div>
-            </div>
 
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500 to-green-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-couch text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">Ofis Koltuğu</h3>
-                        <p class="text-sm">Mobilya</p>
+                <!-- Tasarım Sayısı -->
+                <div class="text-center px-4 py-2 bg-white/10 rounded-lg">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 to-pink-500">
+                        10
                     </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-shirt text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">Pamuklu Kumaş</h3>
-                        <p class="text-sm">Tekstil</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-wrench text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">Elektrikli Matkap</h3>
-                        <p class="text-sm">Alet & Ekipman</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-pink-500 to-pink-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-mobile text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">Akıllı Telefon</h3>
-                        <p class="text-sm">Elektronik</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-cyan-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-chair text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">Çalışma Masası</h3>
-                        <p class="text-sm">Mobilya</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-indigo-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-headphones text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">Kulaklık</h3>
-                        <p class="text-sm">Elektronik</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-red-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-hammer text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <h3 class="font-bold text-xl mb-1">El Aletleri Seti</h3>
-                        <p class="text-sm">Alet & Ekipman</p>
-                    </div>
+                    <div class="text-xs text-gray-400">Tasarım</div>
                 </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- GALLERY-002: Masonry Layout -->
-<section id="gallery-002" class="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-8 overflow-y-auto">
-    <div class="container mx-auto max-w-7xl py-12">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-002
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Masonry Galeri</h2>
-            <p class="text-xl text-gray-600">Farklı boyutlarda ürün görselleri</p>
-        </div>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-12">
 
-        <div class="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl cursor-pointer mb-4">
-                <div class="bg-gradient-to-br from-blue-400 to-blue-600 aspect-square flex items-center justify-center">
-                    <i class="fa-solid fa-laptop text-9xl text-white opacity-50"></i>
+        <!-- Info Banner -->
+        <div class="mb-12 bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-info text-xl"></i>
                 </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all">
-                        <h3 class="font-bold text-2xl">Laptop</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl cursor-pointer mb-4">
-                <div class="bg-gradient-to-br from-green-400 to-green-600 aspect-[4/3] flex items-center justify-center">
-                    <i class="fa-solid fa-couch text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all">
-                        <h3 class="font-bold text-2xl">Mobilya</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl cursor-pointer mb-4">
-                <div class="bg-gradient-to-br from-purple-400 to-purple-600 aspect-[3/4] flex items-center justify-center">
-                    <i class="fa-solid fa-shirt text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all">
-                        <h3 class="font-bold text-2xl">Tekstil</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl cursor-pointer mb-4">
-                <div class="bg-gradient-to-br from-orange-400 to-orange-600 aspect-square flex items-center justify-center">
-                    <i class="fa-solid fa-wrench text-9xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all">
-                        <h3 class="font-bold text-2xl">Aletler</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl cursor-pointer mb-4">
-                <div class="bg-gradient-to-br from-pink-400 to-pink-600 aspect-[3/4] flex items-center justify-center">
-                    <i class="fa-solid fa-mobile text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all">
-                        <h3 class="font-bold text-2xl">Telefon</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl cursor-pointer mb-4">
-                <div class="bg-gradient-to-br from-cyan-400 to-cyan-600 aspect-[4/3] flex items-center justify-center">
-                    <i class="fa-solid fa-chair text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all">
-                        <h3 class="font-bold text-2xl">Masa</h3>
-                    </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-2">Nasıl Kullanılır?</h3>
+                    <p class="text-gray-400">
+                        Aşağıdaki tasarımlardan birini seçin. Her tasarım ayrı bir sayfada açılacak ve üst kısımdaki
+                        <strong class="text-white">İleri/Geri</strong> butonları ile diğer tasarımlara geçiş yapabilirsiniz.
+                    </p>
                 </div>
             </div>
         </div>
+
+        <!-- Gallery Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            
+            <a href="design-gallery-1.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #1</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #1
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-2.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #2</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #2
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-3.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #3</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #3
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-4.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #4</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #4
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-5.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #5</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #5
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-6.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #6</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #6
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-7.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #7</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #7
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-8.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #8</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #8
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-9.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #9</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #9
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-gallery-10.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-fuchsia-500 to-pink-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-images text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #10</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-500 to-pink-500 transition-all">
+                            Galeri Tasarımları #10
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+        </div>
+
+        <!-- Back to Home -->
+        <div class="mt-12 text-center">
+            <a href="index.html" class="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 rounded-full transition-all group">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-semibold">Ana Sayfaya Dön</span>
+            </a>
+        </div>
+
     </div>
-</section>
 
-<!-- GALLERY-003: Lightbox Modal -->
-<section id="gallery-003" class="h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-8"
-         x-data="{ 
-             selectedImage: null,
-             images: [
-                 { title: 'Laptop Pro', category: 'Elektronik', icon: 'fa-laptop', color: 'blue' },
-                 { title: 'Ofis Koltuğu', category: 'Mobilya', icon: 'fa-couch', color: 'green' },
-                 { title: 'Pamuklu Kumaş', category: 'Tekstil', icon: 'fa-shirt', color: 'purple' },
-                 { title: 'Elektrikli Matkap', category: 'Alet', icon: 'fa-wrench', color: 'orange' },
-                 { title: 'Akıllı Telefon', category: 'Elektronik', icon: 'fa-mobile', color: 'pink' },
-                 { title: 'Çalışma Masası', category: 'Mobilya', icon: 'fa-chair', color: 'cyan' }
-             ]
-         }">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-003
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Lightbox Galeri</h2>
-            <p class="text-xl text-gray-600">Resimlere tıklayarak büyütün</p>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-            <template x-for="(image, index) in images" :key="index">
-                <div @click="selectedImage = index" 
-                     class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer hover:scale-105 transition-all duration-300">
-                    <div :class="`absolute inset-0 bg-gradient-to-br from-${image.color}-500 to-${image.color}-700`"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <i :class="'fa-solid ' + image.icon + ' text-9xl text-white opacity-50'"></i>
-                    </div>
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-end p-6">
-                        <div class="text-white">
-                            <h3 class="font-bold text-xl" x-text="image.title"></h3>
-                            <p class="text-sm" x-text="image.category"></p>
-                        </div>
-                    </div>
-                </div>
-            </template>
-        </div>
-
-        <!-- Lightbox Modal -->
-        <div x-show="selectedImage !== null" 
-             x-transition
-             @click="selectedImage = null"
-             class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-8">
-            <div @click.stop class="relative max-w-5xl w-full">
-                <button @click="selectedImage = null" 
-                        class="absolute -top-16 right-0 text-white text-4xl hover:scale-110 transition-all">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-                
-                <template x-if="selectedImage !== null">
-                    <div class="bg-white rounded-3xl p-12">
-                        <div :class="`bg-gradient-to-br from-${images[selectedImage].color}-500 to-${images[selectedImage].color}-700 rounded-2xl aspect-video flex items-center justify-center mb-8`">
-                            <i :class="'fa-solid ' + images[selectedImage].icon + ' text-9xl text-white'"></i>
-                        </div>
-                        <h3 class="text-4xl font-black text-gray-900 mb-2" x-text="images[selectedImage].title"></h3>
-                        <p class="text-xl text-gray-600" x-text="images[selectedImage].category"></p>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY-004: Category Filter -->
-<section id="gallery-004" class="h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-8"
-         x-data="{
-             activeFilter: 'all',
-             items: [
-                 { title: 'Laptop', category: 'electronics', icon: 'fa-laptop', color: 'blue' },
-                 { title: 'Koltuk', category: 'furniture', icon: 'fa-couch', color: 'green' },
-                 { title: 'Kumaş', category: 'textile', icon: 'fa-shirt', color: 'purple' },
-                 { title: 'Matkap', category: 'tools', icon: 'fa-wrench', color: 'orange' },
-                 { title: 'Telefon', category: 'electronics', icon: 'fa-mobile', color: 'pink' },
-                 { title: 'Masa', category: 'furniture', icon: 'fa-chair', color: 'cyan' }
-             ],
-             get filteredItems() {
-                 if (this.activeFilter === 'all') return this.items;
-                 return this.items.filter(item => item.category === this.activeFilter);
-             }
-         }">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-004
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Filtrelenebilir Galeri</h2>
-            <p class="text-xl text-gray-600">Kategoriye göre filtreleyin</p>
-        </div>
-
-        <!-- Filters -->
-        <div class="flex flex-wrap justify-center gap-4 mb-12">
-            <button @click="activeFilter = 'all'" 
-                    :class="activeFilter === 'all' ? 'bg-gradient-to-r from-green-600 to-green-700 text-white scale-110' : 'bg-white text-gray-700'"
-                    class="px-8 py-4 rounded-full font-bold transition-all shadow-lg">
-                Tümü
-            </button>
-            <button @click="activeFilter = 'electronics'" 
-                    :class="activeFilter === 'electronics' ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white scale-110' : 'bg-white text-gray-700'"
-                    class="px-8 py-4 rounded-full font-bold transition-all shadow-lg">
-                Elektronik
-            </button>
-            <button @click="activeFilter = 'furniture'" 
-                    :class="activeFilter === 'furniture' ? 'bg-gradient-to-r from-green-600 to-green-700 text-white scale-110' : 'bg-white text-gray-700'"
-                    class="px-8 py-4 rounded-full font-bold transition-all shadow-lg">
-                Mobilya
-            </button>
-            <button @click="activeFilter = 'textile'" 
-                    :class="activeFilter === 'textile' ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white scale-110' : 'bg-white text-gray-700'"
-                    class="px-8 py-4 rounded-full font-bold transition-all shadow-lg">
-                Tekstil
-            </button>
-            <button @click="activeFilter = 'tools'" 
-                    :class="activeFilter === 'tools' ? 'bg-gradient-to-r from-orange-600 to-orange-700 text-white scale-110' : 'bg-white text-gray-700'"
-                    class="px-8 py-4 rounded-full font-bold transition-all shadow-lg">
-                Alet
-            </button>
-        </div>
-
-        <!-- Gallery Items -->
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-            <template x-for="item in filteredItems" :key="item.title">
-                <div x-transition
-                     class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer hover:scale-105 transition-all">
-                    <div :class="`absolute inset-0 bg-gradient-to-br from-${item.color}-500 to-${item.color}-700`"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <i :class="'fa-solid ' + item.icon + ' text-9xl text-white opacity-50'"></i>
-                    </div>
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
-                        <h3 class="text-white font-bold text-3xl opacity-0 group-hover:opacity-100 transition-all" x-text="item.title"></h3>
-                    </div>
-                </div>
-            </template>
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY-005: Slider/Carousel -->
-<section id="gallery-005" class="h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-pink-100 p-8"
-         x-data="{
-             currentSlide: 0,
-             slides: [
-                 { title: 'Laptop Pro', category: 'Elektronik', icon: 'fa-laptop', color: 'blue' },
-                 { title: 'Ofis Koltuğu', category: 'Mobilya', icon: 'fa-couch', color: 'green' },
-                 { title: 'Pamuklu Kumaş', category: 'Tekstil', icon: 'fa-shirt', color: 'purple' },
-                 { title: 'Elektrikli Matkap', category: 'Alet & Ekipman', icon: 'fa-wrench', color: 'orange' }
-             ],
-             next() { this.currentSlide = (this.currentSlide + 1) % this.slides.length; },
-             prev() { this.currentSlide = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1; }
-         }"
-         x-init="setInterval(() => { next() }, 4000)">
-    <div class="container mx-auto max-w-5xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-005
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Slider Galeri</h2>
-            <p class="text-xl text-gray-600">Otomatik geçişli galeri</p>
-        </div>
-
-        <div class="relative">
-            <template x-for="(slide, index) in slides" :key="index">
-                <div x-show="currentSlide === index"
-                     x-transition:enter="transition ease-out duration-500"
-                     x-transition:enter-start="opacity-0 transform translate-x-8"
-                     x-transition:enter-end="opacity-100 transform translate-x-0">
-                    <div class="bg-white rounded-3xl p-12 shadow-2xl">
-                        <div :class="`bg-gradient-to-br from-${slide.color}-500 to-${slide.color}-700 rounded-2xl aspect-video flex items-center justify-center mb-8`">
-                            <i :class="'fa-solid ' + slide.icon + ' text-9xl text-white'"></i>
-                        </div>
-                        <h3 class="text-4xl font-black text-gray-900 mb-2" x-text="slide.title"></h3>
-                        <p class="text-xl text-gray-600" x-text="slide.category"></p>
-                    </div>
-                </div>
-            </template>
-
-            <!-- Navigation -->
-            <button @click="prev()" 
-                    class="absolute left-4 top-1/2 -translate-y-1/2 w-16 h-16 bg-pink-600 text-white rounded-full hover:scale-110 transition-all shadow-lg">
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <button @click="next()" 
-                    class="absolute right-4 top-1/2 -translate-y-1/2 w-16 h-16 bg-pink-600 text-white rounded-full hover:scale-110 transition-all shadow-lg">
-                <i class="fa-solid fa-chevron-right"></i>
-            </button>
-
-            <!-- Dots -->
-            <div class="flex justify-center gap-2 mt-8">
-                <template x-for="(slide, index) in slides" :key="index">
-                    <button @click="currentSlide = index"
-                            :class="currentSlide === index ? 'bg-pink-600 w-8' : 'bg-gray-300 w-3'"
-                            class="h-3 rounded-full transition-all"></button>
-                </template>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY-006: Hover Zoom Effect -->
-<section id="gallery-006" class="h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 p-8">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-006
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Zoom Efektli Galeri</h2>
-            <p class="text-xl text-gray-600">Üzerine gelince yakınlaşır</p>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="relative overflow-hidden rounded-3xl aspect-square group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 group-hover:scale-150 transition-all duration-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-laptop text-8xl text-white"></i>
-                </div>
-            </div>
-            <div class="relative overflow-hidden rounded-3xl aspect-square group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 group-hover:scale-150 transition-all duration-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-couch text-8xl text-white"></i>
-                </div>
-            </div>
-            <div class="relative overflow-hidden rounded-3xl aspect-square group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-400 to-green-600 group-hover:scale-150 transition-all duration-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-shirt text-8xl text-white"></i>
-                </div>
-            </div>
-            <div class="relative overflow-hidden rounded-3xl aspect-square group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-purple-400 to-purple-600 group-hover:scale-150 transition-all duration-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-wrench text-8xl text-white"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY-007: Full Screen Grid -->
-<section id="gallery-007" class="h-screen bg-gradient-to-br from-cyan-50 to-cyan-100 p-8">
-    <div class="h-full flex flex-col">
-        <div class="text-center mb-8">
-            <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-007
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Tam Ekran Grid</h2>
-        </div>
-
-        <div class="flex-1 grid grid-cols-4 grid-rows-2 gap-4">
-            <div class="col-span-2 row-span-2 relative overflow-hidden rounded-3xl group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-cyan-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-laptop text-9xl text-white opacity-50"></i>
-                </div>
-            </div>
-            <div class="relative overflow-hidden rounded-3xl group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-mobile text-6xl text-white opacity-50"></i>
-                </div>
-            </div>
-            <div class="relative overflow-hidden rounded-3xl group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500 to-green-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-couch text-6xl text-white opacity-50"></i>
-                </div>
-            </div>
-            <div class="relative overflow-hidden rounded-3xl group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-shirt text-6xl text-white opacity-50"></i>
-                </div>
-            </div>
-            <div class="relative overflow-hidden rounded-3xl group cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-700 group-hover:scale-110 transition-all duration-500"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-wrench text-6xl text-white opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY-008: Instagram Style -->
-<section id="gallery-008" class="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-indigo-100 p-8">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-008
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Instagram Tarzı</h2>
-            <p class="text-xl text-gray-600">Sosyal medya görünümü</p>
-        </div>
-
-        <div class="grid grid-cols-3 gap-4">
-            <div class="group relative overflow-hidden aspect-square rounded-lg cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-indigo-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-laptop text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all flex gap-6">
-                        <div class="text-center">
-                            <i class="fa-solid fa-heart text-2xl mb-2"></i>
-                            <p class="font-bold">125</p>
-                        </div>
-                        <div class="text-center">
-                            <i class="fa-solid fa-comment text-2xl mb-2"></i>
-                            <p class="font-bold">48</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden aspect-square rounded-lg cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-pink-500 to-pink-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-mobile text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all flex gap-6">
-                        <div class="text-center">
-                            <i class="fa-solid fa-heart text-2xl mb-2"></i>
-                            <p class="font-bold">89</p>
-                        </div>
-                        <div class="text-center">
-                            <i class="fa-solid fa-comment text-2xl mb-2"></i>
-                            <p class="font-bold">32</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden aspect-square rounded-lg cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500 to-green-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-couch text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all flex gap-6">
-                        <div class="text-center">
-                            <i class="fa-solid fa-heart text-2xl mb-2"></i>
-                            <p class="font-bold">203</p>
-                        </div>
-                        <div class="text-center">
-                            <i class="fa-solid fa-comment text-2xl mb-2"></i>
-                            <p class="font-bold">67</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden aspect-square rounded-lg cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-shirt text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all flex gap-6">
-                        <div class="text-center">
-                            <i class="fa-solid fa-heart text-2xl mb-2"></i>
-                            <p class="font-bold">156</p>
-                        </div>
-                        <div class="text-center">
-                            <i class="fa-solid fa-comment text-2xl mb-2"></i>
-                            <p class="font-bold">42</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden aspect-square rounded-lg cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-wrench text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all flex gap-6">
-                        <div class="text-center">
-                            <i class="fa-solid fa-heart text-2xl mb-2"></i>
-                            <p class="font-bold">178</p>
-                        </div>
-                        <div class="text-center">
-                            <i class="fa-solid fa-comment text-2xl mb-2"></i>
-                            <p class="font-bold">55</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden aspect-square rounded-lg cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-cyan-700"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <i class="fa-solid fa-chair text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transition-all flex gap-6">
-                        <div class="text-center">
-                            <i class="fa-solid fa-heart text-2xl mb-2"></i>
-                            <p class="font-bold">134</p>
-                        </div>
-                        <div class="text-center">
-                            <i class="fa-solid fa-comment text-2xl mb-2"></i>
-                            <p class="font-bold">39</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY-009: Pinterest Style -->
-<section id="gallery-009" class="h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 to-violet-100 p-8 overflow-y-auto">
-    <div class="container mx-auto max-w-7xl py-12">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-violet-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-009
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Pinterest Tarzı</h2>
-            <p class="text-xl text-gray-600">Farklı boyutlarda kartlar</p>
-        </div>
-
-        <div class="columns-2 md:columns-4 gap-6 space-y-6">
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
-                <div class="bg-gradient-to-br from-violet-400 to-violet-600 aspect-[3/4] flex items-center justify-center">
-                    <i class="fa-solid fa-laptop text-9xl text-white opacity-50"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Laptop Pro 15"</h3>
-                    <p class="text-gray-600 mb-4">Yüksek performanslı iş istasyonu</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-2xl font-black text-violet-600">₺8,500</span>
-                        <button class="bg-violet-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
-                <div class="bg-gradient-to-br from-blue-400 to-blue-600 aspect-square flex items-center justify-center">
-                    <i class="fa-solid fa-mobile text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Akıllı Telefon</h3>
-                    <p class="text-gray-600 mb-4">Son model, 128GB</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-2xl font-black text-blue-600">₺4,200</span>
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
-                <div class="bg-gradient-to-br from-green-400 to-green-600 aspect-[4/3] flex items-center justify-center">
-                    <i class="fa-solid fa-couch text-7xl text-white opacity-50"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Ofis Koltuğu</h3>
-                    <p class="text-gray-600 mb-4">Ergonomik, deri</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-2xl font-black text-green-600">₺1,850</span>
-                        <button class="bg-green-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
-                <div class="bg-gradient-to-br from-purple-400 to-purple-600 aspect-[3/4] flex items-center justify-center">
-                    <i class="fa-solid fa-shirt text-8xl text-white opacity-50"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Pamuklu Kumaş</h3>
-                    <p class="text-gray-600 mb-4">%100 pamuk, 10m</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-2xl font-black text-purple-600">₺450</span>
-                        <button class="bg-purple-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- GALLERY-010: Video Gallery -->
-<section id="gallery-010" class="h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-rose-100 p-8">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-rose-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-010
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Video Galeri</h2>
-            <p class="text-xl text-gray-600">Ürün tanıtım videoları</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="group relative overflow-hidden rounded-3xl aspect-video cursor-pointer bg-white shadow-lg">
-                <div class="absolute inset-0 bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center">
-                    <i class="fa-solid fa-laptop text-8xl text-white opacity-30"></i>
-                </div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-20 h-20 bg-black/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
-                        <i class="fa-solid fa-play text-white text-3xl ml-1"></i>
-                    </div>
-                </div>
-                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
-                    <i class="fa-solid fa-clock mr-1"></i>2:30
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent">
-                    <h3 class="text-white font-bold text-xl">Laptop Pro İnceleme</h3>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-video cursor-pointer bg-white shadow-lg">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                    <i class="fa-solid fa-mobile text-8xl text-white opacity-30"></i>
-                </div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-20 h-20 bg-black/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
-                        <i class="fa-solid fa-play text-white text-3xl ml-1"></i>
-                    </div>
-                </div>
-                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
-                    <i class="fa-solid fa-clock mr-1"></i>1:45
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent">
-                    <h3 class="text-white font-bold text-xl">Telefon Özellikleri</h3>
-                </div>
-            </div>
-
-            <div class="group relative overflow-hidden rounded-3xl aspect-video cursor-pointer bg-white shadow-lg">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                    <i class="fa-solid fa-couch text-8xl text-white opacity-30"></i>
-                </div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-20 h-20 bg-black/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
-                        <i class="fa-solid fa-play text-white text-3xl ml-1"></i>
-                    </div>
-                </div>
-                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
-                    <i class="fa-solid fa-clock mr-1"></i>3:15
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent">
-                    <h3 class="text-white font-bold text-xl">Mobilya Montaj Rehberi</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-</div>
 </body>
 </html>

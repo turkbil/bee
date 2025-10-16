@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Popup Tasarımları - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; position: relative; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        2 / 5
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-chatbot-popup-1.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-chatbot-popup-3.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="chatbot-popup-002" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-indigo-900 p-8 relative">
+    <div class="text-center">
+        <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-POPUP-002
+        </span>
+        <h2 class="text-4xl font-black text-white mb-4">Full Screen Chat Overlay</h2>
+        <p class="text-xl text-purple-300">Tam ekran sohbet deneyimi</p>
+    </div>
+
+    <!-- Trigger Button -->
+    <div x-data="{ showFullscreen: false }" class="absolute bottom-8 left-8 z-50">
+        <button @click="showFullscreen = true"
+                class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transition-all">
+            <i class="fa-solid fa-expand mr-2"></i>Full Screen Chat
+        </button>
+
+        <!-- Full Screen Overlay -->
+        <div x-show="showFullscreen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 z-[100] flex flex-col">
+
+            <!-- Header -->
+            <div class="bg-black/30 backdrop-blur-lg border-b border-white/10 p-6">
+                <div class="max-w-7xl mx-auto flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-robot text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">ixtif AI Asistan</h3>
+                            <p class="text-purple-300">Akıllı alışveriş yardımcınız</p>
+                        </div>
+                    </div>
+                    <button @click="showFullscreen = false"
+                            class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white transition-all">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl rounded-tl-sm p-6">
+                            <p class="text-white text-lg leading-relaxed">
+                                Merhaba! Ben ixtif.com'un AI asistanıyım. Size 450+ ürün içinden en uygununu bulmaya yardımcı olabilirim. Ne arıyorsunuz?
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl rounded-tr-sm p-6">
+                            <p class="text-white text-lg">Evimdeki oturma odasını yenilemek istiyorum</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl rounded-tl-sm p-6">
+                            <p class="text-white text-lg leading-relaxed mb-4">
+                                Harika! Size oturma odası için en popüler koltuk takımlarımızı göstereyim:
+                            </p>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-white/10 rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                                    <div class="w-full h-32 bg-white/20 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fa-solid fa-boxes-stacked text-4xl text-white"></i>
+                                    </div>
+                                    <h5 class="font-bold text-white mb-1">Modern L Koltuk</h5>
+                                    <p class="text-purple-200 text-sm mb-2">₺18.999</p>
+                                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm font-semibold transition-all">
+                                        Detay
+                                    </button>
+                                </div>
+                                <div class="bg-white/10 rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                                    <div class="w-full h-32 bg-white/20 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fa-solid fa-layer-group text-4xl text-white"></i>
+                                    </div>
+                                    <h5 class="font-bold text-white mb-1">Chester Kanepe</h5>
+                                    <p class="text-purple-200 text-sm mb-2">₺24.500</p>
+                                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm font-semibold transition-all">
+                                        Detay
+                                    </button>
+                                </div>
+                                <div class="bg-white/10 rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                                    <div class="w-full h-32 bg-white/20 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fa-solid fa-boxes-stacked text-4xl text-white"></i>
+                                    </div>
+                                    <h5 class="font-bold text-white mb-1">3+2+1 Takım</h5>
+                                    <p class="text-purple-200 text-sm mb-2">₺32.999</p>
+                                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm font-semibold transition-all">
+                                        Detay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input -->
+            <div class="bg-black/30 backdrop-blur-lg border-t border-white/10 p-6">
+                <div class="max-w-4xl mx-auto flex gap-4">
+                    <input type="text" placeholder="Mesajınızı buraya yazın..."
+                           class="flex-1 bg-white/10 border border-white/20 text-white placeholder-white/40 rounded-2xl px-8 py-5 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button class="bg-gradient-to-r from-purple-600 to-pink-600 px-10 py-5 rounded-2xl font-bold text-white hover:shadow-2xl transition-all">
+                        <i class="fa-solid fa-paper-plane mr-2"></i>Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

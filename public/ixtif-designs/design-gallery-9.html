@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        9 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-gallery-8.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-gallery-10.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="gallery-009" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 to-violet-100 p-8 overflow-y-auto">
+    <div class="container mx-auto max-w-7xl py-12">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-violet-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>GALLERY-009
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Pinterest Tarzı</h2>
+            <p class="text-xl text-gray-600">Farklı boyutlarda kartlar</p>
+        </div>
+
+        <div class="columns-2 md:columns-4 gap-6 space-y-6">
+            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
+                <div class="bg-gradient-to-br from-violet-400 to-violet-600 aspect-[3/4] flex items-center justify-center">
+                    <i class="fa-solid fa-warehouse text-9xl text-white opacity-50"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold text-xl text-gray-900 mb-2">Laptop Pro 15"</h3>
+                    <p class="text-gray-600 mb-4">Yüksek performanslı iş istasyonu</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-black text-violet-600">₺8,500</span>
+                        <button class="bg-violet-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
+                            Satın Al
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
+                <div class="bg-gradient-to-br from-blue-400 to-blue-600 aspect-square flex items-center justify-center">
+                    <i class="fa-solid fa-truck-loading text-8xl text-white opacity-50"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold text-xl text-gray-900 mb-2">Akıllı Telefon</h3>
+                    <p class="text-gray-600 mb-4">Son model, 128GB</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-black text-blue-600">₺4,200</span>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
+                            Satın Al
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
+                <div class="bg-gradient-to-br from-green-400 to-green-600 aspect-[4/3] flex items-center justify-center">
+                    <i class="fa-solid fa-boxes-stacked text-7xl text-white opacity-50"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold text-xl text-gray-900 mb-2">Ofis Koltuğu</h3>
+                    <p class="text-gray-600 mb-4">Ergonomik, deri</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-black text-green-600">₺1,850</span>
+                        <button class="bg-green-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
+                            Satın Al
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="break-inside-avoid group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer mb-6">
+                <div class="bg-gradient-to-br from-purple-400 to-purple-600 aspect-[3/4] flex items-center justify-center">
+                    <i class="fa-solid fa-dolly text-8xl text-white opacity-50"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold text-xl text-gray-900 mb-2">Pamuklu Kumaş</h3>
+                    <p class="text-gray-600 mb-4">%100 pamuk, 10m</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-black text-purple-600">₺450</span>
+                        <button class="bg-purple-600 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-all">
+                            Satın Al
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

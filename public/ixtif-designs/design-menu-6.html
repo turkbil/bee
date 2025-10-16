@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Tasarımları - ixtif.com | 10 Profesyonel Mega Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-down { animation: slideDown 0.3s ease-out; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-[60] bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        6 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-menu-5.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-menu-7.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="menu-006" class="min-h-screen flex bg-gradient-to-br from-indigo-50 to-purple-50">
+    <!-- Left Vertical Sidebar -->
+    <div class="w-20 bg-gradient-to-b from-indigo-600 to-purple-600 flex flex-col items-center py-6 gap-4" x-data="{ activeMenu: 'home' }">
+        <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-xl">
+            <i class="fa-solid fa-warehouse text-indigo-600 text-2xl"></i>
+        </div>
+
+        <button @click="activeMenu = 'home'" :class="activeMenu === 'home' ? 'bg-white text-indigo-600 shadow-xl' : 'text-white/70 hover:text-white'" class="w-14 h-14 rounded-2xl flex flex-col items-center justify-center transition group">
+            <i class="fa-solid fa-home text-xl mb-1"></i>
+            <span class="text-xs font-bold">Ana</span>
+        </button>
+
+        <button @click="activeMenu = 'categories'" :class="activeMenu === 'categories' ? 'bg-white text-indigo-600 shadow-xl' : 'text-white/70 hover:text-white'" class="w-14 h-14 rounded-2xl flex flex-col items-center justify-center transition group">
+            <i class="fa-solid fa-grid-2 text-xl mb-1"></i>
+            <span class="text-xs font-bold">Kat.</span>
+        </button>
+
+        <button @click="activeMenu = 'deals'" :class="activeMenu === 'deals' ? 'bg-white text-indigo-600 shadow-xl' : 'text-white/70 hover:text-white'" class="w-14 h-14 rounded-2xl flex flex-col items-center justify-center transition group relative">
+            <i class="fa-solid fa-tag text-xl mb-1"></i>
+            <span class="text-xs font-bold">Fırsat</span>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full"></span>
+        </button>
+
+        <button @click="activeMenu = 'favorites'" :class="activeMenu === 'favorites' ? 'bg-white text-indigo-600 shadow-xl' : 'text-white/70 hover:text-white'" class="w-14 h-14 rounded-2xl flex flex-col items-center justify-center transition group">
+            <i class="fa-solid fa-heart text-xl mb-1"></i>
+            <span class="text-xs font-bold">Favori</span>
+        </button>
+
+        <div class="flex-1"></div>
+
+        <button class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-white/70 hover:bg-white/20 transition">
+            <i class="fa-solid fa-cog text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col">
+        <!-- Top Horizontal Bar -->
+        <nav class="bg-white shadow-lg px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <h1 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">ixtif Kategoriler</h1>
+
+                    <!-- Breadcrumb -->
+                    <div class="hidden md:flex items-center gap-2 text-sm text-gray-500">
+                        <a href="#" class="hover:text-indigo-600 transition">Ana Sayfa</a>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                        <span class="text-gray-800 font-semibold">Kategoriler</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="text" placeholder="Ne arıyorsunuz?" class="w-80 bg-gray-50 border-2 border-gray-200 rounded-full px-5 py-2 pl-12 focus:outline-none focus:border-indigo-500 transition">
+                        <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+
+                    <!-- Cart -->
+                    <button class="relative">
+                        <div class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center hover:bg-indigo-100 transition">
+                            <i class="fa-solid fa-shopping-bag text-indigo-600 text-xl"></i>
+                        </div>
+                        <span class="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">12</span>
+                    </button>
+
+                    <!-- User -->
+                    <button class="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2.5 rounded-full font-semibold hover:shadow-xl transition">
+                        <i class="fa-solid fa-user-circle text-xl"></i>
+                        <span class="hidden md:inline">Hesabım</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Category Grid -->
+        <div class="flex-1 overflow-y-auto p-8">
+            <div class="grid grid-cols-4 gap-6 max-w-6xl">
+                <a href="#" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-warehouse text-4xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Forklift</h3>
+                    <p class="text-sm text-gray-500 mb-3">128 ürün</p>
+                    <div class="flex items-center gap-2 text-blue-600 font-semibold text-sm">
+                        <span>İncele</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-boxes-stacked text-4xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">İstif Makinesi</h3>
+                    <p class="text-sm text-gray-500 mb-3">106 ürün</p>
+                    <div class="flex items-center gap-2 text-green-600 font-semibold text-sm">
+                        <span>İncele</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-dolly text-4xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Transpalet</h3>
+                    <p class="text-sm text-gray-500 mb-3">69 ürün</p>
+                    <div class="flex items-center gap-2 text-purple-600 font-semibold text-sm">
+                        <span>İncele</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#" class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-toolbox text-4xl text-orange-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Yedek Parça</h3>
+                    <p class="text-sm text-gray-500 mb-3">146 ürün</p>
+                    <div class="flex items-center gap-2 text-orange-600 font-semibold text-sm">
+                        <span>İncele</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="bg-white p-6 text-center border-t border-gray-100">
+            <span class="inline-block bg-indigo-100 text-indigo-600 px-6 py-2 rounded-full text-sm font-bold mb-2">
+                <i class="fa-solid fa-hashtag mr-1"></i>MENU-006
+            </span>
+            <h2 class="text-3xl font-black text-gray-800 mb-2">Split Navigation</h2>
+            <p class="text-gray-600">Sol vertical + üst horizontal bölünmüş navigasyon tasarımı</p>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Yorumları - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        1 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="#" class="px-4 py-2 bg-white/10 rounded-lg opacity-50 cursor-not-allowed transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-testimonials-2.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="testimonials-001" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-8">
+    <div class="container mx-auto">
+        <div class="text-center mb-12">
+            <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>TESTIMONIALS-001
+            </span>
+            <h2 class="text-5xl font-black text-gray-900 mb-4">Müşterilerimiz Ne Diyor?</h2>
+            <p class="text-xl text-gray-600">Binlerce mutlu müşterimizden bazı yorumlar</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <!-- Review 1 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        AY
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Ayşe Yılmaz</h3>
+                        <p class="text-gray-500 text-sm">İstanbul</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "İxtif.com sayesinde ofis mobilyalarımızı çok uygun fiyata aldık. Teslimat çok hızlıydı, ürünler mükemmel kalitede geldi. Kesinlikle tavsiye ediyorum!"
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>15 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        MK
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Mehmet Kaya</h3>
+                        <p class="text-gray-500 text-sm">Ankara</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Forklift ürünlerde inanılmaz fırsatlar buldum. Özellikle laptop ve tablet fiyatları çok cazip. Müşteri hizmetleri de gerçekten ilgili, teşekkürler!"
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>12 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        ZD
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Zeynep Demir</h3>
+                        <p class="text-gray-500 text-sm">İzmir</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Transpalet ürünlerinde harika seçenekler var. Kaliteli kumaşları toptan fiyatına aldım. İşletmem için sürekli buradan alışveriş yapıyorum."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>8 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 4 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        EA
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Emre Arslan</h3>
+                        <p class="text-gray-500 text-sm">Bursa</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-gray-300 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Alet ve ekipman kategorisinde profesyonel ürünler buldum. Fiyatlar uygun ama kargo biraz geç geldi. Yine de memnunum."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>5 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 5 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        SA
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Selin Aydın</h3>
+                        <p class="text-gray-500 text-sm">Antalya</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Online alışverişte en güvendiğim site. Ürün açıklamaları detaylı, fotoğraflar gerçek. İade sürecim de çok kolay oldu."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>1 Ekim 2024
+                    </p>
+                </div>
+            </div>
+
+            <!-- Review 6 -->
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        BŞ
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Burak Şahin</h3>
+                        <p class="text-gray-500 text-sm">Konya</p>
+                    </div>
+                </div>
+                <div class="flex gap-1 mb-4">
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                    <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                </div>
+                <p class="text-gray-700 leading-relaxed">
+                    "Restoran ekipmanlarımızı buradan temin ediyoruz. Hem kalite hem de fiyat olarak en iyisi. Toplu alışverişlerde ekstra indirim de var."
+                </p>
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-500">
+                        <i class="fa-solid fa-calendar mr-2"></i>28 Eylül 2024
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

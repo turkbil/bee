@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Cards - ixtif.com Tasarım Kütüphanesi</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Scroll Snap */
+        html {
+            scroll-snap-type: y mandatory;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(to right, #f0f0f0 0%, #e0e0e0 20%, #f0f0f0 40%, #f0f0f0 100%);
+            background-size: 1000px 100%;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        2 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-products-1.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-products-3.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-slate-900 to-purple-900 relative overflow-hidden px-8">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">PRODUCT-002</span>
+        </div>
+
+        <div class="max-w-6xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Yatay Kart Tasarımı</h2>
+                <p class="text-xl text-gray-400">Detaylı ürün bilgisi ve özellikler</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Product Card 1 -->
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300">
+                    <div class="flex flex-col lg:flex-row gap-6">
+                        <!-- Image -->
+                        <div class="lg:w-64 aspect-square bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-truck-loading-screen text-8xl text-blue-400"></i>
+                        </div>
+                        <!-- Info -->
+                        <div class="flex-grow">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="text-sm text-gray-400 mb-2">Forklift / Akıllı Telefon</div>
+                                    <h3 class="text-2xl font-bold text-white mb-2">iPhone 14 Pro Max - 256GB, Space Black</h3>
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="flex text-yellow-400">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-400">(1.234 değerlendirme)</span>
+                                    </div>
+                                </div>
+                                <button class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+                                    <i class="fa-solid fa-heart text-white"></i>
+                                </button>
+                            </div>
+
+                            <!-- Features -->
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-microchip text-blue-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">İşlemci</div>
+                                    <div class="text-sm font-bold text-white">A16 Bionic</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-camera text-purple-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">Kamera</div>
+                                    <div class="text-sm font-bold text-white">48 MP</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-battery-full text-green-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">Pil</div>
+                                    <div class="text-sm font-bold text-white">4323 mAh</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-display text-cyan-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">Ekran</div>
+                                    <div class="text-sm font-bold text-white">6.7" OLED</div>
+                                </div>
+                            </div>
+
+                            <!-- Price and Action -->
+                            <div class="flex items-center justify-between flex-wrap gap-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="text-3xl font-black text-blue-400">₺42.999</span>
+                                        <span class="text-xl text-gray-500 line-through">₺65.999</span>
+                                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">-35%</span>
+                                    </div>
+                                    <div class="text-sm text-green-400">
+                                        <i class="fa-solid fa-check-circle mr-1"></i>
+                                        Stokta 45 adet kaldı!
+                                    </div>
+                                </div>
+                                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                                    <i class="fa-solid fa-cart-shopping mr-2"></i>
+                                    Sepete Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20 hover:border-white/40 transition-all duration-300">
+                    <div class="flex flex-col lg:flex-row gap-6">
+                        <div class="lg:w-64 aspect-square bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-headphones text-8xl text-purple-400"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <div class="text-sm text-gray-400 mb-2">Forklift / Ses & Görüntü</div>
+                                    <h3 class="text-2xl font-bold text-white mb-2">Sony WH-1000XM5 Kablosuz Kulaklık - Gürültü Önleme</h3>
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="flex text-yellow-400">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star-half"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-400">(567 değerlendirme)</span>
+                                    </div>
+                                </div>
+                                <button class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+                                    <i class="fa-solid fa-heart text-white"></i>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-volume text-purple-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">Gürültü Önleme</div>
+                                    <div class="text-sm font-bold text-white">ANC Pro</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-battery-three-quarters text-green-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">Pil Ömrü</div>
+                                    <div class="text-sm font-bold text-white">30 Saat</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-bluetooth text-blue-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">Bağlantı</div>
+                                    <div class="text-sm font-bold text-white">Bluetooth 5.2</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3">
+                                    <i class="fa-solid fa-weight text-cyan-400 mb-2"></i>
+                                    <div class="text-xs text-gray-400">Ağırlık</div>
+                                    <div class="text-sm font-bold text-white">250 gram</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between flex-wrap gap-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="text-3xl font-black text-purple-400">₺7.999</span>
+                                        <span class="text-xl text-gray-500 line-through">₺13.999</span>
+                                        <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">-43%</span>
+                                    </div>
+                                    <div class="text-sm text-green-400">
+                                        <i class="fa-solid fa-truck-fast mr-1"></i>
+                                        Ücretsiz kargo
+                                    </div>
+                                </div>
+                                <button class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                                    <i class="fa-solid fa-cart-shopping mr-2"></i>
+                                    Sepete Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+</body>
+</html>

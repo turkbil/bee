@@ -194,15 +194,15 @@ class="fixed {{ $selectedPosition }} z-50">
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
         :style="{
-            height: (expanded || chat.hasConversation) ? '600px' : 'auto',
-            transition: 'height 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
+            height: (expanded || chat.hasConversation) ? '600px' : '420px',
+            transition: 'height 0.4s ease-in-out',
             maxHeight: 'calc(100vh - 120px)'
         }"
-        class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 origin-bottom"
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700"
         x-cloak
     >
         {{-- Header - Beautiful Gradient --}}
-        <div class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-indigo-600 dark:via-purple-600 dark:to-pink-600 text-white px-6 py-4 flex items-center justify-between">
+        <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -232,16 +232,16 @@ class="fixed {{ $selectedPosition }} z-50">
             </div>
         </div>
 
-        {{-- Welcome Section (Compact Mode) --}}
+        {{-- Welcome Section --}}
         <div
-            x-show="!expanded && !chat.hasConversation"
-            x-transition:enter="transition-all ease-out duration-700 delay-100"
+            x-show="!chat.hasConversation"
+            x-transition:enter="transition-all ease-out duration-400"
             x-transition:enter-start="opacity-0 translate-y-2"
             x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition-all ease-in duration-500"
+            x-transition:leave="transition-all ease-in duration-300"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-2"
-            class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700"
+            class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700"
             x-data="{
                 suggestions: [
                     'Ürün özellikleri',
@@ -288,47 +288,60 @@ class="fixed {{ $selectedPosition }} z-50">
                     Size nasıl yardımcı olabilirim?
                 </p>
 
-                {{-- Rotating Suggestions - Left aligned, same size as above text --}}
-                <div class="h-6 overflow-hidden relative">
-                    <template x-for="(suggestion, index) in suggestions" :key="index">
-                        <p
-                            x-show="currentSuggestion === index"
-                            x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 translate-y-4"
-                            x-transition:enter-end="opacity-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-300"
-                            x-transition:leave-start="opacity-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 -translate-y-4"
-                            class="text-sm text-gray-600 dark:text-gray-300 absolute left-0 w-full text-left"
-                            x-text="suggestion"
-                        ></p>
-                    </template>
+                {{-- Rotating Suggestions - Center aligned with smooth fade --}}
+                <div class="h-6 flex items-center justify-center">
+                    <p
+                        x-data="{
+                            currentText: 'Ürün özellikleri',
+                            fading: false,
+                            suggestionsList: [
+                                'Ürün özellikleri',
+                                'Stok durumu',
+                                'Fiyat bilgisi',
+                                'Hızlı öneri',
+                                'Karşılaştırma',
+                                'En iyiler'
+                            ],
+                            currentIndex: 0,
+                            init() {
+                                setInterval(() => {
+                                    // Fade out
+                                    this.fading = true;
+
+                                    // Change text after fade out completes
+                                    setTimeout(() => {
+                                        this.currentIndex = (this.currentIndex + 1) % this.suggestionsList.length;
+                                        this.currentText = this.suggestionsList[this.currentIndex];
+
+                                        // Fade in
+                                        setTimeout(() => {
+                                            this.fading = false;
+                                        }, 50);
+                                    }, 250);
+                                }, 2500);
+                            }
+                        }"
+                        :class="{ 'opacity-0': fading, 'opacity-100': !fading }"
+                        class="text-sm text-gray-600 dark:text-gray-300 text-center transition-opacity duration-250"
+                        x-text="currentText"
+                    ></p>
                 </div>
             </div>
         </div>
 
         {{-- Messages Container --}}
         <div
-            x-show="expanded || chat.hasConversation"
-            x-transition:enter="transition-all ease-out duration-700 delay-200"
+            x-show="chat.hasConversation"
+            x-transition:enter="transition-all ease-out duration-400"
             x-transition:enter-start="opacity-0 translate-y-4"
             x-transition:enter-end="opacity-100 translate-y-0"
             x-transition:leave="transition-all ease-in duration-300"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 translate-y-4"
             data-ai-chat-messages
-            class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900"
+            class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900"
             x-cloak
         >
-            {{-- Empty state --}}
-            <div x-show="!chat.hasConversation" class="text-center text-gray-500 dark:text-gray-400 mt-12">
-                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-                </svg>
-                <p class="text-sm">Henüz mesaj yok.</p>
-                <p class="text-xs mt-1">Bir mesaj yazarak başlayın!</p>
-            </div>
-
             {{-- Messages --}}
             <template x-for="(msg, index) in chat.messages" :key="index">
                 <div
@@ -384,7 +397,7 @@ class="fixed {{ $selectedPosition }} z-50">
         </div>
 
         {{-- Input Area --}}
-        <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
             {{-- Error message --}}
             <div x-show="chat.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" x-cloak>
                 <span x-text="chat.error"></span>
@@ -423,24 +436,11 @@ class="fixed {{ $selectedPosition }} z-50">
                 </button>
             </form>
 
-            {{-- Footer Info - Auto-hide after 10 seconds --}}
-            <div
-                x-data="{ visible: true }"
-                x-init="setTimeout(() => visible = false, 10000)"
-                x-show="visible"
-                x-transition:leave="transition ease-in duration-1000"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="mt-2"
-            >
-                <p class="text-[8px] text-gray-400 dark:text-gray-500 leading-tight opacity-60">
+            {{-- Footer Info - Always visible --}}
+            <div class="mt-2">
+                <p style="font-size: 11px !important; line-height: 1.4 !important; opacity: 0.9 !important;"
+                   class="text-gray-800 dark:text-white">
                     Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
-                    Geliştirme süreci devam etmektedir, zaman zaman hatalar görülebilir.
-                    Ürünler hakkında daha detaylı bilgi veya destek için
-                    <a href="/sayfa/iletisim" target="_blank" class="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 underline">
-                        iletişim sayfamızdan
-                    </a>
-                    bize ulaşabilirsiniz.
                 </p>
 
                 {{-- 🔐 ADMIN ONLY: Hidden clear button (for testing) --}}

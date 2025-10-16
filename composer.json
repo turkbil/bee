@@ -49,6 +49,7 @@
         "stancl/tenancy": "^3.8",
         "symfony/dom-crawler": "^7.3",
         "thiagoalessio/tesseract_ocr": "^2.13",
+        "twilio/sdk": "^8.8",
         "wire-elements/modal": "^2.0"
     },
     "require-dev": {

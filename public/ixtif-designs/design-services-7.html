@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hizmetler Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        7 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-services-6.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-services-8.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="service-007" class="min-h-screen flex items-center justify-center bg-white">
+    <div class="container mx-auto px-6 max-w-6xl">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <!-- Left: Title -->
+            <div>
+                <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                    <i class="fa-solid fa-hashtag mr-1"></i>SERVICE-007
+                </span>
+                <h2 class="text-6xl font-black text-gray-900 mb-6">Tam Destek Hizmeti</h2>
+                <p class="text-2xl text-gray-600 mb-8">Alışverişinizin her aşamasında profesyonel destek</p>
+                <a href="#" class="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    <span>Hemen İletişime Geç</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Right: Services List -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-6 bg-gray-50 rounded-2xl p-6 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all">
+                    <i class="fa-solid fa-phone text-4xl text-blue-600"></i>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Telefon Desteği</h3>
+                        <p class="text-gray-600">0850 123 45 67 - Hafta içi 09:00 - 18:00</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6 bg-gray-50 rounded-2xl p-6 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all">
+                    <i class="fa-brands fa-whatsapp text-4xl text-green-600"></i>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">WhatsApp</h3>
+                        <p class="text-gray-600">7/24 WhatsApp destek hattı</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6 bg-gray-50 rounded-2xl p-6 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all">
+                    <i class="fa-solid fa-envelope text-4xl text-purple-600"></i>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">E-posta</h3>
+                        <p class="text-gray-600">info@ixtif.com - 24 saat içinde yanıt</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6 bg-gray-50 rounded-2xl p-6 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all">
+                    <i class="fa-solid fa-comments text-4xl text-orange-600"></i>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Canlı Destek</h3>
+                        <p class="text-gray-600">Anında yanıt için canlı sohbet</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6 bg-gray-50 rounded-2xl p-6 hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 transition-all">
+                    <i class="fa-solid fa-circle-question text-4xl text-teal-600"></i>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Sık Sorulan Sorular</h3>
+                        <p class="text-gray-600">Aradığınız yanıtlar burada</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

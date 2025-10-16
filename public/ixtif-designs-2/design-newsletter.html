@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Tasarımları - ixtif.com</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-grow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-grow {
+            animation: pulse-grow 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 overflow-hidden">
+
+    <!-- Fixed Back Button -->
+    <a href="index.html" class="fixed top-6 left-6 z-50 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-semibold shadow-2xl hover:shadow-blue-500/50 hover:scale-105 transition-all duration-300 flex items-center gap-2">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Ana Menü</span>
+    </a>
+
+    <div class="scroll-container">
+
+        <!-- NEWSLETTER-001: Simple Center -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute top-20 left-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+            </div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-2xl mx-auto text-center">
+                    <div class="mb-8 float-animation">
+                        <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center text-blue-600 text-5xl mx-auto shadow-2xl">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-5xl md:text-6xl font-black text-white mb-6 drop-shadow-2xl">
+                        Fırsatları Kaçırma!
+                    </h2>
+                    <p class="text-xl text-white/90 mb-8">
+                        E-posta bültenimize abone ol, özel kampanya ve indirimlerden ilk sen haberdar ol.
+                    </p>
+
+                    <form class="max-w-xl mx-auto" x-data="{ email: '', success: false }" @submit.prevent="success = true">
+                        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                            <input 
+                                type="email" 
+                                x-model="email"
+                                placeholder="E-posta adresiniz"
+                                required
+                                class="flex-1 px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50 text-lg shadow-2xl"
+                            >
+                            <button 
+                                type="submit"
+                                class="bg-white text-blue-600 px-10 py-4 rounded-full font-black text-lg shadow-2xl hover:scale-105 transition-all duration-300 whitespace-nowrap"
+                            >
+                                <i class="fa-solid fa-paper-plane mr-2"></i>
+                                Abone Ol
+                            </button>
+                        </div>
+                        <div x-show="success" x-transition class="bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full inline-block">
+                            <i class="fa-solid fa-check-circle mr-2"></i>
+                            Başarıyla abone oldunuz!
+                        </div>
+                    </form>
+
+                    <p class="text-white/60 text-sm mt-6">
+                        Dilediğin zaman abonelikten çıkabilirsin. Gizlilik politikamızı okumak için <a href="#" class="underline hover:text-white">tıkla</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                NEWSLETTER-001
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-002: Split Screen with Benefits -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- Left: Benefits -->
+                        <div>
+                            <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-6">
+                                Bültene Abone Ol,
+                                <span class="block text-blue-600 mt-2">Avantajları Yakala!</span>
+                            </h2>
+                            <p class="text-xl text-gray-600 mb-8">
+                                Haftalık e-posta bültenimizle özel fırsatlardan haberdar ol.
+                            </p>
+
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-start gap-4 p-4 bg-blue-50 rounded-2xl">
+                                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                                        <i class="fa-solid fa-percent text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900 mb-1">Özel İndirimler</h3>
+                                        <p class="text-gray-600 text-sm">Sadece abonelere özel %20'ye varan indirimler</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4 p-4 bg-purple-50 rounded-2xl">
+                                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                                        <i class="fa-solid fa-bolt text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900 mb-1">Erken Erişim</h3>
+                                        <p class="text-gray-600 text-sm">Yeni ürün ve kampanyalara ilk sen ulaş</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4 p-4 bg-pink-50 rounded-2xl">
+                                    <div class="w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center text-white flex-shrink-0">
+                                        <i class="fa-solid fa-gift text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900 mb-1">Hediye Kuponları</h3>
+                                        <p class="text-gray-600 text-sm">Her ay özel hediye ve kupon fırsatları</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-6 text-gray-500 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-users text-blue-600"></i>
+                                    <span>25.000+ abone</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-star text-yellow-500"></i>
+                                    <span>4.8/5 memnuniyet</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Form -->
+                        <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-8 shadow-2xl" x-data="{ email: '', name: '', success: false }">
+                            <h3 class="text-3xl font-black text-white mb-6">Hemen Abone Ol</h3>
+                            <form @submit.prevent="success = true" class="space-y-4">
+                                <div>
+                                    <label class="block text-white/80 text-sm font-semibold mb-2">Adın Soyadın</label>
+                                    <input 
+                                        type="text" 
+                                        x-model="name"
+                                        placeholder="Ahmet Yılmaz"
+                                        required
+                                        class="w-full px-4 py-3 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-white/80 text-sm font-semibold mb-2">E-posta Adresin</label>
+                                    <input 
+                                        type="email" 
+                                        x-model="email"
+                                        placeholder="ahmet@example.com"
+                                        required
+                                        class="w-full px-4 py-3 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50"
+                                    >
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <input type="checkbox" id="consent" required class="mt-1">
+                                    <label for="consent" class="text-white/80 text-sm">
+                                        <a href="#" class="underline hover:text-white">KVKK</a> ve <a href="#" class="underline hover:text-white">Gizlilik Politikası</a>'nı okudum, kabul ediyorum.
+                                    </label>
+                                </div>
+                                <button 
+                                    type="submit"
+                                    class="w-full bg-white text-blue-600 py-4 rounded-xl font-black text-lg shadow-xl hover:scale-105 transition-all duration-300"
+                                >
+                                    <i class="fa-solid fa-check mr-2"></i>
+                                    Abone Ol
+                                </button>
+                                <div x-show="success" x-transition class="bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-xl text-center">
+                                    <i class="fa-solid fa-check-circle mr-2"></i>
+                                    Hoş geldin! E-posta adresini doğrula.
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                NEWSLETTER-002
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-003: Popup Style -->
+        <section class="min-h-screen flex items-center justify-center bg-gray-900 relative overflow-hidden">
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden" x-data="{ step: 1, email: '', preferences: [] }">
+                    <div class="grid grid-cols-1 md:grid-cols-2">
+                        <!-- Left: Visual -->
+                        <div class="bg-gradient-to-br from-orange-500 to-red-600 p-12 flex flex-col justify-center items-center text-center text-white">
+                            <div class="mb-8">
+                                <div class="w-32 h-32 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center text-6xl mb-6 pulse-grow">
+                                    <i class="fa-solid fa-bell"></i>
+                                </div>
+                                <h3 class="text-4xl font-black mb-4">İlk Aboneye Özel!</h3>
+                                <p class="text-xl text-white/90">%15 İndirim Kuponu Kazan</p>
+                            </div>
+                            <div class="space-y-3 text-left w-full max-w-xs">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-check-circle text-2xl"></i>
+                                    <span>Haftalık fırsat bülteni</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-check-circle text-2xl"></i>
+                                    <span>Yeni ürün duyuruları</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-check-circle text-2xl"></i>
+                                    <span>Özel kampanyalar</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Form -->
+                        <div class="p-12">
+                            <!-- Step 1: Email -->
+                            <div x-show="step === 1">
+                                <h3 class="text-3xl font-black text-gray-900 mb-2">Hemen Başla</h3>
+                                <p class="text-gray-600 mb-6">E-posta adresini gir, kuponun gelsin!</p>
+                                <form @submit.prevent="step = 2" class="space-y-4">
+                                    <div>
+                                        <label class="block text-gray-700 font-semibold mb-2">E-posta Adresi</label>
+                                        <input 
+                                            type="email" 
+                                            x-model="email"
+                                            placeholder="sen@example.com"
+                                            required
+                                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-orange-500 transition-colors"
+                                        >
+                                    </div>
+                                    <button 
+                                        type="submit"
+                                        class="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:scale-105 transition-all duration-300"
+                                    >
+                                        Devam Et
+                                        <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Step 2: Preferences -->
+                            <div x-show="step === 2">
+                                <button @click="step = 1" class="text-gray-600 hover:text-gray-900 mb-4">
+                                    <i class="fa-solid fa-arrow-left mr-2"></i>
+                                    Geri
+                                </button>
+                                <h3 class="text-3xl font-black text-gray-900 mb-2">İlgi Alanların</h3>
+                                <p class="text-gray-600 mb-6">Hangi kategorilerden haberdar olmak istersin?</p>
+                                <form @submit.prevent="step = 3" class="space-y-4">
+                                    <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-orange-500 cursor-pointer transition-colors">
+                                        <input type="checkbox" value="electronics" x-model="preferences" class="w-5 h-5">
+                                        <i class="fa-solid fa-laptop text-blue-600 text-xl"></i>
+                                        <span class="font-semibold text-gray-900">Elektronik</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-orange-500 cursor-pointer transition-colors">
+                                        <input type="checkbox" value="furniture" x-model="preferences" class="w-5 h-5">
+                                        <i class="fa-solid fa-couch text-amber-600 text-xl"></i>
+                                        <span class="font-semibold text-gray-900">Mobilya</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-orange-500 cursor-pointer transition-colors">
+                                        <input type="checkbox" value="textile" x-model="preferences" class="w-5 h-5">
+                                        <i class="fa-solid fa-shirt text-pink-600 text-xl"></i>
+                                        <span class="font-semibold text-gray-900">Tekstil</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-orange-500 cursor-pointer transition-colors">
+                                        <input type="checkbox" value="tools" x-model="preferences" class="w-5 h-5">
+                                        <i class="fa-solid fa-wrench text-orange-600 text-xl"></i>
+                                        <span class="font-semibold text-gray-900">Alet & Ekipman</span>
+                                    </label>
+                                    <button 
+                                        type="submit"
+                                        class="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:scale-105 transition-all duration-300"
+                                    >
+                                        Tamamla
+                                        <i class="fa-solid fa-check ml-2"></i>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Step 3: Success -->
+                            <div x-show="step === 3" class="text-center py-8">
+                                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-5xl mx-auto mb-6">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                </div>
+                                <h3 class="text-3xl font-black text-gray-900 mb-2">Tebrikler! 🎉</h3>
+                                <p class="text-xl text-gray-600 mb-6">%15 indirim kuponun e-posta adresine gönderildi!</p>
+                                <div class="bg-orange-50 border-2 border-orange-500 rounded-2xl p-6 mb-6">
+                                    <div class="text-sm text-gray-600 mb-2">Kupon Kodun</div>
+                                    <div class="text-3xl font-black text-orange-600 mb-2">HOSGELDIN15</div>
+                                    <div class="text-sm text-gray-600">Geçerlilik: 30 gün</div>
+                                </div>
+                                <button class="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:scale-105 transition-all duration-300">
+                                    <i class="fa-solid fa-shopping-bag mr-2"></i>
+                                    Alışverişe Başla
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                NEWSLETTER-003
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-004: Minimal Bottom Bar -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Content -->
+                    <div class="text-center mb-20">
+                        <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-6">
+                            İxtif'te Alışverişin Keyfini Çıkar
+                        </h2>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Binlerce ürün, binlerce fırsat seni bekliyor!
+                        </p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                                <div class="text-4xl mb-2">📱</div>
+                                <div class="text-2xl font-black text-gray-900">850+</div>
+                                <div class="text-gray-600 text-sm">Elektronik</div>
+                            </div>
+                            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                                <div class="text-4xl mb-2">🛋️</div>
+                                <div class="text-2xl font-black text-gray-900">620+</div>
+                                <div class="text-gray-600 text-sm">Mobilya</div>
+                            </div>
+                            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                                <div class="text-4xl mb-2">👕</div>
+                                <div class="text-2xl font-black text-gray-900">1200+</div>
+                                <div class="text-gray-600 text-sm">Tekstil</div>
+                            </div>
+                            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                                <div class="text-4xl mb-2">🔧</div>
+                                <div class="text-2xl font-black text-gray-900">450+</div>
+                                <div class="text-gray-600 text-sm">Alet & Ekipman</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Bar -->
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl p-8 shadow-2xl" x-data="{ email: '', subscribed: false }">
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center gap-4 text-white">
+                                <div class="w-16 h-16 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center text-3xl flex-shrink-0">
+                                    <i class="fa-solid fa-envelope-open"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h3 class="text-2xl font-black mb-1">Kampanyaları Kaçırma!</h3>
+                                    <p class="text-white/80">Bültene abone ol, özel fırsatlardan haberdar ol.</p>
+                                </div>
+                            </div>
+                            <form @submit.prevent="subscribed = true" class="flex gap-3 w-full md:w-auto">
+                                <input 
+                                    type="email" 
+                                    x-model="email"
+                                    placeholder="E-posta adresin"
+                                    required
+                                    class="px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50 min-w-[300px]"
+                                >
+                                <button 
+                                    type="submit"
+                                    class="bg-white text-green-600 px-8 py-4 rounded-full font-black whitespace-nowrap shadow-lg hover:scale-105 transition-all duration-300"
+                                >
+                                    Abone Ol
+                                </button>
+                            </form>
+                        </div>
+                        <div x-show="subscribed" x-transition class="mt-4 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full text-center">
+                            <i class="fa-solid fa-check-circle mr-2"></i>
+                            Teşekkürler! E-posta adresini doğrulamayı unutma.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                NEWSLETTER-004
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-005: Side By Side with Preview -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 text-center mb-12">
+                        Haftalık Bültene Abone Ol
+                    </h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- Left: Email Preview -->
+                        <div class="bg-gray-100 rounded-3xl p-8 shadow-xl">
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                                <!-- Email Header -->
+                                <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-center">
+                                    <h3 class="text-3xl font-black text-white mb-2">ixtif.com</h3>
+                                    <p class="text-white/80">Haftalık Fırsat Bülteni</p>
+                                </div>
+                                <!-- Email Body -->
+                                <div class="p-6">
+                                    <h4 class="text-xl font-bold text-gray-900 mb-4">Bu Haftanın Öne Çıkanları</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i class="fa-solid fa-laptop text-blue-600"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900 text-sm">Laptop'larda %30</div>
+                                                <div class="text-gray-600 text-xs">850+ ürün</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                                <i class="fa-solid fa-couch text-amber-600"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900 text-sm">Mobilyada %25</div>
+                                                <div class="text-gray-600 text-xs">620+ ürün</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                            <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                                                <i class="fa-solid fa-shirt text-pink-600"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900 text-sm">Tekstilde 3 Al 2 Öde</div>
+                                                <div class="text-gray-600 text-xs">1200+ ürün</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-bold text-sm">
+                                        Fırsatları Gör
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-500 text-xs text-center mt-4">
+                                <i class="fa-solid fa-envelope mr-1"></i>
+                                Bülten önizlemesi - Sana gönderilecek e-posta böyle görünecek
+                            </p>
+                        </div>
+
+                        <!-- Right: Subscribe Form -->
+                        <div x-data="{ email: '', frequency: 'weekly', subscribed: false }">
+                            <h3 class="text-3xl font-black text-gray-900 mb-4">Ne Kazanırsın?</h3>
+                            <ul class="space-y-4 mb-8">
+                                <li class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-check text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Haftalık Özel İndirimler</div>
+                                        <div class="text-gray-600 text-sm">Sadece abonelere özel kampanyalar</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-check text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Yeni Ürün Duyuruları</div>
+                                        <div class="text-gray-600 text-sm">İlk sen öğren, ilk sen al</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-check text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Alışveriş İpuçları</div>
+                                        <div class="text-gray-600 text-sm">Uzman tavsiyeleri ve rehberler</div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <form @submit.prevent="subscribed = true" class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">E-posta Adresi</label>
+                                    <input 
+                                        type="email" 
+                                        x-model="email"
+                                        placeholder="sen@example.com"
+                                        required
+                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Bülten Sıklığı</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex-1 flex items-center gap-2 p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 transition-colors" :class="frequency === 'weekly' && 'border-blue-500 bg-blue-50'">
+                                            <input type="radio" value="weekly" x-model="frequency">
+                                            <span class="font-semibold text-gray-900">Haftalık</span>
+                                        </label>
+                                        <label class="flex-1 flex items-center gap-2 p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 transition-colors" :class="frequency === 'daily' && 'border-blue-500 bg-blue-50'">
+                                            <input type="radio" value="daily" x-model="frequency">
+                                            <span class="font-semibold text-gray-900">Günlük</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <button 
+                                    type="submit"
+                                    class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:scale-105 transition-all duration-300"
+                                >
+                                    <i class="fa-solid fa-paper-plane mr-2"></i>
+                                    Abone Ol
+                                </button>
+                                <div x-show="subscribed" x-transition class="bg-green-100 text-green-700 px-6 py-3 rounded-xl text-center">
+                                    <i class="fa-solid fa-check-circle mr-2"></i>
+                                    Başarıyla abone oldunuz!
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                NEWSLETTER-005
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-006: Gamified/Interactive -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-20 left-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+            </div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-3xl mx-auto text-center" x-data="{ 
+                    email: '', 
+                    spinning: false, 
+                    prize: null,
+                    prizes: [
+                        { text: '%10 İndirim', icon: 'fa-tag', color: 'blue' },
+                        { text: 'Ücretsiz Kargo', icon: 'fa-truck', color: 'green' },
+                        { text: '%15 İndirim', icon: 'fa-percent', color: 'purple' },
+                        { text: '50 TL Hediye', icon: 'fa-gift', color: 'pink' },
+                        { text: '%20 İndirim', icon: 'fa-fire', color: 'orange' },
+                        { text: '100 TL Hediye', icon: 'fa-star', color: 'yellow' }
+                    ],
+                    spin() {
+                        if (this.email && !this.spinning) {
+                            this.spinning = true;
+                            setTimeout(() => {
+                                this.prize = this.prizes[Math.floor(Math.random() * this.prizes.length)];
+                                this.spinning = false;
+                            }, 3000);
+                        }
+                    }
+                }">
+                    <div class="mb-8">
+                        <h2 class="text-5xl md:text-6xl font-black text-white mb-4 drop-shadow-2xl">
+                            Çarkı Çevir, Kazan!
+                        </h2>
+                        <p class="text-xl text-white/90">
+                            E-posta adresini gir, şansını dene ve hediyeni kazan!
+                        </p>
+                    </div>
+
+                    <!-- Prize Wheel -->
+                    <div class="mb-12">
+                        <div class="relative w-80 h-80 mx-auto mb-8">
+                            <div class="absolute inset-0 bg-white rounded-full shadow-2xl flex items-center justify-center" :class="spinning && 'animate-spin'">
+                                <div class="grid grid-cols-2 gap-4 p-8">
+                                    <template x-for="(p, index) in prizes" :key="index">
+                                        <div class="w-24 h-24 flex flex-col items-center justify-center">
+                                            <i :class="'fa-solid ' + p.icon + ' text-3xl mb-2 text-' + p.color + '-600'"></i>
+                                            <div class="text-xs font-bold text-gray-900 text-center" x-text="p.text"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <!-- Arrow Pointer -->
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4">
+                                <div class="w-8 h-8 bg-yellow-400 rotate-45 shadow-xl"></div>
+                            </div>
+                        </div>
+
+                        <!-- Result Display -->
+                        <div x-show="prize" x-transition class="bg-white rounded-3xl p-8 shadow-2xl mb-8">
+                            <div class="text-6xl mb-4">🎉</div>
+                            <h3 class="text-3xl font-black text-gray-900 mb-2">Tebrikler!</h3>
+                            <p class="text-xl text-gray-600 mb-4">Kazandın:</p>
+                            <div class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-2xl font-black shadow-xl">
+                                <i :class="'fa-solid ' + (prize ? prize.icon : '') + ' mr-2'"></i>
+                                <span x-text="prize ? prize.text : ''"></span>
+                            </div>
+                            <p class="text-gray-500 text-sm mt-4">Kupon kodun e-posta adresine gönderildi!</p>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div x-show="!prize" class="max-w-xl mx-auto">
+                        <form @submit.prevent="spin()" class="space-y-4">
+                            <input 
+                                type="email" 
+                                x-model="email"
+                                placeholder="E-posta adresiniz"
+                                required
+                                :disabled="spinning"
+                                class="w-full px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50 text-lg shadow-2xl disabled:opacity-50"
+                            >
+                            <button 
+                                type="submit"
+                                :disabled="spinning || !email"
+                                class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-5 rounded-full font-black text-xl shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
+                            >
+                                <span x-show="!spinning">
+                                    <i class="fa-solid fa-rotate mr-2"></i>
+                                    Çarkı Çevir!
+                                </span>
+                                <span x-show="spinning">
+                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+                                    Çark Dönüyor...
+                                </span>
+                            </button>
+                        </form>
+                        <p class="text-white/60 text-sm mt-4">
+                            Çarkı çevirmek için e-posta adresini girmen yeterli. Hediyeni kazan!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                NEWSLETTER-006
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-007: Social Proof -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-5xl mx-auto">
+                    <div class="text-center mb-12">
+                        <div class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full font-bold text-sm mb-6">
+                            25.000+ Mutlu Abone
+                        </div>
+                        <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-6">
+                            Binlerce Kişi Zaten Abone!
+                        </h2>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Sen de onlara katıl, özel fırsatlardan yararlan
+                        </p>
+                    </div>
+
+                    <!-- Testimonials -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
+                                    AY
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">Ayşe Y.</div>
+                                    <div class="text-gray-600 text-sm">İstanbul</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-1 mb-3">
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                            </div>
+                            <p class="text-gray-700 text-sm">
+                                "Bülten sayesinde kampanyaları ilk ben öğreniyorum. Geçen ay laptop aldım %30 indirimle!"
+                            </p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center text-white font-bold">
+                                    MK
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">Mehmet K.</div>
+                                    <div class="text-gray-600 text-sm">Ankara</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-1 mb-3">
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                            </div>
+                            <p class="text-gray-700 text-sm">
+                                "Her hafta yeni fırsatlar geliyor. Mobilya alırken çok kazandım. Herkese tavsiye ederim!"
+                            </p>
+                        </div>
+                        <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-3xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center text-white font-bold">
+                                    ZD
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">Zeynep D.</div>
+                                    <div class="text-gray-600 text-sm">İzmir</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-1 mb-3">
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                            </div>
+                            <p class="text-gray-700 text-sm">
+                                "Tekstil ürünlerinde 3 al 2 öde kampanyasını bülten sayesinde öğrendim. Süper!"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Subscribe Form -->
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 shadow-2xl" x-data="{ email: '', subscribed: false }">
+                        <div class="max-w-2xl mx-auto text-center">
+                            <h3 class="text-3xl font-black text-white mb-4">Sen de Abone Ol!</h3>
+                            <p class="text-white/90 mb-6">İlk abonelikte %15 indirim kuponu hediye!</p>
+                            <form @submit.prevent="subscribed = true" class="flex flex-col sm:flex-row gap-4">
+                                <input 
+                                    type="email" 
+                                    x-model="email"
+                                    placeholder="E-posta adresin"
+                                    required
+                                    class="flex-1 px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50"
+                                >
+                                <button 
+                                    type="submit"
+                                    class="bg-white text-blue-600 px-10 py-4 rounded-full font-black shadow-lg hover:scale-105 transition-all duration-300 whitespace-nowrap"
+                                >
+                                    <i class="fa-solid fa-check mr-2"></i>
+                                    Abone Ol
+                                </button>
+                            </form>
+                            <div x-show="subscribed" x-transition class="mt-4 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full inline-block">
+                                <i class="fa-solid fa-party-horn mr-2"></i>
+                                Hoş geldin! Kuponun e-postana gönderildi.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-6 mt-12 max-w-3xl mx-auto">
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-blue-600 mb-2">25K+</div>
+                            <div class="text-gray-600">Aktif Abone</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-purple-600 mb-2">98%</div>
+                            <div class="text-gray-600">Memnuniyet</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-pink-600 mb-2">4.8/5</div>
+                            <div class="text-gray-600">Ortalama Puan</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                NEWSLETTER-007
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-008: Footer Style -->
+        <section class="min-h-screen flex items-center justify-center bg-gray-900 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Main Content -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12">
+                        <!-- Column 1: About -->
+                        <div>
+                            <h3 class="text-3xl font-black text-white mb-4">ixtif.com</h3>
+                            <p class="text-gray-400 mb-6">
+                                Türkiye'nin en büyük istif pazarı. Binlerce ürün, binlerce fırsat!
+                            </p>
+                            <div class="flex gap-3">
+                                <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors">
+                                    <i class="fa-brands fa-facebook text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors">
+                                    <i class="fa-brands fa-instagram text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors">
+                                    <i class="fa-brands fa-twitter text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors">
+                                    <i class="fa-brands fa-youtube text-xl"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Quick Links -->
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-4">Hızlı Linkler</h4>
+                            <ul class="space-y-2">
+                                <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Hakkımızda</a></li>
+                                <li><a href="#" class="text-gray-400 hover:text-white transition-colors">İletişim</a></li>
+                                <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Kategoriler</a></li>
+                                <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Kampanyalar</a></li>
+                                <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Contact -->
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-4">İletişim</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3 text-gray-400">
+                                    <i class="fa-solid fa-phone text-blue-500"></i>
+                                    <span>0850 123 45 67</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-400">
+                                    <i class="fa-solid fa-envelope text-blue-500"></i>
+                                    <span>info@ixtif.com</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-gray-400">
+                                    <i class="fa-solid fa-clock text-blue-500"></i>
+                                    <span>7/24 Müşteri Hizmetleri</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Section -->
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 mb-8" x-data="{ email: '', subscribed: false }">
+                        <div class="max-w-3xl mx-auto">
+                            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div class="text-white text-center md:text-left">
+                                    <h3 class="text-2xl font-black mb-2">
+                                        <i class="fa-solid fa-envelope-open mr-2"></i>
+                                        E-Posta Bültenimize Abone Ol
+                                    </h3>
+                                    <p class="text-white/80">Özel kampanya ve fırsatlardan haberdar ol!</p>
+                                </div>
+                                <form @submit.prevent="subscribed = true" class="flex gap-3 w-full md:w-auto">
+                                    <input 
+                                        type="email" 
+                                        x-model="email"
+                                        placeholder="E-posta adresin"
+                                        required
+                                        class="px-6 py-3 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none min-w-[250px]"
+                                    >
+                                    <button 
+                                        type="submit"
+                                        class="bg-white text-blue-600 px-8 py-3 rounded-full font-bold hover:scale-105 transition-all duration-300 whitespace-nowrap"
+                                    >
+                                        Abone Ol
+                                    </button>
+                                </form>
+                            </div>
+                            <div x-show="subscribed" x-transition class="mt-4 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full text-center">
+                                <i class="fa-solid fa-check-circle mr-2"></i>
+                                Teşekkürler! Başarıyla abone oldunuz.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copyright -->
+                    <div class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
+                        <p>© 2024 ixtif.com - Tüm hakları saklıdır.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                NEWSLETTER-008
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-009: Hero Style with Image -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-500 to-cyan-600 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute" style="top: 10%; left: 10%; width: 200px; height: 200px; background: white; border-radius: 50%; filter: blur(60px);"></div>
+                <div class="absolute" style="bottom: 20%; right: 15%; width: 250px; height: 250px; background: white; border-radius: 50%; filter: blur(80px);"></div>
+            </div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- Left: Content -->
+                        <div class="text-white">
+                            <div class="inline-block bg-white/20 backdrop-blur-lg px-6 py-2 rounded-full text-sm font-bold mb-6">
+                                💌 ÜCRETSİZ E-POSTA BÜLTENİ
+                            </div>
+                            <h2 class="text-5xl md:text-6xl font-black mb-6 drop-shadow-2xl">
+                                Her Gün Yeni Fırsatlar,
+                                <span class="block mt-2">Doğrudan E-postanda!</span>
+                            </h2>
+                            <p class="text-2xl text-white/90 mb-8">
+                                Günlük veya haftalık olarak sana özel seçilmiş kampanyalar, indirimler ve yeni ürün duyuruları.
+                            </p>
+
+                            <form class="mb-8" x-data="{ email: '', subscribed: false }" @submit.prevent="subscribed = true">
+                                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                                    <input 
+                                        type="email" 
+                                        x-model="email"
+                                        placeholder="E-posta adresiniz"
+                                        required
+                                        class="flex-1 px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/50 shadow-2xl"
+                                    >
+                                    <button 
+                                        type="submit"
+                                        class="bg-white text-teal-600 px-10 py-4 rounded-full font-black shadow-2xl hover:scale-105 transition-all duration-300 whitespace-nowrap"
+                                    >
+                                        <i class="fa-solid fa-rocket mr-2"></i>
+                                        Başla
+                                    </button>
+                                </div>
+                                <div x-show="subscribed" x-transition class="bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full inline-block">
+                                    <i class="fa-solid fa-check-circle mr-2"></i>
+                                    Harika! E-postanı kontrol et.
+                                </div>
+                            </form>
+
+                            <div class="flex flex-wrap gap-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center">
+                                        <i class="fa-solid fa-shield-check text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Spam Yok</div>
+                                        <div class="text-white/70 text-sm">Sadece değerli içerik</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center">
+                                        <i class="fa-solid fa-user-lock text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Gizlilik</div>
+                                        <div class="text-white/70 text-sm">Verilerine saygı</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Visual/Mockup -->
+                        <div class="relative">
+                            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                                <!-- Email Preview -->
+                                <div class="bg-gradient-to-r from-teal-600 to-cyan-600 p-6 text-center">
+                                    <div class="text-2xl font-black text-white mb-2">🎯 Bugünün Fırsatları</div>
+                                    <div class="text-white/80 text-sm">Sana özel seçildi</div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="bg-gray-50 rounded-2xl p-4 mb-3">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center">
+                                                <i class="fa-solid fa-laptop text-blue-600 text-2xl"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900">Laptop'larda %35</div>
+                                                <div class="text-gray-600 text-sm">Sadece bugüne özel</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-2xl p-4 mb-3">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-16 h-16 bg-amber-100 rounded-xl flex items-center justify-center">
+                                                <i class="fa-solid fa-couch text-amber-600 text-2xl"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900">Mobilyada Kargo Bedava</div>
+                                                <div class="text-gray-600 text-sm">Tüm siparişlerde</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="w-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white py-3 rounded-xl font-bold">
+                                        Fırsatları Gör
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Floating Badge -->
+                            <div class="absolute -top-6 -right-6 bg-yellow-400 text-gray-900 px-6 py-3 rounded-full font-black shadow-2xl transform rotate-12 pulse-grow">
+                                %15 İNDİRİM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-white/20 backdrop-blur-lg text-white px-6 py-3 rounded-full font-bold border-2 border-white/30">
+                NEWSLETTER-009
+            </div>
+        </section>
+
+        <!-- NEWSLETTER-010: Category Selection -->
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-4xl mx-auto" x-data="{ 
+                    email: '', 
+                    step: 1, 
+                    selectedCategories: [],
+                    categories: [
+                        { id: 'electronics', name: 'Elektronik', icon: 'fa-laptop', color: 'blue', count: '850+' },
+                        { id: 'furniture', name: 'Mobilya', icon: 'fa-couch', color: 'amber', count: '620+' },
+                        { id: 'textile', name: 'Tekstil', icon: 'fa-shirt', color: 'pink', count: '1200+' },
+                        { id: 'tools', name: 'Alet & Ekipman', icon: 'fa-wrench', color: 'orange', count: '450+' }
+                    ],
+                    toggleCategory(id) {
+                        const index = this.selectedCategories.indexOf(id);
+                        if (index > -1) {
+                            this.selectedCategories.splice(index, 1);
+                        } else {
+                            this.selectedCategories.push(id);
+                        }
+                    },
+                    isSelected(id) {
+                        return this.selectedCategories.includes(id);
+                    }
+                }">
+                    <!-- Step 1: Email -->
+                    <div x-show="step === 1" class="text-center">
+                        <h2 class="text-5xl md:text-6xl font-black text-gray-900 mb-6">
+                            Sana Özel İçerik
+                        </h2>
+                        <p class="text-xl text-gray-600 mb-8">
+                            İlgi alanlarına göre özel olarak hazırlanmış kampanyalar ve fırsatlar
+                        </p>
+
+                        <div class="max-w-xl mx-auto mb-12">
+                            <form @submit.prevent="step = 2" class="space-y-4">
+                                <input 
+                                    type="email" 
+                                    x-model="email"
+                                    placeholder="E-posta adresiniz"
+                                    required
+                                    class="w-full px-6 py-4 border-2 border-gray-300 rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors text-lg"
+                                >
+                                <button 
+                                    type="submit"
+                                    class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg hover:scale-105 transition-all duration-300"
+                                >
+                                    Devam Et
+                                    <i class="fa-solid fa-arrow-right ml-2"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-gray-50 rounded-2xl p-6">
+                                <div class="text-3xl mb-2">✉️</div>
+                                <div class="font-bold text-gray-900 text-sm">Özel İçerik</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-6">
+                                <div class="text-3xl mb-2">🎯</div>
+                                <div class="font-bold text-gray-900 text-sm">Kişiselleştirilmiş</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-6">
+                                <div class="text-3xl mb-2">🚀</div>
+                                <div class="font-bold text-gray-900 text-sm">Erken Erişim</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-6">
+                                <div class="text-3xl mb-2">💰</div>
+                                <div class="font-bold text-gray-900 text-sm">Özel İndirimler</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Category Selection -->
+                    <div x-show="step === 2" class="text-center">
+                        <button @click="step = 1" class="text-gray-600 hover:text-gray-900 mb-6 inline-flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Geri
+                        </button>
+
+                        <h3 class="text-4xl font-black text-gray-900 mb-4">
+                            Hangi Kategorilerle İlgileniyorsun?
+                        </h3>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Seçtiğin kategorilerden özel kampanya ve fırsatlar göndereceğiz
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <template x-for="cat in categories" :key="cat.id">
+                                <button 
+                                    @click="toggleCategory(cat.id)"
+                                    :class="isSelected(cat.id) ? 'border-' + cat.color + '-500 bg-' + cat.color + '-50 scale-105' : 'border-gray-300 hover:border-gray-400'"
+                                    class="relative p-8 border-4 rounded-3xl transition-all duration-300 text-left"
+                                >
+                                    <div class="flex items-center gap-6">
+                                        <div :class="'w-20 h-20 bg-gradient-to-br from-' + cat.color + '-500 to-' + cat.color + '-700 rounded-2xl flex items-center justify-center text-white text-3xl'">
+                                            <i :class="'fa-solid ' + cat.icon"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-2xl font-black text-gray-900 mb-1" x-text="cat.name"></h4>
+                                            <p class="text-gray-600" x-text="cat.count + ' ürün'"></p>
+                                        </div>
+                                        <div x-show="isSelected(cat.id)" :class="'w-10 h-10 bg-' + cat.color + '-500 rounded-full flex items-center justify-center text-white'">
+                                            <i class="fa-solid fa-check text-xl"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </template>
+                        </div>
+
+                        <button 
+                            @click="step = 3"
+                            :disabled="selectedCategories.length === 0"
+                            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-full font-black text-lg shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
+                        >
+                            <span x-text="'Seçili: ' + selectedCategories.length + ' kategori'"></span>
+                            <i class="fa-solid fa-check ml-2"></i>
+                        </button>
+                    </div>
+
+                    <!-- Step 3: Success -->
+                    <div x-show="step === 3" class="text-center py-12">
+                        <div class="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-6xl mx-auto mb-8 pulse-grow">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <h3 class="text-5xl font-black text-gray-900 mb-4">
+                            Mükemmel! 🎉
+                        </h3>
+                        <p class="text-xl text-gray-600 mb-8">
+                            Artık sana özel içerikler hazırlanıyor. İlk bültenin yakında e-posta adresine gelecek!
+                        </p>
+
+                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 mb-8 max-w-2xl mx-auto">
+                            <h4 class="text-2xl font-black text-gray-900 mb-4">Ne Bekleyebilirsin?</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-percent text-blue-600 text-xl mt-1"></i>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Özel İndirimler</div>
+                                        <div class="text-gray-600 text-sm">Seçtiğin kategorilerde</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-sparkles text-purple-600 text-xl mt-1"></i>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Yeni Ürünler</div>
+                                        <div class="text-gray-600 text-sm">İlk sen öğren</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-gift text-pink-600 text-xl mt-1"></i>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Hediye Kuponlar</div>
+                                        <div class="text-gray-600 text-sm">Aylık sürprizler</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-bolt text-orange-600 text-xl mt-1"></i>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Flash Kampanyalar</div>
+                                        <div class="text-gray-600 text-sm">Sınırlı süre fırsatlar</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-full font-black text-lg shadow-lg hover:scale-105 transition-all duration-300">
+                            <i class="fa-solid fa-shopping-bag mr-2"></i>
+                            Alışverişe Başla
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                NEWSLETTER-010
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

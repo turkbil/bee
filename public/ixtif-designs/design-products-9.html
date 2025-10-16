@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Cards - ixtif.com Tasarım Kütüphanesi</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Scroll Snap */
+        html {
+            scroll-snap-type: y mandatory;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(to right, #f0f0f0 0%, #e0e0e0 20%, #f0f0f0 40%, #f0f0f0 100%);
+            background-size: 1000px 100%;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        9 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-products-8.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-products-10.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-900 via-slate-900 to-cyan-900 relative overflow-hidden px-8">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">PRODUCT-009</span>
+        </div>
+
+        <div class="max-w-7xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Badge & Etiket Stili</h2>
+                <p class="text-xl text-gray-400">Zengin etiket ve rozet sistemleri</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product 1: Flash Sale -->
+                <div class="relative group">
+                    <div class="bg-white rounded-3xl p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                        <!-- Badges Container -->
+                        <div class="relative aspect-square bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
+                            <i class="fa-solid fa-microwave text-8xl text-orange-600 group-hover:scale-110 transition-transform duration-500"></i>
+
+                            <!-- Top Left: Flash Sale Badge -->
+                            <div class="absolute top-4 left-4">
+                                <div class="bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 animate-pulse">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    FLASH SALE
+                                </div>
+                            </div>
+
+                            <!-- Top Right: Discount -->
+                            <div class="absolute top-4 right-4">
+                                <div class="bg-black text-white w-16 h-16 rounded-full flex items-center justify-center font-black text-lg">
+                                    -70%
+                                </div>
+                            </div>
+
+                            <!-- Bottom Left: Stock Info -->
+                            <div class="absolute bottom-4 left-4">
+                                <div class="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-fire"></i>
+                                    Son 3 Adet!
+                                </div>
+                            </div>
+
+                            <!-- Bottom Right: Free Shipping -->
+                            <div class="absolute bottom-4 right-4">
+                                <div class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                    <i class="fa-solid fa-truck-fast"></i>
+                                    Ücretsiz
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-sm text-gray-500 mb-2">Beyaz Eşya / Mikrodalga</div>
+                        <h3 class="font-bold text-xl mb-3">Samsung Mikrodalga Fırın - 28L, 900W</h3>
+
+                        <!-- Feature Tags -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold">Çift Turbo</span>
+                            <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-semibold">Eco Mode</span>
+                            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">A++</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-3xl font-black">₺2.499</span>
+                            <span class="text-lg text-gray-400 line-through">₺8.299</span>
+                        </div>
+
+                        <button class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all">
+                            Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2: Premium -->
+                <div class="relative group">
+                    <div class="bg-white rounded-3xl p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border-4 border-yellow-400">
+                        <div class="relative aspect-square bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
+                            <i class="fa-solid fa-ring text-8xl text-purple-600 group-hover:scale-110 transition-transform duration-500"></i>
+
+                            <!-- Premium Crown Badge -->
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                                <div class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-6 py-2 rounded-full font-black text-sm flex items-center gap-2 shadow-lg">
+                                    <i class="fa-solid fa-crown"></i>
+                                    PREMİUM
+                                </div>
+                            </div>
+
+                            <!-- Verified Badge -->
+                            <div class="absolute top-4 right-4">
+                                <div class="bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center">
+                                    <i class="fa-solid fa-badge-check text-2xl"></i>
+                                </div>
+                            </div>
+
+                            <!-- Limited Edition -->
+                            <div class="absolute bottom-4 left-4">
+                                <div class="bg-black text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
+                                    <i class="fa-solid fa-star"></i>
+                                    Limitli Üretim
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-sm text-gray-500 mb-2">Aksesuar / Mücevher</div>
+                        <h3 class="font-bold text-xl mb-3">Swarovski Kristal Yüzük - 18K Altın Kaplama</h3>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-semibold">El Yapımı</span>
+                            <span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs font-semibold">18K Altın</span>
+                            <span class="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-xs font-semibold">Sertifikalı</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-3xl font-black">₺4.999</span>
+                            <span class="text-lg text-gray-400 line-through">₺9.999</span>
+                        </div>
+
+                        <button class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all">
+                            Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3: Eco Friendly -->
+                <div class="relative group">
+                    <div class="bg-white rounded-3xl p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                        <div class="relative aspect-square bg-gradient-to-br from-green-100 to-teal-100 rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
+                            <i class="fa-solid fa-leaf text-8xl text-green-600 group-hover:scale-110 transition-transform duration-500"></i>
+
+                            <!-- Eco Badge -->
+                            <div class="absolute top-4 left-4">
+                                <div class="bg-green-500 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-seedling"></i>
+                                    EKO
+                                </div>
+                            </div>
+
+                            <!-- Discount Badge -->
+                            <div class="absolute top-4 right-4">
+                                <div class="bg-teal-500 text-white px-4 py-2 rounded-lg font-bold text-sm">
+                                    -30%
+                                </div>
+                            </div>
+
+                            <!-- Certification Badges -->
+                            <div class="absolute bottom-4 left-4 flex gap-2">
+                                <div class="bg-white text-green-600 w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs border-2 border-green-500">
+                                    A+++
+                                </div>
+                                <div class="bg-white text-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs border-2 border-blue-500">
+                                    <i class="fa-solid fa-recycle"></i>
+                                </div>
+                            </div>
+
+                            <!-- Best Seller -->
+                            <div class="absolute bottom-4 right-4">
+                                <div class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+                                    Çok Satan
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-sm text-gray-500 mb-2">Transpalet / Organik Ürünler</div>
+                        <h3 class="font-bold text-xl mb-3">Organik Pamuk Yatak Çarşafı Seti - Çift Kişilik</h3>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">%100 Organik</span>
+                            <span class="bg-teal-100 text-teal-600 px-3 py-1 rounded-full text-xs font-semibold">GOTS Sertifikalı</span>
+                            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-semibold">Vegan</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-3xl font-black">₺899</span>
+                            <span class="text-lg text-gray-400 line-through">₺1.299</span>
+                        </div>
+
+                        <button class="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all">
+                            Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hakkımızda Sections - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        2 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-about-1.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-about-3.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="about-002" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                <i class="fa-solid fa-hashtag mr-1"></i>ABOUT-002
+            </span>
+            <h2 class="text-5xl font-black text-white mb-4">Hikayemiz</h2>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">2018'den bugüne İxtif.com'un başarı hikayesi</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="space-y-12">
+                <!-- 2018 -->
+                <div class="relative flex items-start gap-8">
+                    <div class="shrink-0 w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-black text-2xl shadow-2xl">
+                        2018
+                    </div>
+                    <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3">Kuruluş</h3>
+                        <p class="text-gray-300">İxtif.com kuruldu. İlk 50 ürünle yola çıktık ve e-ticaret dünyasına adım attık.</p>
+                    </div>
+                </div>
+
+                <!-- 2019 -->
+                <div class="relative flex items-start gap-8">
+                    <div class="shrink-0 w-32 h-32 bg-gradient-to-br from-green-600 to-green-700 rounded-full flex items-center justify-center text-white font-black text-2xl shadow-2xl">
+                        2019
+                    </div>
+                    <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3">Büyüme</h3>
+                        <p class="text-gray-300">500+ ürüne ulaştık. İlk 1000 müşterimize ulaşmanın mutluluğunu yaşadık.</p>
+                    </div>
+                </div>
+
+                <!-- 2021 -->
+                <div class="relative flex items-start gap-8">
+                    <div class="shrink-0 w-32 h-32 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center text-white font-black text-2xl shadow-2xl">
+                        2021
+                    </div>
+                    <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3">Genişleme</h3>
+                        <p class="text-gray-300">İstif Makinesi ve tekstil kategorilerini ekledik. 1500+ ürün, 10.000+ müşteri.</p>
+                    </div>
+                </div>
+
+                <!-- 2024 -->
+                <div class="relative flex items-start gap-8">
+                    <div class="shrink-0 w-32 h-32 bg-gradient-to-br from-orange-600 to-orange-700 rounded-full flex items-center justify-center text-white font-black text-2xl shadow-2xl">
+                        2024
+                    </div>
+                    <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3">Lider</h3>
+                        <p class="text-gray-300">Türkiye'nin en büyük istif pazarı olduk. 450+ ürün, 24.000+ mutlu müşteri!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

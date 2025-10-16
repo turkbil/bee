@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Tasarımları - ixtif.com</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-grow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-grow {
+            animation: pulse-grow 2s ease-in-out infinite;
+        }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        5 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-newsletter-4.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-newsletter-6.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 text-center mb-12">
+                        Haftalık Bültene Abone Ol
+                    </h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <!-- Left: Email Preview -->
+                        <div class="bg-gray-100 rounded-3xl p-8 shadow-xl">
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
+                                <!-- Email Header -->
+                                <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-center">
+                                    <h3 class="text-3xl font-black text-white mb-2">ixtif.com</h3>
+                                    <p class="text-white/80">Haftalık Fırsat Bülteni</p>
+                                </div>
+                                <!-- Email Body -->
+                                <div class="p-6">
+                                    <h4 class="text-xl font-bold text-gray-900 mb-4">Bu Haftanın Öne Çıkanları</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <i class="fa-solid fa-warehouse text-blue-600"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900 text-sm">Laptop'larda %30</div>
+                                                <div class="text-gray-600 text-xs">128 ürün</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                                <i class="fa-solid fa-boxes-stacked text-amber-600"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900 text-sm">İstif Makinesida %25</div>
+                                                <div class="text-gray-600 text-xs">106 ürün</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                            <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                                                <i class="fa-solid fa-dolly text-pink-600"></i>
+                                            </div>
+                                            <div class="flex-1 text-left">
+                                                <div class="font-bold text-gray-900 text-sm">Transpaletde 3 Al 2 Öde</div>
+                                                <div class="text-gray-600 text-xs">69 ürün</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-bold text-sm">
+                                        Fırsatları Gör
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-gray-500 text-xs text-center mt-4">
+                                <i class="fa-solid fa-envelope mr-1"></i>
+                                Bülten önizlemesi - Sana gönderilecek e-posta böyle görünecek
+                            </p>
+                        </div>
+
+                        <!-- Right: Subscribe Form -->
+                        <div x-data="{ email: '', frequency: 'weekly', subscribed: false }">
+                            <h3 class="text-3xl font-black text-gray-900 mb-4">Ne Kazanırsın?</h3>
+                            <ul class="space-y-4 mb-8">
+                                <li class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-check text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Haftalık Özel İndirimler</div>
+                                        <div class="text-gray-600 text-sm">Sadece abonelere özel kampanyalar</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-check text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Yeni Ürün Duyuruları</div>
+                                        <div class="text-gray-600 text-sm">İlk sen öğren, ilk sen al</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-check text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Alışveriş İpuçları</div>
+                                        <div class="text-gray-600 text-sm">Uzman tavsiyeleri ve rehberler</div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <form @submit.prevent="subscribed = true" class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">E-posta Adresi</label>
+                                    <input 
+                                        type="email" 
+                                        x-model="email"
+                                        placeholder="sen@example.com"
+                                        required
+                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold mb-2">Bülten Sıklığı</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex-1 flex items-center gap-2 p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 transition-colors" :class="frequency === 'weekly' && 'border-blue-500 bg-blue-50'">
+                                            <input type="radio" value="weekly" x-model="frequency">
+                                            <span class="font-semibold text-gray-900">Haftalık</span>
+                                        </label>
+                                        <label class="flex-1 flex items-center gap-2 p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 transition-colors" :class="frequency === 'daily' && 'border-blue-500 bg-blue-50'">
+                                            <input type="radio" value="daily" x-model="frequency">
+                                            <span class="font-semibold text-gray-900">Günlük</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <button 
+                                    type="submit"
+                                    class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:scale-105 transition-all duration-300"
+                                >
+                                    <i class="fa-solid fa-paper-plane mr-2"></i>
+                                    Abone Ol
+                                </button>
+                                <div x-show="subscribed" x-transition class="bg-green-100 text-green-700 px-6 py-3 rounded-xl text-center">
+                                    <i class="fa-solid fa-check-circle mr-2"></i>
+                                    Başarıyla abone oldunuz!
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-8 right-8 bg-gray-100 text-gray-900 px-6 py-3 rounded-full font-bold border-2 border-gray-200">
+                NEWSLETTER-005
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

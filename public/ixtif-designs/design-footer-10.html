@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer Tasarımları - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        10 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-footer-9.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="#" class="px-4 py-2 bg-white/10 rounded-lg opacity-50 cursor-not-allowed transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="footer-010" class="min-h-screen flex items-end bg-gradient-to-br from-teal-900 to-emerald-900 p-8">
+    <footer class="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-3xl shadow-2xl overflow-hidden">
+        <span class="inline-block bg-teal-600 text-white px-6 py-2 rounded-full text-sm font-bold m-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>FOOTER-010
+        </span>
+
+        <div class="container mx-auto px-8 py-12">
+            <!-- Ana Satır -->
+            <div class="flex flex-col lg:flex-row justify-between items-center gap-8 mb-8">
+                <!-- Logo + Slogan -->
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-boxes-stacked text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-black">ixtif.com</h3>
+                        <p class="text-gray-400">iXtif - Türkiye'nin İstif Pazarı</p>
+                    </div>
+                </div>
+
+                <!-- Linkler Yatay -->
+                <nav class="flex flex-wrap justify-center gap-6 text-sm">
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">Hakkımızda</a>
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">Kategoriler</a>
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">Kampanyalar</a>
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">Blog</a>
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">İletişim</a>
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">Kariyer</a>
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">SSS</a>
+                    <a href="#" class="text-gray-300 hover:text-teal-400 transition-colors">Yardım</a>
+                </nav>
+
+                <!-- İletişim -->
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-teal-400"></i>
+                        <a href="tel:08501234567" class="font-semibold hover:text-teal-400 transition-colors">0850 123 45 67</a>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-teal-400"></i>
+                        <a href="mailto:info@ixtif.com" class="font-semibold hover:text-teal-400 transition-colors">info@ixtif.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orta Satır: İstatistikler -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8 bg-white/5 rounded-2xl p-6">
+                <div class="text-center">
+                    <div class="text-3xl font-black text-teal-400 mb-1">128</div>
+                    <div class="text-sm text-gray-400">Forklift Ürün</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-emerald-400 mb-1">106</div>
+                    <div class="text-sm text-gray-400">İstif Makinesi</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-cyan-400 mb-1">69</div>
+                    <div class="text-sm text-gray-400">Transpalet Ürünü</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-yellow-400 mb-1">50K+</div>
+                    <div class="text-sm text-gray-400">Mutlu Müşteri</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-pink-400 mb-1">%70</div>
+                    <div class="text-sm text-gray-400">İndirim Oranı</div>
+                </div>
+            </div>
+
+            <!-- Alt Satır -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 border-t border-white/10 pt-8">
+                <!-- Copyright -->
+                <div class="text-gray-400 text-sm">
+                    © 2025 ixtif.com. Tüm hakları saklıdır. |
+                    <a href="#" class="hover:text-white">Gizlilik</a> •
+                    <a href="#" class="hover:text-white">Koşullar</a> •
+                    <a href="#" class="hover:text-white">KVKK</a>
+                </div>
+
+                <!-- Sosyal Medya -->
+                <div class="flex gap-3">
+                    <a href="#" class="w-10 h-10 bg-white/10 hover:bg-teal-600 rounded-lg flex items-center justify-center transition-all">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-white/10 hover:bg-teal-600 rounded-lg flex items-center justify-center transition-all">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-white/10 hover:bg-teal-600 rounded-lg flex items-center justify-center transition-all">
+                        <i class="fa-brands fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-white/10 hover:bg-teal-600 rounded-lg flex items-center justify-center transition-all">
+                        <i class="fa-brands fa-youtube"></i>
+                    </a>
+                </div>
+
+                <!-- Ödeme Metodları -->
+                <div class="flex items-center gap-3">
+                    <div class="text-sm text-gray-400">Güvenli Ödeme:</div>
+                    <div class="flex gap-2">
+                        <div class="w-10 h-7 bg-white rounded flex items-center justify-center text-xs font-bold text-blue-700">VISA</div>
+                        <div class="w-10 h-7 bg-white rounded flex items-center justify-center text-xs font-bold text-red-600">MC</div>
+                        <div class="w-10 h-7 bg-white rounded flex items-center justify-center text-xs font-bold text-blue-900">AMEX</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</section>
+    </div>
+
+</body>
+</html>

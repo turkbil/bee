@@ -560,42 +560,115 @@ window.placeholderV4 = function(productId = null) {
 };
 
 /**
- * HTML Sanitizer & Enhancer for AI Chat Messages v3.0
- * AI artık HTML formatında yanıt veriyor - burada sanitize + style ekliyoruz
- * İzin verilen: <p>, <h3>, <h4>, <ul>, <ol>, <li>, <strong>, <b>, <em>, <i>, <a>, <br>, <div>, <span>
+ * Markdown to HTML Converter & Enhancer for AI Chat Messages v4.0
+ * AI artık Markdown formatında yanıt veriyor - burada HTML'e çevirip style ekliyoruz
+ * Markdown format: paragraflar (boş satır), liste (- item), bold (**text**)
  */
 window.aiChatRenderMarkdown = function(content) {
     if (!content) return '';
 
     let html = content;
 
-    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug (SLUG-BASED - TENANT DYNAMIC!)
-    // Format: **Ürün Adı** [LINK:shop:litef-ept15] → /shop/litef-ept15 (direct slug-based URL)
-    // Format: Ürün Adı [LINK:shop:litef-ept15] → Also works without bold
-    // IMPROVED: Supports uppercase, Turkish chars (İ, ş, ğ, ü, ö, ç), and works with/without bold
-    html = html.replace(/(?:\*\*([^*]+)\*\*|([^\[]+?))\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, boldText, plainText, slug) {
-        const linkText = boldText || plainText;
-        const url = `/shop/${slug}`;
-        const icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>`;
-        const colorClass = 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50';
+    // 🚀 MARKDOWN → HTML CONVERSION (AI artık Markdown kullanıyor!)
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 ${colorClass} rounded-lg transition-colors font-semibold">
-            ${icon}
-            ${linkText.trim()}
+    // 1. Liste dönüşümü: "- item" → <ul><li>item</li></ul>
+    // Ardışık "- " satırlarını tespit et ve <ul> ile wrap et
+    html = html.replace(/((?:^|\n)- .+(?:\n- .+)*)/gm, function(match) {
+        // Her "- item" satırını <li>item</li>'ye çevir
+        let items = match.split('\n').filter(line => line.trim().startsWith('- '));
+        let listItems = items.map(line => {
+            let text = line.replace(/^-\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ul>\n${listItems}\n</ul>`;
+    });
+
+    // 2. Paragraf dönüşümü: Boş satırlarla ayrılmış metinleri <p> ile wrap et
+    // Önce mevcut <ul>, <ol>, link taglarını koru (placeholder kullan)
+    let preservedBlocks = [];
+    html = html.replace(/(<ul>[\s\S]*?<\/ul>|<ol>[\s\S]*?<\/ol>)/g, function(match, block) {
+        let placeholder = `___PRESERVED_BLOCK_${preservedBlocks.length}___`;
+        preservedBlocks.push(block);
+        return placeholder;
+    });
+
+    // Şimdi paragrafları <p> ile wrap et
+    // Çift newline (\n\n) ile ayrılmış blokları paragraf olarak kabul et
+    html = html.split('\n\n').map(block => {
+        block = block.trim();
+        if (!block) return '';
+        // Eğer placeholder veya HTML tag içeriyorsa dokunma
+        if (block.includes('___PRESERVED_BLOCK_') || block.match(/^<[a-z]/i)) {
+            return block;
+        }
+        // Tek satırları <p> ile wrap et
+        return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+    }).join('\n');
+
+    // Preserved block'ları geri koy
+    preservedBlocks.forEach((block, index) => {
+        html = html.replace(`___PRESERVED_BLOCK_${index}___`, block);
+    });
+
+    // 🔗 LINK PROCESSING (custom format → styled HTML)
+
+    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug (PREMIUM ŞIK TASARIM!)
+    // Format: **Ürün Adı** [LINK:shop:litef-ept15] → /shop/litef-ept15
+    // ULTRA ŞIK: Gradient, hover effects, premium icons
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+        const url = `/shop/${slug}`;
+
+        // Minimal shopping icon
+        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>`;
+
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            ${shopIcon}
+            <span class="no-underline">${linkText.trim()}</span>
+            ${arrowIcon}
         </a>`;
     });
 
     // 0B. Category SLUG format: [LINK:shop:category:SLUG]
-    // IMPROVED: Supports uppercase, Turkish chars, works with/without bold
-    html = html.replace(/(?:\*\*([^*]+)\*\*|([^\[]+?))\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, boldText, plainText, slug) {
-        const linkText = boldText || plainText;
+    // IMPORTANT: ONLY processes **bold** text before [LINK:...] to prevent entire sentence being linked
+    // Supports uppercase, Turkish chars
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
-        const icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
-        const colorClass = 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50';
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 ${colorClass} rounded-lg transition-colors font-semibold">
+        // Minimal category icon
+        const icon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>`;
+
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-green-200 dark:border-green-700
+                   hover:border-green-500 dark:hover:border-green-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
             ${icon}
-            ${linkText.trim()}
+            <span class="no-underline">${linkText.trim()}</span>
+            ${arrowIcon}
         </a>`;
     });
 
@@ -646,63 +719,121 @@ window.aiChatRenderMarkdown = function(content) {
             colorClass = 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400';
         }
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 ${colorClass} rounded-lg transition-colors font-semibold">
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
+
+        // Determine border color based on module type for minimal differentiation
+        let borderColor = 'border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500';
+        if (module === 'shop' && type === 'category') {
+            borderColor = 'border-green-200 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500';
+        } else if (module === 'shop' && type === 'brand') {
+            borderColor = 'border-purple-200 dark:border-purple-700 hover:border-purple-500 dark:hover:border-purple-500';
+        } else if (module === 'blog') {
+            borderColor = 'border-orange-200 dark:border-orange-700 hover:border-orange-500 dark:hover:border-orange-500';
+        } else if (module === 'page') {
+            borderColor = 'border-indigo-200 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-500';
+        } else if (module === 'portfolio') {
+            borderColor = 'border-pink-200 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500';
+        }
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border ${borderColor}
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
             ${icon}
-            ${linkText}
+            <span class="no-underline">${linkText.trim()}</span>
+            ${arrowIcon}
         </a>`;
     });
 
     // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)(?::([a-z0-9-]+))?\]/gi, function(match, productName, productId, productSlug) {
         const productUrl = `/shop/product/${productId}`;
-        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors font-semibold">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-            </svg>
-            ${productName}
+
+        // Minimal shopping icon
+        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>`;
+
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
+
+        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            ${shopIcon}
+            <span class="no-underline">${productName.trim()}</span>
+            ${arrowIcon}
         </a>`;
     });
 
+    // 🚨 CRITICAL: Preserve links before bold processing to prevent link splitting
+    // This prevents **text** [LINK] from being split into separate elements
+    let preservedLinks = [];
+    html = html.replace(/(<a[\s\S]*?<\/a>)/g, function(match, link) {
+        let linkPlaceholder = `___LINK_PRESERVED_${preservedLinks.length}___`;
+        preservedLinks.push(link);
+        return linkPlaceholder;
+    });
+
     // Markdown bold syntax'ı HTML'e çevir (**text** → <strong>text</strong>)
+    // Now it won't affect links because they're preserved
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+    // Restore preserved links after bold processing
+    preservedLinks.forEach((link, index) => {
+        html = html.replace(`___LINK_PRESERVED_${index}___`, link);
+    });
 
     // 1. Link'lere target="_blank", rel ve Tailwind class ekle
     // Standart link: <a href="url">text</a>
     html = html.replace(/<a\s+href="([^"]+)"([^>]*)>([^<]+)<\/a>/gi, function(match, url, attrs, text) {
         // Zaten target varsa dokunma
         if (attrs.includes('target=')) return match;
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity text-blue-500 dark:text-blue-400 font-medium">${text}</a>`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors font-medium">${text}</a>`;
     });
 
     // Link içinde <strong> olan durumlar: <a href="url"><strong>text</strong></a>
     html = html.replace(/<a\s+href="([^"]+)"([^>]*)><strong>([^<]+)<\/strong><\/a>/gi, function(match, url, attrs, text) {
         if (attrs.includes('target=')) return match;
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity text-blue-500 dark:text-blue-400 font-bold">${text}</a>`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors font-bold">${text}</a>`;
     });
 
     // Link içinde <b> olan durumlar: <a href="url"><b>text</b></a>
     html = html.replace(/<a\s+href="([^"]+)"([^>]*)><b>([^<]+)<\/b><\/a>/gi, function(match, url, attrs, text) {
         if (attrs.includes('target=')) return match;
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-80 transition-opacity text-blue-500 dark:text-blue-400 font-bold">${text}</a>`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors font-bold">${text}</a>`;
     });
 
     // 2. <ul> listelerine Tailwind class ekle
-    html = html.replace(/<ul>/gi, '<ul class="space-y-1.5 my-2 ml-4 list-none">');
+    html = html.replace(/<ul>/gi, '<ul class="space-y-2.5 my-3 mb-5 ml-4 list-none">');
 
     // 3. <ol> listelerine Tailwind class ekle
-    html = html.replace(/<ol>/gi, '<ol class="space-y-1.5 my-2 ml-4 list-decimal">');
+    html = html.replace(/<ol>/gi, '<ol class="space-y-2.5 my-3 mb-5 ml-4 list-decimal">');
 
     // 4. <li> elementlerine class ekle + bullet point
-    html = html.replace(/<li>/gi, '<li class="ml-2 text-gray-800 dark:text-gray-200">• ');
+    html = html.replace(/<li>/gi, '<li class="ml-3 text-gray-800 dark:text-gray-200 leading-relaxed">• ');
 
-    // 5. <p> elementlerine class ekle (mb-4 = daha fazla boşluk)
-    html = html.replace(/<p>/gi, '<p class="mb-4 text-gray-800 dark:text-gray-200 leading-relaxed">');
+    // 5. <p> elementlerine class ekle (mb-5 = daha fazla boşluk)
+    html = html.replace(/<p>/gi, '<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">');
 
     // 6. <h3> başlıklarına class ekle
-    html = html.replace(/<h3>/gi, '<h3 class="text-lg font-bold mt-3 mb-2 text-gray-900 dark:text-gray-100">');
+    html = html.replace(/<h3>/gi, '<h3 class="text-lg font-bold mt-4 mb-3 text-gray-900 dark:text-gray-100">');
 
     // 7. <h4> başlıklarına class ekle
-    html = html.replace(/<h4>/gi, '<h4 class="text-base font-semibold mt-2 mb-1 text-gray-900 dark:text-gray-100">');
+    html = html.replace(/<h4>/gi, '<h4 class="text-base font-semibold mt-3 mb-2 text-gray-900 dark:text-gray-100">');
 
     // 8. <strong> elementlerine class ekle
     html = html.replace(/<strong>/gi, '<strong class="font-bold text-gray-900 dark:text-white">');
@@ -725,5 +856,5 @@ window.aiChatRenderMarkdown = function(content) {
     return html;
 };
 
-console.log('✅ AI Chat HTML Sanitizer & Enhancer v3.0 loaded');
+console.log('✅ AI Chat Markdown→HTML Converter & Enhancer v4.0 loaded');
 </script>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Popup Tasarımları - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; position: relative; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+    </style>
+</head>
+<body>
+<div class="fixed top-4 left-4 z-[9999]">
+    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="font-semibold text-sm">Ana Menü</span>
+    </a>
+</div>
+<div class="scroll-container">
+
+<!-- CHATBOT-POPUP-001: Bottom Right Floating -->
+<section id="chatbot-popup-001" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-8 relative">
+    <div class="text-center">
+        <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-POPUP-001
+        </span>
+        <h2 class="text-4xl font-black text-gray-900 mb-4">Sağ Alt Köşe Floating Chat</h2>
+        <p class="text-xl text-gray-600">Klasik popup chatbot tasarımı</p>
+    </div>
+
+    <!-- Floating Chat Widget -->
+    <div x-data="{ isOpen: false }" class="absolute bottom-8 right-8 z-50">
+        <!-- Chat Window -->
+        <div x-show="isOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-90 translate-y-4"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             class="absolute bottom-24 right-0 w-96 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-robot text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">ixtif Asistan</h4>
+                            <div class="flex items-center gap-2 text-xs text-blue-100">
+                                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                                Çevrimiçi
+                            </div>
+                        </div>
+                    </div>
+                    <button @click="isOpen = false" class="w-8 h-8 hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-blue-100">Merhaba! Size nasıl yardımcı olabilirim? 😊</p>
+            </div>
+
+            <!-- Messages -->
+            <div class="h-80 overflow-y-auto p-6 bg-gray-50 space-y-4">
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-robot text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 max-w-xs shadow-sm">
+                        <p class="text-sm text-gray-800">Hangi ürünü arıyorsunuz?</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-xs shadow-sm">
+                        <p class="text-sm">Laptop bakıyorum</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-robot text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 max-w-xs shadow-sm">
+                        <p class="text-sm text-gray-800 mb-3">850+ laptop ürünümüz var! Bütçeniz nedir?</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-all">
+                                10.000₺ - 20.000₺
+                            </button>
+                            <button class="bg-purple-50 text-purple-600 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-100 transition-all">
+                                20.000₺ - 30.000₺
+                            </button>
+                            <button class="bg-green-50 text-green-600 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all">
+                                30.000₺+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Mesajınız..."
+                           class="flex-1 bg-gray-100 border-0 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center hover:shadow-lg transition-all">
+                        <i class="fa-solid fa-paper-plane text-white text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Button -->
+        <button @click="isOpen = !isOpen"
+                class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <i :class="isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-comments'" class="text-2xl"></i>
+        </button>
+
+        <!-- Notification Badge -->
+        <div x-show="!isOpen" class="absolute -top-2 -left-2 w-6 h-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
+            3
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-POPUP-002: Full Screen Overlay -->
+<section id="chatbot-popup-002" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-indigo-900 p-8 relative">
+    <div class="text-center">
+        <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-POPUP-002
+        </span>
+        <h2 class="text-4xl font-black text-white mb-4">Full Screen Chat Overlay</h2>
+        <p class="text-xl text-purple-300">Tam ekran sohbet deneyimi</p>
+    </div>
+
+    <!-- Trigger Button -->
+    <div x-data="{ showFullscreen: false }" class="absolute bottom-8 left-8 z-50">
+        <button @click="showFullscreen = true"
+                class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transition-all">
+            <i class="fa-solid fa-expand mr-2"></i>Full Screen Chat
+        </button>
+
+        <!-- Full Screen Overlay -->
+        <div x-show="showFullscreen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 z-[100] flex flex-col">
+
+            <!-- Header -->
+            <div class="bg-black/30 backdrop-blur-lg border-b border-white/10 p-6">
+                <div class="max-w-7xl mx-auto flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-robot text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">ixtif AI Asistan</h3>
+                            <p class="text-purple-300">Akıllı alışveriş yardımcınız</p>
+                        </div>
+                    </div>
+                    <button @click="showFullscreen = false"
+                            class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white transition-all">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl rounded-tl-sm p-6">
+                            <p class="text-white text-lg leading-relaxed">
+                                Merhaba! Ben ixtif.com'un AI asistanıyım. Size 3.120+ ürün içinden en uygununu bulmaya yardımcı olabilirim. Ne arıyorsunuz?
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <div class="max-w-2xl bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl rounded-tr-sm p-6">
+                            <p class="text-white text-lg">Evimdeki oturma odasını yenilemek istiyorum</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div class="flex-1 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl rounded-tl-sm p-6">
+                            <p class="text-white text-lg leading-relaxed mb-4">
+                                Harika! Size oturma odası için en popüler koltuk takımlarımızı göstereyim:
+                            </p>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-white/10 rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                                    <div class="w-full h-32 bg-white/20 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fa-solid fa-couch text-4xl text-white"></i>
+                                    </div>
+                                    <h5 class="font-bold text-white mb-1">Modern L Koltuk</h5>
+                                    <p class="text-purple-200 text-sm mb-2">₺18.999</p>
+                                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm font-semibold transition-all">
+                                        Detay
+                                    </button>
+                                </div>
+                                <div class="bg-white/10 rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                                    <div class="w-full h-32 bg-white/20 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fa-solid fa-loveseat text-4xl text-white"></i>
+                                    </div>
+                                    <h5 class="font-bold text-white mb-1">Chester Kanepe</h5>
+                                    <p class="text-purple-200 text-sm mb-2">₺24.500</p>
+                                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm font-semibold transition-all">
+                                        Detay
+                                    </button>
+                                </div>
+                                <div class="bg-white/10 rounded-xl p-4 hover:bg-white/20 transition-all cursor-pointer">
+                                    <div class="w-full h-32 bg-white/20 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fa-solid fa-couch text-4xl text-white"></i>
+                                    </div>
+                                    <h5 class="font-bold text-white mb-1">3+2+1 Takım</h5>
+                                    <p class="text-purple-200 text-sm mb-2">₺32.999</p>
+                                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm font-semibold transition-all">
+                                        Detay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input -->
+            <div class="bg-black/30 backdrop-blur-lg border-t border-white/10 p-6">
+                <div class="max-w-4xl mx-auto flex gap-4">
+                    <input type="text" placeholder="Mesajınızı buraya yazın..."
+                           class="flex-1 bg-white/10 border border-white/20 text-white placeholder-white/40 rounded-2xl px-8 py-5 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button class="bg-gradient-to-r from-purple-600 to-pink-600 px-10 py-5 rounded-2xl font-bold text-white hover:shadow-2xl transition-all">
+                        <i class="fa-solid fa-paper-plane mr-2"></i>Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-POPUP-003: Slide from Side -->
+<section id="chatbot-popup-003" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 p-8 relative">
+    <div class="text-center">
+        <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-POPUP-003
+        </span>
+        <h2 class="text-4xl font-black text-gray-900 mb-4">Yandan Açılan Panel Chat</h2>
+        <p class="text-xl text-gray-600">Sidebar style chatbot</p>
+    </div>
+
+    <!-- Trigger -->
+    <div x-data="{ sideOpen: false }" class="absolute right-0 top-1/2 -translate-y-1/2 z-50">
+        <!-- Tab Button -->
+        <button @click="sideOpen = !sideOpen"
+                class="bg-gradient-to-b from-green-600 to-emerald-600 text-white p-4 rounded-l-2xl shadow-2xl hover:pr-6 transition-all">
+            <div class="flex flex-col items-center gap-2">
+                <i class="fa-solid fa-comments text-2xl"></i>
+                <span class="text-xs font-bold writing-mode-vertical">CANLI DESTEK</span>
+            </div>
+        </button>
+
+        <!-- Sidebar Panel -->
+        <div x-show="sideOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             class="absolute right-0 top-0 h-full w-[480px] bg-white shadow-2xl flex flex-col">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-2xl font-bold">Canlı Destek</h3>
+                    <button @click="sideOpen = false"
+                            class="w-10 h-10 hover:bg-white/10 rounded-xl flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-user-headset"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold">Ahmet Yılmaz</div>
+                        <div class="text-sm text-green-100">Müşteri Temsilcisi</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50 space-y-4">
+                <div class="text-center">
+                    <div class="inline-block bg-white border border-gray-200 rounded-full px-4 py-2 text-xs text-gray-500">
+                        Bugün, 15:42
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-user-headset text-green-600"></i>
+                    </div>
+                    <div>
+                        <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                            <p class="text-sm text-gray-800">Merhaba! Ben Ahmet, size nasıl yardımcı olabilirim?</p>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1 ml-2">15:42</div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <div>
+                        <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
+                            <p class="text-sm">Siparişim ne zaman gelecek?</p>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1 mr-2 text-right">15:43</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-user-headset text-green-600"></i>
+                    </div>
+                    <div>
+                        <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                            <p class="text-sm text-gray-800 mb-3">Hemen kontrol ediyorum. Sipariş numaranızı paylaşabilir misiniz?</p>
+                            <div class="bg-green-50 rounded-lg p-3">
+                                <div class="text-xs text-green-600 font-semibold mb-2">Hızlı Erişim:</div>
+                                <div class="flex flex-col gap-2">
+                                    <button class="bg-white text-green-600 px-3 py-2 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all text-left">
+                                        <i class="fa-solid fa-box mr-2"></i>Siparişlerim
+                                    </button>
+                                    <button class="bg-white text-green-600 px-3 py-2 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all text-left">
+                                        <i class="fa-solid fa-truck mr-2"></i>Kargo Takip
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1 ml-2">15:43</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="p-4 bg-white border-t border-gray-200">
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    <button class="bg-green-50 text-green-600 px-3 py-2 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all">
+                        <i class="fa-solid fa-box text-lg mb-1"></i>
+                        <div>Sipariş</div>
+                    </button>
+                    <button class="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-all">
+                        <i class="fa-solid fa-rotate-left text-lg mb-1"></i>
+                        <div>İade</div>
+                    </button>
+                    <button class="bg-purple-50 text-purple-600 px-3 py-2 rounded-lg text-xs font-semibold hover:bg-purple-100 transition-all">
+                        <i class="fa-solid fa-badge-percent text-lg mb-1"></i>
+                        <div>Kampanya</div>
+                    </button>
+                </div>
+
+                <div class="flex gap-2">
+                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-paperclip text-gray-600"></i>
+                    </button>
+                    <input type="text" placeholder="Mesaj yazın..."
+                           class="flex-1 bg-gray-100 border-0 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <button class="w-10 h-10 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl flex items-center justify-center hover:shadow-lg transition-all">
+                        <i class="fa-solid fa-paper-plane text-white text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay -->
+        <div x-show="sideOpen"
+             @click="sideOpen = false"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="absolute inset-0 bg-black/50 backdrop-blur-sm -z-10"></div>
+    </div>
+</section>
+
+<!-- CHATBOT-POPUP-004: Bottom Bar Expandable -->
+<section id="chatbot-popup-004" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50 p-8 relative">
+    <div class="text-center">
+        <span class="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-POPUP-004
+        </span>
+        <h2 class="text-4xl font-black text-gray-900 mb-4">Alt Bar Genişleyen Chat</h2>
+        <p class="text-xl text-gray-600">Bottom expandable chatbot</p>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div x-data="{ bottomExpanded: false }" class="absolute bottom-0 left-0 right-0 z-50">
+        <!-- Expanded Chat -->
+        <div x-show="bottomExpanded"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="translate-y-full"
+             x-transition:enter-end="translate-y-0"
+             class="bg-white border-t-2 border-orange-500 shadow-2xl">
+
+            <div class="max-w-7xl mx-auto">
+                <!-- Chat Header -->
+                <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">ixtif Yardım Merkezi</h4>
+                            <p class="text-xs text-gray-500">Anında yanıt alın</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="w-8 h-8 hover:bg-gray-100 rounded-lg flex items-center justify-center transition-all">
+                            <i class="fa-solid fa-minus text-gray-600"></i>
+                        </button>
+                        <button @click="bottomExpanded = false"
+                                class="w-8 h-8 hover:bg-gray-100 rounded-lg flex items-center justify-center transition-all">
+                            <i class="fa-solid fa-xmark text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Content -->
+                <div class="grid md:grid-cols-3 gap-6 p-6 max-h-96 overflow-y-auto">
+                    <!-- Messages Column -->
+                    <div class="md:col-span-2 space-y-4">
+                        <div class="flex gap-3">
+                            <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-robot text-orange-600 text-sm"></i>
+                            </div>
+                            <div class="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 max-w-md">
+                                <p class="text-sm text-gray-800">Size nasıl yardımcı olabilirim? 😊</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <input type="text" placeholder="Sorunuzu yazın..."
+                                   class="flex-1 bg-gray-100 border-0 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <button class="bg-gradient-to-r from-orange-600 to-red-600 px-6 py-3 rounded-xl text-white font-semibold hover:shadow-xl transition-all">
+                                Gönder
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Column -->
+                    <div class="space-y-3">
+                        <h5 class="font-bold text-gray-900 text-sm mb-4">Popüler Konular</h5>
+                        <button class="w-full bg-orange-50 hover:bg-orange-100 text-orange-600 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all">
+                            <i class="fa-solid fa-truck mr-2"></i>Kargo Durumu
+                        </button>
+                        <button class="w-full bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all">
+                            <i class="fa-solid fa-rotate-left mr-2"></i>İade İşlemleri
+                        </button>
+                        <button class="w-full bg-green-50 hover:bg-green-100 text-green-600 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all">
+                            <i class="fa-solid fa-credit-card mr-2"></i>Ödeme Sorunları
+                        </button>
+                        <button class="w-full bg-purple-50 hover:bg-purple-100 text-purple-600 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all">
+                            <i class="fa-solid fa-phone mr-2"></i>Bizi Arayın
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collapsed Bar -->
+        <div x-show="!bottomExpanded"
+             @click="bottomExpanded = true"
+             class="bg-gradient-to-r from-orange-600 to-red-600 text-white p-4 cursor-pointer hover:shadow-2xl transition-all">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+                        <i class="fa-solid fa-comments text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg">Yardıma mı ihtiyacınız var?</h4>
+                        <p class="text-sm text-orange-100">Hemen sohbete başlayın veya SSS'ye göz atın</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="bg-white/20 hover:bg-white/30 px-6 py-3 rounded-xl font-semibold transition-all">
+                        Sohbet Başlat
+                    </button>
+                    <i class="fa-solid fa-chevron-up text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CHATBOT-POPUP-005: Center Modal -->
+<section id="chatbot-popup-005" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 p-8 relative">
+    <div class="text-center">
+        <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-8">
+            <i class="fa-solid fa-hashtag mr-1"></i>CHATBOT-POPUP-005
+        </span>
+        <h2 class="text-4xl font-black text-gray-900 mb-4">Merkezi Modal Chat</h2>
+        <p class="text-xl text-gray-600">Center screen modal chatbot</p>
+
+        <!-- Trigger Button -->
+        <button x-data @click="$dispatch('open-modal')"
+                class="mt-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-indigo-500/50 hover:scale-105 transition-all">
+            <i class="fa-solid fa-comment-dots mr-2"></i>Chat Aç
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div x-data="{ modalOpen: false }"
+         @open-modal.window="modalOpen = true"
+         class="absolute inset-0 z-50 flex items-center justify-center p-4"
+         x-show="modalOpen"
+         style="display: none;">
+
+        <!-- Overlay -->
+        <div @click="modalOpen = false"
+             x-show="modalOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+        <!-- Modal Content -->
+        <div x-show="modalOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-90"
+             x-transition:enter-end="opacity-100 scale-100"
+             class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-robot text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-bold">Merhaba! 👋</h3>
+                            <p class="text-indigo-100">Size nasıl yardımcı olabiliriz?</p>
+                        </div>
+                    </div>
+                    <button @click="modalOpen = false"
+                            class="w-12 h-12 hover:bg-white/10 rounded-xl flex items-center justify-center transition-all">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Chat Options -->
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-gray-900 text-xl mb-4">Ne yapabilir?</h4>
+
+                        <button class="w-full bg-gradient-to-r from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 border-2 border-blue-200 rounded-2xl p-6 text-left transition-all">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-search text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-gray-900 mb-1">Ürün Ara</h5>
+                                    <p class="text-sm text-gray-600">3.120+ ürün içinde istediğinizi bulun</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button class="w-full bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border-2 border-purple-200 rounded-2xl p-6 text-left transition-all">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-box text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-gray-900 mb-1">Sipariş Takibi</h5>
+                                    <p class="text-sm text-gray-600">Siparişinizin durumunu öğrenin</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button class="w-full bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 border-2 border-green-200 rounded-2xl p-6 text-left transition-all">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-headset text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-gray-900 mb-1">Canlı Destek</h5>
+                                    <p class="text-sm text-gray-600">Uzmanlarımızla konuşun</p>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div>
+                        <h4 class="font-bold text-gray-900 text-xl mb-4">Bize Ulaşın</h4>
+
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 rounded-2xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-phone text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm text-gray-500">Telefon</div>
+                                        <a href="tel:08501234567" class="font-bold text-gray-900 hover:text-indigo-600">0850 123 45 67</a>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500">Pazartesi - Pazar: 09:00 - 22:00</p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-2xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-envelope text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm text-gray-500">E-posta</div>
+                                        <a href="mailto:destek@ixtif.com" class="font-bold text-gray-900 hover:text-purple-600">destek@ixtif.com</a>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500">24 saat içinde yanıt garantisi</p>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
+                                <h5 class="font-bold mb-2">Sosyal Medya</h5>
+                                <div class="flex gap-3">
+                                    <a href="#" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all">
+                                        <i class="fa-brands fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all">
+                                        <i class="fa-brands fa-instagram"></i>
+                                    </a>
+                                    <a href="#" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all">
+                                        <i class="fa-brands fa-twitter"></i>
+                                    </a>
+                                    <a href="#" class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+</body>
+</html>

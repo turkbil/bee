@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Tasarımları - ixtif.com | 10 Profesyonel Mega Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        section { scroll-snap-align: start; }
+        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-down { animation: slideDown 0.3s ease-out; }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-[60] bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Numarası -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        2 / 10
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Tasarım Numarası</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <a href="design-menu-1.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-menu-3.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="menu-002" class="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 to-pink-50" x-data="{ sidebarOpen: false, mobileMenuOpen: false, expandedCategory: null }">
+    <nav class="bg-white shadow-md relative z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:rotate-6 transition-transform">
+                        <i class="fa-solid fa-warehouse text-white text-3xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">ixtif</h1>
+                        <p class="text-xs text-gray-500 font-semibold">İstif Pazarı</p>
+                    </div>
+                </div>
+
+                <!-- Center Search -->
+                <div class="hidden lg:block flex-1 max-w-2xl mx-12">
+                    <div class="relative">
+                        <input type="text" placeholder="20.000+ ürün içinde ara..." class="w-full bg-gray-50 border-2 border-gray-200 rounded-full px-6 py-3 pl-14 focus:outline-none focus:border-purple-500 focus:bg-white transition">
+                        <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+                        <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-full hover:shadow-lg transition">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-3">
+                    <button @click="sidebarOpen = true" class="lg:hidden text-gray-700 hover:text-purple-600 transition">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                    <button class="hidden lg:flex items-center gap-2 text-gray-700 hover:text-purple-600 font-semibold transition">
+                        <i class="fa-solid fa-user-circle text-xl"></i>
+                        <span>Hesabım</span>
+                    </button>
+                    <button class="relative">
+                        <i class="fa-solid fa-shopping-bag text-gray-700 hover:text-purple-600 text-2xl transition"></i>
+                        <span class="absolute -top-2 -right-2 w-6 h-6 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg">5</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Category Bar -->
+        <div class="hidden lg:block bg-gradient-to-r from-purple-500 to-pink-600 text-white">
+            <div class="container mx-auto px-6">
+                <div class="flex items-center gap-1">
+                    <button @click="sidebarOpen = true" class="px-6 py-4 bg-white/20 hover:bg-white/30 transition font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-grid-2"></i>
+                        TÜM KATEGORİLER
+                    </button>
+                    <a href="#" class="px-4 py-4 hover:bg-white/20 transition font-semibold">Kampanyalar</a>
+                    <a href="#" class="px-4 py-4 hover:bg-white/20 transition font-semibold">Çok Satanlar</a>
+                    <a href="#" class="px-4 py-4 hover:bg-white/20 transition font-semibold">Yeni Ürünler</a>
+                    <a href="#" class="px-4 py-4 hover:bg-white/20 transition font-semibold">Toplu Satış</a>
+                    <a href="#" class="px-4 py-4 hover:bg-white/20 transition font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-tag"></i>
+                        Fırsat Ürünleri
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay -->
+    <div x-show="sidebarOpen"
+         @click="sidebarOpen = false"
+         x-transition:enter="transition-opacity ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         class="fixed inset-0 bg-black/50 z-50">
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div x-show="sidebarOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         class="fixed left-0 top-0 bottom-0 w-80 bg-white shadow-2xl z-50 overflow-y-auto"
+         @click.stop>
+
+        <!-- Sidebar Header -->
+        <div class="bg-gradient-to-r from-purple-500 to-pink-600 text-white p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold">Kategoriler</h3>
+                <button @click="sidebarOpen = false" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition flex items-center justify-center">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <p class="text-purple-100 text-sm">20+ ana kategori, 5000+ ürün</p>
+        </div>
+
+        <!-- Categories List -->
+        <div class="p-4">
+            <!-- Forklift -->
+            <div class="mb-2">
+                <button @click="expandedCategory = expandedCategory === 'electronics' ? null : 'electronics'" class="w-full flex items-center justify-between p-4 rounded-xl hover:bg-purple-50 transition group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-warehouse text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="font-bold text-gray-800 block">Forklift</span>
+                            <span class="text-xs text-gray-500">128 ürün</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-purple-600 transition" :class="{ 'rotate-90': expandedCategory === 'electronics' }"></i>
+                </button>
+
+                <div x-show="expandedCategory === 'electronics'" x-transition class="ml-4 mt-2 space-y-1">
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition">Televizyon</a>
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition">Telefon & Tablet</a>
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition">Bilgisayar</a>
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition">Kamera</a>
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-600 transition flex items-center justify-between">
+                        Tümünü Gör
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- İstif Makinesi -->
+            <div class="mb-2">
+                <button @click="expandedCategory = expandedCategory === 'furniture' ? null : 'furniture'" class="w-full flex items-center justify-between p-4 rounded-xl hover:bg-green-50 transition group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-boxes-stacked text-green-600 text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="font-bold text-gray-800 block">İstif Makinesi</span>
+                            <span class="text-xs text-gray-500">106 ürün</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-green-600 transition" :class="{ 'rotate-90': expandedCategory === 'furniture' }"></i>
+                </button>
+
+                <div x-show="expandedCategory === 'furniture'" x-transition class="ml-4 mt-2 space-y-1">
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition">Koltuk Takımı</a>
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition">Yatak & Baza</a>
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition">Masa & Sandalye</a>
+                    <a href="#" class="block px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 hover:text-green-600 transition">Dolap</a>
+                </div>
+            </div>
+
+            <!-- Transpalet -->
+            <div class="mb-2">
+                <button @click="expandedCategory = expandedCategory === 'textile' ? null : 'textile'" class="w-full flex items-center justify-between p-4 rounded-xl hover:bg-pink-50 transition group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-dolly text-pink-600 text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="font-bold text-gray-800 block">Transpalet & Giyim</span>
+                            <span class="text-xs text-gray-500">69 ürün</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-pink-600 transition" :class="{ 'rotate-90': expandedCategory === 'textile' }"></i>
+                </button>
+            </div>
+
+            <!-- Yedek Parça -->
+            <div class="mb-2">
+                <button class="w-full flex items-center justify-between p-4 rounded-xl hover:bg-orange-50 transition group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-toolbox text-orange-600 text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="font-bold text-gray-800 block">Yedek Parça</span>
+                            <span class="text-xs text-gray-500">146 ürün</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-orange-600 transition"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-gray-100">
+            <a href="#" class="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition">
+                <i class="fa-solid fa-th"></i>
+                Tüm Kategorileri Gör
+            </a>
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex-1 flex items-center justify-center p-12">
+        <div class="text-center max-w-2xl">
+            <span class="inline-block bg-purple-100 text-purple-600 px-6 py-2 rounded-full text-sm font-bold mb-4">
+                <i class="fa-solid fa-hashtag mr-1"></i>MENU-002
+            </span>
+            <h2 class="text-5xl font-black text-gray-800 mb-4">Sidebar Mega Menu</h2>
+            <p class="text-xl text-gray-600 mb-6">Yan panel açılır menü tasarımı, kategorileri expand/collapse özelliği ile</p>
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-500">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Sidebar Panel</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Collapsible</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-green-500"></i> Mobile Ready</span>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Sections - ixtif.com Tasarım Kütüphanesi</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Scroll Snap */
+        html {
+            scroll-snap-type: y mandatory;
+        }
+        section {
+            scroll-snap-align: start;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900">
+
+    <!-- Navigation Badge -->
+    <div class="fixed top-8 left-8 z-50 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+        <a href="index.html" class="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span class="font-semibold">Ana Sayfa</span>
+        </a>
+    </div>
+
+    <!-- FAQ-001: Classic Accordion -->
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-slate-900 to-blue-900 relative overflow-hidden px-8" x-data="{ activeIndex: 0 }">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">FAQ-001</span>
+        </div>
+
+        <div class="max-w-4xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Klasik Accordion</h2>
+                <p class="text-xl text-gray-400">Sık sorulan sorular - tek seferde bir soru açık</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Question 1 -->
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden">
+                    <button @click="activeIndex = activeIndex === 0 ? null : 0"
+                            class="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-white/5 transition-colors">
+                        <span class="text-xl font-bold text-white">İxtif ürünler nedir? Nasıl çalışır?</span>
+                        <i class="fa-solid text-white text-xl transition-transform duration-300"
+                           :class="activeIndex === 0 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                    <div x-show="activeIndex === 0"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="px-8 pb-6">
+                        <p class="text-gray-300 leading-relaxed">
+                            İxtif ürünleri, fabrikaların fazla üretimlerini, iade edilen ürünlerini veya sezon sonu stoklarını
+                            büyük indirimlerle sunan bir platformdur. Tüm ürünler orijinal, sıfır ve garantilidir.
+                            Toplamda 850+ elektronik, 620+ mobilya, 1200+ tekstil ürünü bulunmaktadır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden">
+                    <button @click="activeIndex = activeIndex === 1 ? null : 1"
+                            class="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-white/5 transition-colors">
+                        <span class="text-xl font-bold text-white">Kargo ücreti ne kadar? Ücretsiz kargo var mı?</span>
+                        <i class="fa-solid text-white text-xl transition-transform duration-300"
+                           :class="activeIndex === 1 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                    <div x-show="activeIndex === 1"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="px-8 pb-6">
+                        <p class="text-gray-300 leading-relaxed">
+                            500₺ ve üzeri alışverişlerde kargo ücretsizdir. 500₺ altındaki siparişlerde kargo bedeli
+                            29,90₺'dir. Büyük beyaz eşya (buzdolabı, çamaşır makinesi vb.) ürünlerde kurulum dahil
+                            ücretsiz teslimat yapılmaktadır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden">
+                    <button @click="activeIndex = activeIndex === 2 ? null : 2"
+                            class="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-white/5 transition-colors">
+                        <span class="text-xl font-bold text-white">İade ve değişim süresi ne kadar?</span>
+                        <i class="fa-solid text-white text-xl transition-transform duration-300"
+                           :class="activeIndex === 2 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                    <div x-show="activeIndex === 2"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="px-8 pb-6">
+                        <p class="text-gray-300 leading-relaxed">
+                            Tüm ürünlerde 14 gün içinde ücretsiz iade hakkınız vardır. Ürünü orijinal ambalajında
+                            ve kullanılmamış olarak iade edebilirsiniz. İade kargo ücreti tarafımızdan karşılanır.
+                            Değişim için müşteri hizmetleri ile iletişime geçmeniz yeterlidir.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden">
+                    <button @click="activeIndex = activeIndex === 3 ? null : 3"
+                            class="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-white/5 transition-colors">
+                        <span class="text-xl font-bold text-white">Ödeme seçenekleri nelerdir?</span>
+                        <i class="fa-solid text-white text-xl transition-transform duration-300"
+                           :class="activeIndex === 3 ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </button>
+                    <div x-show="activeIndex === 3"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-4"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="px-8 pb-6">
+                        <p class="text-gray-300 leading-relaxed">
+                            Kredi kartı, banka kartı, havale/EFT ve kapıda ödeme seçenekleri mevcuttur.
+                            Tüm kredi kartlarına 9 taksit imkanı sunuyoruz. Ayrıca Trendyol Pay, İninal Kart
+                            ve mobil ödeme seçenekleri de bulunmaktadır.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-002: Two Column Grid -->
+    <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden px-8" x-data="{
+        openItems: [0]
+    }">
+        <div class="absolute top-8 right-8 bg-black/10 backdrop-blur-lg px-6 py-3 rounded-full border border-black/20">
+            <span class="text-black font-bold">FAQ-002</span>
+        </div>
+
+        <div class="max-w-7xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-black mb-4">İki Sütunlu Grid</h2>
+                <p class="text-xl text-gray-600">Birden fazla soru aynı anda açık olabilir</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Left Column -->
+                <div class="space-y-4">
+                    <!-- Question 1 -->
+                    <div class="bg-gray-50 rounded-2xl overflow-hidden border-2 border-gray-200">
+                        <button @click="openItems.includes(0) ? openItems = openItems.filter(i => i !== 0) : openItems.push(0)"
+                                class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors">
+                            <span class="font-bold text-lg">Ürünler orijinal mi?</span>
+                            <i class="fa-solid text-lg transition-transform duration-300"
+                               :class="openItems.includes(0) ? 'fa-minus text-blue-600' : 'fa-plus text-gray-400'"></i>
+                        </button>
+                        <div x-show="openItems.includes(0)"
+                             x-transition
+                             class="px-6 pb-5">
+                            <p class="text-gray-600">
+                                Evet, tüm ürünlerimiz %100 orijinal ve sıfırdır. İstif ürünleri fazla üretim stokları olduğu
+                                için indirimli fiyatlarla sunulmaktadır.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="bg-gray-50 rounded-2xl overflow-hidden border-2 border-gray-200">
+                        <button @click="openItems.includes(1) ? openItems = openItems.filter(i => i !== 1) : openItems.push(1)"
+                                class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors">
+                            <span class="font-bold text-lg">Garanti süresi ne kadar?</span>
+                            <i class="fa-solid text-lg transition-transform duration-300"
+                               :class="openItems.includes(1) ? 'fa-minus text-blue-600' : 'fa-plus text-gray-400'"></i>
+                        </button>
+                        <div x-show="openItems.includes(1)"
+                             x-transition
+                             class="px-6 pb-5">
+                            <p class="text-gray-600">
+                                Elektronik ürünlerde 2 yıl resmi distribütör garantisi, mobilya ürünlerinde
+                                üretici firma garantisi geçerlidir. Garanti belgesi ürünle birlikte gönderilir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="bg-gray-50 rounded-2xl overflow-hidden border-2 border-gray-200">
+                        <button @click="openItems.includes(2) ? openItems = openItems.filter(i => i !== 2) : openItems.push(2)"
+                                class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors">
+                            <span class="font-bold text-lg">Teslimat süresi nedir?</span>
+                            <i class="fa-solid text-lg transition-transform duration-300"
+                               :class="openItems.includes(2) ? 'fa-minus text-blue-600' : 'fa-plus text-gray-400'"></i>
+                        </button>
+                        <div x-show="openItems.includes(2)"
+                             x-transition
+                             class="px-6 pb-5">
+                            <p class="text-gray-600">
+                                Standart kargo ile 2-5 iş günü içinde teslimat yapılır. Aynı gün kargo seçeneği de mevcuttur.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-4">
+                    <!-- Question 4 -->
+                    <div class="bg-gray-50 rounded-2xl overflow-hidden border-2 border-gray-200">
+                        <button @click="openItems.includes(3) ? openItems = openItems.filter(i => i !== 3) : openItems.push(3)"
+                                class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors">
+                            <span class="font-bold text-lg">Fatura kesilir mi?</span>
+                            <i class="fa-solid text-lg transition-transform duration-300"
+                               :class="openItems.includes(3) ? 'fa-minus text-blue-600' : 'fa-plus text-gray-400'"></i>
+                        </button>
+                        <div x-show="openItems.includes(3)"
+                             x-transition
+                             class="px-6 pb-5">
+                            <p class="text-gray-600">
+                                Evet, tüm siparişler için e-fatura kesilir. Kurumsal fatura talepleriniz için sipariş
+                                sırasında fatura bilgilerinizi girmeniz yeterlidir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="bg-gray-50 rounded-2xl overflow-hidden border-2 border-gray-200">
+                        <button @click="openItems.includes(4) ? openItems = openItems.filter(i => i !== 4) : openItems.push(4)"
+                                class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors">
+                            <span class="font-bold text-lg">Stok bilgisi güncel mi?</span>
+                            <i class="fa-solid text-lg transition-transform duration-300"
+                               :class="openItems.includes(4) ? 'fa-minus text-blue-600' : 'fa-plus text-gray-400'"></i>
+                        </button>
+                        <div x-show="openItems.includes(4)"
+                             x-transition
+                             class="px-6 pb-5">
+                            <p class="text-gray-600">
+                                Stok bilgileri anlık olarak güncellenir. Sepete eklediğiniz ürünler 30 dakika süreyle
+                                sizin için rezerve edilir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="bg-gray-50 rounded-2xl overflow-hidden border-2 border-gray-200">
+                        <button @click="openItems.includes(5) ? openItems = openItems.filter(i => i !== 5) : openItems.push(5)"
+                                class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors">
+                            <span class="font-bold text-lg">Toplu alım indirimi var mı?</span>
+                            <i class="fa-solid text-lg transition-transform duration-300"
+                               :class="openItems.includes(5) ? 'fa-minus text-blue-600' : 'fa-plus text-gray-400'"></i>
+                        </button>
+                        <div x-show="openItems.includes(5)"
+                             x-transition
+                             class="px-6 pb-5">
+                            <p class="text-gray-600">
+                                5 adet ve üzeri alımlarda ekstra %10 indirim uygulanır. Kurumsal toplu alımlar için
+                                özel fiyat teklifi alabilirsiniz.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-003: Tab Based Categories -->
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-slate-900 to-purple-900 relative overflow-hidden px-8" x-data="{
+        activeTab: 'siparis',
+        activeFaq: 0
+    }">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">FAQ-003</span>
+        </div>
+
+        <div class="max-w-6xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Tab Bazlı Kategoriler</h2>
+                <p class="text-xl text-gray-400">Konulara göre sınıflandırılmış sorular</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button @click="activeTab = 'siparis'; activeFaq = 0"
+                        :class="activeTab === 'siparis' ? 'bg-white text-purple-600' : 'bg-white/10 text-white hover:bg-white/20'"
+                        class="px-6 py-3 rounded-full font-bold transition-all">
+                    <i class="fa-solid fa-box mr-2"></i>
+                    Sipariş & Teslimat
+                </button>
+                <button @click="activeTab = 'odeme'; activeFaq = 0"
+                        :class="activeTab === 'odeme' ? 'bg-white text-purple-600' : 'bg-white/10 text-white hover:bg-white/20'"
+                        class="px-6 py-3 rounded-full font-bold transition-all">
+                    <i class="fa-solid fa-credit-card mr-2"></i>
+                    Ödeme
+                </button>
+                <button @click="activeTab = 'iade'; activeFaq = 0"
+                        :class="activeTab === 'iade' ? 'bg-white text-purple-600' : 'bg-white/10 text-white hover:bg-white/20'"
+                        class="px-6 py-3 rounded-full font-bold transition-all">
+                    <i class="fa-solid fa-rotate-left mr-2"></i>
+                    İade & Değişim
+                </button>
+                <button @click="activeTab = 'urun'; activeFaq = 0"
+                        :class="activeTab === 'urun' ? 'bg-white text-purple-600' : 'bg-white/10 text-white hover:bg-white/20'"
+                        class="px-6 py-3 rounded-full font-bold transition-all">
+                    <i class="fa-solid fa-tag mr-2"></i>
+                    Ürün & Garanti
+                </button>
+            </div>
+
+            <!-- FAQ Content -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 p-8">
+                <!-- Sipariş Tab -->
+                <div x-show="activeTab === 'siparis'" x-transition class="space-y-4">
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 0 ? null : 0" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">Sipariş verdikten sonne ne kadar sürede kargoya verilir?</span>
+                            <i :class="activeFaq === 0 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 0" x-transition class="mt-4 text-gray-300">
+                            Siparişler aynı gün içinde kargoya teslim edilir. Hafta sonu verilen siparişler pazartesi günü kargolanır.
+                        </div>
+                    </div>
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">Kargo takip numarası ne zaman gelir?</span>
+                            <i :class="activeFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 1" x-transition class="mt-4 text-gray-300">
+                            Kargo takip numarası, ürün kargoya verildikten sonra email ve SMS ile gönderilir.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ödeme Tab -->
+                <div x-show="activeTab === 'odeme'" x-transition class="space-y-4">
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 0 ? null : 0" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">Hangi kartlarla ödeme yapabilirim?</span>
+                            <i :class="activeFaq === 0 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 0" x-transition class="mt-4 text-gray-300">
+                            Visa, MasterCard, American Express ve tüm banka kartları ile ödeme yapabilirsiniz.
+                        </div>
+                    </div>
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">Taksit seçenekleri nelerdir?</span>
+                            <i :class="activeFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 1" x-transition class="mt-4 text-gray-300">
+                            Tüm kredi kartlarına 9 taksit imkanı sunuyoruz. Bazı bankalarda 12 taksit seçeneği de bulunmaktadır.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İade Tab -->
+                <div x-show="activeTab === 'iade'" x-transition class="space-y-4">
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 0 ? null : 0" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">İade nasıl yapılır?</span>
+                            <i :class="activeFaq === 0 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 0" x-transition class="mt-4 text-gray-300">
+                            Hesabım > Siparişlerim bölümünden iade talebi oluşturabilirsiniz. Kargo ücretsizdir.
+                        </div>
+                    </div>
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">İade sürecinde param ne zaman iade edilir?</span>
+                            <i :class="activeFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 1" x-transition class="mt-4 text-gray-300">
+                            Ürün depoya ulaştıktan sonra 3-5 iş günü içinde ödemeniz iade edilir.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ürün Tab -->
+                <div x-show="activeTab === 'urun'" x-transition class="space-y-4">
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 0 ? null : 0" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">İstif ürünleri 2. el mi?</span>
+                            <i :class="activeFaq === 0 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 0" x-transition class="mt-4 text-gray-300">
+                            Hayır, tüm ürünler sıfır ve kutusundadır. İstif, fazla üretim stoklarını ifade eder.
+                        </div>
+                    </div>
+                    <div class="border-b border-white/20 pb-4">
+                        <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full flex items-center justify-between text-left">
+                            <span class="text-lg font-bold text-white">Garanti belgeleri gelir mi?</span>
+                            <i :class="activeFaq === 1 ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid text-white"></i>
+                        </button>
+                        <div x-show="activeFaq === 1" x-transition class="mt-4 text-gray-300">
+                            Evet, tüm ürünlerde resmi garanti belgesi ve fatura ürünle birlikte gönderilir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-004: Card Based with Icons -->
+    <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden px-8">
+        <div class="absolute top-8 right-8 bg-black/10 backdrop-blur-lg px-6 py-3 rounded-full border border-black/20">
+            <span class="text-black font-bold">FAQ-004</span>
+        </div>
+
+        <div class="max-w-6xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-black mb-4">İkonlu Kart Tasarımı</h2>
+                <p class="text-xl text-gray-600">Görsel odaklı FAQ kartları</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-8 hover:shadow-xl transition-all cursor-pointer" x-data="{ open: false }" @click="open = !open">
+                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-truck text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">Teslimat Süresi</h3>
+                    <p class="text-gray-700" x-show="!open">Kargolama ve teslimat süreleri hakkında bilgi...</p>
+                    <div x-show="open" x-transition class="text-gray-700">
+                        <p class="mb-3">Standart teslimat 2-5 iş günüdür. Aynı gün kargo seçeneği de mevcuttur.</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>• İstanbul içi: 1 iş günü</li>
+                            <li>• Diğer iller: 2-5 iş günü</li>
+                            <li>• Beyaz eşya: Randevulu teslimat</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 text-blue-600 font-semibold flex items-center gap-2">
+                        <span x-text="open ? 'Daha az göster' : 'Devamını oku'"></span>
+                        <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 hover:shadow-xl transition-all cursor-pointer" x-data="{ open: false }" @click="open = !open">
+                    <div class="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-shield-check text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">Garanti Kapsamı</h3>
+                    <p class="text-gray-700" x-show="!open">Tüm ürünlerimizde garanti ve servis hizmetleri...</p>
+                    <div x-show="open" x-transition class="text-gray-700">
+                        <p class="mb-3">Elektronik ürünlerde 2 yıl resmi distribütör garantisi mevcuttur.</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>• Yetkili servislerde geçerli</li>
+                            <li>• Garanti belgesi ürünle birlikte gelir</li>
+                            <li>• Ücretsiz servis hizmeti</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 text-green-600 font-semibold flex items-center gap-2">
+                        <span x-text="open ? 'Daha az göster' : 'Devamını oku'"></span>
+                        <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-8 hover:shadow-xl transition-all cursor-pointer" x-data="{ open: false }" @click="open = !open">
+                    <div class="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-credit-card text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">Ödeme Yöntemleri</h3>
+                    <p class="text-gray-700" x-show="!open">Güvenli ve çeşitli ödeme seçenekleri...</p>
+                    <div x-show="open" x-transition class="text-gray-700">
+                        <p class="mb-3">Kredi kartı, banka kartı ve havale ile ödeme yapabilirsiniz.</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>• 9 taksit imkanı</li>
+                            <li>• 3D Secure güvenlik</li>
+                            <li>• Kapıda ödeme</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 text-purple-600 font-semibold flex items-center gap-2">
+                        <span x-text="open ? 'Daha az göster' : 'Devamını oku'"></span>
+                        <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-3xl p-8 hover:shadow-xl transition-all cursor-pointer" x-data="{ open: false }" @click="open = !open">
+                    <div class="w-16 h-16 bg-orange-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-rotate-left text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">İade Politikası</h3>
+                    <p class="text-gray-700" x-show="!open">14 gün içinde kolay iade imkanı...</p>
+                    <div x-show="open" x-transition class="text-gray-700">
+                        <p class="mb-3">Cayma hakkınızı 14 gün içinde kullanabilirsiniz.</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>• Ücretsiz iade kargoBu</li>
+                            <li>• Hızlı para iadesi</li>
+                            <li>• Koşulsuz iade</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 text-orange-600 font-semibold flex items-center gap-2">
+                        <span x-text="open ? 'Daha az göster' : 'Devamını oku'"></span>
+                        <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="bg-gradient-to-br from-teal-50 to-teal-100 rounded-3xl p-8 hover:shadow-xl transition-all cursor-pointer" x-data="{ open: false }" @click="open = !open">
+                    <div class="w-16 h-16 bg-teal-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-headset text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">Müşteri Desteği</h3>
+                    <p class="text-gray-700" x-show="!open">7/24 canlı destek hizmeti...</p>
+                    <div x-show="open" x-transition class="text-gray-700">
+                        <p class="mb-3">Her zaman yanınızdayız. 0850 123 45 67</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>• Telefon: 7/24 aktif</li>
+                            <li>• WhatsApp: Anında yanıt</li>
+                            <li>• Email: info@ixtif.com</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 text-teal-600 font-semibold flex items-center gap-2">
+                        <span x-text="open ? 'Daha az göster' : 'Devamını oku'"></span>
+                        <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-3xl p-8 hover:shadow-xl transition-all cursor-pointer" x-data="{ open: false }" @click="open = !open">
+                    <div class="w-16 h-16 bg-pink-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-box text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">Paketleme</h3>
+                    <p class="text-gray-700" x-show="!open">Güvenli ve özenli paketleme...</p>
+                    <div x-show="open" x-transition class="text-gray-700">
+                        <p class="mb-3">Ürünler orijinal kutusunda ve ekstra koruma ile gönderilir.</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>• Bubble wrap koruma</li>
+                            <li>• Kırılmaz etiket</li>
+                            <li>• Sigortalı kargo</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 text-pink-600 font-semibold flex items-center gap-2">
+                        <span x-text="open ? 'Daha az göster' : 'Devamını oku'"></span>
+                        <i :class="open ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-005: Timeline Style -->
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-900 relative overflow-hidden px-8">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">FAQ-005</span>
+        </div>
+
+        <div class="max-w-4xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Timeline Stili</h2>
+                <p class="text-xl text-gray-400">Süreç bazlı soru-cevap akışı</p>
+            </div>
+
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+
+                <!-- Timeline Items -->
+                <div class="space-y-12">
+                    <!-- Step 1 -->
+                    <div class="relative pl-20">
+                        <div class="absolute left-0 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-400 rounded-full flex items-center justify-center border-4 border-slate-900">
+                            <span class="text-white font-black text-xl">1</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                            <h3 class="text-2xl font-bold text-white mb-3">Sipariş Verme</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Beğendiğiniz ürünü sepete ekleyin ve ödeme adımlarını tamamlayın.
+                                Sipariş onayınız email ve SMS ile anında gelir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative pl-20">
+                        <div class="absolute left-0 w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-400 rounded-full flex items-center justify-center border-4 border-slate-900">
+                            <span class="text-white font-black text-xl">2</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                            <h3 class="text-2xl font-bold text-white mb-3">Hazırlık & Kargolama</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Siparişiniz aynı gün içinde hazırlanır ve kargoya verilir.
+                                Kargo takip numaranız tarafınıza iletilir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative pl-20">
+                        <div class="absolute left-0 w-16 h-16 bg-gradient-to-br from-pink-600 to-pink-400 rounded-full flex items-center justify-center border-4 border-slate-900">
+                            <span class="text-white font-black text-xl">3</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                            <h3 class="text-2xl font-bold text-white mb-3">Teslimat</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Ürününüz 2-5 iş günü içinde adresinize teslim edilir.
+                                Beyaz eşyalarda ücretsiz kurulum hizmeti verilir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative pl-20">
+                        <div class="absolute left-0 w-16 h-16 bg-gradient-to-br from-green-600 to-green-400 rounded-full flex items-center justify-center border-4 border-slate-900">
+                            <i class="fa-solid fa-check text-white text-2xl"></i>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                            <h3 class="text-2xl font-bold text-white mb-3">14 Gün İade Garantisi</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Ürünü teslim aldıktan sonra 14 gün içinde ücretsiz iade hakkınız vardır.
+                                Koşulsuz ve hızlı para iadesi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-006: Search Based -->
+    <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden px-8" x-data="{
+        searchQuery: '',
+        allFaqs: [
+            { q: 'İxtif ürünler nedir?', a: 'Fazla üretim stoklarıdır, sıfır ve garantilidir.' },
+            { q: 'Kargo ücreti ne kadar?', a: '500₺ üzeri ücretsiz, altı 29,90₺' },
+            { q: 'İade süresi?', a: '14 gün ücretsiz iade hakkı' },
+            { q: 'Garanti var mı?', a: '2 yıl resmi distribütör garantisi' },
+            { q: 'Taksit var mı?', a: '9 taksit imkanı tüm kartlarda' },
+            { q: 'Teslimat süresi?', a: '2-5 iş günü standart teslimat' }
+        ],
+        get filteredFaqs() {
+            if (!this.searchQuery) return this.allFaqs;
+            return this.allFaqs.filter(faq =>
+                faq.q.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                faq.a.toLowerCase().includes(this.searchQuery.toLowerCase())
+            );
+        }
+    }">
+        <div class="absolute top-8 right-8 bg-black/10 backdrop-blur-lg px-6 py-3 rounded-full border border-black/20">
+            <span class="text-black font-bold">FAQ-006</span>
+        </div>
+
+        <div class="max-w-4xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-black mb-4">Arama Bazlı FAQ</h2>
+                <p class="text-xl text-gray-600">Aradığınız soruyu hızlıca bulun</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative mb-8">
+                <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                <input
+                    type="text"
+                    x-model="searchQuery"
+                    placeholder="Soru ara... (örn: kargo, iade, garanti)"
+                    class="w-full bg-gray-100 border-2 border-gray-300 rounded-2xl px-16 py-5 text-black placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all text-lg">
+                <div class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span x-text="filteredFaqs.length"></span> sonuç
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="space-y-4 max-h-[500px] overflow-y-auto">
+                <template x-for="(faq, index) in filteredFaqs" :key="index">
+                    <div class="bg-gray-50 rounded-2xl p-6 border-2 border-gray-200 hover:border-blue-500 transition-all">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-question text-white"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-lg text-black mb-2" x-text="faq.q"></h3>
+                                <p class="text-gray-600" x-text="faq.a"></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- No Results -->
+                <div x-show="filteredFaqs.length === 0" class="text-center py-12">
+                    <i class="fa-solid fa-search text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-2xl font-bold text-gray-400 mb-2">Sonuç Bulunamadı</h3>
+                    <p class="text-gray-500">Farklı bir arama terimi deneyin veya müşteri hizmetlerimizle iletişime geçin.</p>
+                </div>
+            </div>
+
+            <!-- Contact CTA -->
+            <div class="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-center">
+                <h3 class="text-2xl font-bold text-white mb-2">Cevabını bulamadınız mı?</h3>
+                <p class="text-blue-100 mb-4">Müşteri hizmetlerimiz 7/24 hizmetinizde</p>
+                <button class="bg-white text-blue-600 px-8 py-3 rounded-full font-bold hover:bg-blue-50 transition-colors">
+                    <i class="fa-solid fa-headset mr-2"></i>
+                    Canlı Destek
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-007: Minimal List Style -->
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 relative overflow-hidden px-8">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">FAQ-007</span>
+        </div>
+
+        <div class="max-w-3xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Minimal Liste Stili</h2>
+                <p class="text-xl text-gray-400">Sade ve temiz tasarım</p>
+            </div>
+
+            <div class="space-y-1">
+                <!-- Question 1 -->
+                <div class="bg-white/5 hover:bg-white/10 transition-all" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                        <div class="flex items-center gap-4">
+                            <span class="text-blue-400 font-bold text-lg">01</span>
+                            <span class="text-white font-semibold text-lg">Ürünler orijinal mi, garanti var mı?</span>
+                        </div>
+                        <i :class="open ? 'fa-minus' : 'fa-plus'" class="fa-solid text-white"></i>
+                    </button>
+                    <div x-show="open" x-transition class="px-8 pb-6 pl-20">
+                        <p class="text-gray-400">Evet, tüm ürünler %100 orijinal ve 2 yıl garantilidir.</p>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="bg-white/5 hover:bg-white/10 transition-all" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                        <div class="flex items-center gap-4">
+                            <span class="text-blue-400 font-bold text-lg">02</span>
+                            <span class="text-white font-semibold text-lg">Teslimat ne kadar sürer?</span>
+                        </div>
+                        <i :class="open ? 'fa-minus' : 'fa-plus'" class="fa-solid text-white"></i>
+                    </button>
+                    <div x-show="open" x-transition class="px-8 pb-6 pl-20">
+                        <p class="text-gray-400">Standart teslimat 2-5 iş günü, aynı gün kargo seçeneği de var.</p>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="bg-white/5 hover:bg-white/10 transition-all" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                        <div class="flex items-center gap-4">
+                            <span class="text-blue-400 font-bold text-lg">03</span>
+                            <span class="text-white font-semibold text-lg">İade nasıl yapılır?</span>
+                        </div>
+                        <i :class="open ? 'fa-minus' : 'fa-plus'" class="fa-solid text-white"></i>
+                    </button>
+                    <div x-show="open" x-transition class="px-8 pb-6 pl-20">
+                        <p class="text-gray-400">14 gün içinde ücretsiz iade, kargo ücreti tarafımızdan karşılanır.</p>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="bg-white/5 hover:bg-white/10 transition-all" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                        <div class="flex items-center gap-4">
+                            <span class="text-blue-400 font-bold text-lg">04</span>
+                            <span class="text-white font-semibold text-lg">Taksit seçenekleri nelerdir?</span>
+                        </div>
+                        <i :class="open ? 'fa-minus' : 'fa-plus'" class="fa-solid text-white"></i>
+                    </button>
+                    <div x-show="open" x-transition class="px-8 pb-6 pl-20">
+                        <p class="text-gray-400">Tüm kredi kartlarına 9 taksit, bazı bankada 12 taksit imkanı.</p>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="bg-white/5 hover:bg-white/10 transition-all" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                        <div class="flex items-center gap-4">
+                            <span class="text-blue-400 font-bold text-lg">05</span>
+                            <span class="text-white font-semibold text-lg">Kargo ücreti ne kadar?</span>
+                        </div>
+                        <i :class="open ? 'fa-minus' : 'fa-plus'" class="fa-solid text-white"></i>
+                    </button>
+                    <div x-show="open" x-transition class="px-8 pb-6 pl-20">
+                        <p class="text-gray-400">500₺ üzeri alışverişlerde kargo ücretsiz, altında 29,90₺.</p>
+                    </div>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="bg-white/5 hover:bg-white/10 transition-all" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-full px-8 py-6 flex items-center justify-between text-left">
+                        <div class="flex items-center gap-4">
+                            <span class="text-blue-400 font-bold text-lg">06</span>
+                            <span class="text-white font-semibold text-lg">Müşteri desteği nasıl ulaşılır?</span>
+                        </div>
+                        <i :class="open ? 'fa-minus' : 'fa-plus'" class="fa-solid text-white"></i>
+                    </button>
+                    <div x-show="open" x-transition class="px-8 pb-6 pl-20">
+                        <p class="text-gray-400">0850 123 45 67 numaralı telefon ve WhatsApp ile 7/24 ulaşabilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-008: Hover Expand Style -->
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-900 via-slate-900 to-teal-900 relative overflow-hidden px-8">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">FAQ-008</span>
+        </div>
+
+        <div class="max-w-5xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-white mb-4">Hover Expand Stili</h2>
+                <p class="text-xl text-gray-400">Üzerine gelince genişleyen kartlar</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Card 1 -->
+                <div class="group bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/10 hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-truck text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Ücretsiz Kargo</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                        500₺ ve üzeri tüm siparişlerde kargo tamamen ücretsizdir. Alt limit siparişlerde 29,90₺ sabit kargo bedeli uygulanır.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/10 hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-shield-check text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Garanti Kapsamı</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                        Tüm elektronik ürünlerde 2 yıl resmi distribütör garantisi mevcuttur. Garanti belgesi ürünle birlikte gönderilir.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/10 hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-rotate-left text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Kolay İade</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                        14 gün içinde koşulsuz iade hakkı. İade kargo ücreti tarafımızdan karşılanır. Para iadesi 3-5 iş günü içinde yapılır.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/10 hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-credit-card text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Güvenli Ödeme</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                        3D Secure ile güvenli ödeme. Kredi kartı, banka kartı ve havale seçenekleri. 9 taksit imkanı tüm kartlarda.
+                    </p>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="group bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/10 hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-headset text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">7/24 Destek</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                        Müşteri hizmetlerimiz haftanın 7 günü 24 saat hizmetinizdedir. Telefon, WhatsApp ve email ile ulaşabilirsiniz.
+                    </p>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="group bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/10 hover:scale-105 transition-all duration-300 cursor-pointer">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-box text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Hızlı Teslimat</h3>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
+                        Siparişler aynı gün kargoya verilir. 2-5 iş günü içinde adresinize teslim edilir. Aynı gün kargo seçeneği mevcuttur.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-009: Split Screen Style -->
+    <section class="min-h-screen flex items-center justify-center bg-white relative overflow-hidden px-8" x-data="{ selectedFaq: 0 }">
+        <div class="absolute top-8 right-8 bg-black/10 backdrop-blur-lg px-6 py-3 rounded-full border border-black/20">
+            <span class="text-black font-bold">FAQ-009</span>
+        </div>
+
+        <div class="max-w-7xl w-full">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-black text-black mb-4">Split Screen Stili</h2>
+                <p class="text-xl text-gray-600">Sol taraftan soru, sağ tarafta detaylı cevap</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Questions List -->
+                <div class="space-y-3">
+                    <button @click="selectedFaq = 0"
+                            :class="selectedFaq === 0 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-black hover:bg-gray-200'"
+                            class="w-full text-left px-6 py-4 rounded-xl font-bold transition-all">
+                        <i class="fa-solid fa-chevron-right mr-3"></i>
+                        İxtif ürünler güvenilir mi?
+                    </button>
+                    <button @click="selectedFaq = 1"
+                            :class="selectedFaq === 1 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-black hover:bg-gray-200'"
+                            class="w-full text-left px-6 py-4 rounded-xl font-bold transition-all">
+                        <i class="fa-solid fa-chevron-right mr-3"></i>
+                        Kargo ne kadar sürede gelir?
+                    </button>
+                    <button @click="selectedFaq = 2"
+                            :class="selectedFaq === 2 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-black hover:bg-gray-200'"
+                            class="w-full text-left px-6 py-4 rounded-xl font-bold transition-all">
+                        <i class="fa-solid fa-chevron-right mr-3"></i>
+                        İade şartları nelerdir?
+                    </button>
+                    <button @click="selectedFaq = 3"
+                            :class="selectedFaq === 3 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-black hover:bg-gray-200'"
+                            class="w-full text-left px-6 py-4 rounded-xl font-bold transition-all">
+                        <i class="fa-solid fa-chevron-right mr-3"></i>
+                        Hangi ödeme yöntemleri kabul edilir?
+                    </button>
+                    <button @click="selectedFaq = 4"
+                            :class="selectedFaq === 4 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-black hover:bg-gray-200'"
+                            class="w-full text-left px-6 py-4 rounded-xl font-bold transition-all">
+                        <i class="fa-solid fa-chevron-right mr-3"></i>
+                        Toplu alım indirimi var mı?
+                    </button>
+                </div>
+
+                <!-- Answer Display -->
+                <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8">
+                    <div x-show="selectedFaq === 0" x-transition>
+                        <h3 class="text-2xl font-black text-black mb-4">İxtif Ürünler Güvenilir Mi?</h3>
+                        <p class="text-gray-700 leading-relaxed mb-6">
+                            Evet, ixtif.com'da satılan tüm ürünler %100 orijinal ve sıfırdır. İstif ürünleri,
+                            fabrikaların fazla üretimlerini veya sezon sonu stoklarını ifade eder. Ürünler
+                            hiçbir şekilde kullanılmamış, hasarlı veya 2. el değildir.
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2 text-green-600">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span class="font-semibold">%100 Orijinal</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-blue-600">
+                                <i class="fa-solid fa-shield-check"></i>
+                                <span class="font-semibold">2 Yıl Garanti</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="selectedFaq === 1" x-transition>
+                        <h3 class="text-2xl font-black text-black mb-4">Kargo Ne Kadar Sürede Gelir?</h3>
+                        <p class="text-gray-700 leading-relaxed mb-6">
+                            Standart kargo ile 2-5 iş günü içinde teslimat yapılır. İstanbul içi siparişler
+                            genellikle 1 iş günü içinde teslim edilir. Aynı gün kargo seçeneği ile sipariş
+                            verdiğiniz gün içinde teslimat alabilirsiniz.
+                        </p>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-clock text-blue-600"></i>
+                                İstanbul içi: 1 iş günü
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-clock text-blue-600"></i>
+                                Diğer iller: 2-5 iş günü
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-rocket text-blue-600"></i>
+                                Aynı gün kargo: Ek ücretli
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div x-show="selectedFaq === 2" x-transition>
+                        <h3 class="text-2xl font-black text-black mb-4">İade Şartları Nelerdir?</h3>
+                        <p class="text-gray-700 leading-relaxed mb-6">
+                            Ürünü teslim aldıktan sonra 14 gün içinde koşulsuz iade hakkınız vardır.
+                            Ürünü orijinal ambalajında ve kullanılmamış olarak iade edebilirsiniz.
+                            İade kargo ücreti tarafımızdan karşılanır.
+                        </p>
+                        <div class="bg-white rounded-xl p-4 border-2 border-green-200">
+                            <div class="flex items-center gap-2 text-green-600 font-bold mb-2">
+                                <i class="fa-solid fa-check-double"></i>
+                                İade Garantisi
+                            </div>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>✓ 14 gün içinde ücretsiz iade</li>
+                                <li>✓ Hızlı para iadesi (3-5 iş günü)</li>
+                                <li>✓ Kargo ücreti tarafımızdan</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div x-show="selectedFaq === 3" x-transition>
+                        <h3 class="text-2xl font-black text-black mb-4">Hangi Ödeme Yöntemleri Kabul Edilir?</h3>
+                        <p class="text-gray-700 leading-relaxed mb-6">
+                            Kredi kartı, banka kartı, havale/EFT ve kapıda ödeme seçenekleri mevcuttur.
+                            Tüm ödemeler 3D Secure ile güvenli şekilde işlenir.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white rounded-xl p-4 text-center">
+                                <i class="fa-brands fa-cc-visa text-4xl text-blue-600 mb-2"></i>
+                                <div class="font-semibold text-sm">Visa</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 text-center">
+                                <i class="fa-brands fa-cc-mastercard text-4xl text-orange-600 mb-2"></i>
+                                <div class="font-semibold text-sm">Mastercard</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 text-center">
+                                <i class="fa-solid fa-building-columns text-4xl text-green-600 mb-2"></i>
+                                <div class="font-semibold text-sm">Havale/EFT</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 text-center">
+                                <i class="fa-solid fa-hand-holding-dollar text-4xl text-purple-600 mb-2"></i>
+                                <div class="font-semibold text-sm">Kapıda Ödeme</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="selectedFaq === 4" x-transition>
+                        <h3 class="text-2xl font-black text-black mb-4">Toplu Alım İndirimi Var Mı?</h3>
+                        <p class="text-gray-700 leading-relaxed mb-6">
+                            Evet, 5 adet ve üzeri alımlarda ekstra %10 indirim uygulanır. Kurumsal toplu
+                            alımlar için özel fiyat teklifi alabilirsiniz.
+                        </p>
+                        <div class="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-xl p-6 border-2 border-yellow-300">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fa-solid fa-badge-percent text-3xl text-orange-600"></i>
+                                <div>
+                                    <div class="font-black text-2xl text-black">%10 İndirim</div>
+                                    <div class="text-sm text-gray-600">5+ adet alımlarda</div>
+                                </div>
+                            </div>
+                            <button class="bg-orange-600 text-white px-6 py-2 rounded-full font-bold hover:bg-orange-700 transition-colors">
+                                Toplu Alım Teklifi Al
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ-010: Chat Style -->
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-slate-900 to-purple-900 relative overflow-hidden px-8" x-data="{
+        messages: [
+            { type: 'bot', text: 'Merhaba! Size nasıl yardımcı olabilirim?' },
+            { type: 'user', text: 'Kargo ücreti ne kadar?' },
+            { type: 'bot', text: '500₺ ve üzeri alışverişlerde kargo ücretsizdir. 500₺ altında 29,90₺ kargo bedeli uygulanır.' }
+        ],
+        quickQuestions: [
+            'Garanti süresi ne kadar?',
+            'İade nasıl yapılır?',
+            'Taksit seçenekleri',
+            'Teslimat süresi'
+        ]
+    }">
+        <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+            <span class="text-white font-bold">FAQ-010</span>
+        </div>
+
+        <div class="max-w-3xl w-full">
+            <div class="text-center mb-8">
+                <h2 class="text-5xl font-black text-white mb-4">Chat Stili FAQ</h2>
+                <p class="text-xl text-gray-400">Sohbet benzeri soru-cevap deneyimi</p>
+            </div>
+
+            <!-- Chat Container -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 p-6">
+                <!-- Messages -->
+                <div class="h-96 overflow-y-auto mb-6 space-y-4">
+                    <template x-for="(msg, index) in messages" :key="index">
+                        <div :class="msg.type === 'bot' ? 'flex justify-start' : 'flex justify-end'">
+                            <div :class="msg.type === 'bot' ? 'bg-white/20 text-white' : 'bg-blue-600 text-white'"
+                                 class="max-w-[80%] rounded-2xl px-6 py-4">
+                                <p x-text="msg.text"></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Quick Questions -->
+                <div class="mb-4">
+                    <div class="text-sm text-gray-400 mb-3">Hızlı Sorular:</div>
+                    <div class="flex flex-wrap gap-2">
+                        <template x-for="(question, index) in quickQuestions" :key="index">
+                            <button @click="messages.push({type: 'user', text: question})"
+                                    class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors">
+                                <span x-text="question"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Input -->
+                <div class="flex gap-3">
+                    <input type="text"
+                           placeholder="Sorunuzu yazın..."
+                           class="flex-grow bg-white/20 border-2 border-white/30 rounded-xl px-6 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-white transition-colors">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold transition-colors">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contact Support -->
+            <div class="mt-6 text-center">
+                <p class="text-gray-400 mb-3">Cevap bulamadınız mı?</p>
+                <button class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-full font-semibold transition-colors">
+                    <i class="fa-solid fa-headset mr-2"></i>
+                    Canlı Destek
+                </button>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

@@ -271,7 +271,7 @@
                     </div>
 
                     {{-- Right Column: AI Chat Widget + Featured Image --}}
-                    <div class="hidden lg:block space-y-6">
+                    <div class="hidden lg:block space-y-6 -mr-4 sm:-mr-6 lg:-mr-8">
                         {{-- AI Chat Widget - Always Open --}}
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
                             <x-ai.inline-widget title="Ürün Hakkında Soru Sor" :product-id="$item->product_id" :initially-open="true"
@@ -963,8 +963,16 @@
                                         <i class="fa-solid fa-chevron-down text-gray-400 dark:text-gray-500 transition-transform"
                                             :class="openFaq === {{ $index }} ? 'rotate-180' : ''"></i>
                                     </button>
-                                    <div x-show="openFaq === {{ $index }}" x-transition
-                                        class="border-t border-gray-200 dark:border-gray-700" style="display: none;">
+                                    <div
+                                        x-show="openFaq === {{ $index }}"
+                                        x-transition:enter="transition-all ease-out duration-300"
+                                        x-transition:enter-start="opacity-0 max-h-0"
+                                        x-transition:enter-end="opacity-100 max-h-96"
+                                        x-transition:leave="transition-all ease-in duration-200"
+                                        x-transition:leave-start="opacity-100 max-h-96"
+                                        x-transition:leave-end="opacity-0 max-h-0"
+                                        class="border-t border-gray-200 dark:border-gray-700 overflow-hidden"
+                                        style="display: none;">
                                         <div
                                             class="px-6 py-5 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 leading-relaxed">
                                             {!! nl2br(e($faq['answer'])) !!}

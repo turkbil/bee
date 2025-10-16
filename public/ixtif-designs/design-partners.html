@@ -3,1001 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partner Sections - ixtif.com</title>
+    <title>Partner Tasarımları - iXtif Tasarım Kütüphanesi</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-        section { scroll-snap-align: start; }
-        .scroll-container { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #2563eb, #7c3aed);
+        }
     </style>
 </head>
-<body>
-<div class="fixed top-4 left-4 z-[9999]">
-    <a href="index.html" class="flex items-center gap-2 bg-white shadow-xl px-4 py-2 rounded-full hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all">
-        <i class="fa-solid fa-arrow-left"></i>
-        <span class="font-semibold text-sm">Ana Menü</span>
-    </a>
-</div>
-<div class="scroll-container">
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
 
-<!-- PARTNERS-001: Classic Logo Grid -->
-<section id="partners-001" class="h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-gray-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-001
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">İş Ortaklarımız</h2>
-            <p class="text-xl text-gray-600">Güvenilir markalarla birlikte çalışıyoruz</p>
-        </div>
+    <!-- Header Navigation -->
+    <div class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all group">
+                    <i class="fa-solid fa-home text-xl group-hover:scale-110 transition-transform"></i>
+                    <span class="hidden sm:inline font-semibold">Ana Sayfa</span>
+                </a>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Partner 1 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-laptop text-4xl text-white"></i>
+                <!-- Kategori Başlığı -->
+                <div class="text-center flex-1 mx-4">
+                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full">
+                        <i class="fa-solid fa-handshake text-2xl"></i>
+                        <h1 class="text-xl md:text-2xl font-bold">Partner Tasarımları</h1>
                     </div>
-                    <h3 class="font-bold text-gray-900 text-lg">TechPro</h3>
-                    <p class="text-gray-500 text-sm">Elektronik</p>
+                    <p class="text-sm text-gray-400 mt-2">Partner/logo gösterim tasarımları</p>
                 </div>
-            </div>
 
-            <!-- Partner 2 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-couch text-4xl text-white"></i>
+                <!-- Tasarım Sayısı -->
+                <div class="text-center px-4 py-2 bg-white/10 rounded-lg">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-500">
+                        10
                     </div>
-                    <h3 class="font-bold text-gray-900 text-lg">MobilyaKing</h3>
-                    <p class="text-gray-500 text-sm">Mobilya</p>
+                    <div class="text-xs text-gray-400">Tasarım</div>
                 </div>
-            </div>
-
-            <!-- Partner 3 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-shirt text-4xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-900 text-lg">TextileCo</h3>
-                    <p class="text-gray-500 text-sm">Tekstil</p>
-                </div>
-            </div>
-
-            <!-- Partner 4 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-wrench text-4xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-900 text-lg">ToolMaster</h3>
-                    <p class="text-gray-500 text-sm">Alet & Ekipman</p>
-                </div>
-            </div>
-
-            <!-- Partner 5 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-truck-fast text-4xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-900 text-lg">FastCargo</h3>
-                    <p class="text-gray-500 text-sm">Lojistik</p>
-                </div>
-            </div>
-
-            <!-- Partner 6 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-credit-card text-4xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-900 text-lg">PaySecure</h3>
-                    <p class="text-gray-500 text-sm">Ödeme</p>
-                </div>
-            </div>
-
-            <!-- Partner 7 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-pink-500 to-pink-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-shield-check text-4xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-900 text-lg">SafeGuard</h3>
-                    <p class="text-gray-500 text-sm">Güvenlik</p>
-                </div>
-            </div>
-
-            <!-- Partner 8 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center group">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:rotate-6 transition-all">
-                        <i class="fa-solid fa-cloud text-4xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-900 text-lg">CloudHost</h3>
-                    <p class="text-gray-500 text-sm">Teknoloji</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center mt-12">
-            <p class="text-gray-600 text-lg">
-                <strong class="text-gray-900">150+</strong> global marka ile iş ortağıyız
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNERS-002: Scrolling Logos -->
-<section id="partners-002" class="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-8">
-    <div class="container mx-auto max-w-7xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-002
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Güvenilir Markalar</h2>
-            <p class="text-xl text-gray-600">Dünya çapında tanınmış şirketlerle çalışıyoruz</p>
-        </div>
-
-        <!-- Scrolling Row 1 -->
-        <div class="overflow-hidden mb-8" x-data="{ scroll: 0 }" x-init="setInterval(() => { scroll = (scroll + 1) % 100 }, 30)">
-            <div class="flex gap-8 whitespace-nowrap" :style="`transform: translateX(-${scroll}%)`">
-                <div class="inline-flex items-center justify-center bg-white rounded-2xl px-12 py-8 shadow-lg min-w-[200px]">
-                    <div class="text-center">
-                        <i class="fa-solid fa-laptop text-5xl text-blue-600 mb-3"></i>
-                        <h3 class="font-bold text-gray-900">TechPro</h3>
-                    </div>
-                </div>
-                <div class="inline-flex items-center justify-center bg-white rounded-2xl px-12 py-8 shadow-lg min-w-[200px]">
-                    <div class="text-center">
-                        <i class="fa-solid fa-couch text-5xl text-green-600 mb-3"></i>
-                        <h3 class="font-bold text-gray-900">MobilyaKing</h3>
-                    </div>
-                </div>
-                <div class="inline-flex items-center justify-center bg-white rounded-2xl px-12 py-8 shadow-lg min-w-[200px]">
-                    <div class="text-center">
-                        <i class="fa-solid fa-shirt text-5xl text-purple-600 mb-3"></i>
-                        <h3 class="font-bold text-gray-900">TextileCo</h3>
-                    </div>
-                </div>
-                <div class="inline-flex items-center justify-center bg-white rounded-2xl px-12 py-8 shadow-lg min-w-[200px]">
-                    <div class="text-center">
-                        <i class="fa-solid fa-wrench text-5xl text-orange-600 mb-3"></i>
-                        <h3 class="font-bold text-gray-900">ToolMaster</h3>
-                    </div>
-                </div>
-                <!-- Duplicate for seamless loop -->
-                <div class="inline-flex items-center justify-center bg-white rounded-2xl px-12 py-8 shadow-lg min-w-[200px]">
-                    <div class="text-center">
-                        <i class="fa-solid fa-laptop text-5xl text-blue-600 mb-3"></i>
-                        <h3 class="font-bold text-gray-900">TechPro</h3>
-                    </div>
-                </div>
-                <div class="inline-flex items-center justify-center bg-white rounded-2xl px-12 py-8 shadow-lg min-w-[200px]">
-                    <div class="text-center">
-                        <i class="fa-solid fa-couch text-5xl text-green-600 mb-3"></i>
-                        <h3 class="font-bold text-gray-900">MobilyaKing</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Static Row 2 -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="bg-white rounded-2xl p-8 shadow-lg text-center">
-                <i class="fa-solid fa-truck-fast text-5xl text-red-600 mb-3"></i>
-                <h3 class="font-bold text-gray-900">FastCargo</h3>
-            </div>
-            <div class="bg-white rounded-2xl p-8 shadow-lg text-center">
-                <i class="fa-solid fa-credit-card text-5xl text-cyan-600 mb-3"></i>
-                <h3 class="font-bold text-gray-900">PaySecure</h3>
-            </div>
-            <div class="bg-white rounded-2xl p-8 shadow-lg text-center">
-                <i class="fa-solid fa-shield-check text-5xl text-pink-600 mb-3"></i>
-                <h3 class="font-bold text-gray-900">SafeGuard</h3>
-            </div>
-            <div class="bg-white rounded-2xl p-8 shadow-lg text-center">
-                <i class="fa-solid fa-cloud text-5xl text-indigo-600 mb-3"></i>
-                <h3 class="font-bold text-gray-900">CloudHost</h3>
             </div>
         </div>
     </div>
-</section>
 
-<!-- PARTNERS-003: Featured Partner Spotlight -->
-<section id="partners-003" class="h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 p-8">
-    <div class="container mx-auto max-w-6xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-003
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Öne Çıkan İş Ortağı</h2>
-            <p class="text-xl text-gray-600">Bu ay: TechPro Electronics</p>
-        </div>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-12">
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <!-- Left: Partner Info -->
-            <div>
-                <div class="bg-white rounded-3xl p-12 shadow-2xl">
-                    <div class="w-32 h-32 bg-gradient-to-br from-purple-500 to-purple-700 rounded-3xl flex items-center justify-center mb-8 mx-auto">
-                        <i class="fa-solid fa-laptop text-7xl text-white"></i>
-                    </div>
-                    <h3 class="text-4xl font-black text-gray-900 text-center mb-4">TechPro Electronics</h3>
-                    <p class="text-gray-600 text-center text-lg mb-8">
-                        2015'ten beri güvenilir elektronik ürün tedarikçimiz
+        <!-- Info Banner -->
+        <div class="mb-12 bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-info text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-2">Nasıl Kullanılır?</h3>
+                    <p class="text-gray-400">
+                        Aşağıdaki tasarımlardan birini seçin. Her tasarım ayrı bir sayfada açılacak ve üst kısımdaki
+                        <strong class="text-white">İleri/Geri</strong> butonları ile diğer tasarımlara geçiş yapabilirsiniz.
                     </p>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-check text-purple-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Premium Kalite</h4>
-                                <p class="text-gray-600 text-sm">Tüm ürünler orijinal ve garantili</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-check text-purple-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Geniş Ürün Yelpazesi</h4>
-                                <p class="text-gray-600 text-sm">850+ farklı elektronik ürün</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-check text-purple-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Hızlı Teslimat</h4>
-                                <p class="text-gray-600 text-sm">24 saat içinde kargoya teslim</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: Stats -->
-            <div class="space-y-6">
-                <div class="bg-white rounded-3xl p-8 shadow-lg">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-calendar text-3xl text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-4xl font-black bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
-                                9 Yıl
-                            </div>
-                            <p class="text-gray-600 font-semibold">İşbirliği Süresi</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-8 shadow-lg">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-box text-3xl text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-4xl font-black bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
-                                45K+
-                            </div>
-                            <p class="text-gray-600 font-semibold">Teslim Edilen Ürün</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-8 shadow-lg">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-star text-3xl text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-4xl font-black bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
-                                4.9/5
-                            </div>
-                            <p class="text-gray-600 font-semibold">Müşteri Memnuniyeti</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Gallery Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            
+            <a href="design-partners-1.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #1</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #1
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-2.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #2</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #2
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-3.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #3</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #3
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-4.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #4</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #4
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-5.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #5</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #5
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-6.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #6</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #6
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-7.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #7</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #7
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-8.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #8</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #8
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-9.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #9</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #9
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+            <a href="design-partners-10.html"
+               class="group relative bg-white/5 backdrop-blur-lg rounded-3xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl">
+
+                <!-- Gradient Background -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+
+                <!-- Preview Area (burada screenshot olacak) -->
+                <div class="relative aspect-video bg-gradient-to-br from-emerald-500 to-teal-500 opacity-20 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fa-solid fa-handshake text-6xl text-white/40 mb-4"></i>
+                        <div class="text-2xl font-bold text-white/60">Tasarım #10</div>
+                    </div>
+                </div>
+
+                <!-- Card Info -->
+                <div class="relative p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-500 to-teal-500 transition-all">
+                            Partner Tasarımları #10
+                        </h3>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-arrow-right text-white"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Önizleme</span>
+                    </div>
+                </div>
+
+                <!-- Hover Effect -->
+                <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+            </a>
+
+        </div>
+
+        <!-- Back to Home -->
+        <div class="mt-12 text-center">
+            <a href="index.html" class="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 rounded-full transition-all group">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-semibold">Ana Sayfaya Dön</span>
+            </a>
+        </div>
+
     </div>
-</section>
 
-<!-- PARTNERS-004: Category-Based Partners -->
-<section id="partners-004" class="h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-8"
-         x-data="{
-             activeCategory: 'electronics',
-             categories: {
-                 electronics: { name: 'Elektronik', partners: ['TechPro', 'ElectroMax', 'DigitalWorld'], icon: 'fa-laptop', color: 'blue' },
-                 furniture: { name: 'Mobilya', partners: ['MobilyaKing', 'FurniturePlus', 'OfficeComfort'], icon: 'fa-couch', color: 'green' },
-                 textile: { name: 'Tekstil', partners: ['TextileCo', 'FabricMaster', 'ClothWorld'], icon: 'fa-shirt', color: 'purple' },
-                 tools: { name: 'Alet & Ekipman', partners: ['ToolMaster', 'ProTools', 'EquipmentHub'], icon: 'fa-wrench', color: 'orange' }
-             }
-         }">
-    <div class="container mx-auto max-w-6xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-004
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Kategoriye Göre İş Ortakları</h2>
-            <p class="text-xl text-gray-600">Her kategoride uzman markalarla çalışıyoruz</p>
-        </div>
-
-        <!-- Category Tabs -->
-        <div class="flex flex-wrap justify-center gap-4 mb-12">
-            <template x-for="(category, key) in categories" :key="key">
-                <button @click="activeCategory = key"
-                        :class="activeCategory === key ? 
-                                `bg-gradient-to-r from-${category.color}-600 to-${category.color}-700 text-white scale-110` : 
-                                'bg-white text-gray-700 hover:bg-gray-100'"
-                        class="px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 shadow-lg flex items-center gap-3">
-                    <i :class="'fa-solid ' + category.icon"></i>
-                    <span x-text="category.name"></span>
-                </button>
-            </template>
-        </div>
-
-        <!-- Partners Content -->
-        <div class="bg-white rounded-3xl p-12 shadow-2xl">
-            <template x-for="(category, key) in categories" :key="key">
-                <div x-show="activeCategory === key"
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="opacity-0 transform scale-95"
-                     x-transition:enter-end="opacity-100 transform scale-100">
-                    
-                    <div class="text-center mb-10">
-                        <div :class="`w-24 h-24 bg-gradient-to-br from-${category.color}-500 to-${category.color}-700 rounded-full mx-auto flex items-center justify-center mb-6`">
-                            <i :class="'fa-solid ' + category.icon + ' text-5xl text-white'"></i>
-                        </div>
-                        <h3 class="text-4xl font-black text-gray-900 mb-3" x-text="category.name + ' Ortakları'"></h3>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <template x-for="(partner, index) in category.partners" :key="index">
-                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-8 text-center hover:shadow-xl hover:scale-105 transition-all">
-                                <div :class="`w-20 h-20 bg-gradient-to-br from-${category.color}-500 to-${category.color}-700 rounded-2xl mx-auto mb-6 flex items-center justify-center`">
-                                    <i :class="'fa-solid ' + category.icon + ' text-4xl text-white'"></i>
-                                </div>
-                                <h4 class="text-2xl font-bold text-gray-900 mb-3" x-text="partner"></h4>
-                                <div class="flex items-center justify-center gap-1 mb-4">
-                                    <i class="fa-solid fa-star text-yellow-400"></i>
-                                    <i class="fa-solid fa-star text-yellow-400"></i>
-                                    <i class="fa-solid fa-star text-yellow-400"></i>
-                                    <i class="fa-solid fa-star text-yellow-400"></i>
-                                    <i class="fa-solid fa-star text-yellow-400"></i>
-                                </div>
-                                <button :class="`bg-gradient-to-r from-${category.color}-600 to-${category.color}-700 text-white px-6 py-3 rounded-full font-bold hover:shadow-lg transition-all`">
-                                    Detaylar
-                                </button>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </template>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNERS-005: Timeline Partnership History -->
-<section id="partners-005" class="h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-pink-100 p-8">
-    <div class="container mx-auto max-w-5xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-005
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">İşbirliği Tarihçemiz</h2>
-            <p class="text-xl text-gray-600">Yıllar içinde büyüyen iş ortaklıkları</p>
-        </div>
-
-        <div class="relative">
-            <!-- Timeline Line -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-pink-300"></div>
-
-            <!-- 2024 -->
-            <div class="relative mb-12">
-                <div class="flex items-center justify-center mb-6">
-                    <div class="bg-pink-600 text-white px-6 py-2 rounded-full font-bold text-lg z-10">
-                        2024
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div class="text-right">
-                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
-                            <div class="flex items-center justify-end gap-3 mb-3">
-                                <div>
-                                    <h3 class="font-bold text-gray-900">CloudHost</h3>
-                                    <p class="text-gray-500 text-sm">Teknoloji Altyapısı</p>
-                                </div>
-                                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center">
-                                    <i class="fa-solid fa-cloud text-white text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-gray-600 text-sm">Bulut altyapımızı güçlendirdik</p>
-                        </div>
-                    </div>
-                    <div></div>
-                </div>
-            </div>
-
-            <!-- 2022 -->
-            <div class="relative mb-12">
-                <div class="flex items-center justify-center mb-6">
-                    <div class="bg-pink-600 text-white px-6 py-2 rounded-full font-bold text-lg z-10">
-                        2022
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div></div>
-                    <div class="text-left">
-                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center">
-                                    <i class="fa-solid fa-shield-check text-white text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-900">SafeGuard</h3>
-                                    <p class="text-gray-500 text-sm">Güvenlik Sistemleri</p>
-                                </div>
-                            </div>
-                            <p class="text-gray-600 text-sm">Güvenlik protokollerini geliştirdik</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2020 -->
-            <div class="relative mb-12">
-                <div class="flex items-center justify-center mb-6">
-                    <div class="bg-pink-600 text-white px-6 py-2 rounded-full font-bold text-lg z-10">
-                        2020
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div class="text-right">
-                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
-                            <div class="flex items-center justify-end gap-3 mb-3">
-                                <div>
-                                    <h3 class="font-bold text-gray-900">FastCargo</h3>
-                                    <p class="text-gray-500 text-sm">Lojistik & Kargo</p>
-                                </div>
-                                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center">
-                                    <i class="fa-solid fa-truck-fast text-white text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-gray-600 text-sm">Hızlı teslimat ağını kurduk</p>
-                        </div>
-                    </div>
-                    <div></div>
-                </div>
-            </div>
-
-            <!-- 2018 -->
-            <div class="relative">
-                <div class="flex items-center justify-center mb-6">
-                    <div class="bg-pink-600 text-white px-6 py-2 rounded-full font-bold text-lg z-10">
-                        2018
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div></div>
-                    <div class="text-left">
-                        <div class="bg-white rounded-3xl p-6 shadow-lg inline-block">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-700 rounded-full flex items-center justify-center">
-                                    <i class="fa-solid fa-handshake text-white text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-900">İlk İş Ortağı</h3>
-                                    <p class="text-gray-500 text-sm">TechPro Electronics</p>
-                                </div>
-                            </div>
-                            <p class="text-gray-600 text-sm">İş ortaklığı yolculuğu başladı</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNERS-006: Benefits of Partnership -->
-<section id="partners-006" class="h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 p-8">
-    <div class="container mx-auto max-w-6xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-006
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">İş Ortağı Olun</h2>
-            <p class="text-xl text-gray-600">Birlikte büyüyelim, birlikte kazanalım</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Benefit 1 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
-                <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-chart-line text-3xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Satış Artışı</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Geniş müşteri tabanımız sayesinde satışlarınızı %200'e kadar artırın
-                </p>
-            </div>
-
-            <!-- Benefit 2 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-globe text-3xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Geniş Erişim</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Türkiye genelinde 50,000+ aktif kullanıcıya anında ulaşın
-                </p>
-            </div>
-
-            <!-- Benefit 3 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-handshake text-3xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Güvenilir İşbirliği</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Şeffaf süreçler ve adil ödeme koşulları ile çalışın
-                </p>
-            </div>
-
-            <!-- Benefit 4 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-headset text-3xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Destek 7/24</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Özel hesap yöneticiniz ve teknik destek ekibimiz her zaman yanınızda
-                </p>
-            </div>
-
-            <!-- Benefit 5 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
-                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-700 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-bullhorn text-3xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Pazarlama Desteği</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Ücretsiz dijital pazarlama ve marka görünürlüğü desteği alın
-                </p>
-            </div>
-
-            <!-- Benefit 6 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
-                <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-700 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-rocket text-3xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-3">Hızlı Başlangıç</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    48 saat içinde platformda satışa başlayın, hızlı entegrasyon
-                </p>
-            </div>
-        </div>
-
-        <div class="text-center mt-12">
-            <button class="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-12 py-5 rounded-full font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
-                <i class="fa-solid fa-envelope mr-2"></i>İş Ortaklığı Başvurusu Yap
-            </button>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNERS-007: Testimonials from Partners -->
-<section id="partners-007" class="h-screen flex items-center justify-center bg-gradient-to-br from-cyan-50 to-cyan-100 p-8">
-    <div class="container mx-auto max-w-6xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-cyan-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-007
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">İş Ortaklarımız Ne Diyor?</h2>
-            <p class="text-xl text-gray-600">Başarı hikayeleri ve deneyimler</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Partner 1 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-laptop text-3xl text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-xl">TechPro Electronics</h3>
-                        <div class="flex gap-1">
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    "İxtif.com ile çalışmaya başladığımızdan beri satışlarımız %320 arttı. Platform kullanımı çok kolay ve müşteri destek ekibi harika!"
-                </p>
-                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                    <span class="text-gray-500 text-sm">Ahmet Yılmaz - CEO</span>
-                    <span class="text-gray-500 text-sm">2018'den beri ortak</span>
-                </div>
-            </div>
-
-            <!-- Partner 2 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-couch text-3xl text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-xl">MobilyaKing</h3>
-                        <div class="flex gap-1">
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    "Türkiye'nin dört bir yanına kolayca ulaşabiliyoruz. Lojistik entegrasyonu sorunsuz, ödeme süreçleri hızlı ve güvenli."
-                </p>
-                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                    <span class="text-gray-500 text-sm">Mehmet Demir - Genel Müdür</span>
-                    <span class="text-gray-500 text-sm">2019'dan beri ortak</span>
-                </div>
-            </div>
-
-            <!-- Partner 3 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-shirt text-3xl text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-xl">TextileCo</h3>
-                        <div class="flex gap-1">
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    "Pazarlama desteği sayesinde marka bilinirliğimiz ciddi oranda arttı. Hem B2B hem de B2C müşterilere kolayca ulaşıyoruz."
-                </p>
-                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                    <span class="text-gray-500 text-sm">Ayşe Kaya - Pazarlama Direktörü</span>
-                    <span class="text-gray-500 text-sm">2020'den beri ortak</span>
-                </div>
-            </div>
-
-            <!-- Partner 4 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-wrench text-3xl text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-xl">ToolMaster</h3>
-                        <div class="flex gap-1">
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-yellow-400"></i>
-                            <i class="fa-solid fa-star text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    "Profesyonel müşterilere ulaşmak için ideal bir platform. Analytics ve raporlama araçları işimizi çok kolaylaştırıyor."
-                </p>
-                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                    <span class="text-gray-500 text-sm">Can Özdemir - Operasyon Müdürü</span>
-                    <span class="text-gray-500 text-sm">2021'den beri ortak</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNERS-008: Map with Partner Locations -->
-<section id="partners-008" class="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-indigo-100 p-8">
-    <div class="container mx-auto max-w-6xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-008
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Global İş Ortakları</h2>
-            <p class="text-xl text-gray-600">Türkiye ve dünyada 150+ iş ortağı</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Map Placeholder -->
-            <div class="lg:col-span-2 bg-white rounded-3xl p-12 shadow-2xl">
-                <div class="bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-2xl h-96 flex items-center justify-center relative overflow-hidden">
-                    <!-- Turkey Map Illustration -->
-                    <div class="relative w-full h-full flex items-center justify-center">
-                        <i class="fa-solid fa-map text-9xl text-indigo-300"></i>
-                        
-                        <!-- Location Pins -->
-                        <div class="absolute top-1/4 left-1/3 animate-pulse">
-                            <div class="w-4 h-4 bg-red-500 rounded-full shadow-lg"></div>
-                            <div class="text-xs font-bold text-gray-900 mt-1">İstanbul</div>
-                        </div>
-                        <div class="absolute top-1/3 right-1/3 animate-pulse">
-                            <div class="w-4 h-4 bg-blue-500 rounded-full shadow-lg"></div>
-                            <div class="text-xs font-bold text-gray-900 mt-1">Ankara</div>
-                        </div>
-                        <div class="absolute bottom-1/3 left-1/4 animate-pulse">
-                            <div class="w-4 h-4 bg-green-500 rounded-full shadow-lg"></div>
-                            <div class="text-xs font-bold text-gray-900 mt-1">İzmir</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="space-y-6">
-                <div class="bg-white rounded-3xl p-6 shadow-lg">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-building text-2xl text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">
-                                150+
-                            </div>
-                            <p class="text-gray-600 font-semibold">İş Ortağı</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-6 shadow-lg">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-map-location-dot text-2xl text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">
-                                81
-                            </div>
-                            <p class="text-gray-600 font-semibold">İl Kapsamı</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-6 shadow-lg">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-globe text-2xl text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">
-                                12
-                            </div>
-                            <p class="text-gray-600 font-semibold">Ülke</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-6 shadow-lg">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-users text-2xl text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">
-                                50K+
-                            </div>
-                            <p class="text-gray-600 font-semibold">Müşteri</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNERS-009: Partner Application Form -->
-<section id="partners-009" class="h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 to-violet-100 p-8">
-    <div class="container mx-auto max-w-4xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-violet-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-009
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">İş Ortağı Başvurusu</h2>
-            <p class="text-xl text-gray-600">Formu doldurun, en kısa sürede size dönelim</p>
-        </div>
-
-        <div class="bg-white rounded-3xl p-12 shadow-2xl">
-            <form class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-2">Şirket Adı *</label>
-                        <input type="text" placeholder="Şirketinizin adı" 
-                               class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-2">Yetkili Kişi *</label>
-                        <input type="text" placeholder="Ad Soyad" 
-                               class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-2">E-posta *</label>
-                        <input type="email" placeholder="ornek@sirket.com" 
-                               class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-2">Telefon *</label>
-                        <input type="tel" placeholder="0850 123 45 67" 
-                               class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2">Kategori *</label>
-                    <select class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all">
-                        <option>Kategori Seçiniz</option>
-                        <option>Elektronik</option>
-                        <option>Mobilya</option>
-                        <option>Tekstil</option>
-                        <option>Alet & Ekipman</option>
-                        <option>Diğer</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2">Mesajınız</label>
-                    <textarea rows="4" placeholder="İşbirliği hakkında detaylı bilgi verin..." 
-                              class="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:outline-none transition-all resize-none"></textarea>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" id="terms" class="w-5 h-5 text-violet-600">
-                    <label for="terms" class="text-gray-600">
-                        <a href="#" class="text-violet-600 font-bold hover:underline">Kullanım Şartları</a> ve 
-                        <a href="#" class="text-violet-600 font-bold hover:underline">Gizlilik Politikası</a>'nı kabul ediyorum
-                    </label>
-                </div>
-
-                <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-violet-700 text-white px-12 py-5 rounded-full font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
-                    <i class="fa-solid fa-paper-plane mr-2"></i>Başvuruyu Gönder
-                </button>
-            </form>
-        </div>
-
-        <div class="text-center mt-8">
-            <p class="text-gray-600">
-                Sorularınız mı var? <a href="tel:08501234567" class="text-violet-600 font-bold hover:underline">0850 123 45 67</a> numaralı hattımızı arayın
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNERS-010: Partner Success Stories -->
-<section id="partners-010" class="h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-rose-100 p-8">
-    <div class="container mx-auto max-w-6xl">
-        <div class="text-center mb-12">
-            <span class="inline-block bg-rose-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
-                <i class="fa-solid fa-hashtag mr-1"></i>PARTNERS-010
-            </span>
-            <h2 class="text-5xl font-black text-gray-900 mb-4">Başarı Hikayeleri</h2>
-            <p class="text-xl text-gray-600">İş ortaklarımızın büyüme yolculuğu</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Story 1 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all">
-                <div class="w-20 h-20 bg-gradient-to-br from-rose-500 to-rose-700 rounded-full flex items-center justify-center mb-6 mx-auto">
-                    <i class="fa-solid fa-laptop text-4xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-black text-gray-900 text-center mb-4">TechPro</h3>
-                
-                <div class="space-y-4 mb-6">
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-rose-50 rounded-2xl">
-                        <span class="text-gray-600 font-semibold">Öncesi:</span>
-                        <span class="text-gray-900 font-bold">50 sipariş/ay</span>
-                    </div>
-                    <div class="flex items-center justify-center">
-                        <i class="fa-solid fa-arrow-down text-3xl text-rose-600"></i>
-                    </div>
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl">
-                        <span class="text-gray-600 font-semibold">Sonrası:</span>
-                        <span class="text-gray-900 font-bold">680 sipariş/ay</span>
-                    </div>
-                </div>
-
-                <div class="text-center p-6 bg-gradient-to-br from-rose-100 to-rose-200 rounded-2xl">
-                    <div class="text-4xl font-black text-rose-700 mb-2">+1260%</div>
-                    <p class="text-gray-700 font-semibold">Büyüme Oranı</p>
-                </div>
-            </div>
-
-            <!-- Story 2 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all">
-                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mb-6 mx-auto">
-                    <i class="fa-solid fa-couch text-4xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-black text-gray-900 text-center mb-4">MobilyaKing</h3>
-                
-                <div class="space-y-4 mb-6">
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-rose-50 rounded-2xl">
-                        <span class="text-gray-600 font-semibold">Öncesi:</span>
-                        <span class="text-gray-900 font-bold">₺120K/ay</span>
-                    </div>
-                    <div class="flex items-center justify-center">
-                        <i class="fa-solid fa-arrow-down text-3xl text-green-600"></i>
-                    </div>
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl">
-                        <span class="text-gray-600 font-semibold">Sonrası:</span>
-                        <span class="text-gray-900 font-bold">₺580K/ay</span>
-                    </div>
-                </div>
-
-                <div class="text-center p-6 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl">
-                    <div class="text-4xl font-black text-green-700 mb-2">+383%</div>
-                    <p class="text-gray-700 font-semibold">Ciro Artışı</p>
-                </div>
-            </div>
-
-            <!-- Story 3 -->
-            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all">
-                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mb-6 mx-auto">
-                    <i class="fa-solid fa-shirt text-4xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-black text-gray-900 text-center mb-4">TextileCo</h3>
-                
-                <div class="space-y-4 mb-6">
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-rose-50 rounded-2xl">
-                        <span class="text-gray-600 font-semibold">Öncesi:</span>
-                        <span class="text-gray-900 font-bold">2.5K müşteri</span>
-                    </div>
-                    <div class="flex items-center justify-center">
-                        <i class="fa-solid fa-arrow-down text-3xl text-purple-600"></i>
-                    </div>
-                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl">
-                        <span class="text-gray-600 font-semibold">Sonrası:</span>
-                        <span class="text-gray-900 font-bold">18K müşteri</span>
-                    </div>
-                </div>
-
-                <div class="text-center p-6 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl">
-                    <div class="text-4xl font-black text-purple-700 mb-2">+620%</div>
-                    <p class="text-gray-700 font-semibold">Müşteri Artışı</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center mt-12">
-            <div class="inline-block bg-white rounded-3xl px-12 py-6 shadow-lg">
-                <p class="text-gray-700 text-lg">
-                    <i class="fa-solid fa-quote-left text-rose-400 mr-2"></i>
-                    <strong class="text-gray-900">Ortalama %400+</strong> büyüme oranı ile başarıya birlikte ulaşıyoruz
-                    <i class="fa-solid fa-quote-right text-rose-400 ml-2"></i>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-</div>
 </body>
 </html>

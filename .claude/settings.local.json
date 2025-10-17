@@ -102,7 +102,9 @@
       "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_GK8dow/**)",
       "Bash(if [ -f ~/.claude/skills/$skill/SKILL.md ])",
       "Bash(head:*)",
-      "Bash(else)"
+      "Bash(else)",
+      "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_MYCOuU/**)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": [],

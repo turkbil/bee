@@ -162,15 +162,18 @@
         @endphp
 
         <div class="flex flex-wrap justify-center items-center gap-6 mb-8 text-sm text-gray-600 dark:text-gray-400">
-            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <i class="fa-solid fa-phone text-blue-600 dark:text-blue-400"></i>
                 {{ $contactPhone }}
             </a>
             <span class="text-gray-400 dark:text-gray-600">•</span>
-            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank" class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400"></i>
                 {{ $contactWhatsapp }}
             </a>
             <span class="text-gray-400 dark:text-gray-600">•</span>
-            <a href="mailto:{{ $contactEmail }}" class="hover:text-gray-900 dark:hover:text-white transition-colors">
+            <a href="mailto:{{ $contactEmail }}" class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <i class="fa-solid fa-envelope text-purple-600 dark:text-purple-400"></i>
                 {{ $contactEmail }}
             </a>
         </div>

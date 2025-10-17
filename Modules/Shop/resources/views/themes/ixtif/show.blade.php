@@ -273,14 +273,14 @@
                     {{-- Right Column: AI Chat Widget + Featured Image --}}
                     <div class="hidden lg:block space-y-6 -mr-4 sm:-mr-6 lg:-mr-8">
                         {{-- AI Chat Widget - Always Open --}}
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 overflow-hidden">
                             <x-ai.inline-widget title="Ürün Hakkında Soru Sor" :product-id="$item->product_id" :initially-open="true"
                                 height="500px" theme="blue" />
                         </div>
 
                         @if ($featuredImage)
                             <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
-                                alt="{{ $title }}" class="w-full rounded-lg shadow-lg">
+                                alt="{{ $title }}" class="w-full rounded-xl border border-white/30 dark:border-white/10">
                         @endif
                     </div>
                 </div>
@@ -429,11 +429,11 @@
                                             class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all">
                                         </div>
                                         <div
-                                            class="relative bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-xl">
+                                            class="relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                             {{-- İkon + Başlık (Üstte) --}}
                                             <div class="flex items-center gap-3 mb-4">
                                                 <div
-                                                    class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                                    class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-lg flex items-center justify-center flex-shrink-0">
                                                     <i class="fa-solid fa-bolt text-white text-lg"></i>
                                                 </div>
                                                 <h4 class="text-base font-semibold text-gray-700 dark:text-gray-300">
@@ -470,7 +470,7 @@
                                 <div class="grid grid-cols-1 gap-6 mb-8">
                                     @foreach ($highlightedFeatures as $feature)
                                         <div
-                                            class="flex gap-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all">
+                                            class="flex gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                             <div
                                                 class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
                                                 <i
@@ -499,7 +499,7 @@
                                             $featureText = is_array($feature) ? $feature['text'] ?? $feature : $feature;
                                         @endphp
                                         <div
-                                            class="flex gap-3 items-start p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-green-300 dark:hover:border-green-600 transition-all">
+                                            class="flex gap-3 items-start p-4 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                             <i
                                                 class="fa-solid fa-{{ $featureIcon }} text-green-600 dark:text-green-400 mt-1 text-lg"></i>
                                             <span class="text-gray-700 dark:text-gray-300">{{ $featureText }}</span>
@@ -546,7 +546,7 @@
                                             : null;
                                     @endphp
                                     <a href="{{ $variantUrl }}"
-                                        class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                                        class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl overflow-hidden hover:bg-white/80 dark:hover:bg-white/10 hover:-translate-y-1 transition-all duration-300">
 
                                         @if ($variantImageUrl)
                                             <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
@@ -618,7 +618,7 @@
                                         $advText = is_array($advantage) ? $advantage['text'] ?? $advantage : $advantage;
                                     @endphp
                                     <div
-                                        class="flex gap-4 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all">
+                                        class="flex gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                         <div
                                             class="w-14 h-14 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
                                             <i
@@ -739,10 +739,10 @@
                                     @endphp
                                     @if ($isStandard)
                                         <div
-                                            class="border-2 border-green-500 dark:border-green-600 rounded-xl p-6 transition-all hover:shadow-lg">
+                                            class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-2 border-green-500 dark:border-green-600 rounded-xl p-6 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                         @else
                                             <div
-                                                class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 transition-all hover:shadow-lg">
+                                                class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                     @endif
                                     <div class="flex items-start justify-between mb-4">
                                         <div
@@ -803,9 +803,9 @@
                                         class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 dark:from-blue-500/5 dark:to-cyan-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all">
                                     </div>
                                     <div
-                                        class="relative flex gap-4 p-6 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-xl">
+                                        class="relative flex gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                         <div
-                                            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700 rounded-lg flex items-center justify-center flex-shrink-0">
                                             <i class="fa-solid fa-{{ $caseIcon }} text-white text-lg"></i>
                                         </div>
                                         <p
@@ -844,9 +844,9 @@
                                         class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-purple-500/5 dark:to-pink-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all">
                                     </div>
                                     <div
-                                        class="relative flex flex-col items-center text-center p-6 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-400 dark:hover:border-purple-500 transition-all hover:shadow-xl">
+                                        class="relative flex flex-col items-center text-center p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                         <div
-                                            class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 rounded-lg flex items-center justify-center shadow-md mb-4">
+                                            class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 rounded-lg flex items-center justify-center mb-4">
                                             <i class="fa-solid fa-{{ $industryIcon }} text-white text-2xl"></i>
                                         </div>
                                         <p class="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
@@ -879,7 +879,7 @@
                                     $certIcon = $cert['icon'] ?? 'certificate';
                                 @endphp
                                 <div
-                                    class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 transition-all text-center hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-lg">
+                                    class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6 hover:bg-white/80 dark:hover:bg-white/10 transition-all text-center">
                                     <div
                                         class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <i
@@ -914,7 +914,7 @@
                             <p class="text-lg text-gray-600 dark:text-gray-400">Güvenle alın, endişesiz kullanın</p>
                         </header>
                         <div
-                            class="flex gap-6 p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg transition-all">
+                            class="flex gap-6 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                             <div
                                 class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-shield-heart text-emerald-600 dark:text-emerald-400 text-3xl"></i>
@@ -956,7 +956,7 @@
                         <div class="space-y-4">
                             @foreach ($faqEntries as $index => $faq)
                                 <div
-                                    class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-300 dark:hover:border-blue-600 transition-all bg-white dark:bg-gray-800">
+                                    class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl overflow-hidden hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                     <button
                                         @click="openFaq = (openFaq === {{ $index }} ? null : {{ $index }})"
                                         class="w-full px-6 py-5 flex items-center justify-between gap-4 text-left transition-colors"
@@ -995,7 +995,7 @@
                 <div class="space-y-8 lg:sticky lg:top-24" id="sticky-sidebar">
                     {{-- Product Info Card --}}
                     <div
-                        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
+                        class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ $title }}</h1>
 
                         @if ($shortDescription)
@@ -1055,7 +1055,7 @@
     <section id="trust-signals" class="relative mt-16 scroll-mt-24">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div
-                class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
+                class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {{-- GARANTİLİ --}}
                     <div class="flex items-center gap-4">
@@ -1114,7 +1114,7 @@
                 {{-- SOL: FORM (7/12) --}}
                 <div class="w-full md:w-7/12">
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8 md:p-10">
+                        class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 p-8 md:p-10">
                         <div class="mb-8">
                             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                                 Hemen Teklif Alın
@@ -1171,7 +1171,7 @@
                             </div>
 
                             <button type="submit"
-                                class="group relative w-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white font-bold py-5 rounded-xl transition-all hover:shadow-xl transform hover:-translate-y-0.5">
+                                class="group relative w-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white font-bold py-5 rounded-xl transition-all transform hover:-translate-y-0.5">
                                 <span class="flex items-center justify-center gap-3">
                                     <i
                                         class="fa-solid fa-paper-plane text-xl group-hover:rotate-45 transition-transform"></i>
@@ -1186,58 +1186,58 @@
                 <div class="w-full md:w-5/12 space-y-8">
                     {{-- İletişim Bilgileri --}}
                     <a href="tel:02167553555"
-                        class="group flex items-start gap-4 p-6 bg-white/20 dark:bg-white/10 backdrop-blur-md hover:bg-white/30 dark:hover:bg-white/20 rounded-2xl transition-all duration-300 border border-white/30 hover:border-white/50 cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md hover:bg-white/80 dark:hover:bg-white/10 rounded-2xl transition-all border border-white/30 dark:border-white/10 cursor-pointer">
                         <div
-                            class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300">
-                            <i class="fa-solid fa-phone text-white text-xl group-hover:animate-pulse"></i>
+                            class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-phone text-blue-600 dark:text-blue-400 text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1 font-semibold">Telefon</div>
-                            <div class="text-sm text-white">Hemen arayın</div>
-                            <div class="text-lg font-bold text-white mt-1">0216 755 3 555</div>
+                            <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">Telefon</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Hemen arayın</div>
+                            <div class="text-lg font-bold text-gray-900 dark:text-white mt-1">0216 755 3 555</div>
                         </div>
                     </a>
 
                     <a href="https://wa.me/905010056758" target="_blank"
-                        class="group flex items-start gap-4 p-6 bg-white/20 dark:bg-white/10 backdrop-blur-md hover:bg-white/30 dark:hover:bg-white/20 rounded-2xl transition-all duration-300 border border-white/30 hover:border-white/50 cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md hover:bg-white/80 dark:hover:bg-white/10 rounded-2xl transition-all border border-white/30 dark:border-white/10 cursor-pointer">
                         <div
-                            class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300">
-                            <i class="fa-brands fa-whatsapp text-white text-xl group-hover:animate-pulse"></i>
+                            class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400 text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1 font-semibold">WhatsApp</div>
-                            <div class="text-sm text-white">Anında mesajlaşın</div>
-                            <div class="text-lg font-bold text-white mt-1">0501 005 67 58</div>
+                            <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">WhatsApp</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Anında mesajlaşın</div>
+                            <div class="text-lg font-bold text-gray-900 dark:text-white mt-1">0501 005 67 58</div>
                         </div>
                     </a>
 
                     <a href="mailto:info@ixtif.com"
-                        class="group flex items-start gap-4 p-6 bg-white/20 dark:bg-white/10 backdrop-blur-md hover:bg-white/30 dark:hover:bg-white/20 rounded-2xl transition-all duration-300 border border-white/30 hover:border-white/50 cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md hover:bg-white/80 dark:hover:bg-white/10 rounded-2xl transition-all border border-white/30 dark:border-white/10 cursor-pointer">
                         <div
-                            class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300">
-                            <i class="fa-solid fa-envelope text-white text-xl group-hover:animate-pulse"></i>
+                            class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-envelope text-purple-600 dark:text-purple-400 text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1 font-semibold">E-posta</div>
-                            <div class="text-sm text-white">Mail gönderin</div>
-                            <div class="text-base font-bold text-white break-all mt-1">info@ixtif.com</div>
+                            <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">E-posta</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Mail gönderin</div>
+                            <div class="text-base font-bold text-gray-900 dark:text-white break-all mt-1">info@ixtif.com</div>
                         </div>
                     </a>
 
                     {{-- AI Canlı Destek Kutusu --}}
-                    <div class="bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/30 hover:border-white/50 transition-all cursor-pointer"
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all cursor-pointer"
                          onclick="handleAIChatClick()">
                         <div class="flex items-start gap-4">
-                            <div class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-robot text-cyan-300 text-2xl"></i>
+                            <div class="w-14 h-14 bg-cyan-100 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-robot text-cyan-600 dark:text-cyan-400 text-2xl"></i>
                             </div>
                             <div>
-                                <span class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-white text-xs font-semibold rounded-full mb-2 italic border border-white/20">
-                                    <i class="fa-solid fa-sparkles mr-1.5 text-yellow-300"></i>
+                                <span class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-gray-900 dark:text-white text-xs font-semibold rounded-full mb-2 italic border border-cyan-300 dark:border-cyan-600">
+                                    <i class="fa-solid fa-sparkles mr-1.5 text-yellow-600 dark:text-yellow-400"></i>
                                     Yapay Zeka Destekli
                                 </span>
-                                <div class="text-base font-bold text-white mb-1">Canlı Destek</div>
-                                <div class="text-sm text-blue-100">
+                                <div class="text-base font-bold text-gray-900 dark:text-white mb-1">Canlı Destek</div>
+                                <div class="text-sm text-gray-700 dark:text-gray-300">
                                     <i class="fa-solid fa-comments mr-1"></i> Sohbete Başla
                                 </div>
                             </div>
@@ -1281,37 +1281,37 @@
                     </script>
 
                     {{-- Info Box --}}
-                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/30 dark:border-white/10">
                         <div class="text-center mb-5">
-                            <h3 class="text-2xl font-bold text-white mb-1">Türkiye'nin İstif Pazarı
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Türkiye'nin İstif Pazarı
                             </h3>
-                            <p class="text-sm text-blue-100">Forklift ve İstif Makineleri Merkezi
+                            <p class="text-sm text-gray-700 dark:text-gray-300">Forklift ve İstif Makineleri Merkezi
                             </p>
                         </div>
                         <div class="grid grid-cols-3 gap-3">
-                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-box text-blue-200 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">Satın Alma</div>
+                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                <i class="fa-solid fa-box text-blue-600 dark:text-blue-400 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Satın Alma</div>
                             </div>
-                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-key text-yellow-300 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">Kiralama</div>
+                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                <i class="fa-solid fa-key text-yellow-600 dark:text-yellow-400 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Kiralama</div>
                             </div>
-                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-recycle text-green-300 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">İkinci El</div>
+                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                <i class="fa-solid fa-recycle text-green-600 dark:text-green-400 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-gray-900 dark:text-white">İkinci El</div>
                             </div>
-                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-gears text-orange-300 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">Yedek Parça</div>
+                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                <i class="fa-solid fa-gears text-orange-600 dark:text-orange-400 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Yedek Parça</div>
                             </div>
-                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-wrench text-purple-300 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">Teknik Servis</div>
+                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                <i class="fa-solid fa-wrench text-purple-600 dark:text-purple-400 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Teknik Servis</div>
                             </div>
-                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-robot text-cyan-300 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">AI Canlı Destek</div>
+                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                <i class="fa-solid fa-robot text-cyan-600 dark:text-cyan-400 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-gray-900 dark:text-white">AI Canlı Destek</div>
                             </div>
                         </div>
                     </div>

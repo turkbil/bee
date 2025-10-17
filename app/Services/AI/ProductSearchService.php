@@ -300,15 +300,27 @@ class ProductSearchService
         }
 
         // 🆕 1. CAPACITY/WEIGHT EXTRACTION
+        // ⚠️ KRİTİK: 1 ton = 1000 kg, 200 kg = 0.2 ton (2 ton DEĞİL!)
         preg_match_all('/(\d+\.?\d*)\s*(ton|kg|kilo|kilogram)/i', $originalMessage, $capacityMatches);
         if (!empty($capacityMatches[1])) {
             foreach ($capacityMatches[1] as $idx => $number) {
                 $unit = $capacityMatches[2][$idx] ?? '';
-                // Convert ton to kg
+                $numberValue = floatval($number);
+
+                // ✅ TON → KG dönüşümü
                 if (stripos($unit, 'ton') !== false) {
-                    $keywords[] = (floatval($number) * 1000) . 'kg';
-                } else {
-                    $keywords[] = floatval($number) . 'kg';
+                    $keywords[] = ($numberValue * 1000) . 'kg';  // 2 ton → 2000kg
+                    $keywords[] = $numberValue . 'ton';          // Ayrıca ton'u da ekle
+                }
+                // ✅ KG → Direkt ekle (dönüşüm YOK!)
+                else {
+                    $keywords[] = $numberValue . 'kg';           // 200 kg → 200kg (2 ton DEĞİL!)
+
+                    // 🆕 Eğer 1000'den büyükse ton karşılığını da ekle
+                    if ($numberValue >= 1000) {
+                        $tonValue = $numberValue / 1000;
+                        $keywords[] = $tonValue . 'ton';         // 2000 kg → 2 ton
+                    }
                 }
             }
         }

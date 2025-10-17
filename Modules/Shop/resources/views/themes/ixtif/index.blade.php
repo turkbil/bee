@@ -9,7 +9,7 @@
     <div class="relative" x-data="shopsList()" x-init="init()">
 
         <!-- Gradient Background -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-blue-50/50 dark:from-gray-950 dark:via-slate-900 dark:to-blue-950 -z-10"></div>
 
         <!-- Header -->
         <div class="relative overflow-hidden">
@@ -66,7 +66,7 @@
                             @endphp
 
                             <!-- Ürün Kartı - Glassmorphism -->
-                            <article class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-2xl border border-white/30 dark:border-white/10 transition-all overflow-hidden">
+                            <article class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 transition-all overflow-hidden">
 
                                 <!-- İçerik: 2 kolon (Sol: Ana Ürün, Sağ: Varyantlar) -->
                                 <div class="grid grid-cols-1 md:grid-cols-2">
@@ -135,7 +135,7 @@
                     <!-- Pagination -->
                     @if ($products->hasPages())
                         <div class="mt-20">
-                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+                            <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 p-4">
                                 {{ $products->links() }}
                             </div>
                         </div>

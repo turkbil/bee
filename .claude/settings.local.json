@@ -104,7 +104,15 @@
       "Bash(head:*)",
       "Bash(else)",
       "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_MYCOuU/**)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_Jnx571/**)",
+      "Bash(do echo \"=== $file ===\" grep -o 'bg-gradient-to-[a-z]* from-[a-z]*-[0-9]* via-[a-z]*-[0-9]* to-[a-z]*-[0-9]*' /Users/nurullah/Desktop/cms/laravel/public/ixtif-designs/design-$file.html)",
+      "Bash(brew install:*)",
+      "Bash(openssl rand:*)",
+      "Bash(brew services start:*)",
+      "Bash(do echo \"=== $file ===\" grep -E '(<section|<div.*class=\"\"\"\".*section)' \"$file\")",
+      "Bash(do echo \"=== $file ===\" grep '<section' \"$file\")",
+      "Read(//var/folders/6g/wmhsfvr90pgf031lysz0c03w0000gn/T/TemporaryItems/NSIRD_screencaptureui_O0iKqq/**)"
     ],
     "deny": [],
     "ask": [],

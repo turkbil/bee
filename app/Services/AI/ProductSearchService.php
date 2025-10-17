@@ -20,6 +20,7 @@ class ProductSearchService
 {
     protected int $tenantId;
     protected string $locale;
+    protected HybridSearchService $hybridSearch;
 
     /**
      * ⚙️ CATEGORY-SPECIFIC PARAMETER MAPPINGS
@@ -85,8 +86,10 @@ class ProductSearchService
         ]
     ];
 
-    public function __construct()
+    public function __construct(HybridSearchService $hybridSearch)
     {
+        $this->hybridSearch = $hybridSearch;
+
         // ✅ FIX: Get tenant_id from central tenants table via tenancy helper
         $this->tenantId = tenant('id');
 
@@ -143,6 +146,33 @@ class ProductSearchService
                 'detected_category' => $detectedCategory ? $detectedCategory['category_name'] : 'none'
             ]);
 
+            // 🚀 NEW: TRY HYBRID SEARCH FIRST (Meilisearch 70% + Vector 30%)
+            try {
+                $hybridResults = $this->hybridSearch->search(
+                    $normalizedMessage,
+                    $detectedCategory['category_id'] ?? null,
+                    10
+                );
+
+                if (!empty($hybridResults)) {
+                    Log::info('✅ Hybrid Search SUCCESS', [
+                        'results_count' => count($hybridResults),
+                        'top_product' => $hybridResults[0]['product']['title'] ?? null
+                    ]);
+
+                    return $this->formatResults(
+                        array_column($hybridResults, 'product'),
+                        'hybrid',
+                        $detectedCategory
+                    );
+                }
+            } catch (\Exception $e) {
+                Log::warning('⚠️ Hybrid search failed, falling back to manual search', [
+                    'error' => $e->getMessage()
+                ]);
+            }
+
+            // FALLBACK: Manual search layers below
             // 🆕 CATEGORY-BASED SEARCH (If category detected)
             if ($detectedCategory) {
                 // 🔍 Extract category-specific parameters

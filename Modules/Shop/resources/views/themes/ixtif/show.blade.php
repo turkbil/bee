@@ -228,7 +228,7 @@
 
         {{-- 🎯 HERO SECTION --}}
         <section id="hero-section"
-            class="relative bg-gradient-to-r from-blue-600 via-slate-800 to-slate-950 text-white overflow-hidden">
+            class="relative bg-gradient-to-br from-white via-slate-50 to-gray-100 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 text-gray-900 dark:text-white overflow-hidden">
             {{-- Decorative elements --}}
             <div class="absolute top-0 left-0 w-full h-full opacity-15">
                 <div
@@ -251,7 +251,7 @@
                         </h1>
 
                         @if ($shortDescription)
-                            <p class="text-xl text-blue-100 leading-relaxed mb-8">
+                            <p class="text-xl text-gray-700 dark:text-blue-100 leading-relaxed mb-8">
                                 {{ $shortDescription }}
                             </p>
                         @endif
@@ -287,14 +287,15 @@
             </div>
         </section>
 
-        {{-- 📑 TABLE OF CONTENTS - Fixed below header --}}
-        <div id="toc-bar" x-data="{ scrolled: false }"
-            @scroll.window="scrolled = window.pageYOffset > 50"
-            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed left-0 right-0 transition-all duration-300"
-            :class="scrolled ? 'top-14 z-40' : 'top-[120px] z-40'"
-            style="z-index: 40;">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300"
-                 :class="scrolled ? 'py-1.5' : 'py-2'">
+        {{-- 📑 TABLE OF CONTENTS - Initially relative, becomes fixed on scroll --}}
+        {{-- Placeholder: TOC fixed olduğunda layout shift önlemek için --}}
+        <div id="toc-placeholder" style="display: none;"></div>
+
+        <div id="toc-bar"
+            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 left-0 right-0"
+            style="position: relative; z-index: 40; transition: none;">
+            <div id="toc-container" class="container mx-auto px-4 sm:px-6 lg:px-8 py-2"
+                 style="transition: padding 0.2s ease-in-out;">
                 <div class="flex items-center">
                     <div
                         class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
@@ -381,7 +382,7 @@
             </div>
         </div>
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8" style="padding-top: 80px;">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="grid lg:grid-cols-3 gap-8 items-start">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div class="lg:col-span-2 min-h-screen">
@@ -1182,64 +1183,59 @@
                     </div>
                 </div>
 
-                {{-- SAĞ: DETAYLAR (5/12) --}}
-                <div class="w-full md:w-5/12 space-y-8">
-                    {{-- İletişim Bilgileri --}}
+                {{-- SAĞ: DETAYLAR (5/12) - V3 Glassmorphism --}}
+                <div class="w-full md:w-5/12 space-y-6">
+                    {{-- İletişim Bilgileri - V3 Glassmorphism --}}
                     <a href="tel:02167553555"
-                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md hover:bg-white/80 dark:hover:bg-white/10 rounded-2xl transition-all border border-white/30 dark:border-white/10 cursor-pointer">
-                        <div
-                            class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-phone text-blue-600 dark:text-blue-400 text-xl"></i>
+                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                            <i class="fa-solid fa-phone text-white text-2xl"></i>
                         </div>
-                        <div>
+                        <div class="flex-1">
                             <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">Telefon</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Hemen arayın</div>
-                            <div class="text-lg font-bold text-gray-900 dark:text-white mt-1">0216 755 3 555</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Hemen arayın</div>
+                            <div class="text-lg font-bold text-blue-600 dark:text-blue-400">0216 755 3 555</div>
                         </div>
                     </a>
 
                     <a href="https://wa.me/905010056758" target="_blank"
-                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md hover:bg-white/80 dark:hover:bg-white/10 rounded-2xl transition-all border border-white/30 dark:border-white/10 cursor-pointer">
-                        <div
-                            class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400 text-xl"></i>
+                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                            <i class="fa-brands fa-whatsapp text-white text-2xl"></i>
                         </div>
-                        <div>
+                        <div class="flex-1">
                             <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">WhatsApp</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Anında mesajlaşın</div>
-                            <div class="text-lg font-bold text-gray-900 dark:text-white mt-1">0501 005 67 58</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Anında mesajlaşın</div>
+                            <div class="text-lg font-bold text-green-600 dark:text-green-400">0501 005 67 58</div>
                         </div>
                     </a>
 
                     <a href="mailto:info@ixtif.com"
-                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md hover:bg-white/80 dark:hover:bg-white/10 rounded-2xl transition-all border border-white/30 dark:border-white/10 cursor-pointer">
-                        <div
-                            class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-envelope text-purple-600 dark:text-purple-400 text-xl"></i>
+                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                            <i class="fa-solid fa-envelope text-white text-2xl"></i>
                         </div>
-                        <div>
+                        <div class="flex-1">
                             <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">E-posta</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Mail gönderin</div>
-                            <div class="text-base font-bold text-gray-900 dark:text-white break-all mt-1">info@ixtif.com</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Mail gönderin</div>
+                            <div class="text-base font-bold text-purple-600 dark:text-purple-400 break-all">info@ixtif.com</div>
                         </div>
                     </a>
 
-                    {{-- AI Canlı Destek Kutusu --}}
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all cursor-pointer"
+                    {{-- AI Canlı Destek Kutusu - V3 Glassmorphism --}}
+                    <div class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer relative"
                          onclick="handleAIChatClick()">
-                        <div class="flex items-start gap-4">
-                            <div class="w-14 h-14 bg-cyan-100 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-robot text-cyan-600 dark:text-cyan-400 text-2xl"></i>
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-gray-900 dark:text-white text-xs font-semibold rounded-full mb-2 italic border border-cyan-300 dark:border-cyan-600">
-                                    <i class="fa-solid fa-sparkles mr-1.5 text-yellow-600 dark:text-yellow-400"></i>
-                                    Yapay Zeka Destekli
-                                </span>
-                                <div class="text-base font-bold text-gray-900 dark:text-white mb-1">Canlı Destek</div>
-                                <div class="text-sm text-gray-700 dark:text-gray-300">
-                                    <i class="fa-solid fa-comments mr-1"></i> Sohbete Başla
-                                </div>
+                        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                            <i class="fa-solid fa-robot text-white text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-gray-900 dark:text-white text-xs font-bold rounded-full mb-2 italic border border-cyan-300 dark:border-cyan-600">
+                                <i class="fa-solid fa-sparkles text-yellow-600 dark:text-yellow-400"></i>
+                                Yapay Zeka
+                            </span>
+                            <div class="text-base font-bold text-gray-900 dark:text-white mb-1">Canlı Destek</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                                <i class="fa-solid fa-comments mr-1"></i> Sohbete Başla
                             </div>
                         </div>
                     </div>
@@ -1342,22 +1338,116 @@
 @push('scripts')
     <script src="{{ asset('assets/js/themes/ixtif/shop-product-show.js') }}"></script>
     <script>
-        // TOC gizleme: trust-signals bölümüne gelince TOC kaybolsun
+        // TOC Bar Scroll Behavior: Initially relative, becomes fixed after hero section
         document.addEventListener('DOMContentLoaded', function() {
             const tocBar = document.getElementById('toc-bar');
+            const tocPlaceholder = document.getElementById('toc-placeholder');
             const trustSignals = document.getElementById('trust-signals');
+            const heroSection = document.getElementById('hero-section');
 
-            if (tocBar && trustSignals) {
+            if (!tocBar) return;
+
+            // 🚨 CRITICAL: İlk yüklemede TOC'yi temizle (cache sorunlarını önle)
+            tocBar.style.position = 'relative';
+            tocBar.style.top = '0';
+            tocBar.style.left = '';
+            tocBar.style.right = '';
+            tocBar.style.transform = '';
+            tocBar.style.opacity = '';
+
+            // Header yüksekliği - Responsive
+            const getHeaderHeight = () => {
+                return window.innerWidth >= 1024 ? 84 : 56; // Desktop: 84px, Mobile: 56px
+            };
+
+            let mainNavHeight = getHeaderHeight();
+
+            // Window resize'da header yüksekliğini güncelle
+            window.addEventListener('resize', () => {
+                mainNavHeight = getHeaderHeight();
+            });
+
+            // TOC'nin sayfa başından mesafesini al (ilk pozisyonu)
+            let tocOffsetTop = tocBar.offsetTop;
+            let tocHeight = tocBar.offsetHeight;
+
+            // Scroll kontrolü
+            let isTocFixed = false;
+            let isTocHidden = false;
+
+            function handleTocScroll() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const tocContainer = document.getElementById('toc-container');
+
+                // TOC'nin pozisyonunu güncelle (eğer relative modda değişirse)
+                if (!isTocFixed) {
+                    tocOffsetTop = tocBar.offsetTop;
+                    tocHeight = tocBar.offsetHeight;
+                }
+
+                // Scroll TOC'ye ulaştığında (main nav altına) fixed yap - LAYOUT SHIFT ÖNLEME
+                const threshold = tocOffsetTop - mainNavHeight;
+
+                if (scrollTop >= threshold && !isTocFixed && !isTocHidden) {
+                    // LAYOUT SHIFT ÖNLEME: Placeholder göster (TOC'nin yerini tut)
+                    tocPlaceholder.style.display = 'block';
+                    tocPlaceholder.style.height = tocHeight + 'px';
+
+                    // TOC'yi fixed yap
+                    tocBar.style.position = 'fixed';
+                    tocBar.style.top = mainNavHeight + 'px';
+                    tocBar.style.left = '0';
+                    tocBar.style.right = '0';
+                    tocBar.style.zIndex = '40';
+
+                    // Padding küçült (compact mode)
+                    if (tocContainer) {
+                        tocContainer.style.paddingTop = '0.375rem'; // py-1.5
+                        tocContainer.style.paddingBottom = '0.375rem';
+                    }
+                    isTocFixed = true;
+                } else if (scrollTop < threshold && isTocFixed) {
+                    // Placeholder gizle
+                    tocPlaceholder.style.display = 'none';
+
+                    // TOC'yi relative yap
+                    tocBar.style.position = 'relative';
+                    tocBar.style.top = 'auto'; // EXPLICIT: auto yap (cache sorunlarını önler)
+                    tocBar.style.left = 'auto';
+                    tocBar.style.right = 'auto';
+
+                    // Padding normal
+                    if (tocContainer) {
+                        tocContainer.style.paddingTop = '0.5rem'; // py-2
+                        tocContainer.style.paddingBottom = '0.5rem';
+                    }
+                    isTocFixed = false;
+                }
+            }
+
+            // Scroll event
+            window.addEventListener('scroll', handleTocScroll);
+
+            // NOT: Initial check KALDIRILDI - Sayfa ilk yüklendiğinde TOC relative olmalı,
+            // scroll başladığında otomatik fixed olacak (layout shift önlenir)
+
+            // Trust signals gizleme - TOC kaybolsun
+            if (trustSignals) {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             // Trust signals görünürde - TOC'yi gizle
                             tocBar.style.transform = 'translateY(-100%)';
                             tocBar.style.opacity = '0';
+                            isTocHidden = true;
                         } else {
                             // Trust signals görünmüyor - TOC'yi göster
-                            tocBar.style.transform = 'translateY(0)';
-                            tocBar.style.opacity = '1';
+                            // SADECE fixed modda transform/opacity ekle (initial state'i korur)
+                            if (isTocFixed && isTocHidden) {
+                                tocBar.style.transform = 'translateY(0)';
+                                tocBar.style.opacity = '1';
+                            }
+                            isTocHidden = false;
                         }
                     });
                 }, {
@@ -1367,7 +1457,6 @@
 
                 observer.observe(trustSignals);
             }
-
         });
     </script>
 @endpush

@@ -46,6 +46,7 @@
     .letter-x {
         animation: letterFadeIn 3s ease-in-out infinite;
     }
+
 </style>
 @endpush
 
@@ -53,12 +54,6 @@
 @if(isset($is_homepage) && $is_homepage)
     <div x-data="homepage()" x-init="init()">
         <section class="min-h-screen flex items-center relative overflow-hidden -mt-[72px] pt-[72px]">
-        <!-- Animated Background Blobs -->
-        <div class="absolute inset-0 opacity-30">
-            <div class="absolute top-20 -left-20 w-96 h-96 bg-white/10 dark:bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-20 -right-20 w-96 h-96 bg-white/10 dark:bg-white/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-        </div>
-
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Content -->
@@ -162,19 +157,11 @@
 
     <!-- Categories Section -->
     <section class="w-full py-20 relative overflow-hidden">
-
-        <div class="absolute inset-0">
-            <div class="absolute top-20 left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-20 right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1.5s;"></div>
-        </div>
-
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Category Cards Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Forklift -->
-                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500
-                    bg-blue-50/70 dark:bg-slate-700/50
-                    border border-blue-100/50 dark:border-slate-600/30">
+                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500 border border-white/10 dark:border-white/10 hover:border-white/20 dark:hover:border-white/20">
                     <div class="relative h-full flex flex-col justify-end p-8">
                         <i class="fa-solid fa-warehouse text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Forklift</h3>
@@ -187,9 +174,7 @@
                 </a>
 
                 <!-- Transpalet -->
-                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500
-                    bg-blue-50/70 dark:bg-slate-700/50
-                    border border-blue-100/50 dark:border-slate-600/30">
+                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500 border border-white/10 dark:border-white/10 hover:border-white/20 dark:hover:border-white/20">
                     <div class="relative h-full flex flex-col justify-end p-8">
                         <i class="fa-solid fa-dolly text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Transpalet</h3>
@@ -202,9 +187,7 @@
                 </a>
 
                 <!-- İstif Makinesi -->
-                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500
-                    bg-blue-50/70 dark:bg-slate-700/50
-                    border border-blue-100/50 dark:border-slate-600/30">
+                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500 border border-white/10 dark:border-white/10 hover:border-white/20 dark:hover:border-white/20">
                     <div class="relative h-full flex flex-col justify-end p-8">
                         <i class="fa-solid fa-boxes-stacked text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">İstif Makinesi</h3>
@@ -217,9 +200,7 @@
                 </a>
 
                 <!-- Reach Truck -->
-                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500
-                    bg-blue-50/70 dark:bg-slate-700/50
-                    border border-blue-100/50 dark:border-slate-600/30">
+                <a href="{{ route('shop.index') }}" class="group relative h-80 rounded-3xl overflow-hidden transition-all duration-500 border border-white/10 dark:border-white/10 hover:border-white/20 dark:hover:border-white/20">
                     <div class="relative h-full flex flex-col justify-end p-8">
                         <i class="fa-solid fa-truck-ramp-box text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
                         <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Reach Truck</h3>
@@ -264,9 +245,9 @@
                         $productUrl = route('shop.show.by-id', $product->id);
                     }
                 @endphp
-                <div class="group bg-white/5 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:border-white/40 transition-all cursor-pointer">
+                <div class="group rounded-2xl p-6 border border-white/10 dark:border-white/10 hover:border-white/20 dark:hover:border-white/20 transition-all cursor-pointer">
                     <!-- Product Image -->
-                    <a href="{{ $productUrl }}" class="block aspect-square bg-white/5 dark:bg-white/5 rounded-xl flex items-center justify-center mb-4 overflow-hidden">
+                    <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center mb-4 overflow-hidden bg-white/5 dark:bg-white/5">
                         @if($productImage)
                             <img src="{{ $productImage }}"
                                  alt="{{ $productTitle }}"
@@ -417,51 +398,93 @@
         </div>
     </div>
 
-    <!-- Service Categories Section -->
+    <!-- Service Categories Section - V2 -->
     <section class="py-20">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
                 <!-- Satın Alma -->
-                <a href="{{ route('shop.index') }}" class="group bg-blue-50/70 dark:bg-slate-700/50 border border-blue-100/50 dark:border-slate-600/30 rounded-3xl p-8 text-center transition-all hover:bg-blue-100/70 dark:hover:bg-slate-700/70">
-                    <i class="fa-solid fa-shopping-cart text-5xl text-blue-600 dark:text-blue-400 mb-4 transition-all"></i>
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-1 transition-colors">Satın Alma</h3>
-                </a>
+                <div class="relative mx-4">
+                    <!-- Gradient Border Right (Ayıraç - Tıklanamaz) -->
+                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent pointer-events-none"></div>
+
+                    <a href="{{ route('shop.index') }}" class="group block">
+                        <div class="p-8 pr-4 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                <i class="fa-solid fa-shopping-cart text-4xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Satın Alma</h3>
+                        </div>
+                    </a>
+                </div>
 
                 <!-- Kiralama -->
-                <a href="#" class="group bg-yellow-50/70 dark:bg-slate-700/50 border border-yellow-100/50 dark:border-slate-600/30 rounded-3xl p-8 text-center transition-all hover:bg-yellow-100/70 dark:hover:bg-slate-700/70">
-                    <i class="fa-solid fa-calendar-days text-5xl text-yellow-600 dark:text-yellow-400 mb-4 transition-all"></i>
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-1 transition-colors">Kiralama</h3>
-                </a>
+                <div class="relative mx-4">
+                    <!-- Gradient Border Right (Ayıraç - Tıklanamaz) -->
+                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-yellow-500 dark:via-yellow-400 to-transparent pointer-events-none"></div>
+
+                    <a href="#" class="group block">
+                        <div class="p-8 pr-4 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                <i class="fa-solid fa-calendar-days text-4xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Kiralama</h3>
+                        </div>
+                    </a>
+                </div>
 
                 <!-- İkinci El -->
-                <a href="#" class="group bg-green-50/70 dark:bg-slate-700/50 border border-green-100/50 dark:border-slate-600/30 rounded-3xl p-8 text-center transition-all hover:bg-green-100/70 dark:hover:bg-slate-700/70">
-                    <i class="fa-solid fa-recycle text-5xl text-green-600 dark:text-green-400 mb-4 transition-all"></i>
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-1 transition-colors">İkinci El</h3>
-                </a>
+                <div class="relative mx-4">
+                    <!-- Gradient Border Right (Ayıraç - Tıklanamaz) -->
+                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-green-500 dark:via-green-400 to-transparent pointer-events-none"></div>
+
+                    <a href="#" class="group block">
+                        <div class="p-8 pr-4 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                <i class="fa-solid fa-recycle text-4xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">İkinci El</h3>
+                        </div>
+                    </a>
+                </div>
 
                 <!-- Yedek Parça -->
-                <a href="#" class="group bg-orange-50/70 dark:bg-slate-700/50 border border-orange-100/50 dark:border-slate-600/30 rounded-3xl p-8 text-center transition-all hover:bg-orange-100/70 dark:hover:bg-slate-700/70">
-                    <i class="fa-solid fa-gears text-5xl text-orange-600 dark:text-orange-400 mb-4 transition-all"></i>
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-1 transition-colors">Yedek Parça</h3>
-                </a>
+                <div class="relative mx-4">
+                    <!-- Gradient Border Right (Ayıraç - Tıklanamaz) -->
+                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-orange-500 dark:via-orange-400 to-transparent pointer-events-none"></div>
+
+                    <a href="#" class="group block">
+                        <div class="p-8 pr-4 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                <i class="fa-solid fa-gears text-4xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Yedek Parça</h3>
+                        </div>
+                    </a>
+                </div>
 
                 <!-- Teknik Servis -->
-                <a href="#" class="group bg-purple-50/70 dark:bg-slate-700/50 border border-purple-100/50 dark:border-slate-600/30 rounded-3xl p-8 text-center transition-all hover:bg-purple-100/70 dark:hover:bg-slate-700/70">
-                    <i class="fa-solid fa-wrench text-5xl text-purple-600 dark:text-purple-400 mb-4 transition-all"></i>
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-1 transition-colors">Teknik Servis</h3>
-                </a>
+                <div class="relative mx-4">
+                    <a href="#" class="group block">
+                        <div class="p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg">
+                            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                <i class="fa-solid fa-wrench text-4xl text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Teknik Servis</h3>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact Section - V3 Glassmorphism -->
     <section class="py-20">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Contact Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Phone -->
-                <a href="tel:02167553555" class="bg-blue-50/70 dark:bg-slate-700/50 border border-blue-100/50 dark:border-slate-600/30 rounded-3xl p-8 transition-all text-center group hover:bg-blue-100/70 dark:hover:bg-slate-700/70">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <a href="tel:02167553555" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl p-8 hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                         <i class="fa-solid fa-phone text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Telefon</h3>
@@ -470,8 +493,8 @@
                 </a>
 
                 <!-- WhatsApp -->
-                <a href="https://wa.me/905010056758" target="_blank" class="bg-green-50/70 dark:bg-slate-700/50 border border-green-100/50 dark:border-slate-600/30 rounded-3xl p-8 transition-all text-center group hover:bg-green-100/70 dark:hover:bg-slate-700/70">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <a href="https://wa.me/905010056758" target="_blank" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl p-8 hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                         <i class="fa-brands fa-whatsapp text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">WhatsApp</h3>
@@ -480,8 +503,8 @@
                 </a>
 
                 <!-- Email -->
-                <a href="mailto:info@ixtif.com" class="bg-purple-50/70 dark:bg-slate-700/50 border border-purple-100/50 dark:border-slate-600/30 rounded-3xl p-8 transition-all text-center group hover:bg-purple-100/70 dark:hover:bg-slate-700/70">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <a href="mailto:info@ixtif.com" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl p-8 hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                         <i class="fa-solid fa-envelope text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">E-posta</h3>
@@ -490,7 +513,7 @@
                 </a>
 
                 <!-- Live Chat -->
-                <button onclick="if(window.$store && window.$store.aiChat) { window.$store.aiChat.openFloating(); } else if(window.openAIChat) { window.openAIChat(); }" class="bg-cyan-50/70 dark:bg-slate-700/50 border border-cyan-100/50 dark:border-slate-600/30 rounded-3xl p-8 transition-all text-center group relative hover:bg-cyan-100/70 dark:hover:bg-slate-700/70">
+                <button onclick="if(window.$store && window.$store.aiChat) { window.$store.aiChat.openFloating(); } else if(window.openAIChat) { window.openAIChat(); }" class="relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl p-8 hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 text-center group">
                     <!-- AI Badge -->
                     <div class="absolute top-4 right-4">
                         <span class="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-gray-900 dark:text-white text-xs font-bold rounded-full italic border border-cyan-300 dark:border-cyan-600">
@@ -498,7 +521,7 @@
                             Yapay Zeka
                         </span>
                     </div>
-                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                         <i class="fa-solid fa-robot text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Canlı Destek</h3>

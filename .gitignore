@@ -65,3 +65,12 @@ SUNUCU_BILGILERI.txt
 
 # Readme/Döküman klasörü (local development)
 /readme
+
+# Temporary analysis files
+background-analysis.txt
+unique-gradients.txt
+
+# Design test files
+public/ixtif-designs/composer.json
+public/ixtif-designs/composer.lock
+public/ixtif-designs/vendor/

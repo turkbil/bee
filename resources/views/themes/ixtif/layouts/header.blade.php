@@ -286,8 +286,8 @@
 </head>
 
 <body class="font-sans antialiased min-h-screen
-    bg-gradient-to-br from-slate-50 via-white to-gray-50
-    dark:bg-gradient-to-br dark:from-indigo-900 dark:via-slate-900 dark:to-indigo-900
+    bg-gradient-to-br from-gray-50 via-white to-blue-50/50
+    dark:bg-gradient-to-br dark:from-gray-950 dark:via-slate-900 dark:to-blue-950
     text-gray-900 dark:text-gray-100
     transition-all duration-500 flex flex-col">
 
@@ -403,7 +403,7 @@
                                  x-transition:leave="transition ease-in duration-75"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
-                                 class="dropdown-content absolute top-full mt-2 w-44 bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg rounded-lg border border-gray-300 dark:border-white/20 py-1 z-50">
+                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
 
                                 @if(count($languageSwitcherLinks) > 0)
                                     @php
@@ -423,7 +423,7 @@
 
                                     @foreach($languageSwitcherLinks as $locale => $link)
                                         <a href="{{ $link['url'] }}"
-                                           class="w-full flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 {{ $link['active'] ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : '' }}">
+                                           class="w-full flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 {{ $link['active'] ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : '' }}">
                                             <span class="mr-2 text-base">{{ $languageData[$locale]['flag'] ?? '🌐' }}</span>
                                             <span class="flex-1 text-left">{{ $languageData[$locale]['name'] ?? $link['name'] }}</span>
                                             @if($link['active'])
@@ -550,11 +550,11 @@
                                         <div x-show="open"
                                              @click.away="open = false"
                                              x-transition
-                                             class="dropdown-content absolute top-full mt-2 w-48 bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg rounded-lg border border-gray-300 dark:border-white/20 py-2 z-50">
+                                             class="dropdown-content absolute top-full mt-2 w-48 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
                                             @foreach($menuItem['children'] as $child)
                                                 <a href="{{ $child['url'] }}"
                                                    {{ $child['target'] === '_blank' ? 'target="_blank"' : '' }}
-                                                   class="block px-4 py-2 text-sm {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400' }}">
+                                                   class="block px-4 py-2 text-sm border-b border-gray-200 dark:border-gray-700 last:border-b-0 {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400' }}">
                                                     @if($child['icon'])
                                                         <i class="{{ $child['icon'] }} mr-2"></i>
                                                     @endif

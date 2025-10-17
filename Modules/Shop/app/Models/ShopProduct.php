@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Spatie\MediaLibrary\HasMedia;
 
 class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
 {
     use Sluggable;
+    use Searchable;
     use HasTranslations;
     use HasSeo;
     use HasFactory;
@@ -149,6 +151,70 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
     public function sluggable(): array
     {
         return [];
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     * Scout - Meilisearch integration
+     */
+    public function toSearchableArray(): array
+    {
+        $locale = app()->getLocale();
+
+        return [
+            'product_id' => $this->product_id,
+            'title' => $this->getTranslated('title', $locale) ?? ($this->title[$locale] ?? ''),
+            'slug' => $this->getTranslated('slug', $locale) ?? ($this->slug[$locale] ?? ''),
+            'sku' => $this->sku ?? '',
+            'model_number' => $this->model_number ?? '',
+            'description' => strip_tags($this->getTranslated('short_description', $locale) ?? ($this->short_description[$locale] ?? '')),
+            'body' => strip_tags($this->getTranslated('body', $locale) ?? ($this->body[$locale] ?? '')),
+            'category_id' => $this->category_id,
+            'brand_id' => $this->brand_id,
+            'base_price' => (float) ($this->base_price ?? 0),
+            'is_active' => (bool) $this->is_active,
+            'is_featured' => (bool) $this->is_featured,
+            'tags' => $this->tags ?? [],
+            // Custom searchable fields
+            'category_name' => $this->category ? ($this->category->getTranslated('title', $locale) ?? '') : '',
+            'brand_name' => $this->brand ? ($this->brand->getTranslated('name', $locale) ?? $this->brand->name) : '',
+        ];
+    }
+
+    /**
+     * Get the index name for the model.
+     * Multi-tenant: Her tenant'ın kendi index'i
+     */
+    public function searchableAs(): string
+    {
+        if (tenancy()->initialized) {
+            return 'shop_products_tenant_' . tenant('id');
+        }
+        return 'shop_products';
+    }
+
+    /**
+     * Modify the query used to retrieve models when making all searchable.
+     */
+    protected function makeAllSearchableUsing($query)
+    {
+        return $query->with(['category', 'brand']);
+    }
+
+    /**
+     * Get the value used to index the model.
+     */
+    public function getScoutKey(): mixed
+    {
+        return $this->product_id;
+    }
+
+    /**
+     * Get the key name used to index the model.
+     */
+    public function getScoutKeyName(): string
+    {
+        return 'product_id';
     }
 
     public function scopeActive(Builder $query): Builder

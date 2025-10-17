@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '78500c29767c21e92f432ef18bea6d789920e601',
+        'reference' => '7c2694079c0946a5dd515b5d7d38558af4063ec7',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -316,6 +316,15 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'http-interop/http-factory-guzzle' => array(
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
+            'reference' => '8f06e92b95405216b237521cc64c804dd44c4a81',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../http-interop/http-factory-guzzle',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'illuminate/auth' => array(
             'dev_requirement' => false,
             'replaced' => array(
@@ -616,7 +625,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '78500c29767c21e92f432ef18bea6d789920e601',
+            'reference' => '7c2694079c0946a5dd515b5d7d38558af4063ec7',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -673,6 +682,15 @@
             'reference' => 'fd6df4f79f48a72992e8d29a9c0ee25422a0d677',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laravel/sanctum',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'laravel/scout' => array(
+            'pretty_version' => 'v10.20.0',
+            'version' => '10.20.0.0',
+            'reference' => 'a04d7a8eb27b66c8b7edb7e0c6a078e9e78c4f5b',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/scout',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -816,6 +834,15 @@
             'replaced' => array(
                 0 => 'v2.2.4',
             ),
+        ),
+        'meilisearch/meilisearch-php' => array(
+            'pretty_version' => 'v1.16.1',
+            'version' => '1.16.1.0',
+            'reference' => 'f9f63e0e7d12ffaae54f7317fa8f4f4dfa8ae7b6',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../meilisearch/meilisearch-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'mockery/mockery' => array(
             'pretty_version' => '1.6.12',
@@ -1171,6 +1198,7 @@
             'provided' => array(
                 0 => '*',
                 1 => '1.0',
+                2 => '^1.0',
             ),
         ),
         'psr/http-message' => array(
@@ -1802,6 +1830,15 @@
             'reference' => '0cc9dd0f17f61d8131e7df6b84bd344899fe2608',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-php80',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'symfony/polyfill-php81' => array(
+            'pretty_version' => 'v1.33.0',
+            'version' => '1.33.0.0',
+            'reference' => '4a4cfc2d253c21a5ad0e53071df248ed48c6ce5c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/polyfill-php81',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

@@ -147,6 +147,17 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
 
     protected array $mediaConfig = [];
 
+    /**
+     * Boot the model
+     *
+     * NOTE: Event listeners moved to ProductObserver
+     * @see \App\Observers\ProductObserver
+     */
+    protected static function booted(): void
+    {
+        parent::booted();
+    }
+
     public function getIdAttribute(): int
     {
         return (int) $this->product_id;

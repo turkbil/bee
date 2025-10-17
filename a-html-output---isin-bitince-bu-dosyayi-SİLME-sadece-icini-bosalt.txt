@@ -1,0 +1,480 @@
+<div x-show="chat.floatingOpen" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95" :style="{
+            height: (expanded || chat.hasConversation) ? '600px' : '420px',
+            transition: 'height 0.4s ease-in-out',
+            maxHeight: 'calc(100vh - 120px)'
+        }" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700" style="font-family: Roboto, sans-serif !important; height: 600px; transition: height 0.4s ease-in-out; max-height: calc(-120px + 100vh);">
+        
+        <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white px-6 py-4 flex items-center justify-between" style="font-family: Roboto, sans-serif !important;">
+            <div class="flex items-center gap-3" style="font-family: Roboto, sans-serif !important;">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm" style="font-family: Roboto, sans-serif !important;">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" style="font-family: Roboto, sans-serif !important;">
+                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" style="font-family: Roboto, sans-serif !important;"></path>
+                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" style="font-family: Roboto, sans-serif !important;"></path>
+                    </svg>
+                </div>
+                <div style="font-family: Roboto, sans-serif !important;">
+                    <h3 class="font-semibold text-lg" x-text="chat.assistantName" style="font-family: Roboto, sans-serif !important;">iXtif Yapay Zeka Asistanı</h3>
+                    <div class="flex items-center gap-1.5" style="font-family: Roboto, sans-serif !important;">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse" style="font-family: Roboto, sans-serif !important;"></span>
+                        <p class="text-xs text-white/80" style="font-family: Roboto, sans-serif !important;">Online</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2" style="font-family: Roboto, sans-serif !important;">
+                
+                <button @click="chat.closeFloating()" class="p-2 hover:bg-white/10 rounded-lg transition" title="Kapat" style="font-family: Roboto, sans-serif !important;">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="font-family: Roboto, sans-serif !important;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" style="font-family: Roboto, sans-serif !important;"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        
+        <div x-show="!chat.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700" x-data="{
+                suggestions: [
+                    'Ürün özellikleri',
+                    'Stok durumu',
+                    'Fiyat bilgisi',
+                    'Hızlı öneri',
+                    'Karşılaştırma',
+                    'En iyiler'
+                ],
+                currentSuggestion: 0,
+                init() {
+                    setInterval(() =&gt; {
+                        this.currentSuggestion = (this.currentSuggestion + 1) % this.suggestions.length;
+                    }, 2000);
+                }
+            }" style="font-family: Roboto, sans-serif !important; display: none;">
+            <div class="text-center" style="font-family: Roboto, sans-serif !important;">
+                
+                <div class="relative inline-block mb-4" style="font-family: Roboto, sans-serif !important;">
+                    
+                    <div class="absolute inset-0 flex items-center justify-center" style="font-family: Roboto, sans-serif !important;">
+                        <div class="w-20 h-20 bg-blue-400 rounded-full opacity-20 animate-ping-slow" style="font-family: Roboto, sans-serif !important;"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center" style="font-family: Roboto, sans-serif !important;">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full opacity-30 animate-pulse-slow" style="font-family: Roboto, sans-serif !important;"></div>
+                    </div>
+
+                    
+                    <div class="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full shadow-lg animate-bounce-subtle" style="font-family: Roboto, sans-serif !important;">
+                        <svg class="w-8 h-8 text-white animate-wiggle-subtle" fill="currentColor" viewBox="0 0 20 20" style="font-family: Roboto, sans-serif !important;">
+                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" style="font-family: Roboto, sans-serif !important;"></path>
+                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" style="font-family: Roboto, sans-serif !important;"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                
+                <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-2 animate-fade-in-up" style="font-family: Roboto, sans-serif !important;">
+                    Merhaba! 👋
+                </h4>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 animate-fade-in-up animation-delay-100" style="font-family: Roboto, sans-serif !important;">
+                    Size nasıl yardımcı olabilirim?
+                </p>
+
+                
+                <div class="h-6 flex items-center justify-center" style="font-family: Roboto, sans-serif !important;">
+                    <p x-data="{
+                            currentText: 'Ürün özellikleri',
+                            fading: false,
+                            suggestionsList: [
+                                'Ürün özellikleri',
+                                'Stok durumu',
+                                'Fiyat bilgisi',
+                                'Hızlı öneri',
+                                'Karşılaştırma',
+                                'En iyiler'
+                            ],
+                            currentIndex: 0,
+                            init() {
+                                setInterval(() =&gt; {
+                                    // Fade out
+                                    this.fading = true;
+
+                                    // Change text after fade out completes
+                                    setTimeout(() =&gt; {
+                                        this.currentIndex = (this.currentIndex + 1) % this.suggestionsList.length;
+                                        this.currentText = this.suggestionsList[this.currentIndex];
+
+                                        // Fade in
+                                        setTimeout(() =&gt; {
+                                            this.fading = false;
+                                        }, 50);
+                                    }, 250);
+                                }, 2500);
+                            }
+                        }" :class="{ 'opacity-0': fading, 'opacity-100': !fading }" class="text-sm text-gray-600 dark:text-gray-300 text-center transition-opacity duration-250 opacity-100" x-text="currentText" style="font-family: Roboto, sans-serif !important;">En iyiler</p>
+                </div>
+            </div>
+        </div>
+
+        
+        <div x-show="chat.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4" data-ai-chat-messages="" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900" style="font-family: Roboto, sans-serif !important;">
+            
+            <template x-for="(msg, index) in chat.messages" :key="index" style="font-family: Roboto, sans-serif !important;">
+                <div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content" x-html="window.aiChatRenderMarkdown(msg.content)"></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })"></p>
+                    </div>
+                </div>
+            </template><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">merhaba</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:02</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Merhaba! Size nasıl yardımcı olabilirim? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:02</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">merhaba</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:08</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">Size nasıl yardımcı olabilirim? 😊</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:08</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">soguk hava deposunda kullanmak üzere transpalet arıyorum</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:09</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant">İxtif olarak, soğuk hava depoları için uygun transpaletlerimiz mevcut. İşte size önerilerimiz: - <a href="/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+            <span class="no-underline">İXTİF EPT20-20ETC<ul class="space-y-1 my-2 pl-5 list-disc">
+<li class="text-gray-800 dark:text-gray-200 leading-snug">2.</li>
+</ul>
+</span></a><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed"><a href="/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">Ton Soğuk Depo Transpalet
+            <svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        </a> - <a href="/shop/ixtif-ept20-20etc-560-mm-catal-araligi" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+            <span class="no-underline">İXTİF EPT20-20ETC - 560 mm Çatal Aralığı</span>
+            <svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        </a> - <a href="/shop/ixtif-ept20-20etc-685-mm-catal-araligi" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+            <span class="no-underline">İXTİF EPT20-20ETC - 685 mm Çatal Aralığı</span>
+            <svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        </a> Bu modeller, soğuk hava koşullarında verimli çalışmak üzere tasarlanmıştır. Daha fazla bilgi veya fiyat teklifi için bizimle iletişime geçebilirsiniz.</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:09</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-end">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">dar alanlarda hangisini daha iyi kullanabilirim. böyle de bir transpalet lazım</p></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:10</p>
+                    </div>
+                </div><div :class="{
+                        'flex justify-end': msg.role === 'user',
+                        'flex justify-start': msg.role !== 'user'
+                    }" class="flex justify-start">
+                    <div :class="{
+                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
+                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
+                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
+                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
+                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <div :class="{
+                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
+                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
+                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
+                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant">Dar alanlarda manevra kabiliyeti yüksek transpaletler tercih edilmelidir. İxtif olarak, size bu tür alanlarda kullanabileceğiniz uygun transpaletler öneriyorum:<ul class="space-y-1 my-2 pl-5 list-disc">
+<li class="text-gray-800 dark:text-gray-200 leading-snug"><a href="/shop/ixtif-epl153-15-ton-li-ion-elektrikli-transpalet" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+            <span class="no-underline">İXTİF EPL153 - 1.5 Ton Li-Ion Elektrikli Transpalet</span>
+            <svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        </a></li>
+<li class="text-gray-800 dark:text-gray-200 leading-snug">Kompakt tasarımı ile dar alanlarda rahatça kullanılabilir. - <a href="/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+            <span class="no-underline">İXTİF EPT20-20ETC</span></a></li><a href="/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+<li class="text-gray-800 dark:text-gray-200 leading-snug">2.</li>
+</a></ul><a href="/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+Ton Soğuk Depo Transpalet
+            <svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+        </a><ul class="space-y-1 my-2 pl-5 list-disc">
+<li class="text-gray-800 dark:text-gray-200 leading-snug">Soğuk hava depoları için uygundur ve dar alanlarda etkili manevra kabiliyeti sunar. Bu modeller, özellikle dar alanlarda kullanım için idealdir. Daha fazla bilgi veya detaylı bir görüşme için bizimle iletişime geçebilirsiniz.</li>
+</ul></div>
+                        <p :class="{
+                                'text-white opacity-80': msg.role === 'user',
+                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
+                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
+                                'text-red-700 dark:text-red-300': msg.isError
+                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">00:10</p>
+                    </div>
+                </div>
+
+            
+            <div x-show="chat.isTyping" class="flex justify-start" style="font-family: Roboto, sans-serif !important; display: none;">
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm" style="font-family: Roboto, sans-serif !important;">
+                    <div class="flex gap-1" style="font-family: Roboto, sans-serif !important;">
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms; font-family: Roboto, sans-serif !important;"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 150ms; font-family: Roboto, sans-serif !important;"></span>
+                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 300ms; font-family: Roboto, sans-serif !important;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700" style="font-family: Roboto, sans-serif !important;">
+            
+            <div x-show="chat.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" style="font-family: Roboto, sans-serif !important; display: none;">
+                <span x-text="chat.error" style="font-family: Roboto, sans-serif !important;"></span>
+            </div>
+
+            
+            <form @submit.prevent="submitMessage()" class="flex gap-2" x-data="{ inputFocused: false }" style="font-family: Roboto, sans-serif !important;">
+                <div class="flex-1 relative" style="font-family: Roboto, sans-serif !important;">
+                    
+                    <div x-show="inputFocused &amp;&amp; !chat.isLoading" class="absolute inset-0 bg-blue-400 rounded-full opacity-20 animate-pulse-glow pointer-events-none" style="font-family: Roboto, sans-serif !important; display: none;"></div>
+
+                    <input type="text" x-model="message" @focus="expanded = true; inputFocused = true" @blur="inputFocused = false" placeholder="Mesajınızı yazın..." :disabled="chat.isLoading" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-all duration-300 relative z-10" :class="{ 'animate-input-invite': !expanded &amp;&amp; !chat.hasConversation }" autocomplete="off" style="font-family: Roboto, sans-serif !important;">
+                </div>
+                <button type="submit" :disabled="!message.trim() || chat.isLoading" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors shadow-sm" style="font-family: Roboto, sans-serif !important;" disabled="disabled">
+                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="font-family: Roboto, sans-serif !important;">
+                        <path x-show="!chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" style="font-family: Roboto, sans-serif !important;"></path>
+                        <path x-show="chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" style="font-family: Roboto, sans-serif !important; display: none;"></path>
+                    </svg>
+                </button>
+            </form>
+
+            
+            <div class="mt-2" style="font-family: Roboto, sans-serif !important;">
+                <p style="font-size: 11px !important; line-height: 1.4 !important; opacity: 0.9 !important; font-family: Roboto, sans-serif !important;" class="text-gray-800 dark:text-white">
+                    Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
+                </p>
+
+                
+                <button @click="if(confirm('Database + localStorage temizlenecek. Emin misiniz?')) {
+                        fetch('/api/ai/v1/conversation/' + chat.conversationId, { method: 'DELETE' })
+                            .then(() =&gt; {
+                                chat.clearConversation();
+                                alert('✅ Konuşma database\'den silindi');
+                            })
+                            .catch(err =&gt; alert('❌ Hata: ' + err));
+                    }" class="text-xs text-red-400 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400 opacity-20 hover:opacity-100 transition absolute right-2 bottom-1" title="[ADMIN] Clear DB + Cache" x-show="chat.conversationId" style="font-family: Roboto, sans-serif !important;">
+                    🗑️
+                </button>
+            </div>
+        </div>
+    </div>

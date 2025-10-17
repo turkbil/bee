@@ -347,10 +347,10 @@
 
                             <!-- Thumbnails -->
                             <div class="grid grid-cols-4 gap-3" x-show="selectedProduct && selectedProduct.images && selectedProduct.images.length > 1">
-                                <template x-for="(image, index) in selectedProduct.images" :key="index">
+                                <template x-for="(image, index) in (selectedProduct?.images || [])" :key="index">
                                     <button @click="currentImage = index"
                                             class="aspect-square bg-gray-100 dark:bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden transition-all"
-                                            :class="currentImage === index ? 'ring-2 ring-blue-500' : 'opacity-60 hover:opacity-100'">
+                                            :class="currentImage === index ? 'ring-2 ring-2-blue-500' : 'opacity-60 hover:opacity-100'">
                                         <img :src="image" :alt="'Thumbnail ' + (index + 1)" class="w-full h-full object-cover">
                                     </button>
                                 </template>

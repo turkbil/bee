@@ -99,6 +99,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Livewire pagination views are published and customized in resources/views/vendor/livewire/
 
+        // Register Model Observers - Automatic Embedding Generation
+        $this->registerModelObservers();
+
         // Manual module translations registration
         $this->loadModuleTranslations();
 
@@ -247,9 +250,18 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register Progress Circle Component
         Blade::component('progress-circle', \App\View\Components\ProgressCircle::class);
-        
+
         // Register SEO Meta Component
         Blade::component('seo-meta', \App\View\Components\SeoMeta::class);
+    }
+
+    /**
+     * Register Model Observers for automatic processes
+     */
+    protected function registerModelObservers(): void
+    {
+        // Shop Product Observer - Automatic embedding generation
+        \Modules\Shop\App\Models\ShopProduct::observe(\App\Observers\ProductObserver::class);
     }
     
     /**

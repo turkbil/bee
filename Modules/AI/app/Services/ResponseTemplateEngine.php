@@ -147,6 +147,43 @@ class ResponseTemplateEngine
     ];
 
     /**
+     * 📝 Format types - Format türleri
+     */
+    public const FORMAT_TYPES = [
+        'corporate'   => 'Kurumsal format',
+        'product'     => 'Ürün format',
+        'creative'    => 'Yaratıcı format',
+        'technical'   => 'Teknik format',
+        'mixed'       => 'Karma format'
+    ];
+
+    /**
+     * 🎯 Feature template mappings - Özellik bazlı şablon eşlemeleri
+     */
+    public const FEATURE_TEMPLATE_MAPPINGS = [
+        'blog' => [
+            'format' => 'mixed',
+            'style' => 'friendly',
+            'default_rules' => ['no_numbering', 'use_paragraphs', 'natural_flow']
+        ],
+        'seo' => [
+            'format' => 'technical',
+            'style' => 'professional',
+            'default_rules' => ['use_paragraphs', 'vary_structure', 'contextual_format']
+        ],
+        'kod' => [
+            'format' => 'technical',
+            'style' => 'technical',
+            'default_rules' => ['no_numbering', 'use_paragraphs']
+        ],
+        'ceviri' => [
+            'format' => 'mixed',
+            'style' => 'professional',
+            'default_rules' => ['no_numbering', 'natural_flow']
+        ]
+    ];
+
+    /**
      * 🏢 SECTOR-BASED COMPONENT PATTERNS - Sektör bazlı otomatik tema sistemi
      */
     public const SECTOR_PATTERNS = [

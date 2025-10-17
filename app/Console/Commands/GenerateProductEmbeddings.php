@@ -8,13 +8,25 @@ use App\Services\AI\EmbeddingService;
 
 class GenerateProductEmbeddings extends Command
 {
-    protected $signature = 'products:generate-embeddings {--limit=10} {--force}';
+    protected $signature = 'products:generate-embeddings {--limit=10} {--force} {--tenant=}';
     protected $description = 'Generate embeddings for products using OpenAI';
 
     public function handle(EmbeddingService $embeddingService): int
     {
         $limit = (int) $this->option('limit');
         $force = $this->option('force');
+        $tenantId = $this->option('tenant');
+
+        // Initialize tenant context if provided
+        if ($tenantId) {
+            $tenant = \App\Models\Tenant::find($tenantId);
+            if (!$tenant) {
+                $this->error("Tenant {$tenantId} not found!");
+                return self::FAILURE;
+            }
+            tenancy()->initialize($tenant);
+            $this->info("Initialized tenant: {$tenant->id}");
+        }
 
         // Get products without embeddings (or all if force)
         $query = ShopProduct::query()->where('is_active', true);

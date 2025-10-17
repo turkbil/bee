@@ -560,73 +560,38 @@ window.placeholderV4 = function(productId = null) {
 };
 
 /**
- * Markdown to HTML Converter & Enhancer for AI Chat Messages v4.0
+ * Markdown to HTML Converter & Enhancer for AI Chat Messages v5.0
  * AI artık Markdown formatında yanıt veriyor - burada HTML'e çevirip style ekliyoruz
- * Markdown format: paragraflar (boş satır), liste (- item), bold (**text**)
+ * Markdown format: paragraflar (boş satır), liste (- item, 1. item), bold (**text**)
+ *
+ * v5.0 Changelog:
+ * - ✅ Numbered list support (1. 2. 3.)
+ * - ✅ Fixed list-link nesting issues
+ * - ✅ Reduced padding for compact display
+ * - ✅ Improved processing order (links first, then lists)
  */
 window.aiChatRenderMarkdown = function(content) {
     if (!content) return '';
 
     let html = content;
 
-    // 🚀 MARKDOWN → HTML CONVERSION (AI artık Markdown kullanıyor!)
+    // 🚀 MARKDOWN → HTML CONVERSION
+    // IMPORTANT: Process in this order to prevent nested structure issues:
+    // 1. Links (preserve them)
+    // 2. Bold
+    // 3. Lists (numbered, then unordered)
+    // 4. Paragraphs
+    // 5. Element styling
 
-    // 1. Liste dönüşümü: "- item" → <ul><li>item</li></ul>
-    // IMPROVED: Hem yeni satırlardaki hem aynı satırdaki tireleri algıla
+    // ═══════════════════════════════════════════════════════════════════
+    // STEP 1: LINK PROCESSING (Process FIRST to prevent list nesting issues)
+    // ═══════════════════════════════════════════════════════════════════
 
-    // 1A. Önce aynı satırdaki yan yana tireleri yeni satırlara böl
-    // "Ürünler: - A - B - C" → "Ürünler:\n- A\n- B\n- C"
-    html = html.replace(/([.:])\s*-\s+([^-]+?)(?=\s+-\s+|\s*$)/g, function(match, punctuation, text) {
-        // İlk tire: paragraftan sonra yeni satıra
-        return punctuation + '\n- ' + text.trim();
-    });
+    // Process links BEFORE list parsing to prevent "2. **Text** [LINK]" from creating malformed HTML
+    // This ensures links are standalone elements, not wrapped inside list items
 
-    // 1B. Kalan yan yana tireleri de ayır: " - item" → "\n- item"
-    html = html.replace(/\s+-\s+([^-\n]+?)(?=\s+-|\n|$)/g, '\n- $1');
-
-    // 1C. Ardışık "- " satırlarını tespit et ve <ul> ile wrap et
-    html = html.replace(/((?:^|\n)- .+(?:\n- .+)*)/gm, function(match) {
-        // Her "- item" satırını <li>item</li>'ye çevir
-        let items = match.split('\n').filter(line => line.trim().startsWith('- '));
-        let listItems = items.map(line => {
-            let text = line.replace(/^-\s*/, '').trim();
-            return `<li>${text}</li>`;
-        }).join('\n');
-        return `<ul>\n${listItems}\n</ul>`;
-    });
-
-    // 2. Paragraf dönüşümü: Boş satırlarla ayrılmış metinleri <p> ile wrap et
-    // Önce mevcut <ul>, <ol>, link taglarını koru (placeholder kullan)
-    let preservedBlocks = [];
-    html = html.replace(/(<ul>[\s\S]*?<\/ul>|<ol>[\s\S]*?<\/ol>)/g, function(match, block) {
-        let placeholder = `___PRESERVED_BLOCK_${preservedBlocks.length}___`;
-        preservedBlocks.push(block);
-        return placeholder;
-    });
-
-    // Şimdi paragrafları <p> ile wrap et
-    // Çift newline (\n\n) ile ayrılmış blokları paragraf olarak kabul et
-    html = html.split('\n\n').map(block => {
-        block = block.trim();
-        if (!block) return '';
-        // Eğer placeholder veya HTML tag içeriyorsa dokunma
-        if (block.includes('___PRESERVED_BLOCK_') || block.match(/^<[a-z]/i)) {
-            return block;
-        }
-        // Tek satırları <p> ile wrap et
-        return `<p>${block.replace(/\n/g, '<br>')}</p>`;
-    }).join('\n');
-
-    // Preserved block'ları geri koy
-    preservedBlocks.forEach((block, index) => {
-        html = html.replace(`___PRESERVED_BLOCK_${index}___`, block);
-    });
-
-    // 🔗 LINK PROCESSING (custom format → styled HTML)
-
-    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug (PREMIUM ŞIK TASARIM!)
+    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug
     // Format: **Ürün Adı** [LINK:shop:litef-ept15] → /shop/litef-ept15
-    // ULTRA ŞIK: Gradient, hover effects, premium icons
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
 
@@ -791,6 +756,10 @@ window.aiChatRenderMarkdown = function(content) {
         </a>`;
     });
 
+    // ═══════════════════════════════════════════════════════════════════
+    // STEP 2: BOLD PROCESSING
+    // ═══════════════════════════════════════════════════════════════════
+
     // 🚨 CRITICAL: Preserve links before bold processing to prevent link splitting
     // This prevents **text** [LINK] from being split into separate elements
     let preservedLinks = [];
@@ -808,6 +777,91 @@ window.aiChatRenderMarkdown = function(content) {
     preservedLinks.forEach((link, index) => {
         html = html.replace(`___LINK_PRESERVED_${index}___`, link);
     });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // STEP 3: LIST PROCESSING (Numbered first, then Unordered)
+    // ═══════════════════════════════════════════════════════════════════
+
+    // 🔢 NUMBERED LIST: "1. item", "2. item", "3. item" → <ol><li>item</li></ol>
+    // CRITICAL FIX: This was missing, causing numbers to show as raw text like "2."
+    //
+    // Pattern matches:
+    // - "1. Item text" or "1) Item text"
+    // - Consecutive numbered items (multi-line)
+    // - Numbers can be 1-999
+    //
+    // Example input:
+    //   1. İXTİF EPT15-15ES ___LINK_PRESERVED_0___
+    //   2. İXTİF EPT20-20ETC ___LINK_PRESERVED_1___
+    //
+    // Example output:
+    //   <ol>
+    //   <li>İXTİF EPT15-15ES ___LINK_PRESERVED_0___</li>
+    //   <li>İXTİF EPT20-20ETC ___LINK_PRESERVED_1___</li>
+    //   </ol>
+    html = html.replace(/((?:^|\n)\d+[.)]\s+.+(?:\n\d+[.)]\s+.+)*)/gm, function(match) {
+        // Split by newlines and filter lines that start with number + period/paren
+        let items = match.split('\n').filter(line => /^\d+[.)]\s+/.test(line.trim()));
+        let listItems = items.map(line => {
+            // Remove "1. " or "1) " prefix
+            let text = line.replace(/^\d+[.)]\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ol>\n${listItems}\n</ol>`;
+    });
+
+    // 📋 UNORDERED LIST: "- item" → <ul><li>item</li></ul>
+    //
+    // Example input:
+    //   - Yüksek performans
+    //   - Uzun ömürlü
+    //
+    // Example output:
+    //   <ul>
+    //   <li>Yüksek performans</li>
+    //   <li>Uzun ömürlü</li>
+    //   </ul>
+    html = html.replace(/((?:^|\n)-\s+.+(?:\n-\s+.+)*)/gm, function(match) {
+        let items = match.split('\n').filter(line => line.trim().startsWith('- '));
+        let listItems = items.map(line => {
+            let text = line.replace(/^-\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ul>\n${listItems}\n</ul>`;
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // STEP 4: PARAGRAPH PROCESSING
+    // ═══════════════════════════════════════════════════════════════════
+
+    // Preserve already-created list blocks before paragraph processing
+    let preservedBlocks = [];
+    html = html.replace(/(<ul>[\s\S]*?<\/ul>|<ol>[\s\S]*?<\/ol>)/g, function(match, block) {
+        let placeholder = `___PRESERVED_BLOCK_${preservedBlocks.length}___`;
+        preservedBlocks.push(block);
+        return placeholder;
+    });
+
+    // Wrap double-newline-separated text blocks as paragraphs
+    html = html.split('\n\n').map(block => {
+        block = block.trim();
+        if (!block) return '';
+        // Don't wrap if it contains preserved blocks or HTML tags
+        if (block.includes('___PRESERVED_BLOCK_') || block.includes('___LINK_PRESERVED_') || block.match(/^<[a-z]/i)) {
+            return block;
+        }
+        // Wrap as paragraph, convert single newlines to <br>
+        return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+    }).join('\n');
+
+    // Restore preserved list blocks
+    preservedBlocks.forEach((block, index) => {
+        html = html.replace(`___PRESERVED_BLOCK_${index}___`, block);
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // STEP 5: ELEMENT STYLING (Add Tailwind classes)
+    // ═══════════════════════════════════════════════════════════════════
 
     // 1. Link'lere target="_blank", rel ve Tailwind class ekle
     // Standart link: <a href="url">text</a>
@@ -829,17 +883,20 @@ window.aiChatRenderMarkdown = function(content) {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors font-bold">${text}</a>`;
     });
 
-    // 2. <ul> listelerine Tailwind class ekle (COMPACT: dar alan için optimize)
-    html = html.replace(/<ul>/gi, '<ul class="space-y-1 my-2 pl-5 list-disc">');
+    // 2. <ul> listelerine Tailwind class ekle (ULTRA COMPACT: minimal spacing)
+    // REDUCED: pl-5 → pl-3, my-2 → my-1, space-y-1 → space-y-0.5
+    html = html.replace(/<ul>/gi, '<ul class="space-y-0.5 my-1 pl-3 list-disc">');
 
-    // 3. <ol> listelerine Tailwind class ekle (COMPACT)
-    html = html.replace(/<ol>/gi, '<ol class="space-y-1 my-2 pl-5 list-decimal">');
+    // 3. <ol> listelerine Tailwind class ekle (ULTRA COMPACT)
+    // REDUCED: pl-5 → pl-3, my-2 → my-1, space-y-1 → space-y-0.5
+    html = html.replace(/<ol>/gi, '<ol class="space-y-0.5 my-1 pl-3 list-decimal">');
 
-    // 4. <li> elementlerine class ekle (COMPACT: minimal margin, NO manual bullet)
+    // 4. <li> elementlerine class ekle (COMPACT: minimal margin)
     html = html.replace(/<li>/gi, '<li class="text-gray-800 dark:text-gray-200 leading-snug">');
 
-    // 5. <p> elementlerine class ekle (mb-5 = daha fazla boşluk)
-    html = html.replace(/<p>/gi, '<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">');
+    // 5. <p> elementlerine class ekle (COMPACT: reduced spacing)
+    // REDUCED: mb-5 → mb-3
+    html = html.replace(/<p>/gi, '<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">');
 
     // 6. <h3> başlıklarına class ekle
     html = html.replace(/<h3>/gi, '<h3 class="text-lg font-bold mt-4 mb-3 text-gray-900 dark:text-gray-100">');
@@ -868,5 +925,6 @@ window.aiChatRenderMarkdown = function(content) {
     return html;
 };
 
-console.log('✅ AI Chat Markdown→HTML Converter & Enhancer v4.0 loaded');
+console.log('✅ AI Chat Markdown→HTML Converter & Enhancer v5.0 loaded');
+console.log('📋 v5.0: Numbered lists + compact spacing + fixed list-link nesting');
 </script>

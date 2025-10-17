@@ -47,7 +47,7 @@
         {{-- ℹ️ VARIANT INFO BOX --}}
         @if ($isVariantPage && $parentProduct)
             <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-500">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-info-circle text-blue-600 dark:text-blue-400 text-xl"></i>
                         <div class="flex-1">
@@ -77,7 +77,7 @@
                     style="animation-delay: 2s;"></div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
                         <div class="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
@@ -122,7 +122,7 @@
         {{-- 📑 TABLE OF CONTENTS --}}
         <div id="toc-bar"
             class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky z-50 transition-transform duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-2">
                 <div class="flex items-center">
                     <div
                         class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
@@ -162,7 +162,7 @@
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {{-- 🎨 GALLERY --}}
             @if ($galleryImages->count() > 0)
                 <section id="gallery" class="py-16">
@@ -375,7 +375,7 @@
     </div>
 
     {{-- Footer --}}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="border-t border-gray-200 dark:border-gray-700 pt-8">
             <a href="{{ $shopIndexUrl }}"
                 class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold rounded-lg transition-all hover:shadow-lg">
@@ -387,7 +387,7 @@
 
     {{-- Trust Signals - Modern 4 Column (Before Contact Form) --}}
     <section id="trust-signals" class="relative mt-32 scroll-mt-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div
                 class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
@@ -443,7 +443,7 @@
             </div>
         </div>
 
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+        <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
             <div class="flex flex-col md:flex-row gap-8 items-start">
                 {{-- SOL: FORM (7/12) --}}
                 <div class="w-full md:w-7/12">

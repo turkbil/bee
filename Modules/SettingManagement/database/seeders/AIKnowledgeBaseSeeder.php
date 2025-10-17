@@ -127,10 +127,10 @@ class AIKnowledgeBaseSeeder extends Seeder
             [
                 'category' => 'Hizmetler',
                 'question' => 'Hangi hizmetleri sunuyorsunuz?',
-                'answer' => 'İxtif olarak forklift satışı, kiralama, teknik servis, yedek parça tedariki ve 2. el ürün alım-satımı hizmetleri veriyoruz. Ayrıca operatör eğitimi, periyodik bakım paketleri ve 7/24 teknik destek sunuyoruz.',
+                'answer' => 'İxtif olarak şu hizmetleri sunuyoruz: **Kiralama Hizmetleri:** Günlük, haftalık, aylık ve yıllık kiralama seçeneklerimiz vardır. **İkinci El Alım-Satım:** Kullanılmış ekipman alım-satımı ve takas hizmetleri. **Teknik Servis:** Tüm marka ve modellerde periyodik bakım, arıza onarımı ve 7/24 acil müdahale. **Yedek Parça:** Orijinal ve yan sanayi yedek parça tedariki, hızlı teslimat. Ayrıca operatör eğitimi, devreye alma ve danışmanlık hizmetlerimiz de mevcuttur.',
                 'metadata' => [
-                    'tags' => ['hizmetler', 'satış', 'kiralama', 'servis'],
-                    'internal_note' => 'Tüm hizmetlerin özeti.',
+                    'tags' => ['hizmetler', 'satış', 'kiralama', 'servis', 'günlük', 'haftalık', 'aylık', 'yıllık', '2. el'],
+                    'internal_note' => 'Tüm hizmetlerin detaylı özeti - kiralama sürelerini vurgula.',
                     'icon' => 'fas fa-cogs',
                 ],
                 'is_active' => true,
@@ -397,6 +397,232 @@ class AIKnowledgeBaseSeeder extends Seeder
                 ],
                 'is_active' => true,
                 'sort_order' => 30,
+            ],
+
+            // === FİNANSMAN & ÖDEME ===
+            [
+                'category' => 'Finansman & Ödeme',
+                'question' => 'Hangi ödeme seçenekleri sunuyorsunuz?',
+                'answer' => 'Nakit, havale/EFT, çek ve kredi kartı ile ödeme kabul ediyoruz. Kurumsal müşterilerimize 30-60-90 gün vadeli ödeme seçenekleri sunuyoruz. Büyük alımlarda taksitli ödeme planları yapabiliriz. Leasing ve finansman kuruluşlarıyla anlaşmalıyız.',
+                'metadata' => [
+                    'tags' => ['ödeme', 'taksit', 'vade'],
+                    'internal_note' => 'Ödeme seçenekleri - esneklik vurgusu.',
+                    'icon' => 'fas fa-credit-card',
+                ],
+                'is_active' => true,
+                'sort_order' => 31,
+            ],
+            [
+                'category' => 'Finansman & Ödeme',
+                'question' => 'Leasing ile satın alabilir miyim?',
+                'answer' => 'Evet, iş ortağımız olan leasing şirketleri (ING Leasing, Garanti Leasing, Finans Leasing vb.) aracılığıyla forklift ve diğer ekipmanları finansal kiralama ile alabilirsiniz. Leasing avantajları: KDV ertelemesi, vergi avantajı, düşük peşinat, esnek vade seçenekleri. Leasing başvurunuzu hızlandırmak için size destek oluyoruz.',
+                'metadata' => [
+                    'tags' => ['leasing', 'finansal kiralama', 'kdv avantajı'],
+                    'internal_note' => 'Leasing detayları - vergi avantajı vurgula.',
+                    'icon' => 'fas fa-file-contract',
+                ],
+                'is_active' => true,
+                'sort_order' => 32,
+            ],
+            [
+                'category' => 'Finansman & Ödeme',
+                'question' => 'Kurumsal müşteriler için cari hesap açılıyor mu?',
+                'answer' => 'Evet, sürekli alışveriş yapan kurumsal müşterilerimize özel cari hesap açıyoruz. Cari hesap ile vadeli alım yapabilir, toplu alımlarda indirimlerden faydalanabilirsiniz. Müşteri temsilciniz size özel fiyat listesi ve ödeme koşulları sunar. Referanslarınızı değerlendirdikten sonra cari hesap açılışı hızlıca tamamlanır.',
+                'metadata' => [
+                    'tags' => ['cari hesap', 'kurumsal', 'vadeli ödeme'],
+                    'internal_note' => 'Cari hesap açma - kurumsal avantajlar.',
+                    'icon' => 'fas fa-building',
+                ],
+                'is_active' => true,
+                'sort_order' => 33,
+            ],
+
+            // === TESLİMAT & MONTAJ ===
+            [
+                'category' => 'Teslimat & Montaj',
+                'question' => 'Teslimat süresi ne kadardır?',
+                'answer' => 'Stokta bulunan ekipmanlar 1-3 iş günü içinde teslim edilir. Özel sipariş ürünlerde teslimat süresi 2-4 hafta arasında değişir. Acil ihtiyaçlarda aynı gün teslimat sağlayabiliriz (İstanbul ve çevre iller için). Teslimat öncesi size bilgilendirme yapılır, randevu alınır.',
+                'metadata' => [
+                    'tags' => ['teslimat', 'teslimat süresi', 'kargo'],
+                    'internal_note' => 'Teslimat süreleri - stok durumuna göre bilgi ver.',
+                    'icon' => 'fas fa-truck',
+                ],
+                'is_active' => true,
+                'sort_order' => 34,
+            ],
+            [
+                'category' => 'Teslimat & Montaj',
+                'question' => 'Teslimat ücreti var mı?',
+                'answer' => 'Belirli bir tutarın üzerindeki alımlarda (genelde 50.000 TL+) teslimat ücretsizdir. Küçük alımlarda ve uzak bölgelere teslimat için nakliye ücreti uygulanır. Teslimat ücreti mesafe ve ekipman büyüklüğüne göre belirlenir. Kiralama hizmetlerinde teslimat-montaj genelde ücretsizdir.',
+                'metadata' => [
+                    'tags' => ['teslimat ücreti', 'ücretsiz kargo'],
+                    'internal_note' => 'Teslimat ücreti - alım tutarına göre yönlendir.',
+                    'icon' => 'fas fa-shipping-fast',
+                ],
+                'is_active' => true,
+                'sort_order' => 35,
+            ],
+            [
+                'category' => 'Teslimat & Montaj',
+                'question' => 'Kurulum ve devreye alma hizmeti veriyor musunuz?',
+                'answer' => 'Evet, tüm ekipmanlar için profesyonel kurulum ve devreye alma hizmeti sunuyoruz. Teknik ekibimiz ekipmanı yerinde kurar, test eder, çalışır durumda teslim eder. Operatörlerinize temel kullanım eğitimi verilir. Kurulum sonrası ilk bakım ve kontrol hizmetimiz ücretsizdir.',
+                'metadata' => [
+                    'tags' => ['kurulum', 'montaj', 'devreye alma'],
+                    'internal_note' => 'Kurulum hizmeti - eksiksiz hizmet vurgusu.',
+                    'icon' => 'fas fa-tools',
+                ],
+                'is_active' => true,
+                'sort_order' => 36,
+            ],
+            [
+                'category' => 'Teslimat & Montaj',
+                'question' => 'Tüm Türkiye\'ye teslimat yapıyor musunuz?',
+                'answer' => 'Evet, Türkiye\'nin her yerine teslimat yapıyoruz. Merkez ofisimiz İstanbul, bölge ofislerimiz Ankara, İzmir, Bursa\'da bulunuyor. Uzak bölgelere kargo firmaları ile güvenli teslimat sağlıyoruz. Büyük ekipmanlar için özel nakliye araçları kullanılır. Teslimat sonrası teknik destek hizmetimiz tüm Türkiye\'yi kapsar.',
+                'metadata' => [
+                    'tags' => ['tüm türkiye', 'teslimat ağı', 'kargo'],
+                    'internal_note' => 'Teslimat coğrafyası - yaygın hizmet ağı vurgula.',
+                    'icon' => 'fas fa-map-marked-alt',
+                ],
+                'is_active' => true,
+                'sort_order' => 37,
+            ],
+
+            // === GARANTİ & İADE ===
+            [
+                'category' => 'Garanti & İade',
+                'question' => 'Garanti süresi ne kadardır?',
+                'answer' => 'Yeni ekipmanlarda 12-24 ay (üretici garantisi), 2. el ekipmanlarda 6 ay garanti veriyoruz. Garanti kapsamında motor, hidrolik sistem, elektrik arızaları, kaynak ve yapısal problemler karşılanır. Kullanım hatası, bakım eksikliği ve kaza sonucu hasarlar garanti kapsamı dışındadır. Garanti süresi boyunca yedek parça ve işçilik ücretsizdir.',
+                'metadata' => [
+                    'tags' => ['garanti', 'garanti süresi', 'üretici garantisi'],
+                    'internal_note' => 'Garanti detayları - kapsam ve süreyi açıkla.',
+                    'icon' => 'fas fa-shield-alt',
+                ],
+                'is_active' => true,
+                'sort_order' => 38,
+            ],
+            [
+                'category' => 'Garanti & İade',
+                'question' => 'Aldığım ürünü iade edebilir miyim?',
+                'answer' => 'Ürün teslim alındığında hasarlı veya hatalı çıkarsa 7 gün içinde iade kabul edilir. Kullanılmamış ve ambalajı açılmamış ekipmanlarda 14 gün iade hakkı vardır. İade koşulları: ekipman kullanılmamış, hasarsız ve eksiksiz olmalı. Müşteri memnuniyetsizliğinde değişim veya ürün değiştirme seçenekleri sunuyoruz.',
+                'metadata' => [
+                    'tags' => ['iade', 'iade koşulları', 'değişim'],
+                    'internal_note' => 'İade politikası - müşteri memnuniyeti odaklı.',
+                    'icon' => 'fas fa-undo',
+                ],
+                'is_active' => true,
+                'sort_order' => 39,
+            ],
+            [
+                'category' => 'Garanti & İade',
+                'question' => 'Garanti kapsamı dışında arıza olursa ne olur?',
+                'answer' => 'Garanti kapsamı dışı arızalarda ücretli servis hizmeti sunuyoruz. Önce arıza tespiti yapılır, yedek parça ve işçilik maliyeti bildirilir, onayınızdan sonra tamir edilir. Anlaşmalı müşterilerimize özel servis indirimleri uygulanır. Acil arıza durumlarında öncelikli müdahale sağlıyoruz.',
+                'metadata' => [
+                    'tags' => ['garanti dışı', 'ücretli servis', 'tamir'],
+                    'internal_note' => 'Garanti dışı servis - şeffaf fiyatlama vurgusu.',
+                    'icon' => 'fas fa-wrench',
+                ],
+                'is_active' => true,
+                'sort_order' => 40,
+            ],
+
+            // === İLETİŞİM & DESTEK ===
+            [
+                'category' => 'İletişim & Destek',
+                'question' => 'Size nasıl ulaşabilirim?',
+                'answer' => 'Telefon, WhatsApp, e-posta ve web sitemizden canlı destek ile bize ulaşabilirsiniz. Merkez ofis İstanbul\'da, bölge ofislerimiz Ankara, İzmir, Bursa\'da bulunuyor. Çalışma saatlerimiz: Hafta içi 08:00-18:00, Cumartesi 09:00-14:00. Acil teknik destek için 7/24 acil hat hizmetimiz mevcuttur.',
+                'metadata' => [
+                    'tags' => ['iletişim', 'destek', 'çalışma saatleri'],
+                    'internal_note' => 'İletişim kanalları - erişilebilirlik vurgula.',
+                    'icon' => 'fas fa-headset',
+                ],
+                'is_active' => true,
+                'sort_order' => 41,
+            ],
+            [
+                'category' => 'İletişim & Destek',
+                'question' => 'Teknik destek hattınız var mı?',
+                'answer' => 'Evet, 7/24 acil teknik destek hattımız mevcuttur. Ekipman arızası, acil yedek parça ihtiyacı veya teknik soru için destek hattımızı arayabilirsiniz. Deneyimli teknisyenlerimiz telefonda çözüm sunuyor, gerektiğinde yerinde müdahale ekibi gönderiyor. Anlaşmalı müşterilerimize özel destek numarası ve öncelikli hizmet sağlıyoruz.',
+                'metadata' => [
+                    'tags' => ['teknik destek', '7/24', 'acil hat'],
+                    'internal_note' => 'Teknik destek - 7/24 erişim vurgula.',
+                    'icon' => 'fas fa-phone-volume',
+                ],
+                'is_active' => true,
+                'sort_order' => 42,
+            ],
+            [
+                'category' => 'İletişim & Destek',
+                'question' => 'Showroom\'unuzu ziyaret edebilir miyim?',
+                'answer' => 'Elbette! Showroom\'larımızda tüm ürün gruplarımızı görebilir, test edebilirsiniz. Randevu alarak gelmenizi öneririz, böylece uzman ekibimiz size özel zaman ayırabilir. Ekipman demonstrasyonu yapar, ihtiyaçlarınıza uygun çözümler öneririz. Showroom adreslerimiz: İstanbul (Tuzla), Ankara, İzmir, Bursa.',
+                'metadata' => [
+                    'tags' => ['showroom', 'ziyaret', 'test sürüşü'],
+                    'internal_note' => 'Showroom ziyareti - randevu almanın önemini vurgula.',
+                    'icon' => 'fas fa-store',
+                ],
+                'is_active' => true,
+                'sort_order' => 43,
+            ],
+            [
+                'category' => 'İletişim & Destek',
+                'question' => 'Online satın alma yapabilir miyim?',
+                'answer' => 'Küçük ekipmanlar, yedek parça ve aksesuarlar için web sitemizden online sipariş verebilirsiniz. Forklift ve büyük ekipmanlar için önce ihtiyaç analizi yapıyoruz, danışmanlık hizmeti sunuyoruz. Online fiyat teklifi alabilir, ardından müşteri temsilcimizle iletişime geçerek siparişinizi tamamlayabilirsiniz.',
+                'metadata' => [
+                    'tags' => ['online satış', 'e-ticaret', 'sipariş'],
+                    'internal_note' => 'Online satış - danışmanlık sürecini açıkla.',
+                    'icon' => 'fas fa-shopping-cart',
+                ],
+                'is_active' => true,
+                'sort_order' => 44,
+            ],
+
+            // === TEKNİK BİLGİLER (ÜRÜN ÖZELLİKLERİ) ===
+            [
+                'category' => 'Teknik Bilgiler',
+                'question' => 'AGM batarya nedir, avantajları nelerdir?',
+                'answer' => 'AGM (Absorbent Glass Mat) batarya, kurşun-asit bataryaya göre daha gelişmiş bir teknolojidir. Avantajları: Bakım gerektirmez (sulanmaz), daha uzun ömürlü (2-3 kat), hızlı şarj olur, derin deşarj hasarına karşı dayanıklıdır. Elektrikli forklift ve transpalet kullanıcıları için ideal, işletme maliyetini düşürür.',
+                'metadata' => [
+                    'tags' => ['agm batarya', 'batarya türleri', 'elektrikli forklift'],
+                    'internal_note' => 'AGM batarya - uzun ömür ve düşük maliyet vurgula.',
+                    'icon' => 'fas fa-battery-full',
+                ],
+                'is_active' => true,
+                'sort_order' => 45,
+            ],
+            [
+                'category' => 'Teknik Bilgiler',
+                'question' => 'Li-Ion batarya mı AGM mi tercih etmeliyim?',
+                'answer' => 'Li-Ion batarya: Fırsat şarjı yapılabilir, çok hızlı şarj (2-3 saat), çok uzun ömür (5000+ döngü), hafif. Ancak ilk yatırım maliyeti yüksek. AGM batarya: Orta maliyet, uzun ömür (1500+ döngü), güvenilir, standart şarj. Yoğun vardiyalı çalışmada Li-Ion, tek vardiyada AGM ekonomik olabilir. Kullanım profilinize göre danışmanlık veriyoruz.',
+                'metadata' => [
+                    'tags' => ['li-ion', 'agm', 'batarya karşılaştırma'],
+                    'internal_note' => 'Batarya karşılaştırma - kullanım profiline göre yönlendir.',
+                    'icon' => 'fas fa-balance-scale-right',
+                ],
+                'is_active' => true,
+                'sort_order' => 46,
+            ],
+            [
+                'category' => 'Teknik Bilgiler',
+                'question' => 'Duplex, Triplex mast nedir, farkları nelerdir?',
+                'answer' => 'Mast, forkliftin kaldırma direkidir. Duplex (2 kademeli): Standart kaldırma, 3-4m yükseklik. Triplex (3 kademeli): Yüksek kaldırma, 4.5-6m yükseklik, dar alanlarda tavan yüksekliği sınırlı ise tercih edilir. Standart mast: Tek kademe, düşük kaldırma. Yüksek raf kullanan depolarda Triplex önerilir.',
+                'metadata' => [
+                    'tags' => ['duplex', 'triplex', 'mast türleri', 'kaldırma yüksekliği'],
+                    'internal_note' => 'Mast türleri - depo yüksekliğine göre yönlendir.',
+                    'icon' => 'fas fa-arrows-alt-v',
+                ],
+                'is_active' => true,
+                'sort_order' => 47,
+            ],
+            [
+                'category' => 'Teknik Bilgiler',
+                'question' => 'Soğuk hava deposu için hangi ekipmanları kullanmalıyım?',
+                'answer' => 'Soğuk hava deposu (-30°C\'ye kadar) için özel soğuk ortam uyumlu elektrikli forkliftler ve transpaletler öneriyoruz. Bu ekipmanlarda özel yalıtımlı batarya, donmaya karşı dayanıklı hidrolik sıvı ve güçlendirilmiş elektronik sistem vardır. Paslanmaz çelik gövdeli modeller gıda hijyeni için idealdir. Seri numarasında "ETC" (Extreme Temperature Conditions) olan modelleri tercih edin.',
+                'metadata' => [
+                    'tags' => ['soğuk depo', 'etc', 'soğuk ortam ekipman'],
+                    'internal_note' => 'Soğuk depo - ETC serisi ürünleri öner.',
+                    'icon' => 'fas fa-snowflake',
+                ],
+                'is_active' => true,
+                'sort_order' => 48,
             ],
         ];
 

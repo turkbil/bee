@@ -6,7 +6,7 @@
     <title>{{ $productTitle }} - İXTİF Ürün Kataloğu</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white min-h-screen flex">
+<body class="bg-white flex" style="width: 210mm; height: 297mm; margin: 0; padding: 0; overflow: hidden;">
 
     <!-- Left Side - Orange -->
     <div class="w-1/3 bg-gradient-to-br from-orange-500 to-orange-700 text-white p-12 flex flex-col justify-between">
@@ -47,16 +47,19 @@
     <!-- Right Side - White -->
     <div class="flex-1 p-16 flex flex-col justify-center">
         <div class="max-w-3xl">
-            <div class="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-6 py-3 rounded-full text-sm font-bold mb-8">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
-                </svg>
-                <span class="uppercase tracking-wider">Ürün Kataloğu</span>
-            </div>
+            <!-- Badge and Title on Same Line -->
+            <div class="flex items-center gap-4 mb-8">
+                <div class="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-6 py-3 rounded-full text-sm font-bold whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                    </svg>
+                    <span class="uppercase tracking-wider">Ürün Kataloğu</span>
+                </div>
 
-            <h1 class="text-7xl font-black text-slate-900 leading-tight mb-8">
-                {{ $productTitle }}
-            </h1>
+                <h1 class="text-5xl font-black text-slate-900 leading-tight flex-1">
+                    {{ $productTitle }}
+                </h1>
+            </div>
 
             <div class="h-2 w-64 bg-gradient-to-r from-orange-500 to-transparent rounded-full mb-12"></div>
 
@@ -67,8 +70,8 @@
             <!-- Product Image -->
             @if($productImage)
             <div class="border-4 border-orange-200 rounded-2xl overflow-hidden">
-                <div class="aspect-[4/3] bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-                    <img src="{{ $productImage }}" alt="{{ $productTitle }}" class="w-full h-full object-contain p-8">
+                <div class="aspect-[4/3] bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-8">
+                    <img src="{{ $productImage }}" alt="{{ $productTitle }}" class="max-w-full max-h-full object-contain">
                 </div>
             </div>
             @else

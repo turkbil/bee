@@ -111,15 +111,25 @@ class PublicAIController extends Controller
                 $antiMonotonyPrompt = ResponseTemplateEngine::getQuickAntiMonotonyPrompt('public-chat');
             }
 
-            // Call AI service
-            $response = $this->aiService->processRequest([
-                'input' => $validated['message'],
-                'feature' => $feature,
-                'context' => $validated['context'] ?? [],
-                'options' => $promptOptions,
-                'anti_monotony_prompt' => $antiMonotonyPrompt,
-                'user_id' => null, // Guest user
-            ]);
+            // Build final prompt
+            $finalPrompt = $validated['message'];
+            if (!empty($antiMonotonyPrompt)) {
+                $finalPrompt = $antiMonotonyPrompt . "\n\n" . $finalPrompt;
+            }
+
+            // Call AI service with correct signature
+            $response = $this->aiService->processRequest(
+                prompt: $finalPrompt,
+                maxTokens: $promptOptions['max_tokens'] ?? 2000,
+                temperature: $promptOptions['temperature'] ?? 0.7,
+                model: $promptOptions['model'] ?? null,
+                systemPrompt: $promptOptions['system_prompt'] ?? null,
+                metadata: [
+                    'feature' => $feature?->slug ?? 'public-chat',
+                    'context' => $validated['context'] ?? [],
+                    'user_type' => 'guest'
+                ]
+            );
 
             // Log public usage for analytics
             $this->logPublicUsage($request, $feature, $response);
@@ -128,8 +138,8 @@ class PublicAIController extends Controller
                 'success' => true,
                 'data' => [
                     'message' => $response['content'] ?? 'AI response generated',
-                    'feature_used' => $feature?->slug,
-                    'remaining_requests' => RateLimiter::remainingAttempts($rateLimitKey, 10),
+                    'feature_used' => $feature?->slug ?? 'public-chat',
+                    'remaining_requests' => RateLimiter::remaining($rateLimitKey, 10),
                     'credits_used' => 0, // Public users don't use credits
                     'response_id' => $response['id'] ?? null,
                 ]
@@ -582,7 +592,7 @@ class PublicAIController extends Controller
             }
 
             // 🆕 NEW: Smart Product Search Integration
-            $productSearchService = new \App\Services\AI\ProductSearchService();
+            $productSearchService = app(\App\Services\AI\ProductSearchService::class);
             $smartSearchResults = $productSearchService->searchProducts($validated['message']);
             $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
 

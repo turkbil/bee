@@ -140,9 +140,9 @@
             to { opacity: 1; }
         }
 
-        /* Global Font - Poppins (Font Awesome hariç) */
+        /* Global Font - Roboto (Font Awesome hariç) */
         :root {
-            --global-font: 'Poppins', sans-serif;
+            --global-font: 'Roboto', sans-serif;
         }
 
         *:not([class*="fa-"]):not(i) {
@@ -229,49 +229,10 @@
             });
         }
 
-        // Font Switcher Function
-        function fontSwitcher() {
-            return {
-                open: false,
-                current: 'Poppins',
-                index: 0,
-                fonts: ['Inter','Poppins','Roboto','Open Sans','Lato','Montserrat','Nunito','Raleway','Outfit','Space Grotesk','Manrope','DM Sans','Plus Jakarta Sans','Quicksand','Work Sans','Rubik','Ubuntu','Lexend','Red Hat Display','Sora','Epilogue','Archivo','Figtree','Urbanist','IBM Plex Sans','Source Sans 3','Jost','Barlow','Heebo','Noto Sans'],
-                initFont() {
-                    const saved = localStorage.getItem('selectedFont');
-                    if (saved && this.fonts.includes(saved)) {
-                        this.current = saved;
-                        this.index = this.fonts.indexOf(saved);
-                    }
-                    this.applyFont(this.current);
-                },
-                selectFont(font) {
-                    this.current = font;
-                    this.index = this.fonts.indexOf(font);
-                    this.applyFont(font);
-                    localStorage.setItem('selectedFont', font);
-                },
-                nextFont() {
-                    this.index = (this.index + 1) % this.fonts.length;
-                    this.current = this.fonts[this.index];
-                    this.applyFont(this.current);
-                    localStorage.setItem('selectedFont', this.current);
-                },
-                prevFont() {
-                    this.index = (this.index - 1 + this.fonts.length) % this.fonts.length;
-                    this.current = this.fonts[this.index];
-                    this.applyFont(this.current);
-                    localStorage.setItem('selectedFont', this.current);
-                },
-                applyFont(font) {
-                    const ff = '"' + font + '", sans-serif';
-                    document.documentElement.style.setProperty('--global-font', ff);
-                    const selector = '*:not([class*="fa-"]):not(i)';
-                    document.querySelectorAll(selector).forEach(function(el) {
-                        el.style.setProperty('font-family', ff, 'important');
-                    });
-                }
-            }
-        }
+        // Background gradients removed - using fixed gradients now
+        // Light: bg-gradient-to-br from-white via-slate-50 to-gray-100 (Silver Mist)
+        // Dark: bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 (Blue Purple)
+
     </script>
 
     {{-- Custom Gradient Utilities - Tailwind JIT Dark Mode Fix --}}
@@ -285,11 +246,7 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased min-h-screen
-    bg-gradient-to-br from-gray-50 via-white to-blue-50/50
-    dark:bg-gradient-to-br dark:from-gray-950 dark:via-slate-900 dark:to-blue-950
-    text-gray-900 dark:text-gray-100
-    transition-all duration-500 flex flex-col">
+<body class="font-sans antialiased min-h-screen text-gray-900 dark:text-gray-100 transition-all duration-500 flex flex-col bg-gradient-to-br from-white via-slate-50 to-gray-100 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">
 
 
     <header id="main-header" x-data="{
@@ -596,52 +553,6 @@
                             </template>
                         </button>
 
-                        {{-- Font Switcher --}}
-                        <div x-data="fontSwitcher()" x-init="initFont()" class="hidden md:flex items-center gap-1">
-                            {{-- Prev Button --}}
-                            <button @click="prevFont()"
-                                class="w-8 h-8 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                <i class="fa-solid fa-chevron-left text-sm"></i>
-                            </button>
-
-                            {{-- Font Dropdown --}}
-                            <div class="relative">
-                                <button @click="open = !open"
-                                    class="px-3 h-8 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-300 dark:border-gray-600">
-                                    <i class="fa-solid fa-font text-sm"></i>
-                                    <span class="text-xs font-medium" x-text="current"></span>
-                                    <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="{'rotate-180': open}"></i>
-                                </button>
-
-                                <div x-show="open" @click.away="open = false"
-                                    x-transition:enter="transition ease-out duration-200"
-                                    x-transition:enter-start="opacity-0 scale-95"
-                                    x-transition:enter-end="opacity-100 scale-100"
-                                    x-transition:leave="transition ease-in duration-100"
-                                    x-transition:leave-start="opacity-100 scale-100"
-                                    x-transition:leave-end="opacity-0 scale-95"
-                                    class="absolute top-full mt-2 right-0 w-56 bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-gray-600 z-50 max-h-96 overflow-y-auto"
-                                    style="display: none;">
-                                    <div class="py-2">
-                                        <template x-for="f in fonts" :key="f">
-                                            <button @click="selectFont(f); open = false"
-                                                class="w-full text-left px-4 py-2 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 transition flex items-center justify-between"
-                                                :class="{'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': current === f}">
-                                                <span x-text="f"></span>
-                                                <i x-show="current === f" class="fa-solid fa-check text-xs"></i>
-                                            </button>
-                                        </template>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Next Button --}}
-                            <button @click="nextFont()"
-                                class="w-8 h-8 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                <i class="fa-solid fa-chevron-right text-sm"></i>
-                            </button>
-                        </div>
-
                         {{-- AUTH CONTROL VIA LIVEWIRE --}}
                         @livewire('auth.header-menu')
 
@@ -920,6 +831,12 @@
 
             console.log('✅ Sticky header initialized');
         });
+
+        // Eski font ayarlarını temizle (Roboto sabit olarak kullanılıyor)
+        if (localStorage.getItem('selectedFont')) {
+            localStorage.removeItem('selectedFont');
+            console.log('✅ Font ayarları temizlendi - Roboto sabit font olarak ayarlandı');
+        }
     </script>
 
     {{-- Dynamic Content Areas --}}

@@ -82,6 +82,10 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'parent_product_id',
         'is_master_product',
         'variant_type',
+        // OpenAI Embeddings
+        'embedding',
+        'embedding_generated_at',
+        'embedding_model',
     ];
 
     protected $casts = [

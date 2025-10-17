@@ -55,6 +55,30 @@ class OptimizedPromptService
         $prompts[] = "- Sadece şirket ürünleri ve hizmetleri hakkında konuş";
         $prompts[] = "- Konu dışı konuları kibarca reddet";
         $prompts[] = "";
+        $prompts[] = "## YANIT KURALLARI (ZORUNLU!)";
+        $prompts[] = "❌ ASLA düşüncelerini (reasoning) kullanıcıya gösterme!";
+        $prompts[] = "❌ 'daha dikkatli olmalıyım' gibi self-talk yapma!";
+        $prompts[] = "❌ Kullanıcının sorusunu yanıtta tekrarlama!";
+        $prompts[] = "❌ 'Anladım ki...' / 'Haklısınız...' gibi özür ifadeleri kullanma!";
+        $prompts[] = "";
+        $prompts[] = "✅ Direkt profesyonel yanıt ver!";
+        $prompts[] = "✅ Hataları sessizce düzelt, açıklama yapma!";
+        $prompts[] = "";
+        $prompts[] = "**YANLIŞ ÖRNEK:**";
+        $prompts[] = "```";
+        $prompts[] = "Kullanıcı: Soğuk depo transpaleti önermedin.";
+        $prompts[] = "AI: Haklısınız, daha dikkatli olmalıyım. Soğuk depo transpaletleri...";
+        $prompts[] = "```";
+        $prompts[] = "❌ Bu yanlış! Özür + reasoning gösteriliyor!";
+        $prompts[] = "";
+        $prompts[] = "**DOĞRU ÖRNEK:**";
+        $prompts[] = "```";
+        $prompts[] = "Kullanıcı: Soğuk depo transpaleti önermedin.";
+        $prompts[] = "AI: İxtif olarak, soğuk depo transpaletlerimiz:";
+        $prompts[] = "- EPT20-20ETC Soğuk Depo Transpalet...";
+        $prompts[] = "```";
+        $prompts[] = "✅ Direkt çözüm, özür yok, reasoning yok!";
+        $prompts[] = "";
         $prompts[] = "## FORMAT KURALLARI";
         $prompts[] = "- **Markdown kullan** (HTML yasak!)";
         $prompts[] = "- Link format: **Ürün Adı** [LINK:shop:slug]";
@@ -122,15 +146,39 @@ class OptimizedPromptService
                 $prompts[] = "**⚠️ KRİTİK: Kullanıcı '{$detectedCategory['category_name']}' kategorisinden ürün istedi!**";
                 $prompts[] = "**MUTLAKA ÜRÜN LİSTESİ GÖSTER! Genel bilgi verme!**";
                 $prompts[] = "";
-                $prompts[] = "**ZORUNLU FORMAT:**";
-                $prompts[] = "1. Kısa giriş (1 cümle)";
-                $prompts[] = "2. Ürün listesi (her ürün için başlık + link + özellikler)";
-                $prompts[] = "3. Yardım teklifi";
+                $prompts[] = "## 🤖 AI SEMANTIC MATCHING (ÇOK ÖNEMLİ!)";
                 $prompts[] = "";
-                $prompts[] = "**❌ YAPMA:** Genel açıklama, özellik anlatımı, eğitim metni";
-                $prompts[] = "**✅ YAP:** Direkt ürün listesi göster";
+                $prompts[] = "Sana {$detectedCategory['category_name']} kategorisindeki **TÜM ÜRÜNLER** gönderiliyor (~300 ürün).";
+                $prompts[] = "**GÖREVIN:** Kullanıcının isteğine EN UYGUN 3-5 ürünü SEÇ!";
                 $prompts[] = "";
-                $prompts[] = "**SADECE bu {$detectedCategory['category_name']} ürünlerini göster:**";
+                $prompts[] = "**SEMANTIC MATCHING KURALLARI:**";
+                $prompts[] = "1. 🔍 **SLUG'lara DİKKAT ET!** (En önemli ipucu!)";
+                $prompts[] = "   - Kullanıcı 'soguk' dedi → 'soguk-depo' slug'u varsa onu seç!";
+                $prompts[] = "   - Kullanıcı 'gida' dedi → 'gida' slug'u varsa onu seç!";
+                $prompts[] = "   - **TYPO TOLERANCE:** 'soguk' = 'soğuk', 'gida' = 'gıda'";
+                $prompts[] = "";
+                $prompts[] = "2. 📝 **Title ve SKU'ya bak!** Özel kısaltmalar:";
+                $prompts[] = "   - 'ETC' = Extreme Temperature Conditions = Soğuk depo";
+                $prompts[] = "   - 'SS' = Stainless Steel = Paslanmaz çelik";
+                $prompts[] = "   - 'AGM', 'Li-Ion' = Batarya tipleri";
+                $prompts[] = "";
+                $prompts[] = "3. 🎯 **ÖNCE SPESİFİK, SONRA GENEL!**";
+                $prompts[] = "   - Kullanıcı 'soğuk depo' dedi → Slug/title'da 'soguk' veya 'ETC' olan VAR MI?";
+                $prompts[] = "   - **VARSA:** O ürünü göster! (Genel ürünler değil!)";
+                $prompts[] = "   - **YOKSA:** Genel kategori ürünlerini göster";
+                $prompts[] = "";
+                $prompts[] = "**❌ YAPMA:**";
+                $prompts[] = "- İlk gördüğün genel ürünleri gösterip geç!";
+                $prompts[] = "- Slug'ları görmezden gel!";
+                $prompts[] = "- Manuel olarak typo'ları eşleştirmeye çalış (bunu ben yaparım!)";
+                $prompts[] = "";
+                $prompts[] = "**✅ YAP:**";
+                $prompts[] = "- TÜM ürünleri tara!";
+                $prompts[] = "- Slug'larda anahtar kelimeleri ara!";
+                $prompts[] = "- Semantic eşleştirme yap (sen AI'sın, yapabilirsin!)";
+                $prompts[] = "- EN UYGUN 3-5 ürünü seç ve göster!";
+                $prompts[] = "";
+                $prompts[] = "**{$detectedCategory['category_name']} kategorisindeki TÜM ÜRÜNLER (sen en uygunları seç!):**";
             } else {
                 $prompts[] = "**SADECE bu ürünleri öner (başka ürün arama!):**";
             }
@@ -280,6 +328,9 @@ class OptimizedPromptService
 
         $lines[] = "**{$title}** [LINK:shop:{$slug}]";
 
+        // ⚠️ KRİTİK: Slug'u göster! AI semantic matching için slug'a bakacak!
+        $lines[] = "  - Slug: {$slug}";
+
         if (!empty($product['sku'])) {
             $lines[] = "  - SKU: {$product['sku']}";
         }
@@ -295,8 +346,8 @@ class OptimizedPromptService
             }
         }
 
-        // Price info
-        if (!empty($product['base_price'])) {
+        // Price info - ⚠️ KRİTİK: base_price > 0 kontrolü (0 veya null ise gösterme!)
+        if (isset($product['base_price']) && $product['base_price'] > 0) {
             $lines[] = "  - Fiyat: " . number_format($product['base_price'], 0, ',', '.') . " TL";
         } elseif (!empty($product['price_on_request'])) {
             $lines[] = "  - Fiyat: Talep üzerine";

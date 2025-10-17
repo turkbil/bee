@@ -246,11 +246,14 @@ class ProductSearchService
         // 🔒 PROTECTED TERMS: Bu terimleri asla stopword olarak silme!
         $protectedTerms = [
             'AGM', 'Li-Ion', 'lithium', 'LPG', 'dizel', 'elektrik',
-            'soğuk', 'depo', 'soğuk depo', 'paslanmaz', 'stainless',
+            // ⚠️ KRİTİK: "soğuk" kelimesinin tüm varyasyonları (typo tolerance)
+            'soğuk', 'soguk', 'souk', 'depo', 'hava', 'soğuk depo', 'soguk depo',
+            'soğuk hava', 'soguk hava', 'cold storage', 'freezer', 'dondurucu',
+            'paslanmaz', 'stainless', 'gıda', 'gida', 'food', 'hijyenik', 'hijyen',
             'duplex', 'triplex', 'standart', 'serbest',
             'havalı', 'dolgu', 'superelastik',
             'otonom', 'AGV', 'AMR', 'SLAM',
-            'reach', 'dar koridor', 'gıda', 'hijyenik'
+            'reach', 'dar koridor'
         ];
 
         // Lowercase ve protected terms'i geçici işaretle
@@ -426,10 +429,16 @@ class ProductSearchService
 
             // Usage area (soğuk depo, gıda, paslanmaz)
             if ($paramType === 'usage_area') {
-                if (stripos($lowerMessage, 'soğuk') !== false || stripos($lowerMessage, 'cold') !== false) {
+                // ⚠️ KRİTİK: Typo tolerance - "soguk" ve "soğuk" her ikisini de kontrol et!
+                if (stripos($lowerMessage, 'soğuk') !== false ||
+                    stripos($lowerMessage, 'soguk') !== false ||
+                    stripos($lowerMessage, 'souk') !== false ||
+                    stripos($lowerMessage, 'cold') !== false) {
                     $extracted['usage_area'] = 'soğuk depo';
                 }
-                if (stripos($lowerMessage, 'gıda') !== false || stripos($lowerMessage, 'food') !== false) {
+                if (stripos($lowerMessage, 'gıda') !== false ||
+                    stripos($lowerMessage, 'gida') !== false ||
+                    stripos($lowerMessage, 'food') !== false) {
                     $extracted['usage_area'] = 'gıda';
                 }
                 if (stripos($lowerMessage, 'paslanmaz') !== false || stripos($lowerMessage, 'stainless') !== false) {
@@ -524,23 +533,21 @@ class ProductSearchService
 
     /**
      * 🆕 NEW: Category-based search (Priority!)
-     * 🔍 ENHANCED: Tüm category parametrelerini kullanır (capacity, battery, usage area, height, fork dimensions, etc.)
+     * 💡 YENİ YAKLAŞIM: Manuel filtreleme YAPMA! AI'a kategorideki TÜM ürünleri gönder!
+     * AI semantic matching yapacak - "soguk" → "soğuk depo" bağlantısını kendisi kuracak
      */
     protected function searchByCategory(int $categoryId, array $keywords = [], array $extractedParams = []): array
     {
-        // First get products WITHOUT keyword filtering
-        $baseQuery = ShopProduct::where('is_active', true)
-            ->where('category_id', $categoryId);
-
-        $totalInCategory = $baseQuery->count();
-        Log::info('🔎 searchByCategory debug', [
+        Log::info('🔎 searchByCategory - AI-DRIVEN APPROACH', [
             'category_id' => $categoryId,
-            'total_products_in_category' => $totalInCategory,
             'keywords' => $keywords,
-            'extracted_params' => $extractedParams // 🆕 Log extracted params
+            'extracted_params' => $extractedParams,
+            'approach' => 'Send ALL products to AI, let AI do semantic matching!'
         ]);
 
-        // Now apply full filters
+        // 💡 YENİ YAKLAŞIM: Kategorideki TÜM ürünleri AI'a gönder (ilk 50)
+        // AI'ın kendi semantic matching'i var!
+        // "soguk" yazsa bile "soğuk depo" slug'unu bulabilir!
         $query = ShopProduct::where('is_active', true)
             ->where('category_id', $categoryId)
             ->select([
@@ -549,172 +556,22 @@ class ProductSearchService
             ])
             ->with('category:category_id,title,slug');
 
-        // ✅ 1. CAPACITY FILTERING
+        // 💡 YENİ YAKLAŞIM: FİLTRELEME YAPMA!
+        // Kategorideki TÜM ürünleri AL, AI'a GÖNDER!
+        // AI semantic matching yapacak - manuel typo matching gerekmez!
+
+        // SADECE capacity için basit sıralama yap (opsiyonel)
         if (!empty($extractedParams['capacity'])) {
-            $capacityKeyword = $extractedParams['capacity']; // e.g., "2000kg"
-
-            if (preg_match('/(\d+)kg/', $capacityKeyword, $matches)) {
-                $kgValue = $matches[1];
-                $tonValue = $kgValue / 1000; // 2000 → 2, 1500 → 1.5
-
-                $query->where(function($q) use ($tonValue) {
-                    // Search for "2 ton", "2.0 ton", "2 Ton" patterns in title
-                    $q->where('title', 'LIKE', '% ' . $tonValue . ' %ton%')
-                      ->orWhere('title', 'LIKE', '% ' . $tonValue . ' %Ton%')
-                      ->orWhere('title', 'LIKE', '%' . number_format($tonValue, 1) . ' %ton%')
-                      ->orWhere('title', 'LIKE', '%' . number_format($tonValue, 1) . ' %Ton%');
-                });
-
-                Log::info('🔍 Applied CAPACITY filter', ['capacity' => $capacityKeyword, 'ton_value' => $tonValue]);
-            }
+            $query->orderByRaw('CAST(SUBSTRING_INDEX(title, " ", 1) AS UNSIGNED) DESC');
         }
 
-        // ✅ 2. BATTERY TYPE FILTERING (AGM, Li-Ion, kurşun-asit)
-        if (!empty($extractedParams['battery_type'])) {
-            $batteryType = $extractedParams['battery_type'];
+        $results = $query->limit(300)->get()->toArray(); // ← 300 ürün! AI TÜM kategoriyi görecek!
 
-            $query->where(function($q) use ($batteryType) {
-                $q->where('title', 'LIKE', '%' . $batteryType . '%')
-                  ->orWhere('sku', 'LIKE', '%' . $batteryType . '%')
-                  ->orWhere('short_description', 'LIKE', '%' . $batteryType . '%');
-            });
-
-            Log::info('🔍 Applied BATTERY TYPE filter', ['battery_type' => $batteryType]);
-        }
-
-        // ✅ 3. USAGE AREA FILTERING (soğuk depo, gıda, paslanmaz)
-        if (!empty($extractedParams['usage_area'])) {
-            $usageArea = $extractedParams['usage_area'];
-
-            $query->where(function($q) use ($usageArea) {
-                if ($usageArea === 'soğuk depo') {
-                    // Soğuk depo ürünleri genelde "Soğuk" veya "ETC" (Extreme Temperature Conditions) içerir
-                    $q->where('title', 'LIKE', '%Soğuk%')
-                      ->orWhere('title', 'LIKE', '%soğuk%')
-                      ->orWhere('title', 'LIKE', '%ETC%')
-                      ->orWhere('sku', 'LIKE', '%ETC%');
-                } elseif ($usageArea === 'paslanmaz') {
-                    $q->where('title', 'LIKE', '%paslanmaz%')
-                      ->orWhere('title', 'LIKE', '%stainless%')
-                      ->orWhere('sku', 'LIKE', '%SS%'); // Stainless Steel
-                } elseif ($usageArea === 'gıda') {
-                    $q->where('title', 'LIKE', '%gıda%')
-                      ->orWhere('title', 'LIKE', '%food%')
-                      ->orWhere('title', 'LIKE', '%hijyen%');
-                }
-            });
-
-            Log::info('🔍 Applied USAGE AREA filter', ['usage_area' => $usageArea]);
-        }
-
-        // ✅ 4. LIFT HEIGHT FILTERING (3000mm, 4500mm, 6000mm)
-        if (!empty($extractedParams['lift_height']) || !empty($extractedParams['platform_height'])) {
-            $heightKeyword = $extractedParams['lift_height'] ?? $extractedParams['platform_height'];
-
-            // Extract number from "4500mm" or "4500"
-            if (preg_match('/(\d+)/', $heightKeyword, $matches)) {
-                $heightValue = $matches[1]; // e.g., "4500"
-
-                $query->where(function($q) use ($heightValue) {
-                    // Search in title: "4500mm", "4.5m", "450cm"
-                    $q->where('title', 'LIKE', '%' . $heightValue . 'mm%')
-                      ->orWhere('title', 'LIKE', '%' . $heightValue . '%')
-                      ->orWhere('sku', 'LIKE', '%' . $heightValue . '%');
-
-                    // Also check meter representation: 4500mm → 4.5m
-                    if ($heightValue >= 1000) {
-                        $meterValue = $heightValue / 1000; // 4500 → 4.5
-                        $q->orWhere('title', 'LIKE', '%' . $meterValue . 'm%')
-                          ->orWhere('title', 'LIKE', '%' . $meterValue . ' m%');
-                    }
-                });
-
-                Log::info('🔍 Applied LIFT HEIGHT filter', ['height' => $heightKeyword, 'height_value' => $heightValue]);
-            }
-        }
-
-        // ✅ 5. FORK DIMENSIONS FILTERING (1150mm, 1220mm, 540mm, 685mm)
-        if (!empty($extractedParams['fork_length']) || !empty($extractedParams['fork_width'])) {
-            $forkDimension = $extractedParams['fork_length'] ?? $extractedParams['fork_width'];
-
-            // Extract number: "1220mm" → "1220"
-            if (preg_match('/(\d{3,4})/', $forkDimension, $matches)) {
-                $dimensionValue = $matches[1];
-
-                $query->where(function($q) use ($dimensionValue) {
-                    $q->where('title', 'LIKE', '%' . $dimensionValue . 'mm%')
-                      ->orWhere('title', 'LIKE', '%' . $dimensionValue . '%')
-                      ->orWhere('sku', 'LIKE', '%' . $dimensionValue . '%');
-                });
-
-                Log::info('🔍 Applied FORK DIMENSION filter', ['fork_dimension' => $forkDimension]);
-            }
-        }
-
-        // ✅ 6. MAST TYPE FILTERING (duplex, triplex, standart, serbest)
-        if (!empty($extractedParams['mast_type'])) {
-            $mastType = $extractedParams['mast_type'];
-
-            $query->where(function($q) use ($mastType) {
-                $q->where('title', 'LIKE', '%' . $mastType . '%')
-                  ->orWhere('sku', 'LIKE', '%' . $mastType . '%');
-            });
-
-            Log::info('🔍 Applied MAST TYPE filter', ['mast_type' => $mastType]);
-        }
-
-        // ✅ 7. MOTOR TYPE FILTERING (elektrik, dizel, LPG)
-        if (!empty($extractedParams['motor_type'])) {
-            $motorType = $extractedParams['motor_type'];
-
-            $query->where(function($q) use ($motorType) {
-                $q->where('title', 'LIKE', '%' . $motorType . '%')
-                  ->orWhere('sku', 'LIKE', '%' . $motorType . '%');
-            });
-
-            Log::info('🔍 Applied MOTOR TYPE filter', ['motor_type' => $motorType]);
-        }
-
-        // ✅ 8. CORRIDOR WIDTH FILTERING (dar koridor)
-        if (!empty($extractedParams['corridor_width'])) {
-            $corridorWidth = $extractedParams['corridor_width'];
-
-            $query->where(function($q) use ($corridorWidth) {
-                if ($corridorWidth === 'dar koridor') {
-                    $q->where('title', 'LIKE', '%dar koridor%')
-                      ->orWhere('title', 'LIKE', '%reach%')
-                      ->orWhere('title', 'LIKE', '%Reach%');
-                }
-            });
-
-            Log::info('🔍 Applied CORRIDOR WIDTH filter', ['corridor_width' => $corridorWidth]);
-        }
-
-        // ✅ 9. OPERATOR TYPE FILTERING (yürüyen, sürücülü, platform)
-        if (!empty($extractedParams['operator_type'])) {
-            $operatorType = $extractedParams['operator_type'];
-
-            $query->where(function($q) use ($operatorType) {
-                if ($operatorType === 'yürüyen') {
-                    $q->where('title', 'LIKE', '%Yürüyen%')
-                      ->orWhere('title', 'LIKE', '%yürüyen%')
-                      ->orWhere('title', 'LIKE', '%pedestrian%');
-                } elseif ($operatorType === 'sürücülü') {
-                    $q->where('title', 'LIKE', '%Sürücülü%')
-                      ->orWhere('title', 'LIKE', '%sürücülü%')
-                      ->orWhere('title', 'LIKE', '%platform%')
-                      ->orWhere('title', 'LIKE', '%Platform%');
-                }
-            });
-
-            Log::info('🔍 Applied OPERATOR TYPE filter', ['operator_type' => $operatorType]);
-        }
-
-        $results = $query->limit(10)->get()->toArray();
-
-        Log::info('🔎 searchByCategory results', [
-            'results_count' => count($results),
-            'filters_applied' => array_keys($extractedParams)
+        Log::info('🤖 AI-DRIVEN SEARCH - ALL products sent to AI!', [
+            'category_id' => $categoryId,
+            'total_sent_to_AI' => count($results),
+            'user_request_params' => $extractedParams,
+            'note' => 'AI sees ALL category products - will do semantic matching!'
         ]);
 
         return $results;

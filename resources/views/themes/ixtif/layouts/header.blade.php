@@ -140,9 +140,37 @@
             to { opacity: 1; }
         }
 
-        /* Global Font - Poppins */
-        body {
-            font-family: 'Poppins', sans-serif !important;
+        /* Global Font - Poppins (Font Awesome hariç) */
+        :root {
+            --global-font: 'Poppins', sans-serif;
+        }
+
+        *:not([class*="fa-"]):not(i) {
+            font-family: var(--global-font) !important;
+        }
+
+        /* Smooth Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header Sticky Animation */
+        header {
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        /* Header yukarı kayar - top bar gizlenir */
+        #main-header {
+            transform: translateY(0);
+        }
+        #main-header.scrolled {
+            transform: translateY(calc(var(--top-bar-height, 52px) * -1));
+        }
+
+        /* Main nav scroll */
+        #main-header.scrolled #main-nav {
+            /* Shadow kaldırıldı - temiz tasarım için */
         }
     </style>
 
@@ -200,6 +228,50 @@
                 }, 2000);
             });
         }
+
+        // Font Switcher Function
+        function fontSwitcher() {
+            return {
+                open: false,
+                current: 'Poppins',
+                index: 0,
+                fonts: ['Inter','Poppins','Roboto','Open Sans','Lato','Montserrat','Nunito','Raleway','Outfit','Space Grotesk','Manrope','DM Sans','Plus Jakarta Sans','Quicksand','Work Sans','Rubik','Ubuntu','Lexend','Red Hat Display','Sora','Epilogue','Archivo','Figtree','Urbanist','IBM Plex Sans','Source Sans 3','Jost','Barlow','Heebo','Noto Sans'],
+                initFont() {
+                    const saved = localStorage.getItem('selectedFont');
+                    if (saved && this.fonts.includes(saved)) {
+                        this.current = saved;
+                        this.index = this.fonts.indexOf(saved);
+                    }
+                    this.applyFont(this.current);
+                },
+                selectFont(font) {
+                    this.current = font;
+                    this.index = this.fonts.indexOf(font);
+                    this.applyFont(font);
+                    localStorage.setItem('selectedFont', font);
+                },
+                nextFont() {
+                    this.index = (this.index + 1) % this.fonts.length;
+                    this.current = this.fonts[this.index];
+                    this.applyFont(this.current);
+                    localStorage.setItem('selectedFont', this.current);
+                },
+                prevFont() {
+                    this.index = (this.index - 1 + this.fonts.length) % this.fonts.length;
+                    this.current = this.fonts[this.index];
+                    this.applyFont(this.current);
+                    localStorage.setItem('selectedFont', this.current);
+                },
+                applyFont(font) {
+                    const ff = '"' + font + '", sans-serif';
+                    document.documentElement.style.setProperty('--global-font', ff);
+                    const selector = '*:not([class*="fa-"]):not(i)';
+                    document.querySelectorAll(selector).forEach(function(el) {
+                        el.style.setProperty('font-family', ff, 'important');
+                    });
+                }
+            }
+        }
     </script>
 
     {{-- Custom Gradient Utilities - Tailwind JIT Dark Mode Fix --}}
@@ -213,35 +285,36 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 flex flex-col pt-[120px]">
+<body class="font-sans antialiased min-h-screen
+    bg-gradient-to-br from-slate-50 via-white to-gray-50
+    dark:bg-gradient-to-br dark:from-indigo-900 dark:via-slate-900 dark:to-indigo-900
+    text-gray-900 dark:text-gray-100
+    transition-all duration-500 flex flex-col">
 
-    {{-- NEW MEGA MENU HEADER --}}
-    <header x-data="{
+
+    <header id="main-header" x-data="{
         sidebarOpen: false,
         mobileMenuOpen: false,
         expandedCategory: null,
         activeMegaMenu: null,
         searchOpen: false,
-        activeCategory: 'first',
-        scrolled: false
+        activeCategory: 'first'
     }"
-    @scroll.window="scrolled = window.pageYOffset > 50"
-    class="fixed top-0 left-0 right-0 z-[100]">
+    class="sticky top-0 left-0 right-0 z-50">
 
-        {{-- Top Info Bar - Hidden when scrolled --}}
-        <div class="border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300"
-             :class="scrolled ? 'h-0 opacity-0 overflow-hidden' : 'h-auto opacity-100'">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between text-sm py-2">
+        {{-- Top Info Bar - Scroll'da kaybolacak --}}
+        <div id="top-bar" class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between text-sm py-3">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
                         {{-- Telefon (Tıklanabilir) --}}
-                        <a href="tel:02167553555" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2 text-xs sm:text-sm font-semibold">
+                        <a href="tel:02167553555" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2 text-sm font-medium">
                             <i class="fa-solid fa-phone"></i>
                             <span>0216 755 3 555</span>
                         </a>
 
                         {{-- WhatsApp (Tıklanabilir) --}}
-                        <a href="https://wa.me/905010056758" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-xs sm:text-sm font-semibold">
+                        <a href="https://wa.me/905010056758" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
                             <i class="fa-brands fa-whatsapp text-base"></i>
                             <span>0501 005 67 58</span>
                         </a>
@@ -330,7 +403,7 @@
                                  x-transition:leave="transition ease-in duration-75"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
-                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                                 class="dropdown-content absolute top-full mt-2 w-44 bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg rounded-lg border border-gray-300 dark:border-white/20 py-1 z-50">
 
                                 @if(count($languageSwitcherLinks) > 0)
                                     @php
@@ -350,7 +423,7 @@
 
                                     @foreach($languageSwitcherLinks as $locale => $link)
                                         <a href="{{ $link['url'] }}"
-                                           class="w-full flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ $link['active'] ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : '' }}">
+                                           class="w-full flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 {{ $link['active'] ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : '' }}">
                                             <span class="mr-2 text-base">{{ $languageData[$locale]['flag'] ?? '🌐' }}</span>
                                             <span class="flex-1 text-left">{{ $languageData[$locale]['name'] ?? $link['name'] }}</span>
                                             @if($link['active'])
@@ -367,80 +440,48 @@
             </div>
         </div>
 
-        {{-- Main Menu Bar - Shrinks when scrolled --}}
-        <nav class="bg-white dark:bg-gray-800 shadow-lg relative transition-all duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between transition-all duration-300"
-                     :class="scrolled ? 'py-2' : 'py-4'">
-                    {{-- Logo --}}
-                    <div class="flex items-center gap-3">
-                        <a href="{{ url('/') }}" class="flex items-center gap-3">
+        {{-- Main Menu Bar - Sticky olarak kalacak --}}
+        <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div id="nav-container" class="flex items-center justify-between py-4">
+                    {{-- Logo - Sabit Genişlik Container --}}
+                    <div class="flex items-center gap-3" style="width: 200px;">
+                        <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
                             @php
-                                $siteLogo = setting('site_logo');
-                                $siteLogoDark = setting('site_logo_dark');
+                                // LogoService kullan - daha temiz ve bakımı kolay
+                                $logoService = app(\App\Services\LogoService::class);
+                                $logos = $logoService->getLogos();
 
-                                // Logo URL'lerini oluştur
-                                $logoUrl = null;
-                                $logoDarkUrl = null;
-
-                                if ($siteLogo && $siteLogo !== 'Logo yok') {
-                                    // Eğer zaten tam URL ise olduğu gibi kullan
-                                    if (preg_match('#^https?://#', $siteLogo)) {
-                                        $logoUrl = $siteLogo;
-                                    } else {
-                                        // Storage path'i URL'e çevir
-                                        $logoUrl = asset($siteLogo);
-                                    }
-                                }
-
-                                if ($siteLogoDark && $siteLogoDark !== 'Logo yok') {
-                                    if (preg_match('#^https?://#', $siteLogoDark)) {
-                                        $logoDarkUrl = $siteLogoDark;
-                                    } else {
-                                        $logoDarkUrl = asset($siteLogoDark);
-                                    }
-                                } else {
-                                    // Dark logo yoksa, beyaz logoyu kullan (iXtif için özel)
-                                    $whiteLogo = 'storage/tenant2/settings/55/ixtif-Logo-kadir-turuncu-beyaz.png';
-                                    if (file_exists(public_path($whiteLogo))) {
-                                        $logoDarkUrl = asset($whiteLogo);
-                                    }
-                                }
+                                $logoUrl = $logos['light_logo_url'] ?? null;
+                                $logoDarkUrl = $logos['dark_logo_url'] ?? null;
+                                $fallbackMode = $logos['fallback_mode'] ?? 'none';
                             @endphp
-                            @if($logoUrl)
-                                {{-- Light mode logo --}}
+                            @if($fallbackMode === 'both')
+                                {{-- Her iki logo da var - Direkt göster --}}
                                 <img src="{{ $logoUrl }}"
-                                     alt="{{ setting('site_name') ?? 'iXtif' }}"
-                                     class="dark:hidden transition-all duration-300"
-                                     :class="scrolled ? 'h-8 sm:h-10 w-[180px]' : 'h-12 sm:h-14 w-[180px]'"
-                                     style="object-fit: contain;"
-                                     onerror="console.error('Logo load failed:', this.src); this.style.display='none';">
-
-                                {{-- Dark mode logo --}}
-                                @if($logoDarkUrl)
-                                    <img src="{{ $logoDarkUrl }}"
-                                         alt="{{ setting('site_name') ?? 'iXtif' }}"
-                                         class="hidden dark:block transition-all duration-300"
-                                         :class="scrolled ? 'h-8 sm:h-10 w-[180px]' : 'h-12 sm:h-14 w-[180px]'"
-                                         style="object-fit: contain;"
-                                         onerror="console.error('Dark logo load failed:', this.src); this.style.display='none';">
-                                @else
-                                    {{-- Fallback: Light logo with filter in dark mode --}}
-                                    <img src="{{ $logoUrl }}"
-                                         alt="{{ setting('site_name') ?? 'iXtif' }}"
-                                         class="hidden dark:block brightness-0 invert opacity-90 transition-all duration-300"
-                                         :class="scrolled ? 'h-8 sm:h-10 w-[180px]' : 'h-12 sm:h-14 w-[180px]'"
-                                         style="object-fit: contain;"
-                                         onerror="console.error('Dark logo fallback failed:', this.src); this.style.display='none';">
-                                @endif
+                                     alt="{{ $logos['site_title'] }}"
+                                     class="dark:hidden object-contain h-10 w-auto">
+                                <img src="{{ $logoDarkUrl }}"
+                                     alt="{{ $logos['site_title'] }}"
+                                     class="hidden dark:block object-contain h-10 w-auto">
+                            @elseif($fallbackMode === 'light_only' || $logoUrl)
+                                {{-- Sadece light logo var - Her modda göster --}}
+                                <img src="{{ $logoUrl }}"
+                                     alt="{{ $logos['site_title'] ?? setting('site_name') }}"
+                                     class="block object-contain h-10 w-auto">
+                            @elseif($fallbackMode === 'dark_only' || $logoDarkUrl)
+                                {{-- Sadece dark logo var - Her modda göster --}}
+                                <img src="{{ $logoDarkUrl }}"
+                                     alt="{{ $logos['site_title'] ?? setting('site_name') }}"
+                                     class="block object-contain h-10 w-auto">
                             @else
                                 <div class="flex items-center gap-2">
-                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                                        <i class="fa-solid fa-forklift text-white text-2xl"></i>
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center">
+                                        <i class="fa-solid fa-forklift text-white text-xl"></i>
                                     </div>
                                     <div>
-                                        <h1 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">iXtif</h1>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Türkiye'nin İstif Pazarı</p>
+                                        <h1 class="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">iXtif</h1>
+                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">Türkiye'nin İstif Pazarı</p>
                                     </div>
                                 </div>
                             @endif
@@ -509,11 +550,11 @@
                                         <div x-show="open"
                                              @click.away="open = false"
                                              x-transition
-                                             class="dropdown-content absolute top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                                             class="dropdown-content absolute top-full mt-2 w-48 bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg rounded-lg border border-gray-300 dark:border-white/20 py-2 z-50">
                                             @foreach($menuItem['children'] as $child)
                                                 <a href="{{ $child['url'] }}"
                                                    {{ $child['target'] === '_blank' ? 'target="_blank"' : '' }}
-                                                   class="block px-4 py-2 text-sm {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                   class="block px-4 py-2 text-sm {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400' }}">
                                                     @if($child['icon'])
                                                         <i class="{{ $child['icon'] }} mr-2"></i>
                                                     @endif
@@ -539,14 +580,14 @@
                     {{-- Right Actions --}}
                     <div class="flex items-center gap-2">
                         <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
-                                class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 transition">
+                                class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
                             <i class="fa-solid text-lg transition-all duration-200"
                                :class="searchOpen ? 'fa-search-minus' : 'fa-search-plus'"></i>
                         </button>
 
                         {{-- Dark/Light Mode Toggle --}}
                         <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
-                            class="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 transition">
+                            class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
                             <template x-if="darkMode === 'dark'">
                                 <i class="fa-solid fa-sun text-lg"></i>
                             </template>
@@ -555,12 +596,58 @@
                             </template>
                         </button>
 
+                        {{-- Font Switcher --}}
+                        <div x-data="fontSwitcher()" x-init="initFont()" class="hidden md:flex items-center gap-1">
+                            {{-- Prev Button --}}
+                            <button @click="prevFont()"
+                                class="w-8 h-8 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                <i class="fa-solid fa-chevron-left text-sm"></i>
+                            </button>
+
+                            {{-- Font Dropdown --}}
+                            <div class="relative">
+                                <button @click="open = !open"
+                                    class="px-3 h-8 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-300 dark:border-gray-600">
+                                    <i class="fa-solid fa-font text-sm"></i>
+                                    <span class="text-xs font-medium" x-text="current"></span>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="{'rotate-180': open}"></i>
+                                </button>
+
+                                <div x-show="open" @click.away="open = false"
+                                    x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-100"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute top-full mt-2 right-0 w-56 bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-gray-600 z-50 max-h-96 overflow-y-auto"
+                                    style="display: none;">
+                                    <div class="py-2">
+                                        <template x-for="f in fonts" :key="f">
+                                            <button @click="selectFont(f); open = false"
+                                                class="w-full text-left px-4 py-2 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 transition flex items-center justify-between"
+                                                :class="{'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400': current === f}">
+                                                <span x-text="f"></span>
+                                                <i x-show="current === f" class="fa-solid fa-check text-xs"></i>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Next Button --}}
+                            <button @click="nextFont()"
+                                class="w-8 h-8 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                <i class="fa-solid fa-chevron-right text-sm"></i>
+                            </button>
+                        </div>
+
                         {{-- AUTH CONTROL VIA LIVEWIRE --}}
                         @livewire('auth.header-menu')
 
                         {{-- Mobile Menu Button --}}
                         <button @click="mobileMenuOpen = !mobileMenuOpen"
-                                class="lg:hidden w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 flex items-center justify-center text-white shadow-md hover:shadow-lg transition-all duration-300">
+                                class="lg:hidden w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 flex items-center justify-center text-white transition-all duration-300">
                             <i class="fa-solid text-lg transition-all duration-300"
                                :class="mobileMenuOpen ? 'fa-times rotate-90' : 'fa-bars'"></i>
                         </button>
@@ -578,15 +665,15 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700"
+                     class="bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20"
                      x-cloak>
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
                         <div class="relative">
                             <input type="text"
-                                   placeholder="Ürün, kategori veya marka arayın..."
-                                   class="w-full bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-full px-6 py-3 pl-12 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition text-gray-800 dark:text-gray-200">
-                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition">
+                                   placeholder="Ne aramak istersiniz?"
+                                   class="w-full bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-full px-6 py-3 pl-12 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 dark:text-blue-400"></i>
+                            <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-700 hover:to-purple-700 transition">
                                 Ara
                             </button>
                         </div>
@@ -602,9 +689,9 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700"
+                     class="bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20"
                      x-cloak>
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                         <div style="display: grid;">
                             {{-- Forklift Mega Menu --}}
@@ -667,7 +754,7 @@
         {{-- Mobile Navigation Menu --}}
         <div x-show="mobileMenuOpen"
              x-transition
-             class="lg:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mobile-nav-container">
+             class="lg:hidden bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20 mobile-nav-container">
             <div class="px-4 py-3 space-y-1 max-w-full overflow-x-hidden">
                 @php
                     // Mobile için ana kategoriler ve alt kategoriler
@@ -712,7 +799,7 @@
                         {{-- Ana Kategori Başlığı --}}
                         <div class="flex items-center gap-2">
                             <button @click="categoryOpen = !categoryOpen"
-                                    class="flex-1 flex items-center justify-between px-3 py-2 rounded-md text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                    class="flex-1 flex items-center justify-between px-3 py-2 rounded-md text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition">
                                 <span class="flex items-center gap-2">
                                     <i class="{{ $cat['icon'] }} text-sm"></i>
                                     <span>{{ $cat['name'] }}</span>
@@ -740,7 +827,7 @@
                             @foreach($cat['subcategories'] as $sub)
                                 <a href="{{ route('shop.index') }}?category={{ $sub['slug'] }}"
                                    @click="mobileMenuOpen = false"
-                                   class="block px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition">
+                                   class="block px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 rounded-md transition">
                                     {{ $sub['name'] }}
                                 </a>
                             @endforeach
@@ -781,7 +868,7 @@
                                     @foreach($menuItem['children'] as $child)
                                         <a href="{{ $child['url'] }}"
                                            @click="mobileMenuOpen = false"
-                                           class="block px-3 py-2 text-sm rounded-md {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400' }}">
+                                           class="block px-3 py-2 text-sm rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400' }}">
                                             {{ $child['title'] }}
                                         </a>
                                     @endforeach
@@ -803,6 +890,37 @@
         </div>
     </header>
 
+    {{-- Simple Scroll Handler --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('main-header');
+            const topBar = document.getElementById('top-bar');
+
+            if (!header || !topBar) {
+                console.error('Header elements not found!');
+                return;
+            }
+
+            // Top bar height'ı hesapla
+            const topBarHeight = topBar.offsetHeight;
+            console.log('Top bar height:', topBarHeight + 'px');
+
+            // CSS variable olarak ekle
+            document.documentElement.style.setProperty('--top-bar-height', topBarHeight + 'px');
+
+            window.addEventListener('scroll', function() {
+                const currentScroll = window.pageYOffset;
+
+                if (currentScroll > 30) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            console.log('✅ Sticky header initialized');
+        });
+    </script>
 
     {{-- Dynamic Content Areas --}}
     @stack('header-content')

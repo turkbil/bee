@@ -3,10 +3,10 @@
  * Frontend için tenant bağımsız stil dosyası
  */
 
-// Tailwind CSS imports
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+// Tailwind CSS directives - PostCSS will process these
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 // Variables
 :root {

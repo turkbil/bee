@@ -65,6 +65,7 @@ class AISettingsHelper
             'phone' => setting('ai_contact_phone', null),
             'whatsapp' => setting('ai_contact_whatsapp', null),
             'email' => setting('ai_contact_email', null),
+            'telegram' => setting('ai_social_telegram', null),
             'address' => setting('ai_contact_address', null),
             'city' => setting('ai_contact_city', null),
             'country' => setting('ai_contact_country', null),
@@ -312,6 +313,18 @@ class AISettingsHelper
         }
         if (!empty($contact['email'])) {
             $prompt[] = "E-posta: [{$contact['email']}](mailto:{$contact['email']})";
+        }
+        if (!empty($contact['telegram'])) {
+            // Handle telegram format (@username or https://t.me/username)
+            $telegramLink = $contact['telegram'];
+            if (strpos($telegramLink, '@') === 0) {
+                $username = ltrim($telegramLink, '@');
+                $prompt[] = "Telegram: [" . $telegramLink . "](https://t.me/{$username})";
+            } elseif (strpos($telegramLink, 'https://') === 0 || strpos($telegramLink, 'http://') === 0) {
+                $prompt[] = "Telegram: [" . $telegramLink . "](" . $telegramLink . ")";
+            } else {
+                $prompt[] = "Telegram: " . $telegramLink;
+            }
         }
         if (!empty($contact['address'])) {
             $prompt[] = "Adres: {$contact['address']}";

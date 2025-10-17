@@ -269,6 +269,18 @@ class AISettingsSeeder extends Seeder
                 'is_required' => false,
                 'help_text' => 'Instagram sayfanızın URL\'si. Boş bırakılabilir.',
             ],
+            [
+                'group_id' => $groupId,
+                'label' => 'Telegram',
+                'key' => 'ai_social_telegram',
+                'type' => 'text',
+                'default_value' => '',
+                'sort_order' =>  18.5,
+                'is_active' => true,
+                'is_system' => false,
+                'is_required' => false,
+                'help_text' => 'Telegram kullanıcı adınız veya grup linkiniz (örn: @firmaismi veya https://t.me/firmaismi). Boş bırakılabilir.',
+            ],
 
             // ==================== YANITLAMA TARZI ====================
             [

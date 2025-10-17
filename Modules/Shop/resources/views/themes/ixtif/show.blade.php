@@ -238,7 +238,7 @@
                     style="animation-delay: 2s;"></div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
                         <div class="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
@@ -293,7 +293,7 @@
             class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed left-0 right-0 transition-all duration-300"
             :class="scrolled ? 'top-14 z-40' : 'top-[120px] z-40'"
             style="z-index: 40;">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300"
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300"
                  :class="scrolled ? 'py-1.5' : 'py-2'">
                 <div class="flex items-center">
                     <div
@@ -381,7 +381,7 @@
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style="padding-top: 80px;">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8" style="padding-top: 80px;">
             <div class="grid lg:grid-cols-3 gap-8 items-start">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div class="lg:col-span-2 min-h-screen">
@@ -1053,7 +1053,7 @@
 
     {{-- Trust Signals - Modern 4 Column (Before Contact Form) --}}
     <section id="trust-signals" class="relative mt-16 scroll-mt-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div
                 class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
@@ -1109,7 +1109,7 @@
             </div>
         </div>
 
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+        <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
             <div class="flex flex-col md:flex-row gap-8 items-start">
                 {{-- SOL: FORM (7/12) --}}
                 <div class="w-full md:w-7/12">
@@ -1186,40 +1186,99 @@
                 <div class="w-full md:w-5/12 space-y-8">
                     {{-- İletişim Bilgileri --}}
                     <a href="tel:02167553555"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-blue-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-blue-400 hover:shadow-lg cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/20 dark:bg-white/10 backdrop-blur-md hover:bg-white/30 dark:hover:bg-white/20 rounded-2xl transition-all duration-300 border border-white/30 hover:border-white/50 cursor-pointer">
                         <div
-                            class="w-14 h-14 bg-white rounded-xl flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-all duration-300">
-                            <i class="fa-solid fa-phone text-blue-600 text-xl group-hover:animate-pulse"></i>
+                            class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300">
+                            <i class="fa-solid fa-phone text-white text-xl group-hover:animate-pulse"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">Telefon</div>
-                            <div class="text-xl font-bold text-white">0216 755 3 555</div>
+                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1 font-semibold">Telefon</div>
+                            <div class="text-sm text-white">Hemen arayın</div>
+                            <div class="text-lg font-bold text-white mt-1">0216 755 3 555</div>
                         </div>
                     </a>
 
                     <a href="https://wa.me/905010056758" target="_blank"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-green-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-green-400 hover:shadow-lg cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/20 dark:bg-white/10 backdrop-blur-md hover:bg-white/30 dark:hover:bg-white/20 rounded-2xl transition-all duration-300 border border-white/30 hover:border-white/50 cursor-pointer">
                         <div
-                            class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-600 transition-all duration-300">
+                            class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300">
                             <i class="fa-brands fa-whatsapp text-white text-xl group-hover:animate-pulse"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">WhatsApp</div>
-                            <div class="text-xl font-bold text-white">0501 005 67 58</div>
+                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1 font-semibold">WhatsApp</div>
+                            <div class="text-sm text-white">Anında mesajlaşın</div>
+                            <div class="text-lg font-bold text-white mt-1">0501 005 67 58</div>
                         </div>
                     </a>
 
                     <a href="mailto:info@ixtif.com"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-purple-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-purple-400 hover:shadow-lg cursor-pointer">
+                        class="group flex items-start gap-4 p-6 bg-white/20 dark:bg-white/10 backdrop-blur-md hover:bg-white/30 dark:hover:bg-white/20 rounded-2xl transition-all duration-300 border border-white/30 hover:border-white/50 cursor-pointer">
                         <div
-                            class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-purple-600 transition-all duration-300">
+                            class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300">
                             <i class="fa-solid fa-envelope text-white text-xl group-hover:animate-pulse"></i>
                         </div>
                         <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">E-posta</div>
-                            <div class="text-lg font-bold text-white break-all">info@ixtif.com</div>
+                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1 font-semibold">E-posta</div>
+                            <div class="text-sm text-white">Mail gönderin</div>
+                            <div class="text-base font-bold text-white break-all mt-1">info@ixtif.com</div>
                         </div>
                     </a>
+
+                    {{-- AI Canlı Destek Kutusu --}}
+                    <div class="bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/30 hover:border-white/50 transition-all cursor-pointer"
+                         onclick="handleAIChatClick()">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-robot text-cyan-300 text-2xl"></i>
+                            </div>
+                            <div>
+                                <span class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-white text-xs font-semibold rounded-full mb-2 italic border border-white/20">
+                                    <i class="fa-solid fa-sparkles mr-1.5 text-yellow-300"></i>
+                                    Yapay Zeka Destekli
+                                </span>
+                                <div class="text-base font-bold text-white mb-1">Canlı Destek</div>
+                                <div class="text-sm text-blue-100">
+                                    <i class="fa-solid fa-comments mr-1"></i> Sohbete Başla
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                    function handleAIChatClick() {
+                        // Hero section'daki AI chat widget'ını kontrol et
+                        const chatWidget = document.querySelector('.ai-inline-widget, [x-data*="aiInlineWidget"]');
+
+                        if (!chatWidget) {
+                            // Widget bulunamadıysa hero section'a scroll yap
+                            window.scrollTo({top: 0, behavior: 'smooth'});
+                            return;
+                        }
+
+                        // Chat açık mı kontrol et
+                        const isOpen = chatWidget.classList.contains('open') ||
+                                      chatWidget.querySelector('[x-show="isOpen"]')?.style.display !== 'none';
+
+                        // Chat input alanını bul
+                        const chatInput = chatWidget.querySelector('textarea, input[type="text"]');
+                        const hasMessages = chatWidget.querySelectorAll('.message, [class*="message"]').length > 1;
+
+                        if (isOpen && !hasMessages && chatInput) {
+                            // Chat açık, mesaj yok ve input küçükse -> inputa tıkla (büyüt)
+                            chatInput.focus();
+                            chatInput.click();
+                        } else if (!isOpen) {
+                            // Chat kapalıysa -> aç
+                            const openButton = chatWidget.querySelector('button[x-on\\:click*="isOpen"], button[onclick*="open"]');
+                            if (openButton) {
+                                openButton.click();
+                            }
+                        }
+
+                        // Her durumda chat widget'a scroll yap
+                        chatWidget.scrollIntoView({behavior: 'smooth', block: 'center'});
+                    }
+                    </script>
 
                     {{-- Info Box --}}
                     <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
@@ -1230,29 +1289,29 @@
                             </p>
                         </div>
                         <div class="grid grid-cols-3 gap-3">
-                            <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
+                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
                                 <i class="fa-solid fa-box text-blue-200 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">Sıfır</div>
+                                <div class="text-xs font-semibold text-white">Satın Alma</div>
                             </div>
-                            <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
+                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
+                                <i class="fa-solid fa-key text-yellow-300 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-white">Kiralama</div>
+                            </div>
+                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
                                 <i class="fa-solid fa-recycle text-green-300 text-xl mb-2"></i>
                                 <div class="text-xs font-semibold text-white">İkinci El</div>
                             </div>
-                            <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-key text-yellow-300 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">Kiralık</div>
-                            </div>
-                            <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
+                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
                                 <i class="fa-solid fa-gears text-orange-300 text-xl mb-2"></i>
                                 <div class="text-xs font-semibold text-white">Yedek Parça</div>
                             </div>
-                            <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
+                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
                                 <i class="fa-solid fa-wrench text-purple-300 text-xl mb-2"></i>
                                 <div class="text-xs font-semibold text-white">Teknik Servis</div>
                             </div>
-                            <div class="text-center p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-shield-halved text-red-300 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-white">Bakım</div>
+                            <div class="text-center p-3 bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl border border-white/30 hover:bg-white/30 dark:hover:bg-white/20 transition-all">
+                                <i class="fa-solid fa-robot text-cyan-300 text-xl mb-2"></i>
+                                <div class="text-xs font-semibold text-white">AI Canlı Destek</div>
                             </div>
                         </div>
                     </div>

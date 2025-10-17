@@ -14,22 +14,19 @@
         <!-- Header -->
         <div class="relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
-            <div class="relative py-20">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative py-12">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="max-w-3xl">
-                        <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
+                        <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
                             {{ $moduleTitle ?? __('shop::front.general.shops') }}
                         </h1>
-                        <p class="text-lg text-gray-600 dark:text-gray-400">
-                            Bilgi sayfalarımızı keşfedin
-                        </p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="py-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 @if ($products->count() > 0)
 
                     <!-- Grid: 2 kolon (her satırda 2 ürün) -->
@@ -68,40 +65,40 @@
                                 $featuredImage = $item->getFirstMedia('featured_image');
                             @endphp
 
-                            <!-- Ürün Kartı -->
-                            <article class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all border border-gray-200 dark:border-gray-700 overflow-hidden">
+                            <!-- Ürün Kartı - Glassmorphism -->
+                            <article class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-2xl border border-white/30 dark:border-white/10 transition-all overflow-hidden">
 
                                 <!-- İçerik: 2 kolon (Sol: Ana Ürün, Sağ: Varyantlar) -->
                                 <div class="grid grid-cols-1 md:grid-cols-2">
 
                                     <!-- SOL: ANA ÜRÜN -->
-                                    <a href="{{ $dynamicUrl }}" class="block bg-gray-50 dark:bg-gray-900 p-6 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-r border-gray-200 dark:border-gray-700">
+                                    <a href="{{ $dynamicUrl }}" class="block bg-white/20 dark:bg-white/5 p-6 hover:bg-white/30 dark:hover:bg-white/10 transition-colors">
 
                                         @if ($featuredImage)
-                                            <div class="aspect-square mb-4 rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm">
+                                            <div class="aspect-square mb-4 rounded-xl overflow-hidden bg-white/50 dark:bg-white/10 shadow-md backdrop-blur-sm">
                                                 <img src="{{ $featuredImage->hasGeneratedConversion('thumb') ? $featuredImage->getUrl('thumb') : $featuredImage->getUrl() }}"
                                                     alt="{{ $title }}"
                                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                                             </div>
                                         @endif
 
-                                        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
                                             {{ $title }}
                                         </h2>
 
                                         @if ($description)
-                                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                                            <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
                                                 {{ Str::limit($description, 120) }}
                                             </p>
                                         @endif
                                     </a>
 
                                     <!-- SAĞ: VARYANTLAR -->
-                                    <div class="bg-white dark:bg-gray-800 p-6">
+                                    <div class="bg-white/20 dark:bg-white/5 p-6">
                                         @if ($variants->count() > 0)
-                                            <div class="text-sm font-bold text-gray-900 dark:text-white mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                                            <div class="text-sm font-semibold text-gray-900 dark:text-white mb-4 pb-3 border-b border-white/20 dark:border-white/10">
                                                 <i class="fa-solid fa-layer-group text-blue-600 dark:text-blue-400 mr-2"></i>
-                                                Varyantlar <span class="text-gray-500 dark:text-gray-400 font-normal">({{ $variants->count() }})</span>
+                                                Varyantlar <span class="text-gray-600 dark:text-gray-400 font-normal">({{ $variants->count() }})</span>
                                             </div>
                                             <ul class="space-y-2 max-h-[280px] overflow-y-auto">
                                                 @foreach ($variants as $variant)
@@ -111,7 +108,7 @@
                                                     @endphp
                                                     <li>
                                                         <a href="{{ $variantUrl }}"
-                                                            class="group flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 p-2 rounded-lg transition-all">
+                                                            class="group flex items-start gap-2 text-sm text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/30 dark:hover:bg-white/10 p-2 rounded-lg transition-all">
                                                             <i class="fa-solid fa-angle-right text-xs mt-1 group-hover:translate-x-1 transition-transform"></i>
                                                             <span class="flex-1">{{ $variantTitle }}</span>
                                                         </a>
@@ -119,7 +116,7 @@
                                                 @endforeach
                                             </ul>
                                         @else
-                                            <div class="flex flex-col items-center justify-center h-full text-center text-gray-400 dark:text-gray-500 py-12">
+                                            <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 py-12">
                                                 <i class="fa-solid fa-inbox text-3xl mb-2 opacity-50"></i>
                                                 <p class="text-sm">Varyant bulunmuyor</p>
                                             </div>

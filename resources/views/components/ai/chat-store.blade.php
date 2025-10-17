@@ -572,7 +572,19 @@ window.aiChatRenderMarkdown = function(content) {
     // 🚀 MARKDOWN → HTML CONVERSION (AI artık Markdown kullanıyor!)
 
     // 1. Liste dönüşümü: "- item" → <ul><li>item</li></ul>
-    // Ardışık "- " satırlarını tespit et ve <ul> ile wrap et
+    // IMPROVED: Hem yeni satırlardaki hem aynı satırdaki tireleri algıla
+
+    // 1A. Önce aynı satırdaki yan yana tireleri yeni satırlara böl
+    // "Ürünler: - A - B - C" → "Ürünler:\n- A\n- B\n- C"
+    html = html.replace(/([.:])\s*-\s+([^-]+?)(?=\s+-\s+|\s*$)/g, function(match, punctuation, text) {
+        // İlk tire: paragraftan sonra yeni satıra
+        return punctuation + '\n- ' + text.trim();
+    });
+
+    // 1B. Kalan yan yana tireleri de ayır: " - item" → "\n- item"
+    html = html.replace(/\s+-\s+([^-\n]+?)(?=\s+-|\n|$)/g, '\n- $1');
+
+    // 1C. Ardışık "- " satırlarını tespit et ve <ul> ile wrap et
     html = html.replace(/((?:^|\n)- .+(?:\n- .+)*)/gm, function(match) {
         // Her "- item" satırını <li>item</li>'ye çevir
         let items = match.split('\n').filter(line => line.trim().startsWith('- '));
@@ -817,14 +829,14 @@ window.aiChatRenderMarkdown = function(content) {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors font-bold">${text}</a>`;
     });
 
-    // 2. <ul> listelerine Tailwind class ekle
-    html = html.replace(/<ul>/gi, '<ul class="space-y-2.5 my-3 mb-5 ml-4 list-none">');
+    // 2. <ul> listelerine Tailwind class ekle (COMPACT: dar alan için optimize)
+    html = html.replace(/<ul>/gi, '<ul class="space-y-1 my-2 pl-5 list-disc">');
 
-    // 3. <ol> listelerine Tailwind class ekle
-    html = html.replace(/<ol>/gi, '<ol class="space-y-2.5 my-3 mb-5 ml-4 list-decimal">');
+    // 3. <ol> listelerine Tailwind class ekle (COMPACT)
+    html = html.replace(/<ol>/gi, '<ol class="space-y-1 my-2 pl-5 list-decimal">');
 
-    // 4. <li> elementlerine class ekle + bullet point
-    html = html.replace(/<li>/gi, '<li class="ml-3 text-gray-800 dark:text-gray-200 leading-relaxed">• ');
+    // 4. <li> elementlerine class ekle (COMPACT: minimal margin, NO manual bullet)
+    html = html.replace(/<li>/gi, '<li class="text-gray-800 dark:text-gray-200 leading-snug">');
 
     // 5. <p> elementlerine class ekle (mb-5 = daha fazla boşluk)
     html = html.replace(/<p>/gi, '<p class="mb-5 text-gray-800 dark:text-gray-200 leading-relaxed">');

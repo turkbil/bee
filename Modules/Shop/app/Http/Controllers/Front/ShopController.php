@@ -567,13 +567,27 @@ class ShopController extends Controller
                 $productImage = $product->getFirstMediaUrl('featured_image');
             }
 
-            // Render first page
-            $firstPageHtml = view('shop::themes.ixtif.pdf.first-page', [
+            // Render first page body content
+            $firstPageBodyHtml = view('shop::themes.ixtif.pdf.first-page', [
                 'productTitle' => $title,
                 'logoUrl' => $logoUrl,
                 'catalogDate' => $catalogDate,
                 'productImage' => $productImage,
             ])->render();
+
+            // Extract body content only
+            preg_match('/<body[^>]*>(.*?)<\/body>/is', $firstPageBodyHtml, $firstMatches);
+            $firstPageBody = $firstMatches[1] ?? '';
+
+            // Render last page body content
+            $lastPageBodyHtml = view('shop::themes.ixtif.pdf.last-page', [
+                'logoUrl' => $logoUrl,
+                'catalogDate' => $catalogDate,
+            ])->render();
+
+            // Extract body content only
+            preg_match('/<body[^>]*>(.*?)<\/body>/is', $lastPageBodyHtml, $lastMatches);
+            $lastPageBody = $lastMatches[1] ?? '';
 
             // Fetch product content page via HTTP (with SSL verification disabled for local dev)
             $context = stream_context_create([
@@ -584,57 +598,134 @@ class ShopController extends Controller
             ]);
             $productPageHtml = file_get_contents($productUrl, false, $context);
 
-            // Render last page
-            $lastPageHtml = view('shop::themes.ixtif.pdf.last-page', [
-                'logoUrl' => $logoUrl,
-                'catalogDate' => $catalogDate,
-            ])->render();
-
             // CSS to inject for product page cleanup
             $productPageCss = '
-                /* Hide right sidebar */
-                #sticky-sidebar { display: none !important; }
-                .lg\:col-span-1 { display: none !important; }
+                /* ========== HIDE HEADER & FOOTER ========== */
+                body > header,
+                body > nav,
+                body > footer,
+                header[class*="bg-"],
+                footer[class*="bg-"],
+                .site-header,
+                .site-footer,
+                [id*="header"],
+                [id*="Header"],
+                [class*="header-"],
+                [class*="footer-"] {
+                    display: none !important;
+                }
+
+                /* Hide TOC bar */
+                #toc-bar { display: none !important; }
+
+                /* ========== HIDE RIGHT SIDEBAR ========== */
+                #sticky-sidebar,
+                aside,
+                [class*="sidebar"],
+                .lg\:col-span-1 {
+                    display: none !important;
+                }
 
                 /* Make left content full width */
                 .lg\:col-span-2 {
                     grid-column: span 3 / span 3 !important;
                     max-width: 100% !important;
+                    width: 100% !important;
                 }
 
-                /* Hide header, navigation, TOC bar, footer */
-                header, nav, footer, #toc-bar { display: none !important; }
+                /* Force single column layout */
+                .grid.grid-cols-1.lg\:grid-cols-3 {
+                    grid-template-columns: 1fr !important;
+                }
 
-                /* Hide Contact Form & Trust Signals */
-                #contact, #trust-signals { display: none !important; }
+                /* ========== HIDE CONTACT FORM ========== */
+                #contact,
+                #trust-signals,
+                [id*="contact-form"],
+                form[action*="contact"] {
+                    display: none !important;
+                }
 
                 /* Hide Hero CTA Buttons */
-                #hero-section .flex.flex-col.sm\:flex-row { display: none !important; }
-                #hero-section a[href="#contact"] { display: none !important; }
-                #hero-section a[href^="tel:"] { display: none !important; }
+                #hero-section .flex.flex-col.sm\:flex-row,
+                #hero-section a[href="#contact"],
+                #hero-section a[href^="tel:"] {
+                    display: none !important;
+                }
 
-                /* Hide AI Chat & floating widgets */
-                section.py-16.bg-white { display: none !important; }
-                .fixed { display: none !important; }
-                .sticky { position: relative !important; }
-
-                /* FAQ - Always Open */
-                #faq [x-show] {
+                /* ========== OPEN ALL ACCORDIONS (FAQ) ========== */
+                #faq [x-show],
+                [x-show][class*="faq"],
+                .accordion-content {
                     display: block !important;
                     opacity: 1 !important;
                     max-height: none !important;
+                    height: auto !important;
+                    visibility: visible !important;
                 }
 
-                /* Disable All Links */
+                #faq .fa-chevron-down,
+                #faq .fa-chevron-up {
+                    display: none !important;
+                }
+
+                /* Force accordion buttons to show content */
+                [x-cloak] {
+                    display: block !important;
+                }
+
+                /* ========== SHOW ALL ICONS (Font Awesome fix) ========== */
+                .fa, .fas, .far, .fal, .fab, i[class*="fa-"] {
+                    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "FontAwesome" !important;
+                    font-weight: 900 !important;
+                    display: inline-block !important;
+                    font-style: normal !important;
+                    font-variant: normal !important;
+                    text-rendering: auto !important;
+                    -webkit-font-smoothing: antialiased !important;
+                }
+
+                /* ========== SEKTÖRLER 3 COLUMN GRID ========== */
+                #industries .grid,
+                #target-industries .grid,
+                [id*="industr"] .grid {
+                    grid-template-columns: repeat(3, 1fr) !important;
+                    display: grid !important;
+                }
+
+                /* ========== HIDE FLOATING WIDGETS ========== */
+                .fixed,
+                [class*="fixed"],
+                [style*="position: fixed"] {
+                    display: none !important;
+                }
+
+                .sticky {
+                    position: relative !important;
+                }
+
+                /* ========== DISABLE ALL LINKS ========== */
                 a {
                     pointer-events: none !important;
                     text-decoration: none !important;
+                    cursor: default !important;
                 }
 
-                /* Page Break Prevention */
+                /* ========== PAGE BREAK CONTROL ========== */
                 section {
                     page-break-inside: avoid !important;
                     break-inside: avoid !important;
+                }
+
+                /* ========== PRINT OPTIMIZATION ========== */
+                body {
+                    background: white !important;
+                }
+
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    color-adjust: exact !important;
                 }
             ';
 
@@ -645,11 +736,11 @@ class ShopController extends Controller
                 $productPageHtml
             );
 
-            // Extract body content from product page (remove <html>, <head>, <body> tags)
-            preg_match('/<body[^>]*>(.*?)<\/body>/is', $productPageHtml, $bodyMatches);
-            $productBodyContent = $bodyMatches[1] ?? $productPageHtml;
+            // Extract body content from product page
+            preg_match('/<body[^>]*>(.*?)<\/body>/is', $productPageHtml, $productMatches);
+            $productBodyContent = $productMatches[1] ?? '';
 
-            // Combine all 3 sections with page breaks
+            // Combine all 3 sections with page breaks - single HTML document
             $combinedHtml = <<<HTML
 <!DOCTYPE html>
 <html lang="tr">
@@ -659,14 +750,28 @@ class ShopController extends Controller
     <title>{$title} - İXTİF Ürün Kataloğu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .page-break {
-            page-break-after: always !important;
-            break-after: always !important;
+        @page {
+            size: A4;
+            margin: 0;
         }
+
+        .pdf-page {
+            page-break-after: always;
+            page-break-inside: avoid;
+            min-height: 297mm;
+            width: 210mm;
+            position: relative;
+        }
+
+        .pdf-page:last-child {
+            page-break-after: auto;
+        }
+
         body {
-            margin: 0 !important;
-            padding: 0 !important;
+            margin: 0;
+            padding: 0;
         }
+
         * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
@@ -676,40 +781,28 @@ class ShopController extends Controller
 <body>
 
 <!-- FIRST PAGE -->
-<div class="page-break">
-HTML;
-
-            // Add first page body content (extract from first page HTML)
-            preg_match('/<body[^>]*>(.*?)<\/body>/is', $firstPageHtml, $firstPageMatches);
-            $combinedHtml .= $firstPageMatches[1] ?? '';
-
-            $combinedHtml .= <<<HTML
+<div class="pdf-page">
+{$firstPageBody}
 </div>
 
-<!-- PRODUCT CONTENT PAGE -->
-<div class="page-break">
+<!-- PRODUCT CONTENT PAGES -->
+<div style="padding: 10mm;">
 {$productBodyContent}
 </div>
 
 <!-- LAST PAGE -->
-<div>
-HTML;
-
-            // Add last page body content
-            preg_match('/<body[^>]*>(.*?)<\/body>/is', $lastPageHtml, $lastPageMatches);
-            $combinedHtml .= $lastPageMatches[1] ?? '';
-
-            $combinedHtml .= <<<HTML
+<div class="pdf-page">
+{$lastPageBody}
 </div>
 
 </body>
 </html>
 HTML;
 
-            // Write combined HTML to temp file
+            // Write combined HTML to temp file (for debugging if needed)
             file_put_contents($htmlPath, $combinedHtml);
 
-            // Generate PDF from combined HTML file using Browsershot
+            // Generate PDF from combined HTML
             Browsershot::html($combinedHtml)
                 ->setNodeBinary('/opt/homebrew/bin/node')
                 ->setNpmBinary('/opt/homebrew/bin/npm')
@@ -717,8 +810,8 @@ HTML;
                 ->waitUntilNetworkIdle()
                 ->showBackground()
                 ->format('A4')
-                ->margins(10, 10, 10, 10)
-                ->windowSize(1200, 1600)
+                ->margins(0, 0, 0, 0)
+                ->windowSize(794, 1123)  // A4 at 96 DPI
                 ->save($pdfPath);
 
             // Clean up temp HTML file

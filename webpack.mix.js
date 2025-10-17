@@ -16,7 +16,12 @@ mix.setPublicPath('public');
 
 // Ana CSS/JS dosyaları - tenant-safe paths
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
+   .sass('resources/sass/app.scss', 'public/css', {
+       sassOptions: {
+           api: 'modern',
+           silenceDeprecations: ['legacy-js-api']
+       }
+   })
    .postCss('resources/css/app.css', 'public/css', [
        require('tailwindcss'),
        require('autoprefixer'),
@@ -24,11 +29,21 @@ mix.js('resources/js/app.js', 'public/js')
 
 // Admin panel assets - tenant bağımsız
 mix.js('resources/js/admin.js', 'public/admin-assets/js')
-   .sass('resources/sass/admin.scss', 'public/admin-assets/css');
+   .sass('resources/sass/admin.scss', 'public/admin-assets/css', {
+       sassOptions: {
+           api: 'modern',
+           silenceDeprecations: ['legacy-js-api']
+       }
+   });
 
 // Frontend theme assets - tenant-aware
 mix.js('resources/js/frontend.js', 'public/assets/js')
-   .sass('resources/sass/frontend.scss', 'public/assets/css');
+   .sass('resources/sass/frontend.scss', 'public/assets/css', {
+       sassOptions: {
+           api: 'modern',
+           silenceDeprecations: ['legacy-js-api']
+       }
+   });
 
 // AI Content System - global asset
 mix.js('public/assets/js/ai-content-system.js', 'public/assets/js/ai-content-system.min.js');
@@ -90,6 +105,11 @@ mix.webpackConfig({
         // Tenant-safe public path
         publicPath: '/',
         chunkFilename: 'js/[name].[chunkhash].js'
+    },
+    stats: {
+        children: true,
+        warnings: true,
+        warningsFilter: []
     }
 });
 

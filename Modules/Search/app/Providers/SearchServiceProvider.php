@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Search\Providers;
+namespace Modules\Search\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;

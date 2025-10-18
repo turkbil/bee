@@ -1,11 +1,11 @@
 {
     "name": "Search",
     "alias": "search",
-    "description": "",
-    "keywords": [],
+    "description": "Universal Search System with Analytics",
+    "keywords": ["search", "meilisearch", "analytics"],
     "priority": 0,
     "providers": [
-        "Modules\\Search\\Providers\\SearchServiceProvider"
+        "Modules\\Search\\App\\Providers\\SearchServiceProvider"
     ],
     "files": []
 }

@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(php artisan tinker --execute=\"echo json_encode(DB::table(''module_tenants'')->where(''module_id'', 18)->get(), JSON_PRETTY_PRINT);\")"
+      "Bash(php artisan view:clear)",
+      "Bash(timeout 15 curl -s \"https://ixtif.com/\")",
+      "Read(//tmp/**)",
+      "Bash(php artisan route:list)",
+      "Bash(php artisan optimize:clear)",
+      "Bash(composer dump-autoload)",
+      "Bash(timeout 15 curl -s \"https://ixtif.com/\" -o /tmp/latest.html)",
+      "Bash(composer dump-autoload -q)",
+      "Bash(git add -A)",
+      "Bash(git commit -m \"🔍 SEARCH: Route fix + Header integration + Dark mode support\n\n✅ ROUTE SORUNLARI DÜZELTİLDİ:\n- Namespace uyumsuzluğu çözüldü (Modules\\Search\\App\\)\n- module.json provider path güncellendi\n- composer.json PSR-4 autoload düzenlendi (Announcement pattern)\n- Route''lar başarıyla yüklendi (7 route)\n\n✅ FRONTEND ENTEGRASYON:\n- ixtif.com header''a Livewire SearchBar eklendi\n- Mevcut static arama alanı değiştirildi\n- Dark mode desteği (Tailwind dark:)\n- Gradient butonlar (blue-purple)\n- Real-time autocomplete dropdown\n- FontAwesome iconlar\n\n✅ ROUTE LİSTESİ:\n- admin/search → admin.search.index\n- admin/search/analytics → admin.search.analytics  \n- api/search → api.api.search\n- api/search/suggestions → api.api.search.suggestions\n- api/search/track-click → api.api.search.track-click\n- /search/{query?} → search.show\n- /populer-aramalar → search.tags\n\n✅ TESTler:\n- Cache temizlendi (optimize:clear)\n- Autoload regenerate edildi\n- Route list doğrulandı\n\n🎨 UI Özellikleri:\n- ixtif teması ile tam uyumlu\n- Dark mode support\n- Smooth transitions\n- Autocomplete dropdown\n- Keyboard navigation ready\n\n🤖 Generated with Claude Code\nhttps://claude.com/claude-code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\")"
     ],
     "deny": [],
     "ask": [],

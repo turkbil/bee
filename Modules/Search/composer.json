@@ -18,9 +18,9 @@
     "autoload": {
         "psr-4": {
             "Modules\\Search\\": "",
-            "Modules\\Search\\App\\": "app/",
             "Modules\\Search\\Database\\Factories\\": "database/factories/",
-            "Modules\\Search\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\Search\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\Search\\App\\": "app/"
         }
     },
     "autoload-dev": {

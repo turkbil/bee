@@ -29,7 +29,7 @@
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: gradientShift 10s ease-in-out infinite;
+        animation: gradientShift 4s ease-in-out infinite;
     }
 
     .dark .gradient-animate {
@@ -63,7 +63,7 @@
                     </div>
 
                     <!-- Main Title with Animation -->
-                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.3] overflow-visible pb-4" style="font-weight: 900;">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.4] overflow-visible pb-4">
                         <span class="gradient-animate block py-1">
                             TÜRKİYE'NİN
                         </span>

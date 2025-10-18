@@ -10,16 +10,9 @@ use Modules\Search\App\Http\Livewire\Admin\SearchAnalyticsComponent;
 |--------------------------------------------------------------------------
 */
 
-// Frontend Search Routes (Tenant-aware)
-Route::middleware(['web', 'tenant'])->group(function () {
-    // Main search page
-    Route::get('/search/{query?}', [SearchPageController::class, 'show'])
-        ->name('search.show');
-
-    // Popular searches (SEO)
-    Route::get('/populer-aramalar', [SearchPageController::class, 'tags'])
-        ->name('search.tags');
-});
+// Frontend Search Routes - MOVED TO routes/web.php (priority over catch-all)
+// Search routes must be defined before Page module's catch-all routes
+// See: routes/web.php line 43-56
 
 // Admin Routes (Tenant-aware + Auth)
 Route::middleware(['web', 'auth', 'tenant'])->prefix('admin')->group(function () {

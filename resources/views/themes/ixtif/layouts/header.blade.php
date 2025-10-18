@@ -184,7 +184,7 @@
         }
 
         .dark #top-bar {
-            animation: slideGradient 8s ease-in-out infinite;
+            animation: slideGradient 20s ease-in-out infinite;
             background: rgba(15, 23, 42, 0.9) !important;
         }
 
@@ -212,35 +212,35 @@
             position: relative;
         }
 
-        /* Layer 1 - Blue → Pink Gradient (Horizontal Movement) */
+        /* Layer 1 - Blue → Slate Gradient (Horizontal Movement) */
         body.dark-mode-active::before {
             content: '';
             position: fixed;
             inset: 0;
             background: linear-gradient(135deg,
                 rgba(37, 99, 235, 0.3) 0%,
-                rgba(236, 72, 153, 0.2) 30%,
+                rgba(30, 41, 59, 0.2) 30%,
                 transparent 70%,
                 transparent 100%);
             background-size: 400% 400%;
-            animation: gradient-x 10s ease infinite;
+            animation: gradient-x 30s ease infinite;
             pointer-events: none;
             z-index: 0;
         }
 
-        /* Layer 2 - Purple → Blue → Pink Gradient (Diagonal Movement) */
+        /* Layer 2 - Slate → Blue → Slate Gradient (Diagonal Movement) */
         body.dark-mode-active::after {
             content: '';
             position: fixed;
             inset: 0;
             background: linear-gradient(225deg,
                 transparent 0%,
-                rgba(147, 51, 234, 0.3) 25%,
+                rgba(15, 23, 42, 0.3) 25%,
                 rgba(37, 99, 235, 0.2) 50%,
-                rgba(236, 72, 153, 0.25) 75%,
+                rgba(15, 23, 42, 0.25) 75%,
                 transparent 100%);
             background-size: 400% 400%;
-            animation: gradient-xy 20s ease infinite;
+            animation: gradient-xy 60s ease infinite;
             pointer-events: none;
             z-index: 0;
         }
@@ -697,7 +697,7 @@
                             },
                             goToSearch() {
                                 if (this.query.length >= 1) {
-                                    window.location.href = `/search/${encodeURIComponent(this.query)}`;
+                                    window.location.href = `/search?q=${encodeURIComponent(this.query)}`;
                                 }
                             }
                         }" @click.away="isOpen = false">
@@ -723,7 +723,7 @@
                                  x-transition
                                  class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-[100] max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
                                 <template x-for="(result, index) in results" :key="index">
-                                    <a :href="`/search/${encodeURIComponent(result)}`"
+                                    <a :href="`/search?q=${encodeURIComponent(result)}`"
                                        class="block p-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition group">
                                         <div class="flex items-center gap-3">
                                             <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"></i>
@@ -732,7 +732,7 @@
                                     </a>
                                 </template>
 
-                                <a :href="`/search/${encodeURIComponent(query)}`"
+                                <a :href="`/search?q=${encodeURIComponent(query)}`"
                                    x-show="query.length >= 2"
                                    class="block p-3 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-medium transition">
                                     <i class="fa-solid fa-arrow-right mr-2"></i>

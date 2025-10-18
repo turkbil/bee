@@ -12,7 +12,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('usermanagement::admin.cancel') }}</button>
-                    <button type="button" class="btn btn-danger" wire:click="deleteUser">{{ __('usermanagement::admin.delete') }}</button>
+                    <button type="button" class="btn btn-danger" wire:click="delete">{{ __('usermanagement::admin.delete') }}</button>
                 </div>
             </div>
         </div>

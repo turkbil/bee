@@ -192,7 +192,7 @@ class UniversalMediaComponent extends Component
         }
 
         $this->validate([
-            'featuredImageFile' => 'image|max:10240', // 10MB
+            'featuredImageFile' => 'image|max:20480|dimensions:max_width=4000,max_height=4000', // 20MB, max 4000x4000px
         ]);
 
         // Model ID yoksa, session-based temp storage'a kaydet
@@ -237,7 +237,7 @@ class UniversalMediaComponent extends Component
         }
 
         $this->validate([
-            'seoOgImageFile' => 'image|max:10240',
+            'seoOgImageFile' => 'image|max:20480|dimensions:max_width=4000,max_height=4000', // 20MB, max 4000x4000px
         ]);
 
         if (!$this->modelId) {
@@ -281,7 +281,7 @@ class UniversalMediaComponent extends Component
     public function updatedGalleryFiles()
     {
         $this->validate([
-            'galleryFiles.*' => 'image|max:10240', // 10MB per file
+            'galleryFiles.*' => 'image|max:20480|dimensions:max_width=4000,max_height=4000', // 20MB per file, max 4000x4000px
         ]);
 
         // Model ID yoksa, session-based temp storage'a kaydet

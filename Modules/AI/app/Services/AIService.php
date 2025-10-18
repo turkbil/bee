@@ -56,8 +56,8 @@ class AIService
             $providerData = $this->providerManager->getProviderServiceWithoutFailover();
             $this->currentProvider = $providerData['provider'];
             $this->currentService = $providerData['service'];
-            
-            Log::info('🔥 AI Provider loaded successfully', [
+
+            Log::debug('🔥 AI Provider loaded successfully', [
                 'provider' => $this->currentProvider->name,
                 'model' => $this->currentProvider->default_model
             ]);

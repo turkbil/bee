@@ -591,16 +591,29 @@ class PublicAIController extends Controller
                 $conversation->save();
             }
 
-            // 🆕 NEW: Smart Product Search Integration
+            // 🆕 Smart Product Search Integration
             $productSearchService = app(\App\Services\AI\ProductSearchService::class);
-            $smartSearchResults = $productSearchService->searchProducts($validated['message']);
-            $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
 
-            \Log::info('🔍 Smart Search Results', [
-                'products_found' => $smartSearchResults['count'] ?? 0,
-                'search_layer' => $smartSearchResults['search_layer'] ?? 'none',
-                'user_sentiment' => $userSentiment['tone'] ?? 'neutral',
-            ]);
+            try {
+                $smartSearchResults = $productSearchService->searchProducts($validated['message']);
+                $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
+
+                \Log::info('🔍 Smart Search Results', [
+                    'products_found' => $smartSearchResults['count'] ?? 0,
+                    'search_layer' => $smartSearchResults['search_layer'] ?? 'none',
+                    'user_sentiment' => $userSentiment['tone'] ?? 'neutral',
+                    'tenant_id' => tenant('id')
+                ]);
+            } catch (\Exception $e) {
+                \Log::error('❌ ProductSearchService failed', [
+                    'error' => $e->getMessage(),
+                    'tenant_id' => tenant('id'),
+                    'message' => $validated['message']
+                ]);
+
+                // Re-throw to stop execution - NO FALLBACK
+                throw new \Exception('Product search failed: ' . $e->getMessage());
+            }
 
             // Build context options for orchestrator
             $contextOptions = [

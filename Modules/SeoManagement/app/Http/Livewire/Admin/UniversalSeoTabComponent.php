@@ -48,6 +48,9 @@ class UniversalSeoTabComponent extends Component
         'languageChanged' => 'handleLanguageChange',
         'refreshSeoTab' => '$refresh',
         'page-saved' => 'saveSeoData', // Parent component'ten gelen save event'i
+        'announcement-saved' => 'saveSeoData',
+        'blog-saved' => 'saveSeoData',
+        'portfolio-saved' => 'saveSeoData',
     ];
 
     public function mount($modelId = null, $modelType = 'page', $modelClass = null)
@@ -56,6 +59,12 @@ class UniversalSeoTabComponent extends Component
         $this->modelType = $modelType;
         $this->modelClass = $modelClass;
         $this->supportsSeoOgMedia = $this->determineSeoOgMediaSupport();
+
+        Log::info('🎬 UniversalSeoTabComponent MOUNT', [
+            'modelId' => $modelId,
+            'modelType' => $modelType,
+            'modelClass' => $modelClass
+        ]);
 
         // Varsayılan dil bilgileri (cache'li helper'lar kullan)
         $this->currentLanguage = get_tenant_default_locale();
@@ -373,16 +382,17 @@ class UniversalSeoTabComponent extends Component
      * SEO verilerini kaydet
      * Parent component save olduğunda tetiklenir
      */
-    public function saveSeoData($pageId = null)
+    public function saveSeoData($modelId = null)
     {
         Log::info('🎯 UniversalSeoTab - saveSeoData ÇAĞRILDI!', [
-            'received_pageId' => $pageId,
-            'current_modelId' => $this->modelId
+            'received_modelId' => $modelId,
+            'current_modelId' => $this->modelId,
+            'seoDataCache' => $this->seoDataCache
         ]);
 
         // Yeni oluşturulan model ID'sini güncelle
-        if ($pageId) {
-            $this->modelId = $pageId;
+        if ($modelId) {
+            $this->modelId = $modelId;
         }
 
         // Model yüklü değilse kaydetme
@@ -433,7 +443,6 @@ class UniversalSeoTabComponent extends Component
             $authorUrl = $defaultData['author_url'] ?? '';
 
             // AI Analysis verilerini hazırla
-            $detailedScores = null;
             $strengths = null;
             $improvements = null;
             $actionItems = null;
@@ -442,11 +451,6 @@ class UniversalSeoTabComponent extends Component
             foreach ($this->availableLanguages as $lang) {
                 if (!empty($this->staticAiAnalysis[$lang])) {
                     $analysis = $this->staticAiAnalysis[$lang];
-
-                    // Detaylı skorları topla
-                    if (isset($analysis['detailed_scores'])) {
-                        $detailedScores[$lang] = $analysis['detailed_scores'];
-                    }
 
                     // Strengths topla
                     if (isset($analysis['strengths'])) {
@@ -484,7 +488,6 @@ class UniversalSeoTabComponent extends Component
                     'ai_suggestions' => $this->staticAiRecommendations ?: null,
                     // AI Analysis Results
                     'analysis_results' => !empty($this->staticAiAnalysis) ? $this->staticAiAnalysis : null,
-                    'detailed_scores' => $detailedScores,
                     'strengths' => $strengths,
                     'improvements' => $improvements,
                     'action_items' => $actionItems,

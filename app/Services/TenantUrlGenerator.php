@@ -8,8 +8,8 @@ class TenantUrlGenerator extends DefaultUrlGenerator
 {
     public function getUrl(): string
     {
-        // Temel URL'yi al
-        $url = config('app.url');
+        // Temel URL'yi al - Tenant context'inde tenant domain'ini kullan
+        $url = $this->getTenantAwareUrl();
 
         // Storage linkini ekle
         $url .= '/storage';
@@ -39,6 +39,38 @@ class TenantUrlGenerator extends DefaultUrlGenerator
         // Tam URL'yi oluştur - tenant{id} olmadan
         // StorageController domain'e göre otomatik tenant klasörünü bulur
         return $url . '/' . $mediaId . '/' . $fileName;
+    }
+
+    /**
+     * Tenant-aware URL döndürür
+     * Tenant context'inde tenant domain'ini, central'de app.url'i kullanır
+     */
+    protected function getTenantAwareUrl(): string
+    {
+        try {
+            // Tenant context var mı kontrol et
+            if (app()->bound('currentTenant') && $tenant = app('currentTenant')) {
+                // Tenant'ın ilk domain'ini al
+                if ($tenant->domains()->exists()) {
+                    $domain = $tenant->domains()->first()->domain;
+                    return 'https://' . $domain;
+                }
+            }
+
+            // Alternatif: tenancy()->initialized kontrolü
+            if (function_exists('tenant') && tenant()) {
+                $tenant = tenant();
+                if (isset($tenant->domains) && $tenant->domains->count() > 0) {
+                    $domain = $tenant->domains->first()->domain;
+                    return 'https://' . $domain;
+                }
+            }
+        } catch (\Exception $e) {
+            // Hata durumunda config'den al
+        }
+
+        // Fallback: config'den al
+        return config('app.url');
     }
 
     public function getPath(): string

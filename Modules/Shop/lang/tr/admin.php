@@ -25,6 +25,10 @@ return [
     'activate_selected' => 'Seçilenleri Aktifleştir',
     'deactivate_selected' => 'Seçilenleri Pasifleştir',
     'toggle_status' => 'Durum değiştir',
+    'all_categories' => 'Tüm Kategoriler',
+    'drag_to_sort' => 'Sıralamak için sürükleyin',
+    'filtered' => 'Filtrelendi',
+    'sort_order_updated' => 'Sıralama başarıyla güncellendi',
 
     // Alanlar
     'title_field' => 'Başlık',

@@ -28,23 +28,9 @@
         animation: gradient-shift 4s linear infinite;
     }
 
-    /* S/X Letter Switch Animation */
-    @keyframes letterFadeOut {
-        0%, 40% { opacity: 1; }
-        50%, 100% { opacity: 0; }
-    }
-
-    @keyframes letterFadeIn {
-        0%, 50% { opacity: 0; }
-        60%, 100% { opacity: 1; }
-    }
-
-    .letter-s {
-        animation: letterFadeOut 3s ease-in-out infinite;
-    }
-
-    .letter-x {
-        animation: letterFadeIn 3s ease-in-out infinite;
+    /* Letter switch transition */
+    .letter-transition {
+        transition: opacity 0.3s ease-in-out;
     }
 
 </style>
@@ -70,10 +56,7 @@
                             TÜRKİYE'NİN
                         </span>
                         <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 dark:from-orange-400 dark:via-pink-400 dark:to-purple-400 gradient-animated block py-1">
-                            İ<span class="relative inline-block" style="width: 0.7em; height: 1.4em; top: 0.05em;">
-                                <span class="letter-s absolute inset-0 flex items-center justify-center">S</span>
-                                <span class="letter-x absolute inset-0 flex items-center justify-center">X</span>
-                            </span>TİF PAZARI
+                            İSTİF PAZARI
                         </span>
                     </h1>
 

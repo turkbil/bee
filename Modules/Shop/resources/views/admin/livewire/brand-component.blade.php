@@ -17,7 +17,7 @@
                     @disabled(empty($selectedItems))>
                 <i class="ti ti-trash"></i> {{ __('shop::admin.delete_selected') }}
             </button>
-            <a href="{{ route('admin.shop.brands.create') }}" class="btn btn-primary">
+            <a href="{{ route('admin.shop.brands.manage') }}" class="btn btn-primary">
                 <i class="ti ti-plus"></i> {{ __('shop::admin.new_brand') }}
             </a>
         </div>
@@ -61,7 +61,7 @@
                                         wire:click="toggleActive({{ $brand->brand_id }})">
                                     <i class="ti ti-refresh"></i>
                                 </button>
-                                <a href="{{ route('admin.shop.brands.edit', $brand->brand_id) }}"
+                                <a href="{{ route('admin.shop.brands.manage', $brand->brand_id) }}"
                                    class="btn btn-outline-primary btn-icon">
                                     <i class="ti ti-edit"></i>
                                 </a>

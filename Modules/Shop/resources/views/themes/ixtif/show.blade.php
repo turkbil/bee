@@ -8,12 +8,17 @@
 {{-- V6: HYBRID - V4/V1 Content + V2 Sticky Sidebar --}}
 
 @section('module_content')
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="min-h-screen bg-gray-50 dark:bg-slate-900">
         @php
             $currentLocale = app()->getLocale();
             $title = $item->getTranslated('title', $currentLocale);
             $shortDescription = $item->getTranslated('short_description', $currentLocale);
             $longDescription = $item->getTranslated('body', $currentLocale);
+
+            // 📞 İletişim Bilgileri - Settings'ten al
+            $contactPhone = setting('contact_phone_1');
+            $contactWhatsapp = setting('contact_whatsapp_1');
+            $contactEmail = setting('contact_email_1');
 
             $moduleSlugService = app(\App\Services\ModuleSlugService::class);
             $indexSlug = $moduleSlugService->getMultiLangSlug('Shop', 'index', $currentLocale);
@@ -228,22 +233,19 @@
 
         {{-- 🎯 HERO SECTION --}}
         <section id="hero-section"
-            class="relative bg-gradient-to-br from-white via-slate-50 to-gray-100 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 text-gray-900 dark:text-white overflow-hidden">
-            {{-- Decorative elements --}}
-            <div class="absolute top-0 left-0 w-full h-full opacity-15">
-                <div
-                    class="absolute top-20 right-20 w-96 h-96 bg-blue-400 rounded-full mix-blend-overlay filter blur-3xl animate-pulse">
-                </div>
-                <div class="absolute bottom-10 left-10 w-[500px] h-[500px] bg-slate-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"
-                    style="animation-delay: 2s;"></div>
+            class="relative min-h-screen flex items-center text-gray-900 dark:text-white overflow-hidden">
+            {{-- Animated Background Blobs - Anasayfa ile aynı --}}
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute top-20 -left-20 w-96 h-96 bg-purple-300 dark:bg-white rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-20 -right-20 w-96 h-96 bg-blue-300 dark:bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
             </div>
 
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
-                        <div class="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-6">
+                        <div class="inline-flex items-center gap-2 bg-purple-100 dark:bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full mb-6">
                             <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                            <span class="text-sm font-medium">Stokta Mevcut</span>
+                            <span class="text-sm font-medium text-purple-700 dark:text-white">Stokta Mevcut</span>
                         </div>
 
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
@@ -251,22 +253,24 @@
                         </h1>
 
                         @if ($shortDescription)
-                            <p class="text-xl text-gray-700 dark:text-blue-100 leading-relaxed mb-8">
+                            <p class="text-xl text-gray-600 dark:text-purple-100 leading-relaxed mb-8">
                                 {{ $shortDescription }}
                             </p>
                         @endif
 
                         <div class="flex flex-col sm:flex-row gap-4">
                             <a href="#contact"
-                                class="inline-flex items-center justify-center gap-3 bg-white text-blue-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition-colors">
+                                class="inline-flex items-center justify-center gap-3 bg-white text-purple-600 px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
                                 <i class="fa-solid fa-envelope"></i>
                                 <span>Teklif Al</span>
                             </a>
-                            <a href="tel:02167553555"
-                                class="inline-flex items-center justify-center gap-3 bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-blue-700 transition-colors">
-                                <i class="fa-solid fa-phone"></i>
-                                <span>0216 755 3 555</span>
-                            </a>
+                            @if($contactPhone)
+                                <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                    class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <span>{{ $contactPhone }}</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
 
@@ -1025,14 +1029,18 @@
                                     <i class="fa-solid fa-envelope"></i>Teklif İste
                                 </a>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <a href="tel:02167553555"
-                                        class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
-                                        <i class="fa-solid fa-phone"></i>Ara
-                                    </a>
-                                    <a href="https://wa.me/905010056758" target="_blank"
-                                        class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-3 rounded-lg transition-colors">
-                                        <i class="fa-brands fa-whatsapp"></i>WhatsApp
-                                    </a>
+                                    @if($contactPhone)
+                                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                            class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
+                                            <i class="fa-solid fa-phone"></i>Ara
+                                        </a>
+                                    @endif
+                                    @if($contactWhatsapp)
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                                            class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-3 rounded-lg transition-colors">
+                                            <i class="fa-brands fa-whatsapp"></i>WhatsApp
+                                        </a>
+                                    @endif
                                 </div>
 
                                 {{-- PDF İndir Butonu --}}
@@ -1099,15 +1107,11 @@
     </section>
 
     {{-- 📬 MODERN CONTACT FORM --}}
-    <section id="contact" class="relative mt-32 overflow-hidden">
-        {{-- Gradient Background with Pattern --}}
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900"></div>
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl">
-            </div>
-            <div
-                class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-overlay filter blur-3xl">
-            </div>
+    <section id="contact" class="relative mt-32 overflow-hidden bg-gradient-to-br from-purple-600 via-purple-700 to-orange-600 dark:from-purple-900 dark:via-purple-800 dark:to-yellow-600">
+        {{-- Animated Background Blobs --}}
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-20 -left-20 w-96 h-96 bg-purple-300 dark:bg-white rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-20 -right-20 w-96 h-96 bg-orange-300 dark:bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
         </div>
 
         <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
@@ -1186,31 +1190,36 @@
                 {{-- SAĞ: DETAYLAR (5/12) - V3 Glassmorphism --}}
                 <div class="w-full md:w-5/12 space-y-6">
                     {{-- İletişim Bilgileri - V3 Glassmorphism --}}
-                    <a href="tel:02167553555"
-                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <i class="fa-solid fa-phone text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">Telefon</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Hemen arayın</div>
-                            <div class="text-lg font-bold text-blue-600 dark:text-blue-400">0216 755 3 555</div>
-                        </div>
-                    </a>
+                    @if($contactPhone)
+                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                            class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                <i class="fa-solid fa-phone text-white text-2xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">Telefon</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Hemen arayın</div>
+                                <div class="text-lg font-bold text-blue-600 dark:text-blue-400">{{ $contactPhone }}</div>
+                            </div>
+                        </a>
+                    @endif
 
-                    <a href="https://wa.me/905010056758" target="_blank"
-                        class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                            <i class="fa-brands fa-whatsapp text-white text-2xl"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">WhatsApp</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Anında mesajlaşın</div>
-                            <div class="text-lg font-bold text-green-600 dark:text-green-400">0501 005 67 58</div>
-                        </div>
-                    </a>
+                    @if($contactWhatsapp)
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                            class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                                <i class="fa-brands fa-whatsapp text-white text-2xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">WhatsApp</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Anında mesajlaşın</div>
+                                <div class="text-lg font-bold text-green-600 dark:text-green-400">{{ $contactWhatsapp }}</div>
+                            </div>
+                        </a>
+                    @endif
 
-                    <a href="mailto:info@ixtif.com"
+                    @if($contactEmail)
+                        <a href="mailto:{{ $contactEmail }}"
                         class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
                         <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                             <i class="fa-solid fa-envelope text-white text-2xl"></i>
@@ -1218,9 +1227,10 @@
                         <div class="flex-1">
                             <div class="text-sm text-gray-700 dark:text-gray-300 mb-1 font-semibold">E-posta</div>
                             <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Mail gönderin</div>
-                            <div class="text-base font-bold text-purple-600 dark:text-purple-400 break-all">info@ixtif.com</div>
+                            <div class="text-base font-bold text-purple-600 dark:text-purple-400 break-all">{{ $contactEmail }}</div>
                         </div>
                     </a>
+                    @endif
 
                     {{-- AI Canlı Destek Kutusu - V3 Glassmorphism --}}
                     <div class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer relative"

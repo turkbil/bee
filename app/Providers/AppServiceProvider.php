@@ -262,6 +262,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Shop Product Observer - Automatic embedding generation
         \Modules\Shop\App\Models\ShopProduct::observe(\App\Observers\ProductObserver::class);
+
+        // Shop Product Cache Observer - Automatic cache invalidation
+        \Modules\Shop\App\Models\ShopProduct::observe(\App\Observers\ShopProductCacheObserver::class);
     }
     
     /**

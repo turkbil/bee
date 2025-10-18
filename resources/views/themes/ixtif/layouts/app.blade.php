@@ -3,7 +3,7 @@
 {{-- Universal Notification System --}}
 @include('themes.ixtif.layouts.notification')
 
-<main class="flex-1 min-h-[60vh]">
+<main class="flex-1 min-h-[60vh] relative" style="z-index: 10;">
     @php
     ob_start();
     @endphp

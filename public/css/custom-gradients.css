@@ -49,3 +49,56 @@
 .dark .dark\:hover\:to-purple-800:hover {
     --tw-gradient-to: #6b21a8 var(--tw-gradient-to-position);
 }
+
+/* ========================================
+   🎨 DARK MODE ANIMATED BACKGROUND
+   ======================================== */
+
+/* 🌊 MULTI-LAYER GRADIENT ANIMATIONS */
+@keyframes gradient-x {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes gradient-y {
+    0%, 100% {
+        background-position: 50% 0%;
+    }
+    50% {
+        background-position: 50% 100%;
+    }
+}
+
+@keyframes gradient-xy {
+    0%, 100% {
+        background-position: 0% 0%;
+    }
+    25% {
+        background-position: 100% 0%;
+    }
+    50% {
+        background-position: 100% 100%;
+    }
+    75% {
+        background-position: 0% 100%;
+    }
+}
+
+.animate-gradient-x {
+    background-size: 400% 400%;
+    animation: gradient-x 60s ease infinite;
+}
+
+.animate-gradient-y {
+    background-size: 400% 400%;
+    animation: gradient-y 80s ease infinite;
+}
+
+.animate-gradient-xy {
+    background-size: 400% 400%;
+    animation: gradient-xy 40s ease infinite;
+}

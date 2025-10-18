@@ -37,7 +37,7 @@
     @endif
 
     {{-- Tailwind CSS - Compiled & Minified --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}" media="all">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ now()->timestamp }}" media="all">
 
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">
@@ -172,6 +172,78 @@
         #main-header.scrolled #main-nav {
             /* Shadow kaldırıldı - temiz tasarım için */
         }
+
+        /* Top Bar Animated Gradient - Dark Mode Only */
+        @keyframes slideGradient {
+            0%, 100% {
+                background: linear-gradient(90deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 50%, rgba(30, 41, 59, 0.9) 100%);
+            }
+            50% {
+                background: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 50%, rgba(15, 23, 42, 0.9) 100%);
+            }
+        }
+
+        .dark #top-bar {
+            animation: slideGradient 8s ease-in-out infinite;
+            background: rgba(15, 23, 42, 0.9) !important;
+        }
+
+        /* 🎬 Multi-Layer Animated Background Gradients */
+        @keyframes gradient-x {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes gradient-y {
+            0%, 100% { background-position: 50% 0%; }
+            50% { background-position: 50% 100%; }
+        }
+
+        @keyframes gradient-xy {
+            0%, 100% { background-position: 0% 0%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+        }
+
+        /* Dark Mode Body - Base Background */
+        body.dark-mode-active {
+            background: linear-gradient(135deg, rgb(15, 23, 42) 0%, rgb(2, 6, 23) 100%);
+            position: relative;
+        }
+
+        /* Layer 1 - Blue → Pink Gradient (Horizontal Movement) */
+        body.dark-mode-active::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg,
+                rgba(37, 99, 235, 0.3) 0%,
+                rgba(236, 72, 153, 0.2) 30%,
+                transparent 70%,
+                transparent 100%);
+            background-size: 400% 400%;
+            animation: gradient-x 10s ease infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Layer 2 - Purple → Blue → Pink Gradient (Diagonal Movement) */
+        body.dark-mode-active::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(225deg,
+                transparent 0%,
+                rgba(147, 51, 234, 0.3) 25%,
+                rgba(37, 99, 235, 0.2) 50%,
+                rgba(236, 72, 153, 0.25) 75%,
+                transparent 100%);
+            background-size: 400% 400%;
+            animation: gradient-xy 20s ease infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
     </style>
 
     {{-- Livewire Styles --}}
@@ -236,17 +308,19 @@
     </script>
 
     {{-- Custom Gradient Utilities - Tailwind JIT Dark Mode Fix --}}
-    <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=1.0.0">
+    <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=8.0.1">
 
     {{-- Core System Styles - Mandatory for all themes --}}
-    <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.0">
+    <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.1">
 
     {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased min-h-screen text-gray-900 dark:text-gray-100 transition-all duration-500 flex flex-col bg-gradient-to-br from-white via-slate-50 to-gray-100 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">
+<body class="font-sans antialiased min-h-screen transition-all duration-500 flex flex-col"
+      :class="{ 'dark-mode-active': darkMode === 'dark' }"
+      :style="darkMode === 'dark' ? 'color: rgb(243, 244, 246);' : 'background: linear-gradient(to bottom right, rgb(255, 255, 255), rgb(248, 250, 252), rgb(243, 244, 246)); color: rgb(17, 24, 39);'">
 
 
     <header id="main-header" x-data="{
@@ -264,17 +338,26 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between text-sm py-3">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
+                        @php
+                            $contactPhone = setting('contact_phone_1');
+                            $contactWhatsapp = setting('contact_whatsapp_1');
+                        @endphp
+
                         {{-- Telefon (Tıklanabilir) --}}
-                        <a href="tel:02167553555" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2 text-sm font-medium">
-                            <i class="fa-solid fa-phone"></i>
-                            <span>0216 755 3 555</span>
-                        </a>
+                        @if($contactPhone)
+                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2 text-sm font-medium">
+                                <i class="fa-solid fa-phone"></i>
+                                <span>{{ $contactPhone }}</span>
+                            </a>
+                        @endif
 
                         {{-- WhatsApp (Tıklanabilir) --}}
-                        <a href="https://wa.me/905010056758" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
-                            <i class="fa-brands fa-whatsapp text-base"></i>
-                            <span>0501 005 67 58</span>
-                        </a>
+                        @if($contactWhatsapp)
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
+                                <i class="fa-brands fa-whatsapp text-base"></i>
+                                <span>{{ $contactWhatsapp }}</span>
+                            </a>
+                        @endif
                     </div>
                     <div class="flex items-center gap-3 sm:gap-4">
                         {{-- Sık Sorulan Sorular --}}
@@ -432,12 +515,14 @@
                                      alt="{{ $logos['site_title'] ?? setting('site_name') }}"
                                      class="block object-contain h-10 w-auto">
                             @else
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2" x-data="{ showX: true }" x-init="setInterval(() => { showX = !showX }, 3000)">
                                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center">
                                         <i class="fa-solid fa-forklift text-white text-xl"></i>
                                     </div>
                                     <div>
-                                        <h1 class="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">iXtif</h1>
+                                        <h1 class="text-xl font-black text-gray-900 dark:text-white relative inline-block">
+                                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">i</span><span x-show="showX" x-transition:enter="transition-all duration-300" x-transition:enter-start="opacity-0 scale-75" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition-all duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-75" class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 inline-block">X</span><span x-show="!showX" x-transition:enter="transition-all duration-300" x-transition:enter-start="opacity-0 scale-75" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition-all duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-75" class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 inline-block">S</span><span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">tif</span>
+                                        </h1>
                                         <p class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">Türkiye'nin İstif Pazarı</p>
                                     </div>
                                 </div>
@@ -576,7 +661,7 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20"
+                     class="bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
                         <div class="relative">
@@ -600,7 +685,7 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20"
+                     class="bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
@@ -837,6 +922,34 @@
             localStorage.removeItem('selectedFont');
             console.log('✅ Font ayarları temizlendi - Roboto sabit font olarak ayarlandı');
         }
+
+        // 🐛 DARK MODE + ANIMATION DEBUG
+        setTimeout(() => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+            const bodyClasses = document.body.className;
+            const bodyAnimation = window.getComputedStyle(document.body).animation;
+            const hasDarkModeActive = document.body.classList.contains('dark-mode-active');
+
+            console.log('🌓 DARK MODE + ANIMATION DEBUG:');
+            console.log('  ├─ localStorage.darkMode:', localStorage.getItem('darkMode'));
+            console.log('  ├─ HTML has .dark class:', isDark);
+            console.log('  ├─ Body has .dark-mode-active:', hasDarkModeActive);
+            console.log('  ├─ Body computed background:', bodyBg);
+            console.log('  ├─ Body animation:', bodyAnimation);
+            console.log('  ├─ Body classes:', bodyClasses);
+            console.log('  └─ Expected: slideBodyGradient 20s ease-in-out infinite');
+
+            if (isDark && !hasDarkModeActive) {
+                console.error('❌ SORUN: Dark mode aktif ama .dark-mode-active class yok!');
+                console.log('💡 Alpine.js :class binding çalışmıyor olabilir');
+            } else if (isDark && !bodyAnimation.includes('slideBodyGradient')) {
+                console.error('❌ SORUN: Class var ama animasyon çalışmıyor!');
+                console.log('💡 CSS animasyonu yüklenememiş olabilir - hard refresh dene');
+            } else if (isDark && hasDarkModeActive) {
+                console.log('✅ Dark mode + animasyon aktif!');
+            }
+        }, 1000);
     </script>
 
     {{-- Dynamic Content Areas --}}

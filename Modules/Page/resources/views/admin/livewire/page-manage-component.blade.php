@@ -109,6 +109,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab
+                            :key="'seo-tab-page-' . ($pageId ?? 'new')"
                             :model-id="$pageId"
                             model-type="page"
                             model-class="Modules\Page\App\Models\Page"

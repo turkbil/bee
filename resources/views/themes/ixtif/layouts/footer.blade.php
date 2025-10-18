@@ -1,8 +1,9 @@
 {{-- FOOTER-002 Design --}}
-<footer class="w-full
+<footer class="w-full relative
     bg-white dark:bg-transparent
     backdrop-blur-xl
-    text-gray-900 dark:text-white
+    text-gray-900 dark:text-white"
+    style="z-index: 10;
     rounded-3xl
     border border-gray-200 dark:border-white/10
     overflow-hidden">
@@ -138,7 +139,7 @@
                 ['icon' => 'instagram', 'url' => setting('social_instagram', 'https://instagram.com/ixtifcom'), 'gradient' => 'from-pink-500 to-rose-600'],
                 ['icon' => 'twitter', 'url' => setting('social_twitter', 'https://twitter.com/ixtifcom'), 'gradient' => 'from-blue-400 to-cyan-500'],
                 ['icon' => 'linkedin-in', 'url' => setting('social_linkedin', 'https://linkedin.com/company/ixtif'), 'gradient' => 'from-blue-600 to-blue-700'],
-                ['icon' => 'whatsapp', 'url' => 'https://wa.me/' . preg_replace('/[^0-9]/', '', setting('contact_whatsapp', '905010056758')), 'gradient' => 'from-green-500 to-green-600']
+                ['icon' => 'whatsapp', 'url' => 'https://wa.me/' . preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')), 'gradient' => 'from-green-500 to-green-600']
             ];
         @endphp
 
@@ -156,9 +157,9 @@
 
         {{-- İletişim Bilgileri --}}
         @php
-            $contactPhone = setting('contact_phone', '0850 123 45 67');
-            $contactWhatsapp = setting('contact_whatsapp', '905010056758');
-            $contactEmail = setting('contact_email', 'info@ixtif.com');
+            $contactPhone = setting('contact_phone_1', '0216 755 3 555');
+            $contactWhatsapp = setting('contact_whatsapp_1', '0501 005 67 58');
+            $contactEmail = setting('contact_email_1', 'info@ixtif.com');
         @endphp
 
         <div class="flex flex-wrap justify-center items-center gap-6 mb-8 text-sm text-gray-600 dark:text-gray-400">
@@ -239,22 +240,46 @@
                     Speed
                 </a>
 
-                {{-- Cache Clear Button --}}
-                <button onclick="clearSystemCache(this)"
-                        title="Sistem Önbelleğini Temizle"
-                        class="inline-flex items-center px-2 py-1
-                               bg-red-100 dark:bg-red-500/20
-                               text-red-700 dark:text-red-300
-                               rounded hover:bg-red-200 dark:hover:bg-red-500/30
-                               transition-colors cursor-pointer">
-                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="button-text">Cache</span>
-                    <svg class="w-3 h-3 ml-1 loading-spinner hidden animate-spin" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm6 14a6 6 0 100-12 6 6 0 000 12z"/>
-                    </svg>
-                </button>
+                {{-- 🔐 ADMIN ONLY: Admin Tools (Cache + AI Chat) --}}
+                @auth
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('root'))
+                        {{-- Cache Clear Button --}}
+                        <button onclick="clearSystemCache(this)"
+                                title="[ADMIN] Sistem Önbelleğini Temizle"
+                                class="inline-flex items-center px-2 py-1
+                                       bg-red-100 dark:bg-red-500/20
+                                       text-red-700 dark:text-red-300
+                                       rounded hover:bg-red-200 dark:hover:bg-red-500/30
+                                       transition-colors cursor-pointer">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="button-text">Cache</span>
+                            <svg class="w-3 h-3 ml-1 loading-spinner hidden animate-spin" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm6 14a6 6 0 100-12 6 6 0 000 12z"/>
+                            </svg>
+                        </button>
+
+                        {{-- Clear AI Conversation Button --}}
+                        <button
+                            onclick="clearAIConversation(this)"
+                            title="[ADMIN] AI Konuşma Geçmişini Temizle"
+                            class="inline-flex items-center px-2 py-1
+                                   bg-purple-100 dark:bg-purple-500/20
+                                   text-purple-700 dark:text-purple-300
+                                   rounded hover:bg-purple-200 dark:hover:bg-purple-500/30
+                                   transition-colors cursor-pointer">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
+                                <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/>
+                            </svg>
+                            <span class="button-text">AI Chat</span>
+                            <svg class="w-3 h-3 ml-1 loading-spinner hidden animate-spin" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm6 14a6 6 0 100-12 6 6 0 000 12z"/>
+                            </svg>
+                        </button>
+                    @endif
+                @endauth
 
                 {{-- Theme Badge --}}
                 @php
@@ -314,6 +339,51 @@
 {{-- Core System Scripts --}}
 <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
+{{-- AI Chat Admin Functions --}}
+<script>
+function clearAIConversation(button) {
+    if (!window.Alpine || !window.Alpine.store('aiChat')) {
+        alert('❌ AI Chat sistemi yüklü değil!');
+        return;
+    }
+
+    const chat = window.Alpine.store('aiChat');
+
+    if (!chat.conversationId) {
+        alert('ℹ️ Aktif bir konuşma bulunamadı.');
+        return;
+    }
+
+    // Show loading
+    const originalText = button.querySelector('.button-text').textContent;
+    const spinner = button.querySelector('.loading-spinner');
+    button.querySelector('.button-text').textContent = 'Siliniyor...';
+    spinner.classList.remove('hidden');
+    button.disabled = true;
+
+    // Delete from database
+    fetch('/api/ai/v1/conversation/' + chat.conversationId, { method: 'DELETE' })
+        .then(response => {
+            if (!response.ok) throw new Error('API hatası');
+
+            // Clear from Alpine store
+            chat.clearConversation();
+
+            alert('✅ AI konuşma geçmişi silindi!');
+        })
+        .catch(err => {
+            console.error('AI conversation clear error:', err);
+            alert('❌ Hata: ' + err.message);
+        })
+        .finally(() => {
+            // Reset button
+            button.querySelector('.button-text').textContent = originalText;
+            spinner.classList.add('hidden');
+            button.disabled = false;
+        });
+}
+</script>
+
 {{-- Theme Main Scripts --}}
 @php
     $themeService = app(\App\Services\ThemeService::class);
@@ -328,5 +398,6 @@
 {{-- AI Chat Components --}}
 <x-ai.chat-store />
 <x-ai.floating-widget button-text="AI Destek" theme="blue" />
+    </div> {{-- Close relative z-10 wrapper --}}
 </body>
 </html>

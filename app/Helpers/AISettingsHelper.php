@@ -58,21 +58,25 @@ class AISettingsHelper
     /**
      * İletişim bilgilerini al
      * ⚠️ Sadece doldurulmuş iletişim bilgileri döner
+     *
+     * ✅ Yeni contact_* ve social_* ayarlarından okur (Grup 10: İletişim Bilgileri)
      */
     public static function getContactInfo(): array
     {
         $contact = [
-            'phone' => setting('ai_contact_phone', null),
-            'whatsapp' => setting('ai_contact_whatsapp', null),
-            'email' => setting('ai_contact_email', null),
-            'telegram' => setting('ai_social_telegram', null),
-            'address' => setting('ai_contact_address', null),
-            'city' => setting('ai_contact_city', null),
-            'country' => setting('ai_contact_country', null),
-            'postal_code' => setting('ai_contact_postal_code', null),
-            'working_hours' => setting('ai_working_hours', null),
-            'facebook' => setting('ai_social_facebook', null),
-            'instagram' => setting('ai_social_instagram', null),
+            'phone' => setting('contact_phone_1', null),
+            'whatsapp' => setting('contact_whatsapp_1', null),
+            'email' => setting('contact_email_1', null),
+            'telegram' => setting('ai_social_telegram', null), // AI'ya özel (bildirim için)
+            'address' => setting('contact_address_line_1', null),
+            'city' => setting('contact_city', null),
+            'country' => setting('contact_country', null),
+            'postal_code' => setting('contact_postal_code', null),
+            'working_hours' => setting('contact_working_hours', null),
+            'facebook' => setting('social_facebook', null),
+            'instagram' => setting('social_instagram', null),
+            'twitter' => setting('social_twitter', null),
+            'linkedin' => setting('social_linkedin', null),
         ];
 
         // Boş değerleri filtrele

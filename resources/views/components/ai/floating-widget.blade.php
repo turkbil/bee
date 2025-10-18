@@ -441,24 +441,75 @@ class="fixed {{ $selectedPosition }} z-50">
                 <p style="font-size: 11px !important; line-height: 1.4 !important; opacity: 0.9 !important;"
                    class="text-gray-800 dark:text-white">
                     Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
+                    <a href="#"
+                       @click.prevent="$refs.aiDisclaimerModal.classList.remove('hidden')"
+                       class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors ml-1">
+                        Devamını Oku
+                    </a>
                 </p>
+            </div>
 
-                {{-- 🔐 ADMIN ONLY: Hidden clear button (for testing) --}}
-                <button
-                    @click="if(confirm('Database + localStorage temizlenecek. Emin misiniz?')) {
-                        fetch('/api/ai/v1/conversation/' + chat.conversationId, { method: 'DELETE' })
-                            .then(() => {
-                                chat.clearConversation();
-                                alert('✅ Konuşma database\'den silindi');
-                            })
-                            .catch(err => alert('❌ Hata: ' + err));
-                    }"
-                    class="text-xs text-red-400 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400 opacity-20 hover:opacity-100 transition absolute right-2 bottom-1"
-                    title="[ADMIN] Clear DB + Cache"
-                    x-show="chat.conversationId"
-                >
-                    🗑️
-                </button>
+            {{-- AI Disclaimer Modal --}}
+            <div x-ref="aiDisclaimerModal"
+                 class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+                 @click.self="$refs.aiDisclaimerModal.classList.add('hidden')">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+                    {{-- Close Button --}}
+                    <button @click="$refs.aiDisclaimerModal.classList.add('hidden')"
+                            class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+
+                    {{-- Modal Content --}}
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                            Önemli Bilgilendirme
+                        </h3>
+                    </div>
+
+                    <div class="space-y-3 text-sm text-gray-700 dark:text-gray-300 mb-6">
+                        <p>
+                            Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
+                        </p>
+
+                        <p>
+                            Bu yapay zeka asistanı şu anda <strong>öğrenme aşamasındadır</strong> ve kendini sürekli geliştirmektedir.
+                        </p>
+                        <p>
+                            Verdiği yanıtlar her zaman doğru olmayabilir veya eksik bilgiler içerebilir.
+                        </p>
+                        <p>
+                            En doğru ve güncel bilgi için lütfen <strong>firmamız yetkilileriyle doğrudan iletişime</strong> geçiniz.
+                        </p>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mt-4">
+                            <a href="tel:+902167553555"
+                               class="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                                </svg>
+                                <strong class="text-lg">0216 755 3 555</strong>
+                            </a>
+                        </div>
+
+                        <p>
+                            Anlayışınız için teşekkür ederiz.
+                        </p>
+                    </div>
+
+                    {{-- Action Button --}}
+                    <button @click="$refs.aiDisclaimerModal.classList.add('hidden')"
+                            class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
+                        Anladım
+                    </button>
+                </div>
             </div>
         </div>
     </div>

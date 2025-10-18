@@ -13,6 +13,7 @@ class TenantPathGenerator implements PathGenerator
         $tenantId = $this->getTenantId();
 
         // Path: tenant{id}/{media_id}/
+        // Bu prefix tenant isolation için gerekli
         return "tenant{$tenantId}/" . $media->id . '/';
     }
 

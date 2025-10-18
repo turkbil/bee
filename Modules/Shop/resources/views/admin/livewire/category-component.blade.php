@@ -201,7 +201,7 @@
                                                     </div>
                                                     <!-- Edit Button -->
                                                     <div>
-                                                        <a href="{{ route('admin.shop.categories.edit', $item->category_id) }}"
+                                                        <a href="{{ route('admin.shop.categories.manage', $item->category_id) }}"
                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.edit') }}">
                                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                                         </a>

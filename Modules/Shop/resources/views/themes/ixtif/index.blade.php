@@ -9,7 +9,7 @@
     <div class="relative" x-data="shopsList()" x-init="init()">
 
         <!-- Gradient Background -->
-        <div class="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-blue-50/50 dark:from-gray-950 dark:via-slate-900 dark:to-blue-950 -z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:bg-slate-900 -z-10"></div>
 
         <!-- Header -->
         <div class="relative overflow-hidden">

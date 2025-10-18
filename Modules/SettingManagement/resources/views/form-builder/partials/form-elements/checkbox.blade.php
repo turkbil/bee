@@ -3,35 +3,42 @@
     if (!isset($element) || !is_array($element)) {
         $element = [];
     }
-    
+
     // Temel alan özelliklerini al
     $fieldName = isset($element['name']) ? $element['name'] : (isset($element['properties']['name']) ? $element['properties']['name'] : 'checkbox_' . uniqid());
     $fieldLabel = isset($element['label']) ? $element['label'] : (isset($element['properties']['label']) ? $element['properties']['label'] : 'Onay Kutusu');
     $isRequired = isset($element['required']) ? $element['required'] : (isset($element['properties']['required']) && $element['properties']['required']);
     $checkboxLabel = isset($element['checkbox_label']) ? $element['checkbox_label'] : (isset($element['properties']['checkbox_label']) ? $element['properties']['checkbox_label'] : $fieldLabel);
     $helpText = isset($element['help_text']) ? $element['help_text'] : (isset($element['properties']['help_text']) ? $element['properties']['help_text'] : '');
-    
+
     // Diğer özellikleri al
     $width = isset($element['width']) ? $element['width'] : (isset($element['properties']['width']) ? $element['properties']['width'] : 12);
     $defaultValue = isset($element['default']) ? $element['default'] : (isset($element['properties']['default_value']) ? $element['properties']['default_value'] : false);
-    
+
     // Boolean değeri düzelt
     if (is_string($defaultValue)) {
         $defaultValue = ($defaultValue === 'true' || $defaultValue === '1');
     }
-    
+
     // values ve originalValues kontrolü
     if (!isset($values) || !is_array($values)) {
         $values = [];
     }
-    
+
     if (!isset($originalValues) || !is_array($originalValues)) {
         $originalValues = [];
     }
-    
+
     // values için varsayılan değeri ayarla
     if (!isset($values[$fieldName])) {
         $values[$fieldName] = $defaultValue;
+    }
+
+    // Mevcut değeri kontrol et (string '1' veya boolean true ise checked)
+    $isChecked = false;
+    if (isset($values[$fieldName])) {
+        $currentValue = $values[$fieldName];
+        $isChecked = ($currentValue === '1' || $currentValue === 1 || $currentValue === true || $currentValue === 'true');
     }
 @endphp
 
@@ -44,13 +51,16 @@
             @endif
         </label>
         <div class="form-check">
-            <input class="form-check-input" 
-                type="checkbox" 
-                id="{{ $fieldName }}" 
+            {{-- Hidden input to ensure '0' value is sent when checkbox is unchecked --}}
+            <input type="hidden" wire:model.defer="values.{{ $fieldName }}" value="0">
+
+            <input class="form-check-input"
+                type="checkbox"
+                id="{{ $fieldName }}"
                 wire:model.defer="values.{{ $fieldName }}"
                 value="1"
-                @if($isRequired) required @endif
-                @if($defaultValue) checked @endif>
+                @if($isChecked) checked @endif
+                @if($isRequired) required @endif>
             <label class="form-check-label" for="{{ $fieldName }}">
                 {{ $checkboxLabel }}
             </label>

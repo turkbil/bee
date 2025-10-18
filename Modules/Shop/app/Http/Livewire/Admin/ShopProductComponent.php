@@ -34,7 +34,12 @@ class ShopProductComponent extends Component
     #[Url]
     public string $sortDirection = 'desc';
 
+    #[Url]
+    public ?int $selectedCategory = null;
+
     public array $availableSiteLanguages = [];
+
+    public array $categories = [];
 
     protected ShopProductService $productService;
 
@@ -51,11 +56,62 @@ class ShopProductComponent extends Component
             ->orderBy('sort_order')
             ->pluck('code')
             ->toArray();
+
+        // Load all categories hierarchically for dropdown
+        $this->categories = $this->buildHierarchicalCategories();
     }
 
     protected function getModelClass(): string
     {
         return ShopProduct::class;
+    }
+
+    /**
+     * Build hierarchical category list with indentation
+     */
+    protected function buildHierarchicalCategories(): array
+    {
+        $categories = \Modules\Shop\App\Models\ShopCategory::query()
+            ->orderBy('sort_order')
+            ->orderBy('category_id')
+            ->get();
+
+        $hierarchical = [];
+        $this->buildTree($categories, $hierarchical, null, 0);
+
+        return $hierarchical;
+    }
+
+    /**
+     * Recursively build category tree
+     */
+    protected function buildTree($categories, &$result, $parentId, $level): void
+    {
+        $locale = app()->getLocale();
+
+        foreach ($categories as $category) {
+            if ($category->parent_id == $parentId) {
+                $prefix = str_repeat('-', $level);
+                if ($prefix) {
+                    $prefix .= ' ';
+                }
+
+                $title = $category->getTranslated('title', $locale)
+                    ?? $category->title['tr']
+                    ?? $category->title[array_key_first($category->title)]
+                    ?? 'Untitled';
+
+                $result[] = [
+                    'category_id' => $category->category_id,
+                    'title' => $prefix . $title,
+                    'level' => $level,
+                    'parent_id' => $category->parent_id,
+                ];
+
+                // Recursively add children
+                $this->buildTree($categories, $result, $category->category_id, $level + 1);
+            }
+        }
     }
 
     public function updatingSearch(): void
@@ -67,6 +123,40 @@ class ShopProductComponent extends Component
     {
         $this->perPage = max(1, (int) $this->perPage);
         $this->resetPage();
+    }
+
+    public function updatedSelectedCategory(): void
+    {
+        $this->resetPage();
+    }
+
+    public function clearCategoryFilter(): void
+    {
+        $this->selectedCategory = null;
+        $this->resetPage();
+    }
+
+    public function updateSortOrder(array $orderedIds): void
+    {
+        try {
+            foreach ($orderedIds as $index => $productId) {
+                ShopProduct::where('product_id', $productId)->update([
+                    'sort_order' => $index + 1
+                ]);
+            }
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('shop::admin.sort_order_updated'),
+                'type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
     }
 
     public function sortBy(string $field): void
@@ -144,10 +234,15 @@ class ShopProductComponent extends Component
         $filters = [
             'search' => $this->search,
             'locales' => $this->availableSiteLanguages,
-            'sortField' => $this->sortField,
-            'sortDirection' => $this->sortDirection,
+            'sortField' => $this->selectedCategory ? 'sort_order' : $this->sortField,
+            'sortDirection' => $this->selectedCategory ? 'asc' : $this->sortDirection,
             'currentLocale' => app()->getLocale(),
         ];
+
+        // Add category filter if selected
+        if ($this->selectedCategory) {
+            $filters['category_id'] = $this->selectedCategory;
+        }
 
         $products = $this->productService->getPaginatedProducts($filters, (int) $this->perPage);
 
@@ -155,6 +250,7 @@ class ShopProductComponent extends Component
             'products' => $products,
             'siteLanguages' => $this->availableSiteLanguages,
             'currentSiteLocale' => app()->getLocale(),
+            'categories' => $this->categories,
         ]);
     }
 

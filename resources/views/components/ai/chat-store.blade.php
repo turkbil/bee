@@ -595,28 +595,14 @@ window.aiChatRenderMarkdown = function(content) {
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
 
-        // Minimal shopping icon
-        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-        </svg>`;
+        // Minimal shopping icon (single line, no newlines)
+        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>`;
 
-        // Minimal arrow icon
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>`;
+        // Minimal arrow icon (single line, no newlines)
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-gray-200 dark:border-gray-700
-                   hover:border-blue-500 dark:hover:border-blue-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${shopIcon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        // CRITICAL FIX: Single-line template to prevent <br> injection
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${shopIcon}<span class="no-underline">${linkText.trim()}</span>${arrowIcon}</a>`;
     });
 
     // 0B. Category SLUG format: [LINK:shop:category:SLUG]
@@ -625,28 +611,14 @@ window.aiChatRenderMarkdown = function(content) {
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
 
-        // Minimal category icon
-        const icon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>`;
+        // Minimal category icon (single line, no newlines)
+        const icon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
 
-        // Minimal arrow icon
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>`;
+        // Minimal arrow icon (single line, no newlines)
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-green-200 dark:border-green-700
-                   hover:border-green-500 dark:hover:border-green-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${icon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        // CRITICAL FIX: Single-line template to prevent <br> injection
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${icon}<span class="no-underline">${linkText.trim()}</span>${arrowIcon}</a>`;
     });
 
     // 0C. BACKWARD COMPATIBILITY: [LINK:shop:TYPE:ID] → /shop/TYPE/ID (OLD ID-BASED FORMAT)
@@ -696,10 +668,8 @@ window.aiChatRenderMarkdown = function(content) {
             colorClass = 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400';
         }
 
-        // Minimal arrow icon
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>`;
+        // Minimal arrow icon (single line, no newlines)
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
 
         // Determine border color based on module type for minimal differentiation
         let borderColor = 'border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500';
@@ -715,45 +685,22 @@ window.aiChatRenderMarkdown = function(content) {
             borderColor = 'border-pink-200 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500';
         }
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border ${borderColor}
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${icon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        // CRITICAL FIX: Single-line template to prevent <br> injection
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border ${borderColor} rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${icon}<span class="no-underline">${linkText.trim()}</span>${arrowIcon}</a>`;
     });
 
     // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)(?::([a-z0-9-]+))?\]/gi, function(match, productName, productId, productSlug) {
         const productUrl = `/shop/product/${productId}`;
 
-        // Minimal shopping icon
-        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-        </svg>`;
+        // Minimal shopping icon (single line, no newlines)
+        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>`;
 
-        // Minimal arrow icon
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>`;
+        // Minimal arrow icon (single line, no newlines)
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
 
-        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-gray-200 dark:border-gray-700
-                   hover:border-blue-500 dark:hover:border-blue-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${shopIcon}
-            <span class="no-underline">${productName.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        // CRITICAL FIX: Single-line template to prevent <br> injection
+        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${shopIcon}<span class="no-underline">${productName.trim()}</span>${arrowIcon}</a>`;
     });
 
     // ═══════════════════════════════════════════════════════════════════

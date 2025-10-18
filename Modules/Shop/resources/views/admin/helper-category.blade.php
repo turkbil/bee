@@ -24,7 +24,7 @@
                 @endhasmoduleaccess
 
                 @hasmoduleaccess('shop', 'create')
-                    <a href="{{ route('admin.shop.categories.create') }}" class="dropdown-module-item btn btn-primary">
+                    <a href="{{ route('admin.shop.categories.manage') }}" class="dropdown-module-item btn btn-primary">
                         {{ __('shop::admin.new_category') }}
                     </a>
                 @endhasmoduleaccess

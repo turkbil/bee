@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İletişim Sections - ixtif.com Tasarım Kütüphanesi (Animated)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+        html { scroll-snap-type: y mandatory; }
+        section { scroll-snap-align: start; }
+
+        /* 🎬 ANIMATED BACKGROUND STYLES */
+        @keyframes gradient-x {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes gradient-y {
+            0%, 100% {
+                background-position: 50% 0%;
+            }
+            50% {
+                background-position: 50% 100%;
+            }
+        }
+
+        @keyframes gradient-xy {
+            0%, 100% {
+                background-position: 0% 0%;
+            }
+            25% {
+                background-position: 100% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            75% {
+                background-position: 0% 100%;
+            }
+        }
+
+        .animate-gradient-x {
+            background-size: 400% 400%;
+            animation: gradient-x 10s ease infinite;
+        }
+
+        .animate-gradient-y {
+            background-size: 400% 400%;
+            animation: gradient-y 12s ease infinite;
+        }
+
+        .animate-gradient-xy {
+            background-size: 400% 400%;
+            animation: gradient-xy 20s ease infinite;
+        }
+    </style>
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <section id="contact-010" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-gray-900 to-black relative overflow-hidden">
+
+    <!-- 🌊 MULTI-LAYER ANIMATED BACKGROUND -->
+    <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-transparent to-transparent animate-gradient-x"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-purple-600/30 to-transparent animate-gradient-y"></div>
+        <div class="absolute inset-0 bg-gradient-to-bl from-transparent via-transparent to-pink-600/30 animate-gradient-xy"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-5xl mx-auto">
+            <!-- Badge -->
+            <div class="text-center mb-8">
+                <span class="inline-block bg-white/10 backdrop-blur-lg text-white px-6 py-2 rounded-full text-sm font-bold border border-white/20">
+                    <i class="fa-solid fa-hashtag mr-1"></i>CONTACT-010
+                    <span class="ml-2 text-cyan-400">● ANIMATED</span>
+                </span>
+            </div>
+
+            <!-- Title -->
+            <div class="text-center mb-16">
+                <h2 class="text-6xl md:text-7xl font-black text-white mb-6 drop-shadow-2xl">
+                    7/24 Yanınızdayız
+                </h2>
+                <p class="text-2xl text-white/80 max-w-3xl mx-auto">
+                    Hangi saatte olursanız olun, size yardımcı olmak için hazırız
+                </p>
+            </div>
+
+            <!-- Contact Methods -->
+            <div class="bg-white/5 backdrop-blur-lg border-2 border-white/10 rounded-[50px] p-8 mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Phone -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group">
+                        <i class="fa-solid fa-phone text-4xl text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">Telefon</h3>
+                        <p class="text-white/60 text-sm">Hemen arayın</p>
+                    </button>
+
+                    <!-- Email -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group">
+                        <i class="fa-solid fa-envelope text-4xl text-purple-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">E-posta</h3>
+                        <p class="text-white/60 text-sm">Mail gönderin</p>
+                    </button>
+
+                    <!-- WhatsApp -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group">
+                        <i class="fa-brands fa-whatsapp text-4xl text-green-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">WhatsApp</h3>
+                        <p class="text-white/60 text-sm">Mesajlaşın</p>
+                    </button>
+
+                    <!-- Live Chat -->
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl p-6 transition-all duration-300 text-center group relative">
+                        <div class="absolute top-3 right-3 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <i class="fa-solid fa-comment-dots text-4xl text-orange-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-white font-bold mb-1">Canlı Destek</h3>
+                        <p class="text-white/60 text-sm">Online</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-8 mb-12">
+                <div class="text-center">
+                    <div class="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 mb-2">
+                        <2h
+                    </div>
+                    <p class="text-white/70 font-semibold">Ortalama Yanıt</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400 mb-2">
+                        98%
+                    </div>
+                    <p class="text-white/70 font-semibold">Memnuniyet</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-2">
+                        24/7
+                    </div>
+                    <p class="text-white/70 font-semibold">Destek</p>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center">
+                <button class="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-16 py-6 rounded-full font-black text-2xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <i class="fa-solid fa-headset mr-3"></i>
+                    Destek Talep Et
+                </button>
+                <p class="text-white/60 mt-6">
+                    <i class="fa-solid fa-shield-check text-green-400 mr-2"></i>
+                    %100 müşteri memnuniyeti garantisi
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+    </div>
+
+</body>
+</html>

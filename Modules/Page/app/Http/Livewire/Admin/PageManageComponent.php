@@ -391,10 +391,12 @@ class PageManageComponent extends Component implements AIContentGeneratable
         // TinyMCE içeriğini senkronize et
         $this->dispatch('sync-tinymce-content');
 
-        Log::info('🚀 SAVE METHOD BAŞLADI', [
+        Log::info('🚀🚀🚀 PAGE SAVE METHOD BAŞLADI 🚀🚀🚀', [
             'pageId' => $this->pageId,
             'redirect' => $redirect,
-            'currentLanguage' => $this->currentLanguage
+            'currentLanguage' => $this->currentLanguage,
+            'inputs' => $this->inputs,
+            'multiLangInputs' => $this->multiLangInputs
         ]);
 
         try {
@@ -505,7 +507,15 @@ class PageManageComponent extends Component implements AIContentGeneratable
         $this->dispatch('toast', $toast);
 
         // SEO VERİLERİNİ KAYDET - Universal SEO Tab Component'e event gönder
-        $this->dispatch('page-saved', pageId: $this->pageId);
+        Log::info('🚀 PAGE-SAVED EVENT GÖNDERİLİYOR', [
+            'pageId' => $this->pageId,
+            'modelId' => $this->pageId
+        ]);
+
+        // Global event dispatch - tüm component'ler dinleyebilir
+        $this->dispatch('page-saved', $this->pageId);
+
+        Log::info('✅ Event dispatched');
 
         Log::info('✅ Save method başarıyla tamamlandı', [
             'pageId' => $this->pageId

@@ -6,12 +6,17 @@
 @extends('themes.' . $themeName . '.layouts.app')
 
 @section('module_content')
-    <div class="min-h-screen bg-white dark:bg-gray-900">
+    <div class="min-h-screen bg-white dark:bg-slate-900">
         @php
             $currentLocale = app()->getLocale();
             $title = $item->getTranslated('title', $currentLocale);
             $shortDescription = $item->getTranslated('short_description', $currentLocale);
             $longDescription = $item->getTranslated('body', $currentLocale);
+
+            // 📞 İletişim Bilgileri - Settings'ten al
+            $contactPhone = setting('contact_phone_1');
+            $contactWhatsapp = setting('contact_whatsapp_1');
+            $contactEmail = setting('contact_email_1');
 
             $moduleSlugService = app(\App\Services\ModuleSlugService::class);
             $indexSlug = $moduleSlugService->getMultiLangSlug('Shop', 'index', $currentLocale);
@@ -67,7 +72,7 @@
 
         {{-- 🎯 HERO SECTION --}}
         <section id="hero-section"
-            class="relative bg-gradient-to-r from-blue-600 via-slate-800 to-slate-950 text-white overflow-hidden">
+            class="relative bg-gradient-to-r from-blue-600 via-slate-800 to-slate-950 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 text-white overflow-hidden">
             {{-- Decorative elements --}}
             <div class="absolute top-0 left-0 w-full h-full opacity-15">
                 <div
@@ -101,11 +106,13 @@
                                 <i class="fa-solid fa-envelope"></i>
                                 <span>Teklif Al</span>
                             </a>
-                            <a href="tel:02167553555"
-                                class="inline-flex items-center justify-center gap-3 bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-blue-700 transition-colors">
-                                <i class="fa-solid fa-phone"></i>
-                                <span>0216 755 3 555</span>
-                            </a>
+                            @if($contactPhone)
+                                <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                    class="inline-flex items-center justify-center gap-3 bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-blue-700 transition-colors">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <span>{{ $contactPhone }}</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
 
@@ -210,31 +217,35 @@
                         <div class="lg:col-span-1">
                             <div class="sticky top-24 space-y-6">
                                 {{-- Quick Contact --}}
-                                <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-6 text-white">
+                                <div class="bg-gradient-to-br from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 rounded-lg p-6 text-white">
                                     <h3 class="text-xl font-bold mb-4">Hızlı İletişim</h3>
                                     <div class="space-y-4">
-                                        <a href="tel:02167553555"
-                                            class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
-                                            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                                <i class="fa-solid fa-phone"></i>
-                                            </div>
-                                            <div>
-                                                <div class="text-xs opacity-80">Telefon</div>
-                                                <div class="font-semibold">0216 755 3 555</div>
-                                            </div>
-                                        </a>
-                                        <a href="mailto:info@ixtif.com"
-                                            class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
-                                            <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                                                <i class="fa-solid fa-envelope"></i>
-                                            </div>
-                                            <div>
-                                                <div class="text-xs opacity-80">E-posta</div>
-                                                <div class="font-semibold">info@ixtif.com</div>
-                                            </div>
-                                        </a>
+                                        @if($contactPhone)
+                                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                                class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
+                                                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-phone"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-xs opacity-80">Telefon</div>
+                                                    <div class="font-semibold">{{ $contactPhone }}</div>
+                                                </div>
+                                            </a>
+                                        @endif
+                                        @if($contactEmail)
+                                            <a href="mailto:{{ $contactEmail }}"
+                                                class="flex items-center gap-3 text-white hover:text-blue-100 transition-colors">
+                                                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-envelope"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-xs opacity-80">E-posta</div>
+                                                    <div class="font-semibold">{{ $contactEmail }}</div>
+                                                </div>
+                                            </a>
+                                        @endif
                                     </div>
-                                    <a href="#contact-form"
+                                    <a href="#contact"
                                         class="mt-6 block w-full bg-white text-blue-700 font-bold py-3 rounded-lg text-center hover:bg-blue-50 transition-colors">
                                         Teklif Formu
                                     </a>
@@ -434,7 +445,7 @@
     {{-- 📬 MODERN CONTACT FORM --}}
     <section id="contact" class="relative mt-32 overflow-hidden">
         {{-- Gradient Background with Pattern --}}
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900"></div>
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl">
             </div>
@@ -518,41 +529,47 @@
                 {{-- SAĞ: DETAYLAR (5/12) --}}
                 <div class="w-full md:w-5/12 space-y-8">
                     {{-- İletişim Bilgileri --}}
-                    <a href="tel:02167553555"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-blue-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-blue-400 hover:shadow-lg cursor-pointer">
-                        <div
-                            class="w-14 h-14 bg-white rounded-xl flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-all duration-300">
-                            <i class="fa-solid fa-phone text-blue-600 text-xl group-hover:animate-pulse"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">Telefon</div>
-                            <div class="text-xl font-bold text-white">0216 755 3 555</div>
-                        </div>
-                    </a>
+                    @if($contactPhone)
+                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                            class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-blue-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-blue-400 hover:shadow-lg cursor-pointer">
+                            <div
+                                class="w-14 h-14 bg-white rounded-xl flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-all duration-300">
+                                <i class="fa-solid fa-phone text-blue-600 text-xl group-hover:animate-pulse"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">Telefon</div>
+                                <div class="text-xl font-bold text-white">{{ $contactPhone }}</div>
+                            </div>
+                        </a>
+                    @endif
 
-                    <a href="https://wa.me/905010056758" target="_blank"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-green-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-green-400 hover:shadow-lg cursor-pointer">
-                        <div
-                            class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-600 transition-all duration-300">
-                            <i class="fa-brands fa-whatsapp text-white text-xl group-hover:animate-bounce"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">WhatsApp</div>
-                            <div class="text-xl font-bold text-white">0501 005 67 58</div>
-                        </div>
-                    </a>
+                    @if($contactWhatsapp)
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                            class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-green-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-green-400 hover:shadow-lg cursor-pointer">
+                            <div
+                                class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-600 transition-all duration-300">
+                                <i class="fa-brands fa-whatsapp text-white text-xl group-hover:animate-bounce"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">WhatsApp</div>
+                                <div class="text-xl font-bold text-white">{{ $contactWhatsapp }}</div>
+                            </div>
+                        </a>
+                    @endif
 
-                    <a href="mailto:info@ixtif.com"
-                        class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-purple-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-purple-400 hover:shadow-lg cursor-pointer">
-                        <div
-                            class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-purple-600 transition-all duration-300">
-                            <i class="fa-solid fa-envelope text-white text-xl group-hover:animate-pulse"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">E-posta</div>
-                            <div class="text-lg font-bold text-white break-all">info@ixtif.com</div>
-                        </div>
-                    </a>
+                    @if($contactEmail)
+                        <a href="mailto:{{ $contactEmail }}"
+                            class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-purple-500/30 rounded-2xl transition-all duration-300 border border-white/20 hover:border-purple-400 hover:shadow-lg cursor-pointer">
+                            <div
+                                class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-purple-600 transition-all duration-300">
+                                <i class="fa-solid fa-envelope text-white text-xl group-hover:animate-pulse"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">E-posta</div>
+                                <div class="text-lg font-bold text-white break-all">{{ $contactEmail }}</div>
+                            </div>
+                        </a>
+                    @endif
 
                     {{-- Info Box --}}
                     <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">

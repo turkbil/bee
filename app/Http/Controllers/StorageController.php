@@ -39,9 +39,14 @@ class StorageController extends Controller
             $tenancy = app(\Stancl\Tenancy\Tenancy::class);
 
             if ($tenancy->initialized) {
-                // Tenant context'inde storage_path() zaten tenant klasörünü içerir
-                // Örn: /var/www/.../storage/tenant2
-                $fullPath = storage_path("app/public/{$path}");
+                // Tenant ID'yi al
+                $tenantId = tenant('id');
+
+                // TenantPathGenerator ile uyumlu path:
+                // storage/tenant2/app/public/tenant2/{media_id}/file.png
+                // URL'den gelen: 1/file.png
+                // Eklememiz gereken prefix: tenant{id}/
+                $fullPath = storage_path("app/public/tenant{$tenantId}/{$path}");
 
                 return $this->serveFile($fullPath);
             }

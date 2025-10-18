@@ -10,7 +10,7 @@
             <!-- Header Bölümü -->
             <div class="row mx-2 my-3">
                 <!-- Arama Kutusu -->
-                <div class="col">
+                <div class="col-md-4">
                     <div class="input-icon">
                         <span class="input-icon-addon">
                             <i class="fas fa-search"></i>
@@ -20,21 +20,40 @@
                     </div>
                 </div>
 
-                <!-- Ortadaki Loading -->
-                <div class="col position-relative">
-                    <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, toggleActive, selectedItems, selectAll, bulkDelete, bulkToggleSelected"
-                        class="position-absolute top-50 start-50 translate-middle text-center"
-                        style="width: 100%; max-width: 250px;">
-                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
-                        <div class="progress mb-1">
-                            <div class="progress-bar progress-bar-indeterminate"></div>
-                        </div>
+                <!-- Kategori Dropdown -->
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <select wire:model.live="selectedCategory" class="form-select">
+                            <option value="">{{ __('shop::admin.all_categories') }}</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category['category_id'] }}">
+                                    {{ $category['title'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @if($selectedCategory)
+                            <button wire:click="clearCategoryFilter" class="btn btn-outline-secondary" type="button">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Ürün Sayısı Gösterimi -->
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center h-100">
+                        <span class="text-muted">
+                            <i class="fas fa-box me-2"></i>
+                            <strong>{{ $products->total() }}</strong> {{ __('shop::admin.products') }}
+                            @if($selectedCategory)
+                                <span class="badge bg-primary ms-2">{{ __('shop::admin.filtered') }}</span>
+                            @endif
+                        </span>
                     </div>
                 </div>
 
                 <!-- Sağ Taraf (Sayfa Adeti Seçimi) -->
-                <div class="col">
+                <div class="col-md-2">
                     <div class="d-flex align-items-center justify-content-end gap-3">
                         <div style="width: 80px; min-width: 80px">
                             <select wire:model.live="perPage" class="form-control listing-filter-select" data-choices
@@ -49,11 +68,30 @@
                 </div>
             </div>
 
+            <!-- Loading Indicator -->
+            <div class="row mx-2">
+                <div class="col-12">
+                    <div wire:loading
+                        wire:target="render, search, perPage, sortBy, selectedCategory, gotoPage, previousPage, nextPage, toggleActive, selectedItems, selectAll, bulkDelete, bulkToggleSelected"
+                        class="text-center py-2">
+                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
+                        <div class="progress mb-1" style="height: 3px;">
+                            <div class="progress-bar progress-bar-indeterminate"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tablo Bölümü -->
             <div id="table-default" class="table-responsive">
                 <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
+                            <th style="width: 50px">
+                                @if($selectedCategory)
+                                    <i class="fas fa-grip-vertical text-muted" data-bs-toggle="tooltip" title="{{ __('shop::admin.drag_to_sort') }}"></i>
+                                @endif
+                            </th>
                             <th style="width: 50px">
                                 <div class="d-flex align-items-center gap-2">
                                     <input type="checkbox"
@@ -89,10 +127,17 @@
                             <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
                         </tr>
                     </thead>
-                    <tbody class="table-tbody" x-data="{ openVariants: {} }">
+                    <tbody class="table-tbody {{ $selectedCategory ? 'sortable-list' : '' }}" x-data="{ openVariants: {} }" id="sortable-products">
                         @forelse($products as $product)
-                            <tr class="hover-trigger" wire:key="product-row-{{ $product->product_id }}"
+                            <tr class="hover-trigger {{ $selectedCategory ? 'sortable-item' : '' }}"
+                                wire:key="product-row-{{ $product->product_id }}"
+                                data-product-id="{{ $product->product_id }}"
                                 x-init="openVariants[{{ $product->product_id }}] = false">
+                                <td class="text-center">
+                                    @if($selectedCategory)
+                                        <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab;"></i>
+                                    @endif
+                                </td>
                                 <td class="sort-id small">
                                     <div class="hover-toggle">
                                         <span class="hover-hide">{{ $product->product_id }}</span>
@@ -541,9 +586,84 @@
         font-size: 0.875rem;
     }
 }
+
+/* Sortable Styles */
+.sortable-handle {
+    cursor: grab !important;
+}
+
+.sortable-handle:active {
+    cursor: grabbing !important;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+    background-color: var(--tblr-primary-lt, #e6f3ff) !important;
+}
+
+.sortable-chosen {
+    background-color: var(--tblr-primary-lt, #e6f3ff) !important;
+}
+
+.sortable-drag {
+    opacity: 0.8;
+    cursor: grabbing !important;
+}
+
+:root[data-bs-theme="dark"] .sortable-ghost,
+:root[data-bs-theme="dark"] .sortable-chosen {
+    background-color: rgba(var(--tblr-primary-rgb), 0.2) !important;
+}
 </style>
 @endpush
 
 @push('scripts')
 <script src="{{ asset('assets/js/simple-translation-modal.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initSortable();
+});
+
+// Livewire render sonrası yeniden initialize et
+document.addEventListener('livewire:update', function() {
+    initSortable();
+});
+
+function initSortable() {
+    const sortableList = document.getElementById('sortable-products');
+
+    if (!sortableList || !sortableList.classList.contains('sortable-list')) {
+        return;
+    }
+
+    // Eski sortable instance'ı temizle
+    if (window.productSortable) {
+        window.productSortable.destroy();
+    }
+
+    window.productSortable = new Sortable(sortableList, {
+        animation: 150,
+        handle: '.sortable-handle',
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+        filter: '.variant-row',
+        onEnd: function(evt) {
+            const productIds = [];
+            const rows = sortableList.querySelectorAll('.sortable-item');
+
+            rows.forEach(function(row) {
+                const productId = row.getAttribute('data-product-id');
+                if (productId) {
+                    productIds.push(parseInt(productId));
+                }
+            });
+
+            // Livewire component'e sıralama bilgisini gönder
+            @this.call('updateSortOrder', productIds);
+        }
+    });
+}
+</script>
 @endpush

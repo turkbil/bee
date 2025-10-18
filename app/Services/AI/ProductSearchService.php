@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Log;
  */
 class ProductSearchService
 {
-    protected int $tenantId;
-    protected string $locale;
+    protected ?int $tenantId = null;
+    protected ?string $locale = null;
     protected HybridSearchService $hybridSearch;
 
     /**
@@ -89,37 +89,35 @@ class ProductSearchService
     public function __construct(HybridSearchService $hybridSearch)
     {
         $this->hybridSearch = $hybridSearch;
+        // Tenant context will be initialized lazily on first use
+    }
 
-        // ✅ FIX: Get tenant_id from central tenants table via tenancy helper
+    /**
+     * Ensure tenant context is initialized
+     * @throws \Exception if tenant context is not available
+     */
+    protected function ensureTenantContext(): void
+    {
+        if ($this->tenantId !== null) {
+            return; // Already initialized
+        }
+
+        // Get tenant_id from tenancy helper
         $this->tenantId = tenant('id');
 
-        // ⚠️ CRITICAL: tenant() NULL ise exception fırlat - API route tenant middleware eksik!
-        if (!$this->tenantId) {
-            \Log::error('🚨 ProductSearchService: Tenant context missing!', [
-                'backtrace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)
-            ]);
-            throw new \Exception('Tenant context is required for ProductSearchService. Ensure InitializeTenancy middleware is applied to the route.');
+        if ($this->tenantId === null) {
+            throw new \Exception('Tenant context is required. Ensure InitializeTenancy middleware is applied to the route.');
         }
 
-        // ✅ FIX: Get locale from tenant's tenant_languages table (is_default = 1)
-        try {
-            $defaultLanguage = \Modules\LanguageManagement\App\Models\TenantLanguage::where('is_default', 1)->first();
-            $this->locale = $defaultLanguage ? $defaultLanguage->code : 'tr';
+        // Get locale from tenant's default language
+        $defaultLanguage = \Modules\LanguageManagement\App\Models\TenantLanguage::where('is_default', 1)->first();
+        $this->locale = $defaultLanguage ? $defaultLanguage->code : 'tr';
 
-            \Log::info('🔧 ProductSearchService initialized', [
-                'tenant_id' => $this->tenantId,
-                'locale' => $this->locale,
-                'default_language' => $defaultLanguage ? $defaultLanguage->name : 'Turkish (fallback)'
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('🚨 ProductSearchService: Failed to get default language', [
-                'tenant_id' => $this->tenantId,
-                'error' => $e->getMessage()
-            ]);
-
-            // Fallback to 'tr' if language table query fails
-            $this->locale = 'tr';
-        }
+        \Log::info('🔧 ProductSearchService initialized', [
+            'tenant_id' => $this->tenantId,
+            'locale' => $this->locale,
+            'default_language' => $defaultLanguage ? $defaultLanguage->name : 'Turkish (default)'
+        ]);
     }
 
     /**
@@ -127,144 +125,68 @@ class ProductSearchService
      */
     public function searchProducts(string $userMessage, array $options = []): array
     {
-        // Normalize message (remove aggression, urgency markers)
+        // Ensure tenant context is initialized
+        $this->ensureTenantContext();
+
+        // Normalize message (basic cleanup only)
         $normalizedMessage = $this->normalizeUserMessage($userMessage);
 
         $cacheKey = "smart_search:{$this->tenantId}:" . md5($normalizedMessage);
 
-        return Cache::remember($cacheKey, 300, function() use ($normalizedMessage, $options) {
-            // 🆕 STEP 0: Detect category first (HIGHEST PRIORITY!)
+        return Cache::remember($cacheKey, 300, function() use ($normalizedMessage, $userMessage, $options) {
+            // STEP 1: Detect category (for Meilisearch filtering)
             $detectedCategory = $this->detectCategory($normalizedMessage);
-
-            // Extract keywords from user message
-            $keywords = $this->extractKeywords($normalizedMessage);
 
             Log::info('🔍 Smart Product Search Started', [
                 'tenant_id' => $this->tenantId,
-                'normalized_message' => substr($normalizedMessage, 0, 100),
-                'keywords' => $keywords,
+                'user_query' => substr($userMessage, 0, 100),
                 'detected_category' => $detectedCategory ? $detectedCategory['category_name'] : 'none'
             ]);
 
-            // 🚀 NEW: TRY HYBRID SEARCH FIRST (Meilisearch 70% + Vector 30%)
-            try {
-                $hybridResults = $this->hybridSearch->search(
-                    $normalizedMessage,
-                    $detectedCategory['category_id'] ?? null,
-                    10
+            // STEP 2: HYBRID SEARCH (Meilisearch 70% + Vector 30%)
+            // ✅ Meilisearch handles: typo tolerance, fuzzy matching, tokenization, stopwords
+            // ✅ No keyword extraction needed - pass user query directly!
+            $hybridResults = $this->hybridSearch->search(
+                $normalizedMessage,
+                $detectedCategory['category_id'] ?? null,
+                10
+            );
+
+            if (!empty($hybridResults)) {
+                Log::info('✅ Hybrid Search SUCCESS', [
+                    'results_count' => count($hybridResults),
+                    'top_product' => $hybridResults[0]['product']['title'] ?? null,
+                    'search_layer' => 'hybrid'
+                ]);
+
+                return $this->formatResults(
+                    array_column($hybridResults, 'product'),
+                    'hybrid',
+                    $detectedCategory
                 );
-
-                if (!empty($hybridResults)) {
-                    Log::info('✅ Hybrid Search SUCCESS', [
-                        'results_count' => count($hybridResults),
-                        'top_product' => $hybridResults[0]['product']['title'] ?? null
-                    ]);
-
-                    return $this->formatResults(
-                        array_column($hybridResults, 'product'),
-                        'hybrid',
-                        $detectedCategory
-                    );
-                }
-            } catch (\Exception $e) {
-                Log::warning('⚠️ Hybrid search failed, falling back to manual search', [
-                    'error' => $e->getMessage()
-                ]);
             }
 
-            // FALLBACK: Manual search layers below
-            // 🆕 CATEGORY-BASED SEARCH (If category detected)
-            if ($detectedCategory) {
-                // 🔍 Extract category-specific parameters
-                $extractedParams = $this->extractCategoryParameters(
-                    $detectedCategory['category_id'],
-                    $keywords,
-                    $normalizedMessage
-                );
-
-                Log::info('🔍 Attempting category search', [
-                    'category_id' => $detectedCategory['category_id'],
-                    'category_name' => $detectedCategory['category_name'],
-                    'extracted_params' => $extractedParams
-                ]);
-
-                $results = $this->searchByCategory(
-                    $detectedCategory['category_id'],
-                    $keywords,
-                    $extractedParams
-                );
-
-                Log::info('📊 Category search results', [
-                    'results_count' => count($results),
-                    'is_empty' => empty($results)
-                ]);
-
-                if (!empty($results)) {
-                    Log::info('✅ Category Search found products', [
-                        'category' => $detectedCategory['category_name'],
-                        'count' => count($results)
-                    ]);
-                    return $this->formatResults($results, 'category', $detectedCategory);
-                }
-            }
-
-            // Try Layer 1: Exact Match
-            $results = $this->exactMatch($keywords, $detectedCategory);
-            if (!empty($results)) {
-                Log::info('✅ Layer 1 (Exact Match) found products', [
-                    'count' => count($results)
-                ]);
-                return $this->formatResults($results, 'exact', $detectedCategory);
-            }
-
-            // Try Layer 2: Fuzzy Search (DISABLED - causes array-to-string conversion issues)
-            // $results = $this->fuzzySearch($keywords, $detectedCategory);
-            // if (!empty($results)) {
-            //     Log::info('✅ Layer 2 (Fuzzy Search) found products', [
-            //         'count' => count($results)
-            //     ]);
-            //     return $this->formatResults($results, 'fuzzy', $detectedCategory);
-            // }
-
-            // Try Layer 3: Phonetic Search
-            $results = $this->phoneticSearch($keywords);
-            if (!empty($results)) {
-                Log::info('✅ Layer 3 (Phonetic Search) found products', [
-                    'count' => count($results)
-                ]);
-                return $this->formatResults($results, 'phonetic', $detectedCategory);
-            }
-
-            Log::warning('❌ No products found in any layer', [
-                'category_detected' => $detectedCategory ? 'yes' : 'no'
+            // No fallbacks - if Meilisearch can't find it, it doesn't exist
+            Log::warning('❌ No products found', [
+                'category_detected' => $detectedCategory ? 'yes' : 'no',
+                'query' => substr($normalizedMessage, 0, 100)
             ]);
+
             return [];
         });
     }
 
     /**
-     * Normalize user message (handle rude, urgent, confused users)
+     * Normalize user message
+     *
+     * ✅ BASITLEŞTIRILDI: Sadece temel temizlik
+     * ⚠️ Meilisearch zaten typo tolerance, fuzzy matching, stopword handling yapıyor
+     *    Bu yüzden gereksiz preprocessing KALDIRILIYOR
      */
     protected function normalizeUserMessage(string $message): string
     {
-        // Convert to lowercase
-        $normalized = mb_strtolower($message);
-
-        // Remove urgency markers
-        $urgencyMarkers = ['acil', 'hemen', 'şimdi', 'çabuk', 'hızlı', 'ivedi', '!!!', '!!!!'];
-        $normalized = str_replace($urgencyMarkers, '', $normalized);
-
-        // Remove rudeness (keep professional regardless)
-        $rudeWords = ['lan', 'yav', 'be', 'ya', 'amaan'];
-        $normalized = str_replace($rudeWords, '', $normalized);
-
-        // Remove excessive punctuation
-        $normalized = preg_replace('/[!?]{2,}/', '', $normalized);
-
-        // Remove emojis (optional, but helps with search)
-        $normalized = preg_replace('/[\x{1F600}-\x{1F64F}]/u', '', $normalized);
-
-        return trim($normalized);
+        // Sadece trim ve fazla boşlukları temizle
+        return trim(preg_replace('/\s+/', ' ', $message));
     }
 
     /**
@@ -276,6 +198,9 @@ class ProductSearchService
         // 🔒 PROTECTED TERMS: Bu terimleri asla stopword olarak silme!
         $protectedTerms = [
             'AGM', 'Li-Ion', 'lithium', 'LPG', 'dizel', 'elektrik',
+            // ⚠️ KRİTİK: Voltage/batarya terimleri
+            '48V', '48v', '24V', '24v', '12V', '12v', '36V', '36v', '80V', '80v',
+            'volt', 'voltaj', 'batarya', 'akü', 'battery',
             // ⚠️ KRİTİK: "soğuk" kelimesinin tüm varyasyonları (typo tolerance)
             'soğuk', 'soguk', 'souk', 'depo', 'hava', 'soğuk depo', 'soguk depo',
             'soğuk hava', 'soguk hava', 'cold storage', 'freezer', 'dondurucu',

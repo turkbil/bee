@@ -82,6 +82,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'parent_product_id',
         'is_master_product',
         'variant_type',
+        'sort_order',
         // OpenAI Embeddings
         'embedding',
         'embedding_generated_at',
@@ -130,6 +131,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'warranty_info' => 'array',
         'shipping_info' => 'array',
         'tags' => 'array',
+        'sort_order' => 'integer',
     ];
 
     protected array $translatable = [

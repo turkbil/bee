@@ -335,15 +335,70 @@ class OptimizedPromptService
             $lines[] = "  - SKU: {$product['sku']}";
         }
 
-        // Technical specs (if available)
+        // ⚠️ KRİTİK: Ürün açıklamalarını ekle (voltage/specs bilgileri burada!)
+        if (!empty($product['short_description'])) {
+            $desc = $product['short_description'];
+            if (is_array($desc)) {
+                $desc = $desc['tr'] ?? $desc['en'] ?? reset($desc) ?? '';
+            }
+            if (!empty($desc)) {
+                $desc = mb_substr(strip_tags($desc), 0, 300);
+                $lines[] = "  - Kısa Açıklama: {$desc}";
+            }
+        }
+
+        // Full description da ekle (daha detaylı bilgiler için)
+        if (!empty($product['description'])) {
+            $fullDesc = $product['description'];
+            if (is_array($fullDesc)) {
+                $fullDesc = $fullDesc['tr'] ?? $fullDesc['en'] ?? reset($fullDesc) ?? '';
+            }
+            if (!empty($fullDesc)) {
+                $fullDesc = mb_substr(strip_tags($fullDesc), 0, 500);
+                $lines[] = "  - Detaylı Açıklama: {$fullDesc}";
+            }
+        }
+
+        // ⚠️ KRİTİK: TÜM Technical specs (voltage, battery, vs.)
         if (!empty($product['custom_technical_specs'])) {
             $specs = $product['custom_technical_specs'];
-            if (!empty($specs['capacity'])) {
-                $lines[] = "  - Kapasite: {$specs['capacity']}";
+
+            // Tüm spec'leri dinamik olarak ekle
+            foreach ($specs as $key => $value) {
+                if (!empty($value) && is_string($value)) {
+                    // Key'i Türkçe label'a çevir
+                    $label = match($key) {
+                        'capacity' => 'Kapasite',
+                        'lift_height' => 'Kaldırma Yüksekliği',
+                        'voltage' => 'Voltaj',
+                        'battery_type' => 'Batarya Tipi',
+                        'battery_capacity' => 'Batarya Kapasitesi',
+                        'fork_length' => 'Çatal Uzunluğu',
+                        'fork_width' => 'Çatal Genişliği',
+                        'weight' => 'Ağırlık',
+                        'dimensions' => 'Boyutlar',
+                        'max_speed' => 'Maksimum Hız',
+                        'drive_type' => 'Tahrik Tipi',
+                        'control_type' => 'Kontrol Tipi',
+                        default => ucfirst(str_replace('_', ' ', $key))
+                    };
+                    $lines[] = "  - {$label}: {$value}";
+                }
             }
-            if (!empty($specs['lift_height'])) {
-                $lines[] = "  - Kaldırma: {$specs['lift_height']}";
+        }
+
+        // Custom features (özellikler)
+        if (!empty($product['custom_features']) && is_array($product['custom_features'])) {
+            $features = array_filter($product['custom_features']);
+            if (!empty($features)) {
+                $lines[] = "  - Özellikler: " . implode(', ', array_slice($features, 0, 5));
             }
+        }
+
+        // Tags (etiketler - arama için önemli!)
+        if (!empty($product['tags'])) {
+            $tags = is_array($product['tags']) ? implode(', ', $product['tags']) : $product['tags'];
+            $lines[] = "  - Etiketler: {$tags}";
         }
 
         // Price info - ⚠️ KRİTİK: base_price > 0 kontrolü (0 veya null ise gösterme!)

@@ -1,13 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(php artisan route:clear)",
-      "Bash(curl -I \"https://ixtif.com/storage/1/f4-151-golgesiz.png\")",
-      "Bash(awk '{print $9}')",
-      "Bash(curl -s -H \"Authorization: Bearer vu1zM39HMijhnBm6XwaJapovdd6L2dEA\" http://127.0.0.1:7700/indexes)",
-      "Bash(curl -s -H \"Authorization: Bearer vu1zM39HMijhnBm6XwaJapovdd6L2dEA\" http://127.0.0.1:7700/indexes/shop_products_tenant_2/stats)",
-      "Bash(curl -s -H \"Authorization: Bearer vu1zM39HMijhnBm6XwaJapovdd6L2dEA\" \"http://127.0.0.1:7700/indexes/shop_products_tenant_2/search?q=filtre&limit=1\")",
-      "Bash(git add -A)"
+      "Bash(php artisan migrate --path=database/migrations/2025_10_18_210135_create_search_queries_table.php)",
+      "Bash(php artisan migrate --path=database/migrations/2025_10_18_210510_create_search_clicks_table.php)",
+      "Bash(php artisan tenants:migrate --path=database/migrations/tenant)",
+      "Bash(php artisan module:seed Search)",
+      "Bash(php artisan tinker --execute=\"echo json_encode(DB::select(''DESCRIBE modules''), JSON_PRETTY_PRINT);\")",
+      "Bash(php artisan make:migration add_is_visible_to_search_queries)",
+      "Bash(php artisan migrate --path=database/migrations/2025_10_18_215152_add_is_visible_to_search_queries.php)",
+      "Bash(git commit -m \"$(cat <<''EOF''\n🔍 SEARCH: Universal Search System + Analytics + Tag Management\n\n✅ TAMAMLANAN ÖZELLİKLER:\n\n📊 Backend (Complete):\n- search_queries + search_clicks tabloları (ana + 3 tenant)\n- SearchQuery + SearchClick modelleri (relations)\n- UniversalSearchService (Meilisearch entegre)\n- SearchClickTracker (çoklu tıklama desteği)\n- SearchAnalyticsService (CTR, performance metrics)\n\n🎨 Frontend (Announcement Pattern):\n- /search/{query} - Ana arama sayfası\n- /populer-aramalar - SEO tags sayfası  \n- SearchResultsComponent (Livewire)\n- SearchBarComponent (header için hazır)\n- Theme-aware (simple/ixtif dinamik)\n\n⚙️ Admin (Tabler.io Pattern):\n- Analytics dashboard (stats + popular + zero-result)\n- Pretitle + card layout (Announcement gibi)\n- Date range filtering (7/30/90 gün)\n\n🔐 Permissions & Module:\n- search.view_analytics\n- search.export_data\n- search.manage_settings\n- search.view_queries\n- search.delete_queries\n- Module: \"search\" (system type)\n\n🆕 TAG YÖNETİMİ:\n- is_visible_in_tags field (her search query için)\n- Admin''den görünürlük kontrolü hazır\n- Tags sayfasında sadece visible olanlar gösterilecek\n\n🚀 Routes:\n- Frontend: /search/{query}, /populer-aramalar\n- API: /api/search, /api/search/suggestions, /api/search/track-click\n- Admin: /admin/search/analytics\n- Rate limiting: 60 req/min (API)\n\n📈 Analytics Features:\n- Click-through rate (CTR)\n- Position analytics\n- New tab vs same tab tracking\n- Response time metrics\n- Zero-result queries\n- Module distribution\n\n🎯 Multi-tenant:\n- Tenant-aware index (shop_products_tenant_{id})\n- Her tenant kendi search data''sını tutar\n- Permissions tüm tenant''larda aktif\n\nPattern Compliance:\n✅ Announcement pattern (frontend layouts)\n✅ Tabler.io pattern (admin views)\n✅ Page module pattern (structure)\n\nSonraki Adım: Header entegrasyonu + SearchBar component''i ixtif.com''a bağla\n\n🤖 Generated with Claude Code\nhttps://claude.com/claude-code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": [],

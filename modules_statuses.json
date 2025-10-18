@@ -15,5 +15,6 @@
     "LanguageManagement": true,
     "SeoManagement": true,
     "MenuManagement": true,
-    "MediaManagement": true
+    "MediaManagement": true,
+    "Search": true
 }

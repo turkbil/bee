@@ -664,15 +664,7 @@
                      class="bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                        <div class="relative">
-                            <input type="text"
-                                   placeholder="Ne aramak istersiniz?"
-                                   class="w-full bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-full px-6 py-3 pl-12 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500">
-                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 dark:text-blue-400"></i>
-                            <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-700 hover:to-purple-700 transition">
-                                Ara
-                            </button>
-                        </div>
+                        @livewire('search::frontend.search-bar')
                     </div>
                 </div>
 

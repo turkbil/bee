@@ -16,16 +16,28 @@
         animation: float 3s ease-in-out infinite;
     }
 
-    /* Animated Gradient - Light & Dark Mode */
-    @keyframes gradient-shift {
+    /* Animated Gradient - Light & Dark Mode (yakında sayfası ile aynı) */
+    @keyframes gradientShift {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
-    .gradient-animated {
-        background-size: 200% 200%;
-        animation: gradient-shift 4s linear infinite;
+    .gradient-animate {
+        background: linear-gradient(-45deg, #1e40af, #2563eb, #ea580c, #15803d, #7c3aed, #dc2626, #2563eb, #1e40af);
+        background-size: 600% 600%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientShift 4s ease-in-out infinite;
+    }
+
+    .dark .gradient-animate {
+        background: linear-gradient(-45deg, #3b82f6, #60a5fa, #fb923c, #22c55e, #a78bfa, #f87171, #60a5fa, #3b82f6);
+        background-size: 600% 600%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     /* Letter switch transition */
@@ -52,10 +64,10 @@
 
                     <!-- Main Title with Animation -->
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.4] overflow-visible pb-4">
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 dark:from-orange-400 dark:via-pink-400 dark:to-purple-400 gradient-animated block py-1">
+                        <span class="gradient-animate block py-1">
                             TÜRKİYE'NİN
                         </span>
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 dark:from-orange-400 dark:via-pink-400 dark:to-purple-400 gradient-animated block py-1">
+                        <span class="gradient-animate block py-1">
                             İSTİF PAZARI
                         </span>
                     </h1>

@@ -1,157 +1,532 @@
- 🔧 Multi Modal Manager initialized
- ✅ Multi Modal Manager loaded
- 🔧 Minimal Translation Modal loading...
- ✅ AI Warning System Translation Modal loaded successfully
- 📦 AI Content Generation System yüklendi
- 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
- 🚀 AI SEO INTEGRATION SYSTEM LOADING...
- 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1760797002:13 ⏰ Load Time: 2025-10-18T14:16:43.720Z
-ai-seo-integration.js?v=1760797002:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1760797002:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1760797002:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1760797002:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1760797002:564 🔍 Bulunan buton sayısı: 9
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:568 🔍 Buton DEBUG: Object
-ai-seo-integration.js?v=1760797002:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1760797002:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1760797002:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1760797002:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-monaco-editor-universal.js?v=1760797002:28 🎯 Monaco Editor Universal System başlatılıyor...
-monaco-editor-universal.js?v=1760797002:324 ✅ Monaco Editor Universal System hazır!
-universal-seo-functions.js?v=1760797002:21 🎯 Universal SEO Functions başlatılıyor...
-universal-seo-functions.js?v=1760797002:372 ✅ Universal SEO Functions yüklendi!
-universal-language-functions.js?v=1760797002:21 🎯 Universal Language Functions başlatılıyor...
-universal-language-functions.js?v=1760797002:145 ✅ Universal Language Functions yüklendi!
-universal-ai-content-functions.js?v=1760797002:21 🎯 Universal AI Content Functions başlatılıyor...
-universal-ai-content-functions.js?v=1760797002:146 ✅ Universal AI Content Functions yüklendi!
-streaming-translation.js:33 ✅ Streaming translation is supported
-streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
-streaming-translation.js:15 🚀 Streaming Translation System initializing...
-streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
-1:3059 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1760797002:839 ⚡ Livewire initialized
-ai-content-system.js?v=1760797002:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1760797002:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1760797002:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1760797002:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1760797002:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1760797002:558 🔒 attachButtonListeners SKIP - already attached
-1:3125 📋 Unified Tab System başlatılıyor, storage key: page_active_tab
-1:3144 🔄 Tab restore işlemi başlıyor...
-1:3147 📋 Kaydedilmiş tab: #1
-1:3153 🎯 Hedef tab element: <a href=​"#1" class=​"nav-link active" data-bs-toggle=​"tab" data-tab-key=​"1" style=​"border-radius:​ 0.25rem 0.25rem 0px 0px !important;​" aria-selected=​"true" data-tab-event-attached=​"true" role=​"tab">​…​</a>​flex
-1:3154 🎯 Hedef pane element: <div class=​"tab-pane show active" id=​"1" role=​"tabpanel" style=​"border-radius:​ 0px !important;​ overflow:​ hidden !important;​">​…​</div>​
-1:3176 ✅ Tab restore tamamlandı: #1
-1:3300 🔄 Tab restore sonrası dil senkronizasyon: tr
-manage.js?v=1760797002:1469 ✅ Dil değiştirildi: tr
-1:3639 🔍 UNIVERSAL SEO TAB - DEBUG START
-1:3643 📊 SEO Input sayısı: 12
-1:3649   SEO Input 0: Object
-1:3649   SEO Input 1: Object
-1:3649   SEO Input 2: Object
-1:3649   SEO Input 3: Object
-1:3649   SEO Input 4: Object
-1:3649   SEO Input 5: Object
-1:3649   SEO Input 6: Object
-1:3649   SEO Input 7: Object
-1:3649   SEO Input 8: Object
-1:3649   SEO Input 9: Object
-1:3649   SEO Input 10: Object
-1:3649   SEO Input 11: Object
-1:3661 ✅ Livewire Component bulundu
-1:3662 📦 seoDataCache: Proxy(Object)
-1:3663 🌍 currentLanguage: tr
-1:3664 📋 availableLanguages: Proxy(Array)
-1:3665 🆔 modelId: 1
-1:3666 🏷️ modelType: page
-1:3667 📦 modelClass: Modules\Page\App\Models\Page
-1:3677 💡 TIP: Konsola "debugSeoTab()" yaz
-1:3682 🔍 UNIVERSAL SEO TAB - DEBUG END
-1:3712 📋 Universal Language System yüklendi
-1:3713 🌍 Current Language: tr
-1:3714 🌍 Livewire Current Language: tr
-1:3715 🔍 Available Languages: Array(1)
-universal-language-functions.js?v=1760797002:73 🔧 İlk yükleme: Dil içeriği düzenleniyor: tr
-universal-language-functions.js?v=1760797002:30 🌍 Dil içeriği değiştiriliyor: tr
-universal-language-functions.js?v=1760797002:64 ✅ Dil içeriği değiştirildi: tr
-1:3739 🎯 TR dili için sosyal medya alanları dolu, switch aktifleştiriliyor
-1:3768 ✅ Universal AI Content System hazır!
-universal-seo-functions.js?v=1760797002:336 ✅ Universal SEO event listeners kuruldu
-universal-language-functions.js?v=1760797002:129 ✅ Universal Language event listeners kuruldu
-manage.js?v=1760797002:115 🔧 Language switching sistemi kuruluyor...
-manage.js?v=1760797002:118 🔍 Bulunan language button sayısı: 0
-manage.js?v=1760797002:443 🔎 RESTORE KONTROL - sayfa başladı
-manage.js?v=1760797002:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
-manage.js?v=1760797002:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
-manage.js?v=1760797002:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
-manage.js?v=1760797002:1347 🔍 Bulunan seo-no-enter input sayısı: 4
-manage.js?v=1760797002:1353   Input 0: Object
-manage.js?v=1760797002:1353   Input 1: Object
-manage.js?v=1760797002:1353   Input 2: Object
-manage.js?v=1760797002:1353   Input 3: Object
-manage.js?v=1760797002:1407 ✅ 4 SEO input için Enter tuşu engelleme aktif
-manage.js?v=1760797002:662 ℹ️ Language switch buttons bulunamadı - tek dil sistemi aktif
-manage.js?v=1760797002:682 🔧 Tek dil modu aktif - tüm language-content elementleri görünür yapılıyor
-manage.js?v=1760797002:697 🌍 Tek dil modu - varsayılan dil: tr
-manage.js?v=1760797002:700 ✅ Tek dil modu kurulumu tamamlandı
-1:4066 🚀 Enterprise Streaming Translation System Ready!
-1:4079 📝 Streaming translation not available - Using standard translation mode
-monaco-editor-universal.js?v=1760797002:59 ✅ Monaco loader yüklendi
-universal-seo-functions.js?v=1760797002:200 📱 Social media switches initialized
-manage.js?v=1760797002:1469 ✅ Dil değiştirildi: tr
-manage.js?v=1760797002:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
-monaco-editor-universal.js?v=1760797002:100 ✅ Monaco Editor hazır
-ai-seo-integration.js?v=1760797002:558 🔒 attachButtonListeners SKIP - already attached
-ai-seo-integration.js?v=1760797002:558 🔒 attachButtonListeners SKIP - already attached
-manage.js?v=1760797002:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: Array(0)
-manage.js?v=1760797002:586 🌍 SEO Counter - Dinamik diller tespit edildi: Array(0)
-1:3096 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
-manage.js?v=1760797002:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
-manage.js?v=1760797002:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
-manage.js?v=1760797002:371 💾 Save button tıklandı
-manage.js?v=1760797002:383 🔍🔍 AKTİF DİL TESPİTİ:
-manage.js?v=1760797002:384   - .text-primary button: null
-manage.js?v=1760797002:385   - Bulunan dil: tr
-manage.js?v=1760797002:386   - window.currentLanguage: tr
-manage.js?v=1760797002:390 🔍 Tüm dil button'ları:
-manage.js?v=1760797002:408 🔍🔍 Aktif tab detayları:
-manage.js?v=1760797002:409   - Tab ID: #1
-manage.js?v=1760797002:410   - Tab metni: SEO
-manage.js?v=1760797002:411   - SEO tab mı?: true
-manage.js?v=1760797002:412   - Element: <a href=​"#1" class=​"nav-link active" data-bs-toggle=​"tab" data-tab-key=​"1" style=​"border-radius:​ 0.25rem 0.25rem 0px 0px !important;​" aria-selected=​"true" data-tab-event-attached=​"true" role=​"tab">​…​</a>​flex
-manage.js?v=1760797002:417 🎯 Kaydet ve Devam Et - GEÇİCİ state korunacak
-manage.js?v=1760797002:418   - Aktif dil: tr
-manage.js?v=1760797002:419   - Aktif tab: #1
-manage.js?v=1760797002:425 ✅ Geçici state window object'e kaydedildi
-manage.js?v=1760797002:426 📋 KURAL: Sayfa tamamen yenilenirse bu veriler kaybolacak
-1:3144 🔄 Tab restore işlemi başlıyor...
-1:3147 📋 Kaydedilmiş tab: #1
-1:3153 🎯 Hedef tab element: <a href=​"#1" class=​"nav-link active" data-bs-toggle=​"tab" data-tab-key=​"1" style=​"border-radius:​ 0.25rem 0.25rem 0px 0px !important;​" aria-selected=​"true" data-tab-event-attached=​"true" role=​"tab">​…​</a>​flex
-1:3154 🎯 Hedef pane element: <div class=​"tab-pane" id=​"1" role=​"tabpanel">​…​</div>​
-1:3176 ✅ Tab restore tamamlandı: #1
-1:3300 🔄 Tab restore sonrası dil senkronizasyon: tr
-manage.js?v=1760797002:1469 ✅ Dil değiştirildi: tr
-1:3144 🔄 Tab restore işlemi başlıyor...
-1:3147 📋 Kaydedilmiş tab: #1
-1:3153 🎯 Hedef tab element: <a href=​"#1" class=​"nav-link active" data-bs-toggle=​"tab" data-tab-key=​"1" style=​"border-radius:​ 0.25rem 0.25rem 0px 0px !important;​" aria-selected=​"true" data-tab-event-attached=​"true" role=​"tab">​…​</a>​flex
-1:3154 🎯 Hedef pane element: <div class=​"tab-pane show active" id=​"1" role=​"tabpanel">​…​</div>​
-1:3176 ✅ Tab restore tamamlandı: #1
-1:3300 🔄 Tab restore sonrası dil senkronizasyon: tr
-manage.js?v=1760797002:1469 ✅ Dil değiştirildi: tr
-manage.js?v=1760797002:376 ✅ Save debounce reset edildi
-1:3144 🔄 Tab restore işlemi başlıyor...
-1:3147 📋 Kaydedilmiş tab: #1
-1:3153 🎯 Hedef tab element: <a href=​"#1" class=​"nav-link active" data-bs-toggle=​"tab" data-tab-key=​"1" style=​"border-radius:​ 0.25rem 0.25rem 0px 0px !important;​" aria-selected=​"true" data-tab-event-attached=​"true" role=​"tab">​…​</a>​flex
-1:3154 🎯 Hedef pane element: <div class=​"tab-pane show active" id=​"1" role=​"tabpanel">​…​</div>​
-1:3176 ✅ Tab restore tamamlandı: #1
-1:3300 🔄 Tab restore sonrası dil senkronizasyon: tr
-manage.js?v=1760797002:1469 ✅ Dil değiştirildi: tr
+
+<!DOCTYPE html>
+<html x-data="{
+        isDark: JSON.parse(localStorage.getItem('darkMode') || 'true'),
+        hourAngle: 0,
+        minuteAngle: 0,
+        isLoading: true,
+        showContent: false
+    }" :class="isDark ? 'dark' : ''" lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iXtif - Endüstriyel Forklift ve İş Makineleri | Yakında</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="iXtif - Türkiye'nin önde gelen forklift ve endüstriyel iş makineleri tedarikçisi. Kaliteli hizmet ve güvenilir çözümler için bizi tercih edin.">
+    <meta name="keywords" content="forklift, iş makineleri, endüstriyel ekipman, forklift kiralama, forklift satış, İstanbul forklift, Tuzla forklift, ixtif">
+    <meta name="author" content="iXtif">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="iXtif - Endüstriyel Forklift ve İş Makineleri">
+    <meta property="og:description" content="Türkiye'nin önde gelen forklift ve endüstriyel iş makineleri tedarikçisi">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ixtif.com">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet"></noscript>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5DDRPR03QM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5DDRPR03QM');
+    </script>
+
+    <!-- Enhanced Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "iXtif",
+        "alternateName": "Türkiye'nin İstif Pazarı",
+        "description": "Türkiye'nin önde gelen forklift ve endüstriyel iş makineleri tedarikçisi. Kaliteli hizmet ve güvenilir çözümler.",
+        "url": "https://ixtif.com",
+        "logo": "https://ixtif.com/logo-light.png",
+        "foundingDate": "2024",
+        "contactPoint": [
+            {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "email": "info@ixtif.com",
+                "telephone": "+90-216-755-3555",
+                "availableLanguage": "Turkish"
+            }
+        ],
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Tuzla",
+            "addressRegion": "İstanbul",
+            "addressCountry": "TR",
+            "postalCode": "34940"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "40.8732",
+            "longitude": "29.2953"
+        },
+        "sameAs": [
+            "https://www.linkedin.com/company/ixtif",
+            "https://www.instagram.com/ixtif",
+            "https://www.facebook.com/ixtif"
+        ],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Forklift ve İş Makineleri",
+            "itemListElement": [
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Product",
+                        "name": "Endüstriyel Forklift",
+                        "category": "İş Makineleri"
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Product",
+                        "name": "Depo Ekipmanları",
+                        "category": "Lojistik Çözümleri"
+                    }
+                }
+            ]
+        }
+    }
+    </script>
+
+    <!-- Additional Meta Tags -->
+    <meta name="geo.region" content="TR-34">
+    <meta name="geo.placename" content="Tuzla, İstanbul">
+    <meta name="geo.position" content="40.8732;29.2953">
+    <meta name="ICBM" content="40.8732, 29.2953">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="iXtif - Endüstriyel Forklift ve İş Makineleri">
+    <meta name="twitter:description" content="Türkiye'nin önde gelen forklift ve endüstriyel iş makineleri tedarikçisi">
+    <meta property="og:image" content="https://ixtif.com/logo-light.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="iXtif">
+    <link rel="canonical" href="https://ixtif.com">
+    <link rel="alternate" hreflang="tr" href="https://ixtif.com">
+    <meta name="theme-color" content="#1e40af">
+    <meta name="msapplication-TileColor" content="#1e40af">
+
+    <style>
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-animate {
+            background: linear-gradient(-45deg, #1e40af, #2563eb, #ea580c, #15803d, #7c3aed, #dc2626, #2563eb, #1e40af);
+            background-size: 600% 600%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+
+        .dark .gradient-animate {
+            background: linear-gradient(-45deg, #3b82f6, #60a5fa, #fb923c, #22c55e, #a78bfa, #f87171, #60a5fa, #3b82f6);
+            background-size: 600% 600%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8) translateY(0); }
+            25% { opacity: 0.8; transform: scale(1.1) translateY(-5px); }
+            50% { opacity: 1; transform: scale(1.3) translateY(-10px); box-shadow: 0 0 15px currentColor; }
+            75% { opacity: 0.6; transform: scale(1.1) translateY(-5px); }
+        }
+
+        @keyframes starMove {
+            0% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(10px) translateY(-5px); }
+            66% { transform: translateX(-5px) translateY(5px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s ease-in-out infinite, starMove 8s ease-in-out infinite;
+        }
+
+        .dark .star {
+            background: #fbbf24;
+        }
+
+        .star:nth-child(1) { animation-delay: 0s, 0s; }
+        .star:nth-child(2) { animation-delay: 0.8s, 1s; }
+        .star:nth-child(3) { animation-delay: 1.6s, 2s; }
+        .star:nth-child(4) { animation-delay: 2.4s, 3s; }
+        .star:nth-child(5) { animation-delay: 3.2s, 4s; }
+        .star:nth-child(6) { animation-delay: 4s, 5s; }
+
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .dark .loader {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+
+        .loader-logo {
+            animation: logoFade 2s ease-in-out;
+        }
+
+        @keyframes logoFade {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Typewriter Effect */
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            border-right: .15em solid;
+            animation: blink-caret 1s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: currentColor; }
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Logo specific animation */
+        .main-logo {
+            transform: translateY(0);
+        }
+
+        .main-logo.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Particle Effect */
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 4s linear infinite;
+        }
+
+        .dark .particle {
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.8) 0%, transparent 70%);
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Rubik', 'ui-sans-serif', 'system-ui'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 8s ease-in-out infinite reverse',
+                        'float-slow': 'float 10s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px) translateX(0px)' },
+                            '50%': { transform: 'translateY(-20px) translateX(10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body x-init="
+        // Clock initialization
+        setInterval(() => {
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            hourAngle = (hours * 30) + (minutes * 0.5);
+            minuteAngle = minutes * 6;
+        }, 1000);
+
+
+        // Loading screen with logo animation
+        setTimeout(() => {
+            isLoading = false;
+            showContent = true;
+            setTimeout(() => {
+                logoAnimation();
+            }, 300);
+        }, 2500);
+
+        // Logo animation sequence
+        function logoAnimation() {
+            const logo = document.querySelector('.main-logo');
+            const otherElements = document.querySelectorAll('.reveal:not(.main-logo)');
+
+            // First show logo
+            logo.classList.add('active');
+
+            // After logo appears, slide it up and show others
+            setTimeout(() => {
+                logo.style.transform = 'translateY(-50px)';
+                logo.style.transition = 'transform 0.8s ease-out';
+
+                // Show other elements cascading down
+                otherElements.forEach((element, index) => {
+                    setTimeout(() => {
+                        element.classList.add('active');
+                    }, index * 150);
+                });
+            }, 800);
+        }
+
+        // Scroll reveal (not used anymore, replaced by logoAnimation)
+        function revealElements() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach((element, index) => {
+                setTimeout(() => {
+                    element.classList.add('active');
+                }, index * 200);
+            });
+        }
+
+        // Particle system
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.width = Math.random() * 6 + 4 + 'px';
+            particle.style.height = particle.style.width;
+            document.body.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 4000);
+        }
+
+        // Mouse trail particles
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() < 0.1) {
+                createParticle(e.clientX, e.clientY);
+            }
+        });
+      "
+      class="min-h-screen font-sans transition-colors duration-300 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white"
+      style="touch-action: pan-x pan-y; -webkit-user-select: none; -webkit-touch-callout: none;">
+
+    <!-- Loading Screen -->
+    <div x-show="isLoading" class="loader" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="loader-logo">
+            <img src="logo-dark.png" alt="iXtif Logo" class="w-64 object-contain" loading="eager" fetchpriority="high">
+        </div>
+    </div>
+
+    <!-- Clock - Top Left -->
+    <div class="fixed top-4 left-4 z-50 flex items-center gap-3">
+        <div class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-full border-2 border-gray-400 dark:border-gray-600 shadow-lg">
+            <!-- Clock face border -->
+            <div class="absolute inset-1 rounded-full border border-gray-400 dark:border-gray-500"></div>
+
+            <!-- 12 o'clock mark -->
+            <div class="absolute w-px h-1.5 bg-gray-700 dark:bg-gray-300" style="top: 1px; left: 50%; transform: translateX(-50%);"></div>
+            <!-- 3 o'clock mark -->
+            <div class="absolute w-1.5 h-px bg-gray-700 dark:bg-gray-300" style="right: 1px; top: 50%; transform: translateY(-50%);"></div>
+            <!-- 6 o'clock mark -->
+            <div class="absolute w-px h-1.5 bg-gray-700 dark:bg-gray-300" style="bottom: 1px; left: 50%; transform: translateX(-50%);"></div>
+            <!-- 9 o'clock mark -->
+            <div class="absolute w-1.5 h-px bg-gray-700 dark:bg-gray-300" style="left: 1px; top: 50%; transform: translateY(-50%);"></div>
+
+            <!-- Hour hand (akrep - kısa) -->
+            <div class="absolute bg-gray-900 dark:bg-gray-100 rounded-full pointer-events-none block"
+                 x-bind:style="`
+                    width: 2px;
+                    height: 12px;
+                    top: 50%;
+                    left: 50%;
+                    transform-origin: 50% 100%;
+                    transform: translate(-50%, -100%) rotate(${hourAngle}deg);
+                    display: block;
+                 `"></div>
+
+            <!-- Minute hand (yelkovan - uzun) -->
+            <div class="absolute bg-gray-700 dark:bg-gray-200 rounded-full pointer-events-none block"
+                 x-bind:style="`
+                    width: 1px;
+                    height: 16px;
+                    top: 50%;
+                    left: 50%;
+                    transform-origin: 50% 100%;
+                    transform: translate(-50%, -100%) rotate(${minuteAngle}deg);
+                    display: block;
+                 `"></div>
+
+            <!-- Center dot -->
+            <div class="absolute w-1 h-1 bg-red-500 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+        </div>
+
+        <!-- Date Display -->
+        <div class="text-xs text-gray-600 dark:text-gray-400 font-medium">
+            <span x-text="new Date().toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' })"></span>
+        </div>
+    </div>
+
+    <!-- Theme Toggle - Top Right -->
+    <div class="fixed top-4 right-4 z-50">
+        <button @click="isDark = !isDark; localStorage.setItem('darkMode', JSON.stringify(isDark))"
+                class="w-12 h-12 bg-white dark:bg-gray-800 rounded-full border-2 border-gray-400 dark:border-gray-600 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-lg">
+            <svg x-show="isDark" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+            </svg>
+            <svg x-show="!isDark" class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Background Animation -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 dark:bg-blue-400/5 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute top-3/4 right-1/4 w-80 h-80 bg-purple-500/10 dark:bg-purple-400/5 rounded-full blur-3xl animate-float-delayed"></div>
+        <div class="absolute top-1/2 left-3/4 w-48 h-48 bg-indigo-500/10 dark:bg-indigo-400/5 rounded-full blur-3xl animate-float-slow"></div>
+
+        <!-- Twinkling Stars -->
+        <div class="star w-1 h-1" style="top: 15%; left: 20%;"></div>
+        <div class="star w-0.5 h-0.5" style="top: 25%; right: 30%;"></div>
+        <div class="star w-1.5 h-1.5" style="top: 40%; left: 80%;"></div>
+        <div class="star w-0.5 h-0.5" style="bottom: 30%; left: 15%;"></div>
+        <div class="star w-1 h-1" style="bottom: 20%; right: 20%;"></div>
+        <div class="star w-0.5 h-0.5" style="top: 60%; left: 10%;"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div x-show="showContent" class="min-h-screen flex flex-col items-center justify-center px-6 py-16 sm:py-12 text-center relative z-10" x-transition:enter="transition ease-out duration-800" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0">
+
+        <!-- Logo -->
+        <div class="mb-4 sm:mb-2 reveal main-logo">
+            <img :src="isDark ? 'logo-dark.png' : 'logo-light.png'"
+                 alt="iXtif Logo - Türkiye'nin İstif Pazarı, Endüstriyel Forklift ve İş Makineleri"
+                 class="w-64 sm:w-80 object-contain mx-auto pb-3 sm:pb-2 transition-all duration-500 hover:drop-shadow-lg"
+                 loading="eager"
+                 fetchpriority="high"
+                 role="img"
+                 tabindex="0">
+
+            <!-- Motto under logo -->
+            <div class="text-gray-700 dark:text-gray-200 font-medium text-center mb-1 sm:mb-2">
+                <span class="sm:hidden" style="font-size: 1.5rem; line-height: 1.2;">Türkiye'nin İstif Pazarı</span>
+                <span class="hidden sm:inline" style="font-size: 1.9rem; line-height: 1.2;">Türkiye'nin İstif Pazarı</span>
+            </div>
+        </div>
+
+        <!-- Main Heading with Animated Gradient -->
+        <h1 class="text-6xl sm:text-8xl font-bold mb-12 sm:mb-12 gradient-animate reveal" role="banner">
+            YAKINDA
+        </h1>
+
+        <p class="text-base sm:text-xl text-gray-700 dark:text-gray-200 mb-8 sm:mb-12 max-w-xl sm:max-w-2xl reveal px-4" role="region" aria-label="Şirket açıklaması">
+            Endüstriyel forklift ve iş makineleri alanında yenilikçi çözümlerle çok yakında karşınızdayız.
+        </p>
+
+
+        <!-- Contact Information -->
+        <nav class="flex flex-col sm:flex-row gap-6 sm:gap-6 reveal px-4" role="navigation" aria-label="İletişim bilgileri">
+            <a href="mailto:info@ixtif.com"
+               class="px-4 sm:px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
+               aria-label="E-posta gönder: info@ixtif.com"
+               title="E-posta gönder">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                info@ixtif.com
+            </a>
+
+            <a href="tel:+902167553555"
+               class="px-4 sm:px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm sm:text-base"
+               aria-label="Telefon ara: 0216 755 3 555"
+               title="Telefon ara">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                </svg>
+                0216 755 3 555
+            </a>
+
+            <div class="px-4 sm:px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center gap-2 text-sm sm:text-base" role="text" aria-label="Adres: Tuzla, İstanbul">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Tuzla, İstanbul
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hidden SEO Content -->
+    <div class="sr-only">
+        <h2>iXtif - Endüstriyel Forklift ve İş Makineleri</h2>
+        <p>forklift, iş makineleri, endüstriyel ekipman, forklift kiralama, forklift satış, İstanbul forklift, Tuzla forklift, ixtif, endüstriyel çözümler, yük taşıma, depo ekipmanları, lojistik çözümleri</p>
+    </div>
+</body>
+</html>

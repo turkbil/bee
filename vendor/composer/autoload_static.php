@@ -223,6 +223,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
             'Modules\\SeoManagement\\' => 22,
             'Modules\\Search\\Database\\Seeders\\' => 32,
             'Modules\\Search\\Database\\Factories\\' => 34,
+            'Modules\\Search\\App\\' => 19,
             'Modules\\Search\\' => 15,
             'Modules\\Portfolio\\Database\\Seeders\\' => 35,
             'Modules\\Portfolio\\Database\\Factories\\' => 37,
@@ -866,9 +867,13 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         array (
             0 => __DIR__ . '/../..' . '/Modules/Search/database/factories',
         ),
-        'Modules\\Search\\' => 
+        'Modules\\Search\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Modules/Search/app',
+        ),
+        'Modules\\Search\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Search',
         ),
         'Modules\\Portfolio\\Database\\Seeders\\' => 
         array (
@@ -7096,11 +7101,22 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Portfolio\\database\\seeders\\PortfolioSeederTenant2' => __DIR__ . '/../..' . '/Modules/Portfolio/database/seeders/PortfolioSeederTenant2.php',
         'Modules\\Portfolio\\database\\seeders\\PortfolioSeederTenant3' => __DIR__ . '/../..' . '/Modules/Portfolio/database/seeders/PortfolioSeederTenant3.php',
         'Modules\\Portfolio\\database\\seeders\\PortfolioSeederTenant4' => __DIR__ . '/../..' . '/Modules/Portfolio/database/seeders/PortfolioSeederTenant4.php',
+        'Modules\\Search\\App\\Http\\Controllers\\Api\\SearchApiController' => __DIR__ . '/../..' . '/Modules/Search/app/Http/Controllers/Api/SearchApiController.php',
+        'Modules\\Search\\App\\Http\\Controllers\\SearchPageController' => __DIR__ . '/../..' . '/Modules/Search/app/Http/Controllers/SearchPageController.php',
+        'Modules\\Search\\App\\Http\\Livewire\\Admin\\SearchAnalyticsComponent' => __DIR__ . '/../..' . '/Modules/Search/app/Http/Livewire/Admin/SearchAnalyticsComponent.php',
+        'Modules\\Search\\App\\Http\\Livewire\\Frontend\\SearchBarComponent' => __DIR__ . '/../..' . '/Modules/Search/app/Http/Livewire/Frontend/SearchBarComponent.php',
+        'Modules\\Search\\App\\Http\\Livewire\\Frontend\\SearchResultsComponent' => __DIR__ . '/../..' . '/Modules/Search/app/Http/Livewire/Frontend/SearchResultsComponent.php',
+        'Modules\\Search\\App\\Models\\SearchClick' => __DIR__ . '/../..' . '/Modules/Search/app/Models/SearchClick.php',
+        'Modules\\Search\\App\\Models\\SearchQuery' => __DIR__ . '/../..' . '/Modules/Search/app/Models/SearchQuery.php',
+        'Modules\\Search\\App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Search/app/Providers/EventServiceProvider.php',
+        'Modules\\Search\\App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/Search/app/Providers/RouteServiceProvider.php',
+        'Modules\\Search\\App\\Providers\\SearchServiceProvider' => __DIR__ . '/../..' . '/Modules/Search/app/Providers/SearchServiceProvider.php',
+        'Modules\\Search\\App\\Services\\SearchAnalyticsService' => __DIR__ . '/../..' . '/Modules/Search/app/Services/SearchAnalyticsService.php',
+        'Modules\\Search\\App\\Services\\SearchClickTracker' => __DIR__ . '/../..' . '/Modules/Search/app/Services/SearchClickTracker.php',
+        'Modules\\Search\\App\\Services\\UniversalSearchService' => __DIR__ . '/../..' . '/Modules/Search/app/Services/UniversalSearchService.php',
         'Modules\\Search\\Database\\Seeders\\SearchDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/Search/database/seeders/SearchDatabaseSeeder.php',
-        'Modules\\Search\\Http\\Controllers\\SearchController' => __DIR__ . '/../..' . '/Modules/Search/app/Http/Controllers/SearchController.php',
-        'Modules\\Search\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Search/app/Providers/EventServiceProvider.php',
-        'Modules\\Search\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/Search/app/Providers/RouteServiceProvider.php',
-        'Modules\\Search\\Providers\\SearchServiceProvider' => __DIR__ . '/../..' . '/Modules/Search/app/Providers/SearchServiceProvider.php',
+        'Modules\\Search\\Database\\Seeders\\SearchModuleSeeder' => __DIR__ . '/../..' . '/Modules/Search/database/seeders/SearchModuleSeeder.php',
+        'Modules\\Search\\Database\\Seeders\\SearchPermissionsSeeder' => __DIR__ . '/../..' . '/Modules/Search/database/seeders/SearchPermissionsSeeder.php',
         'Modules\\SeoManagement\\App\\Http\\Controllers\\Admin\\SeoAIController' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Http/Controllers/Admin/SeoAIController.php',
         'Modules\\SeoManagement\\App\\Http\\Controllers\\Admin\\SeoManagementController' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Http/Controllers/Admin/SeoManagementController.php',
         'Modules\\SeoManagement\\App\\Http\\Livewire\\Admin\\UniversalSeoTabComponent' => __DIR__ . '/../..' . '/Modules/SeoManagement/app/Http/Livewire/Admin/UniversalSeoTabComponent.php',

@@ -46,7 +46,7 @@ class SearchApiController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'items' => $formattedResults,
+                    'items' => $formattedResults->all(), // Collection to array
                     'total' => $results['total_count'],
                     'response_time' => $results['response_time'],
                     'query' => $results['query'],
@@ -54,10 +54,13 @@ class SearchApiController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('Search API error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
 
             return response()->json([
                 'success' => false,
                 'message' => 'Arama sırasında bir hata oluştu.',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+                'trace' => config('app.debug') ? $e->getTraceAsString() : null,
             ], 500);
         }
     }

@@ -252,12 +252,22 @@ class UniversalSearchService
      */
     protected function getItemUrl($item, string $type): string
     {
-        // Customize based on type
-        return match ($type) {
-            'products' => route('shop.product.show', $item->slug[app()->getLocale()] ?? $item->slug),
-            'categories' => route('shop.category.show', $item->slug[app()->getLocale()] ?? $item->slug),
-            default => '#',
-        };
+        try {
+            // Get slug for current locale
+            $slug = is_array($item->slug ?? null)
+                ? ($item->slug[app()->getLocale()] ?? $item->slug['tr'] ?? null)
+                : ($item->slug ?? null);
+
+            // Generate URL based on type
+            return match ($type) {
+                'products' => $item->id ? route('shop.show.by-id', $item->id) : '#',
+                'categories' => $slug ? route('shop.category', $slug) : '#',
+                default => '#',
+            };
+        } catch (\Exception $e) {
+            \Log::warning('Search URL generation failed: ' . $e->getMessage());
+            return '#';
+        }
     }
 
     /**

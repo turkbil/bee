@@ -102,7 +102,7 @@ class AIProviderManager
             if ($tenant && $tenant->default_ai_provider_id) {
                 $tenantProvider = $this->providers->where('id', $tenant->default_ai_provider_id)->first();
                 if ($tenantProvider && $tenantProvider->isAvailable()) {
-                    Log::info("🎯 Tenant provider selected", [
+                    Log::debug("🎯 Tenant provider selected", [
                         'tenant_id' => $tenantId,
                         'provider' => $tenantProvider->name,
                         'provider_id' => $tenantProvider->id
@@ -111,11 +111,11 @@ class AIProviderManager
                 }
             }
         }
-        
+
         // 2. Central default provider kullan
         $defaultProvider = $this->providers->where('is_default', true)->first();
         if ($defaultProvider && $defaultProvider->isAvailable()) {
-            Log::info("🔧 Central default provider selected", [
+            Log::debug("🔧 Central default provider selected", [
                 'provider' => $defaultProvider->name,
                 'is_default' => true,
                 'tenant_id' => $tenantId
@@ -139,24 +139,24 @@ class AIProviderManager
         if ($tenantId) {
             $tenant = \App\Models\Tenant::find($tenantId);
             if ($tenant && $tenant->default_ai_model) {
-                Log::info("🎯 Tenant model selected", [
+                Log::debug("🎯 Tenant model selected", [
                     'tenant_id' => $tenantId,
                     'model' => $tenant->default_ai_model
                 ]);
                 return $tenant->default_ai_model;
             }
         }
-        
+
         // 2. Provider'ın default model'ini kullan
         $provider = $this->getTenantProvider($tenantId);
         $defaultModel = $provider->default_model ?? 'gpt-3.5-turbo';
-        
-        Log::info("🔧 Default model selected", [
+
+        Log::debug("🔧 Default model selected", [
             'model' => $defaultModel,
             'provider' => $provider->name,
             'tenant_id' => $tenantId
         ]);
-        
+
         return $defaultModel;
     }
 
@@ -206,7 +206,7 @@ class AIProviderManager
 
         $service = $provider->getServiceInstance();
 
-        Log::info("🔥 Strict provider selected (no failover)", [
+        Log::debug("🔥 Strict provider selected (no failover)", [
             'provider' => $provider->name,
             'model' => $provider->default_model,
             'priority' => $provider->priority

@@ -840,7 +840,7 @@ class AutoScalingService
 
     private function recordScaleAction(array $action, array $result): void
     {
-        Log::info('Auto-scaling action executed', [
+        Log::debug('Auto-scaling action executed', [
             'action' => $action,
             'result' => $result,
             'timestamp' => Carbon::now()->toISOString()

@@ -664,7 +664,82 @@
                      class="bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                        @livewire('search::frontend.search-bar')
+                        {{-- Alpine.js + API Search (No Livewire overhead) --}}
+                        <div class="relative" x-data="{
+                            query: '',
+                            results: [],
+                            isOpen: false,
+                            loading: false,
+                            async search() {
+                                if (this.query.length < 2) {
+                                    this.results = [];
+                                    this.isOpen = false;
+                                    return;
+                                }
+                                this.loading = true;
+                                try {
+                                    const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(this.query)}`);
+                                    const data = await response.json();
+
+                                    if (data.success && data.data && data.data.length > 0) {
+                                        this.results = data.data.slice(0, 8);
+                                        this.isOpen = true;
+                                    } else {
+                                        this.results = [];
+                                        this.isOpen = false;
+                                    }
+                                } catch (e) {
+                                    console.error('Search error:', e);
+                                    this.results = [];
+                                    this.isOpen = false;
+                                }
+                                this.loading = false;
+                            },
+                            goToSearch() {
+                                if (this.query.length >= 1) {
+                                    window.location.href = `/search/${encodeURIComponent(this.query)}`;
+                                }
+                            }
+                        }" @click.away="isOpen = false">
+                            <div class="relative">
+                                <input type="search"
+                                       x-model="query"
+                                       @input.debounce.300ms="search()"
+                                       @keydown.enter="goToSearch()"
+                                       placeholder="Ürün, kategori veya marka arayın..."
+                                       class="w-full bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-full px-6 py-3 pl-12 pr-24 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                                       autocomplete="off">
+                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 dark:text-blue-400"></i>
+                                <button @click="goToSearch()"
+                                        type="button"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-700 hover:to-purple-700 transition">
+                                    <i class="fa-solid fa-spinner fa-spin" x-show="loading" x-cloak></i>
+                                    <span x-show="!loading">Ara</span>
+                                </button>
+                            </div>
+
+                            {{-- Autocomplete Dropdown --}}
+                            <div x-show="isOpen && results.length > 0"
+                                 x-transition
+                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-[100] max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                                <template x-for="(result, index) in results" :key="index">
+                                    <a :href="`/search/${encodeURIComponent(result)}`"
+                                       class="block p-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition group">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"></i>
+                                            <span class="font-medium text-gray-900 dark:text-white" x-text="result"></span>
+                                        </div>
+                                    </a>
+                                </template>
+
+                                <a :href="`/search/${encodeURIComponent(query)}`"
+                                   x-show="query.length >= 2"
+                                   class="block p-3 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-medium transition">
+                                    <i class="fa-solid fa-arrow-right mr-2"></i>
+                                    Tüm sonuçları gör
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

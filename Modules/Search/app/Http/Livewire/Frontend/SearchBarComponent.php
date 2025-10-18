@@ -10,38 +10,34 @@ use Modules\Search\App\Services\UniversalSearchService;
 class SearchBarComponent extends Component
 {
     public $query = '';
-    public $results = [];
     public $isOpen = false;
-    public $selectedIndex = -1;
 
     public function updatedQuery()
     {
         if (strlen($this->query) >= 2) {
-            $this->search();
             $this->isOpen = true;
-            $this->selectedIndex = -1;
         } else {
-            $this->results = [];
             $this->isOpen = false;
         }
     }
 
-    public function search()
+    /**
+     * Computed property - NOT serialized in state!
+     * Results calculated on each render, never stored
+     */
+    public function getResultsProperty()
     {
+        if (strlen($this->query) < 2) {
+            return [];
+        }
+
         $searchService = app(UniversalSearchService::class);
         $searchResults = $searchService->searchAll($this->query, 10);
-        $this->results = $searchService->formatResultsForDisplay(
+
+        return $searchService->formatResultsForDisplay(
             $searchResults,
             $this->query
-        )->take(10);
-    }
-
-    public function selectResult($index)
-    {
-        if (isset($this->results[$index])) {
-            $result = $this->results[$index];
-            return redirect($result['url']);
-        }
+        )->take(10)->values()->all();
     }
 
     public function closeDropdown()

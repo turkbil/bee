@@ -23,6 +23,11 @@ Route::middleware(['web', 'tenant'])->group(function () {
 
 // Admin Routes (Tenant-aware + Auth)
 Route::middleware(['web', 'auth', 'tenant'])->prefix('admin')->group(function () {
+    // Main index route (navigation için)
+    Route::get('/search', function () {
+        return redirect()->route('admin.search.analytics');
+    })->name('admin.search.index');
+
     // Analytics - Livewire component view'dan render edilecek
     Route::get('/search/analytics', function () {
         return view('search::admin.analytics');

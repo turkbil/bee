@@ -23,7 +23,7 @@
                                 </button>
                             </div>
                             <div class="col">
-                                <button class="btn btn-danger w-100" wire:click="deleteUser" wire:loading.attr="disabled">
+                                <button class="btn btn-danger w-100" wire:click="delete" wire:loading.attr="disabled">
                                     <span wire:loading.remove>Kullanıcıyı Sil</span>
                                     <span wire:loading>Siliniyor...</span>
                                 </button>

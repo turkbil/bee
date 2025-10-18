@@ -19,7 +19,7 @@
             <!-- Ortadaki Loading -->
             <div class="col position-relative">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, deleteUser, toggleActive"
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, toggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
                     <div class="small text-muted mb-2">{{ __('usermanagement::admin.updating') }}</div>

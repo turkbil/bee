@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
 use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
+use Modules\Search\App\Http\Controllers\SearchPageController;
 
 
 // Admin routes
@@ -38,6 +39,21 @@ Route::get('/health/system', [App\Http\Controllers\HealthController::class, 'sys
 Route::get('/metrics', function () {
     return response('', 204);
 })->name('metrics');
+
+// SEARCH ROUTES - Must be before catch-all routes
+Route::middleware(['tenant'])->group(function () {
+    // Search with query parameter (?q=keyword)
+    Route::get('/search', [SearchPageController::class, 'show'])
+        ->name('search.query');
+
+    // Search with URL parameter (/search/keyword)
+    Route::get('/search/{query}', [SearchPageController::class, 'show'])
+        ->name('search.show');
+
+    // Popular searches (SEO)
+    Route::get('/populer-aramalar', [SearchPageController::class, 'tags'])
+        ->name('search.tags');
+});
 
 // PWA Manifest - Dynamic (2025 Best Practice)
 Route::get('/manifest.json', function () {

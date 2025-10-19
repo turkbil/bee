@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\MediaLibrary\HasMedia;
+use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
-class Setting extends Model
+class Setting extends Model implements HasMedia
 {
-    use CentralConnection, Sluggable;
+    use CentralConnection, Sluggable, HasMediaManagement;
     
     protected $table = 'settings';
 
@@ -92,5 +94,133 @@ class Setting extends Model
 
         // Hiç değer yoksa default_value kullan
         return $this->default_value;
+    }
+
+    /**
+     * Register media collections for this setting
+     * Override HasMediaManagement trait method
+     */
+    public function registerMediaCollections(): void
+    {
+        // Setting type'ına göre collection tanımla
+        if (!in_array($this->type, ['image', 'file'])) {
+            return;
+        }
+
+        $collection = $this->addMediaCollection('featured_image')
+            ->singleFile();
+
+        // MIME types - Setting key'ine göre özel tanımlar
+        $mimeTypes = $this->getMimeTypesForSetting();
+        if (!empty($mimeTypes)) {
+            $collection->acceptsMimeTypes($mimeTypes);
+        }
+    }
+
+    /**
+     * Get allowed MIME types based on setting key
+     */
+    public function getMimeTypesForSetting(): array
+    {
+        // Favicon için özel MIME types
+        if ($this->key === 'site_favicon') {
+            return [
+                'image/x-icon',
+                'image/vnd.microsoft.icon',
+                'image/png',
+                'image/jpeg',
+                'image/jpg',
+            ];
+        }
+
+        // Diğer image ayarları için standart image MIME types
+        if ($this->type === 'image') {
+            return [
+                'image/jpeg',
+                'image/jpg',
+                'image/png',
+                'image/webp',
+                'image/gif',
+                'image/svg+xml',
+            ];
+        }
+
+        // File type için document MIME types
+        if ($this->type === 'file') {
+            return [
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * Media collections tanımla (HasMediaManagement trait için)
+     */
+    protected function getMediaCollectionsConfig(): array
+    {
+        // Setting type'ına göre collection belirle
+        $collections = [];
+
+        // Type'a göre uygun collection ekle (hep featured_image kullan)
+        switch ($this->type) {
+            case 'image':
+            case 'file':
+                $collections['featured_image'] = [
+                    'type' => $this->type === 'image' ? 'image' : 'document',
+                    'single_file' => true,
+                    'max_items' => 1,
+                    'conversions' => $this->type === 'image' ? ['thumb'] : [],
+                    'sortable' => false,
+                ];
+                break;
+        }
+
+        return $collections;
+    }
+
+    /**
+     * Setting için media collection adını belirle
+     * UniversalMediaComponent sadece featured_image destekliyor, o yüzden hep onu kullan
+     */
+    public function getMediaCollectionName(): string
+    {
+        // UniversalMediaComponent için featured_image kullan
+        return 'featured_image';
+    }
+
+    /**
+     * Setting'in media URL'sini al
+     */
+    public function getMediaUrl(): ?string
+    {
+        if (!in_array($this->type, ['image', 'file'])) {
+            return null;
+        }
+
+        $collection = $this->getMediaCollectionName();
+        return $this->getFirstMediaUrl($collection);
+    }
+
+    /**
+     * Setting'e media attach et
+     */
+    public function attachSettingMedia($file): void
+    {
+        if (!in_array($this->type, ['image', 'file'])) {
+            return;
+        }
+
+        $collection = $this->getMediaCollectionName();
+
+        // Eski medyayı temizle (singleFile olduğu için)
+        $this->clearMediaCollection($collection);
+
+        // Yeni medyayı ekle
+        $this->addMedia($file)
+            ->toMediaCollection($collection);
     }
 }

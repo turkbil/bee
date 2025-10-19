@@ -102,24 +102,27 @@
                                                 @break
                                             
                                             @case('file')
-                                                <div class="mb-3">
-                                                    <label class="form-label">{{ $setting->label }}</label>
-                                                    @include('settingmanagement::form-builder.partials.file-upload', [
-                                                        'fileKey' => $setting->id,
-                                                        'label' => __('settingmanagement::admin.drag_drop_file'),
-                                                        'values' => $values
-                                                    ])
-                                                </div>
-                                                @break
-                                            
                                             @case('image')
                                                 <div class="mb-3">
                                                     <label class="form-label">{{ $setting->label }}</label>
-                                                    @include('settingmanagement::form-builder.partials.image-upload', [
-                                                        'imageKey' => $setting->id,
-                                                        'label' => __('settingmanagement::admin.drag_drop_image'),
-                                                        'values' => $values
-                                                    ])
+
+                                                    {{-- Universal MediaManagement Component --}}
+                                                    @livewire('mediamanagement::universal-media', [
+                                                        'modelId' => $setting->id,
+                                                        'modelType' => 'setting',
+                                                        'modelClass' => 'Modules\SettingManagement\App\Models\Setting',
+                                                        'collections' => ['featured_image'],
+                                                        'maxGalleryItems' => 1,
+                                                        'sortable' => false,
+                                                        'setFeaturedFromGallery' => false
+                                                    ], key('setting-media-' . $setting->id))
+
+                                                    @if(isset($setting->help_text) && !empty($setting->help_text))
+                                                        <div class="form-text text-muted mt-2">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            {{ $setting->help_text }}
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 @break
                                                 

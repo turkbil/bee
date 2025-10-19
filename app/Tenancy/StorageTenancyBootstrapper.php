@@ -132,23 +132,39 @@ class StorageTenancyBootstrapper implements TenancyBootstrapper
     {
         $rootPath = storage_path("tenant{$tenantId}/app/public");
         $url = config('app.url') . "/storage/tenant{$tenantId}";
+        $internalRoot = storage_path("tenant{$tenantId}/app");
 
         Config::set('filesystems.disks.public.root', $rootPath);
         Config::set('filesystems.disks.public.url', $url);
 
         Config::set('filesystems.disks.tenant.root', $rootPath);
         Config::set('filesystems.disks.tenant.url', $url);
+
+        Config::set('filesystems.disks.tenant_internal', [
+            'driver' => 'local',
+            'root' => $internalRoot,
+            'visibility' => 'private',
+            'throw' => false,
+        ]);
     }
 
     private function resetFilesystemDisks(): void
     {
         $defaultRoot = storage_path('app/public');
         $defaultUrl = config('app.url') . '/storage';
+        $defaultInternalRoot = storage_path('app');
 
         Config::set('filesystems.disks.public.root', $defaultRoot);
         Config::set('filesystems.disks.public.url', $defaultUrl);
 
         Config::set('filesystems.disks.tenant.root', $defaultRoot);
         Config::set('filesystems.disks.tenant.url', $defaultUrl);
+
+        Config::set('filesystems.disks.tenant_internal', [
+            'driver' => 'local',
+            'root' => $defaultInternalRoot,
+            'visibility' => 'private',
+            'throw' => false,
+        ]);
     }
 }

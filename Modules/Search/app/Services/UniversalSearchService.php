@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Search\App\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Modules\Search\App\Models\SearchQuery;
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
@@ -31,7 +33,8 @@ class UniversalSearchService
         int $perPage = 20,
         int $page = 1,
         array $filters = [],
-        string $activeTab = 'all'
+        string $activeTab = 'all',
+        bool $logQuery = true
     ): array {
         $startTime = microtime(true);
 
@@ -61,7 +64,9 @@ class UniversalSearchService
         $responseTime = (int) ((microtime(true) - $startTime) * 1000);
 
         // Log search query
-        $this->logSearchQuery($query, $totalCount, $responseTime, $filters, $activeTab);
+        if ($logQuery) {
+            $this->logSearchQuery($query, $totalCount, $responseTime, $filters, $activeTab);
+        }
 
         return [
             'results' => $results,
@@ -82,34 +87,45 @@ class UniversalSearchService
         int $limit = 20,
         int $page = 1
     ): array {
-        $searchQuery = $modelClass::search($query);
-
-        // Apply filters
-        if (!empty($filters['is_active'])) {
-            $searchQuery->where('is_active', true);
+        if (!method_exists($modelClass, 'search')) {
+            return $this->fallbackSearchInModel($modelClass, $query, $filters, $limit, $page);
         }
 
-        if (!empty($filters['category_id'])) {
-            $searchQuery->where('category_id', $filters['category_id']);
+        try {
+            $searchQuery = $modelClass::search($query);
+
+            if (!empty($filters['is_active'])) {
+                $searchQuery->where('is_active', true);
+            }
+
+            if (!empty($filters['category_id'])) {
+                $searchQuery->where('category_id', $filters['category_id']);
+            }
+
+            if (!empty($filters['brand_id'])) {
+                $searchQuery->where('brand_id', $filters['brand_id']);
+            }
+
+            $paginator = $searchQuery->paginate($limit, 'page', $page);
+
+            if ($paginator->total() === 0) {
+                return $this->fallbackSearchInModel($modelClass, $query, $filters, $limit, $page);
+            }
+
+            return [
+                'items' => collect($paginator->items()),
+                'count' => $paginator->count(),
+                'total' => $paginator->total(),
+                'current_page' => $paginator->currentPage(),
+                'last_page' => $paginator->lastPage(),
+            ];
+        } catch (\Throwable $e) {
+            \Log::warning("Scout search failed in {$modelClass}: " . $e->getMessage());
+            return $this->fallbackSearchInModel($modelClass, $query, $filters, $limit, $page);
         }
-
-        if (!empty($filters['brand_id'])) {
-            $searchQuery->where('brand_id', $filters['brand_id']);
-        }
-
-        // Use paginate() for pagination support
-        $paginator = $searchQuery->paginate($limit, 'page', $page);
-
-        return [
-            'items' => collect($paginator->items()),
-            'count' => $paginator->count(),
-            'total' => $paginator->total(),
-            'current_page' => $paginator->currentPage(),
-            'last_page' => $paginator->lastPage(),
-        ];
     }
 
-    /**
+/**
      * Get autocomplete suggestions - ONLY from popular searches
      */
     public function getSuggestions(string $partial, int $limit = 10): Collection
@@ -122,26 +138,186 @@ class UniversalSearchService
         return Cache::remember("suggestions:{$partial}", 3600, function () use ($partial, $limit) {
             // Get ONLY from popular searches (user-typed queries)
             // Ürün isimlerini keyword olarak gösterme!
-            $popularSearches = SearchQuery::query()
+            $rawSuggestions = SearchQuery::query()
                 ->where('query', 'LIKE', "{$partial}%")
                 ->where('results_count', '>', 0)
                 // Sadece kısa kelimeleri al (ürün isimleri çok uzun)
-                ->whereRaw('CHAR_LENGTH(query) <= 50')
+                ->whereRaw('CHAR_LENGTH(query) BETWEEN 2 AND 50')
                 // Test verilerini filtrele
                 ->where('query', 'NOT LIKE', '%OBSERVER TEST%')
                 ->where('query', 'NOT LIKE', '%İXTİF CPD%')
                 ->selectRaw('query, COUNT(*) as count')
                 ->groupBy('query')
                 ->orderByDesc('count')
-                ->limit($limit * 2) // Fazladan al, filtrelenecek
-                ->pluck('query');
+                ->limit($limit * 6) // Fazladan al, filtrelemede kullanılacak
+                ->get()
+                ->map(function ($row) {
+                    return [
+                        'query' => trim($row->query),
+                        'count' => (int) $row->count,
+                    ];
+                })
+                ->filter(fn($row) => $row['query'] !== '');
 
-            return $popularSearches
-                ->unique()
-                ->filter(fn($q) => !empty(trim($q))) // Boş olanları filtrele
-                ->take($limit)
+            $normalized = $rawSuggestions->unique('query')->values();
+
+            $filtered = $normalized
+                ->reject(function ($row) use ($normalized) {
+                    $query = $row['query'];
+                    $length = Str::length($query);
+                    if ($length < 2) {
+                        return true;
+                    }
+
+                    return $normalized->contains(function ($other) use ($row, $length, $query) {
+                        if ($other['query'] === $query) {
+                            return false;
+                        }
+
+                        return Str::startsWith($other['query'], $query)
+                            && Str::length($other['query']) > $length
+                            && $other['count'] >= $row['count'];
+                    });
+                })
+                ->sortByDesc('count')
+                ->take($limit);
+
+            return $filtered
+                ->pluck('query')
                 ->values();
         });
+    }
+
+
+    protected function fallbackSearchInModel(
+        string $modelClass,
+        string $query,
+        array $filters = [],
+        int $limit = 20,
+        int $page = 1
+    ): array {
+        $builder = $modelClass::query();
+        $locale = app()->getLocale();
+        $patterns = $this->buildLikePatterns($query);
+
+        if ($modelClass === ShopProduct::class) {
+            $builder->where(function (Builder $sub) use ($patterns, $locale) {
+                $this->applyLikeConditions($sub, [
+                    ['column' => 'title', 'json' => true],
+                    ['column' => 'slug', 'json' => true],
+                    ['column' => 'short_description', 'json' => true],
+                ], $patterns, $locale);
+
+                $this->applyLikeConditions($sub, [
+                    ['column' => 'sku'],
+                    ['column' => 'model_number'],
+                ], $patterns);
+            });
+
+            if (!empty($filters['is_active'])) {
+                $builder->where('is_active', true);
+            }
+
+            if (!empty($filters['category_id'])) {
+                $builder->where('category_id', $filters['category_id']);
+            }
+
+            if (!empty($filters['brand_id'])) {
+                $builder->where('brand_id', $filters['brand_id']);
+            }
+        } elseif ($modelClass === ShopCategory::class) {
+            $builder->where(function (Builder $sub) use ($patterns, $locale) {
+                $this->applyLikeConditions($sub, [
+                    ['column' => 'title', 'json' => true],
+                    ['column' => 'slug', 'json' => true],
+                ], $patterns, $locale);
+            });
+        } elseif ($modelClass === ShopBrand::class) {
+            $builder->where(function (Builder $sub) use ($patterns, $locale) {
+                $this->applyLikeConditions($sub, [
+                    ['column' => 'title', 'json' => true],
+                    ['column' => 'slug', 'json' => true],
+                ], $patterns, $locale);
+            });
+        } else {
+            return $this->emptySearchResult();
+        }
+
+        $paginator = $builder->paginate($limit, ['*'], 'page', $page);
+
+        return [
+            'items' => collect($paginator->items()),
+            'count' => $paginator->count(),
+            'total' => $paginator->total(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+        ];
+    }
+
+    protected function applyLikeConditions(Builder $builder, array $columns, array $patterns, ?string $locale = null): void
+    {
+        $first = true;
+
+        foreach ($columns as $columnConfig) {
+            $column = $columnConfig['column'];
+            $isJson = $columnConfig['json'] ?? false;
+            $expression = $this->accentInsensitiveExpression($column, $isJson, $locale);
+
+            foreach ($patterns as $pattern) {
+                $binding = '%' . $pattern . '%';
+                if ($first) {
+                    $builder->whereRaw("$expression LIKE ?", [$binding]);
+                    $first = false;
+                } else {
+                    $builder->orWhereRaw("$expression LIKE ?", [$binding]);
+                }
+            }
+        }
+    }
+
+    protected function accentInsensitiveExpression(string $column, bool $isJson = false, ?string $locale = null): string
+    {
+        if ($isJson) {
+            $locale = $locale ?: app()->getLocale();
+            $expression = "JSON_UNQUOTE(JSON_EXTRACT($column, '$.\"{$locale}\"'))";
+        } else {
+            $expression = $column;
+        }
+
+        $expression = "LOWER($expression)";
+        foreach ($this->accentMap as $accent => $plain) {
+            $safeAccent = str_replace("'", "''", $accent);
+            $safePlain = str_replace("'", "''", $plain);
+            $expression = "REPLACE($expression, '$safeAccent', '$safePlain')";
+        }
+
+        return $expression;
+    }
+
+    protected function normalizeQuery(string $query): string
+    {
+        return strtr(Str::lower($query), $this->accentMap);
+    }
+
+    protected function buildLikePatterns(string $query): array
+    {
+        $patterns = [
+            Str::lower($query),
+            $this->normalizeQuery($query),
+        ];
+
+        return array_values(array_unique(array_filter($patterns)));
+    }
+
+    protected function emptySearchResult(): array
+    {
+        return [
+            'items' => collect([]),
+            'count' => 0,
+            'total' => 0,
+            'current_page' => 1,
+            'last_page' => 1,
+        ];
     }
 
     /**
@@ -226,6 +402,8 @@ class UniversalSearchService
                     'price' => $this->getItemPrice($item),
                     'highlighted_title' => $this->highlightQuery($this->getItemTitle($item), $query),
                     'highlighted_description' => $this->highlightQuery($this->getItemDescription($item), $query),
+                    'is_master_product' => $item->is_master_product ?? null,
+                    'product_badge' => $this->resolveProductBadge($item),
                 ]);
             }
         }
@@ -288,9 +466,92 @@ class UniversalSearchService
      */
     protected function getItemImage($item): ?string
     {
-        if (method_exists($item, 'getFirstMediaUrl')) {
-            return $item->getFirstMediaUrl() ?: null;
+        if (method_exists($item, 'featuredImageUrl')) {
+            $featured = $item->featuredImageUrl();
+            if ($featured) {
+                return $featured;
+            }
+            $featuredThumb = $item->featuredImageUrl('thumb');
+            if ($featuredThumb) {
+                return $featuredThumb;
+            }
         }
+
+        if (method_exists($item, 'getFirstMediaUrl')) {
+            $collections = [
+                'featured_image',
+                'gallery',
+                'category_image',
+                'brand_logo',
+                'seo_og_image',
+            ];
+            $conversions = ['thumb', 'medium', 'small'];
+
+            foreach ($collections as $collection) {
+                $url = $item->getFirstMediaUrl($collection);
+                if ($url) {
+                    return $url;
+                }
+
+                foreach ($conversions as $conversion) {
+                    $converted = $item->getFirstMediaUrl($collection, $conversion);
+                    if ($converted) {
+                        return $converted;
+                    }
+                }
+            }
+
+            $default = $item->getFirstMediaUrl();
+            if ($default) {
+                return $default;
+            }
+        }
+
+        $gallery = $item->media_gallery ?? null;
+        if (!empty($gallery)) {
+            if (is_string($gallery)) {
+                $decoded = json_decode($gallery, true);
+                $gallery = json_last_error() === JSON_ERROR_NONE ? $decoded : $gallery;
+            }
+
+            if (is_array($gallery)) {
+                foreach ($gallery as $mediaItem) {
+                    if (empty($mediaItem)) {
+                        continue;
+                    }
+                    if (is_array($mediaItem) && !empty($mediaItem['url'])) {
+                        $normalized = $this->normalizeMediaUrl($mediaItem['url']);
+                        if ($normalized) {
+                            return $normalized;
+                        }
+                    } elseif (is_string($mediaItem)) {
+                        $normalized = $this->normalizeMediaUrl($mediaItem);
+                        if ($normalized) {
+                            return $normalized;
+                        }
+                    }
+                }
+            } elseif (is_string($gallery)) {
+                $normalized = $this->normalizeMediaUrl($gallery);
+                if ($normalized) {
+                    return $normalized;
+                }
+            }
+        }
+
+        if ($item instanceof ShopProduct && !empty($item->parent_product_id)) {
+            $parent = $item->relationLoaded('parentProduct')
+                ? $item->parentProduct
+                : $item->parentProduct()->first();
+
+            if ($parent) {
+                $parentImage = $this->getItemImage($parent);
+                if ($parentImage) {
+                    return $parentImage;
+                }
+            }
+        }
+
         return null;
     }
 
@@ -317,6 +578,33 @@ class UniversalSearchService
             'pages' => 'Sayfa',
             default => ucfirst($type),
         };
+    }
+
+    protected function resolveProductBadge($item): ?string
+    {
+        if ($item instanceof ShopProduct && $item->isVariant()) {
+            return 'Varyant';
+        }
+
+        return null;
+    }
+
+    protected function normalizeMediaUrl(?string $path): ?string
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, ['//'])) {
+            return request()->getScheme() . ':' . $path;
+        }
+
+        $cleanPath = ltrim($path, '/');
+        return url($cleanPath);
     }
 
     /**

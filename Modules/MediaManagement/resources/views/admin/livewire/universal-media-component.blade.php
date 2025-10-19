@@ -3,14 +3,16 @@
         {{-- FEATURED IMAGE - Sol Taraf --}}
         @if($hasFeautredImage)
             <div class="{{ $hasGallery ? 'col-md-6' : 'col-12' }} mb-4 order-md-1">
-                <h5 class="mb-3">
-                    {{ __('mediamanagement::admin.featured_image') }}
-                    @if(!empty($existingFeaturedImage))
-                        <span class="badge bg-success ms-2">
-                            <i class="fas fa-check"></i>
-                        </span>
-                    @endif
-                </h5>
+                @if(!$hideLabel)
+                    <h5 class="mb-3">
+                        {{ __('mediamanagement::admin.featured_image') }}
+                        @if(!empty($existingFeaturedImage))
+                            <span class="badge bg-success ms-2">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        @endif
+                    </h5>
+                @endif
 
                 <div class="row g-2 align-items-stretch" style="max-height: 125px;">
                     {{-- Thumbnail Preview - Sol taraf, sadece görsel varsa --}}
@@ -855,7 +857,8 @@
             });
 
             // Debounce timer for tooltip re-initialization
-            let tooltipInitTimer = null;
+            // Global tooltip timer (avoid duplicate declaration)
+            window.tooltipInitTimer = window.tooltipInitTimer || null;
 
             // Re-initialize after Livewire updates
             Livewire.hook('morph.updated', ({ el, component }) => {
@@ -865,8 +868,8 @@
                 }
 
                 // Debounce: Hızlı ard arda güncellmelerde sadece son çağrıyı işle
-                clearTimeout(tooltipInitTimer);
-                tooltipInitTimer = setTimeout(() => {
+                clearTimeout(window.tooltipInitTimer);
+                window.tooltipInitTimer = setTimeout(() => {
                     initMediaTooltips();
                 }, 200);
             });

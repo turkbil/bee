@@ -17,8 +17,10 @@ return [
                 'image/webp',
                 'image/gif',
                 'image/svg+xml',
+                'image/x-icon',
+                'image/vnd.microsoft.icon',
             ],
-            'extensions' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'],
+            'extensions' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'ico'],
             'max_size' => 10240, // 10MB in KB
             'enabled' => true,
         ],

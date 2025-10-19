@@ -2,130 +2,300 @@
     $themeService = app(\App\Services\ThemeService::class);
     $activeTheme = $themeService->getActiveTheme();
     $themeName = $activeTheme ? $activeTheme->name : 'simple';
+
+    $initialItems = $initialData['items'] ?? [];
+    $initialTotal = $initialData['total'] ?? 0;
+    $initialResponse = $initialData['response_time'] ?? 0;
+    $initialPage = $initialData['page'] ?? 1;
+    $initialPerPage = $initialData['per_page'] ?? 20;
+    $prefetched = $initialTotal > 0;
 @endphp
+
 @extends('themes.' . $themeName . '.layouts.app')
 
 @section('title', $pageTitle)
 
-@section('module_content')
-    <div class="min-h-screen" x-data="{
-        query: '{{ addslashes($query) }}',
-        results: [],
-        total: 0,
-        loading: true,
-        loadingMore: false,
-        page: 1,
-        perPage: 20,
-        activeTab: 'all',
-        async loadResults(append = false) {
-            if (append) {
-                this.loadingMore = true;
-            } else {
-                this.loading = true;
-                this.page = 1;
-                this.results = [];
-            }
+@push('styles')
+    <style>
+        [x-cloak] { display: none !important; }
 
-            try {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(this.query)}&type=${this.activeTab}&per_page=${this.perPage}&page=${this.page}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    if (append) {
-                        this.results = [...this.results, ...(data.data.items || [])];
-                    } else {
-                        this.results = data.data.items || [];
-                    }
-                    this.total = data.data.total || 0;
-                }
-            } catch (e) {
-                console.error('Search error:', e);
-            }
-
-            this.loading = false;
-            this.loadingMore = false;
-        },
-        async loadMore() {
-            this.page++;
-            await this.loadResults(true);
-        },
-        get hasMore() {
-            return this.results.length < this.total;
+        /* Fallback: Hide Alpine.js controlled elements until Alpine loads */
+        .alpine-container:not([x-init]) {
+            min-height: 200px;
         }
-    }" x-init="loadResults()">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    </style>
+@endpush
+
+@push('scripts')
+<script>
+    // Debug Alpine.js loading
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔍 Search Page Debug:');
+        console.log('  Alpine available:', typeof window.Alpine !== 'undefined');
+        console.log('  Livewire available:', typeof window.Livewire !== 'undefined');
+
+        setTimeout(() => {
+            const searchContainer = document.querySelector('[x-data*="query"]');
+            console.log('  Search container found:', !!searchContainer);
+            console.log('  Alpine initialized:', searchContainer?.__x !== undefined);
+        }, 1000);
+    });
+</script>
+@endpush
+
+@section('module_content')
+    <div x-data="{
+            query: @js($query),
+            results: @js($initialItems->map(function($item) {
+                // Remove HTML from highlighted fields for Alpine.js
+                $item['highlighted_title'] = strip_tags($item['highlighted_title'] ?? $item['title']);
+                $item['highlighted_description'] = strip_tags($item['highlighted_description'] ?? '');
+                return $item;
+            })->values()->toArray()),
+            total: {{ $initialTotal }},
+            responseTime: {{ $initialResponse }},
+            loading: {{ $prefetched ? 'false' : 'true' }},
+            page: {{ $initialPage }},
+            perPage: {{ $initialPerPage }},
+            lastPage: {{ $initialData['last_page'] ?? 1 }},
+            activeTab: 'all',
+            prefetched: {{ $prefetched ? 'true' : 'false' }},
+            async fetchResults(reset = false) {
+                const trimmedQuery = this.query.trim();
+
+                if (reset) {
+                    this.page = 1;
+                }
+
+                if (trimmedQuery.length &lt; 2) {
+                    this.loading = false;
+                    this.results = [];
+                    this.total = 0;
+                    this.responseTime = 0;
+                    this.lastPage = 1;
+                    return;
+                }
+
+                this.loading = true;
+
+                try {
+                    const params = new URLSearchParams({
+                        q: trimmedQuery,
+                        type: this.activeTab,
+                        per_page: this.perPage,
+                        page: this.page
+                    });
+
+                    const response = await fetch(`/api/search?${params.toString()}`);
+                    const data = await response.json();
+
+                    if (data.success && data.data) {
+                        const items = data.data.items || [];
+                        this.results = items;
+                        this.total = data.data.total || 0;
+                        this.responseTime = data.data.response_time || 0;
+
+                        if (data.data.pagination) {
+                            this.page = data.data.pagination.current_page || this.page;
+                            this.lastPage = data.data.pagination.last_page || this.totalPages;
+                        } else {
+                            this.lastPage = this.totalPages;
+                        }
+                    } else {
+                        this.results = [];
+                        this.total = 0;
+                        this.responseTime = 0;
+                        this.lastPage = 1;
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    this.results = [];
+                    this.total = 0;
+                    this.responseTime = 0;
+                    this.lastPage = 1;
+                } finally {
+                    this.loading = false;
+                    this.prefetched = false;
+                }
+            },
+            startSearch() {
+                this.prefetched = false;
+                this.fetchResults(true);
+            },
+            goToPage(page) {
+                if (page &lt; 1 || page &gt; this.lastPage) {
+                    return;
+                }
+                this.page = page;
+                this.fetchResults();
+            },
+            goToPreviousPage() {
+                if (this.page &gt; 1) {
+                    this.goToPage(this.page - 1);
+                }
+            },
+            goToNextPage() {
+                if (this.page &lt; this.lastPage) {
+                    this.goToPage(this.page + 1);
+                }
+            },
+            get totalPages() {
+                return Math.max(1, Math.ceil(this.total / this.perPage));
+            },
+            get pageWindow() {
+                const window = 3;
+                const start = Math.max(1, this.page - window);
+                const end = Math.min(this.lastPage, this.page + window);
+                const pages = [];
+                for (let i = start; i <= end; i++) {
+                    pages.push(i);
+                }
+                return pages;
+            },
+            removeFallback() {
+                const fallback = document.querySelector('.js-search-fallback');
+                if (fallback) {
+                    fallback.remove();
+                }
+            }
+        }"
+        x-init="removeFallback(); if (!prefetched) { fetchResults(true); }">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
             {{-- Header --}}
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
-                    <span x-text="query"></span> - Arama Sonuçları
-                </h1>
-                <p class="text-gray-600 dark:text-gray-400">
-                    <span x-show="!loading && total > 0">
-                        <strong x-text="total"></strong> sonuç bulundu
-                    </span>
-                    <span x-show="!loading && total === 0">
-                        Sonuç bulunamadı
-                    </span>
-                    <span x-show="loading">
-                        Aranıyor...
-                    </span>
-                </p>
+            <div class="mb-6 space-y-4">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+                        <span x-text="query">{{ $query }}</span> - Arama Sonuçları
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-400 space-x-2">
+                        @if($initialTotal > 0)
+                            {{-- Initial results exist - show them immediately --}}
+                            <span x-show="!loading && total &gt; 0">
+                                <strong x-text="total">{{ $initialTotal }}</strong> sonuç bulundu
+                                <span x-show="responseTime" class="text-xs text-gray-400 dark:text-gray-500">
+                                    (<span x-text="responseTime">{{ $initialResponse }}</span> ms)
+                                </span>
+                            </span>
+                            <span x-show="!loading && total === 0" style="display: none;">
+                                Sonuç bulunamadı
+                            </span>
+                        @else
+                            {{-- No initial results --}}
+                            <span x-show="!loading && total &gt; 0" style="display: none;">
+                                <strong x-text="total"></strong> sonuç bulundu
+                                <span x-show="responseTime" class="text-xs text-gray-400 dark:text-gray-500">
+                                    (<span x-text="responseTime"></span> ms)
+                                </span>
+                            </span>
+                            <span x-show="!loading && total === 0">
+                                Sonuç bulunamadı
+                            </span>
+                        @endif
+                        <span x-show="loading" style="display: none;">
+                            Aranıyor...
+                        </span>
+                    </p>
+                </div>
+
+                <div class="w-full max-w-3xl">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="search"
+                               x-model.trim="query"
+                               @keydown.enter.prevent="startSearch()"
+                               placeholder="Yeni bir arama yapın..."
+                               class="flex-1 px-5 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 text-gray-800 dark:text-white transition" />
+                        <button @click="startSearch()"
+                                :disabled="query.trim().length &lt; 2"
+                                class="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow hover:from-blue-700 hover:to-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                            Ara
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2"
+                       x-show="query.trim().length &lt; 2"
+                       x-cloak>
+                        Arama sonuçlarının listelenmesi için en az 2 karakter girmeniz gerekir.
+                    </p>
+                </div>
             </div>
 
             {{-- Loading --}}
-            <div x-show="loading" class="text-center py-12">
+            <div x-show="loading" class="text-center py-12" x-cloak>
                 <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 dark:text-blue-400"></i>
                 <p class="mt-4 text-gray-600 dark:text-gray-400">Arama yapılıyor...</p>
             </div>
 
             {{-- Results --}}
-            <div x-show="!loading && results.length > 0">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <template x-for="(item, index) in results" :key="index">
+            <div x-show="!loading && results.length &gt; 0" x-cloak>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <template x-for="(item, index) in results" :key="`${item.id}-${index}`">
                         <a :href="item.url"
-                           class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition p-6 border border-gray-200 dark:border-gray-700 group">
-                            {{-- Image --}}
-                            <div x-show="item.image" class="mb-4">
-                                <img :src="item.image"
-                                     :alt="item.title"
-                                     class="w-full h-48 object-cover rounded-lg">
-                            </div>
+                           class="block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition p-6 border border-gray-200 dark:border-gray-700 group">
+                            <div class="flex flex-row gap-5">
+                                <template x-if="item.image">
+                                    <div class="w-24 sm:w-32 md:w-36 flex-shrink-0">
+                                        <img :src="item.image"
+                                             :alt="item.title"
+                                             class="w-full aspect-square object-cover rounded-xl bg-gray-100 dark:bg-gray-800">
+                                    </div>
+                                </template>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"
+                                        x-html="item.highlighted_title"></h3>
 
-                            {{-- Title --}}
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"
-                                x-html="item.highlighted_title"></h3>
+                                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                                              x-text="item.type_label"></span>
+                                        <template x-if="item.product_badge">
+                                            <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+                                                  x-text="item.product_badge"></span>
+                                        </template>
+                                    </div>
 
-                            {{-- Type Badge --}}
-                            <span class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 mb-2"
-                                  x-text="item.type_label"></span>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
+                                       x-html="item.highlighted_description"></p>
 
-                            {{-- Description --}}
-                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
-                               x-html="item.highlighted_description"></p>
-
-                            {{-- Price --}}
-                            <div x-show="item.price" class="mt-3">
-                                <span class="text-lg font-bold text-green-600 dark:text-green-400" x-text="item.price"></span>
+                                    <div x-show="item.price" class="mt-3">
+                                        <span class="text-lg font-bold text-green-600 dark:text-green-400" x-text="item.price"></span>
+                                    </div>
+                                </div>
                             </div>
                         </a>
                     </template>
                 </div>
+                <nav x-show="totalPages &gt; 1" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4" x-cloak aria-label="Arama sayfalama">
+                    <div class="flex items-center gap-2">
+                        <button type="button"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                @click="goToPreviousPage()"
+                                :disabled="page &lt;= 1">
+                            <i class="fa-solid fa-arrow-left"></i> Önceki
+                        </button>
+                        <button type="button"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                @click="goToNextPage()"
+                                :disabled="page &gt;= lastPage">
+                            Sonraki <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span>Sayfa <span x-text="page"></span> / <span x-text="lastPage"></span></span>
+                        <div class="hidden sm:flex items-center gap-1">
+                            <template x-for="pageNumber in pageWindow" :key="`page-${pageNumber}`">
+                                <button type="button"
+                                        class="min-w-[2.5rem] h-10 rounded-lg border text-sm font-semibold transition"
+                                        :class="pageNumber === page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'"
+                                        @click="goToPage(pageNumber)">
+                                    <span x-text="pageNumber"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </nav>
 
-                {{-- Load More Button --}}
-                <div x-show="hasMore" class="mt-12 text-center">
-                    <button @click="loadMore()"
-                            :disabled="loadingMore"
-                            class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:from-blue-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i class="fa-solid fa-spinner fa-spin" x-show="loadingMore"></i>
-                        <i class="fa-solid fa-arrow-down" x-show="!loadingMore"></i>
-                        <span x-text="loadingMore ? 'Yükleniyor...' : 'Daha Fazla Göster'"></span>
-                        <span x-show="!loadingMore" class="text-sm opacity-90" x-text="`(${results.length} / ${total})`"></span>
-                    </button>
-                </div>
             </div>
 
             {{-- No Results --}}
-            <div x-show="!loading && results.length === 0" class="text-center py-12">
+            <div x-show="!loading && results.length === 0" class="text-center py-12" x-cloak>
                 <i class="fa-solid fa-magnifying-glass text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Sonuç Bulunamadı</h3>
                 <p class="text-gray-600 dark:text-gray-400 mb-6">
@@ -137,4 +307,87 @@
             </div>
         </div>
     </div>
+
+    @if($prefetched)
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 js-search-fallback">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                @foreach($initialItems as $item)
+                    <a href="{{ $item['url'] }}"
+                       class="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-row gap-5">
+                            @if(!empty($item['image']))
+                                <div class="w-24 sm:w-32 md:w-36 flex-shrink-0">
+                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full aspect-square object-cover rounded-xl bg-gray-100 dark:bg-gray-800">
+                                </div>
+                            @endif
+
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{!! $item['highlighted_title'] !!}</h3>
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">{{ $item['type_label'] }}</span>
+                                    @if(!empty($item['product_badge']))
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">{{ $item['product_badge'] }}</span>
+                                    @endif
+                                </div>
+                                @if(!empty($item['highlighted_description']))
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{!! $item['highlighted_description'] !!}</p>
+                                @endif
+                                @if(!empty($item['price']))
+                                    <div class="mt-3">
+                                        <span class="text-lg font-bold text-green-600 dark:text-green-400">{{ $item['price'] }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+
+            @if($initialTotal > count($initialItems))
+                <div class="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
+                    {{ count($initialItems) }} / {{ $initialTotal }} sonuç görüntüleniyor. Daha fazla sonuç için tarayıcınızda JavaScript'i etkinleştirin.
+                </div>
+            @endif
+            @if(($initialData['last_page'] ?? 1) > 1)
+                <nav class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4" aria-label="Arama sayfalama">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300">
+                            <i class="fa-solid fa-arrow-left"></i> Önceki
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-500 dark:text-gray-300">
+                            Sonraki <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span>Sayfa {{ $initialData['page'] ?? 1 }} / {{ $initialData['last_page'] ?? 1 }}</span>
+                        <div class="hidden sm:flex items-center gap-1">
+                            @php
+                                $window = 3;
+                                $start = max(1, ($initialData['page'] ?? 1) - $window);
+                                $end = min($initialData['last_page'] ?? 1, ($initialData['page'] ?? 1) + $window);
+                            @endphp
+                            @for($i = $start; $i <= $end; $i++)
+                                <span class="min-w-[2.5rem] h-10 rounded-lg border text-sm font-semibold transition {{ ($initialData['page'] ?? 1) === $i ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300' }}">
+                                    {{ $i }}
+                                </span>
+                            @endfor
+                        </div>
+                    </div>
+                </nav>
+            @endif
+        </div>
+    @elseif(mb_strlen($query) >= 2)
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 js-search-fallback">
+            <div class="text-center py-12">
+                <i class="fa-solid fa-magnifying-glass text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Sonuç Bulunamadı</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                    "{{ $query }}" için sonuç bulunamadı.
+                </p>
+                <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+        </div>
+    @endif
 @endsection

@@ -256,9 +256,9 @@ class ValuesComponent extends Component
         }
     }
 
-    public function save($redirect = false)
+    public function save($redirect = false, $resetForm = false)
     {
-        
+
         foreach ($this->values as $settingId => $value) {
             // String key'leri filtrele (sadece numeric ID'leri işle)
             if (!is_numeric($settingId)) {

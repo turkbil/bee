@@ -350,10 +350,17 @@
                     @php
                         use App\Helpers\CanonicalHelper;
 
+                        use Illuminate\Database\Eloquent\Model as EloquentModel;
+
                         $currentModel = isset($item) ? $item : null;
                         $moduleAction = 'show';
                         if (isset($items) && !isset($item)) $moduleAction = 'index';
                         if (isset($category)) { $currentModel = $category; $moduleAction = 'category'; }
+
+                        if ($currentModel && !($currentModel instanceof EloquentModel)) {
+                            // Only pass Eloquent models into CanonicalHelper
+                            $currentModel = null;
+                        }
 
                         $currentLang = app()->getLocale();
 

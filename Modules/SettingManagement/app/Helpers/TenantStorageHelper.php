@@ -22,10 +22,14 @@ class TenantStorageHelper
     {
         [$tenantId, $disk, $diskName] = self::resolveTenantFilesystem($tenantId);
 
+        // ✅ FIX: Double prefix bug - tenant disk root zaten tenant{id}/app/public olduğu için
+        // relativePath'e tekrar tenant prefix eklemeye gerek yok!
         $relativePath = trim($relativePath, '/');
-        if ($diskName !== 'tenant' && $tenantId) {
-            $relativePath = trim("tenant{$tenantId}/{$relativePath}", '/');
-        }
+
+        // ❌ REMOVED: Eski kod double prefix oluşturuyordu
+        // if ($diskName !== 'tenant' && $tenantId) {
+        //     $relativePath = trim("tenant{$tenantId}/{$relativePath}", '/');
+        // }
 
         $fullPath = trim(($relativePath !== '' ? $relativePath . '/' : '') . $fileName, '/');
 
@@ -44,6 +48,8 @@ class TenantStorageHelper
             }
             self::applyPermissions($disk, $fullPath, 0664);
 
+            // ✅ Return path tenant prefix'li olmalı (URL için)
+            // Çünkü symlink: public/storage/tenant{id} → storage/tenant{id}/app/public
             if ($diskName === 'tenant' && $tenantId) {
                 return "storage/tenant{$tenantId}/{$fullPath}";
             }
@@ -81,18 +87,15 @@ class TenantStorageHelper
 
             [$resolvedTenantId, $disk, $diskName] = self::resolveTenantFilesystem($tenantId);
 
-            if ($diskName !== 'tenant' && $resolvedTenantId) {
-                $prefixedPath = "tenant{$resolvedTenantId}/{$relativePath}";
-                if (self::deleteFromDisk($disk, $prefixedPath)) {
-                    return true;
-                }
-            }
-
+            // ✅ FIX: Direkt relativePath ile sil, tenant disk root zaten doğru
+            // Double prefix oluşturmaya gerek yok
             if (self::deleteFromDisk($disk, $relativePath)) {
                 return true;
             }
 
-            return self::deleteFromDisk(Storage::disk('public'), $relativePath);
+            // ❌ REMOVED: Gereksiz prefix ekleme ve fallback
+            // Çünkü tenant disk doğru yapılandırıldıysa zaten başarılı olur
+            return false;
         } catch (\Throwable $e) {
             return false;
         }

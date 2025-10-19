@@ -4,6 +4,8 @@
 
 <div class="search-analytics-component-wrapper">
     <div class="card">
+        @include('search::admin.helper')
+
         <div class="card-header">
             <h3 class="card-title">Arama Analytics</h3>
             <div class="card-actions">
@@ -16,7 +18,6 @@
         </div>
 
         <div class="card-body">
-
             {{-- Stats Cards --}}
             <div class="row mb-3">
                 <div class="col-md-3">

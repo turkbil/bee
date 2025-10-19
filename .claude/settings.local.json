@@ -1,19 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sudo chown -R tuufi.com_:psaserv /var/www/vhosts/tuufi.com/httpdocs/Modules/)",
-      "Bash(sudo chown -R tuufi.com_:psaserv /var/www/vhosts/tuufi.com/httpdocs/app/)",
-      "Bash(php artisan cache:clear)",
-      "Bash(php artisan permission:cache-reset)",
-      "Bash(php artisan view:clear)",
-      "Bash(timeout 10 curl -s \"https://ixtif.com/api/search?q=forklift\")",
-      "Bash(php -l /var/www/vhosts/tuufi.com/httpdocs/Modules/SettingManagement/app/Http/Livewire/ValuesComponent.php)",
-      "Bash(timeout 10 curl -s \"https://ixtif.com/shop/ixtif-cpd18fvl-1-8-ton-li-ion-forklift\" -o /dev/null -w \"Product detail page: %{http_code}\\n\")",
-      "Bash(php artisan tinker --execute=\"\n$product = \\Modules\\Shop\\App\\Models\\ShopProduct::find(5);\nif ($product) {\n    echo ''Product ID: '' . $product->id . PHP_EOL;\n    echo ''Title: '' . $product->title[''tr''] . PHP_EOL;\n    echo ''Slug: '' . json_encode($product->slug) . PHP_EOL;\n    echo ''Route test: '' . route(''shop.show'', $product->slug[''tr'']) . PHP_EOL;\n}\n\")",
-      "Bash(timeout 10 curl -s \"https://ixtif.com/shop/test-final-auto-update-test-2025-10-17-233255\" -o /dev/null -w \"Test product (ID 1): %{http_code}\\n\")",
-      "Bash(timeout 10 curl -s \"https://ixtif.com/shop\" -o /dev/null -w \"Shop index: %{http_code}\\n\")",
-      "Bash(timeout 10 curl -s \"https://ixtif.com/shop/category/forklift\" -o /dev/null -w \"Shop category: %{http_code}\\n\")",
-      "Bash(git add -A)"
+      "Bash(timeout 10 curl -s \"https://ixtif.com/shop/ixtif-cpd15tvl-1070-mm-catal\" -o /dev/null -w \"Product page: %{http_code}\\n\")",
+      "Bash(timeout 15 curl -s \"https://ixtif.com/search?q=forklift\")",
+      "Bash(timeout 10 curl -s -o /dev/null -w \"Ana sayfa: %{http_code}\\n\" \"https://ixtif.com/\")",
+      "Bash(timeout 10 curl -s -o /dev/null -w \"Arama: %{http_code}\\n\" \"https://ixtif.com/search?q=test\")",
+      "Bash(timeout 10 curl -s -o /dev/null -w \"Shop ürün: %{http_code}\\n\" \"https://ixtif.com/shop/ixtif-cpd18fvl-18-ton-li-ion-forklift\")",
+      "Bash(git add -A)",
+      "Bash(git commit -m \"🔧 FIX: Search module admin route file\n\n✅ SORUN ÇÖZÜLDÜ: Shop product sayfaları çalışıyor\n\n**HATA:**\n- Modules/Search/routes/admin.php eksikti\n- RouteServiceProvider admin route''ları yüklemeye çalışıyordu\n- require() failed → 500 error tüm sistemde\n\n**ÇÖZÜM:**\nModules/Search/routes/admin.php:\n- Boş admin route dosyası oluşturuldu\n- RouteServiceProvider artık hata vermiyor\n\n**TEST:**\n✅ Ana sayfa: HTTP 200\n✅ Arama sayfası: HTTP 200\n✅ Shop ürün sayfası: HTTP 200 (düzeldi!)\n✅ Search sonuç linkleri: Çalışıyor\n\n**BULGU:**\nShopProduct primary key: product_id (id değil!)\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\")"
     ],
     "deny": [],
     "ask": [],

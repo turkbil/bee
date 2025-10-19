@@ -4,7 +4,7 @@
         @livewire('header-user-dropdown')
     @else
         {{-- GUEST MENU - MODERN DROPDOWN --}}
-        <div class="relative" x-data="{ open: false }">
+        <div class="relative z-60" x-data="{ open: false }">
             <button @click="open = !open"
                     aria-label="Kullanıcı menüsünü aç"
                     class="flex items-center justify-center w-10 h-10 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-300 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20">
@@ -21,7 +21,7 @@
                  x-transition:leave="transition ease-in duration-75"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[400]">
+                 class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-60">
                 
                 <a href="{{ route('login') }}"
                    class="w-full flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 rounded-lg mx-1">

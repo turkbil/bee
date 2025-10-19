@@ -728,47 +728,70 @@
                             {{-- Hybrid Autocomplete Dropdown --}}
                             <div x-show="isOpen"
                                  x-transition
-                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-[100] max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-[100] border border-gray-200 dark:border-gray-700 overflow-hidden">
 
-                                {{-- Keywords Section --}}
-                                <div x-show="keywords.length > 0" class="border-b border-gray-200 dark:border-gray-700">
-                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                                        <i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar
-                                    </div>
-                                    <template x-for="(keyword, index) in keywords" :key="'k-'+index">
-                                        <a :href="`/search?q=${encodeURIComponent(keyword.text)}`"
-                                           class="block px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition group">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center gap-3">
-                                                    <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"></i>
-                                                    <span class="font-medium text-gray-900 dark:text-white" x-text="keyword.text"></span>
-                                                </div>
-                                                <span x-show="keyword.count" class="text-xs text-gray-500 dark:text-gray-400" x-text="`(${keyword.count} sonuç)`"></span>
+                                <div class="max-h-[28rem] overflow-y-auto">
+                                    <div class="grid gap-6 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                                        {{-- Keywords Section --}}
+                                        <div x-show="keywords.length > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
+                                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                                <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar</span>
+                                                <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords.length}`"></span>
                                             </div>
-                                        </a>
-                                    </template>
-                                </div>
+                                            <div class="space-y-1">
+                                                <template x-for="(keyword, index) in keywords" :key="'k-'+index">
+                                                    <a :href="`/search?q=${encodeURIComponent(keyword.text)}`"
+                                                       class="flex items-center justify-between gap-3 px-3 py-2 rounded-md hover:bg-white dark:hover:bg-gray-800/70 transition group">
+                                                        <div class="flex items-center gap-3">
+                                                            <span class="w-7 h-7 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
+                                                                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                                                            </span>
+                                                            <span class="font-medium text-sm text-gray-900 dark:text-white" x-text="keyword.text"></span>
+                                                        </div>
+                                                        <span x-show="keyword.count" class="text-xs text-gray-400 dark:text-gray-500" x-text="`${keyword.count} sonuç`"></span>
+                                                    </a>
+                                                </template>
+                                            </div>
+                                        </div>
 
-                                {{-- Products Section --}}
-                                <div x-show="products.length > 0">
-                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                                        <i class="fa-solid fa-box text-blue-500 mr-1"></i> Ürünler
-                                    </div>
-                                    <template x-for="(product, index) in products" :key="'p-'+index">
-                                        <a :href="product.url"
-                                           class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition group">
-                                            <div class="flex items-start gap-3">
-                                                <i class="fa-solid fa-cube text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition mt-0.5"></i>
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="font-medium text-sm text-gray-900 dark:text-white truncate" x-html="product.highlighted_title || product.title"></div>
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                                        <span x-text="product.type_label"></span>
-                                                        <span x-show="product.price" class="ml-2 text-green-600 dark:text-green-400 font-semibold" x-text="product.price"></span>
-                                                    </div>
-                                                </div>
+                                        {{-- Products Section --}}
+                                        <div x-show="products.length > 0" class="space-y-3">
+                                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                                <span><i class="fa-solid fa-box text-blue-500 mr-1"></i> Ürünler</span>
+                                                <span x-show="total > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products.length} / ${total}`"></span>
                                             </div>
-                                        </a>
-                                    </template>
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                <template x-for="(product, index) in products" :key="'p-'+index">
+                                                    <a :href="product.url"
+                                                       class="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition group">
+                                                        <div class="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                            <template x-if="product.image">
+                                                                <img :src="product.image"
+                                                                     :alt="product.title"
+                                                                     class="w-full h-full object-cover">
+                                                            </template>
+                                                            <template x-if="!product.image">
+                                                                <i class="fa-solid fa-cube text-gray-400 dark:text-gray-500 text-xl"></i>
+                                                            </template>
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <div class="font-medium text-sm text-gray-900 dark:text-white leading-snug line-clamp-2"
+                                                                 x-html="product.highlighted_title || product.title"></div>
+                                                            <p x-show="product.highlighted_description"
+                                                               class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2"
+                                                               x-html="product.highlighted_description"></p>
+                                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center justify-between">
+                                                                <span x-text="product.type_label"></span>
+                                                                <span x-show="product.price"
+                                                                      class="ml-2 font-semibold text-green-600 dark:text-green-400"
+                                                                      x-text="product.price"></span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {{-- View All Results --}}

@@ -79,7 +79,8 @@ class SearchApiController extends Controller
 
         try {
             $query = $validated['q'];
-            $limit = $validated['limit'] ?? 5; // Dropdown için 5 yeterli
+            $limit = $validated['limit'] ?? 5; // Keyword dropdown varsayılanı
+            $productLimit = 6; // Grid için 2x3 ürün kartı
 
             // Get keyword suggestions from popular searches ONLY
             $keywordSuggestions = $this->searchService->getSuggestions($query, $limit);
@@ -104,7 +105,7 @@ class SearchApiController extends Controller
             // Get product suggestions (top 5 from actual search)
             $results = $this->searchService->searchAll(
                 query: $query,
-                perPage: 5,
+                perPage: $productLimit,
                 page: 1
             );
 
@@ -113,7 +114,7 @@ class SearchApiController extends Controller
                 $query
             );
 
-            $products = $formattedResults->take(5)->map(function ($item) {
+            $products = $formattedResults->take($productLimit)->map(function ($item) {
                 return [
                     'type' => 'product',
                     'title' => $item['title'],
@@ -121,6 +122,8 @@ class SearchApiController extends Controller
                     'url' => $item['url'],
                     'type_label' => $item['type_label'],
                     'price' => $item['price'],
+                    'image' => $item['image'],
+                    'highlighted_description' => $item['highlighted_description'],
                 ];
             })->values()->all();
 

@@ -24,23 +24,27 @@ class NotificationSettingsValuesSeeder extends Seeder
 
         echo "📝 Bildirim Ayarları değerleri oluşturuluyor (Tenant: " . tenant()->id . ")...\n";
 
+        // ⚠️ UYARI: Bu seeder sadece örnek amaçlıdır!
+        // Gerçek production değerleri admin panelden girilmelidir:
+        // https://yourdomain.com/admin/settingmanagement/values/11
+
         // Central database'den setting'leri al
         $settingsData = [
             // 📱 TELEGRAM BİLDİRİMLERİ
-            'telegram_enabled' => '1',
-            'telegram_bot_token' => '8344881512:AAGJQn3Z167ebNx67pwvGuKf1RbzTHazbt0',
-            'telegram_chat_id' => '-1002943373765',
+            'telegram_enabled' => '0',  // Admin panelden aktifleştirin
+            'telegram_bot_token' => '',  // @BotFather'dan alın ve admin panelde girin
+            'telegram_chat_id' => '',    // @userinfobot'tan alın ve admin panelde girin
 
             // 💬 WHATSAPP BİLDİRİMLERİ (TWILIO)
-            'whatsapp_enabled' => '1',
-            'twilio_account_sid' => 'AC1b50075754770609cb4a69be42112e3f',
-            'twilio_auth_token' => 'b2b99ddd9ebd4d771bb96c08ece5d97c',
-            'twilio_whatsapp_from' => 'whatsapp:+14155238886',
-            'twilio_whatsapp_to' => 'whatsapp:+905322160754',
+            'whatsapp_enabled' => '0',   // Admin panelden aktifleştirin
+            'twilio_account_sid' => '',  // Twilio Console'dan alın ve admin panelde girin
+            'twilio_auth_token' => '',   // Twilio Console'dan alın ve admin panelde girin
+            'twilio_whatsapp_from' => '',  // Örnek: whatsapp:+14155238886
+            'twilio_whatsapp_to' => '',    // Örnek: whatsapp:+905321234567
 
             // 📧 EMAIL BİLDİRİMLERİ
-            'email_enabled' => '1',
-            'notification_email' => 'info@ixtif.com',
+            'email_enabled' => '0',      // Admin panelden aktifleştirin
+            'notification_email' => '',  // Bildirim alacak email adresinizi admin panelde girin
         ];
 
         $created = 0;

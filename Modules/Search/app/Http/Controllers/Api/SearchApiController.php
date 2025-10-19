@@ -33,7 +33,7 @@ class SearchApiController extends Controller
         try {
             $results = $this->searchService->searchAll(
                 query: $validated['q'],
-                perPage: $validated['per_page'] ?? 20,
+                perPage: $validated['per_page'] ?? 12,
                 page: $validated['page'] ?? 1,
                 filters: $validated['filters'] ?? [],
                 activeTab: $validated['type'] ?? 'all'
@@ -45,6 +45,16 @@ class SearchApiController extends Controller
                 $validated['q']
             );
 
+            $pages = collect($results['results'] ?? [])->map(function ($data) {
+                return [
+                    'current' => $data['current_page'] ?? 1,
+                    'last' => $data['last_page'] ?? 1,
+                ];
+            });
+
+            $currentPage = max(1, $pages->max('current') ?? ($validated['page'] ?? 1));
+            $lastPage = max(1, $pages->max('last') ?? 1);
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -52,6 +62,11 @@ class SearchApiController extends Controller
                     'total' => $results['total_count'],
                     'response_time' => $results['response_time'],
                     'query' => $results['query'],
+                    'pagination' => [
+                        'current_page' => min($currentPage, $lastPage),
+                        'last_page' => $lastPage,
+                        'per_page' => $validated['per_page'] ?? 12,
+                    ],
                 ],
             ]);
         } catch (\Exception $e) {
@@ -89,7 +104,14 @@ class SearchApiController extends Controller
                 // Get count for each keyword by doing a quick search
                 $count = 0;
                 try {
-                    $quickSearch = $this->searchService->searchAll($keyword, 1, 1);
+                    $quickSearch = $this->searchService->searchAll(
+                        query: $keyword,
+                        perPage: 1,
+                        page: 1,
+                        filters: [],
+                        activeTab: 'all',
+                        logQuery: false
+                    );
                     $count = $quickSearch['total_count'];
                 } catch (\Exception $e) {
                     // Ignore count errors
@@ -106,7 +128,10 @@ class SearchApiController extends Controller
             $results = $this->searchService->searchAll(
                 query: $query,
                 perPage: $productLimit,
-                page: 1
+                page: 1,
+                filters: [],
+                activeTab: 'all',
+                logQuery: false
             );
 
             $formattedResults = $this->searchService->formatResultsForDisplay(
@@ -114,18 +139,23 @@ class SearchApiController extends Controller
                 $query
             );
 
-            $products = $formattedResults->take($productLimit)->map(function ($item) {
-                return [
-                    'type' => 'product',
-                    'title' => $item['title'],
-                    'highlighted_title' => $item['highlighted_title'],
-                    'url' => $item['url'],
-                    'type_label' => $item['type_label'],
-                    'price' => $item['price'],
-                    'image' => $item['image'],
-                    'highlighted_description' => $item['highlighted_description'],
-                ];
-            })->values()->all();
+            $products = $formattedResults
+                ->filter(fn ($item) => ($item['type'] ?? null) === 'products')
+                ->sortByDesc(fn ($item) => !empty($item['is_master_product']) ? 1 : 0)
+                ->take($productLimit)
+                ->map(function ($item) {
+                    return [
+                        'type' => $item['type'] ?? 'product',
+                        'title' => $item['title'],
+                        'highlighted_title' => $item['highlighted_title'],
+                        'url' => $item['url'],
+                        'type_label' => $item['type_label'],
+                        'price' => $item['price'],
+                        'image' => $item['image'],
+                        'highlighted_description' => $item['highlighted_description'],
+                        'is_master_product' => $item['is_master_product'] ?? null,
+                    ];
+                })->values()->all();
 
             return response()->json([
                 'success' => true,

@@ -16,6 +16,16 @@
 !/storage/framework/testing/.gitkeep
 !/storage/framework/views/.gitkeep
 
+# Tenant storage (geçici dosyalar, upload cache)
+/storage/tenant*/app/public/*
+/storage/tenant*/app/livewire-tmp/*
+/storage/tenant*/app/temp/*
+/storage/tenant*/framework/*
+/storage/tenant*/logs/*
+
+# Horizon process ID
+/storage/horizon.pid
+
 # Ortam dosyaları
 .env
 .env.*
@@ -54,6 +64,10 @@ Thumbs.db
 *.backup
 debug*.txt
 debug-*.txt
+tmp_*.php
+
+# Claude local settings
+.claude/settings.local.json
 
 # Docker volumes - veritabanı ve cache dosyaları
 /docker/volumes

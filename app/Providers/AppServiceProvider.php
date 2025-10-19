@@ -125,7 +125,7 @@ class AppServiceProvider extends ServiceProvider
         
         // Tenant için Redis önbellek yapılandırması
         if (TenantHelpers::isTenant()) {
-            $tenantId = tenant_id();
+            $tenantId = tenant_id() ?: 1;
 
             // ResponseCache için tenant bazlı tag ayarlaması
             config([
@@ -133,10 +133,26 @@ class AppServiceProvider extends ServiceProvider
                 'responsecache.cache_lifetime_in_seconds' => 86400, // 24 saat
             ]);
 
+            $tenantStorageRoot = storage_path("tenant{$tenantId}/app");
+
+            // Tenant özel disk yapılandırması (private storage kökü)
+            config([
+                'filesystems.disks.tenant_internal' => [
+                    'driver' => 'local',
+                    'root' => $tenantStorageRoot,
+                    'visibility' => 'private',
+                    'throw' => false,
+                ],
+            ]);
+
+            if (! is_dir($tenantStorageRoot . '/livewire-tmp')) {
+                @mkdir($tenantStorageRoot . '/livewire-tmp', 0775, true);
+            }
+
             // Livewire temporary upload için tenant-aware path
             config([
-                'livewire.temporary_file_upload.disk' => 'public',
-                'livewire.temporary_file_upload.directory' => "tenant{$tenantId}/livewire-tmp",
+                'livewire.temporary_file_upload.disk' => 'tenant_internal',
+                'livewire.temporary_file_upload.directory' => 'livewire-tmp',
             ]);
 
             // Media Library temp path için tenant-aware

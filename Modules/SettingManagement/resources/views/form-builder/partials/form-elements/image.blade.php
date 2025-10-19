@@ -1,52 +1,48 @@
 @php
+    $setting = null;
     $settingId = null;
-    $settingKey = null;
-    
+
     if(isset($element['properties']['setting_id'])) {
         $settingId = $element['properties']['setting_id'];
+        $setting = $settings->firstWhere('id', $settingId);
     } elseif(isset($element['properties']['name'])) {
         $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
         $setting = $settings->firstWhere('key', $settingName);
         if($setting) {
             $settingId = $setting->id;
-            $settingKey = $setting->key;
         }
     }
 @endphp
 
-@if($settingId)
-    <div class="col-12" wire:key="setting-{{ $settingId }}">
+@if($setting)
+    <div class="col-12" wire:key="setting-{{ $setting->id }}">
         <div class="card mb-3 w-100">
             <div class="card-header">
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
                         <i class="fas fa-image me-2"></i>
-                        {{ $element['properties']['label'] ?? 'Resim' }}
+                        {{ $element['properties']['label'] ?? $setting->label }}
                     </h3>
                 </div>
             </div>
             <div class="card-body">
                 <div class="form-group w-100">
-                    @include('settingmanagement::form-builder.partials.image-upload', [
-                        'imageKey' => $settingId,
-                        'label' => $element['properties']['placeholder'] ?? 'Görseli sürükleyip bırakın veya tıklayın',
-                        'values' => $values
-                    ])
-                    
+                    {{-- Universal MediaManagement Component (label gösterme - card-header'da zaten var) --}}
+                    @livewire('mediamanagement::universal-media', [
+                        'modelId' => $setting->id,
+                        'modelType' => 'setting',
+                        'modelClass' => 'Modules\SettingManagement\App\Models\Setting',
+                        'collections' => ['featured_image'],
+                        'maxGalleryItems' => 1,
+                        'sortable' => false,
+                        'setFeaturedFromGallery' => false,
+                        'hideLabel' => true
+                    ], key('setting-media-fb-' . $setting->id))
+
                     @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
                         <div class="form-text text-muted mt-2">
                             <i class="fas fa-info-circle me-1"></i>
                             {{ $element['properties']['help_text'] }}
-                        </div>
-                    @endif
-                    
-                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
-                        <div class="mt-2 text-end">
-                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                            </span>
                         </div>
                     @endif
                 </div>

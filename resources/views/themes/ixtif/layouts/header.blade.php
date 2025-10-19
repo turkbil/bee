@@ -370,10 +370,17 @@
                         @php
                             use App\Helpers\CanonicalHelper;
 
+                            use Illuminate\Database\Eloquent\Model as EloquentModel;
+
                             $currentModel = isset($item) ? $item : null;
                             $moduleAction = 'show';
                             if (isset($items) && !isset($item)) $moduleAction = 'index';
                             if (isset($category)) { $currentModel = $category; $moduleAction = 'category'; }
+
+                            if ($currentModel && !($currentModel instanceof EloquentModel)) {
+                                // Only pass Eloquent models into CanonicalHelper
+                                $currentModel = null;
+                            }
 
                             $currentLang = app()->getLocale();
 
@@ -443,7 +450,7 @@
                                  x-transition:leave="transition ease-in duration-75"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
-                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-1 z-[200]">
 
                                 @if(count($languageSwitcherLinks) > 0)
                                     @php
@@ -661,7 +668,7 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="relative z-40 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
+                     class="relative z-30 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
                         {{-- Alpine.js + API Search (No Livewire overhead) --}}
@@ -815,7 +822,7 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="relative z-0 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl"
+                     class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}

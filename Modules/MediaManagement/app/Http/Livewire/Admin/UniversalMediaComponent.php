@@ -39,6 +39,7 @@ class UniversalMediaComponent extends Component
     public ?int $maxGalleryItems = null;
     public bool $sortable = true;
     public bool $setFeaturedFromGallery = true;
+    public bool $hideLabel = false; // Label'ı gizle (form-builder için)
 
     // ========================================
     // FILE UPLOAD PROPERTIES
@@ -192,7 +193,7 @@ class UniversalMediaComponent extends Component
         }
 
         $this->validate([
-            'featuredImageFile' => 'image|max:20480|dimensions:max_width=4000,max_height=4000', // 20MB, max 4000x4000px
+            'featuredImageFile' => 'file|max:20480', // 20MB - MIME validation Spatie'de yapılıyor
         ]);
 
         // Model ID yoksa, session-based temp storage'a kaydet
@@ -1186,6 +1187,7 @@ class UniversalMediaComponent extends Component
             'hasVideos' => $this->hasCollection('videos'),
             'hasAudio' => $this->hasCollection('audio'),
             'hasDocuments' => $this->hasCollection('documents'),
+            'hideLabel' => $this->hideLabel,
         ]);
     }
 }

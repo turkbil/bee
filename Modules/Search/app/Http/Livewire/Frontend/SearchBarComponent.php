@@ -32,7 +32,14 @@ class SearchBarComponent extends Component
         }
 
         $searchService = app(UniversalSearchService::class);
-        $searchResults = $searchService->searchAll($this->query, 10);
+        $searchResults = $searchService->searchAll(
+            query: $this->query,
+            perPage: 10,
+            page: 1,
+            filters: [],
+            activeTab: 'all',
+            logQuery: false
+        );
 
         return $searchService->formatResultsForDisplay(
             $searchResults,

@@ -652,7 +652,7 @@
             </div>
 
             {{-- Dropdown Wrapper - Contains both search and mega menu stacked --}}
-            <div class="absolute left-0 right-0 top-full z-[200]">
+            <div class="absolute left-0 right-0 top-full z-20">
                 {{-- Search Bar --}}
                 <div x-show="searchOpen"
                      x-transition:enter="transition ease-out duration-200"
@@ -661,7 +661,7 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="relative z-[300] bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
+                     class="relative z-40 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
                         {{-- Alpine.js + API Search (No Livewire overhead) --}}
@@ -721,7 +721,7 @@
                             {{-- Autocomplete Dropdown --}}
                             <div x-show="isOpen && results.length > 0"
                                  x-transition
-                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-[310] max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-50 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
                                 <template x-for="(result, index) in results" :key="index">
                                     <a :href="`/search?q=${encodeURIComponent(result)}`"
                                        class="block p-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition group">
@@ -752,7 +752,7 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="relative z-[100] bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl"
+                     class="relative z-0 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}

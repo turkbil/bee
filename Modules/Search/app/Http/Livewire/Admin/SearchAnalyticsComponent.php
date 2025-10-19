@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Search\App\Http\Livewire\Admin;
 
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Modules\Search\App\Services\SearchAnalyticsService;
 
+#[Layout('admin.layout')]
 class SearchAnalyticsComponent extends Component
 {
     public $days = 30;
@@ -47,7 +49,6 @@ class SearchAnalyticsComponent extends Component
 
     public function render()
     {
-        return view('search::livewire.admin.analytics')
-            ->layout('admin.layouts.app');
+        return view('search::admin.livewire.analytics');
     }
 }

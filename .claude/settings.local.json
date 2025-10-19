@@ -1,13 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout 10 curl -s \"https://ixtif.com/shop/ixtif-cpd15tvl-1070-mm-catal\" -o /dev/null -w \"Product page: %{http_code}\\n\")",
-      "Bash(timeout 15 curl -s \"https://ixtif.com/search?q=forklift\")",
-      "Bash(timeout 10 curl -s -o /dev/null -w \"Ana sayfa: %{http_code}\\n\" \"https://ixtif.com/\")",
-      "Bash(timeout 10 curl -s -o /dev/null -w \"Arama: %{http_code}\\n\" \"https://ixtif.com/search?q=test\")",
-      "Bash(timeout 10 curl -s -o /dev/null -w \"Shop ürün: %{http_code}\\n\" \"https://ixtif.com/shop/ixtif-cpd18fvl-18-ton-li-ion-forklift\")",
-      "Bash(git add -A)",
-      "Bash(git commit -m \"🔧 FIX: Search module admin route file\n\n✅ SORUN ÇÖZÜLDÜ: Shop product sayfaları çalışıyor\n\n**HATA:**\n- Modules/Search/routes/admin.php eksikti\n- RouteServiceProvider admin route''ları yüklemeye çalışıyordu\n- require() failed → 500 error tüm sistemde\n\n**ÇÖZÜM:**\nModules/Search/routes/admin.php:\n- Boş admin route dosyası oluşturuldu\n- RouteServiceProvider artık hata vermiyor\n\n**TEST:**\n✅ Ana sayfa: HTTP 200\n✅ Arama sayfası: HTTP 200\n✅ Shop ürün sayfası: HTTP 200 (düzeldi!)\n✅ Search sonuç linkleri: Çalışıyor\n\n**BULGU:**\nShopProduct primary key: product_id (id değil!)\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\")"
+      "Bash(php artisan view:clear)",
+      "Bash(php artisan cache:clear)",
+      "Bash(timeout 10 curl -s -o /dev/null -w \"Search page: %{http_code}\\n\" \"https://ixtif.com/search?q=forklift\")",
+      "Bash(timeout 10 curl -s \"https://ixtif.com/api/search/suggestions?q=fork\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(timeout 10 curl -s \"https://ixtif.com/api/search?q=forklift&per_page=20&page=1\")",
+      "Bash(timeout 15 curl -s \"https://ixtif.com/api/search?q=forklift&per_page=5&page=1\")",
+      "Bash(python3 -c \"import sys, json; data=json.load(sys.stdin); print(json.dumps(data, indent=2, ensure_ascii=False))\")",
+      "Bash(timeout 15 curl -s -w \"\\n\\nHTTP Code: %{http_code}\\n\" \"https://ixtif.com/api/search?q=forklift&per_page=5&page=1\")",
+      "Bash(timeout 15 curl -s \"https://ixtif.com/api/search/?q=forklift&per_page=5&page=1\")",
+      "Bash(php artisan route:clear)",
+      "Bash(php artisan route:cache)",
+      "Bash(timeout 15 curl -s \"https://ixtif.com/api/search/?q=forklift&per_page=5\")",
+      "Bash(python3 -c \"import sys, json; data=json.load(sys.stdin); print(''''SUCCESS:'''', data.get(''''success'''')); print(''''Total:'''', data.get(''''data'''', {}).get(''''total'''')); print(''''Items:'''', len(data.get(''''data'''', {}).get(''''items'''', [])))\")",
+      "Bash(timeout 15 curl -s -w \"\\n\\nHTTP: %{http_code}\" \"https://ixtif.com/api/search?q=forklift&per_page=5\")",
+      "Bash(python3 -c \"import sys, json; data=json.load(sys.stdin); print(''''✅ SUCCESS:'''', data.get(''''success'''')); print(''''📊 Total:'''', data.get(''''data'''', {}).get(''''total'''')); print(''''📦 Items:'''', len(data.get(''''data'''', {}).get(''''items'''', [])))\")",
+      "Bash(timeout 10 curl -s -w \"\\nHTTP_CODE: %{http_code}\\n\" \"https://ixtif.com/api/search?q=test&per_page=5\")",
+      "Bash(php artisan route:list --path=api/search --columns=method,uri,name)",
+      "Bash(php artisan route:list)"
     ],
     "deny": [],
     "ask": [],

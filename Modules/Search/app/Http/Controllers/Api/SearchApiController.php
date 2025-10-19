@@ -26,6 +26,7 @@ class SearchApiController extends Controller
             'q' => 'required|string|min:2|max:500',
             'type' => 'nullable|string|in:all,products,categories,brands,pages',
             'per_page' => 'nullable|integer|min:1|max:100',
+            'page' => 'nullable|integer|min:1',
             'filters' => 'nullable|array',
         ]);
 
@@ -33,6 +34,7 @@ class SearchApiController extends Controller
             $results = $this->searchService->searchAll(
                 query: $validated['q'],
                 perPage: $validated['per_page'] ?? 20,
+                page: $validated['page'] ?? 1,
                 filters: $validated['filters'] ?? [],
                 activeTab: $validated['type'] ?? 'all'
             );
@@ -66,7 +68,7 @@ class SearchApiController extends Controller
     }
 
     /**
-     * Get autocomplete suggestions
+     * Get hybrid autocomplete suggestions (keywords + products)
      */
     public function suggestions(Request $request): JsonResponse
     {
@@ -76,14 +78,49 @@ class SearchApiController extends Controller
         ]);
 
         try {
-            $suggestions = $this->searchService->getSuggestions(
-                $validated['q'],
-                $validated['limit'] ?? 10
+            // Get search results
+            $results = $this->searchService->searchAll(
+                query: $validated['q'],
+                perPage: 15
             );
+
+            // Keyword suggestions
+            $keywords = [];
+            $query = $validated['q'];
+
+            if (strlen($query) >= 2 && $results['total_count'] > 0) {
+                $keywords[] = [
+                    'type' => 'keyword',
+                    'text' => $query,
+                    'count' => $results['total_count'],
+                ];
+            }
+
+            // Product suggestions
+            $products = [];
+            $formattedResults = $this->searchService->formatResultsForDisplay(
+                $results,
+                $validated['q']
+            );
+
+            foreach ($formattedResults->take(5) as $item) {
+                $products[] = [
+                    'type' => 'product',
+                    'title' => $item['title'],
+                    'highlighted_title' => $item['highlighted_title'],
+                    'url' => $item['url'],
+                    'type_label' => $item['type_label'],
+                    'price' => $item['price'],
+                ];
+            }
 
             return response()->json([
                 'success' => true,
-                'data' => $suggestions,
+                'data' => [
+                    'keywords' => $keywords,
+                    'products' => $products,
+                    'total' => $results['total_count'],
+                ],
             ]);
         } catch (\Exception $e) {
             \Log::error('Suggestions API error: ' . $e->getMessage());

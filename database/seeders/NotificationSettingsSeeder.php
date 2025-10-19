@@ -73,7 +73,7 @@ class NotificationSettingsSeeder extends Seeder
                 'default_value' => '',
                 'sort_order' => 3,
                 'is_active' => true,
-                'help_text' => 'Bildirimlerin gönderileceği Telegram grup veya kullanıcı ID\'si. @userinfobot ile öğrenebilirsiniz. Grup için - ile başlar (örn: -1002943373765)',
+                'help_text' => 'Bildirimlerin gönderileceği Telegram grup veya kullanıcı ID\'si. @userinfobot ile öğrenebilirsiniz. Grup için - ile başlar (örn: -1001234567890)',
                 'updated_at' => now(),
             ]
         );
@@ -261,7 +261,7 @@ class NotificationSettingsSeeder extends Seeder
                                         'required' => false,
                                         'help_text' => 'Bildirimlerin gönderileceği Telegram grup veya kullanıcı ID\'si.',
                                         'setting_id' => $telegramChatId,
-                                        'placeholder' => '-1002943373765',
+                                        'placeholder' => '-1001234567890',
                                         'default_value' => ''
                                     ]
                                 ]

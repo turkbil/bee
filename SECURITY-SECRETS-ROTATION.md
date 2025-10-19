@@ -5,13 +5,15 @@
 GitHub'ın secret scanning özelliği kodunuzda **7 adet açık secret** tespit etti. Bu secret'lar public repository'de görünür durumdadır ve güvenlik riski oluşturmaktadır.
 
 ### Tespit Edilen Secret'lar:
-1. **Telegram Bot Token** - NotificationSettingsValuesSeeder.php#L31
-2. **Telegram Chat ID** - NotificationSettingsValuesSeeder.php#L32
-3. **Twilio Account SID** - NotificationSettingsValuesSeeder.php#L36
-4. **Twilio Auth Token** - NotificationSettingsValuesSeeder.php#L37
-5. **Twilio WhatsApp From** - NotificationSettingsValuesSeeder.php#L38
-6. **Twilio WhatsApp To** - NotificationSettingsValuesSeeder.php#L39
-7. **Notification Email** - NotificationSettingsValuesSeeder.php#L43
+1. **Telegram Bot Token** - `NotificationSettingsValuesSeeder.php`
+2. **Telegram Chat ID** - `NotificationSettingsValuesSeeder.php`
+3. **Twilio Account SID** - `NotificationSettingsValuesSeeder.php`
+4. **Twilio Auth Token** - `NotificationSettingsValuesSeeder.php`
+5. **Twilio WhatsApp From** - `NotificationSettingsValuesSeeder.php`
+6. **Twilio WhatsApp To** - `NotificationSettingsValuesSeeder.php`
+7. **Notification Email** - `NotificationSettingsValuesSeeder.php`
+
+**NOT:** Tüm secret'lar seeder dosyasından kaldırılmıştır.
 
 ---
 
@@ -72,7 +74,7 @@ Aşağıdaki kontrolleri yapın:
 
 ```php
 // ❌ YANLIŞ: Seeder'da hardcoded
-'telegram_bot_token' => '8344881512:AAGJQn3Z167ebNx67pwvGuKf1RbzTHazbt0',
+'telegram_bot_token' => '1234567890:ABCdefGHIjklMNOpqrsTUVwxyz',
 
 // ✅ DOĞRU: Boş bırak, admin panelden gir
 'telegram_bot_token' => '',  // Admin panelden girilecek

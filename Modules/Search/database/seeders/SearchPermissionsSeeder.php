@@ -7,7 +7,7 @@ namespace Modules\Search\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Stancl\Tenancy\Database\Models\Tenant;
+use App\Models\Tenant;
 
 class SearchPermissionsSeeder extends Seeder
 {
@@ -18,13 +18,12 @@ class SearchPermissionsSeeder extends Seeder
     {
         $this->command->info('Creating Search module permissions...');
 
-        // Define permissions
+        // Define permissions (CRUD)
         $permissions = [
-            ['name' => 'search.view_analytics', 'description' => 'Arama - Analytics Görüntüleme'],
-            ['name' => 'search.export_data', 'description' => 'Arama - Data Export'],
-            ['name' => 'search.manage_settings', 'description' => 'Arama - Ayarları Yönetme'],
-            ['name' => 'search.view_queries', 'description' => 'Arama - Sorguları Görüntüleme'],
-            ['name' => 'search.delete_queries', 'description' => 'Arama - Sorguları Silme'],
+            ['name' => 'search.view', 'description' => 'Arama - Görüntüleme'],
+            ['name' => 'search.create', 'description' => 'Arama - Oluşturma'],
+            ['name' => 'search.update', 'description' => 'Arama - Güncelleme'],
+            ['name' => 'search.delete', 'description' => 'Arama - Silme'],
         ];
 
         // Create permissions in central database
@@ -69,16 +68,20 @@ class SearchPermissionsSeeder extends Seeder
                         );
                     }
 
-                    // Assign to Super Admin role
-                    $superAdminRole = Role::where('name', 'super-admin')->first();
+                    // Assign to Root role (or Admin as fallback)
+                    $adminRole = Role::where('name', 'root')->first();
 
-                    if ($superAdminRole) {
+                    if (!$adminRole) {
+                        $adminRole = Role::where('name', 'admin')->first();
+                    }
+
+                    if ($adminRole) {
                         $permissionNames = array_column($permissions, 'name');
-                        $superAdminRole->givePermissionTo($permissionNames);
+                        $adminRole->givePermissionTo($permissionNames);
 
-                        $this->command->info("  ✓ Assigned permissions to Super Admin in tenant: {$tenant->id}");
+                        $this->command->info("  ✓ Assigned permissions to {$adminRole->name} role in tenant: {$tenant->id}");
                     } else {
-                        $this->command->warn("  ⚠ Super Admin role not found in tenant: {$tenant->id}");
+                        $this->command->warn("  ⚠ Admin role not found in tenant: {$tenant->id}");
                     }
 
                     // Add module to module_tenants table

@@ -24,8 +24,14 @@ class DeleteModal extends Component
 
   public function delete()
   {
+      // Permission kontrolü için modül adını belirle
+      $permissionModule = $this->module;
+      if (str_starts_with($this->module, 'shop-')) {
+          $permissionModule = 'shop';
+      }
+
       // Silme yetkisi kontrolü
-      if (!auth()->user()->hasModulePermission($this->module, 'delete')) {
+      if (!auth()->user()->hasModulePermission($permissionModule, 'delete')) {
           $this->dispatch('toast', [
               'title' => 'Yetkisiz İşlem!',
               'message' => 'Bu işlem için gerekli yetkiniz bulunmamaktadır.',
@@ -38,11 +44,47 @@ class DeleteModal extends Component
       try {
           DB::beginTransaction();
 
-          $modelClass = $this->module === 'module' 
-              ? "Modules\\ModuleManagement\\App\\Models\\Module"
-              : "Modules\\" . ucfirst($this->module) . "Management\\App\\Models\\" . ucfirst($this->module);
+          // Modül-Model mapping
+          $moduleModelMap = [
+              'module' => [
+                  'class' => "Modules\\ModuleManagement\\App\\Models\\Module",
+                  'key' => 'module_id'
+              ],
+              'shop-product' => [
+                  'class' => "Modules\\Shop\\App\\Models\\ShopProduct",
+                  'key' => 'product_id'
+              ],
+              'shop-category' => [
+                  'class' => "Modules\\Shop\\App\\Models\\ShopCategory",
+                  'key' => 'category_id'
+              ],
+              'shop-brand' => [
+                  'class' => "Modules\\Shop\\App\\Models\\ShopBrand",
+                  'key' => 'brand_id'
+              ],
+              'blog' => [
+                  'class' => "Modules\\Blog\\App\\Models\\Blog",
+                  'key' => 'blog_id'
+              ],
+              'portfolio' => [
+                  'class' => "Modules\\Portfolio\\App\\Models\\Portfolio",
+                  'key' => 'portfolio_id'
+              ],
+              'page' => [
+                  'class' => "Modules\\Page\\App\\Models\\Page",
+                  'key' => 'page_id'
+              ],
+          ];
 
-          $primaryKey = $this->module === 'module' ? 'module_id' : $this->module . '_id';
+          // Modül mapping'de var mı kontrol et
+          if (isset($moduleModelMap[$this->module])) {
+              $modelClass = $moduleModelMap[$this->module]['class'];
+              $primaryKey = $moduleModelMap[$this->module]['key'];
+          } else {
+              // Default pattern (eski sistem)
+              $modelClass = "Modules\\" . ucfirst($this->module) . "Management\\App\\Models\\" . ucfirst($this->module);
+              $primaryKey = $this->module . '_id';
+          }
 
           $item = $modelClass::where($primaryKey, $this->itemId)->first();
 

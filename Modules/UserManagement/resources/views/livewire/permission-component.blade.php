@@ -139,16 +139,48 @@
     @push('scripts')
     <script>
         document.addEventListener('livewire:initialized', () => {
-        const modal = document.getElementById('deletePermissionModal');
-        
-        @this.on('openDeleteModal', () => {
-            new bootstrap.Modal(modal).show();
+            const modal = document.getElementById('deletePermissionModal');
+            let modalInstance = null;
+
+            @this.on('openDeleteModal', () => {
+                // Bootstrap Modal instance oluştur ve aç
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    modalInstance = new bootstrap.Modal(modal);
+                    modalInstance.show();
+                } else {
+                    // Fallback: Manuel modal açma
+                    modal.classList.add('show');
+                    modal.style.display = 'block';
+                    document.body.classList.add('modal-open');
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    backdrop.id = 'deleteModalBackdrop';
+                    document.body.appendChild(backdrop);
+                }
+            });
+
+            @this.on('closeDeleteModal', () => {
+                // Bootstrap Modal instance var ise kapat
+                if (modalInstance) {
+                    modalInstance.hide();
+                    modalInstance = null;
+                } else if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const instance = bootstrap.Modal.getInstance(modal);
+                    if (instance) {
+                        instance.hide();
+                    }
+                } else {
+                    // Fallback: Manuel modal kapatma
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    document.body.classList.remove('modal-open');
+                    const backdrop = document.getElementById('deleteModalBackdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                }
+            });
         });
-        
-        @this.on('closeDeleteModal', () => {
-            bootstrap.Modal.getInstance(modal).hide();
-        });
-    });
     </script>
     @endpush
 </div>

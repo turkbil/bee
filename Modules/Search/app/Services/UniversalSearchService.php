@@ -258,10 +258,18 @@ class UniversalSearchService
                 ? ($item->slug[app()->getLocale()] ?? $item->slug['tr'] ?? null)
                 : ($item->slug ?? null);
 
+            if (!$slug) {
+                return '#';
+            }
+
             // Generate URL based on type
+            // Products: /shop/{slug}
+            // Categories: /shop/category/{slug}
+            // Brands: /shop/brand/{slug}
             return match ($type) {
-                'products' => $item->id ? route('shop.show.by-id', $item->id) : '#',
-                'categories' => $slug ? route('shop.category', $slug) : '#',
+                'products' => route('shop.show', $slug),
+                'categories' => route('shop.category', $slug),
+                'brands' => route('shop.brand', $slug),
                 default => '#',
             };
         } catch (\Exception $e) {

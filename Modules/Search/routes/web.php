@@ -24,5 +24,5 @@ Route::middleware(['web', 'auth', 'tenant'])->prefix('admin')->group(function ()
     // Analytics - Livewire component view'dan render edilecek
     Route::get('/search/analytics', function () {
         return view('search::admin.analytics');
-    })->name('admin.search.analytics')->middleware('permission:search.view_analytics');
+    })->name('admin.search.analytics')->middleware('permission:search.view');
 });

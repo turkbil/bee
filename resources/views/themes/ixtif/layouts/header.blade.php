@@ -667,12 +667,15 @@
                         {{-- Alpine.js + API Search (No Livewire overhead) --}}
                         <div class="relative" x-data="{
                             query: '',
-                            results: [],
+                            keywords: [],
+                            products: [],
+                            total: 0,
                             isOpen: false,
                             loading: false,
                             async search() {
                                 if (this.query.length < 2) {
-                                    this.results = [];
+                                    this.keywords = [];
+                                    this.products = [];
                                     this.isOpen = false;
                                     return;
                                 }
@@ -681,16 +684,20 @@
                                     const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(this.query)}`);
                                     const data = await response.json();
 
-                                    if (data.success && data.data && data.data.length > 0) {
-                                        this.results = data.data.slice(0, 8);
-                                        this.isOpen = true;
+                                    if (data.success && data.data) {
+                                        this.keywords = data.data.keywords || [];
+                                        this.products = data.data.products || [];
+                                        this.total = data.data.total || 0;
+                                        this.isOpen = (this.keywords.length > 0 || this.products.length > 0);
                                     } else {
-                                        this.results = [];
+                                        this.keywords = [];
+                                        this.products = [];
                                         this.isOpen = false;
                                     }
                                 } catch (e) {
                                     console.error('Search error:', e);
-                                    this.results = [];
+                                    this.keywords = [];
+                                    this.products = [];
                                     this.isOpen = false;
                                 }
                                 this.loading = false;
@@ -718,25 +725,58 @@
                                 </button>
                             </div>
 
-                            {{-- Autocomplete Dropdown --}}
-                            <div x-show="isOpen && results.length > 0"
+                            {{-- Hybrid Autocomplete Dropdown --}}
+                            <div x-show="isOpen"
                                  x-transition
-                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-50 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
-                                <template x-for="(result, index) in results" :key="index">
-                                    <a :href="`/search?q=${encodeURIComponent(result)}`"
-                                       class="block p-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition group">
-                                        <div class="flex items-center gap-3">
-                                            <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"></i>
-                                            <span class="font-medium text-gray-900 dark:text-white" x-text="result"></span>
-                                        </div>
-                                    </a>
-                                </template>
+                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-[100] max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
 
+                                {{-- Keywords Section --}}
+                                <div x-show="keywords.length > 0" class="border-b border-gray-200 dark:border-gray-700">
+                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        <i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar
+                                    </div>
+                                    <template x-for="(keyword, index) in keywords" :key="'k-'+index">
+                                        <a :href="`/search?q=${encodeURIComponent(keyword.text)}`"
+                                           class="block px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition group">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"></i>
+                                                    <span class="font-medium text-gray-900 dark:text-white" x-text="keyword.text"></span>
+                                                </div>
+                                                <span x-show="keyword.count" class="text-xs text-gray-500 dark:text-gray-400" x-text="`(${keyword.count} sonuç)`"></span>
+                                            </div>
+                                        </a>
+                                    </template>
+                                </div>
+
+                                {{-- Products Section --}}
+                                <div x-show="products.length > 0">
+                                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        <i class="fa-solid fa-box text-blue-500 mr-1"></i> Ürünler
+                                    </div>
+                                    <template x-for="(product, index) in products" :key="'p-'+index">
+                                        <a :href="product.url"
+                                           class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition group">
+                                            <div class="flex items-start gap-3">
+                                                <i class="fa-solid fa-cube text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition mt-0.5"></i>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="font-medium text-sm text-gray-900 dark:text-white truncate" x-html="product.highlighted_title || product.title"></div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                        <span x-text="product.type_label"></span>
+                                                        <span x-show="product.price" class="ml-2 text-green-600 dark:text-green-400 font-semibold" x-text="product.price"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </template>
+                                </div>
+
+                                {{-- View All Results --}}
                                 <a :href="`/search?q=${encodeURIComponent(query)}`"
-                                   x-show="query.length >= 2"
-                                   class="block p-3 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-medium transition">
+                                   x-show="total > 0"
+                                   class="block p-3 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-medium transition border-t border-gray-200 dark:border-gray-700">
                                     <i class="fa-solid fa-arrow-right mr-2"></i>
-                                    Tüm sonuçları gör
+                                    <span x-text="`Tüm ${total} sonucu gör`"></span>
                                 </a>
                             </div>
                         </div>

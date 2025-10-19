@@ -29,6 +29,7 @@ class UniversalSearchService
     public function searchAll(
         string $query,
         int $perPage = 20,
+        int $page = 1,
         array $filters = [],
         string $activeTab = 'all'
     ): array {
@@ -48,12 +49,12 @@ class UniversalSearchService
             }
 
             try {
-                $modelResults = $this->searchInModel($modelClass, $query, $filters, $perPage);
+                $modelResults = $this->searchInModel($modelClass, $query, $filters, $perPage, $page);
                 $results[$key] = $modelResults;
-                $totalCount += $modelResults['count'];
+                $totalCount += $modelResults['total'];
             } catch (\Exception $e) {
                 \Log::error("Search error in {$modelClass}: " . $e->getMessage());
-                $results[$key] = ['items' => collect([]), 'count' => 0];
+                $results[$key] = ['items' => collect([]), 'count' => 0, 'total' => 0];
             }
         }
 
@@ -78,7 +79,8 @@ class UniversalSearchService
         string $modelClass,
         string $query,
         array $filters = [],
-        int $limit = 20
+        int $limit = 20,
+        int $page = 1
     ): array {
         $searchQuery = $modelClass::search($query);
 
@@ -95,11 +97,15 @@ class UniversalSearchService
             $searchQuery->where('brand_id', $filters['brand_id']);
         }
 
-        $items = $searchQuery->take($limit)->get();
+        // Use paginate() for pagination support
+        $paginator = $searchQuery->paginate($limit, 'page', $page);
 
         return [
-            'items' => $items,
-            'count' => $items->count(),
+            'items' => collect($paginator->items()),
+            'count' => $paginator->count(),
+            'total' => $paginator->total(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
         ];
     }
 

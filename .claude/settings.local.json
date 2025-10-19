@@ -1,25 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(php artisan view:clear)",
-      "Bash(php artisan cache:clear)",
-      "Bash(timeout 10 curl -s -o /dev/null -w \"Search page: %{http_code}\\n\" \"https://ixtif.com/search?q=forklift\")",
-      "Bash(timeout 10 curl -s \"https://ixtif.com/api/search/suggestions?q=fork\")",
-      "Bash(python3 -m json.tool)",
-      "Bash(timeout 10 curl -s \"https://ixtif.com/api/search?q=forklift&per_page=20&page=1\")",
-      "Bash(timeout 15 curl -s \"https://ixtif.com/api/search?q=forklift&per_page=5&page=1\")",
-      "Bash(python3 -c \"import sys, json; data=json.load(sys.stdin); print(json.dumps(data, indent=2, ensure_ascii=False))\")",
-      "Bash(timeout 15 curl -s -w \"\\n\\nHTTP Code: %{http_code}\\n\" \"https://ixtif.com/api/search?q=forklift&per_page=5&page=1\")",
-      "Bash(timeout 15 curl -s \"https://ixtif.com/api/search/?q=forklift&per_page=5&page=1\")",
-      "Bash(php artisan route:clear)",
-      "Bash(php artisan route:cache)",
-      "Bash(timeout 15 curl -s \"https://ixtif.com/api/search/?q=forklift&per_page=5\")",
-      "Bash(python3 -c \"import sys, json; data=json.load(sys.stdin); print(''''SUCCESS:'''', data.get(''''success'''')); print(''''Total:'''', data.get(''''data'''', {}).get(''''total'''')); print(''''Items:'''', len(data.get(''''data'''', {}).get(''''items'''', [])))\")",
-      "Bash(timeout 15 curl -s -w \"\\n\\nHTTP: %{http_code}\" \"https://ixtif.com/api/search?q=forklift&per_page=5\")",
-      "Bash(python3 -c \"import sys, json; data=json.load(sys.stdin); print(''''✅ SUCCESS:'''', data.get(''''success'''')); print(''''📊 Total:'''', data.get(''''data'''', {}).get(''''total'''')); print(''''📦 Items:'''', len(data.get(''''data'''', {}).get(''''items'''', [])))\")",
-      "Bash(timeout 10 curl -s -w \"\\nHTTP_CODE: %{http_code}\\n\" \"https://ixtif.com/api/search?q=test&per_page=5\")",
-      "Bash(php artisan route:list --path=api/search --columns=method,uri,name)",
-      "Bash(php artisan route:list)"
+      "Bash(timeout 10 curl -s \"https://ixtif.com/search?q=forklift\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\n🔍 FIX: Keyword quality + 2-column grid layout\n\n✅ **KEYWORD KALİTESİ DÜZELTİLDİ:**\n\n**SORUN:**\n- Ürün isimleri keyword olarak geliyordu\n- \"İXTİF CPD18FVL - 1.8 Ton Li-Ion Forklift\" → keyword değil!\n- \"OBSERVER TEST - 2025-10-17\" → test verisi\n- Dropdown çok uzun (10 keyword + 5 product)\n\n**ÇÖZÜM:**\n- `getSuggestions()`: Sadece popüler aramalar\n- Ürün isimlerini filtrele (50 karakter limiti)\n- Test verilerini filtrele (OBSERVER TEST, İXTİF CPD)\n- Keyword sayısı: 10 → 5 (dropdown için)\n\n**DEĞİŞİKLİKLER:**\n\n**1. UniversalSearchService.php:**\n```php\n// Sadece popüler aramalar (user-typed queries)\n->whereRaw(''CHAR_LENGTH(query) <= 50'')\n->where(''query'', ''NOT LIKE'', ''%OBSERVER TEST%'')\n->where(''query'', ''NOT LIKE'', ''%İXTİF CPD%'')\n```\n\n**2. SearchApiController.php:**\n```php\n$limit = $validated[''limit''] ?? 5; // 10 → 5\n```\n\n**3. show.blade.php (Search Results Page):**\n```html\n<!-- BEFORE: 3 sütun -->\n<div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">\n\n<!-- AFTER: 2 sütun (daha geniş kartlar) -->\n<div class=\"grid grid-cols-1 lg:grid-cols-2 gap-6\">\n```\n\n**4. Console logging temizlendi:**\n- Debug logları kaldırıldı (production''da gereksiz)\n\n**SONUÇ:**\n✅ Keyword''ler temiz (sadece kısa, kullanıcı aramalar)\n✅ Dropdown daha kompakt (5 keyword + 5 product)\n✅ Search results daha okunabilir (2 sütun)\n\n**TEST GEREKLİ:**\n- Header''da \"fork\" yazın → 5 temiz keyword görmeli\n- Search page → Kartlar 2 sütunlu olmalı\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": [],

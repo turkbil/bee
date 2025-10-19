@@ -10,8 +10,7 @@ use Livewire\WithFileUploads;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingValue;
 use Modules\SettingManagement\App\Models\SettingGroup;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 use Modules\MediaManagement\App\Services\ThumbnailManager;
 use Modules\SettingManagement\app\Http\Livewire\Traits\WithBulkActionsQueue;
 
@@ -29,6 +28,7 @@ class ValuesComponent extends Component
     public $temporaryMultipleImages = [];
     public $multipleImagesArrays = [];
     public $pendingImages = []; // Yüklenen dosyaları saklar
+    protected ?string $settingValueConnection = null;
     
     public $tempPhoto;
     public $photoField; // Hangi alan için yüklüyoruz
@@ -76,7 +76,9 @@ class ValuesComponent extends Component
         $settings = Setting::where('group_id', $this->groupId)->get();
 
         foreach ($settings as $setting) {
-            $value = SettingValue::where('setting_id', $setting->id)->first();
+            $value = $this->settingValueQuery()
+                ->where('setting_id', $setting->id)
+                ->first();
 
             // Normal değerler için
             $finalValue = $value ? $value->value : $setting->default_value;
@@ -254,26 +256,6 @@ class ValuesComponent extends Component
         }
     }
 
-    // URL'den yerel depolama yolunu çıkarır
-    private function extractLocalPath($path)
-    {
-        if (empty($path)) {
-            return '';
-        }
-        
-        // storage/ ile başlıyorsa çıkar
-        if (Str::startsWith($path, 'storage/')) {
-            $path = substr($path, 8); // "storage/" kısmını çıkar
-        }
-        
-        // tenant{id}/ ifadesini ara ve kaldır
-        if (preg_match('/^tenant\d+\/(.*)$/', $path, $matches)) {
-            return $matches[1];
-        }
-        
-        return $path;
-    }
-    
     public function save($redirect = false)
     {
         
@@ -404,7 +386,9 @@ class ValuesComponent extends Component
                         \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
                     }
                     
-                    SettingValue::where('setting_id', $settingId)->delete();
+                    $this->settingValueQuery()
+                        ->where('setting_id', $settingId)
+                        ->delete();
                     
                     log_activity(
                         $setting,
@@ -413,7 +397,7 @@ class ValuesComponent extends Component
                     );
                 } else {
                     // Değer değişti ve default değil, kaydet
-                    $settingValue = SettingValue::updateOrCreate(
+                    $settingValue = $this->settingValueQuery()->updateOrCreate(
                         ['setting_id' => $settingId],
                         ['value' => $value]
                     );
@@ -463,12 +447,7 @@ class ValuesComponent extends Component
         $value = $this->values[$settingId] ?? null;
         
         if ($setting && $value) {
-            // Dosya yolundan local path'i çıkart
-            $localPath = $this->extractLocalPath($value);
-            
-            if (Storage::disk('public')->exists($localPath)) {
-                Storage::disk('public')->delete($localPath);
-                
+            if (\Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($value)) {
                 $this->values[$settingId] = null;
                 $this->checkChanges();
                 
@@ -482,6 +461,28 @@ class ValuesComponent extends Component
     }
     
 
+    protected function resolveSettingValueConnection(): string
+    {
+        if ($this->settingValueConnection) {
+            return $this->settingValueConnection;
+        }
+        
+        $connection = (function_exists('is_tenant') && is_tenant())
+            ? 'tenant'
+            : config('tenancy.database.central_connection', config('database.default'));
+        
+        if (! $connection) {
+            $connection = config('database.default');
+        }
+        
+        return $this->settingValueConnection = $connection;
+    }
+    
+    protected function settingValueQuery(): Builder
+    {
+        return SettingValue::on($this->resolveSettingValueConnection());
+    }
+    
     private function normalizeSettingImageIfNeeded(Setting $setting, $file): void
     {
         if (! $file instanceof \Illuminate\Http\UploadedFile) {

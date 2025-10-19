@@ -78,33 +78,43 @@ class SearchApiController extends Controller
         ]);
 
         try {
-            // Get search results
+            $query = $validated['q'];
+            $limit = $validated['limit'] ?? 5; // Dropdown için 5 yeterli
+
+            // Get keyword suggestions from popular searches ONLY
+            $keywordSuggestions = $this->searchService->getSuggestions($query, $limit);
+
+            $keywords = $keywordSuggestions->map(function ($keyword) use ($query) {
+                // Get count for each keyword by doing a quick search
+                $count = 0;
+                try {
+                    $quickSearch = $this->searchService->searchAll($keyword, 1, 1);
+                    $count = $quickSearch['total_count'];
+                } catch (\Exception $e) {
+                    // Ignore count errors
+                }
+
+                return [
+                    'type' => 'keyword',
+                    'text' => $keyword,
+                    'count' => $count,
+                ];
+            })->values()->all();
+
+            // Get product suggestions (top 5 from actual search)
             $results = $this->searchService->searchAll(
-                query: $validated['q'],
-                perPage: 15
+                query: $query,
+                perPage: 5,
+                page: 1
             );
 
-            // Keyword suggestions
-            $keywords = [];
-            $query = $validated['q'];
-
-            if (strlen($query) >= 2 && $results['total_count'] > 0) {
-                $keywords[] = [
-                    'type' => 'keyword',
-                    'text' => $query,
-                    'count' => $results['total_count'],
-                ];
-            }
-
-            // Product suggestions
-            $products = [];
             $formattedResults = $this->searchService->formatResultsForDisplay(
                 $results,
-                $validated['q']
+                $query
             );
 
-            foreach ($formattedResults->take(5) as $item) {
-                $products[] = [
+            $products = $formattedResults->take(5)->map(function ($item) {
+                return [
                     'type' => 'product',
                     'title' => $item['title'],
                     'highlighted_title' => $item['highlighted_title'],
@@ -112,7 +122,7 @@ class SearchApiController extends Controller
                     'type_label' => $item['type_label'],
                     'price' => $item['price'],
                 ];
-            }
+            })->values()->all();
 
             return response()->json([
                 'success' => true,

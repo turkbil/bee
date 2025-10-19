@@ -1,9 +1,11 @@
 <?php
 namespace Modules\SettingManagement\App\Helpers;
 
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class TenantStorageHelper 
+class TenantStorageHelper
 {
     /**
      * Dosyayı tenant için doğru bir şekilde yükler
@@ -11,116 +13,235 @@ class TenantStorageHelper
      * @param mixed $file Yüklenecek dosya
      * @param string $relativePath Relative path (örn: "settings/1" veya "widgets")
      * @param string $fileName Dosya adı
-     * @param int $tenantId Tenant ID
+     * @param int|null $tenantId Tenant ID
      * @return string Public URL path
+     *
+     * @throws \Exception
      */
-    public static function storeTenantFile($file, $relativePath, $fileName, $tenantId)
+    public static function storeTenantFile($file, string $relativePath, string $fileName, ?int $tenantId = null): string
     {
-        $disk = Storage::disk('public');
-        $fullPath = $relativePath . '/' . $fileName;
+        [$tenantId, $disk, $diskName] = self::resolveTenantFilesystem($tenantId);
+
+        $relativePath = trim($relativePath, '/');
+        if ($diskName !== 'tenant' && $tenantId) {
+            $relativePath = trim("tenant{$tenantId}/{$relativePath}", '/');
+        }
+
+        $fullPath = trim(($relativePath !== '' ? $relativePath . '/' : '') . $fileName, '/');
 
         try {
-            // Klasör yoksa oluştur (Laravel Storage kullanarak - tenant-aware)
-            if (!$disk->exists($relativePath)) {
-                // makeDirectory nested path'leri de oluşturabilsin diye recursive true gönder
-                $disk->makeDirectory($relativePath, 0775, true);
-
-                // Directory oluşturulduktan sonra permission düzelt (tenant-aware)
-                $actualPath = $disk->path($relativePath);
-                if (file_exists($actualPath)) {
-                    @chmod($actualPath, 0775);
-                }
+            if ($relativePath !== '') {
+                self::ensureDirectoryExists($disk, $relativePath);
             }
 
-            // Dosyayı Laravel Storage ile yükle (tenant-aware)
             $fileContent = file_get_contents($file->getRealPath());
-            $result = $disk->put($fullPath, $fileContent);
-
-            if (!$result) {
-                throw new \Exception("Dosya yüklenemedi: " . $fullPath);
+            if (! $disk->put($fullPath, $fileContent)) {
+                throw new \RuntimeException("Dosya yüklenemedi: {$fullPath}");
             }
 
-            // Dosya permission'ını düzelt (tenant-aware)
-            $actualFile = $disk->path($fullPath);
-            if (file_exists($actualFile)) {
-                @chmod($actualFile, 0664);
+            if ($relativePath !== '') {
+                self::applyPermissions($disk, $relativePath, 0775);
             }
+            self::applyPermissions($disk, $fullPath, 0664);
 
-            // Tenant prefix ile path döndür
-            if ($tenantId == 1) {
-                return 'storage/tenant1/' . $fullPath;
-            } else {
+            if ($diskName === 'tenant' && $tenantId) {
                 return "storage/tenant{$tenantId}/{$fullPath}";
             }
 
-        } catch (\Exception $e) {
-            // Detaylı hata mesajı (tenant-aware debug info)
-            $errorMsg = "Dosya yükleme hatası (Tenant {$tenantId}): " . $e->getMessage();
+            return "storage/{$fullPath}";
+        } catch (\Throwable $e) {
+            $errorMsg = "Dosya yükleme hatası (Tenant {$tenantId}): {$e->getMessage()}";
             $errorMsg .= " | Path: {$relativePath}/{$fileName}";
 
-            // Debug: Actual storage path
             try {
-                $errorMsg .= " | Actual Storage: " . $disk->path($relativePath);
-            } catch (\Exception $ex) {
-                $errorMsg .= " | Storage path alınamadı";
+                $errorMsg .= " | Disk root: " . $disk->path('/');
+            } catch (\Throwable $ex) {
+                $errorMsg .= " | Disk path alınamadı";
             }
 
-            throw new \Exception($errorMsg);
+            throw new \Exception($errorMsg, previous: $e);
         }
     }
-    
+
     /**
      * Dosyayı siler
      */
-    public static function deleteFile($path)
+    public static function deleteFile(?string $path): bool
     {
         if (empty($path)) {
             return false;
         }
 
-        $disk = Storage::disk('public');
-
         try {
-            // "storage/tenant{id}" formatını kontrol et
-            if (preg_match('/^storage\/tenant(\d+)\/(.*)$/', $path, $matches)) {
-                $relativePath = $matches[2];
+            [$tenantId, $relativePath] = self::extractTenantPath($path);
 
-                // Laravel Storage ile sil
-                if ($disk->exists($relativePath)) {
-                    return $disk->delete($relativePath);
-                }
-
-                // Yanlış yoldaki dosyayı da kontrol et (eski hatalar için)
-                $tenantId = $matches[1];
-                $wrongPath = storage_path('tenant' . $tenantId . '/app/public/' . $relativePath);
-                if (file_exists($wrongPath)) {
-                    return @unlink($wrongPath);
-                }
-
+            if ($relativePath === null) {
                 return false;
             }
 
-            // Eski format (tenant{id}/) için destek
-            if (preg_match('/^tenant(\d+)\/(.*)$/', $path, $matches)) {
-                $relativePath = $matches[2];
+            [$resolvedTenantId, $disk, $diskName] = self::resolveTenantFilesystem($tenantId);
 
-                if ($disk->exists($relativePath)) {
-                    return $disk->delete($relativePath);
+            if ($diskName !== 'tenant' && $resolvedTenantId) {
+                $prefixedPath = "tenant{$resolvedTenantId}/{$relativePath}";
+                if (self::deleteFromDisk($disk, $prefixedPath)) {
+                    return true;
                 }
-
-                return false;
             }
 
-            // Prefix olmayan yol
-            if ($disk->exists($path)) {
-                return $disk->delete($path);
+            if (self::deleteFromDisk($disk, $relativePath)) {
+                return true;
             }
 
-            return false;
-
-        } catch (\Exception $e) {
-            // Sessizce başarısız ol (log kaydı yapılabilir)
+            return self::deleteFromDisk(Storage::disk('public'), $relativePath);
+        } catch (\Throwable $e) {
             return false;
         }
+    }
+
+    /**
+     * Silme işlemini verilen disk üzerinde gerçekleştirir
+     */
+    protected static function deleteFromDisk(FilesystemAdapter $disk, string $path): bool
+    {
+        $path = ltrim($path, '/');
+
+        if ($path === '') {
+            return false;
+        }
+
+        if ($disk->exists($path)) {
+            return (bool) $disk->delete($path);
+        }
+
+        return false;
+    }
+
+    /**
+     * Verilen dizinin varlığını garanti eder.
+     */
+    protected static function ensureDirectoryExists(FilesystemAdapter $disk, string $relativePath): void
+    {
+        $relativePath = trim($relativePath, '/');
+
+        if ($relativePath === '') {
+            return;
+        }
+
+        $directoryExists = method_exists($disk, 'directoryExists')
+            ? $disk->directoryExists($relativePath)
+            : $disk->exists($relativePath);
+
+        if (! $directoryExists) {
+            $disk->makeDirectory($relativePath);
+        }
+    }
+
+    /**
+     * Dosya veya dizin izinlerini ayarlar.
+     */
+    protected static function applyPermissions(FilesystemAdapter $disk, string $path, int $permission): void
+    {
+        $path = trim($path, '/');
+
+        if ($path === '') {
+            return;
+        }
+
+        try {
+            $absolutePath = $disk->path($path);
+        } catch (\Throwable $e) {
+            return;
+        }
+
+        if ($absolutePath && file_exists($absolutePath)) {
+            @chmod($absolutePath, $permission);
+        }
+    }
+
+    /**
+     * Tenant ID ve relative path'i çıkartır
+     *
+     * @return array{0:int|null,1:string|null}
+     */
+    protected static function extractTenantPath(string $path): array
+    {
+        $path = trim($path);
+
+        if ($path === '') {
+            return [null, null];
+        }
+
+        if (preg_match('#^https?://#i', $path)) {
+            $parsedPath = parse_url($path, PHP_URL_PATH);
+            if (is_string($parsedPath)) {
+                $path = ltrim($parsedPath, '/');
+            }
+        } else {
+            $path = ltrim($path, '/');
+        }
+
+        if (preg_match('#^storage/tenant(\d+)/(.*)$#i', $path, $matches)) {
+            return [(int) $matches[1], $matches[2]];
+        }
+
+        if (preg_match('#^tenant(\d+)/(.*)$#i', $path, $matches)) {
+            return [(int) $matches[1], $matches[2]];
+        }
+
+        if (Str::startsWith($path, 'storage/')) {
+            return [null, substr($path, strlen('storage/'))];
+        }
+
+        return [null, $path];
+    }
+
+    /**
+     * İlgili tenant için filesystem adapter'ı döndürür.
+     *
+     * @return array{0:int,1:FilesystemAdapter,2:string}
+     */
+    protected static function resolveTenantFilesystem(?int $tenantId = null): array
+    {
+        $tenantId = $tenantId
+            ?? (function_exists('tenant_id') ? tenant_id() : null)
+            ?? 1;
+
+        $tenantId = (int) max(1, $tenantId);
+
+        self::configureTenantDisk($tenantId);
+
+        try {
+            $disk = Storage::disk('tenant');
+            $diskName = 'tenant';
+        } catch (\Throwable $e) {
+            $disk = Storage::disk('public');
+            $diskName = 'public';
+        }
+
+        return [$tenantId, $disk, $diskName];
+    }
+
+    /**
+     * Tenant disk yapılandırmasını hazırlar.
+     */
+    protected static function configureTenantDisk(int $tenantId): void
+    {
+        $root = storage_path("tenant{$tenantId}/app/public");
+
+        if (! is_dir($root)) {
+            @mkdir($root, 0775, true);
+        }
+
+        $appUrl = rtrim((string) config('app.url'), '/');
+
+        config([
+            'filesystems.disks.tenant' => [
+                'driver' => 'local',
+                'root' => $root,
+                'url' => $appUrl ? "{$appUrl}/storage/tenant{$tenantId}" : null,
+                'visibility' => 'public',
+                'throw' => false,
+            ],
+        ]);
     }
 }

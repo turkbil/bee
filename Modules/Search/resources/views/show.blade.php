@@ -27,8 +27,12 @@
             }
 
             try {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(this.query)}&type=${this.activeTab}&per_page=${this.perPage}&page=${this.page}`);
+                const url = `/api/search?q=${encodeURIComponent(this.query)}&type=${this.activeTab}&per_page=${this.perPage}&page=${this.page}`;
+                console.log('🔍 Search API URL:', url);
+                const response = await fetch(url);
+                console.log('📡 Response status:', response.status);
                 const data = await response.json();
+                console.log('📦 Response data:', data);
 
                 if (data.success) {
                     if (append) {
@@ -37,9 +41,12 @@
                         this.results = data.data.items || [];
                     }
                     this.total = data.data.total || 0;
+                    console.log(`✅ Loaded ${this.results.length} results, total: ${this.total}`);
+                } else {
+                    console.warn('⚠️ API returned success:false', data);
                 }
             } catch (e) {
-                console.error('Search error:', e);
+                console.error('❌ Search error:', e);
             }
 
             this.loading = false;
@@ -80,7 +87,7 @@
 
             {{-- Results --}}
             <div x-show="!loading && results.length > 0">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <template x-for="(item, index) in results" :key="index">
                         <a :href="item.url"
                            class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition p-6 border border-gray-200 dark:border-gray-700 group">

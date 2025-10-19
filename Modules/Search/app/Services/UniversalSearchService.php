@@ -110,7 +110,7 @@ class UniversalSearchService
     }
 
     /**
-     * Get autocomplete suggestions
+     * Get autocomplete suggestions - ONLY from popular searches
      */
     public function getSuggestions(string $partial, int $limit = 10): Collection
     {
@@ -120,28 +120,27 @@ class UniversalSearchService
 
         // Cache suggestions for 1 hour
         return Cache::remember("suggestions:{$partial}", 3600, function () use ($partial, $limit) {
-            // Get from popular searches
+            // Get ONLY from popular searches (user-typed queries)
+            // Ürün isimlerini keyword olarak gösterme!
             $popularSearches = SearchQuery::query()
                 ->where('query', 'LIKE', "{$partial}%")
                 ->where('results_count', '>', 0)
+                // Sadece kısa kelimeleri al (ürün isimleri çok uzun)
+                ->whereRaw('CHAR_LENGTH(query) <= 50')
+                // Test verilerini filtrele
+                ->where('query', 'NOT LIKE', '%OBSERVER TEST%')
+                ->where('query', 'NOT LIKE', '%İXTİF CPD%')
                 ->selectRaw('query, COUNT(*) as count')
                 ->groupBy('query')
                 ->orderByDesc('count')
-                ->limit($limit)
+                ->limit($limit * 2) // Fazladan al, filtrelenecek
                 ->pluck('query');
 
-            // If not enough, search in products
-            if ($popularSearches->count() < $limit) {
-                $productSuggestions = ShopProduct::search($partial)
-                    ->take($limit - $popularSearches->count())
-                    ->get()
-                    ->pluck('title')
-                    ->map(fn($title) => is_array($title) ? ($title[app()->getLocale()] ?? '') : $title);
-
-                $popularSearches = $popularSearches->merge($productSuggestions);
-            }
-
-            return $popularSearches->unique()->take($limit);
+            return $popularSearches
+                ->unique()
+                ->filter(fn($q) => !empty(trim($q))) // Boş olanları filtrele
+                ->take($limit)
+                ->values();
         });
     }
 

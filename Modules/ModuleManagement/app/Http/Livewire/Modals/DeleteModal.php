@@ -29,37 +29,57 @@ class DeleteModal extends Component
         try {
             DB::beginTransaction();
 
-            // Özel durumlarda model isimlerini düzelt
-            $modelMapping = [
-                'settingmanagement' => 'Setting',
-                'modulemanagement' => 'Module',
-                'thememanagement' => 'Theme',
-                // Diğer modüller için gerekirse buraya ekle
+            // Modül-Model mapping (tam liste)
+            $moduleModelMap = [
+                'module' => [
+                    'class' => "Modules\\ModuleManagement\\App\\Models\\Module",
+                    'key' => 'module_id'
+                ],
+                'shop-product' => [
+                    'class' => "Modules\\Shop\\App\\Models\\ShopProduct",
+                    'key' => 'product_id'
+                ],
+                'shop-category' => [
+                    'class' => "Modules\\Shop\\App\\Models\\ShopCategory",
+                    'key' => 'category_id'
+                ],
+                'shop-brand' => [
+                    'class' => "Modules\\Shop\\App\\Models\\ShopBrand",
+                    'key' => 'brand_id'
+                ],
+                'blog' => [
+                    'class' => "Modules\\Blog\\App\\Models\\Blog",
+                    'key' => 'blog_id'
+                ],
+                'portfolio' => [
+                    'class' => "Modules\\Portfolio\\App\\Models\\Portfolio",
+                    'key' => 'portfolio_id'
+                ],
+                'page' => [
+                    'class' => "Modules\\Page\\App\\Models\\Page",
+                    'key' => 'page_id'
+                ],
+                'settingmanagement' => [
+                    'class' => "Modules\\Settingmanagement\\App\\Models\\Setting",
+                    'key' => 'id'
+                ],
+                'thememanagement' => [
+                    'class' => "Modules\\Thememanagement\\App\\Models\\Theme",
+                    'key' => 'theme_id'
+                ],
             ];
-            
-            // Modül adını düzgün formatta al (ilk harf büyük, diğerleri küçük)
-            $moduleName = ucfirst(strtolower($this->module));
-            
-            $modelName = isset($modelMapping[$this->module]) 
-                ? $modelMapping[$this->module] 
-                : ucfirst($this->module);
-            
-            $modelClass = $this->module === 'module' 
-                ? "Modules\\ModuleManagement\\App\\Models\\Module"
-                : "Modules\\" . $moduleName . "\\App\\Models\\" . $modelName;
 
-            // Özel durumlarda model birincil anahtar sütun isimlerini düzelt
-            $primaryKeyMapping = [
-                'settingmanagement' => 'id',
-                'thememanagement' => 'theme_id',
-                // Diğer modüller için gerekirse buraya ekle
-            ];
-            
-            $primaryKey = $this->module === 'module' 
-                ? 'module_id' 
-                : (isset($primaryKeyMapping[$this->module]) 
-                    ? $primaryKeyMapping[$this->module] 
-                    : $modelName . '_id');
+            // Modül mapping'de var mı kontrol et
+            if (isset($moduleModelMap[$this->module])) {
+                $modelClass = $moduleModelMap[$this->module]['class'];
+                $primaryKey = $moduleModelMap[$this->module]['key'];
+            } else {
+                // Default pattern (eski sistem)
+                $moduleName = ucfirst(strtolower($this->module));
+                $modelName = ucfirst($this->module);
+                $modelClass = "Modules\\" . $moduleName . "\\App\\Models\\" . $modelName;
+                $primaryKey = $modelName . '_id';
+            }
 
             $item = $modelClass::where($primaryKey, $this->itemId)->first();
 

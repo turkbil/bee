@@ -621,34 +621,34 @@
 <script src="{{ asset('assets/js/simple-translation-modal.js') }}?v={{ time() }}"></script>
 <script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    initSortable();
-});
-
-// Livewire render sonrası yeniden initialize et
-document.addEventListener('livewire:update', function() {
-    initSortable();
-});
+let productSortableInstance = null;
 
 function initSortable() {
     const sortableList = document.getElementById('sortable-products');
 
     if (!sortableList || !sortableList.classList.contains('sortable-list')) {
+        // Eski instance'ı temizle
+        if (productSortableInstance) {
+            productSortableInstance.destroy();
+            productSortableInstance = null;
+        }
         return;
     }
 
     // Eski sortable instance'ı temizle
-    if (window.productSortable) {
-        window.productSortable.destroy();
+    if (productSortableInstance) {
+        productSortableInstance.destroy();
+        productSortableInstance = null;
     }
 
-    window.productSortable = new Sortable(sortableList, {
+    productSortableInstance = new Sortable(sortableList, {
         animation: 150,
         handle: '.sortable-handle',
         ghostClass: 'sortable-ghost',
         chosenClass: 'sortable-chosen',
         dragClass: 'sortable-drag',
         filter: '.variant-row',
+        preventOnFilter: true,
         onEnd: function(evt) {
             const productIds = [];
             const rows = sortableList.querySelectorAll('.sortable-item');
@@ -660,10 +660,38 @@ function initSortable() {
                 }
             });
 
+            console.log('Sortable onEnd - Product IDs:', productIds);
+
             // Livewire component'e sıralama bilgisini gönder
             @this.call('updateSortOrder', productIds);
         }
     });
+
+    console.log('Sortable initialized for products');
 }
+
+// İlk yükleme
+document.addEventListener('DOMContentLoaded', function() {
+    initSortable();
+});
+
+// Livewire güncellemelerinden sonra yeniden initialize
+document.addEventListener('livewire:navigated', function() {
+    initSortable();
+});
+
+// Livewire component güncellendiğinde
+document.addEventListener('livewire:update', function() {
+    setTimeout(initSortable, 100);
+});
+
+// Wire events ile de dinle
+Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
+    succeed(({ snapshot, effect }) => {
+        queueMicrotask(() => {
+            initSortable();
+        });
+    });
+});
 </script>
 @endpush

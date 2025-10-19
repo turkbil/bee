@@ -94,7 +94,7 @@ class ModuleManagementServiceProvider extends ServiceProvider
 
         // Modül cache temizleme
         \Illuminate\Support\Facades\Cache::forget("modules_tenant_central");
-        app(\App\Services\ModuleAccessService::class)->refreshModuleCache();
+        app(\App\Services\ModuleAccessService::class)->clearModuleAccessCache();
     }
 
     /**
@@ -111,7 +111,7 @@ class ModuleManagementServiceProvider extends ServiceProvider
 
         // Modül cache temizleme
         \Illuminate\Support\Facades\Cache::forget("modules_tenant_" . $module->tenant_id);
-        app(\App\Services\ModuleAccessService::class)->refreshModuleCache();
+        app(\App\Services\ModuleAccessService::class)->clearModuleAccessCache();
     }
     
     /**

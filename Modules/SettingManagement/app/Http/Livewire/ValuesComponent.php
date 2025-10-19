@@ -296,24 +296,34 @@ class ValuesComponent extends Component
             if (isset($this->temporaryImages[$settingId])) {
                 $file = $this->temporaryImages[$settingId];
                 $type = $setting->type;
-                
+
                 // Normalize brand assets so oversized logos are not stored untouched
                 $this->normalizeSettingImageIfNeeded($setting, $file);
-                
+
                 try {
                     // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                     $tenantId = is_tenant() ? tenant_id() : 1;
 
                     // 🎯 SPATİE PATTERN: Her setting için unique klasör (settings/{setting_id}/)
-                    $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $file->getClientOriginalExtension();
+                    // ✅ FIX: Dosya adına timestamp ekle (browser cache + unique filename için)
+                    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $extension = $file->getClientOriginalExtension();
+                    $fileName = $originalName . '_' . time() . '.' . $extension;
 
                     // Eski dosyayı sil (eğer varsa)
                     if ($oldValue) {
-                        \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
+                        $deleted = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
+                        if (!$deleted) {
+                            // Log dosya silinemezse (debug için)
+                            \Log::warning("Setting dosyası silinemedi: {$oldValue}", [
+                                'setting_id' => $settingId,
+                                'tenant_id' => $tenantId
+                            ]);
+                        }
                     }
 
                     // TenantStorageHelper ile doğru şekilde dosyayı yükle
-                    // Path: settings/{setting_id}/filename.ext (Spatie pattern)
+                    // Path: settings/{setting_id}/filename_timestamp.ext (Spatie pattern + unique)
                     $value = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
                         $file,
                         "settings/{$settingId}",  // ✅ Setting ID bazlı unique klasör

@@ -681,27 +681,21 @@
                                 }
                                 this.loading = true;
                                 try {
-                                    const url = `/api/search/suggestions?q=${encodeURIComponent(this.query)}`;
-                                    console.log('🔍 Suggestions API URL:', url);
-                                    const response = await fetch(url);
-                                    console.log('📡 Suggestions response status:', response.status);
+                                    const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(this.query)}`);
                                     const data = await response.json();
-                                    console.log('📦 Suggestions data:', data);
 
                                     if (data.success && data.data) {
                                         this.keywords = data.data.keywords || [];
                                         this.products = data.data.products || [];
                                         this.total = data.data.total || 0;
                                         this.isOpen = (this.keywords.length > 0 || this.products.length > 0);
-                                        console.log(`✅ Loaded ${this.keywords.length} keywords, ${this.products.length} products`);
                                     } else {
-                                        console.warn('⚠️ Suggestions API returned success:false', data);
                                         this.keywords = [];
                                         this.products = [];
                                         this.isOpen = false;
                                     }
                                 } catch (e) {
-                                    console.error('❌ Suggestions error:', e);
+                                    console.error('Suggestions error:', e);
                                     this.keywords = [];
                                     this.products = [];
                                     this.isOpen = false;

@@ -1,8 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout 10 curl -s \"https://ixtif.com/search?q=forklift\")",
-      "Bash(git commit -m \"$(cat <<''EOF''\n🔍 FIX: Keyword quality + 2-column grid layout\n\n✅ **KEYWORD KALİTESİ DÜZELTİLDİ:**\n\n**SORUN:**\n- Ürün isimleri keyword olarak geliyordu\n- \"İXTİF CPD18FVL - 1.8 Ton Li-Ion Forklift\" → keyword değil!\n- \"OBSERVER TEST - 2025-10-17\" → test verisi\n- Dropdown çok uzun (10 keyword + 5 product)\n\n**ÇÖZÜM:**\n- `getSuggestions()`: Sadece popüler aramalar\n- Ürün isimlerini filtrele (50 karakter limiti)\n- Test verilerini filtrele (OBSERVER TEST, İXTİF CPD)\n- Keyword sayısı: 10 → 5 (dropdown için)\n\n**DEĞİŞİKLİKLER:**\n\n**1. UniversalSearchService.php:**\n```php\n// Sadece popüler aramalar (user-typed queries)\n->whereRaw(''CHAR_LENGTH(query) <= 50'')\n->where(''query'', ''NOT LIKE'', ''%OBSERVER TEST%'')\n->where(''query'', ''NOT LIKE'', ''%İXTİF CPD%'')\n```\n\n**2. SearchApiController.php:**\n```php\n$limit = $validated[''limit''] ?? 5; // 10 → 5\n```\n\n**3. show.blade.php (Search Results Page):**\n```html\n<!-- BEFORE: 3 sütun -->\n<div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">\n\n<!-- AFTER: 2 sütun (daha geniş kartlar) -->\n<div class=\"grid grid-cols-1 lg:grid-cols-2 gap-6\">\n```\n\n**4. Console logging temizlendi:**\n- Debug logları kaldırıldı (production''da gereksiz)\n\n**SONUÇ:**\n✅ Keyword''ler temiz (sadece kısa, kullanıcı aramalar)\n✅ Dropdown daha kompakt (5 keyword + 5 product)\n✅ Search results daha okunabilir (2 sütun)\n\n**TEST GEREKLİ:**\n- Header''da \"fork\" yazın → 5 temiz keyword görmeli\n- Search page → Kartlar 2 sütunlu olmalı\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit -m \"🧹 CLEAN: Remove console debug logs (production ready)\")"
     ],
     "deny": [],
     "ask": [],

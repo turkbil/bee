@@ -27,12 +27,8 @@
             }
 
             try {
-                const url = `/api/search?q=${encodeURIComponent(this.query)}&type=${this.activeTab}&per_page=${this.perPage}&page=${this.page}`;
-                console.log('🔍 Search API URL:', url);
-                const response = await fetch(url);
-                console.log('📡 Response status:', response.status);
+                const response = await fetch(`/api/search?q=${encodeURIComponent(this.query)}&type=${this.activeTab}&per_page=${this.perPage}&page=${this.page}`);
                 const data = await response.json();
-                console.log('📦 Response data:', data);
 
                 if (data.success) {
                     if (append) {
@@ -41,12 +37,9 @@
                         this.results = data.data.items || [];
                     }
                     this.total = data.data.total || 0;
-                    console.log(`✅ Loaded ${this.results.length} results, total: ${this.total}`);
-                } else {
-                    console.warn('⚠️ API returned success:false', data);
                 }
             } catch (e) {
-                console.error('❌ Search error:', e);
+                console.error('Search error:', e);
             }
 
             this.loading = false;

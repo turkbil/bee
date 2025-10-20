@@ -129,6 +129,45 @@ cat a-console.txt
 echo "" > a-console.txt
 ```
 
+### 🌐 WEB İÇERİK OKUMA
+
+**✅ Kullanıcı link vermeden direkt okuyabilirim!**
+
+**Metod 1: curl ile HTML okuma (Tercih edilen)**
+```bash
+# SSL bypass ile HTML içeriği oku
+curl -s -k https://ixtif.com
+
+# Sadece head/meta taglerini kontrol
+curl -s -k https://ixtif.com | head -200
+
+# Buffer dosyasına kaydet ve analiz et
+curl -s -k https://URL > a-html.txt
+cat a-html.txt
+# Analiz yap...
+echo "" > a-html.txt  # Temizle
+```
+
+**Metod 2: WebFetch tool (SSL sorunlu siteler için çalışmayabilir)**
+```
+WebFetch tool kullan (genelde çalışır ama SSL hatası verebilir)
+```
+
+**Kullanım:**
+- ❌ "Link verirsen bakayım" DEME
+- ✅ Direkt linki al ve curl ile oku
+- ✅ HTML'i analiz et, sorunları tespit et
+- ✅ a-html.txt'e kaydet, temizle
+
+**Örnek:**
+```
+Kullanıcı: "ixtif.com anasayfasına bak, responsive çalışıyor mu?"
+Sen: curl -s -k https://ixtif.com > a-html.txt
+     (HTML'i analiz et)
+     "Viewport meta tag var, Tailwind responsive classları kullanılmış..."
+     echo "" > a-html.txt
+```
+
 ---
 
 ## 🎨 TASARIM STANDARTLARI

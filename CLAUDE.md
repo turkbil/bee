@@ -106,6 +106,13 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 - **Log/Fotoğraf** gönderirsen: Oku → Analiz et → Boşalt → Sil
 - **Otomatik temizlik** her işlem sonrası
 
+### 🛡️ KORUNAN DOSYALAR
+**⚠️ Bu dosyaları ASLA silme!**
+- `a-console.txt` - Console/Debugbar çıktıları için (içini boşalt, dosyayı silme)
+- `a-html.txt` - HTML output için (içini boşalt, dosyayı silme)
+
+**Kullanım:** Bu dosyalar debug amaçlı buffer. İçeriği okuyup analiz ettikten sonra içini boşalt, ama dosyayı silme!
+
 ---
 
 ## 🎨 TASARIM STANDARTLARI
